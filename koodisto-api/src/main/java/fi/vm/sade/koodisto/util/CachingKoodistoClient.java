@@ -47,7 +47,7 @@ public class CachingKoodistoClient implements KoodistoClient {
             fis = new FileInputStream(new File(System.getProperty("user.home"), "oph-configuration/common.properties"));
             props.load(fis);
             this.koodistoServiceWebappUrl = props.getProperty("cas.service.koodisto-service");
-			fis.close();
+            fis.close();
         } catch (IOException e) {
             throw new KoodistoFailedReadingPropertiesRuntimeException("failed to read common.properties", e);
         }
@@ -108,12 +108,12 @@ public class CachingKoodistoClient implements KoodistoClient {
     @Override
     public String buildSearchKoodisUri(SearchKoodisCriteriaType sc) {
         return "/searchKoodis?"
-                +param("koodiUris", sc.getKoodiUris())
-                +param("koodiArvo", sc.getKoodiArvo())
-                +param("koodiTilas", sc.getKoodiTilas())
-                +param("validAt", sc.getValidAt())
-                +param("koodiVersio", sc.getKoodiVersio())
-                +param("koodiVersioSelection", sc.getKoodiVersioSelection());
+                + param("koodiUris", sc.getKoodiUris())
+                + param("koodiArvo", sc.getKoodiArvo())
+                + param("koodiTilas", sc.getKoodiTilas())
+                + param("validAt", sc.getValidAt())
+                + param("koodiVersio", sc.getKoodiVersio())
+                + param("koodiVersioSelection", sc.getKoodiVersioSelection());
     }
 
     private String param(String name, Object val) {
