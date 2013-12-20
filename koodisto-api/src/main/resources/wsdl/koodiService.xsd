@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema elementFormDefault="unqualified"
+    targetNamespace="http://service.koodisto.sade.vm.fi/types" version="1.0"
+    xmlns:tns="http://service.koodisto.sade.vm.fi/types" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:tnsh="http://service.koodisto.sade.vm.fi/types/common">
+
+    <xs:import namespace="http://service.koodisto.sade.vm.fi/types/common"
+        schemaLocation="common.xsd" />
+
+    <xs:element name="listKoodiByRelation" type="tns:ListKoodiByRelationType" />
+    <xs:element name="listKoodiByRelationResponse" type="tns:ListKoodiByRelationResponseType" />
+    <xs:element name="searchKoodis" type="tns:SearchKoodisType" />
+    <xs:element name="searchKoodisResponse" type="tns:SearchKoodisResponseType" />
+    <xs:element name="searchKoodisByKoodisto" type="tns:SearchKoodisByKoodistoType" />
+    <xs:element name="searchKoodisByKoodistoResponse" type="tns:SearchKoodisByKoodistoResponseType" />
+
+    <xs:complexType name="ListKoodiByRelationType">
+        <xs:sequence>
+            <xs:element minOccurs="1" name="koodi"
+                type="tnsh:KoodiUriAndVersioType" maxOccurs="1" />
+            <xs:element minOccurs="1" name="onAlaKoodi" type="xs:boolean"
+                maxOccurs="1" />
+            <xs:element minOccurs="1" name="suhdeTyyppi"
+                type="tnsh:SuhteenTyyppiType" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ListKoodiByRelationResponseType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0"
+                name="koodis" type="tnsh:KoodiType" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="SearchKoodisType">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1"
+                name="searchCriteria" type="tns:SearchKoodisCriteriaType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SearchKoodisResponseType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0"
+                name="koodis" type="tnsh:KoodiType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SearchKoodisByKoodistoType">
+        <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1"
+                name="searchCriteria" type="tns:SearchKoodisByKoodistoCriteriaType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SearchKoodisByKoodistoResponseType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0"
+                name="koodis" type="tnsh:KoodiType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SearchKoodisByKoodistoCriteriaType">
+        <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="koodistoUri"
+                type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1"
+                name="koodistoVersio" type="xs:int" />
+            <xs:element minOccurs="1" maxOccurs="1"
+                name="koodistoVersioSelection" type="tns:SearchKoodisByKoodistoVersioSelectionType" />
+            <xs:element minOccurs="0" maxOccurs="unbounded"
+                name="koodistoTilas" type="tnsh:TilaType" />
+            <xs:element minOccurs="0" maxOccurs="1" name="validAt"
+                type="xs:dateTime" />
+            <xs:element minOccurs="0" maxOccurs="1"
+                name="koodiSearchCriteria" type="tns:KoodiBaseSearchCriteriaType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="KoodiBaseSearchCriteriaType">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded"
+                name="koodiUris" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="koodiArvo"
+                type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="unbounded"
+                name="koodiTilas" type="tnsh:TilaType" />
+            <xs:element minOccurs="0" maxOccurs="1" name="validAt"
+                type="xs:dateTime" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SearchKoodisCriteriaType">
+        <xs:complexContent>
+            <xs:extension base="tns:KoodiBaseSearchCriteriaType">
+                <xs:sequence>
+                    <xs:element minOccurs="0" maxOccurs="1"
+                        name="koodiVersio" type="xs:int" />
+                    <xs:element minOccurs="1" maxOccurs="1"
+                        name="koodiVersioSelection" type="tns:SearchKoodisVersioSelectionType" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:simpleType name="SearchKoodisByKoodistoVersioSelectionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="LATEST" />
+            <xs:enumeration value="SPECIFIC" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="SearchKoodisVersioSelectionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ALL" />
+            <xs:enumeration value="LATEST" />
+            <xs:enumeration value="SPECIFIC" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:element name="genericFaultInfo" type="tnsh:GenericFaultInfoType"></xs:element>
+</xs:schema>

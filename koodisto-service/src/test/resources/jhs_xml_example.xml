@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jhsoph:koodilistaus xmlns:jhsoph="http://skeemat.jhs-suositukset.fi/oph/2012/05/03">
+    <jhsoph:koodi>
+        <jhsoph:versio>1</jhsoph:versio>
+        <jhsoph:koodiUri></jhsoph:koodiUri>
+        <jhsoph:koodiArvo>arvo</jhsoph:koodiArvo>
+        <jhsoph:paivitysPvm>2013-04-24T00:00:00.000+03:00</jhsoph:paivitysPvm>
+        <jhsoph:voimassaAlkuPvm>2013-03-31T00:00:00.000+02:00</jhsoph:voimassaAlkuPvm>
+        <jhsoph:voimassaLoppuPvm>2013-04-23T00:00:00.000+03:00</jhsoph:voimassaLoppuPvm>
+        <jhsoph:tila>LUONNOS</jhsoph:tila>
+        <jhsoph:metadata kieli="SV">
+            <jhsoph:nimi>nimi</jhsoph:nimi>
+            <jhsoph:kuvaus>kuvaus</jhsoph:kuvaus>
+            <jhsoph:lyhytNimi>lyhyt nimi</jhsoph:lyhytNimi>
+            <jhsoph:kayttoohje>käyttöohje</jhsoph:kayttoohje>
+            <jhsoph:kasite>käsite</jhsoph:kasite>
+            <jhsoph:sisaltaaMerkityksen>sisältää merkityksen</jhsoph:sisaltaaMerkityksen>
+            <jhsoph:eiSisallaMerkitysta>ei sisällä merkitystä</jhsoph:eiSisallaMerkitysta>
+            <jhsoph:huomioitavaKoodi>huomioitavakoodi</jhsoph:huomioitavaKoodi>
+            <jhsoph:sisaltaaKoodiston>sisältää koodiston</jhsoph:sisaltaaKoodiston>
+        </jhsoph:metadata>
+        <jhsoph:metadata kieli="EN">
+            <jhsoph:nimi>nimi</jhsoph:nimi>
+            <jhsoph:kuvaus>kuvaus</jhsoph:kuvaus>
+            <jhsoph:lyhytNimi>lyhyt nimi</jhsoph:lyhytNimi>
+            <jhsoph:kayttoohje>käyttöohje</jhsoph:kayttoohje>
+            <jhsoph:kasite>käsite</jhsoph:kasite>
+            <jhsoph:sisaltaaMerkityksen>sisältää merkityksen</jhsoph:sisaltaaMerkityksen>
+            <jhsoph:eiSisallaMerkitysta>ei sisällä merkitystä</jhsoph:eiSisallaMerkitysta>
+            <jhsoph:huomioitavaKoodi>huomioitavakoodi</jhsoph:huomioitavaKoodi>
+            <jhsoph:sisaltaaKoodiston>sisältää koodiston</jhsoph:sisaltaaKoodiston>
+        </jhsoph:metadata>
+        <jhsoph:metadata kieli="FI">
+            <jhsoph:nimi>nimi</jhsoph:nimi>
+            <jhsoph:kuvaus>kuvaus</jhsoph:kuvaus>
+            <jhsoph:lyhytNimi>lyhyt nimi</jhsoph:lyhytNimi>
+            <jhsoph:kayttoohje>käyttöohje</jhsoph:kayttoohje>
+            <jhsoph:kasite>käsite</jhsoph:kasite>
+            <jhsoph:sisaltaaMerkityksen>sisältää merkityksen</jhsoph:sisaltaaMerkityksen>
+            <jhsoph:eiSisallaMerkitysta>ei sisällä merkitystä</jhsoph:eiSisallaMerkitysta>
+            <jhsoph:huomioitavaKoodi>huomioitavakoodi</jhsoph:huomioitavaKoodi>
+            <jhsoph:sisaltaaKoodiston>sisältää koodiston</jhsoph:sisaltaaKoodiston>
+        </jhsoph:metadata>
+    </jhsoph:koodi>
+</jhsoph:koodilistaus>
