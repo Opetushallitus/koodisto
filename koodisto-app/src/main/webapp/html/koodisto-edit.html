@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+    <script type="text/javascript" src="/virkailija-raamit/apply-raamit.js"></script>
+    <script type="text/javascript">
+        /* testparams:
+         ?lang=fi&koodistoUri=kielistysvirkailijaraamit
+         ?lang=fi&koodistoUri=kielistysvirkailijaraamit&koodiUri=kayttoohje
+         ?lang=fi&koodistoUri=kielistysvirkailijaraamit&koodiUri=jokuuusikoodi
+         ?lang=xx&koodistoUri=kielistysvirkailijaraamit&koodiUri=kayttoohje
+           */
+        var serverMode = (location.protocol.indexOf('http') == 0);
+        var restapi = serverMode ? '/koodisto-service/rest/json/' : 'http://localhost:8080/koodisto-service/rest/json/'; //'samplerest/';
+        var initialCall = true;
+        var editingMap = {}; // map to store state are we editing or not some koodi metadata
+        function devlog(msg) { if (!(typeof console === "undefined" || typeof console.log === "undefined")) { try { console.log(msg); } catch(e) {} } } // logging func for dev env
+        /* Controllers */
+        function TodoCtrl($scope) {
+            $scope.restapi = restapi;
+            $scope.langs = ['FI','SV','EN'];
+            $scope.koodistoUris = [];
+            $.getJSON(restapi, function(koodistoryhmas) {
+                devlog(koodistoryhmas);
+                jQuery.each(koodistoryhmas, function() {
+//                    devlog(this);
+                    jQuery.each(this.koodistos, function() {
+                        var koodisto = this;
+//                        devlog(koodisto.koodistoUri);
+                        if ($scope.koodistoUris.indexOf(koodisto.koodistoUri) == -1) {
+                            $scope.koodistoUris.push(koodisto.koodistoUri);
+                        }
+                    });
+                });
+                $scope.koodistoUris.sort();
+            }).error(function(x,s,e) { devlog('error getting koodistoryhmas: '+s); devlog(e); }).complete(function() {
+                        $scope.showKoodisto($scope.getParam("koodistoUri") ? $scope.getParam("koodistoUri") : $scope.koodistoUris[0]); // set first koodisto selected OR if koodistoUri was param then that
+                        $scope.$apply(); // update view
+                    });
+
+            $scope.showKoodisto = function(koodistoUri, scrollToKoodiUri) {
+                $scope.koodistoUri = koodistoUri;
+                var koodiUriParam = $scope.getParam("koodiUri");
+                devlog('showKoodisto: '+koodistoUri+', scrollToKoodiUri: '+scrollToKoodiUri+', koodiUriParam: '+koodiUriParam+', initialCall: '+initialCall);
+                $.getJSON(restapi + $scope.koodistoUri + '?'+Date.now(), function(data) {
+                    $scope.koodisto = data;
+                    $scope.$apply(); // update view
+                }).error(function(x,s,e) { devlog('error getting koodisto: '+s); devlog(e); });
+                $.getJSON(restapi + $scope.koodistoUri + '/koodi?'+Date.now(), function(data) {
+                    devlog("loaded koodisto: "+koodistoUri);
+                    devlog(data);
+                    $scope.$apply(function () { // must apply here for scroll to work
+                        $scope.koodis = data.sort(function(a, b) { return (a.koodiUri > b.koodiUri) ? 1 : (a.koodiUri < b.koodiUri ? -1 : 0); });
+                    });
+                    // if koodiUri was parameter, but no such koodi exist, we offer to create it
+                    var koodiFound = $("#koodi_" + koodistoUri + "_" + koodiUriParam).length > 0;
+                    devlog("finding: "+"#koodi_"+koodistoUri+"_"+koodiUriParam+", koodiUriParam: "+koodiUriParam+', found: '+koodiFound);
+                    if (koodiUriParam && !koodiFound) {
+                        devlog("autocreate koodi: "+koodiUriParam);
+                        $("#koodi_inputNewKoodiUri").val(koodiUriParam).focus();
+                        scrollToKoodiUri = "inputNewKoodiUri";
+                    } else
+                    if (koodiUriParam && koodiFound) { // koodiUri was parameter and koodi exist, we scroll to edit it
+                        scrollToKoodiUri = koodistoUri+'_'+koodiUriParam;
+                        $scope.editing(koodistoUri+'_'+koodiUriParam, $scope.getParam('lang'), true);
+                    }
+                    // if need to scroll to existing koodi
+                    if (scrollToKoodiUri) {
+                        var scrollTarget = $('#koodi_' + scrollToKoodiUri);
+                        devlog('scrolling to: '+scrollToKoodiUri);
+                        $('html,body').animate({scrollTop: scrollTarget.offset().top});
+                    }
+                    $scope.$apply(); // need to apply here again so parameter based editing is on
+                    initialCall = false; // set initialCall=false when page has been rendered for first time
+                }).error(function(x,s,e) { devlog('error getting koodis: '+s); devlog(e); });
+            };
+
+            $scope.getKieliArvo = function(koodi, lang) {
+                var result;
+//                devlog('getKieliArvo, koodi: '+koodi.koodiUri);
+                for (var i=0;i<koodi.metadata.length;i++) {
+                    var md = koodi.metadata[i];
+                    if (md.kieli == lang) {
+                        result = md.kuvaus;
+                    }
+                }
+                return result;
+            };
+
+            $scope.saveKoodiLangMetaData = function(koodiUri,lang,kieliArvo,scrollToKoodiUri) {
+                devlog('saveKoodiLangMetaData, koodi: '+koodiUri+', lang: '+lang+', kieliArvo: '+kieliArvo+', scrollToKoodiUri: '+scrollToKoodiUri);
+                var jqhqr = $.post(restapi+$scope.koodistoUri+"/koodi/"+koodiUri+"/kieli/"+lang+"/metadata", { nimi: kieliArvo, kuvaus: kieliArvo }, function(data) {
+                    devlog('save OK: '+koodiUri+'/'+data.koodiUri+', editing: '+$scope.editing(koodiUri,lang));
+                    devlog(data);
+                    $scope.newKoodiUri = null;
+                    $scope.editing(koodiUri,lang,false);
+                    $scope.showKoodisto($scope.koodistoUri, scrollToKoodiUri);
+                }).error(function(x,s,e) { devlog('error saving koodi: '+s); devlog(e); alert("Virhe tallennuksessa, ei oikeuksia, liian pitkä teksti?"); });
+            };
+
+            $scope.getParam = function(paramName){
+                if(initialCall && (paramName=(new RegExp('[?&]'+encodeURIComponent(paramName)+'=([^&]*)')).exec(location.search))) return decodeURIComponent(paramName[1]);
+            };
+
+            $scope.editing = function(koodiUri,lang,editing) {
+                if (typeof koodiUri === 'undefined') return Object.keys(editingMap).length > 0; // editing() -> are we editing anything now?
+                else if (typeof editing === 'undefined') return editingMap[koodiUri+'_'+lang.toLowerCase()]; // editing(koodiUri, lang) ?
+                else { // start/cancel editing
+                    devlog('koodiUri: '+koodiUri+', lang: '+lang+', editing: '+editing);
+                    if (!editing) { // cancel editing
+                        delete editingMap[koodiUri+'_'+lang.toLowerCase()];
+                    } else {
+                        if (Object.keys(editingMap).length) alert('Tallenna/peruuta ensin edellinen'); // trying to start editing new koodi metadata but already editing sthing
+                        else editingMap[koodiUri+'_'+lang.toLowerCase()] = editing; // start editing
+                    }
+                }
+            };
+
+        }
+
+    </script>
+</head>
+<body ng-controller="TodoCtrl" style="padding-left: 20px;">
+
+<h2>Koodisto pikaeditori</h2>
+
+<span style="color: red; font-weight: bold;">{{info}}</span>
+
+Valitse koodisto:
+<select ng-model="koodistoUri" ng-options="koodistoUri as koodistoUri for koodistoUri in koodistoUris" ng-change='showKoodisto(koodistoUri)'></select>
+
+<h3>Valittu koodisto: {{ koodistoUri }} <span style="color: #808080; font-size: smaller">(v. {{ koodisto.versio }})</span></h3>
+
+Klikkaa teksejä editoidaksesi:
+<table class="table table-striped table-bordered table-condensed" style="width: auto;">
+    <tr>
+        <th>
+            Koodi
+        </th>
+        <th ng-repeat="lang in langs">
+            {{ lang }} <br/>
+            <a style="font-size: smaller;" target="props" href="{{ restapi }}/{{ koodistoUri }}_{{ lang }}.properties">( properties )</a>
+        </th>
+        <th style="width: 100px;">
+             <!--action buttons? -->
+        </th>
+    </tr>
+    <tr ng-repeat="koodi in koodis" ng-init="koodiUri=koodi.koodiUri" id="koodi_{{ koodiUri }}">
+        <td>
+            {{ koodiUri }}<br/>
+            <span style="color: #808080; font-size: smaller">(v. {{ koodi.versio }} / {{ koodi.tila.substr(0,1) }})</span>
+        </td>
+        <td ng-repeat="lang in langs" ng-init="kieliArvo=getKieliArvo(koodi,lang)">
+            <span ng-hide="editing(koodiUri,lang)" ng-click="editing(koodiUri,lang,true)">
+                {{ kieliArvo }} <span ng-hide="kieliArvo">N/A</span>
+            </span>
+            <form ng-show="editing(koodiUri,lang)">
+                <textarea style="width: 300px;" rows="4" ng-model="kieliArvo" id="input_{{ koodiUri }}_{{ lang }}" autofocus="autofocus"></textarea>
+                <br/>
+                <button class="btn" type="button" ng-click="kieliArvo=getKieliArvo(koodi,lang); editing(koodiUri,lang,false)">Peruuta</button>
+                <button class="btn" type="button" ng-click="saveKoodiLangMetaData(koodiUri,lang,kieliArvo)">Tallenna</button>
+            </form>
+        </td>
+        <td>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <form>
+                Luo uusi koodi (luonnin jälkeen pääset syöttämään arvoja):
+                <input id="koodi_inputNewKoodiUri" style="width: 90%;" type="text" ng-init="newKoodiUri=getParam('koodiUri')" ng-model="newKoodiUri" placeholder="Uuden koodin uri" />
+                <br/>
+                <button class="btn" type="submit" ng-click="saveKoodiLangMetaData(newKoodiUri,'FI',newKoodiUri,koodistoUri+'_'+newKoodiUri)">Luo uusi koodi</button>
+            </form>
+        </td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+
+</body>
+</html>

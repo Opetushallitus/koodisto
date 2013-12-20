@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema elementFormDefault="unqualified"
+    targetNamespace="http://service.koodisto.sade.vm.fi/types" version="1.0"
+    xmlns:tns="http://service.koodisto.sade.vm.fi/types" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:tnsh="http://service.koodisto.sade.vm.fi/types/common">
+
+    <xs:import namespace="http://service.koodisto.sade.vm.fi/types/common"
+        schemaLocation="common.xsd" />
+
+    <xs:element name="addRelation" type="tns:AddRelationType" />
+    <xs:element name="addRelationByAlakoodi" type="tns:AddRelationByAlakoodiType" />
+    <xs:element name="addRelationByAlakoodiResponse" type="tns:AddRelationByAlakoodiResponseType" />
+    <xs:element name="addRelationResponse" type="tns:AddRelationResponseType" />
+    <xs:element name="createKoodi" type="tns:CreateKoodiType" />
+    <xs:element name="createKoodiResponse" type="tns:CreateKoodiResponseType" />
+    <xs:element name="deleteKoodiVersion" type="tns:DeleteKoodiVersionType" />
+    <xs:element name="deleteKoodiVersionResponse" type="tns:DeleteKoodiVersionResponseType" />
+    <xs:element name="massCreate" type="tns:MassCreateType" />
+    <xs:element name="massCreateResponse" type="tns:MassCreateResponseType" />
+    <xs:element name="removeRelationByAlakoodi" type="tns:RemoveRelationByAlakoodiType" />
+    <xs:element name="removeRelationByAlakoodiResponse"
+        type="tns:RemoveRelationByAlakoodiResponseType" />
+    <xs:element name="updateKoodi" type="tns:UpdateKoodiType" />
+    <xs:element name="updateKoodiResponse" type="tns:UpdateKoodiResponseType" />
+    <xs:complexType name="AddRelationType">
+        <xs:sequence>
+            <xs:element minOccurs="1" name="ylaKoodi"
+                type="xs:string" maxOccurs="1" />
+            <xs:element minOccurs="1" name="alaKoodi"
+                type="xs:string" maxOccurs="1" />
+            <xs:element minOccurs="1" name="suhteenTyyppi"
+                type="tnsh:SuhteenTyyppiType" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AddRelationResponseType">
+        <xs:sequence />
+    </xs:complexType>
+    <xs:complexType name="AddRelationByAlakoodiType">
+        <xs:sequence>
+            <xs:element minOccurs="1" name="ylaKoodi"
+                type="xs:string" maxOccurs="1" />
+            <xs:element maxOccurs="unbounded" minOccurs="1"
+                name="alaKoodis" type="xs:string" />
+            <xs:element minOccurs="1" name="suhteenTyyppi"
+                type="tnsh:SuhteenTyyppiType" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AddRelationByAlakoodiResponseType">
+        <xs:sequence />
+    </xs:complexType>
+    <xs:complexType name="CreateKoodiType">
+        <xs:sequence>
+            <xs:element name="koodistoUri" type="xs:string"
+                minOccurs="1" maxOccurs="1" />
+            <xs:element minOccurs="1" maxOccurs="1"
+                name="createKoodiData" type="tns:CreateKoodiDataType" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="CreateKoodiResponseType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="savedKoodi" type="tnsh:KoodiType" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DeleteKoodiVersionType">
+        <xs:sequence>
+            <xs:element minOccurs="1" name="koodiUri" type="xs:string"
+                maxOccurs="1" />
+            <xs:element minOccurs="1" name="koodiVersio"
+                type="xs:int" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="DeleteKoodiVersionResponseType">
+        <xs:sequence />
+    </xs:complexType>
+    <xs:complexType name="RemoveRelationByAlakoodiType">
+        <xs:sequence>
+            <xs:element minOccurs="1" name="ylaKoodi"
+                type="xs:string" maxOccurs="1" />
+            <xs:element maxOccurs="unbounded" minOccurs="1"
+                name="alaKoodis" type="xs:string" />
+            <xs:element minOccurs="1" name="suhteenTyyppi"
+                type="tnsh:SuhteenTyyppiType" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="RemoveRelationByAlakoodiResponseType">
+        <xs:sequence />
+    </xs:complexType>
+    <xs:complexType name="MassCreateType">
+        <xs:sequence>
+            <xs:element minOccurs="1" name="koodistoUri"
+                type="xs:string" maxOccurs="1" />
+            <xs:element maxOccurs="unbounded" minOccurs="0"
+                name="koodiList" type="tns:UpdateKoodiDataType" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="MassCreateResponseType">
+        <xs:sequence />
+    </xs:complexType>
+    <xs:complexType name="UpdateKoodiType">
+        <xs:sequence>
+            <xs:element minOccurs="1" name="updateKoodiData"
+                type="tns:UpdateKoodiDataType" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="UpdateKoodiResponseType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="updateKoodiKoodi"
+                type="tnsh:KoodiType" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="CreateKoodiDataType">
+        <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="koodiArvo"
+                type="xs:string" />
+            <xs:element minOccurs="1" maxOccurs="1"
+                name="voimassaAlkuPvm" type="xs:dateTime" />
+            <xs:element minOccurs="0" maxOccurs="1"
+                name="voimassaLoppuPvm" type="xs:dateTime" />
+            <xs:element maxOccurs="unbounded" minOccurs="1"
+                name="metadata" nillable="true" type="tnsh:KoodiMetadataType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="UpdateKoodiTilaType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="LUONNOS" />
+            <xs:enumeration value="PASSIIVINEN" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="UpdateKoodiDataType">
+        <xs:sequence>
+            <xs:element name="koodiUri" type="xs:string"
+                maxOccurs="1" minOccurs="1" />
+            <xs:element minOccurs="1" maxOccurs="1" name="koodiArvo"
+                type="xs:string" />
+            <xs:element minOccurs="1" maxOccurs="1"
+                name="voimassaAlkuPvm" type="xs:dateTime" />
+            <xs:element minOccurs="0" maxOccurs="1"
+                name="voimassaLoppuPvm" type="xs:dateTime" />
+            <xs:element minOccurs="0" maxOccurs="1" name="tila"
+                type="tns:UpdateKoodiTilaType" />
+            <xs:element maxOccurs="unbounded" minOccurs="1"
+                name="metadata" nillable="true" type="tnsh:KoodiMetadataType" />
+            <xs:element name="versio" type="xs:int" />
+            <xs:element name="lockingVersion" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="genericFaultInfo" type="tnsh:GenericFaultInfoType"></xs:element>
+
+
+</xs:schema>
