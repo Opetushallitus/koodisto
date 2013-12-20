@@ -170,10 +170,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return getKoodiVersioWithKoodistoVersioItems(koodiUri, koodiVersio).getKoodiVersio();
     }
 
-    private KoodiVersio getKoodiVersio(KoodiUriAndVersioType koodi) {
-        return getKoodiVersio(koodi.getKoodiUri(), koodi.getVersio());
-    }
-
     private void checkRequiredMetadataFields(Collection<KoodiMetadataType> metadatas) {
         for (KoodiMetadataType md : metadatas) {
             if (StringUtils.isBlank(md.getNimi())) {
