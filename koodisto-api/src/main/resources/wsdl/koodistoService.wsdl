@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions name="koodistoService"
+    targetNamespace="http://service.koodisto.sade.vm.fi/" xmlns:ns1="http://service.koodisto.sade.vm.fi/types"
+    xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tns="http://service.koodisto.sade.vm.fi/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://service.koodisto.sade.vm.fi/">
+            <xsd:import namespace="http://service.koodisto.sade.vm.fi/types"
+                schemaLocation="koodistoService.xsd" />
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="listAllKoodistoRyhmasRequest">
+        <wsdl:part name="parameters" element="ns1:listAllKoodistoRyhmas"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listAllKoodistoRyhmasResponse">
+        <wsdl:part name="parameters" element="ns1:listAllKoodistoRyhmasResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="searchKoodistosRequest">
+        <wsdl:part name="parameters" element="ns1:searchKoodistos"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="searchKoodistosResponse">
+        <wsdl:part name="parameters" element="ns1:searchKoodistosResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="genericFault">
+        <wsdl:part name="fault" element="ns1:genericFaultInfo"></wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="koodistoService">
+        <wsdl:documentation>Palvelurajapinta koodistojen ja
+            koodistoryhmien hakemiseen
+        </wsdl:documentation>
+        <wsdl:operation name="listAllKoodistoRyhmas">
+            <wsdl:documentation>Listaa kaikki koodistoryhmät
+            </wsdl:documentation>
+            <wsdl:input message="tns:listAllKoodistoRyhmasRequest"></wsdl:input>
+            <wsdl:output message="tns:listAllKoodistoRyhmasResponse"></wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="searchKoodistos">
+            <wsdl:documentation>Hakee koodistoja annetuilla
+                hakukriteereillä
+            </wsdl:documentation>
+            <wsdl:input message="tns:searchKoodistosRequest"></wsdl:input>
+            <wsdl:output message="tns:searchKoodistosResponse"></wsdl:output>
+            <wsdl:fault name="fault" message="tns:genericFault"></wsdl:fault>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="koodistoServiceSoapBinding" type="tns:koodistoService">
+        <soap:binding style="document"
+            transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="listAllKoodistoRyhmas">
+            <soap:operation soapAction="" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="searchKoodistos">
+            <soap:operation soapAction="" />
+            <wsdl:input>
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="koodistoService">
+        <wsdl:port binding="tns:koodistoServiceSoapBinding"
+            name="koodistoServicePort">
+            <soap:address location="http://localhost:8181/cxf/koodistoService" />
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

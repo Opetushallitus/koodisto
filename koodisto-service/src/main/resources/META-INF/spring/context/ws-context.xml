@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <context:annotation-config/>
+    <aop:aspectj-autoproxy/>
+
+    <context:component-scan base-package="fi.vm.sade.koodisto.service.provider"/>
+    <bean id="exceptionWrappingAspect"
+          class="fi.vm.sade.koodisto.service.impl.exceptionwrapper.ExceptionWrappingAspect"/>
+
+    <bean id="koodiAdminWS"
+          class="fi.vm.sade.koodisto.service.impl.KoodiAdminServiceImpl"/>
+    <bean id="koodistoAdminWS"
+          class="fi.vm.sade.koodisto.service.impl.KoodistoAdminServiceImpl"/>
+    <bean id="koodistoWS" class="fi.vm.sade.koodisto.service.impl.KoodistoServiceImpl"/>
+    <bean id="koodiWS" class="fi.vm.sade.koodisto.service.impl.KoodiServiceImpl"/>
+    <bean id="downloadWS" class="fi.vm.sade.koodisto.service.impl.DownloadServiceImpl"/>
+    <bean id="uploadWS" class="fi.vm.sade.koodisto.service.impl.UploadServiceImpl"/>
+
+    <!--<bean id="koodiRESTService" class="fi.vm.sade.koodisto.service.impl.KoodiRESTService" />-->
+    <bean id="koodistoRESTService" class="fi.vm.sade.koodisto.service.impl.KoodistoRESTService"/>
+
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+
+    <!-- JAX-RS servers -->
+    <!--<jaxrs:server id="koodistoREST" address="/koodisto/rest">-->
+    <!--<jaxrs:serviceBeans>-->
+    <!--<ref bean="koodistoRESTService" />-->
+    <!--</jaxrs:serviceBeans>-->
+    <!--</jaxrs:server>-->
+
+    <!--<jaxrs:server id="koodiREST" address="/koodi/rest">-->
+    <!--<jaxrs:serviceBeans>-->
+    <!--<ref bean="koodiRESTService" />-->
+    <!--</jaxrs:serviceBeans>-->
+    <!--</jaxrs:server>-->
+
+    <jaxws:endpoint address="/services/koodistoAdminService" implementor="#koodistoAdminWS"/>
+    <jaxws:endpoint address="/services/koodiAdminService" implementor="#koodiAdminWS"/>
+    <jaxws:endpoint address="/services/koodistoService" implementor="#koodistoWS"/>
+    <jaxws:endpoint address="/services/koodiService" implementor="#koodiWS"/>
+    <jaxws:endpoint address="/services/downloadService" implementor="#downloadWS"/>
+    <jaxws:endpoint address="/services/uploadService" implementor="#uploadWS"/>
+
+    <!-- TODO: cas todo, varmista ettei tartte olla wsdl jne kuten organisaatiossa:? -->
+    <!--<jaxws:endpoint address="/services/organisaatioService" implementor="#organisaatioWs" wsdlLocation="wsdl/organisaatioService.wsdl" serviceName="tns:OrganisaatioService" xmlns:tns="http://model.api.organisaatio.sade.vm.fi/"/>-->
+
+</beans>

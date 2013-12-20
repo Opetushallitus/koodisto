@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<xs:schema elementFormDefault="unqualified"
+    targetNamespace="http://service.koodisto.sade.vm.fi/types" version="1.0"
+    xmlns:tns="http://service.koodisto.sade.vm.fi/types" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:tnsh="http://service.koodisto.sade.vm.fi/types/common">
+
+    <xs:import namespace="http://service.koodisto.sade.vm.fi/types/common"
+        schemaLocation="common.xsd" />
+    <xs:element name="listAllKoodistoRyhmas" type="tns:ListAllKoodistoRyhmasType" />
+    <xs:element name="listAllKoodistoRyhmasResponse" type="tns:ListAllKoodistoRyhmasResponseType" />
+    <xs:element name="searchKoodistos" type="tns:SearchKoodistosType" />
+    <xs:element name="searchKoodistosResponse" type="tns:SearchKoodistosResponseType" />
+
+    <xs:complexType name="ListAllKoodistoRyhmasType">
+        <xs:sequence />
+    </xs:complexType>
+
+    <xs:complexType name="ListAllKoodistoRyhmasResponseType">
+        <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0"
+                name="koodistoRyhmas" type="tnsh:KoodistoRyhmaListType" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="GetKoodistoByUriAndVersionType">
+        <xs:sequence>
+            <xs:element minOccurs="1" name="koodistoUri"
+                type="xs:string" maxOccurs="1" />
+            <xs:element minOccurs="1" name="koodistoVersio"
+                type="xs:int" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="SearchKoodistosType">
+        <xs:sequence>
+            <xs:element minOccurs="0" name="searchCriteria"
+                type="tns:SearchKoodistosCriteriaType" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="SearchKoodistosResponseType">
+        <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="unbounded"
+                name="koodistos" type="tnsh:KoodistoType" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="SearchKoodistosCriteriaType">
+        <xs:sequence>
+            <xs:element name="koodistoUris" minOccurs="0"
+                maxOccurs="unbounded" type="xs:string" />
+            <xs:element name="koodistoVersio" minOccurs="0"
+                maxOccurs="1" type="xs:int" />
+            <xs:element name="koodistoVersioSelection"
+                minOccurs="0" maxOccurs="1"
+                type="tns:SearchKoodistosVersioSelectionType" />
+            <xs:element minOccurs="0" maxOccurs="unbounded"
+                name="koodistoTilas" type="tnsh:TilaType" />
+            <xs:element minOccurs="0" maxOccurs="1" name="validAt"
+                type="xs:dateTime" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="SearchKoodistosVersioSelectionType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="ALL" />
+            <xs:enumeration value="LATEST" />
+            <xs:enumeration value="SPECIFIC" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:element name="genericFaultInfo" type="tnsh:GenericFaultInfoType" />
+</xs:schema>
