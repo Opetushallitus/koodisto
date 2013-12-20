@@ -1,0 +1,51 @@
+
+<!-- Node template -->
+<script type="text/ng-template" id="organisaatio.html">
+    <span class="label">
+        <i class="fa fa-sitemap organisaatio"
+           ng-class="{ auki: (data.open || data.children.length == 0),
+                kiinni: (!data.open && data.children.length > 0)}"
+           ng-click="openChildren(data)"></i>
+        <label>
+            <a href="" ng-click="organisaatioSelector(data);ok()">{{data.nimi['fi'] || data.nimi['sv'] || data.nimi['en']}}</a>
+            <span ng-repeat="type in data.organisaatiotyypit">({{type}}) </span>
+        </label>
+    </span>
+    <ol ng-if="data.open">
+        <li ng-repeat="data in data.children" ng-include="'organisaatio.html'">
+        </li>
+    </ol>
+
+</script>
+
+
+
+<script type="text/ng-template" id="organizationModalContent.html">
+    <div class="modal-header">
+        <h3>{{'codes.createpage.chooseorganization' | i18n}}</h3>
+    </div>
+    <div class="modal-body">
+        {{'codes.createpage.organization.help' | i18n}}<br>
+
+        <div ng-controller="OrganisaatioTreeController">
+            <div class="orgSearch">
+                <input type="text" class="search" placeholder="Hae organisaatioita" ng-model="orgTree.searchStr"/>
+                <i class="fa fa-trash-o organisaatio" ng-click="clear()"></i>
+                <br />
+                <span>Hakutuloksia: {{orgTree.model.numHits || 0}}</span>
+            </div>
+            <div class="clear"></div>
+            <div class="orgSelector">
+                <ol class="treelist collapsible">
+                    <li ng-repeat="data in orgTree.model.organisaatiot" ng-include="'organisaatio.html'">
+                    </li>
+                </ol>
+            </div>
+
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="float-right margin-right-1 button small" ng-click="cancel()">{{'codes.createpage.organization.cancel' | i18n}}</button>
+    </div>
+</script>

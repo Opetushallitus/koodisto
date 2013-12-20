@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="koodiAdminService"
+    targetNamespace="http://service.koodisto.sade.vm.fi/" xmlns:ns1="http://service.koodisto.sade.vm.fi/types"
+    xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tns="http://service.koodisto.sade.vm.fi/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://service.koodisto.sade.vm.fi/">
+            <xsd:import namespace="http://service.koodisto.sade.vm.fi/types"
+                schemaLocation="koodiAdminService.xsd" />
+        </xsd:schema>
+
+    </wsdl:types>
+    <wsdl:message name="addRelation">
+        <wsdl:part element="ns1:addRelation" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="removeRelationByAlakoodi">
+        <wsdl:part element="ns1:removeRelationByAlakoodi"
+            name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="addRelationResponse">
+        <wsdl:part element="ns1:addRelationResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="deleteKoodiVersion">
+        <wsdl:part element="ns1:deleteKoodiVersion" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="createKoodi">
+        <wsdl:part element="ns1:createKoodi" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="deleteKoodiVersionResponse">
+        <wsdl:part element="ns1:deleteKoodiVersionResponse"
+            name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="updateKoodiResponse">
+        <wsdl:part element="ns1:updateKoodiResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="addRelationByAlakoodiResponse">
+        <wsdl:part element="ns1:addRelationByAlakoodiResponse"
+            name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="addRelationByAlakoodi">
+        <wsdl:part element="ns1:addRelationByAlakoodi" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="removeRelationByAlakoodiResponse">
+        <wsdl:part element="ns1:removeRelationByAlakoodiResponse"
+            name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="createKoodiResponse">
+        <wsdl:part element="ns1:createKoodiResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="massCreateResponse">
+        <wsdl:part element="ns1:massCreateResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="updateKoodi">
+        <wsdl:part element="ns1:updateKoodi" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="massCreate">
+        <wsdl:part element="ns1:massCreate" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="genericFault">
+        <wsdl:part name="fault" element="ns1:genericFaultInfo"></wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="koodiAdminService">
+        <wsdl:documentation>Palvelurajapinta koodien hallinnointiin</wsdl:documentation>
+        <wsdl:operation name="addRelation">
+            <wsdl:documentation>Lisää suhteen kahden koodin välille.
+            </wsdl:documentation>
+            <wsdl:input message="tns:addRelation" name="addRelation">
+            </wsdl:input>
+            <wsdl:output message="tns:addRelationResponse"
+                name="addRelationResponse">
+            </wsdl:output>
+            <wsdl:fault name="fault" message="tns:genericFault"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="addRelationByAlakoodi">
+            <wsdl:documentation>Lisää suhteen yläkoodin ja kaikkien annettujen alakoodien välille.
+            </wsdl:documentation>
+            <wsdl:input message="tns:addRelationByAlakoodi"
+                name="addRelationByAlakoodi">
+            </wsdl:input>
+            <wsdl:output message="tns:addRelationByAlakoodiResponse"
+                name="addRelationByAlakoodiResponse">
+            </wsdl:output>
+            <wsdl:fault name="fault" message="tns:genericFault"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="createKoodi">
+            <wsdl:documentation>Luo  koodin uutena koodistoon, jonka URI tästää annettuun koodistoUri-parametriin.</wsdl:documentation>
+            <wsdl:input message="tns:createKoodi" name="createKoodi">
+            </wsdl:input>
+            <wsdl:output message="tns:createKoodiResponse"
+                name="createKoodiResponse">
+            </wsdl:output>
+            <wsdl:fault name="fault" message="tns:genericFault"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="deleteKoodiVersion">
+            <wsdl:documentation>Poistaa koodin tietyn versio</wsdl:documentation>
+            <wsdl:input message="tns:deleteKoodiVersion"
+                name="deleteKoodiVersion">
+            </wsdl:input>
+            <wsdl:output message="tns:deleteKoodiVersionResponse"
+                name="deleteKoodiVersionResponse">
+            </wsdl:output>
+            <wsdl:fault name="fault" message="tns:genericFault"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="removeRelationByAlakoodi">
+            <wsdl:documentation>Poistaa suhteen ylakoodin ja annettujen alakoodien väliltä
+            </wsdl:documentation>
+            <wsdl:input message="tns:removeRelationByAlakoodi"
+                name="removeRelationByAlakoodi">
+            </wsdl:input>
+            <wsdl:output message="tns:removeRelationByAlakoodiResponse"
+                name="removeRelationByAlakoodiResponse">
+            </wsdl:output>
+            <wsdl:fault name="fault" message="tns:genericFault"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="massCreate">
+            <wsdl:documentation>Lisää kaikki annetut koodit annettuun koodistoon
+            </wsdl:documentation>
+            <wsdl:input message="tns:massCreate" name="massCreate">
+            </wsdl:input>
+            <wsdl:output message="tns:massCreateResponse"
+                name="massCreateResponse">
+            </wsdl:output>
+            <wsdl:fault name="fault" message="tns:genericFault"></wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="updateKoodi">
+            <wsdl:documentation>Päivittää annetun koodin
+</wsdl:documentation>
+            <wsdl:input message="tns:updateKoodi" name="updateKoodi">
+            </wsdl:input>
+            <wsdl:output message="tns:updateKoodiResponse"
+                name="updateKoodiResponse">
+            </wsdl:output>
+            <wsdl:fault name="fault" message="tns:genericFault"></wsdl:fault>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="koodiAdminServiceSoapBinding" type="tns:koodiAdminService">
+        <soap:binding style="document"
+            transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="addRelation">
+            <soap:operation soapAction="" style="document" />
+            <wsdl:input name="addRelation">
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="addRelationResponse">
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="addRelationByAlakoodi">
+            <soap:operation soapAction="" style="document" />
+            <wsdl:input name="addRelationByAlakoodi">
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="addRelationByAlakoodiResponse">
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="createKoodi">
+            <soap:operation soapAction="" style="document" />
+            <wsdl:input name="createKoodi">
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="createKoodiResponse">
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="deleteKoodiVersion">
+            <soap:operation soapAction="" style="document" />
+            <wsdl:input name="deleteKoodiVersion">
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="deleteKoodiVersionResponse">
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="removeRelationByAlakoodi">
+            <soap:operation soapAction="" style="document" />
+            <wsdl:input name="removeRelationByAlakoodi">
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="removeRelationByAlakoodiResponse">
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="massCreate">
+            <soap:operation soapAction="" style="document" />
+            <wsdl:input name="massCreate">
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="massCreateResponse">
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="updateKoodi">
+            <soap:operation soapAction="" style="document" />
+            <wsdl:input name="updateKoodi">
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="updateKoodiResponse">
+                <soap:body use="literal" />
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="koodiAdminService">
+        <wsdl:port binding="tns:koodiAdminServiceSoapBinding"
+            name="koodiAdminServicePort">
+            <soap:address location="http://localhost:8181/cxf/koodiAdminService" />
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

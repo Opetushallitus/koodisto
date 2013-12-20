@@ -1,0 +1,125 @@
+<h1>{{'codeelement.createpage.header' | i18n}}</h1>
+<div>
+    <form name="form" ng-submit="submit()">
+
+        <div class="form-row">
+
+            <div class="form-row-content width-60 align-center">
+                <label for="name_fi" class="form-row-label">{{'codeelement.createpage.name' | i18n}}</label>
+                <input id="same_name" type="checkbox" ng-model="samename" ng-click="setSameValue('name')"
+                       codeelement-combined-field/>
+                <label for="same_name">{{'codes.sameinalllanguages' | i18n}}</label>
+            </div>
+
+            <div class="form-row-content width-60">
+                <label for="name_fi" class="form-row-label">&nbsp;</label>
+                <input id="name_fi" type="text" maxlength="50" class="width-30" name="namefi" ng-model="namefi"
+                       placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field/>
+
+                <span class="text-error" ng-show="form.namefi.$error.codeelementcombinedrequired">
+                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="name_sv" class="form-row-label">&nbsp;</label>
+                <input id="name_sv" name="namesv" type="text" maxlength="50" class="width-30" ng-model="namesv"
+                       placeholder="{{'codes.swedish' | i18n}}" codeelement-combined-field/>
+
+                <span class="text-error" ng-show="form.namesv.$error.codeelementcombinedrequired">
+                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="name_en" class="form-row-label">&nbsp;</label>
+                <input id="name_en" type="text" maxlength="50" class="width-30" name="nameen" ng-model="nameen"
+                       placeholder="{{'codes.english' | i18n}}" codeelement-combined-field/>
+
+                <span class="text-error" ng-show="form.nameen.$error.codeelementcombinedrequired">
+                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+
+            <div class="form-row-content width-60">
+                <label for="code" class="form-row-label">{{'codeelement.createpage.codevalue' | i18n}}</label>
+                <input id="code" type="text" maxlength="50" class="width-30" ng-model="codeValue" ng-required="true"/>
+            </div>
+
+            <div class="form-row-content width-60">
+
+                <label for="datesactivestart" class="form-row-label">{{'codeelement.createpage.datesactive' | i18n}}</label>
+
+                <input id="datesactivestart" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="dActiveStart" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" />
+                -
+                <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="dActiveEnd" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" />
+                <i class="icon-calendar"></i>
+
+            </div>
+
+
+            <div class="form-row-content width-60 align-center">
+                <label for="shortname_fi" class="form-row-label">{{'codeelement.createpage.shortname' | i18n}}</label>
+                <input id="same_shortname" type="checkbox" ng-model="sameshortname"
+                       ng-click="setSameValue('shortname')" codeelement-combined-field/>
+                <label for="same_shortname">{{'codes.sameinalllanguages' | i18n}}</label>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="shortname_fi" class="form-row-label">&nbsp;</label>
+                <input id="shortname_fi" type="text" maxlength="50" class="width-30" name="shortnamefi" ng-model="shortnamefi"
+                       placeholder="{{'codes.finnish' | i18n}}" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.shortnamefi.$error.codeelementcombinedrequired">
+                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="shortname_sv" class="form-row-label">&nbsp;</label>
+                <input id="shortname_sv" type="text" maxlength="50" class="width-30" name="shortnamesv" ng-model="shortnamesv"
+                       placeholder="{{'codes.swedish' | i18n}}" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.shortnamesv.$error.codeelementcombinedrequired">
+                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="shortname_en" class="form-row-label">&nbsp;</label>
+                <input id="shortname_en" type="text" maxlength="50" class="width-30" name="shortnameen" ng-model="shortnameen"
+                       placeholder="{{'codes.english' | i18n}}" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.shortnameen.$error.codeelementcombinedrequired">
+                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+
+            <div class="form-row-content width-60 align-center">
+                <label for="description_fi" class="form-row-label">{{'codes.createpage.description' | i18n}}</label>
+                <input id="same_description" type="checkbox" ng-model="samedescription" ng-click="setSameValue('description')"
+                       codeelement-combined-field/>
+                <label for="same_description">{{'codes.sameinalllanguages' | i18n}}</label>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="description_fi" class="form-row-label">&nbsp;</label>
+                <textarea id="description_fi" maxlength="350" class="width-30" name="descriptionfi" ng-model="descriptionfi"
+                          placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.descriptionfi.$error.codeelementcombinedrequired">
+                                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="description_sv" class="form-row-label">&nbsp;</label>
+                <textarea id="description_sv" maxlength="350" class="width-30" name="descriptionsv" ng-model="descriptionsv"
+                          placeholder="{{'codes.swedish' | i18n}}" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.descriptionsv.$error.codeelementcombinedrequired">
+                                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="description_en" class="form-row-label">&nbsp;</label>
+                <textarea id="description_en" maxlength="350" class="width-30" name="descriptionen" ng-model="descriptionen"
+                          placeholder="{{'codes.english' | i18n}}" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.descriptionen.$error.codeelementcombinedrequired">
+                                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+
+
+            <div class="form-row-content width-100">
+                <a href="#">{{'codes.createpage.showextra' | i18n}}</a>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+        <div class="form-row navbar-fixed-bottom width-90 padding-bottom-3">
+            <button ng-disabled="!form.$valid" class="button small primary float-right" type="submit">{{'codes.save' | i18n}}</button>
+            <button type="button" class="float-right margin-right-1 button small" ng-click="cancel()">{{'codes.cancel' | i18n}}
+            </button>
+        </div>
+    </form>
+</div>

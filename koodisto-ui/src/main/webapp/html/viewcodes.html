@@ -1,0 +1,156 @@
+
+<h1>{{'codes.viewpage.header' | i18n}}</h1>
+
+
+<div>
+    <form ng-init="domain.update()" name="form" ng-submit="submit()">
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                &nbsp;
+            </div>
+            <div class="form-row-content width-25">
+                <h3>{{ model.languageSpecificValue( model.codes.metadata , 'nimi', 'FI') }}</h3>
+            </div>
+            <div class="form-row-content width-30 align-left">
+                <a href="#/lisaaKoodisto" class="button small">
+                    {{'codes.viewpage.uploadbutton' | i18n}}</a>
+                <a href="#/lisaaKoodisto" class="button small">
+                    {{'codes.viewpage.downloadbutton' | i18n}}</a>
+            </div>
+
+        </div>
+
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codes.viewpage.state' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.codes.tila }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codes.viewpage.name' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.languageSpecificValue( model.codes.metadata , 'nimi', 'FI') }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codes.viewpage.uri' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.codes.resourceUri }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codes.viewpage.version' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.codes.versio }}
+                <span ng-show="model.codes.codesVersions.length > 0">
+                    &nbsp;(&nbsp;<a href="#/koodisto/{{codesUri}}/{{codesVersion}}" ng-repeat="codesVersion in model.codes.codesVersions | orderBy:identity:true">{{ codesVersion }}&nbsp;</a>)
+                </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codes.viewpage.dateactive' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.codes.voimassaAlkuPvm | date:'dd.MM.yyyy' }} -
+                {{ model.codes.voimassaLoppuPvm | date:'dd.MM.yyyy' }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codes.viewpage.description' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.languageSpecificValue( model.codes.metadata , 'kuvaus', 'FI') }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codes.viewpage.organization' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.codes.organizationName }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codes.viewpage.updated' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.codes.paivitysPvm | date:'dd.MM.yyyy HH:mm' }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codes.viewpage.codeelements' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left">
+                {{'codes.viewpage.codeelements.help' | i18n}}
+            </div>
+        </div>
+
+        <div class="form-row item">
+            <div class="form-row-content width-10">
+                &nbsp;
+            </div>
+            <div class="form-row-content width-60 input-group">
+                <input type="text" maxlength="50"
+                       placeholder="{{'codes.viewpage.codeelements.search.placeholder' | i18n}}" ng-model="query"/>
+                <input id="filter_version" type="checkbox" ng-model="model.showversion" ng-click="model.getCodeElementVersions()"/>
+                <label for="filter_version">{{'codes.viewpage.codeelements.showversion' | i18n}}</label>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                &nbsp;
+            </div>
+            <div ng-show="model.codeElements.length > 0" class="margin-vertical-2 form-row-content width-60">
+                <form name="form" ng-submit="submit()">
+                    <table class="virkailija-table-1">
+                        <thead>
+                        <tr>
+                            <th>{{'codes.viewpage.codeelements.tableheader1' | i18n}}</th>
+                            <th>{{'codes.viewpage.codeelements.tableheader2' | i18n}}</th>
+                            <th>{{'codes.viewpage.codeelements.tableheader3' | i18n}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="codeElement in model.codeElements | orderBy:'koodiArvo' | filter:search">
+                            <td>
+                                {{codeElement.koodiArvo}}
+                            </td>
+                            <td>
+                                <a href="#/koodi/{{codeElement.koodiUri}}/{{codeElement.versio}}">{{codeElement.name}}</a>
+                            </td>
+                            <td>
+                                {{codeElement.versio}}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+
+        <div class="form-row navbar-fixed-bottom width-90 padding-bottom-3">
+            <button type="button" class="margin-right-1 button small float-right" ng-click="cancel()">{{'codes.back' | i18n}}
+            </button>
+            <a href="#/lisaaKoodi/{{ codesUri }}/{{ model.codes.versio }}" class="button small primary float-right margin-right-3">
+                {{'codes.viewpage.codeelements.create' | i18n}}</a>
+            <a href="#/muokkaaKoodisto/{{ codesUri }}" class="button small primary float-right margin-right-1">
+                {{'codes.viewpage.editbutton' | i18n}}</a>
+        </div>
+    </form>
+</div>

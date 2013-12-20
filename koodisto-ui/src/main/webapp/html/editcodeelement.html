@@ -1,0 +1,269 @@
+<!-- Node template -->
+<script type="text/ng-template" id="codeelement.html">
+    <span class="label">
+        <i class="fa fa-sitemap organisaatio"
+           ng-class="{ auki: (data.open || data.koodistos.length == 0 || data.metadata[0].lyhytNimi),
+                kiinni: (!data.open && data.koodistos.length > 0 && data.metadata[0].nimi)}"
+           ng-click="openChildren(data)"></i>
+        <label>
+            <a href="" ng-if="data.metadata[0].nimi">{{data.metadata[0].nimi || data.metadata[1].nimi || data.metadata[2].nimi}}</a>
+            <a href="" ng-if="data.latestKoodistoVersio.metadata[0].nimi">{{data.latestKoodistoVersio.metadata[0].nimi || data.latestKoodistoVersio.metadata[1].nimi || data.latestKoodistoVersio.metadata[2].nimi}}</a>
+            <a href="" ng-click="close(data)" ng-if="data.metadata[0].lyhytNimi">{{data.metadata[0].lyhytNimi || data.metadata[1].lyhytNimi || data.metadata[2].lyhytNimi}}</a>
+        </label>
+    </span>
+    <ol ng-if="data.open">
+        <li ng-if="data.latestKoodistoVersio.metadata[0].nimi" ng-repeat="data in data.koodistos" ng-include="'codeelement.html'">
+        <li ng-if="data.metadata[0].lyhytNimi" ng-repeat="data in data.children" ng-include="'codeelement.html'">
+        </li>
+    </ol>
+
+</script>
+
+
+<script type="text/ng-template" id="confirmModalContent.html">
+    <div class="modal-header">
+        <h3>{{'codeelement.editpage.modal.header' | i18n}}</h3>
+    </div>
+    <div class="modal-body">
+        Olet poistamassa koodin {{ namefi }} ja {{ model.withinRelationToRemove.name || model.includesRelationToRemove.name || model.levelsRelationToRemove.name }} v&auml;list&auml; yhteytt&auml;
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="okconfirm()">OK</button>
+        <button class="btn btn-warning" ng-click="cancelconfirm()">Cancel</button>
+    </div>
+</script>
+
+<h1>{{'codeelement.editpage.header' | i18n}}</h1>
+<div>
+    <form name="form" ng-submit="submit()">
+
+        <div class="form-row">
+            <div class="form-row-content width-60">
+                <label for="codesstate" class="form-row-label">{{'codes.editpage.state' | i18n}}</label><br>
+                <select id="codesstate" ng-model="model.codeElement.tila" class="width-30"
+                        ng-options="state.key as state.value for state in model.states" ng-required="true">
+                </select>
+            </div>
+
+            <div class="form-row-content width-60 align-center">
+                <label for="name_fi" class="form-row-label">{{'codeelement.editpage.name' | i18n}}</label>
+                <input id="same_name" type="checkbox" ng-model="samename" ng-click="setSameValue('name')"
+                       codeelement-combined-field/>
+                <label for="same_name">{{'codes.sameinalllanguages' | i18n}}</label>
+            </div>
+
+            <div class="form-row-content width-60">
+                <label for="name_fi" class="form-row-label">&nbsp;</label>
+                <input id="name_fi" type="text" maxlength="50" class="width-30" name="namefi" ng-model="namefi"
+                       placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field/>
+
+                <span class="text-error" ng-show="form.namefi.$error.codeelementcombinedrequired">
+                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="name_sv" class="form-row-label">&nbsp;</label>
+                <input id="name_sv" name="namesv" type="text" maxlength="50" class="width-30" ng-model="namesv"
+                       placeholder="{{'codes.swedish' | i18n}}" codeelement-combined-field/>
+
+                <span class="text-error" ng-show="form.namesv.$error.codeelementcombinedrequired">
+                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="name_en" class="form-row-label">&nbsp;</label>
+                <input id="name_en" type="text" maxlength="50" class="width-30" name="nameen" ng-model="nameen"
+                       placeholder="{{'codes.english' | i18n}}" codeelement-combined-field/>
+
+                <span class="text-error" ng-show="form.nameen.$error.codeelementcombinedrequired">
+                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+
+            <div class="form-row-content width-60">
+                <label for="code" class="form-row-label">{{'codeelement.editpage.codevalue' | i18n}}</label>
+                <input id="code" type="text" maxlength="50" class="width-30" ng-model="codeValue" ng-required="true"/>
+            </div>
+
+            <div class="form-row-content width-60">
+
+                <label for="datesactivestart" class="form-row-label">{{'codeelement.editpage.datesactive' | i18n}}</label>
+
+                <input id="datesactivestart" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codeElement.voimassaAlkuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" />
+                -
+                <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codeElement.voimassaLoppuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" />
+                <i class="icon-calendar"></i>
+
+            </div>
+
+
+            <div class="form-row-content width-60 align-center">
+                <label for="shortname_fi" class="form-row-label">{{'codeelement.editpage.shortname' | i18n}}</label>
+                <input id="same_shortname" type="checkbox" ng-model="sameshortname"
+                       ng-click="setSameValue('shortname')" codeelement-combined-field/>
+                <label for="same_shortname">{{'codes.sameinalllanguages' | i18n}}</label>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="shortname_fi" class="form-row-label">&nbsp;</label>
+                <input id="shortname_fi" type="text" maxlength="50" class="width-30" name="shortnamefi" ng-model="shortnamefi"
+                       placeholder="{{'codes.finnish' | i18n}}" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.shortnamefi.$error.codeelementcombinedrequired">
+                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="shortname_sv" class="form-row-label">&nbsp;</label>
+                <input id="shortname_sv" type="text" maxlength="50" class="width-30" name="shortnamesv" ng-model="shortnamesv"
+                       placeholder="{{'codes.swedish' | i18n}}" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.shortnamesv.$error.codeelementcombinedrequired">
+                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="shortname_en" class="form-row-label">&nbsp;</label>
+                <input id="shortname_en" type="text" maxlength="50" class="width-30" name="shortnameen" ng-model="shortnameen"
+                       placeholder="{{'codes.english' | i18n}}" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.shortnameen.$error.codeelementcombinedrequired">
+                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+
+            <div class="form-row-content width-60 align-center">
+                <label for="description_fi" class="form-row-label">{{'codeelement.editpage.description' | i18n}}</label>
+                <input id="same_description" type="checkbox" ng-model="samedescription" ng-click="setSameValue('description')"
+                       codeelement-combined-field/>
+                <label for="same_description">{{'codes.sameinalllanguages' | i18n}}</label>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="description_fi" class="form-row-label">&nbsp;</label>
+                <textarea id="description_fi" maxlength="350" class="width-30" name="descriptionfi" ng-model="descriptionfi"
+                          placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.descriptionfi.$error.codeelementcombinedrequired">
+                                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="description_sv" class="form-row-label">&nbsp;</label>
+                <textarea id="description_sv" maxlength="350" class="width-30" name="descriptionsv" ng-model="descriptionsv"
+                          placeholder="{{'codes.swedish' | i18n}}" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.descriptionsv.$error.codeelementcombinedrequired">
+                                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+            <div class="form-row-content width-60">
+                <label for="description_en" class="form-row-label">&nbsp;</label>
+                <textarea id="description_en" maxlength="350" class="width-30" name="descriptionen" ng-model="descriptionen"
+                          placeholder="{{'codes.english' | i18n}}" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.descriptionen.$error.codeelementcombinedrequired">
+                                    {{'codes.validation.codeelementcombinedrequired' | i18n}}</span>
+            </div>
+
+            <div  ng-show="codeElementSelector" class="width-60">
+                <div class="modal-backdrop" ng-click="close()"></div>
+
+                <div class="clear"></div>
+                <div class="orgSelector">
+                    <ol class="treelist collapsible">
+                        <li ng-repeat="data in model.allCodes" ng-include="'codeelement.html'">
+                        </li>
+                    </ol>
+                </div>
+
+            </div>
+
+            <div class="form-row-content width-60">
+                <label for="withincodes" class="form-row-label">{{'codeelement.editpage.withincodeelements' | i18n}}</label><br>
+                <button id="withincodes" type="button" class="button small" ng-model="codeElementSelector" ng-show="!codeElementSelector" ng-click="show('withincodes')">Lisää koodi</button>
+
+            </div>
+
+
+            <div class="form-row" ng-show="model.withinCodeElements.length">
+                <div class="form-row-content">
+                    <table class="virkailija-table-1 width-100">
+                        <thead>
+                        <tr>
+                            <th>{{'codeelement.editpage.codeelement' | i18n}}</th>
+                            <th>{{'codes.delete' | i18n}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="codeElement in model.withinCodeElements | orderBy:'name'">
+                            <td class="align-center">{{codeElement.name}}</td>
+                            <td class="align-center">
+                                <span class="removebtn" ng-click="model.removeFromWithinCodeElements(codeElement)"></span>
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+
+            <div class="form-row-content width-60">
+                <label for="includescodes" class="form-row-label">{{'codeelement.editpage.includescodeelements' | i18n}}
+                </label><br>
+                <button id="includescodes" type="button" class="button small" ng-model="codeElementSelector" ng-show="!codeElementSelector" ng-click="show('includescodes')">Lisää koodi</button>
+            </div>
+            <div class="form-row" ng-show="model.includesCodeElements.length">
+                <div class="form-row-content">
+                    <table class="virkailija-table-1 width-100">
+                        <thead>
+                        <tr>
+                            <th>{{'codeelement.editpage.codeelement' | i18n}}</th>
+                            <th>{{'codes.delete' | i18n}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="codeElement in model.includesCodeElements | orderBy:'name'">
+                            <td class="align-center">{{codeElement.name}}</td>
+                            <td class="align-center">
+                                <span class="removebtn" ng-click="model.removeFromIncludesCodeElements(codeElement)"></span>
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+            <div class="form-row-content width-60">
+                <label for="levelswithcodes" class="form-row-label">{{'codeelement.editpage.levelswithcodeelements' | i18n}}
+                </label><br>
+                <button id="levelswithcodes" type="button" class="button small" ng-model="codeElementSelector" ng-show="!codeElementSelector" ng-click="show('levelswithcodes')">Lisää koodi</button>
+            </div>
+            <div class="form-row" ng-show="model.levelsWithCodeElements.length">
+                <div class="form-row-content">
+                    <table class="virkailija-table-1 width-100">
+                        <thead>
+                        <tr>
+                            <th>{{'codeelement.editpage.codeelement' | i18n}}</th>
+                            <th>{{'codes.delete' | i18n}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:'name'">
+                            <td class="align-center">{{codeElement.name}}</td>
+                            <td class="align-center">
+                                <span class="removebtn" ng-click="model.removeFromLevelsWithCodeElements(codeElement)"></span>
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+                </div>
+                <div class="clear"></div>
+            </div>
+
+
+            <div class="form-row-content width-100">
+                <a href="#">{{'codes.createpage.showextra' | i18n}}</a>
+            </div>
+        </div>
+
+        <div class="clear"></div>
+        <div class="form-row navbar-fixed-bottom width-90 padding-bottom-3">
+            <button ng-disabled="!form.$valid" class="button small primary float-right" type="submit">{{'codes.save' | i18n}}</button>
+            <button type="button" class="float-right margin-right-1 button small" ng-click="cancel()">{{'codes.cancel' | i18n}}
+            </button>
+        </div>
+    </form>
+</div>

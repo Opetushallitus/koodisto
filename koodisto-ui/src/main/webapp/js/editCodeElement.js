@@ -1,0 +1,324 @@
+
+app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, CodeElementByUriAndVersion, AllCodes,
+                                               CodeElementsByCodesUriAndVersion, RemoveRelationCodeElement,
+                                               LatestCodeElementVersionsByCodeElementUri) {
+    var model;
+    model = new function() {
+        this.states = [{key:'PASSIIVINEN', value:'PASSIIVINEN'},{key:'LUONNOS', value:'LUONNOS'}];
+
+        this.allCodes = [];
+        this.codesShown = [];
+        this.searchStr = "";
+        this.withinCodeElements = [];
+        this.includesCodeElements = [];
+        this.levelsWithCodeElements = [];
+
+        this.init = function(scope, codeElementUri, codeElementVersion) {
+            this.allCodes = [];
+            this.withinCodeElements = [];
+            this.includesCodeElements = [];
+            this.levelsWithCodeElements = [];
+            model.getAllCodes();
+            model.getCodeElement(scope, codeElementUri, codeElementVersion);
+        };
+
+        this.getCodeElement = function(scope, codeElementUri, codeElementVersion) {
+            CodeElementByUriAndVersion.get({codeElementUri: codeElementUri, codeElementVersion: codeElementVersion}, function (result) {
+                model.codeElement = result;
+                scope.codeValue = result.koodiArvo;
+
+                scope.namefi = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
+                scope.namesv = model.languageSpecificValue(result.metadata, 'nimi', 'SV');
+                scope.nameen = model.languageSpecificValue(result.metadata, 'nimi', 'EN');
+
+                scope.shortnamefi = model.languageSpecificValue(result.metadata, 'lyhytNimi', 'FI');
+                scope.shortnamesv = model.languageSpecificValue(result.metadata, 'lyhytNimi', 'SV');
+                scope.shortnameen = model.languageSpecificValue(result.metadata, 'lyhytNimi', 'EN');
+
+                scope.descriptionfi = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
+                scope.descriptionsv = model.languageSpecificValue(result.metadata, 'kuvaus', 'SV');
+                scope.descriptionen = model.languageSpecificValue(result.metadata, 'kuvaus', 'EN');
+
+                model.codeElement.withinCodeElements.forEach(function(codelement){
+                    model.getLatestCodeElementVersionsByCodeElementUri(codelement,model.withinCodeElements);
+                });
+                model.codeElement.includesCodeElements.forEach(function(codelement){
+                    model.getLatestCodeElementVersionsByCodeElementUri(codelement,model.includesCodeElements);
+                });
+                model.codeElement.levelsWithCodeElements.forEach(function(codelement){
+                    model.getLatestCodeElementVersionsByCodeElementUri(codelement,model.levelsWithCodeElements);
+                });
+            });
+        };
+
+        this.getLatestCodeElementVersionsByCodeElementUri = function(codeElementUri, list) {
+            LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElementUri}, function (result) {
+                var ce = {};
+                ce.uri = codeElementUri;
+                ce.name = model.languageSpecificValue(result.metadata, 'lyhytNimi', 'FI');
+                list.push(ce);
+            });
+        };
+
+        this.languageSpecificValue = function(fieldArray,fieldName,language) {
+            return getLanguageSpecificValue(fieldArray,fieldName,language);
+        };
+        this.removeFromWithinCodeElements = function(codeelement) {
+            model.withinRelationToRemove = codeelement;
+
+            model.modalInstance = $modal.open({
+                templateUrl: 'confirmModalContent.html',
+                controller: CodeElementEditorController,
+                resolve: {
+                }
+            });
+
+        };
+
+        this.removeFromIncludesCodeElements = function(codeelement) {
+            model.includesRelationToRemove = codeelement;
+            model.modalInstance = $modal.open({
+                templateUrl: 'confirmModalContent.html',
+                controller: CodeElementEditorController,
+                resolve: {
+                }
+            });
+        };
+
+        this.removeFromLevelsWithCodeElements = function(codeelement) {
+            model.levelsRelationToRemove = codeelement;
+            model.modalInstance = $modal.open({
+                templateUrl: 'confirmModalContent.html',
+                controller: CodeElementEditorController,
+                resolve: {
+                }
+            });
+        };
+
+        this.getAllCodes = function() {
+            RootCodes.get({}, function (result) {
+                model.allCodes = result;
+            });
+        };
+
+        this.refresh = function(searchStr) {
+            model.codesShown = [];
+            model.allCodes.forEach(function(child){
+                child.children = [];
+                /*if (child.codeelementchildren) {
+                    child.codeelementchildren.forEach(function(codeelementchild){
+                        if (codeelementchild.metadata[0].lyhytNimi.indexOf(searchStr) !== -1) {
+                            child.children.push(codeelementchild);
+                        }
+                    });
+
+                    if (child.children.length > 0) {
+                        model.codesShown.push(child);
+                    }
+
+                }*/
+
+                if (child.children.length === 0 && child.metadata[0].nimi.indexOf(searchStr) !== -1) {
+                    model.codesShown.push(child);
+                }
+            });
+        };
+
+        this.openChildren = function(data) {
+            data.open = !data.open;
+            if(data.open) {
+
+                var iter = function(children){
+                    if(children) {
+                        children.forEach(function(child){
+                            child.open = true;
+
+                        });
+                    }
+                }
+                if (data.latestKoodistoVersio) {
+                    CodeElementsByCodesUriAndVersion.get({codesUri: data.koodistoUri, codesVersion: data.latestKoodistoVersio.versio}, function (result) {
+                        data.children = result;
+                    });
+                }
+                iter(data.children);
+            }
+        };
+    };
+
+
+    return model;
+});
+
+function CodeElementEditorController($scope, $location, $routeParams, CodeElementEditorModel, UpdateCodeElement,
+                                     AddRelationCodeElement, RemoveRelationCodeElement) {
+    $scope.model = CodeElementEditorModel;
+    $scope.codeElementUri = $routeParams.codeElementUri;
+    $scope.codeElementVersion = $routeParams.codeElementVersion;
+    CodeElementEditorModel.init($scope, $scope.codeElementUri, $scope.codeElementVersion);
+
+    $scope.cancel = function() {
+        $location.path("/koodi/"+$scope.codeElementUri+"/"+$scope.codeElementVersion);
+    };
+
+    $scope.submit = function() {
+        $scope.persistCodes();
+    };
+
+    $scope.persistCodes = function() {
+        var codeelement = {
+            koodiUri: $scope.codeElementUri,
+            versio: $scope.codeElementVersion,
+            voimassaAlkuPvm: $scope.model.codeElement.voimassaAlkuPvm,
+            voimassaLoppuPvm: $scope.model.codeElement.voimassaLoppuPvm,
+            koodiArvo: $scope.codeValue,
+            tila: $scope.model.codeElement.tila,
+            version: $scope.model.codeElement.version,
+
+            metadata : [{
+                kieli: 'FI',
+                nimi: $scope.form.namefi.$viewValue,
+                kuvaus: $scope.form.descriptionfi.$viewValue,
+                lyhytNimi: $scope.form.shortnamefi.$viewValue
+            }]
+        };
+        if ($scope.form.namesv && $scope.form.namesv.$viewValue) {
+            codeelement.metadata.push({
+                kieli: 'SV',
+                nimi: $scope.form.namesv.$viewValue,
+                kuvaus: $scope.form.descriptionsv.$viewValue,
+                lyhytNimi: $scope.form.shortnamesv.$viewValue
+            });
+        }
+        if ($scope.form.nameen && $scope.form.nameen.$viewValue) {
+            codeelement.metadata.push({
+                kieli: 'EN',
+                nimi: $scope.form.nameen.$viewValue,
+                kuvaus: $scope.form.descriptionen.$viewValue,
+                lyhytNimi: $scope.form.shortnameen.$viewValue
+            });
+        }
+        UpdateCodeElement.put({}, codeelement, function(result) {
+            $location.path("/koodi/"+result.koodiUri+"/"+result.versio);
+        });
+    };
+
+    $scope.setSameValue = function(name) {
+        if (name === 'name' && !$scope.samename) {
+            $scope.namesv = $scope.namefi;
+            $scope.nameen = $scope.namefi;
+        } else if (name === 'description' && !$scope.samedescription) {
+            $scope.descriptionsv = $scope.descriptionfi;
+            $scope.descriptionen = $scope.descriptionfi;
+        } else if (name === 'shortname' && !$scope.sameshortname) {
+            $scope.shortnamesv = $scope.shortnamefi;
+            $scope.shortnameen = $scope.shortnamefi;
+        }
+    };
+
+    $scope.createCodeElement = function(data) {
+        var ce = {};
+        ce.uri = data.koodiUri;
+        ce.name = $scope.model.languageSpecificValue(data.metadata, 'lyhytNimi', 'FI');
+
+        return ce;
+    };
+
+    $scope.addToWithinCodeElement = function(data) {
+        var ce = {};
+        ce = $scope.createCodeElement(data);
+        if ($scope.model.withinCodeElements.indexOf(ce) === -1) {
+            $scope.model.withinCodeElements.push(ce);
+            AddRelationCodeElement.put({codeElementUri: data.koodiUri,
+                codeElementUriToAdd: $scope.model.codeElement.koodiUri,relationType: "SISALTYY"},function(result) {
+            });
+        }
+    };
+
+    $scope.addToIncludesCodeElement = function(data) {
+        var ce = {};
+        ce = $scope.createCodeElement(data);
+        if ($scope.model.includesCodeElements.indexOf(ce) === -1) {
+            $scope.model.includesCodeElements.push(ce);
+            AddRelationCodeElement.put({codeElementUri: $scope.model.codeElement.koodiUri,
+                codeElementUriToAdd: data.koodiUri,relationType: "SISALTYY"},function(result) {
+            });
+        }
+    };
+    $scope.addToLevelsWithCodeElement = function(data) {
+        var ce = {};
+        ce = $scope.createCodeElement(data);
+        if ($scope.model.levelsWithCodeElements.indexOf(ce) === -1) {
+            $scope.model.levelsWithCodeElements.push(ce);
+            AddRelationCodeElement.put({codeElementUri: data.koodiUri,
+                codeElementUriToAdd: $scope.model.codeElement.koodiUri,relationType: "RINNASTEINEN"},function(result) {
+            });
+        }
+    };
+
+    $scope.refresh = function() {
+        $scope.model.refresh($scope.model.searchStr);
+    }
+
+    $scope.openChildren = function(data) {
+        CodeElementEditorModel.openChildren(data);
+    }
+
+    $scope.clear = function(){
+        $scope.model.searchStr = '';
+    }
+
+    $scope.close = function(selectedCodeElement){
+        $scope.codeElementSelector = false;
+        if (selectedCodeElement) {
+            if ($scope.addToListName === 'withincodes') {
+                $scope.addToWithinCodeElement(selectedCodeElement);
+            } else if ($scope.addToListName === 'includescodes') {
+                $scope.addToIncludesCodeElement(selectedCodeElement);
+            } else if ($scope.addToListName === 'levelswithcodes') {
+                $scope.addToLevelsWithCodeElement(selectedCodeElement);
+            }
+        }
+    }
+
+    $scope.show = function(name){
+        $scope.addToListName = name;
+        $scope.codeElementSelector = true;
+    }
+
+    $scope.okconfirm = function() {
+        if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
+            $scope.model.withinCodeElements.splice($scope.model.withinCodeElements.indexOf($scope.model.withinRelationToRemove.uri), 1);
+
+            RemoveRelationCodeElement.put({codeElementUri: $scope.model.withinRelationToRemove.uri,
+                codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "SISALTYY"},function(result) {
+
+            });
+        } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
+
+            $scope.model.includesCodeElements.splice($scope.model.includesCodeElements.indexOf($scope.model.includesRelationToRemove.uri), 1);
+
+            RemoveRelationCodeElement.put({codeElementUri: $scope.model.codeElement.koodiUri,
+                codeElementUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
+
+            });
+        } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
+            $scope.model.levelsWithCodeElements.splice($scope.model.levelsWithCodeElements.indexOf($scope.model.levelsRelationToRemove.uri), 1);
+
+            RemoveRelationCodeElement.put({codeElementUri: $scope.model.levelsRelationToRemove.uri,
+                codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "RINNASTEINEN"},function(result) {
+            });
+        }
+        $scope.model.levelsRelationToRemove = null;
+        $scope.model.includesRelationToRemove = null;
+        $scope.model.withinRelationToRemove = null;
+        $scope.model.modalInstance.close();
+    };
+
+    $scope.cancelconfirm = function() {
+        $scope.model.levelsRelationToRemove = null;
+        $scope.model.includesRelationToRemove = null;
+        $scope.model.withinRelationToRemove = null;
+        $scope.model.modalInstance.dismiss('cancel');
+    };
+}

@@ -1,0 +1,249 @@
+<script type="text/ng-template" id="confirmDeleteCodeElementModalContent.html">
+    <div class="modal-header">
+        <h3>{{'codeelement.editpage.modal.header' | i18n}}</h3>
+    </div>
+    <div class="modal-body">
+        Olet poistamassa koodia {{ model.languageSpecificValue( model.codeElement.metadata , 'nimi', 'FI') }}, haluatko jatkaa?
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="okconfirmdeletecodeelement()">OK</button>
+        <button class="btn btn-warning" ng-click="cancelconfirmdeletecodeelement()">Cancel</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="confirmModalContent.html">
+    <div class="modal-header">
+        <h3>{{'codeelement.editpage.modal.header' | i18n}}</h3>
+    </div>
+    <div class="modal-body">
+        Olet poistamassa koodin {{ model.languageSpecificValue( model.codeElement.metadata , 'nimi', 'FI') }} ja {{ model.withinRelationToRemove.name || model.includesRelationToRemove.name || model.levelsRelationToRemove.name }} v&auml;list&auml; yhteytt&auml;
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="okconfirm()">OK</button>
+        <button class="btn btn-warning" ng-click="cancelconfirm()">Cancel</button>
+    </div>
+</script>
+
+<h1>{{'codeelement.viewpage.header' | i18n}}</h1>
+
+
+<div>
+    <form ng-init="domain.update()" name="form" ng-submit="submit()">
+
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                &nbsp;
+            </div>
+            <div class="form-row-content width-30">
+                <h3>{{ model.languageSpecificValue( model.codeElement.metadata , 'nimi', 'FI') }}&nbsp;({{ model.codeElement.koodiArvo }})</h3>
+            </div>
+
+        </div>
+
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codeelement.viewpage.state' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.codeElement.tila }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codeelement.viewpage.name' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.languageSpecificValue( model.codeElement.metadata , 'nimi', 'FI') }}<br>
+                {{ model.languageSpecificValue( model.codeElement.metadata , 'nimi', 'SV') }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codeelement.viewpage.uri' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.codeElement.resourceUri }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codeelement.viewpage.version' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.codeElement.versio }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codeelement.viewpage.codevalue' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.codeElement.koodiArvo }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codeelement.viewpage.dateactive' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.codeElement.voimassaAlkuPvm | date:'dd.MM.yyyy' }} -
+                {{ model.codeElement.voimassaLoppuPvm | date:'dd.MM.yyyy' }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codeelement.viewpage.shortname' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.languageSpecificValue( model.codeElement.metadata , 'lyhytNimi', 'FI') }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codeelement.viewpage.description' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.languageSpecificValue( model.codeElement.metadata , 'kuvaus', 'FI') }}<br>
+                {{ model.languageSpecificValue( model.codeElement.metadata , 'kuvaus', 'SV') }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-row-content width-10">
+                {{'codeelement.viewpage.updated' | i18n}}
+            </div>
+            <div class="form-row-content width-50 align-left bold">
+                {{ model.codeElement.paivitysPvm | date:'dd.MM.yyyy HH:mm' }}
+            </div>
+        </div>
+        <div class="form-row-content width-60">
+        <accordion close-others="oneAtATime">
+        <accordion-group is-open="isopen" class="">
+            <accordion-heading>
+                <i class="pull-left" ng-class="{'icon-chevron-down': isopen, 'icon-chevron-right': !isopen}"></i> {{'codeelement.editpage.withincodeelements' | i18n}}
+            </accordion-heading>
+
+        <div id="withincodes" class="form-row" ng-show="model.withinCodeElements.length">
+            <div class="form-row-content">
+                <table class="virkailija-table-1 width-100">
+                    <thead>
+                    <tr>
+                        <th>{{'codeelement.viewpage.tableheader1' | i18n}}</th>
+                        <th>{{'codeelement.viewpage.tableheader2' | i18n}}</th>
+                        <th>{{'codeelement.viewpage.tableheader3' | i18n}}</th>
+                        <th>{{'codes.delete' | i18n}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="codeElement in model.withinCodeElements | orderBy:'name'">
+                        <td class="align-center">{{codeElement.codesname}}</td>
+                        <td class="align-center">{{codeElement.name}}</td>
+                        <td class="align-center">{{codeElement.description}}</td>
+                        <td class="align-center">
+                            <span class="removebtn" ng-click="model.removeFromWithinCodeElements(codeElement)"></span>
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+                <a href="#/muokkaaKoodi/{{model.codeElement.koodiUri}}/{{model.codeElement.versio}}" class="float-right margin-right-3 button small primary">
+                    {{'codeelement.viewpage.editrelationsbutton' | i18n}}</a>
+            </div>
+            <div class="clear"></div>
+        </div>
+        </accordion-group>
+        </accordion>
+        </div>
+
+
+        <div class="form-row-content width-60">
+            <accordion close-others="oneAtATime">
+                <accordion-group is-open="isopen2" class="">
+                    <accordion-heading>
+                        <i class="pull-left" ng-class="{'icon-chevron-down': isopen2, 'icon-chevron-right': !isopen2}"></i> {{'codeelement.editpage.includescodeelements' | i18n}}
+                    </accordion-heading>
+
+                <div id="includescodes" class="form-row" ng-show="model.includesCodeElements.length">
+                    <div class="form-row-content">
+                        <table class="virkailija-table-1 width-100">
+                            <thead>
+                            <tr>
+                                <th>{{'codeelement.viewpage.tableheader1' | i18n}}</th>
+                                <th>{{'codeelement.viewpage.tableheader2' | i18n}}</th>
+                                <th>{{'codeelement.viewpage.tableheader3' | i18n}}</th>
+                                <th>{{'codes.delete' | i18n}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="codeElement in model.includesCodeElements | orderBy:'name'">
+                                <td class="align-center">{{codeElement.codesname}}</td>
+                                <td class="align-center">{{codeElement.name}}</td>
+                                <td class="align-center">{{codeElement.description}}</td>
+                                <td class="align-center">
+                                    <span class="removebtn" ng-click="model.removeFromWithinCodeElements(codeElement)"></span>
+                                </td>
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+                        <a href="#/muokkaaKoodi/{{model.codeElement.koodiUri}}/{{model.codeElement.versio}}" class="float-right margin-right-3 button small primary">
+                            {{'codeelement.viewpage.editrelationsbutton' | i18n}}</a>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                </accordion-group>
+            </accordion>
+        </div>
+        <div class="form-row-content width-60">
+            <accordion close-others="oneAtATime">
+                <accordion-group is-open="isopen3" class="">
+                    <accordion-heading>
+                        <i class="pull-left" ng-class="{'icon-chevron-down': isopen3, 'icon-chevron-right': !isopen3}"></i> {{'codeelement.editpage.levelswithcodeelements' | i18n}}
+                    </accordion-heading>
+
+                <div id="levelswithcodes" class="form-row" ng-show="model.levelsWithCodeElements.length">
+                    <div class="form-row-content">
+                        <table class="virkailija-table-1 width-100">
+                            <thead>
+                            <tr>
+                                <th>{{'codeelement.viewpage.tableheader1' | i18n}}</th>
+                                <th>{{'codeelement.viewpage.tableheader2' | i18n}}</th>
+                                <th>{{'codeelement.viewpage.tableheader3' | i18n}}</th>
+                                <th>{{'codes.delete' | i18n}}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:'name'">
+                                <td class="align-center">{{codeElement.codesname}}</td>
+                                <td class="align-center">{{codeElement.name}}</td>
+                                <td class="align-center">{{codeElement.description}}</td>
+                                <td class="align-center">
+                                    <span class="removebtn" ng-click="model.removeFromWithinCodeElements(codeElement)"></span>
+                                </td>
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+                        <a href="#/muokkaaKoodi/{{model.codeElement.koodiUri}}/{{model.codeElement.versio}}" class="float-right margin-right-3 button small primary">
+                            {{'codeelement.viewpage.editrelationsbutton' | i18n}}</a>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                </accordion-group>
+            </accordion>
+        </div>
+        <div class="clear"></div>
+        <div class="form-row navbar-fixed-bottom width-90 padding-bottom-3">
+
+            <button type="button" class="float-right margin-right-1 button small" ng-click="cancel()">{{'codes.back' | i18n}}
+            </button>
+            <button type="button" class="float-right margin-right-3 button small primary"
+                    ng-click="model.removeCodeElement()" ng-disabled="model.deleteState">{{'codeelement.viewpage.deletebutton' | i18n}}
+            </button>
+            <a href="#/muokkaaKoodi/{{model.codeElement.koodiUri}}/{{model.codeElement.versio}}" class="float-right margin-right-3 button small primary">
+                {{'codeelement.viewpage.editbutton' | i18n}}</a>
+        </div>
+    </form>
+</div>
