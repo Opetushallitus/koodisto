@@ -92,6 +92,20 @@ app.factory('AllCodes', function ($resource) {
     });
 });
 
+app.factory('UploadCodes', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codes/download/:codesUri",
+        {codesUri: "@codesUri"}, {
+        put: {method: "POST"}
+    });
+});
+
+
+app.factory('DownloadCodes', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codes/upload/:codesUri/:codesVersion",
+        {codesUri: "@codesUri", codesVersion: "@codesVersion"}, {
+        put: {method: "POST"}
+    });
+});
 
 app.factory('MyRoles', function($resource) {
     return $resource(CAS_URL, {}, {

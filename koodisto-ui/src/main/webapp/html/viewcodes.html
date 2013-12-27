@@ -1,6 +1,30 @@
+<script type="text/ng-template" id="downloadModalContent.html">
+    <div class="modal-header">
+        <h3>{{'codes.downloadmodal.header' | i18n}}</h3>
+    </div>
+    <div class="modal-body">
+        {{'codes.downloadmodal.format' | i18n}}
+        <br>
+        <select ng-model="model.format">
+            <option value="JHS_XML">JHS_XML</option>
+            <option value="CSV">CSV</option>
+        </select>
+        <br>
+        {{'codes.downloadmodal.encoding' | i18n}}
+        <br>
+        <select ng-model="model.encoding">
+            <option value="UTF8">UTF8</option>
+            <option value="ISO_88519_1">ISO_88519_1</option>
+            <option value="ISO_88519_15">ISO_88519_15</option>
+        </select>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" ng-click="canceldownload()">{{'codes.cancel' | i18n}}</button>
+        <button class="btn btn-primary" ng-click="okdownload()">{{'codes.select' | i18n}}</button>
+    </div>
+</script>
 
 <h1>{{'codes.viewpage.header' | i18n}}</h1>
-
 
 <div>
     <form ng-init="domain.update()" name="form" ng-submit="submit()">
@@ -12,10 +36,10 @@
                 <h3>{{ model.languageSpecificValue( model.codes.metadata , 'nimi', 'FI') }}</h3>
             </div>
             <div class="form-row-content width-30 align-left">
-                <a href="#/lisaaKoodisto" class="button small">
-                    {{'codes.viewpage.uploadbutton' | i18n}}</a>
-                <a href="#/lisaaKoodisto" class="button small">
-                    {{'codes.viewpage.downloadbutton' | i18n}}</a>
+                <button type="button" class="float-right margin-right-1 button small" ng-click="model.upload()">{{'codes.viewpage.uploadbutton' | i18n}}
+                </button>
+                <button type="button" class="float-right margin-right-1 button small" ng-click="model.download()">{{'codes.viewpage.downloadbutton' | i18n}}
+                </button>
             </div>
 
         </div>

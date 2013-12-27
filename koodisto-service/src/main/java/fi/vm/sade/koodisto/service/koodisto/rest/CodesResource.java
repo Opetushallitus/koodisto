@@ -3,18 +3,19 @@ package fi.vm.sade.koodisto.service.koodisto.rest;
 import fi.vm.sade.generic.rest.Cacheable;
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.dto.*;
-import fi.vm.sade.koodisto.model.JsonViews;
-import fi.vm.sade.koodisto.model.Koodisto;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.service.DownloadService;
+import fi.vm.sade.koodisto.service.UploadService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.impl.KoodistoRole;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +25,15 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -45,6 +49,12 @@ public class CodesResource {
 
     @Autowired
     private SadeConversionService conversionService;
+
+    @Autowired
+    private UploadService uploadService;
+
+    @Autowired
+    private DownloadService downloadService;
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -187,5 +197,64 @@ public class CodesResource {
         KoodistoVersio koodistoVersio = koodistoBusinessService.getKoodistoVersio(codesUri,codesVersion);
 
         return conversionService.convert(koodistoVersio, KoodistoDto.class);
+    }
+
+    @POST
+    @Path("upload/{codesUri}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({JsonViews.Basic.class})
+    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @Transactional
+    public Response upload(@PathParam("codesUri") String codesUri, FileFormatDto fileFormatDto) {
+        try {
+            String mime = "";
+            String encodingStr = null;
+            ExportImportFormatType formatStr = null;
+            InputStream csvData = null;
+
+            if (Format.valueOf(fileFormatDto.getFormat()) == Format.CSV) {
+                encodingStr = fileFormatDto.getEncoding();
+                mime = "application/octet-stream; charset=" + encodingStr;
+                formatStr = ExportImportFormatType.CSV;
+            } else if (Format.valueOf(fileFormatDto.getFormat()) == Format.JHS_XML) {
+                formatStr = ExportImportFormatType.JHS_XML;
+                mime = "application/xml";
+            }
+            DataSource ds = new InputStreamDataSource(csvData, mime);
+            DataHandler handler = new DataHandler(ds);
+            uploadService.upload(codesUri, formatStr, encodingStr, handler);
+            return Response.status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            logger.warn("Koodistoa ei saatu vietyä. ", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @POST
+    @Path("download/{codesUri}/{codesVersion}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({JsonViews.Basic.class})
+    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @Transactional
+    public Response download(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion,
+                           FileFormatDto fileFormatDto) {
+        try {
+            ExportImportFormatType formatStr = null;
+
+            if (Format.valueOf(fileFormatDto.getFormat()) == Format.CSV) {
+                formatStr = ExportImportFormatType.CSV;
+            } else if (Format.valueOf(fileFormatDto.getFormat()) == Format.JHS_XML) {
+                formatStr = ExportImportFormatType.JHS_XML;
+            }
+
+            DataHandler handler = downloadService.download(codesUri, codesVersion, formatStr, fileFormatDto.getEncoding());
+
+            return Response.status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            logger.warn("Koodistoa ei saatu tuotua. ", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

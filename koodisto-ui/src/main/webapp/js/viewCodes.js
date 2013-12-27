@@ -1,5 +1,5 @@
 
-app.factory('ViewCodesModel', function($location, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion,
+app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion,
                                        CodeElementVersionsByCodeElementUri, OrganizationByOid) {
     var model;
     model = new function() {
@@ -8,6 +8,10 @@ app.factory('ViewCodesModel', function($location, CodesByUriAndVersion, CodeElem
             model.codesUri = codesUri;
             model.codesVersion = codesVersion;
             model.showversion = null;
+
+            model.format = "JHS_XML";
+            model.encoding = "UTF8";
+
             model.getCodes(codesUri,codesVersion);
         };
 
@@ -57,13 +61,25 @@ app.factory('ViewCodesModel', function($location, CodesByUriAndVersion, CodeElem
         this.languageSpecificValue = function(fieldArray,fieldName,language) {
             return getLanguageSpecificValue(fieldArray,fieldName,language);
         };
+
+
+        this.download = function() {
+            model.downloadModalInstance = $modal.open({
+                templateUrl: 'downloadModalContent.html',
+                controller: ViewCodesController,
+                resolve: {
+                }
+            });
+
+        };
+
     };
 
 
     return model;
 });
 
-function ViewCodesController($scope, $location, $routeParams, ViewCodesModel) {
+function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, DownloadCodes, UploadCodes) {
     $scope.model = ViewCodesModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
@@ -79,5 +95,19 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel) {
             return true;
         }
         return false;
+    };
+
+    $scope.okdownload = function() {
+        var fileFormat = {
+            format: $scope.model.format,
+            encoding: $scope.model.encoding
+        }
+        DownloadCodes.put({codesUri: $scope.codesUri}, fileFormat,function(result) {
+        });
+        $scope.model.downloadModalInstance.close();
+    };
+
+    $scope.canceldownload = function() {
+        $scope.model.downloadModalInstance.dismiss('cancel');
     };
 }
