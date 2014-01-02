@@ -15,6 +15,7 @@ import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import org.apache.commons.io.IOUtils;
 import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
@@ -34,9 +35,9 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
+import java.util.*;
 
 @Component
 @Path("codes")
@@ -238,7 +239,7 @@ public class CodesResource {
     @JsonView({JsonViews.Basic.class})
     @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
     @Transactional
-    public Response download(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion,
+    public FileDto download(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion,
                            FileFormatDto fileFormatDto) {
         try {
             ExportImportFormatType formatStr = null;
@@ -250,11 +251,16 @@ public class CodesResource {
             }
 
             DataHandler handler = downloadService.download(codesUri, codesVersion, formatStr, fileFormatDto.getEncoding());
-
-            return Response.status(Response.Status.ACCEPTED).build();
+            StringWriter writer = new StringWriter();
+            InputStream inputStream = handler.getInputStream();
+            IOUtils.copy(inputStream, writer, fileFormatDto.getEncoding().toString());
+            String theString = writer.toString();
+            FileDto fileDto = new FileDto();
+            fileDto.setData(theString);
+            return fileDto;
         } catch (Exception e) {
             logger.warn("Koodistoa ei saatu tuotua. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return null;
         }
     }
 }

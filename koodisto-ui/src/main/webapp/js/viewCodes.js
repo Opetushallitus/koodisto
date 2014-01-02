@@ -10,7 +10,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             model.showversion = null;
 
             model.format = "JHS_XML";
-            model.encoding = "UTF8";
+            model.encoding = "UTF-8";
 
             model.getCodes(codesUri,codesVersion);
         };
@@ -102,7 +102,30 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
             format: $scope.model.format,
             encoding: $scope.model.encoding
         }
-        DownloadCodes.put({codesUri: $scope.codesUri}, fileFormat,function(result) {
+        DownloadCodes.put({codesUri: $scope.codesUri,codesVersion: $scope.codesVersion}, fileFormat, function(result) {
+
+            if (result.data) {
+                var type = 'text/xml';
+
+                if (fileFormat.format === "CSV") {
+                    type = 'text/csv';
+                }
+
+                var blob = new Blob([ result.data ], { type : type });
+
+                var url  = window.URL || window.webkitURL;
+                var link = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+                link.href = url.createObjectURL(blob);
+                if (fileFormat.format === "CSV") {
+                    link.download = $scope.codesUri+".csv";
+                } else {
+                    link.download = $scope.codesUri;
+                }
+
+                var event = document.createEvent("MouseEvents");
+                event.initEvent("click", true, false);
+                link.dispatchEvent(event);
+            }
         });
         $scope.model.downloadModalInstance.close();
     };

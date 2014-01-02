@@ -93,7 +93,7 @@ app.factory('AllCodes', function ($resource) {
 });
 
 app.factory('UploadCodes', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codes/download/:codesUri",
+    return $resource(SERVICE_URL_BASE + "codes/upload/:codesUri",
         {codesUri: "@codesUri"}, {
         put: {method: "POST"}
     });
@@ -101,7 +101,7 @@ app.factory('UploadCodes', function($resource) {
 
 
 app.factory('DownloadCodes', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codes/upload/:codesUri/:codesVersion",
+    return $resource(SERVICE_URL_BASE + "codes/download/:codesUri/:codesVersion",
         {codesUri: "@codesUri", codesVersion: "@codesVersion"}, {
         put: {method: "POST"}
     });
