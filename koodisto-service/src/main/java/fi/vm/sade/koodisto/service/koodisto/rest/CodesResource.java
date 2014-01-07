@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
+import com.sun.jersey.multipart.FormDataParam;
 import fi.vm.sade.generic.rest.Cacheable;
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.dto.*;
@@ -26,7 +27,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.ws.rs.*;
@@ -36,7 +36,6 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -203,34 +202,39 @@ public class CodesResource {
 
     @POST
     @Path("upload/{codesUri}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({JsonViews.Basic.class})
-    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
-    @Transactional
-    public Response upload(@PathParam("codesUri") String codesUri, FileFormatDto fileFormatDto) {
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    public Response uploadFile(@FormDataParam("uploadedFile") InputStream fileInputStream,
+                               @FormDataParam("uploadedFile") com.sun.jersey.core.header.FormDataContentDisposition contentDispositionHeader,
+                               @FormDataParam("fileFormat") String fileFormat, @FormDataParam("fileEncoding") String fileEncoding,
+                               @PathParam("codesUri") String codesUri) {
+
+        String filePath = contentDispositionHeader.getFileName();
+
         try {
             String mime = "";
-            String encodingStr = null;
             ExportImportFormatType formatStr = null;
-            InputStream csvData = null;
 
-            if (Format.valueOf(fileFormatDto.getFormat()) == Format.CSV) {
-                encodingStr = fileFormatDto.getEncoding();
-                mime = "application/octet-stream; charset=" + encodingStr;
+            String encoding = fileEncoding;
+            if (StringUtils.isBlank(encoding) || !Charset.isSupported(encoding)) {
+                encoding = "UTF-8";
+            }
+
+            if (Format.valueOf(fileFormat) == Format.CSV) {
+                mime = "application/octet-stream; charset=" + encoding;
                 formatStr = ExportImportFormatType.CSV;
-            } else if (Format.valueOf(fileFormatDto.getFormat()) == Format.JHS_XML) {
+            } else if (Format.valueOf(fileFormat) == Format.JHS_XML) {
                 formatStr = ExportImportFormatType.JHS_XML;
                 mime = "application/xml";
             }
-            DataSource ds = new InputStreamDataSource(csvData, mime);
+            DataSource ds = new InputStreamDataSource(fileInputStream, mime);
             DataHandler handler = new DataHandler(ds);
-            uploadService.upload(codesUri, formatStr, encodingStr, handler);
+            uploadService.upload(codesUri, formatStr, encoding, handler);
             return Response.status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
             logger.warn("Koodistoa ei saatu vietyä. ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+
     }
 
     @POST

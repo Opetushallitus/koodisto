@@ -8,6 +8,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
         this.includesCodeElements = [];
         this.levelsWithCodeElements = [];
         this.deleteState = "disabled";
+        this.alerts = [];
 
         this.init = function(codeElementUri, codeElementVersion) {
 
@@ -104,15 +105,24 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
     $scope.codeElementVersion = $routeParams.codeElementVersion;
     ViewCodeElementModel.init($scope.codeElementUri, $scope.codeElementVersion);
 
+
+    $scope.closeAlert = function(index) {
+        $scope.model.alerts.splice(index, 1);
+    };
+
     $scope.cancel = function() {
         $location.path("/koodisto/"+$scope.model.codeElement.koodisto.koodistoUri+"/"+$scope.model.codeElement.koodisto.koodistoVersios[0]);
     };
 
     $scope.okconfirmdeletecodeelement = function() {
         DeleteCodeElement.put({codeElementUri: $scope.codeElementUri,
-            codeElementVersion: $scope.codeElementVersion},function(result) {
+            codeElementVersion: $scope.codeElementVersion},function(success) {
             $location.path("/koodisto/"+$scope.model.codeElement.koodisto.koodistoUri+"/"+$scope.model.codeElement.koodisto.koodistoVersios[0]);
+        }, function(error) {
+            var alert = { type: 'danger', msg: 'Koodin poisto ep\u00E4onnistui. Koodin rinnastuu/sis\u00E4lt\u00E4\u00E4/sis\u00E4ltyy-suhteita ei ole poistettu.' }
+            $scope.model.alerts.push(alert);
         });
+
         $scope.model.deleteCodeElementModalInstance.close();
     };
 

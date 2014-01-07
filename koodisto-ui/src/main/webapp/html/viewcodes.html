@@ -3,16 +3,16 @@
         <h3>{{'codes.downloadmodal.header' | i18n}}</h3>
     </div>
     <div class="modal-body">
-        {{'codes.downloadmodal.format' | i18n}}
+        <label for="fileFormat">{{'codes.downloadmodal.format' | i18n}}</label>
         <br>
-        <select ng-model="model.format">
+        <select id="fileFormat" ng-model="model.format">
             <option value="JHS_XML">JHS_XML</option>
             <option value="CSV">CSV</option>
         </select>
         <br>
-        {{'codes.downloadmodal.encoding' | i18n}}
+        <label for="fileEncoding">{{'codes.downloadmodal.encoding' | i18n}}</label>
         <br>
-        <select ng-model="model.encoding">
+        <select id="fileEncoding" ng-model="model.encoding">
             <option value="UTF-8">UTF8</option>
             <option value="ISO-88519-1">ISO_88519_1</option>
             <option value="ISO-88519-15">ISO_88519_15</option>
@@ -23,6 +23,37 @@
         <button class="btn btn-primary" ng-click="okdownload()">{{'codes.select' | i18n}}</button>
     </div>
 </script>
+
+<script type="text/ng-template" id="uploadModalContent.html">
+    <div class="modal-header">
+        <h3>{{'codes.uploadmodal.header' | i18n}}</h3>
+    </div>
+    <div class="modal-body">
+        <label for="fileFormat2">{{'codes.downloadmodal.format' | i18n}}</label>
+        <br>
+        <select id="fileFormat2" ng-model="model.format">
+            <option value="JHS_XML">JHS_XML</option>
+            <option value="CSV">CSV</option>
+        </select>
+        <br>
+        <label for="fileEncoding2">{{'codes.downloadmodal.encoding' | i18n}}</label>
+        <br>
+        <select id="fileEncoding2" ng-model="model.encoding">
+            <option value="UTF-8">UTF8</option>
+            <option value="ISO-88519-1">ISO_88519_1</option>
+            <option value="ISO-88519-15">ISO_88519_15</option>
+        </select>
+        <br>
+        <label for="fileToUpload">{{'codes.uploadmodal.selectfile' | i18n}}</label><br />
+        <input type="file" ng-model-instant id="fileToUpload" onchange="angular.element(this).scope().setFiles(this)" />
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" ng-click="cancelupload()">{{'codes.cancel' | i18n}}</button>
+        <button class="btn btn-primary" ng-click="okupload()">{{'codes.select' | i18n}}</button>
+    </div>
+</script>
+
 
 <h1>{{'codes.viewpage.header' | i18n}}</h1>
 

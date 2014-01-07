@@ -48,7 +48,6 @@ app.config(function ($routeProvider) {
 
 //rest resources
 
-
 //Koodistot
 app.factory('RootCodes', function ($resource) {
     return $resource(SERVICE_URL_BASE + "codes", {}, {
@@ -89,13 +88,6 @@ app.factory('AllCodes', function ($resource) {
             params: {
             }
         }
-    });
-});
-
-app.factory('UploadCodes', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codes/upload/:codesUri",
-        {codesUri: "@codesUri"}, {
-        put: {method: "POST"}
     });
 });
 

@@ -245,5 +245,11 @@
             <a href="#/muokkaaKoodi/{{model.codeElement.koodiUri}}/{{model.codeElement.versio}}" class="float-right margin-right-3 button small primary">
                 {{'codeelement.viewpage.editbutton' | i18n}}</a>
         </div>
+
+        <div class="form-row width-40">
+            <alert ng-repeat="alert in model.alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+        </div>
     </form>
+
 </div>
+

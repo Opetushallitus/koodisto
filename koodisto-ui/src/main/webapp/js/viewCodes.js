@@ -73,6 +73,15 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
 
         };
 
+        this.upload = function() {
+            model.uploadModalInstance = $modal.open({
+                templateUrl: 'uploadModalContent.html',
+                controller: ViewCodesController,
+                resolve: {
+                }
+            });
+        };
+
     };
 
 
@@ -133,4 +142,51 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
     $scope.canceldownload = function() {
         $scope.model.downloadModalInstance.dismiss('cancel');
     };
+
+    $scope.okupload = function() {
+        var fileFormat = {
+            format: $scope.model.format,
+            encoding: $scope.model.encoding
+        }
+        var fd = new FormData()
+        for (var i in $scope.files) {
+            fd.append("uploadedFile", $scope.files[i])
+        }
+        fd.append("fileFormat", $scope.model.format)
+        fd.append("fileEncoding", $scope.model.encoding)
+        var xhr = new XMLHttpRequest()
+        xhr.addEventListener("load", uploadComplete, false)
+        xhr.addEventListener("error", uploadFailed, false)
+        xhr.addEventListener("abort", uploadCanceled, false)
+        xhr.open("POST", SERVICE_URL_BASE + "codes" + "/upload/"+$scope.codesUri)
+        xhr.send(fd)
+
+        $scope.model.uploadModalInstance.close();
+    };
+
+    $scope.cancelupload = function() {
+        $scope.model.uploadModalInstance.dismiss('cancel');
+    };
+
+    $scope.setFiles = function(element) {
+        $scope.$apply(function(scope) {
+            console.log('files:', element.files);
+            // Turn the FileList object into an Array
+            $scope.files = []
+            for (var i = 0; i < element.files.length; i++) {
+                $scope.files.push(element.files[i])
+            }
+        });
+    };
+
+    function uploadComplete(evt) {
+    }
+
+    function uploadFailed(evt) {
+        alert("There was an error attempting to upload the file.")
+    }
+
+    function uploadCanceled(evt) {
+        alert("The upload has been canceled by the user or the browser dropped the connection.")
+    }
 }
