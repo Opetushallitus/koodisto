@@ -88,7 +88,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
     return model;
 });
 
-function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, DownloadCodes, UploadCodes) {
+function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, DownloadCodes) {
     $scope.model = ViewCodesModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
