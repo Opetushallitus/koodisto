@@ -9,6 +9,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
         this.onlyCodes = [];
         this.organizations = [];
         this.states = [{key:'PASSIIVINEN', value:'PASSIIVINEN'},{key:'LUONNOS', value:'LUONNOS'},{key:'HYVAKSYTTY',value:'HYVÄKSYTTY'}];
+        this.alerts = [];
 
         this.init = function(scope, codesUri) {
             this.withinCodes = [];
@@ -17,7 +18,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             this.allCodes = [];
             this.onlyCodes = [];
             this.organizations = [];
-
+            this.alerts = [];
             model.getCodes(scope, codesUri);
             model.getAllCodes();
             model.getOrganizations();
@@ -33,6 +34,44 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 scope.descriptionfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kuvaus', 'FI');
                 scope.descriptionsv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kuvaus', 'SV');
                 scope.descriptionen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kuvaus', 'EN');
+
+                scope.instructionsfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kayttoohje', 'FI');
+                scope.instructionssv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kayttoohje', 'SV');
+                scope.instructionsen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kayttoohje', 'EN');
+
+                scope.targetareafi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kohdealue', 'FI');
+                scope.targetareasv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kohdealue', 'SV');
+                scope.targetareaen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kohdealue', 'EN');
+
+                scope.targetareapartfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kohdealueenOsaAlue', 'FI');
+                scope.targetareapartsv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kohdealueenOsaAlue', 'SV');
+                scope.targetareaparten = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kohdealueenOsaAlue', 'EN');
+
+                scope.conceptfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kasite', 'FI');
+                scope.conceptsv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kasite', 'SV');
+                scope.concepten = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kasite', 'EN');
+
+                scope.operationalenvironmentfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'toimintaymparisto', 'FI');
+                scope.operationalenvironmentsv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'toimintaymparisto', 'SV');
+                scope.operationalenvironmenten = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'toimintaymparisto', 'EN');
+
+                scope.codessourcefi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'koodistonLahde', 'FI');
+                scope.codessourcesv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'koodistonLahde', 'SV');
+                scope.codessourceen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'koodistonLahde', 'EN');
+
+                scope.specifiescodesfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'tarkentaaKoodistoa', 'FI');
+                scope.specifiescodessv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'tarkentaaKoodistoa', 'SV');
+                scope.specifiescodesen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'tarkentaaKoodistoa', 'EN');
+
+                scope.totakenoticeoffi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'huomioitavaKoodisto', 'FI');
+                scope.totakenoticeofsv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'huomioitavaKoodisto', 'SV');
+                scope.totakenoticeofen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'huomioitavaKoodisto', 'EN');
+
+                scope.validitylevelfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'sitovuustaso', 'FI');
+                scope.validitylevelsv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'sitovuustaso', 'SV');
+                scope.validitylevelen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'sitovuustaso', 'EN');
+
+
 
                 OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result) {
                     if (result.nimi['fi']) {
@@ -106,6 +145,10 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     $scope.codesUri = $routeParams.codesUri;
     CodesEditorModel.init($scope,$scope.codesUri);
 
+    $scope.closeAlert = function(index) {
+        $scope.model.alerts.splice(index, 1);
+    };
+
     $scope.cancel = function() {
         $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.model.codes.latestKoodistoVersio.versio);
     };
@@ -127,27 +170,56 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
             metadata : [{
                 kieli: 'FI',
                 nimi: $scope.form.namefi.$viewValue,
-                kuvaus: $scope.form.descriptionfi.$viewValue
+                kuvaus: $scope.form.descriptionfi.$viewValue,
+                kayttoohje: $scope.form.instructionsfi.$viewValue,
+                kohdealue: $scope.form.targetareafi.$viewValue,
+                kohdealueenOsaAlue: $scope.form.targetareapartfi.$viewValue,
+                kasite: $scope.form.conceptfi.$viewValue,
+                toimintaymparisto: $scope.form.operationalenvironmentfi.$viewValue,
+                koodistonLahde: $scope.form.codessourcefi.$viewValue,
+                tarkentaaKoodistoa: $scope.form.specifiescodesfi.$viewValue,
+                huomioitavaKoodisto: $scope.form.totakenoticeoffi.$viewValue,
+                sitovuustaso: $scope.form.validitylevelfi.$viewValue
             }]
         };
         if ($scope.form.namesv && $scope.form.namesv.$viewValue) {
             codes.metadata.push({
                 kieli: 'SV',
                 nimi: $scope.form.namesv.$viewValue,
-                kuvaus: $scope.form.descriptionsv.$viewValue
+                kuvaus: $scope.form.descriptionsv.$viewValue,
+                kayttoohje: $scope.form.instructionssv.$viewValue,
+                kohdealue: $scope.form.targetareasv.$viewValue,
+                kohdealueenOsaAlue: $scope.form.targetareapartsv.$viewValue,
+                kasite: $scope.form.conceptsv.$viewValue,
+                toimintaymparisto: $scope.form.operationalenvironmentsv.$viewValue,
+                koodistonLahde: $scope.form.codessourcesv.$viewValue,
+                tarkentaaKoodistoa: $scope.form.specifiescodessv.$viewValue,
+                huomioitavaKoodisto: $scope.form.totakenoticeofsv.$viewValue,
+                sitovuustaso: $scope.form.validitylevelsv.$viewValue
             });
         }
         if ($scope.form.nameen && $scope.form.nameen.$viewValue) {
             codes.metadata.push({
                 kieli: 'EN',
                 nimi: $scope.form.nameen.$viewValue,
-                kuvaus: $scope.form.descriptionen.$viewValue
+                kuvaus: $scope.form.descriptionen.$viewValue,
+                kayttoohje: $scope.form.instructionsen.$viewValue,
+                kohdealue: $scope.form.targetareaen.$viewValue,
+                kohdealueenOsaAlue: $scope.form.targetareaparten.$viewValue,
+                kasite: $scope.form.concepten.$viewValue,
+                toimintaymparisto: $scope.form.operationalenvironmenten.$viewValue,
+                koodistonLahde: $scope.form.codessourceen.$viewValue,
+                tarkentaaKoodistoa: $scope.form.specifiescodesen.$viewValue,
+                huomioitavaKoodisto: $scope.form.totakenoticeofen.$viewValue,
+                sitovuustaso: $scope.form.validitylevelen.$viewValue
             });
         }
-
         UpdateCodes.put({}, codes, function(result) {
             Treemodel.refresh();
             $location.path("/koodisto/"+result.koodistoUri+"/"+result.versio);
+        }, function(error) {
+            var alert = { type: 'danger', msg: 'Koodiston muokkaus ep\u00E4onnistui.' }
+            $scope.model.alerts.push(alert);
         });
     };
 
@@ -158,6 +230,33 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         } else if (name === 'description' && !$scope.samedescription) {
             $scope.descriptionsv = $scope.form.descriptionfi.$viewValue;
             $scope.descriptionen = $scope.form.descriptionfi.$viewValue;
+        } else if (name === 'instructions' && !$scope.sameinstructions) {
+            $scope.instructionssv = $scope.form.instructionsfi.$viewValue;
+            $scope.instructionsen = $scope.form.instructionsfi.$viewValue;
+        } else if (name === 'targetarea' && !$scope.sametargetarea) {
+            $scope.targetareasv = $scope.form.targetareafi.$viewValue;
+            $scope.targetareaen = $scope.form.targetareafi.$viewValue;
+        } else if (name === 'targetareapart' && !$scope.sametargetareapart) {
+            $scope.targetareapartsv = $scope.form.targetareapartfi.$viewValue;
+            $scope.targetareaparten = $scope.form.targetareapartfi.$viewValue;
+        } else if (name === 'concept' && !$scope.sameconcept) {
+            $scope.conceptsv = $scope.form.conceptfi.$viewValue;
+            $scope.concepten = $scope.form.conceptfi.$viewValue;
+        } else if (name === 'operationalenvironment' && !$scope.sameoperationalenvironment) {
+            $scope.operationalenvironmentsv = $scope.form.operationalenvironmentfi.$viewValue;
+            $scope.operationalenvironmenten = $scope.form.operationalenvironmentfi.$viewValue;
+        } else if (name === 'codessource' && !$scope.samecodessource) {
+            $scope.codessourcesv = $scope.form.codessourcefi.$viewValue;
+            $scope.codessourceen = $scope.form.codessourcefi.$viewValue;
+        } else if (name === 'specifiescodes' && !$scope.samespecifiescodes) {
+            $scope.specifiescodessv = $scope.form.specifiescodesfi.$viewValue;
+            $scope.specifiescodesen = $scope.form.specifiescodesfi.$viewValue;
+        } else if (name === 'totakenoticeof' && !$scope.sametotakenoticeof) {
+            $scope.totakenoticeofsv = $scope.form.totakenoticeoffi.$viewValue;
+            $scope.totakenoticeofen = $scope.form.totakenoticeoffi.$viewValue;
+        } else if (name === 'validitylevel' && !$scope.samevaliditylevel) {
+            $scope.validitylevelsv = $scope.form.validitylevelfi.$viewValue;
+            $scope.validitylevelen = $scope.form.validitylevelfi.$viewValue;
         }
     };
 

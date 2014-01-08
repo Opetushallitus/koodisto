@@ -105,7 +105,214 @@
 
 
             <div class="form-row-content width-100">
-                <a href="#">{{'codes.createpage.showextra' | i18n}}</a>
+                <accordion close-others="false">
+                    <accordion-group is-open="isopen" class="">
+                        <accordion-heading>
+                            <i class="pull-left" ng-class="{'icon-chevron-down': isopen, 'icon-chevron-right': !isopen}"></i> {{'codes.createpage.showextra' | i18n}}
+                        </accordion-heading>
+                        <div class="form-row-content width-60 align-center">
+                            <label for="instructions_fi" class="form-row-label">{{'codes.createpage.instructions' | i18n}}</label>
+                            <input id="same_instructions" type="checkbox" ng-model="sameinstructions" ng-click="setSameValue('instructions')"
+                                    />
+                            <label for="same_instructions">{{'codes.sameinalllanguages' | i18n}}</label>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="instructions_fi" class="form-row-label">&nbsp;</label>
+                            <textarea id="instructions_fi" maxlength="350" class="width-30" name="instructionsfi" ng-model="instructionsfi"
+                                      placeholder="{{'codes.finnish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="instructions_sv" class="form-row-label">&nbsp;</label>
+                            <textarea id="instructions_sv" maxlength="350" class="width-30" name="instructionssv" ng-model="instructionssv"
+                                      placeholder="{{'codes.swedish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="instructions_en" class="form-row-label">&nbsp;</label>
+                            <textarea id="instructions_en" maxlength="350" class="width-30" name="instructionsen" ng-model="instructionsen"
+                                      placeholder="{{'codes.english' | i18n}}"/>
+                        </div>
+
+
+                        <div class="form-row-content width-60 align-center">
+                            <label for="targetarea_fi" class="form-row-label">{{'codes.createpage.targetarea' | i18n}}</label>
+                            <input id="same_targetarea" type="checkbox" ng-model="sametargetarea"
+                                   ng-click="setSameValue('targetarea')" />
+                            <label for="same_targetarea">{{'codes.sameinalllanguages' | i18n}}</label>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="targetarea_fi" class="form-row-label">&nbsp;</label>
+                            <input id="targetarea_fi" type="text" maxlength="50" class="width-30" name="targetareafi" ng-model="targetareafi"
+                                   placeholder="{{'codes.finnish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="targetarea_sv" class="form-row-label">&nbsp;</label>
+                            <input id="targetarea_sv" type="text" maxlength="50" class="width-30" name="targetareasv" ng-model="targetareasv"
+                                   placeholder="{{'codes.swedish' | i18n}}" />
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="targetarea_en" class="form-row-label">&nbsp;</label>
+                            <input id="targetarea_en" type="text" maxlength="50" class="width-30" name="targetareaen" ng-model="targetareaen"
+                                   placeholder="{{'codes.english' | i18n}}"/>
+                        </div>
+
+
+                        <div class="form-row-content width-60 align-center">
+                            <label for="targetareapart_fi" class="form-row-label">{{'codes.createpage.targetareapart' | i18n}}</label>
+                            <input id="same_targetareapart" type="checkbox" ng-model="sametargetareapart"
+                                   ng-click="setSameValue('targetareapart')"/>
+                            <label for="same_targetareapart">{{'codes.sameinalllanguages' | i18n}}</label>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="targetareapart_fi" class="form-row-label">&nbsp;</label>
+                            <input id="targetareapart_fi" type="text" maxlength="50" class="width-30" name="targetareapartfi" ng-model="targetareapartfi"
+                                   placeholder="{{'codes.finnish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="targetareapart_sv" class="form-row-label">&nbsp;</label>
+                            <input id="targetareapart_sv" type="text" maxlength="50" class="width-30" name="targetareapartsv" ng-model="targetareapartsv"
+                                   placeholder="{{'codes.swedish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="targetareapart_en" class="form-row-label">&nbsp;</label>
+                            <input id="targetareapart_en" type="text" maxlength="50" class="width-30" name="targetareaparten" ng-model="targetareaparten"
+                                   placeholder="{{'codes.english' | i18n}}"/>
+                        </div>
+
+
+                        <div class="form-row-content width-60 align-center">
+                            <label for="concept_fi" class="form-row-label">{{'codes.createpage.concept' | i18n}}</label>
+                            <input id="same_concept" type="checkbox" ng-model="sameconcept"
+                                   ng-click="setSameValue('concept')"/>
+                            <label for="same_concept">{{'codes.sameinalllanguages' | i18n}}</label>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="concept_fi" class="form-row-label">&nbsp;</label>
+                            <input id="concept_fi" type="text" maxlength="50" class="width-30" name="conceptfi" ng-model="conceptfi"
+                                   placeholder="{{'codes.finnish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="concept_sv" class="form-row-label">&nbsp;</label>
+                            <input id="concept_sv" type="text" maxlength="50" class="width-30" name="conceptsv" ng-model="conceptsv"
+                                   placeholder="{{'codes.swedish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="concept_en" class="form-row-label">&nbsp;</label>
+                            <input id="concept_en" type="text" maxlength="50" class="width-30" name="concepten" ng-model="concepten"
+                                   placeholder="{{'codes.english' | i18n}}"/>
+                        </div>
+
+                        <div class="form-row-content width-60 align-center">
+                            <label for="operationalenvironment_fi" class="form-row-label">{{'codes.createpage.operationalenvironment' | i18n}}</label>
+                            <input id="same_operationalenvironment" type="checkbox" ng-model="sameoperationalenvironment"
+                                   ng-click="setSameValue('operationalenvironment')"/>
+                            <label for="same_operationalenvironment">{{'codes.sameinalllanguages' | i18n}}</label>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="operationalenvironment_fi" class="form-row-label">&nbsp;</label>
+                            <input id="operationalenvironment_fi" type="text" maxlength="50" class="width-30" name="operationalenvironmentfi" ng-model="operationalenvironmentfi"
+                                   placeholder="{{'codes.finnish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="operationalenvironment_sv" class="form-row-label">&nbsp;</label>
+                            <input id="operationalenvironment_sv" type="text" maxlength="50" class="width-30" name="operationalenvironmentsv" ng-model="operationalenvironmentsv"
+                                   placeholder="{{'codes.swedish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="operationalenvironment_en" class="form-row-label">&nbsp;</label>
+                            <input id="operationalenvironment_en" type="text" maxlength="50" class="width-30" name="operationalenvironmenten" ng-model="operationalenvironmenten"
+                                   placeholder="{{'codes.english' | i18n}}"/>
+                        </div>
+
+                        <div class="form-row-content width-60 align-center">
+                            <label for="codessource_fi" class="form-row-label">{{'codes.createpage.codessource' | i18n}}</label>
+                            <input id="same_codessource" type="checkbox" ng-model="samecodessource"
+                                   ng-click="setSameValue('codessource')"/>
+                            <label for="same_codessource">{{'codes.sameinalllanguages' | i18n}}</label>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="codessource_fi" class="form-row-label">&nbsp;</label>
+                            <input id="codessource_fi" type="text" maxlength="50" class="width-30" name="codessourcefi" ng-model="codessourcefi"
+                                   placeholder="{{'codes.finnish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="codessource_sv" class="form-row-label">&nbsp;</label>
+                            <input id="codessource_sv" type="text" maxlength="50" class="width-30" name="codessourcesv" ng-model="codessourcesv"
+                                   placeholder="{{'codes.swedish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="codessource_en" class="form-row-label">&nbsp;</label>
+                            <input id="codessource_en" type="text" maxlength="50" class="width-30" name="codessourceen" ng-model="codessourceen"
+                                   placeholder="{{'codes.english' | i18n}}"/>
+                        </div>
+
+                        <div class="form-row-content width-60 align-center">
+                            <label for="specifiescodes_fi" class="form-row-label">{{'codes.createpage.specifiescodes' | i18n}}</label>
+                            <input id="same_specifiescodes" type="checkbox" ng-model="samespecifiescodes"
+                                   ng-click="setSameValue('specifiescodes')"/>
+                            <label for="same_specifiescodes">{{'codes.sameinalllanguages' | i18n}}</label>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="specifiescodes_fi" class="form-row-label">&nbsp;</label>
+                            <input id="specifiescodes_fi" type="text" maxlength="50" class="width-30" name="specifiescodesfi" ng-model="specifiescodesfi"
+                                   placeholder="{{'codes.finnish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="specifiescodes_sv" class="form-row-label">&nbsp;</label>
+                            <input id="specifiescodes_sv" type="text" maxlength="50" class="width-30" name="specifiescodessv" ng-model="specifiescodessv"
+                                   placeholder="{{'codes.swedish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="specifiescodes_en" class="form-row-label">&nbsp;</label>
+                            <input id="specifiescodes_en" type="text" maxlength="50" class="width-30" name="specifiescodesen" ng-model="specifiescodesen"
+                                   placeholder="{{'codes.english' | i18n}}"/>
+                        </div>
+
+                        <div class="form-row-content width-60 align-center">
+                            <label for="totakenoticeof_fi" class="form-row-label">{{'codes.createpage.totakenoticeof' | i18n}}</label>
+                            <input id="same_totakenoticeof" type="checkbox" ng-model="sametotakenoticeof"
+                                   ng-click="setSameValue('totakenoticeof')"/>
+                            <label for="same_totakenoticeof">{{'codes.sameinalllanguages' | i18n}}</label>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="totakenoticeof_fi" class="form-row-label">&nbsp;</label>
+                            <input id="totakenoticeof_fi" type="text" maxlength="50" class="width-30" name="totakenoticeoffi" ng-model="totakenoticeoffi"
+                                   placeholder="{{'codes.finnish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="totakenoticeof_sv" class="form-row-label">&nbsp;</label>
+                            <input id="totakenoticeof_sv" type="text" maxlength="50" class="width-30" name="totakenoticeofsv" ng-model="totakenoticeofsv"
+                                   placeholder="{{'codes.swedish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="totakenoticeof_en" class="form-row-label">&nbsp;</label>
+                            <input id="totakenoticeof_en" type="text" maxlength="50" class="width-30" name="totakenoticeofen" ng-model="totakenoticeofen"
+                                   placeholder="{{'codes.english' | i18n}}"/>
+                        </div>
+
+                        <div class="form-row-content width-60 align-center">
+                            <label for="validitylevel_fi" class="form-row-label">{{'codes.createpage.validitylevel' | i18n}}</label>
+                            <input id="same_validitylevel" type="checkbox" ng-model="samevaliditylevel"
+                                   ng-click="setSameValue('validitylevel')"/>
+                            <label for="same_validitylevel">{{'codes.sameinalllanguages' | i18n}}</label>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="validitylevel_fi" class="form-row-label">&nbsp;</label>
+                            <input id="validitylevel_fi" type="text" maxlength="50" class="width-30" name="validitylevelfi" ng-model="validitylevelfi"
+                                   placeholder="{{'codes.finnish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="validitylevel_sv" class="form-row-label">&nbsp;</label>
+                            <input id="validitylevel_sv" type="text" maxlength="50" class="width-30" name="validitylevelsv" ng-model="validitylevelsv"
+                                   placeholder="{{'codes.swedish' | i18n}}"/>
+                        </div>
+                        <div class="form-row-content width-60">
+                            <label for="validitylevel_en" class="form-row-label">&nbsp;</label>
+                            <input id="validitylevel_en" type="text" maxlength="50" class="width-30" name="validitylevelen" ng-model="validitylevelen"
+                                   placeholder="{{'codes.english' | i18n}}"/>
+                        </div>
+
+                    </accordion-group>
+                </accordion>
             </div>
         </div>
 
