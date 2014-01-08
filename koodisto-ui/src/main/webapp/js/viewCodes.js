@@ -4,11 +4,13 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
     var model;
     model = new function() {
         codeElements = [];
+        this.alerts = [];
+
         this.init = function(codesUri, codesVersion) {
             model.codesUri = codesUri;
             model.codesVersion = codesVersion;
             model.showversion = null;
-
+            this.alerts = [];
             model.format = "JHS_XML";
             model.encoding = "UTF-8";
 
@@ -95,6 +97,10 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
     $scope.identity = angular.identity;
     ViewCodesModel.init($scope.codesUri,$scope.codesVersion);
 
+    $scope.closeAlert = function(index) {
+        $scope.model.alerts.splice(index, 1);
+    };
+
     $scope.cancel = function() {
         $location.path("/");
     };
@@ -135,6 +141,9 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
                 event.initEvent("click", true, false);
                 link.dispatchEvent(event);
             }
+        }, function(error) {
+            var alert = { type: 'danger', msg: 'Koodiston tuonti ep\u00E4onnistui.' }
+            $scope.model.alerts.push(alert);
         });
         $scope.model.downloadModalInstance.close();
     };
@@ -183,10 +192,13 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
     }
 
     function uploadFailed(evt) {
-        alert("There was an error attempting to upload the file.")
+        var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' }
+        $scope.model.alerts.push(alert);
     }
 
     function uploadCanceled(evt) {
-        alert("The upload has been canceled by the user or the browser dropped the connection.")
+        var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' }
+        $scope.model.alerts.push(alert);
+
     }
 }

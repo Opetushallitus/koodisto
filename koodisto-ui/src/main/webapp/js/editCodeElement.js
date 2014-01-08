@@ -12,12 +12,14 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
         this.withinCodeElements = [];
         this.includesCodeElements = [];
         this.levelsWithCodeElements = [];
+        this.alerts = [];
 
         this.init = function(scope, codeElementUri, codeElementVersion) {
             this.allCodes = [];
             this.withinCodeElements = [];
             this.includesCodeElements = [];
             this.levelsWithCodeElements = [];
+            this.alerts = [];
             model.getAllCodes();
             model.getCodeElement(scope, codeElementUri, codeElementVersion);
         };
@@ -38,6 +40,32 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                 scope.descriptionfi = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
                 scope.descriptionsv = model.languageSpecificValue(result.metadata, 'kuvaus', 'SV');
                 scope.descriptionen = model.languageSpecificValue(result.metadata, 'kuvaus', 'EN');
+
+
+                scope.instructionsfi = model.languageSpecificValue(result.metadata, 'kayttoohje', 'FI');
+                scope.instructionssv = model.languageSpecificValue(result.metadata, 'kayttoohje', 'SV');
+                scope.instructionsen = model.languageSpecificValue(result.metadata, 'kayttoohje', 'EN');
+
+                scope.conceptfi = model.languageSpecificValue(result.metadata, 'kasite', 'FI');
+                scope.conceptsv = model.languageSpecificValue(result.metadata, 'kasite', 'SV');
+                scope.concepten = model.languageSpecificValue(result.metadata, 'kasite', 'EN');
+
+                scope.totakenoticeoffi = model.languageSpecificValue(result.metadata, 'huomioitavaKoodi', 'FI');
+                scope.totakenoticeofsv = model.languageSpecificValue(result.metadata, 'huomioitavaKoodi', 'SV');
+                scope.totakenoticeofen = model.languageSpecificValue(result.metadata, 'huomioitavaKoodi', 'EN');
+
+                scope.containssignificancefi = model.languageSpecificValue(result.metadata, 'sisaltaaMerkityksen', 'FI');
+                scope.containssignificancesv = model.languageSpecificValue(result.metadata, 'sisaltaaMerkityksen', 'SV');
+                scope.containssignificanceen = model.languageSpecificValue(result.metadata, 'sisaltaaMerkityksen', 'EN');
+
+                scope.doesnotcontainsignificancefi = model.languageSpecificValue(result.metadata, 'eiSisallaMerkitysta', 'FI');
+                scope.doesnotcontainsignificancesv = model.languageSpecificValue(result.metadata, 'eiSisallaMerkitysta', 'SV');
+                scope.doesnotcontainsignificanceen = model.languageSpecificValue(result.metadata, 'eiSisallaMerkitysta', 'EN');
+
+                scope.containscodesfi = model.languageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'FI');
+                scope.containscodessv = model.languageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'SV');
+                scope.containscodesen = model.languageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'EN');
+
 
                 model.codeElement.withinCodeElements.forEach(function(codelement){
                     model.getLatestCodeElementVersionsByCodeElementUri(codelement,model.withinCodeElements);
@@ -105,18 +133,6 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             model.codesShown = [];
             model.allCodes.forEach(function(child){
                 child.children = [];
-                /*if (child.codeelementchildren) {
-                    child.codeelementchildren.forEach(function(codeelementchild){
-                        if (codeelementchild.metadata[0].lyhytNimi.indexOf(searchStr) !== -1) {
-                            child.children.push(codeelementchild);
-                        }
-                    });
-
-                    if (child.children.length > 0) {
-                        model.codesShown.push(child);
-                    }
-
-                }*/
 
                 if (child.children.length === 0 && child.metadata[0].nimi.indexOf(searchStr) !== -1) {
                     model.codesShown.push(child);
@@ -157,6 +173,10 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
     $scope.codeElementVersion = $routeParams.codeElementVersion;
     CodeElementEditorModel.init($scope, $scope.codeElementUri, $scope.codeElementVersion);
 
+    $scope.closeAlert = function(index) {
+        $scope.model.alerts.splice(index, 1);
+    };
+
     $scope.cancel = function() {
         $location.path("/koodi/"+$scope.codeElementUri+"/"+$scope.codeElementVersion);
     };
@@ -179,7 +199,13 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
                 kieli: 'FI',
                 nimi: $scope.form.namefi.$viewValue,
                 kuvaus: $scope.form.descriptionfi.$viewValue,
-                lyhytNimi: $scope.form.shortnamefi.$viewValue
+                lyhytNimi: $scope.form.shortnamefi.$viewValue,
+                kayttoohje: $scope.form.instructionsfi.$viewValue,
+                kasite: $scope.form.conceptfi.$viewValue,
+                huomioitavaKoodi: $scope.form.totakenoticeoffi.$viewValue,
+                sisaltaaMerkityksen: $scope.form.containssignificancefi.$viewValue,
+                eiSisallaMerkitysta: $scope.form.doesnotcontainsignificancefi.$viewValue,
+                sisaltaaKoodiston: $scope.form.containscodesfi.$viewValue
             }]
         };
         if ($scope.form.namesv && $scope.form.namesv.$viewValue) {
@@ -187,7 +213,13 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
                 kieli: 'SV',
                 nimi: $scope.form.namesv.$viewValue,
                 kuvaus: $scope.form.descriptionsv.$viewValue,
-                lyhytNimi: $scope.form.shortnamesv.$viewValue
+                lyhytNimi: $scope.form.shortnamesv.$viewValue,
+                kayttoohje: $scope.form.instructionssv.$viewValue,
+                kasite: $scope.form.conceptsv.$viewValue,
+                huomioitavaKoodi: $scope.form.totakenoticeofsv.$viewValue,
+                sisaltaaMerkityksen: $scope.form.containssignificancesv.$viewValue,
+                eiSisallaMerkitysta: $scope.form.doesnotcontainsignificancesv.$viewValue,
+                sisaltaaKoodiston: $scope.form.containscodessv.$viewValue
             });
         }
         if ($scope.form.nameen && $scope.form.nameen.$viewValue) {
@@ -195,11 +227,20 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
                 kieli: 'EN',
                 nimi: $scope.form.nameen.$viewValue,
                 kuvaus: $scope.form.descriptionen.$viewValue,
-                lyhytNimi: $scope.form.shortnameen.$viewValue
+                lyhytNimi: $scope.form.shortnameen.$viewValue,
+                kayttoohje: $scope.form.instructionsen.$viewValue,
+                kasite: $scope.form.concepten.$viewValue,
+                huomioitavaKoodi: $scope.form.totakenoticeofen.$viewValue,
+                sisaltaaMerkityksen: $scope.form.containssignificanceen.$viewValue,
+                eiSisallaMerkitysta: $scope.form.doesnotcontainsignificanceen.$viewValue,
+                sisaltaaKoodiston: $scope.form.containscodesen.$viewValue
             });
         }
         UpdateCodeElement.put({}, codeelement, function(result) {
             $location.path("/koodi/"+result.koodiUri+"/"+result.versio);
+        }, function(error) {
+            var alert = { type: 'danger', msg: 'Koodin p\u00E4ivitys ep\u00E4onnistui.' }
+            $scope.model.alerts.push(alert);
         });
     };
 
@@ -213,6 +254,24 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
         } else if (name === 'shortname' && !$scope.sameshortname) {
             $scope.shortnamesv = $scope.shortnamefi;
             $scope.shortnameen = $scope.shortnamefi;
+        } else if (name === 'instructions' && !$scope.sameinstructions) {
+            $scope.instructionssv = $scope.form.instructionsfi.$viewValue;
+            $scope.instructionsen = $scope.form.instructionsfi.$viewValue;
+        } else if (name === 'concept' && !$scope.sameconcept) {
+            $scope.conceptsv = $scope.form.conceptfi.$viewValue;
+            $scope.concepten = $scope.form.conceptfi.$viewValue;
+        } else if (name === 'totakenoticeof' && !$scope.sametotakenoticeof) {
+            $scope.totakenoticeofsv = $scope.form.totakenoticeoffi.$viewValue;
+            $scope.totakenoticeofen = $scope.form.totakenoticeoffi.$viewValue;
+        } else if (name === 'containssignificance' && !$scope.samecontainssignificance) {
+            $scope.containssignificancesv = $scope.form.containssignificancefi.$viewValue;
+            $scope.containssignificanceen = $scope.form.containssignificancefi.$viewValue;
+        } else if (name === 'doesnotcontainsignificance' && !$scope.samedoesnotcontainsignificance) {
+            $scope.doesnotcontainsignificancesv = $scope.form.doesnotcontainsignificancefi.$viewValue;
+            $scope.doesnotcontainsignificanceen = $scope.form.doesnotcontainsignificancefi.$viewValue;
+        } else if (name === 'containscodes' && !$scope.samecontainscodes) {
+            $scope.containscodessv = $scope.form.containscodesfi.$viewValue;
+            $scope.containscodesen = $scope.form.containscodesfi.$viewValue;
         }
     };
 
@@ -293,6 +352,9 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
             RemoveRelationCodeElement.put({codeElementUri: $scope.model.withinRelationToRemove.uri,
                 codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "SISALTYY"},function(result) {
 
+            }, function(error) {
+                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
 
@@ -301,12 +363,18 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
             RemoveRelationCodeElement.put({codeElementUri: $scope.model.codeElement.koodiUri,
                 codeElementUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
 
+            }, function(error) {
+                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
             $scope.model.levelsWithCodeElements.splice($scope.model.levelsWithCodeElements.indexOf($scope.model.levelsRelationToRemove.uri), 1);
 
             RemoveRelationCodeElement.put({codeElementUri: $scope.model.levelsRelationToRemove.uri,
                 codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "RINNASTEINEN"},function(result) {
+            }, function(error) {
+                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                $scope.model.alerts.push(alert);
             });
         }
         $scope.model.levelsRelationToRemove = null;

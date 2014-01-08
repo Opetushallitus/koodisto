@@ -7,6 +7,7 @@ app.factory('CodesCreatorModel', function($location, RootCodes, Organizations) {
         this.levelsWithCodes = [];
         this.allCodes = [];
         this.onlyCodes = [];
+        this.alerts = [];
 
         this.init = function() {
             this.withinCodes = [];
@@ -14,6 +15,7 @@ app.factory('CodesCreatorModel', function($location, RootCodes, Organizations) {
             this.levelsWithCodes = [];
             this.allCodes = [];
             this.onlyCodes = [];
+            this.alerts = [];
             model.getCodes();
         };
 
@@ -69,6 +71,10 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
     $scope.createmodel = CodesCreatorModel;
     CodesCreatorModel.init();
 
+    $scope.closeAlert = function(index) {
+        $scope.model.alerts.splice(index, 1);
+    };
+
     $scope.cancel = function() {
         $location.path("/");
     };
@@ -107,6 +113,9 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
         NewCodes.put({}, codes, function(result) {
             Treemodel.refresh();
             $location.path("/koodisto/"+result.koodistoUri+"/"+result.versio);
+        }, function(error) {
+            var alert = { type: 'danger', msg: 'Koodiston luonti ep\u00E4onnistui.' }
+            $scope.model.alerts.push(alert);
         });
     };
 

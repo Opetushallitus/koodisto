@@ -16,6 +16,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
             this.includesCodeElements = [];
             this.levelsWithCodeElements = [];
             this.deleteState = "disabled";
+            this.alerts = [];
 
             model.getCodeElement(codeElementUri, codeElementVersion);
         };
@@ -119,7 +120,7 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
             codeElementVersion: $scope.codeElementVersion},function(success) {
             $location.path("/koodisto/"+$scope.model.codeElement.koodisto.koodistoUri+"/"+$scope.model.codeElement.koodisto.koodistoVersios[0]);
         }, function(error) {
-            var alert = { type: 'danger', msg: 'Koodin poisto ep\u00E4onnistui. Koodin rinnastuu/sis\u00E4lt\u00E4\u00E4/sis\u00E4ltyy-suhteita ei ole poistettu.' }
+            var alert = { type: 'danger', msg: 'Koodin poisto ep\u00E4onnistui.' }
             $scope.model.alerts.push(alert);
         });
 
@@ -136,7 +137,9 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
 
             RemoveRelationCodeElement.put({codeElementUri: $scope.model.withinRelationToRemove.uri,
                 codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "SISALTYY"},function(result) {
-
+            }, function(error) {
+                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
 
@@ -145,12 +148,18 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
             RemoveRelationCodeElement.put({codeElementUri: $scope.model.codeElement.koodiUri,
                 codeElementUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
 
+            }, function(error) {
+                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
             $scope.model.levelsWithCodeElements.splice($scope.model.levelsWithCodeElements.indexOf($scope.model.levelsRelationToRemove.uri), 1);
 
             RemoveRelationCodeElement.put({codeElementUri: $scope.model.levelsRelationToRemove.uri,
                 codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "RINNASTEINEN"},function(result) {
+            }, function(error) {
+                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                $scope.model.alerts.push(alert);
             });
         }
         $scope.model.levelsRelationToRemove = null;

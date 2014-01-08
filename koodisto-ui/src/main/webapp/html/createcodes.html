@@ -115,5 +115,9 @@
             <button type="button" class="float-right margin-right-1 button small" ng-click="cancel()">{{'codes.cancel' | i18n}}
             </button>
         </div>
+
+        <div class="form-row width-40">
+            <alert ng-repeat="alert in model.alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+        </div>
     </form>
 </div>
