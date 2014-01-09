@@ -247,7 +247,7 @@ public class CodeElementResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Simple.class})
-    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @Secured({KoodistoRole.CRUD})
     @Transactional
     public Response delete(@PathParam("codeElementUri") String codeElementUri, @PathParam("codeElementVersion") int codeElementVersion) {
         try {

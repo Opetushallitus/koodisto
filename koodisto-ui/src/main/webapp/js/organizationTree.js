@@ -1,5 +1,5 @@
 "use strict";
-app.factory('OrganisaatioTreeModel', function(Organizations,OrganizationByOid) {
+app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, OrganizationByOid) {
 
     return (function() {
         var instance = {};

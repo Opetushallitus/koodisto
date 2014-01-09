@@ -202,6 +202,7 @@ public class CodesResource {
 
     @POST
     @Path("upload/{codesUri}")
+    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFile(@FormDataParam("uploadedFile") InputStream fileInputStream,
                                @FormDataParam("uploadedFile") com.sun.jersey.core.header.FormDataContentDisposition contentDispositionHeader,

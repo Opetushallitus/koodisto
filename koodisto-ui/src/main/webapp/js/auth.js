@@ -77,18 +77,22 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
     // OPH check -- voidaan ohittaa organisaatioiden haku
     var ophRead = function(service,model) {
         return (model.myroles.indexOf(service + READ + "_" + OPH_ORG) > -1
-              || model.myroles.indexOf(service + UPDATE + "_" + OPH_ORG) > -1
-              || model.myroles.indexOf(service + CRUD + "_" + OPH_ORG) > -1);
+            || model.myroles.indexOf(service + UPDATE + "_" + OPH_ORG) > -1
+            || model.myroles.indexOf(service + CRUD + "_" + OPH_ORG) > -1);
 
     }
 
     var ophUpdate = function(service,model) {
         return (model.myroles.indexOf(service + UPDATE + "_" + OPH_ORG) > -1
-              || model.myroles.indexOf(service + CRUD + "_" + OPH_ORG) > -1);
+            || model.myroles.indexOf(service + CRUD + "_" + OPH_ORG) > -1);
     }
 
     var ophCrud = function(service,model) {
         return (model.myroles.indexOf(service + CRUD + "_" + OPH_ORG) > -1);
+    }
+
+    var crudAny = function(service,model) {
+        return (model.myroles.indexOf(service + CRUD + "_") > -1);
     }
 
     var ophAccessCheck = function(service, accessFunction) {
@@ -105,56 +109,61 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
         return deferred.promise;
     }
 
-  return {
-      readOrg : function(service, orgOid) {
-        return accessCheck(service, orgOid, readAccess);
-      },
+    return {
+        readOrg : function(service, orgOid) {
+            return accessCheck(service, orgOid, readAccess);
+        },
 
-      updateOrg : function(service, orgOid) {
-        return accessCheck(service, orgOid, updateAccess);
-      },
+        updateOrg : function(service, orgOid) {
+            return accessCheck(service, orgOid, updateAccess);
+        },
 
-      crudOrg : function(service, orgOid) {
-        return accessCheck(service, orgOid, crudAccess);
-      },
+        crudOrg : function(service, orgOid) {
+            return accessCheck(service, orgOid, crudAccess);
+        },
 
-      readOph : function(service) {
-        return ophAccessCheck(service, ophRead);
-      },
+        readOph : function(service) {
+            return ophAccessCheck(service, ophRead);
+        },
 
-      updateOph : function(service) {
-        return ophAccessCheck(service, ophUpdate);
-      },
+        updateOph : function(service) {
+            return ophAccessCheck(service, ophUpdate);
+        },
 
-      crudOph : function(service) {
-        return ophAccessCheck(service, ophCrud);
-      },
+        crudOph : function(service) {
+            return ophAccessCheck(service, ophCrud);
+        },
 
-      getOrganizations : function(service) {
-        var deferred = $q.defer();
+        crudAny : function(service) {
+            return ophAccessCheck(service, crudAny);
+        },
 
-        MyRolesModel.then(function(model){
-            var organizations = [];
+        getOrganizations : function(service) {
+            var deferred = $q.defer();
 
-            model.myroles.forEach(function(role) {
-                var org;
-                if(role.indexOf(service + "_CRUD_") > -1) {
-                    org = role.replace(service + "_CRUD_", '');
-                } else if(role.indexOf(service + "_READ_UPDATE_") > -1) {
-                    org = role.replace(service + "_READ_UPDATE_", '');
-                } else if(role.indexOf(service + "_READ_UPDATE") === -1 && role.indexOf(service + "_READ_") > -1) {
-                    org = role.replace(service + "_READ_", '');
-                }
+            MyRolesModel.then(function(model){
+                var organizations = [];
 
-                if(org && organizations.indexOf(org) === -1) {
-                    organizations.push(org);
-                }
+                model.myroles.forEach(function(role) {
+                    // TODO: refaktor
+                    var org;
+                    if(role.indexOf(service + "_CRUD_") > -1) {
+                        org = role.replace(service + "_CRUD_", '');
+                    } else if(role.indexOf(service + "_READ_UPDATE_") > -1) {
+                        org = role.replace(service + "_READ_UPDATE_", '');
+                    } else if(role.indexOf(service + "_READ_UPDATE") == -1 && role.indexOf(service + "_READ_") > -1) {
+                        org = role.replace(service + "_READ_", '');
+                    }
+
+                    if(org && organizations.indexOf(org) == -1) {
+                        organizations.push(org);
+                    }
+                });
+
+                deferred.resolve(organizations);
             });
+            return deferred.promise;
+        }
 
-            deferred.resolve(organizations);
-        });
-        return deferred.promise;
-      }
-
-  };
+    };
 });
