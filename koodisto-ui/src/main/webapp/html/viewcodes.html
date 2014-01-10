@@ -67,7 +67,7 @@
                 <h3>{{ model.languageSpecificValue( model.codes.metadata , 'nimi', 'FI') }}</h3>
             </div>
             <div class="form-row-content width-30 align-left">
-                <button type="button" class="float-right margin-right-1 button small" ng-click="model.upload()">{{'codes.viewpage.uploadbutton' | i18n}}
+                <button type="button" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="float-right margin-right-1 button small" ng-click="model.upload()">{{'codes.viewpage.uploadbutton' | i18n}}
                 </button>
                 <button type="button" class="float-right margin-right-1 button small" ng-click="model.download()">{{'codes.viewpage.downloadbutton' | i18n}}
                 </button>
@@ -202,9 +202,9 @@
         <div class="form-row navbar-fixed-bottom width-90 padding-bottom-3">
             <button type="button" class="margin-right-1 button small float-right" ng-click="cancel()">{{'codes.back' | i18n}}
             </button>
-            <a href="#/lisaaKoodi/{{ codesUri }}/{{ model.codes.versio }}" class="button small primary float-right margin-right-3">
+            <a href="#/lisaaKoodi/{{ codesUri }}/{{ model.codes.versio }}" auth="crud" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="button small primary float-right margin-right-3">
                 {{'codes.viewpage.codeelements.create' | i18n}}</a>
-            <a href="#/muokkaaKoodisto/{{ codesUri }}" class="button small primary float-right margin-right-1">
+            <a href="#/muokkaaKoodisto/{{ codesUri }}" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="button small primary float-right margin-right-1">
                 {{'codes.viewpage.editbutton' | i18n}}</a>
         </div>
 

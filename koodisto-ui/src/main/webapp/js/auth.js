@@ -8,7 +8,7 @@ app.factory('MyRolesModel', function ($q, $http) {
 
     var factory = (function() {
         var instance = {};
-        instance.myroles = [];
+        instance.myroles = ['APP_KOODISTO_CRUD_1.2.246.562.10.00000000001'];
 
         $http.get(CAS_URL).success(function(result) {
             instance.myroles = result;
@@ -56,7 +56,7 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
         var deferred = $q.defer();
 
         MyRolesModel.then(function(model){
-            $http.get(ORGANISAATIO_URL_BASE + "organisaatio/" + orgOid + "/parentoids").success(function(result) {
+            $http.get(ORGANIZATION_SERVICE_URL_BASE + "rest/organisaatio/" + orgOid + "/parentoids").success(function(result) {
                 var found = false;
                 result.split("/").forEach(function(org){
                     if(accessFunction(service, org, model)){
@@ -91,8 +91,12 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
         return (model.myroles.indexOf(service + CRUD + "_" + OPH_ORG) > -1);
     }
 
-    var crudAny = function(service,model) {
-        return (model.myroles.indexOf(service + CRUD + "_") > -1);
+    var anyUpdate = function(service,model) {
+        return (new RegExp(model.myroles.join("|")).test(service + UPDATE));
+    }
+
+    var anyCrud = function(service,model) {
+        return (new RegExp(model.myroles.join("|")).test(service + CRUD));
     }
 
     var ophAccessCheck = function(service, accessFunction) {
@@ -135,7 +139,11 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
         },
 
         crudAny : function(service) {
-            return ophAccessCheck(service, crudAny);
+            return ophAccessCheck(service, anyCrud);
+        },
+
+        updateAny : function(service) {
+            return ophAccessCheck(service, anyUpdate);
         },
 
         getOrganizations : function(service) {

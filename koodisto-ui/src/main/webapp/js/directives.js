@@ -3,11 +3,11 @@ app.directive('auth', function($animate, $timeout, AuthService) {
     return {
         link : function($scope, element, attrs) {
 
-            $animate.addClass(element, 'ng-hide');
+            element.addClass('ng-hide');
 
             var success = function() {
                 if(additionalCheck()) {
-                    $animate.removeClass(element, 'ng-hide');
+                    element.removeClass('ng-hide');
                 }
             }
             var additionalCheck = function() {
@@ -34,6 +34,10 @@ app.directive('auth', function($animate, $timeout, AuthService) {
 
                     case "crudAny":
                         AuthService.crudAny(attrs.authService).then(success);
+                        break;
+
+                    case "updateAny":
+                        AuthService.updateAny(attrs.authService).then(success);
                         break;
                 }
             },0);

@@ -139,14 +139,14 @@
                         <td class="align-center">{{codeElement.name}}</td>
                         <td class="align-center">{{codeElement.description}}</td>
                         <td class="align-center">
-                            <span class="removebtn" ng-click="model.removeFromWithinCodeElements(codeElement)"></span>
+                            <span class="removebtn" auth="crud" auth-service="APP_KOODISTO" ng-click="model.removeFromWithinCodeElements(codeElement)"></span>
                         </td>
                     </tr>
 
                     </tbody>
 
                 </table>
-                <a href="#/muokkaaKoodi/{{model.codeElement.koodiUri}}/{{model.codeElement.versio}}" class="float-right margin-right-3 button small primary">
+                <a href="#/muokkaaKoodi/{{model.codeElement.koodiUri}}/{{model.codeElement.versio}}" auth="crud" auth-service="APP_KOODISTO" class="float-right margin-right-3 button small primary">
                     {{'codeelement.viewpage.editrelationsbutton' | i18n}}</a>
             </div>
             <div class="clear"></div>
@@ -180,14 +180,14 @@
                                 <td class="align-center">{{codeElement.name}}</td>
                                 <td class="align-center">{{codeElement.description}}</td>
                                 <td class="align-center">
-                                    <span class="removebtn" ng-click="model.removeFromWithinCodeElements(codeElement)"></span>
+                                    <span class="removebtn" auth="crud" auth-service="APP_KOODISTO" ng-click="model.removeFromWithinCodeElements(codeElement)"></span>
                                 </td>
                             </tr>
 
                             </tbody>
 
                         </table>
-                        <a href="#/muokkaaKoodi/{{model.codeElement.koodiUri}}/{{model.codeElement.versio}}" class="float-right margin-right-3 button small primary">
+                        <a href="#/muokkaaKoodi/{{model.codeElement.koodiUri}}/{{model.codeElement.versio}}" auth="crud" auth-service="APP_KOODISTO" class="float-right margin-right-3 button small primary">
                             {{'codeelement.viewpage.editrelationsbutton' | i18n}}</a>
                     </div>
                     <div class="clear"></div>
@@ -219,14 +219,14 @@
                                 <td class="align-center">{{codeElement.name}}</td>
                                 <td class="align-center">{{codeElement.description}}</td>
                                 <td class="align-center">
-                                    <span class="removebtn" ng-click="model.removeFromWithinCodeElements(codeElement)"></span>
+                                    <span class="removebtn" auth="crud" auth-service="APP_KOODISTO" ng-click="model.removeFromWithinCodeElements(codeElement)"></span>
                                 </td>
                             </tr>
 
                             </tbody>
 
                         </table>
-                        <a href="#/muokkaaKoodi/{{model.codeElement.koodiUri}}/{{model.codeElement.versio}}" class="float-right margin-right-3 button small primary">
+                        <a href="#/muokkaaKoodi/{{model.codeElement.koodiUri}}/{{model.codeElement.versio}}" auth="crud" auth-service="APP_KOODISTO" class="float-right margin-right-3 button small primary">
                             {{'codeelement.viewpage.editrelationsbutton' | i18n}}</a>
                     </div>
                     <div class="clear"></div>
@@ -240,9 +240,9 @@
             <button type="button" class="float-right margin-right-1 button small" ng-click="cancel()">{{'codes.back' | i18n}}
             </button>
             <button type="button" class="float-right margin-right-3 button small primary"
-                    ng-click="model.removeCodeElement()" ng-disabled="model.deleteState">{{'codeelement.viewpage.deletebutton' | i18n}}
+                    ng-click="model.removeCodeElement()" auth="crud" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" ng-disabled="model.deleteState">{{'codeelement.viewpage.deletebutton' | i18n}}
             </button>
-            <a href="#/muokkaaKoodi/{{model.codeElement.koodiUri}}/{{model.codeElement.versio}}" class="float-right margin-right-3 button small primary">
+            <a href="#/muokkaaKoodi/{{model.codeElement.koodiUri}}/{{model.codeElement.versio}}" auth="updateAny" auth-service="APP_KOODISTO" class="float-right margin-right-3 button small primary">
                 {{'codeelement.viewpage.editbutton' | i18n}}</a>
         </div>
 
