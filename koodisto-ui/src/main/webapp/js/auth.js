@@ -14,6 +14,7 @@ app.factory('MyRolesModel', function ($q, $http) {
             instance.myroles = result;
             deferred.resolve(instance);
         });
+
         return instance;
     })();
 
@@ -47,6 +48,24 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
             return true;
         }
     };
+
+    var anyUpdateAccess = function(service,org,model) {
+        model.myroles.forEach(function(role) {
+            if( role.indexOf(service + UPDATE) > -1 ||
+                role.indexOf(service + CRUD) > -1) {
+                return true;
+            }
+        });
+    };
+
+    var anyCrudAccess = function(service,org,model) {
+        model.myroles.forEach(function(role) {
+            if( role.indexOf(service + CRUD) > -1) {
+                return true;
+            }
+        });
+    };
+
 
     var accessCheck = function(service, orgOid, accessFunction) {
         var deferred = $q.defer();
@@ -127,11 +146,11 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
         },
 
         crudAny : function(service) {
-            return accessCheck(service, OPH_ORG, crudAccess);
+            return ophAccessCheck(service, anyCrudAccess);
         },
 
         updateAny : function(service) {
-            return accessCheck(service, OPH_ORG, updateAccess);
+            return ophAccessCheck(service, anyUpdateAccess);
         },
 
         getOrganizations : function(service) {
