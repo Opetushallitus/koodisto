@@ -8,20 +8,16 @@ app.factory('MyRolesModel', function ($q, $http) {
 
     var factory = (function() {
         var instance = {};
-        instance.myroles = ['APP_KOODISTO_CRUD_1.2.246.562.10.00000000001'];
+        instance.myroles = [];
 
         $http.get(CAS_URL).success(function(result) {
             instance.myroles = result;
             deferred.resolve(instance);
         });
-
         return instance;
     })();
 
-
-
     return deferred.promise;
-
 });
 
 
@@ -91,14 +87,6 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
         return (model.myroles.indexOf(service + CRUD + "_" + OPH_ORG) > -1);
     }
 
-    var anyUpdate = function(service,model) {
-        return (new RegExp(model.myroles.join("|")).test(service + UPDATE));
-    }
-
-    var anyCrud = function(service,model) {
-        return (new RegExp(model.myroles.join("|")).test(service + CRUD));
-    }
-
     var ophAccessCheck = function(service, accessFunction) {
         var deferred = $q.defer();
 
@@ -139,11 +127,11 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
         },
 
         crudAny : function(service) {
-            return ophAccessCheck(service, anyCrud);
+            return accessCheck(service, OPH_ORG, crudAccess);
         },
 
         updateAny : function(service) {
-            return ophAccessCheck(service, anyUpdate);
+            return accessCheck(service, OPH_ORG, updateAccess);
         },
 
         getOrganizations : function(service) {

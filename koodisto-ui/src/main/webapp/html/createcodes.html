@@ -318,7 +318,7 @@
 
         <div class="clear"></div>
         <div class="form-row navbar-fixed-bottom width-90 padding-bottom-3">
-            <button ng-disabled="!form.$valid" class="button small primary float-right" type="submit">{{'codes.save' | i18n}}</button>
+            <button ng-disabled="!form.$valid" auth="crud" auth-service="APP_KOODISTO" auth-org="{{organizationOid}}" class="button small primary float-right" type="submit">{{'codes.save' | i18n}}</button>
             <button type="button" class="float-right margin-right-1 button small" ng-click="cancel()">{{'codes.cancel' | i18n}}
             </button>
         </div>

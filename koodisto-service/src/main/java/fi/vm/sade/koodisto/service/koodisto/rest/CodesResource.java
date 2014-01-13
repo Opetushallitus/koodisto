@@ -243,7 +243,7 @@ public class CodesResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @Secured({KoodistoRole.READ,KoodistoRole.UPDATE,KoodistoRole.CRUD})
     @Transactional
     public FileDto download(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion,
                            FileFormatDto fileFormatDto) {

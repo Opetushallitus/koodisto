@@ -165,7 +165,7 @@
 
             <div class="form-row-content width-60">
                 <label for="withincodes" class="form-row-label">{{'codeelement.editpage.withincodeelements' | i18n}}</label><br>
-                <button id="withincodes" type="button" class="button small" ng-model="codeElementSelector" ng-show="!codeElementSelector" ng-click="show('withincodes')">Lisää koodi</button>
+                <button id="withincodes" type="button" auth="crudUpdate" auth-service="APP_KOODISTO" class="button small" ng-model="codeElementSelector" ng-show="!codeElementSelector" ng-click="show('withincodes')">Lisää koodi</button>
 
             </div>
 
@@ -183,7 +183,7 @@
                         <tr ng-repeat="codeElement in model.withinCodeElements | orderBy:'name'">
                             <td class="align-center">{{codeElement.name}}</td>
                             <td class="align-center">
-                                <span class="removebtn" ng-click="model.removeFromWithinCodeElements(codeElement)"></span>
+                                <span class="removebtn" auth="crudUpdate" auth-service="APP_KOODISTO" ng-click="model.removeFromWithinCodeElements(codeElement)"></span>
                             </td>
                         </tr>
 
@@ -198,7 +198,7 @@
             <div class="form-row-content width-60">
                 <label for="includescodes" class="form-row-label">{{'codeelement.editpage.includescodeelements' | i18n}}
                 </label><br>
-                <button id="includescodes" type="button" class="button small" ng-model="codeElementSelector" ng-show="!codeElementSelector" ng-click="show('includescodes')">Lisää koodi</button>
+                <button id="includescodes" type="button" auth="crudUpdate" auth-service="APP_KOODISTO" class="button small" ng-model="codeElementSelector" ng-show="!codeElementSelector" ng-click="show('includescodes')">Lisää koodi</button>
             </div>
             <div class="form-row" ng-show="model.includesCodeElements.length">
                 <div class="form-row-content">
@@ -213,7 +213,7 @@
                         <tr ng-repeat="codeElement in model.includesCodeElements | orderBy:'name'">
                             <td class="align-center">{{codeElement.name}}</td>
                             <td class="align-center">
-                                <span class="removebtn" ng-click="model.removeFromIncludesCodeElements(codeElement)"></span>
+                                <span class="removebtn" auth="crudUpdate" auth-service="APP_KOODISTO" ng-click="model.removeFromIncludesCodeElements(codeElement)"></span>
                             </td>
                         </tr>
 
@@ -227,7 +227,7 @@
             <div class="form-row-content width-60">
                 <label for="levelswithcodes" class="form-row-label">{{'codeelement.editpage.levelswithcodeelements' | i18n}}
                 </label><br>
-                <button id="levelswithcodes" type="button" class="button small" ng-model="codeElementSelector" ng-show="!codeElementSelector" ng-click="show('levelswithcodes')">Lisää koodi</button>
+                <button id="levelswithcodes" type="button" auth="crudUpdate" auth-service="APP_KOODISTO" class="button small" ng-model="codeElementSelector" ng-show="!codeElementSelector" ng-click="show('levelswithcodes')">Lisää koodi</button>
             </div>
             <div class="form-row" ng-show="model.levelsWithCodeElements.length">
                 <div class="form-row-content">
@@ -242,7 +242,7 @@
                         <tr ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:'name'">
                             <td class="align-center">{{codeElement.name}}</td>
                             <td class="align-center">
-                                <span class="removebtn" ng-click="model.removeFromLevelsWithCodeElements(codeElement)"></span>
+                                <span class="removebtn" auth="crudUpdate" auth-service="APP_KOODISTO" ng-click="model.removeFromLevelsWithCodeElements(codeElement)"></span>
                             </td>
                         </tr>
 
@@ -401,7 +401,7 @@
 
         <div class="clear"></div>
         <div class="form-row navbar-fixed-bottom width-90 padding-bottom-3">
-            <button ng-disabled="!form.$valid" class="button small primary float-right" type="submit">{{'codes.save' | i18n}}</button>
+            <button ng-disabled="!form.$valid" auth="crudUpdate" auth-service="APP_KOODISTO" class="button small primary float-right" type="submit">{{'codes.save' | i18n}}</button>
             <button type="button" class="float-right margin-right-1 button small" ng-click="cancel()">{{'codes.cancel' | i18n}}
             </button>
         </div>
