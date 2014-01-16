@@ -13,8 +13,16 @@
 
             <label for="codesstate" class="control-label">{{'codes.editpage.state' | i18n}}</label>
             <div class="controls">
-                <select id="codesstate" ng-model="model.codes.latestKoodistoVersio.tila"
+                <select id="codesstate" ng-model="model.codes.tila"
                         ng-options="state.key as state.value for state in model.states" ng-required="true">
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="codesgroup" class="control-label">{{'codes.createpage.codesgroup' | i18n}}</label>
+            <div class="controls">
+                <select id="codesgroup" ng-model="model.codes.codesGroupUri"
+                        ng-options="code.koodistoRyhmaUri as code.metadata[0].nimi for code in model.allCodes | orderBy:'metadata[0].nimi'" ng-required="true">
                 </select>
             </div>
         </div>
@@ -56,9 +64,9 @@
             <label for="datesactivestart" class="control-label">{{'codes.createpage.datesactive' | i18n}}</label>
 
             <div class="controls">
-                <input id="datesactivestart" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codes.latestKoodistoVersio.voimassaAlkuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" />
+                <input id="datesactivestart" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codes.voimassaAlkuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" />
                 -
-                <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codes.latestKoodistoVersio.voimassaLoppuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" />
+                <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codes.voimassaLoppuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" />
                 <i class="icon-calendar"></i>
 
             </div>

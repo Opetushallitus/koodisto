@@ -1,5 +1,5 @@
 
-app.factory('CodesEditorModel', function($location, RootCodes, Organizations, CodesByUri, OrganizationByOid) {
+app.factory('CodesEditorModel', function($location, RootCodes, Organizations, CodesByUriAndVersion, OrganizationByOid) {
     var model;
     model = new function() {
         this.withinCodes = [];
@@ -11,7 +11,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
         this.states = [{key:'PASSIIVINEN', value:'PASSIIVINEN'},{key:'LUONNOS', value:'LUONNOS'},{key:'HYVAKSYTTY',value:'HYVÄKSYTTY'}];
         this.alerts = [];
 
-        this.init = function(scope, codesUri) {
+        this.init = function(scope, codesUri, codesVersion) {
             this.withinCodes = [];
             this.includesCodes = [];
             this.levelsWithCodes = [];
@@ -19,57 +19,59 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             this.onlyCodes = [];
             this.organizations = [];
             this.alerts = [];
-            model.getCodes(scope, codesUri);
+            model.getCodes(scope, codesUri, codesVersion);
             model.getAllCodes();
             model.getOrganizations();
         };
 
-        this.getCodes = function(scope, codesUri) {
-            CodesByUri.get({codesUri: codesUri}, function (result) {
+        this.getCodes = function(scope, codesUri, codesVersion) {
+            CodesByUriAndVersion.get({codesUri: codesUri, codesVersion: codesVersion}, function (result) {
                 model.codes = result;
-                scope.namefi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
-                scope.namesv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'nimi', 'SV');
-                scope.nameen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'nimi', 'EN');
 
-                scope.descriptionfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kuvaus', 'FI');
-                scope.descriptionsv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kuvaus', 'SV');
-                scope.descriptionen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kuvaus', 'EN');
 
-                scope.instructionsfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kayttoohje', 'FI');
-                scope.instructionssv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kayttoohje', 'SV');
-                scope.instructionsen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kayttoohje', 'EN');
+                scope.namefi = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
+                scope.namesv = model.languageSpecificValue(result.metadata, 'nimi', 'SV');
+                scope.nameen = model.languageSpecificValue(result.metadata, 'nimi', 'EN');
 
-                scope.targetareafi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kohdealue', 'FI');
-                scope.targetareasv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kohdealue', 'SV');
-                scope.targetareaen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kohdealue', 'EN');
+                scope.descriptionfi = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
+                scope.descriptionsv = model.languageSpecificValue(result.metadata, 'kuvaus', 'SV');
+                scope.descriptionen = model.languageSpecificValue(result.metadata, 'kuvaus', 'EN');
 
-                scope.targetareapartfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kohdealueenOsaAlue', 'FI');
-                scope.targetareapartsv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kohdealueenOsaAlue', 'SV');
-                scope.targetareaparten = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kohdealueenOsaAlue', 'EN');
+                scope.instructionsfi = model.languageSpecificValue(result.metadata, 'kayttoohje', 'FI');
+                scope.instructionssv = model.languageSpecificValue(result.metadata, 'kayttoohje', 'SV');
+                scope.instructionsen = model.languageSpecificValue(result.metadata, 'kayttoohje', 'EN');
 
-                scope.conceptfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kasite', 'FI');
-                scope.conceptsv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kasite', 'SV');
-                scope.concepten = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'kasite', 'EN');
+                scope.targetareafi = model.languageSpecificValue(result.metadata, 'kohdealue', 'FI');
+                scope.targetareasv = model.languageSpecificValue(result.metadata, 'kohdealue', 'SV');
+                scope.targetareaen = model.languageSpecificValue(result.metadata, 'kohdealue', 'EN');
 
-                scope.operationalenvironmentfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'toimintaymparisto', 'FI');
-                scope.operationalenvironmentsv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'toimintaymparisto', 'SV');
-                scope.operationalenvironmenten = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'toimintaymparisto', 'EN');
+                scope.targetareapartfi = model.languageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'FI');
+                scope.targetareapartsv = model.languageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'SV');
+                scope.targetareaparten = model.languageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'EN');
 
-                scope.codessourcefi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'koodistonLahde', 'FI');
-                scope.codessourcesv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'koodistonLahde', 'SV');
-                scope.codessourceen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'koodistonLahde', 'EN');
+                scope.conceptfi = model.languageSpecificValue(result.metadata, 'kasite', 'FI');
+                scope.conceptsv = model.languageSpecificValue(result.metadata, 'kasite', 'SV');
+                scope.concepten = model.languageSpecificValue(result.metadata, 'kasite', 'EN');
 
-                scope.specifiescodesfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'tarkentaaKoodistoa', 'FI');
-                scope.specifiescodessv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'tarkentaaKoodistoa', 'SV');
-                scope.specifiescodesen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'tarkentaaKoodistoa', 'EN');
+                scope.operationalenvironmentfi = model.languageSpecificValue(result.metadata, 'toimintaymparisto', 'FI');
+                scope.operationalenvironmentsv = model.languageSpecificValue(result.metadata, 'toimintaymparisto', 'SV');
+                scope.operationalenvironmenten = model.languageSpecificValue(result.metadata, 'toimintaymparisto', 'EN');
 
-                scope.totakenoticeoffi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'huomioitavaKoodisto', 'FI');
-                scope.totakenoticeofsv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'huomioitavaKoodisto', 'SV');
-                scope.totakenoticeofen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'huomioitavaKoodisto', 'EN');
+                scope.codessourcefi = model.languageSpecificValue(result.metadata, 'koodistonLahde', 'FI');
+                scope.codessourcesv = model.languageSpecificValue(result.metadata, 'koodistonLahde', 'SV');
+                scope.codessourceen = model.languageSpecificValue(result.metadata, 'koodistonLahde', 'EN');
 
-                scope.validitylevelfi = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'sitovuustaso', 'FI');
-                scope.validitylevelsv = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'sitovuustaso', 'SV');
-                scope.validitylevelen = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'sitovuustaso', 'EN');
+                scope.specifiescodesfi = model.languageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'FI');
+                scope.specifiescodessv = model.languageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'SV');
+                scope.specifiescodesen = model.languageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'EN');
+
+                scope.totakenoticeoffi = model.languageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'FI');
+                scope.totakenoticeofsv = model.languageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'SV');
+                scope.totakenoticeofen = model.languageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'EN');
+
+                scope.validitylevelfi = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'FI');
+                scope.validitylevelsv = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
+                scope.validitylevelen = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
 
 
 
@@ -143,14 +145,15 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
 function CodesEditorController($scope, $location, $modal, $log, $routeParams, CodesEditorModel, UpdateCodes, Treemodel, OrganizationByOid) {
     $scope.model = CodesEditorModel;
     $scope.codesUri = $routeParams.codesUri;
-    CodesEditorModel.init($scope,$scope.codesUri);
+    $scope.codesVersion = $routeParams.codesVersion;
+    CodesEditorModel.init($scope,$routeParams.codesUri, $scope.codesVersion);
 
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
     };
 
     $scope.cancel = function() {
-        $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.model.codes.latestKoodistoVersio.versio);
+        $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.codesVersion);
     };
 
     $scope.submit = function() {
@@ -160,13 +163,13 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     $scope.persistCodes = function() {
         var codes = {
             koodistoUri: $scope.model.codes.koodistoUri,
-            voimassaAlkuPvm: $scope.model.codes.latestKoodistoVersio.voimassaAlkuPvm,
-            voimassaLoppuPvm: $scope.model.codes.latestKoodistoVersio.voimassaLoppuPvm,
+            voimassaAlkuPvm: $scope.model.codes.voimassaAlkuPvm,
+            voimassaLoppuPvm: $scope.model.codes.voimassaLoppuPvm,
             omistaja: $scope.model.codes.omistaja,
             organisaatioOid: $scope.model.codes.organisaatioOid,
-            versio: $scope.model.codes.latestKoodistoVersio.versio,
-            tila: $scope.model.codes.latestKoodistoVersio.tila,
-            version: $scope.model.codes.latestKoodistoVersio.version,
+            versio: $scope.model.codes.versio,
+            tila: $scope.model.codes.tila,
+            version: $scope.model.codes.version,
             metadata : [{
                 kieli: 'FI',
                 nimi: $scope.form.namefi.$viewValue,

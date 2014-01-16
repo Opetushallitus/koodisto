@@ -8,15 +8,13 @@ app.factory('MyRolesModel', function ($q, $http) {
 
     var factory = (function() {
         var instance = {};
-        instance.myroles = ["APP_KOODISTO_CRUD_1.2.246.562.10.00000000001"];
+        instance.myroles = [];
 
-        /*
         $http.get(CAS_URL).success(function(result) {
             instance.myroles = result;
             deferred.resolve(instance);
         });
-        */
-        deferred.resolve(instance);
+
         return instance;
     })();
 

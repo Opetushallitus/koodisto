@@ -36,7 +36,7 @@ app.config(function ($routeProvider) {
         //front page
         when('/etusivu', {controller: KoodistoTreeController, templateUrl: TEMPLATE_URL_BASE + 'codesmainpage.html'}).
         when('/lisaaKoodisto', {controller: CodesCreatorController, templateUrl:TEMPLATE_URL_BASE + 'createcodes.html'}).
-        when('/muokkaaKoodisto/:codesUri', {controller: CodesEditorController, templateUrl:TEMPLATE_URL_BASE + 'editcodes.html'}).
+        when('/muokkaaKoodisto/:codesUri/:codesVersion', {controller: CodesEditorController, templateUrl:TEMPLATE_URL_BASE + 'editcodes.html'}).
         when('/koodisto/:codesUri/:codesVersion', {controller: ViewCodesController, templateUrl:TEMPLATE_URL_BASE + 'viewcodes.html'}).
         when('/koodi/:codeElementUri/:codeElementVersion', {controller: ViewCodeElementController, templateUrl:TEMPLATE_URL_BASE + 'viewcodeelement.html'}).
         when('/lisaaKoodi/:codesUri/:codesVersion', {controller: CodeElementCreatorController, templateUrl:TEMPLATE_URL_BASE + 'createcodeelement.html'}).
