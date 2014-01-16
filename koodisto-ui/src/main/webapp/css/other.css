@@ -412,3 +412,13 @@ li.uiCollapsed.mjs-nestedSortable-hovering div {
 .icon-trash {
     cursor: pointer; cursor: hand;
 }
+
+label, .label {
+    line-height: 2em;
+    display: inline !important;
+    color: inherit !important;
+    background-color: inherit !important;
+    font-weight: inherit !important;
+    text-shadow: none !important;
+    font-size: inherit !important;
+}
