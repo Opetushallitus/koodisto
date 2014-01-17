@@ -88,6 +88,7 @@ public class CodesResource {
         } catch (DatatypeConfigurationException e) {
             logger.warn("Date couldn't be parsed: ", e);
         }
+        updateKoodistoDataType.setCodesGroupUri(koodistoDto.getCodesGroupUri());
         updateKoodistoDataType.setVoimassaAlkuPvm(startDate);
         updateKoodistoDataType.setVoimassaLoppuPvm(endDate);
         updateKoodistoDataType.setKoodistoUri(koodistoDto.getKoodistoUri());

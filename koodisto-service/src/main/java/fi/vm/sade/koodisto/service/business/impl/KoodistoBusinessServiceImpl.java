@@ -167,11 +167,25 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
                 latest.getVersion() != updateKoodistoData.getLockingVersion())) {
             throw new KoodistoOptimisticLockingException("Koodisto has already been modified.");
         }
-
+        KoodistoRyhma newKoodistoRyhma = null;
+        KoodistoRyhma oldKoodistoRyhma = null;
+        for (KoodistoRyhma koodistoRyhma : latest.getKoodisto().getKoodistoRyhmas()) {
+            if (koodistoRyhma.getKoodistoRyhmaUri().indexOf("kaikki") == -1 && !koodistoRyhma.getKoodistoRyhmaUri().equals(updateKoodistoData.getCodesGroupUri())) {
+                oldKoodistoRyhma = koodistoRyhma;
+                newKoodistoRyhma = getKoodistoGroup(updateKoodistoData.getCodesGroupUri());
+            }
+        }
+        if (newKoodistoRyhma != null) {
+            oldKoodistoRyhma.removeKoodisto(latest.getKoodisto());
+            newKoodistoRyhma.addKoodisto(latest.getKoodisto());
+            latest.getKoodisto().removeKoodistoRyhma(oldKoodistoRyhma);
+            latest.getKoodisto().addKoodistoRyhma(newKoodistoRyhma);
+        }
         // authorize update
         authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(),
                 KoodistoRole.CRUD, KoodistoRole.UPDATE);
         latest = createNewVersionIfNeeded(latest, updateKoodistoData);
+
 
         // update the non-version specific fields
         EntityUtils.copyFields(updateKoodistoData, latest.getKoodisto());

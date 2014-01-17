@@ -39,9 +39,8 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         converted.setVersion(source.getVersion());
         String uri = "";
         for (KoodistoRyhma ryhma : source.getKoodisto().getKoodistoRyhmas()) {
-            if (ryhma.getKoodistoRyhmaUri().indexOf("kaikki") == -1) {
+            if (uri.isEmpty() || ryhma.getKoodistoRyhmaUri().indexOf("kaikki") == -1) {
                 uri = ryhma.getKoodistoRyhmaUri();
-                break;
             }
         }
         converted.setCodesGroupUri(uri);

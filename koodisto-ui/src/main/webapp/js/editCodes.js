@@ -170,6 +170,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
             versio: $scope.model.codes.versio,
             tila: $scope.model.codes.tila,
             version: $scope.model.codes.version,
+            codesGroupUri: $scope.model.codes.codesGroupUri,
             metadata : [{
                 kieli: 'FI',
                 nimi: $scope.form.namefi.$viewValue,
