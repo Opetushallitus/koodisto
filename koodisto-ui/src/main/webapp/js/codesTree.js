@@ -67,6 +67,7 @@ app.factory('Treemodel', function ($resource, RootCodes, MyRoles) {
         },
         update: function () {
             modelInterface.search.codesfound = 0;
+            modelInterface.search.codesfoundlist = [];
             for(var i=0; i < model.codeList.length; i++) {
                 if (model.codeList[i].koodistos) {
                     for(var j=0; j < model.codeList[i].koodistos.length; j++) {
@@ -74,7 +75,10 @@ app.factory('Treemodel', function ($resource, RootCodes, MyRoles) {
                             if (this.filter && this.filter.name && 0 !== this.filter.name.length) {
                                 model.codeList[i].isVisible = true;
                             }
-                            modelInterface.search.codesfound++;
+                            if (modelInterface.search.codesfoundlist.indexOf(model.codeList[i].koodistos[j].koodistoUri) === -1) {
+                                modelInterface.search.codesfoundlist.push(model.codeList[i].koodistos[j].koodistoUri);
+                                modelInterface.search.codesfound++;
+                            }
                         }
                     }
                 }
