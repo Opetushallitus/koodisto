@@ -3,6 +3,7 @@ package fi.vm.sade.koodisto.service.impl.conversion.koodisto;
 import fi.vm.sade.generic.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
+import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,14 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         converted.setVoimassaAlkuPvm(source.getVoimassaAlkuPvm());
         converted.setVoimassaLoppuPvm(source.getVoimassaLoppuPvm());
         converted.setVersion(source.getVersion());
-
-
+        String uri = "";
+        for (KoodistoRyhma ryhma : source.getKoodisto().getKoodistoRyhmas()) {
+            if (ryhma.getKoodistoRyhmaUri().indexOf("kaikki") == -1) {
+                uri = ryhma.getKoodistoRyhmaUri();
+                break;
+            }
+        }
+        converted.setCodesGroupUri(uri);
         converted.getMetadata().addAll(source.getMetadatas());
         List<Integer> codesVersions = new ArrayList<Integer>();
         if (source.getKoodisto().getKoodistoVersios() != null) {
