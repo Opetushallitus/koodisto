@@ -35,6 +35,8 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         converted.setVersio(source.getVersio());
         converted.setVoimassaAlkuPvm(source.getVoimassaAlkuPvm());
         converted.setVoimassaLoppuPvm(source.getVoimassaLoppuPvm());
+        converted.setVersion(source.getVersion());
+
 
         converted.getMetadata().addAll(source.getMetadatas());
         List<Integer> codesVersions = new ArrayList<Integer>();

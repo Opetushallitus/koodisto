@@ -162,7 +162,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
 
     $scope.persistCodes = function() {
         var codes = {
-            koodistoUri: $scope.model.codes.koodistoUri,
+            koodistoUri: $scope.codesUri,
             voimassaAlkuPvm: $scope.model.codes.voimassaAlkuPvm,
             voimassaLoppuPvm: $scope.model.codes.voimassaLoppuPvm,
             omistaja: $scope.model.codes.omistaja,

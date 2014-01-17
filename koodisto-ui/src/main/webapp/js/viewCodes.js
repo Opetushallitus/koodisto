@@ -20,6 +20,50 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.getCodes = function(codesUri, codesVersion) {
             CodesByUriAndVersion.get({codesUri: codesUri, codesVersion: codesVersion}, function (result) {
                 model.codes = result;
+                model.namefi = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
+                model.namesv = model.languageSpecificValue(result.metadata, 'nimi', 'SV');
+                model.nameen = model.languageSpecificValue(result.metadata, 'nimi', 'EN');
+
+                model.descriptionfi = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
+                model.descriptionsv = model.languageSpecificValue(result.metadata, 'kuvaus', 'SV');
+                model.descriptionen = model.languageSpecificValue(result.metadata, 'kuvaus', 'EN');
+
+                model.instructionsfi = model.languageSpecificValue(result.metadata, 'kayttoohje', 'FI');
+                model.instructionssv = model.languageSpecificValue(result.metadata, 'kayttoohje', 'SV');
+                model.instructionsen = model.languageSpecificValue(result.metadata, 'kayttoohje', 'EN');
+
+                model.targetareafi = model.languageSpecificValue(result.metadata, 'kohdealue', 'FI');
+                model.targetareasv = model.languageSpecificValue(result.metadata, 'kohdealue', 'SV');
+                model.targetareaen = model.languageSpecificValue(result.metadata, 'kohdealue', 'EN');
+
+                model.targetareapartfi = model.languageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'FI');
+                model.targetareapartsv = model.languageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'SV');
+                model.targetareaparten = model.languageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'EN');
+
+                model.conceptfi = model.languageSpecificValue(result.metadata, 'kasite', 'FI');
+                model.conceptsv = model.languageSpecificValue(result.metadata, 'kasite', 'SV');
+                model.concepten = model.languageSpecificValue(result.metadata, 'kasite', 'EN');
+
+                model.operationalenvironmentfi = model.languageSpecificValue(result.metadata, 'toimintaymparisto', 'FI');
+                model.operationalenvironmentsv = model.languageSpecificValue(result.metadata, 'toimintaymparisto', 'SV');
+                model.operationalenvironmenten = model.languageSpecificValue(result.metadata, 'toimintaymparisto', 'EN');
+
+                model.codessourcefi = model.languageSpecificValue(result.metadata, 'koodistonLahde', 'FI');
+                model.codessourcesv = model.languageSpecificValue(result.metadata, 'koodistonLahde', 'SV');
+                model.codessourceen = model.languageSpecificValue(result.metadata, 'koodistonLahde', 'EN');
+
+                model.specifiescodesfi = model.languageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'FI');
+                model.specifiescodessv = model.languageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'SV');
+                model.specifiescodesen = model.languageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'EN');
+
+                model.totakenoticeoffi = model.languageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'FI');
+                model.totakenoticeofsv = model.languageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'SV');
+                model.totakenoticeofen = model.languageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'EN');
+
+                model.validitylevelfi = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'FI');
+                model.validitylevelsv = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
+                model.validitylevelen = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
+
                 OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result) {
                     if (result.nimi['fi']) {
                         model.codes.organizationName = result.nimi['fi'];
