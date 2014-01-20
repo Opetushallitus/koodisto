@@ -142,7 +142,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
     return model;
 });
 
-function CodesEditorController($scope, $location, $modal, $log, $routeParams, CodesEditorModel, UpdateCodes, Treemodel, OrganizationByOid) {
+function CodesEditorController($scope, $location, $modal, $log, $routeParams, CodesEditorModel, UpdateCodes, Treemodel, ValidateService) {
     $scope.model = CodesEditorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
@@ -222,8 +222,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
             Treemodel.refresh();
             $location.path("/koodisto/"+result.koodistoUri+"/"+result.versio);
         }, function(error) {
-            var alert = { type: 'danger', msg: 'Koodiston muokkaus ep\u00E4onnistui.' }
-            $scope.model.alerts.push(alert);
+            ValidateService.validateCodes($scope,error,true);
         });
     };
 

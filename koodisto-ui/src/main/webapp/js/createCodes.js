@@ -67,8 +67,8 @@ app.factory('CodesCreatorModel', function($location, RootCodes, Organizations) {
     return model;
 });
 
-function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorModel, NewCodes, Treemodel) {
-    $scope.createmodel = CodesCreatorModel;
+function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorModel, NewCodes, Treemodel, ValidateService) {
+    $scope.model = CodesCreatorModel;
     CodesCreatorModel.init();
 
     $scope.closeAlert = function(index) {
@@ -141,8 +141,7 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
             Treemodel.refresh();
             $location.path("/koodisto/"+result.koodistoUri+"/"+result.versio);
         }, function(error) {
-            var alert = { type: 'danger', msg: 'Koodiston luonti ep\u00E4onnistui.' }
-            $scope.model.alerts.push(alert);
+            ValidateService.validateCodes($scope,error,false);
         });
     };
 
@@ -184,19 +183,19 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
     };
 
     $scope.addToWithinCodes = function() {
-        if ($scope.createmodel.withinCodes.indexOf($scope.withinCodesItem) === -1) {
-            $scope.createmodel.withinCodes.push($scope.withinCodesItem);
+        if ($scope.model.withinCodes.indexOf($scope.withinCodesItem) === -1) {
+            $scope.model.withinCodes.push($scope.withinCodesItem);
         }
     };
 
     $scope.addToIncludesCodes = function() {
-        if (!$scope.createmodel.inCodesList($scope.createmodel.includesCodes,$scope.includesCodesItem)) {
-            $scope.createmodel.includesCodes.push($scope.includesCodesItem);
+        if (!$scope.model.inCodesList($scope.model.includesCodes,$scope.includesCodesItem)) {
+            $scope.model.includesCodes.push($scope.includesCodesItem);
         }
     };
     $scope.addToLevelsWithCodes = function() {
-        if (!$scope.createmodel.inCodesList($scope.createmodel.levelsWithCodes,$scope.levelsWithCodesItem)) {
-            $scope.createmodel.levelsWithCodes.push($scope.levelsWithCodesItem);
+        if (!$scope.model.inCodesList($scope.model.levelsWithCodes,$scope.levelsWithCodesItem)) {
+            $scope.model.levelsWithCodes.push($scope.levelsWithCodesItem);
         }
     };
 

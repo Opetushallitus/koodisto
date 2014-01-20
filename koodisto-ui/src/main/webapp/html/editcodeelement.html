@@ -467,7 +467,8 @@
 
         <div class="row-fluid">
             <div class="span9">
-                <alert ng-repeat="alert in model.alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                <alert ng-repeat="alert in model.alerts" type="alert.type" close="closeAlert($index)">
+                    <img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{alert.msg}}</alert>
             </div>
         </div>
 

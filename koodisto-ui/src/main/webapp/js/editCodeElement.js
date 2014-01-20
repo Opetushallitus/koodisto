@@ -167,7 +167,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
 });
 
 function CodeElementEditorController($scope, $location, $routeParams, CodeElementEditorModel, UpdateCodeElement,
-                                     AddRelationCodeElement, RemoveRelationCodeElement) {
+                                     AddRelationCodeElement, RemoveRelationCodeElement, ValidateService) {
     $scope.model = CodeElementEditorModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
     $scope.codeElementVersion = $routeParams.codeElementVersion;
@@ -239,8 +239,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
         UpdateCodeElement.put({}, codeelement, function(result) {
             $location.path("/koodi/"+result.koodiUri+"/"+result.versio);
         }, function(error) {
-            var alert = { type: 'danger', msg: 'Koodin p\u00E4ivitys ep\u00E4onnistui.' }
-            $scope.model.alerts.push(alert);
+            ValidateService.validateCodeElement($scope,error,true);
         });
     };
 

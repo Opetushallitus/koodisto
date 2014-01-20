@@ -12,7 +12,7 @@
             <label for="codesgroup" class="control-label">{{'codes.createpage.codesgroup' | i18n}}</label>
             <div class="controls">
                 <select id="codesgroup" ng-model="selectedCGoup"
-                        ng-options="code.koodistoRyhmaUri as code.metadata[0].nimi for code in createmodel.allCodes | orderBy:'metadata[0].nimi'" ng-required="true">
+                        ng-options="code.koodistoRyhmaUri as code.metadata[0].nimi for code in model.allCodes | orderBy:'metadata[0].nimi'" ng-required="true">
                 </select>
             </div>
         </div>
@@ -397,7 +397,8 @@
 
         <div class="row-fluid">
             <div class="span9">
-                <alert ng-repeat="alert in model.alerts" type="alert.type" close="closeAlert($index)">{{alert.msg}}</alert>
+                <alert ng-repeat="alert in model.alerts" type="alert.type" close="closeAlert($index)">
+                    <img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{alert.msg}}</alert>
             </div>
         </div>
 

@@ -20,7 +20,7 @@ app.factory('CodeElementCreatorModel', function($location) {
     return model;
 });
 
-function CodeElementCreatorController($scope, $location, $routeParams, CodeElementCreatorModel, NewCodeElement) {
+function CodeElementCreatorController($scope, $location, $routeParams, CodeElementCreatorModel, NewCodeElement, ValidateService) {
     $scope.model = CodeElementCreatorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
@@ -87,8 +87,7 @@ function CodeElementCreatorController($scope, $location, $routeParams, CodeEleme
         NewCodeElement.put({codesUri: $scope.codesUri}, codeelement, function(result) {
             $location.path("/koodi/"+result.koodiUri+"/"+result.versio);
         }, function(error) {
-            var alert = { type: 'danger', msg: 'Koodin luonti ep\u00E4onnistui.' }
-            $scope.model.alerts.push(alert);
+            ValidateService.validateCodeElement($scope,error,false);
         });
     };
 
