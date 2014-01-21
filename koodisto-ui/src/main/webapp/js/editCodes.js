@@ -341,7 +341,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     };
 
     $scope.openChildren = function(data) {
-        CodesCreatorModel.openChildren(data);
+        CodesEditorModel.openChildren(data);
     }
 
     $scope.close = function(selectedCodes){
@@ -355,6 +355,11 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 $scope.addToLevelsWithCodes(selectedCodes);
             }
         }
+    }
+
+    $scope.show = function(name){
+        $scope.addToListName = name;
+        $scope.codesSelector = true;
     }
 
     $scope.open = function () {

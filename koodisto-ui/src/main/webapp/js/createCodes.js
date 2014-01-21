@@ -172,25 +172,6 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
         }
     };
 
-
-    $scope.close = function(selectedCodes){
-        $scope.codesSelector = false;
-        if (selectedCodes) {
-            if ($scope.addToListName === 'withincodes') {
-                $scope.addToWithinCodes(selectedCodes);
-            } else if ($scope.addToListName === 'includescodes') {
-                $scope.addToIncludesCodes(selectedCodes);
-            } else if ($scope.addToListName === 'levelswithcodes') {
-                $scope.addToLevelsWithCodes(selectedCodes);
-            }
-        }
-    }
-
-    $scope.show = function(name){
-        $scope.addToListName = name;
-        $scope.codesSelector = true;
-    }
-
     $scope.open = function () {
 
         var modalInstance = $modal.open({
