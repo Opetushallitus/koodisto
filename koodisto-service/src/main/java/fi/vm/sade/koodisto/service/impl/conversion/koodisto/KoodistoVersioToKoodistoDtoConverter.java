@@ -5,11 +5,14 @@ import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Component("koodistoVersioToKoodistoDtoConverter")
@@ -23,6 +26,51 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
 
         KoodistoDto converted = new KoodistoDto();
         converted.setKoodistoUri(source.getKoodisto().getKoodistoUri());
+
+        if (source.getYlakoodistos() != null && source.getYlakoodistos().size() > 0) {
+            Iterator itr = source.getYlakoodistos().iterator();
+            while(itr.hasNext()) {
+                KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
+
+                koodistonSuhde.getYlakoodistoVersio().getMetadatas().size();
+                Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getKoodisto());
+                switch (koodistonSuhde.getSuhteenTyyppi()) {
+                    case RINNASTEINEN:
+                        if (koodistonSuhde.getYlakoodistoVersio() != null) {
+                            converted.getLevelsWithCodes().add(koodistonSuhde.getYlakoodistoVersio().getKoodisto().getKoodistoUri());
+                        }
+                        break;
+                    case SISALTYY:
+                        if (koodistonSuhde.getYlakoodistoVersio() != null) {
+                            converted.getWithinCodes().add(koodistonSuhde.getYlakoodistoVersio().getKoodisto().getKoodistoUri());
+                        }
+                        break;
+                }
+            }
+        }
+        if (source.getAlakoodistos() != null && source.getAlakoodistos().size() > 0) {
+            Iterator itr = source.getAlakoodistos().iterator();
+            while(itr.hasNext()) {
+                KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
+
+                koodistonSuhde.getAlakoodistoVersio().getMetadatas().size();
+                Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getKoodisto());
+                switch (koodistonSuhde.getSuhteenTyyppi()) {
+                    case RINNASTEINEN:
+                        if (koodistonSuhde.getAlakoodistoVersio() != null) {
+                            converted.getLevelsWithCodes().add(koodistonSuhde.getAlakoodistoVersio().getKoodisto().getKoodistoUri());
+                        }
+                        break;
+                    case SISALTYY:
+                        if (koodistonSuhde.getAlakoodistoVersio() != null) {
+                            converted.getIncludesCodes().add(koodistonSuhde.getAlakoodistoVersio().getKoodisto().getKoodistoUri());
+                        }
+                        break;
+                }
+            }
+        }
+
+
 
         if (StringUtils.isNotBlank(converted.getKoodistoUri())) {
             converted.setResourceUri(koodistoConfiguration.getKoodistoResourceUri(converted.getKoodistoUri()));

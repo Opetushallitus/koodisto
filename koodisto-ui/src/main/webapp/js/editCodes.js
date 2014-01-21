@@ -73,7 +73,9 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 scope.validitylevelsv = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
                 scope.validitylevelen = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
 
-
+                this.withinCodes = model.codes.withinCodes;
+                this.includesCodes = model.codes.includesCodes;
+                this.levelsWithCodes = model.codes.levelsWithCodes;
 
                 OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result) {
                     if (result.nimi['fi']) {
@@ -180,7 +182,8 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
     return model;
 });
 
-function CodesEditorController($scope, $location, $modal, $log, $routeParams, CodesEditorModel, UpdateCodes, Treemodel, ValidateService, AddRelationCodes) {
+function CodesEditorController($scope, $location, $modal, $log, $routeParams, CodesEditorModel, UpdateCodes, Treemodel,
+                               ValidateService, AddRelationCodes, RemoveRelationCodes) {
     $scope.model = CodesEditorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;

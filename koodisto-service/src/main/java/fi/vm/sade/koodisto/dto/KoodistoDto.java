@@ -42,6 +42,15 @@ public class KoodistoDto extends AbstractKoodistoDto {
     @JsonView(JsonViews.Extended.class)
     private List<Integer> codesVersions;
 
+    @JsonView({JsonViews.Extended.class})
+    protected List<String> withinCodes = new ArrayList<String>();
+
+    @JsonView({JsonViews.Extended.class})
+    protected List<String> includesCodes = new ArrayList<String>();
+
+    @JsonView({JsonViews.Extended.class})
+    protected List<String> levelsWithCodes = new ArrayList<String>();
+
     public int getVersio() {
         return versio;
     }
@@ -112,5 +121,29 @@ public class KoodistoDto extends AbstractKoodistoDto {
 
     public void setCodesVersions(final List<Integer> codesVersions) {
         this.codesVersions = codesVersions;
+    }
+
+    public List<String> getWithinCodes() {
+        return withinCodes;
+    }
+
+    public void setWithinCodes(final List<String> withinCodes) {
+        this.withinCodes = withinCodes;
+    }
+
+    public List<String> getIncludesCodes() {
+        return includesCodes;
+    }
+
+    public void setIncludesCodes(final List<String> includesCodes) {
+        this.includesCodes = includesCodes;
+    }
+
+    public List<String> getLevelsWithCodes() {
+        return levelsWithCodes;
+    }
+
+    public void setLevelsWithCodes(final List<String> levelsWithCodes) {
+        this.levelsWithCodes = levelsWithCodes;
     }
 }

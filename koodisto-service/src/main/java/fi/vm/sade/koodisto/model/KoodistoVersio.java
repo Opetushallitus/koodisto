@@ -79,10 +79,10 @@ public class KoodistoVersio extends BaseEntity {
     private List<KoodistoMetadata> metadatas = new ArrayList<KoodistoMetadata>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodistoVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
-    private Set<KoodistonSuhde> ylakoodisto = new HashSet<KoodistonSuhde>();
+    private Set<KoodistonSuhde> ylakoodistos = new HashSet<KoodistonSuhde>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "ylakoodistoVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
-    private Set<KoodistonSuhde> alakoodisto = new HashSet<KoodistonSuhde>();
+    private Set<KoodistonSuhde> alakoodistos = new HashSet<KoodistonSuhde>();
 
 
     @PrePersist
@@ -173,20 +173,20 @@ public class KoodistoVersio extends BaseEntity {
         this.koodiVersios.remove(koodiVersio);
     }
 
-    public Set<KoodistonSuhde> getYlakoodisto() {
-        return ylakoodisto;
+    public Set<KoodistonSuhde> getYlakoodistos() {
+        return ylakoodistos;
     }
 
-    public void setYlakoodisto(final Set<KoodistonSuhde> ylakoodisto) {
-        this.ylakoodisto = ylakoodisto;
+    public void setYlakoodistos(final Set<KoodistonSuhde> ylakoodisto) {
+        this.ylakoodistos = ylakoodisto;
     }
 
-    public Set<KoodistonSuhde> getAlakoodisto() {
-        return alakoodisto;
+    public Set<KoodistonSuhde> getAlakoodistos() {
+        return alakoodistos;
     }
 
-    public void setAlakoodisto(final Set<KoodistonSuhde> alakoodisto) {
-        this.alakoodisto = alakoodisto;
+    public void setAlakoodistos(final Set<KoodistonSuhde> alakoodisto) {
+        this.alakoodistos = alakoodisto;
     }
 
     @Override
