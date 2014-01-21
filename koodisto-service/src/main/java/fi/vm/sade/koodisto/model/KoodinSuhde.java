@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 
 import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 /**
  * @author tommiha

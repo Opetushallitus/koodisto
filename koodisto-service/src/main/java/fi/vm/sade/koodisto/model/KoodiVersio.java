@@ -81,11 +81,11 @@ public class KoodiVersio extends BaseEntity {
     private Set<KoodiMetadata> metadatas = new HashSet<KoodiMetadata>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodiVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
-   // @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<KoodinSuhde> ylakoodis = new HashSet<KoodinSuhde>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "ylakoodiVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
-   // @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<KoodinSuhde> alakoodis = new HashSet<KoodinSuhde>();
 
     @PrePersist

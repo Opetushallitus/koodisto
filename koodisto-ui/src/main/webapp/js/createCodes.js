@@ -1,5 +1,5 @@
 
-app.factory('CodesCreatorModel', function($location, RootCodes, Organizations) {
+app.factory('CodesCreatorModel', function($location, RootCodes, $modal) {
     var model;
     model = new function() {
         this.withinCodes = [];
@@ -31,8 +31,10 @@ app.factory('CodesCreatorModel', function($location, RootCodes, Organizations) {
                         }
                     }
                 }
+
             });
         };
+
 
         this.inCodesList = function(codesList,codesToFind) {
             for(var i=0; i < codesList.length; i++) {
@@ -48,18 +50,53 @@ app.factory('CodesCreatorModel', function($location, RootCodes, Organizations) {
             return getLanguageSpecificValue(fieldArray,fieldName,language);
         };
 
-        this.removeFromWithinCodes = function(code) {
-            model.withinCodes.splice(model.withinCodes.indexOf(code), 1);
+        this.removeFromWithinCodes = function(codes) {
+            model.withinRelationToRemove = codes;
+
+            model.modalInstance = $modal.open({
+                templateUrl: 'confirmModalContent.html',
+                controller: CodesCreatorController,
+                resolve: {
+                }
+            });
+
         };
 
-        this.removeFromIncludesCodes = function(code) {
-            model.includesCodes.splice(model.includesCodes.indexOf(code), 1);
+        this.removeFromIncludesCodes = function(codes) {
+            model.includesRelationToRemove = codes;
+            model.modalInstance = $modal.open({
+                templateUrl: 'confirmModalContent.html',
+                controller: CodesCreatorController,
+                resolve: {
+                }
+            });
         };
 
-        this.removeFromLevelsWithCodes = function(code) {
-            model.levelsWithCodes.splice(model.levelsWithCodes.indexOf(code), 1);
+        this.removeFromLevelsWithCodes = function(codes) {
+            model.levelsRelationToRemove = codes;
+            model.modalInstance = $modal.open({
+                templateUrl: 'confirmModalContent.html',
+                controller: CodesCreatorController,
+                resolve: {
+                }
+            });
         };
 
+        this.openChildren = function(data) {
+            data.open = !data.open;
+            if(data.open) {
+
+                var iter = function(children){
+                    if(children) {
+                        children.forEach(function(child){
+                            child.open = true;
+
+                        });
+                    }
+                }
+                iter(data.children);
+            }
+        };
 
     };
 
@@ -182,23 +219,66 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
         }
     };
 
-    $scope.addToWithinCodes = function() {
-        if ($scope.model.withinCodes.indexOf($scope.withinCodesItem) === -1) {
-            $scope.model.withinCodes.push($scope.withinCodesItem);
+    $scope.createCodes = function(data) {
+        var ce = {};
+        ce.uri = data.koodistoUri;
+        ce.name = $scope.model.languageSpecificValue(data.latestKoodistoVersio.metadata, 'nimi', 'FI');
+        return ce;
+    };
+
+    $scope.addToWithinCodes = function(data) {
+        var ce = {};
+        ce = $scope.createCodes(data);
+        if ($scope.model.withinCodes.indexOf(ce) === -1) {
+            $scope.model.withinCodes.push(ce);
+            AddRelationCodes.put({codesUri: data.koodistoUri,
+                codesUriToAdd: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
+            });
         }
     };
 
-    $scope.addToIncludesCodes = function() {
-        if (!$scope.model.inCodesList($scope.model.includesCodes,$scope.includesCodesItem)) {
-            $scope.model.includesCodes.push($scope.includesCodesItem);
+    $scope.addToIncludesCodes = function(data) {
+        var ce = {};
+        ce = $scope.createCodes(data);
+        if ($scope.model.includesCodes.indexOf(ce) === -1) {
+            $scope.model.includesCodes.push(ce);
+            AddRelationCodes.put({codesUri: $scope.model.codes.koodistoUri,
+                codesUriToAdd: data.koodistoUri,relationType: "SISALTYY"},function(result) {
+            });
         }
     };
-    $scope.addToLevelsWithCodes = function() {
-        if (!$scope.model.inCodesList($scope.model.levelsWithCodes,$scope.levelsWithCodesItem)) {
-            $scope.model.levelsWithCodes.push($scope.levelsWithCodesItem);
+    $scope.addToLevelsWithCodes = function(data) {
+        var ce = {};
+        ce = $scope.createCodes(data);
+        if ($scope.model.levelsWithCodes.indexOf(ce) === -1) {
+            $scope.model.levelsWithCodes.push(ce);
+            AddRelationCodes.put({codesUri: data.koodistoUri,
+                codesUriToAdd: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
+            });
         }
     };
 
+    $scope.openChildren = function(data) {
+        CodesCreatorModel.openChildren(data);
+    }
+
+    $scope.close = function(selectedCodes){
+        $scope.codesSelector = false;
+        if (selectedCodes) {
+            if ($scope.addToListName === 'withincodes') {
+                $scope.addToWithinCodes(selectedCodes);
+            } else if ($scope.addToListName === 'includescodes') {
+                $scope.addToIncludesCodes(selectedCodes);
+            } else if ($scope.addToListName === 'levelswithcodes') {
+                $scope.addToLevelsWithCodes(selectedCodes);
+            }
+        }
+    }
+
+    $scope.show = function(name){
+        $scope.addToListName = name;
+        $scope.codesSelector = true;
+    }
 
     $scope.open = function () {
 
@@ -220,5 +300,50 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());
         });
+    };
+
+    $scope.okconfirm = function() {
+        if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
+            $scope.model.withinCodes.splice($scope.model.withinCodes.indexOf($scope.model.withinRelationToRemove.uri), 1);
+
+            RemoveRelationCodes.put({codesUri: $scope.model.withinRelationToRemove.uri,
+                codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
+
+            }, function(error) {
+                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                $scope.model.alerts.push(alert);
+            });
+        } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
+
+            $scope.model.includesCodes.splice($scope.model.includesCodes.indexOf($scope.model.includesRelationToRemove.uri), 1);
+
+            RemoveRelationCodes.put({codesUri: $scope.model.codes.koodistoUri,
+                codesUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
+
+            }, function(error) {
+                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                $scope.model.alerts.push(alert);
+            });
+        } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
+            $scope.model.levelsWithCodes.splice($scope.model.levelsWithCodes.indexOf($scope.model.levelsRelationToRemove.uri), 1);
+
+            RemoveRelationCodes.put({codesUri: $scope.model.levelsRelationToRemove.uri,
+                codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
+            }, function(error) {
+                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                $scope.model.alerts.push(alert);
+            });
+        }
+        $scope.model.levelsRelationToRemove = null;
+        $scope.model.includesRelationToRemove = null;
+        $scope.model.withinRelationToRemove = null;
+        $scope.model.modalInstance.close();
+    };
+
+    $scope.cancelconfirm = function() {
+        $scope.model.levelsRelationToRemove = null;
+        $scope.model.includesRelationToRemove = null;
+        $scope.model.withinRelationToRemove = null;
+        $scope.model.modalInstance.dismiss('cancel');
     };
 }

@@ -78,6 +78,13 @@ public class KoodistoVersio extends BaseEntity {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private List<KoodistoMetadata> metadatas = new ArrayList<KoodistoMetadata>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodistoVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
+    private Set<KoodistonSuhde> ylakoodisto = new HashSet<KoodistonSuhde>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ylakoodistoVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
+    private Set<KoodistonSuhde> alakoodisto = new HashSet<KoodistonSuhde>();
+
+
     @PrePersist
     protected void onCreate() {
         onUpdate();
@@ -164,6 +171,22 @@ public class KoodistoVersio extends BaseEntity {
 
     public void removeKoodiVersio(KoodistoVersioKoodiVersio koodiVersio) {
         this.koodiVersios.remove(koodiVersio);
+    }
+
+    public Set<KoodistonSuhde> getYlakoodisto() {
+        return ylakoodisto;
+    }
+
+    public void setYlakoodisto(final Set<KoodistonSuhde> ylakoodisto) {
+        this.ylakoodisto = ylakoodisto;
+    }
+
+    public Set<KoodistonSuhde> getAlakoodisto() {
+        return alakoodisto;
+    }
+
+    public void setAlakoodisto(final Set<KoodistonSuhde> alakoodisto) {
+        this.alakoodisto = alakoodisto;
     }
 
     @Override
