@@ -135,6 +135,15 @@
 
     <xs:element name="koodisto" type="tns:KoodistoType" />
 
+    <xs:complexType name="KoodistoUriAndVersioType">
+        <xs:sequence>
+            <xs:element name="koodistoUri" type="xs:string"
+                        maxOccurs="1" minOccurs="1" />
+            <xs:element name="versio" type="xs:int"
+                        maxOccurs="1" minOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
     <xs:complexType name="KoodistoRyhmaMetadataType">
         <xs:sequence>
             <xs:element minOccurs="1" maxOccurs="1" name="nimi"

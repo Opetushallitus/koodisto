@@ -10,13 +10,14 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.*;
+import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.impl.KoodistoRole;
-import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
-import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
-import fi.vm.sade.koodisto.service.types.SearchKoodistosVersioSelectionType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.*;
+import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
+import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
+import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -44,6 +45,9 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Autowired
     private KoodistoRyhmaDAO koodistoJoukkoDAO;
+
+    @Autowired
+    private KoodistonSuhdeDAO koodistonSuhdeDAO;
 
     @Autowired
     private KoodistoVersioDAO koodistoVersioDAO;
@@ -115,6 +119,58 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         }
 
         return koodistoVersio;
+    }
+
+    @Override
+    public void addRelation(String ylaKoodisto, String alaKoodisto, SuhteenTyyppi suhteenTyyppi) {
+
+        KoodistoVersio yla = getLatestKoodistoVersio(ylaKoodisto);
+        KoodistoVersio ala = getLatestKoodistoVersio(alaKoodisto);
+
+        addRelation(yla, suhteenTyyppi, ala);
+    }
+
+    private void addRelation(KoodistoVersio ylakoodisto, SuhteenTyyppi suhteenTyyppi, KoodistoVersio alakoodisto) {
+
+        KoodistonSuhde koodistonSuhde = new KoodistonSuhde();
+        koodistonSuhde.setSuhteenTyyppi(suhteenTyyppi);
+        koodistonSuhde.setYlakoodistoVersio(ylakoodisto);
+        koodistonSuhde.setAlakoodistoVersio(alakoodisto);
+        koodistonSuhdeDAO.insert(koodistonSuhde);
+
+    }
+
+    private List<KoodistonSuhde> getRelations(String ylakoodistoUri, List<String> alakoodistoUris, SuhteenTyyppi st) {
+        KoodistoVersio ylakoodisto = getLatestKoodistoVersio(ylakoodistoUri);
+        KoodistoUriAndVersioType yk = new KoodistoUriAndVersioType();
+        yk.setKoodistoUri(ylakoodisto.getKoodisto().getKoodistoUri());
+        yk.setVersio(ylakoodisto.getVersio());
+
+        List<KoodistoUriAndVersioType> aks = new ArrayList<KoodistoUriAndVersioType>();
+        for (KoodistoVersio ak : getLatestKoodistoVersios(alakoodistoUris.toArray(new String[alakoodistoUris.size()]))) {
+            KoodistoUriAndVersioType a = new KoodistoUriAndVersioType();
+            a.setKoodistoUri(ak.getKoodisto().getKoodistoUri());
+            a.setVersio(ak.getVersio());
+
+            aks.add(a);
+        }
+
+        return koodistonSuhdeDAO.getRelations(yk, aks, st);
+    }
+
+    @Override
+    public void removeRelation(String ylakoodistoUri, List<String> alakoodistoUris, SuhteenTyyppi st) {
+        if (alakoodistoUris == null || alakoodistoUris.isEmpty() || getRelations(ylakoodistoUri, alakoodistoUris, st).size() == 0) {
+            return;
+        }
+
+        KoodistoVersio ylakoodi = getLatestKoodistoVersio(ylakoodistoUri);
+
+        List<KoodistonSuhde> relations = getRelations(ylakoodistoUri, alakoodistoUris, st);
+
+        for (KoodistonSuhde k : relations) {
+            koodistonSuhdeDAO.remove(k);
+        }
     }
 
     /**
@@ -287,6 +343,16 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         }
 
         return result.get(0);
+    }
+
+    private List<KoodistoVersio> getLatestKoodistoVersios(String... koodistoUris) {
+        SearchKoodistosCriteriaType searchCriteria = KoodistoServiceSearchCriteriaBuilder.latestKoodistosByUri(koodistoUris);
+        List<KoodistoVersio> result = koodistoVersioDAO.searchKoodistos(searchCriteria);
+        if (result.size() != 1) {
+            throw new KoodistoNotFoundException("No koodisto found for URIs");
+        }
+
+        return result;
     }
 
     @Override

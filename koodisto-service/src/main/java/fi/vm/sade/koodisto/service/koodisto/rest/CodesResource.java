@@ -58,6 +58,36 @@ public class CodesResource {
     private DownloadService downloadService;
 
     @POST
+    @Path("addrelation/{codesUri}/{codesUriToAdd}/{relationType}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({JsonViews.Extended.class})
+    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @Transactional
+    public void addRelation(@PathParam("codesUri") String codesUri,
+                            @PathParam("codesUriToAdd") String codesUriToAdd,
+                            @PathParam("relationType") String relationType) {
+
+        koodistoBusinessService.addRelation(codesUri, codesUriToAdd,
+                SuhteenTyyppi.valueOf(relationType));
+    }
+
+    @POST
+    @Path("removerelation/{codesUri}/{codesUriToRemove}/{relationType}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({JsonViews.Extended.class})
+    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @Transactional
+    public void removeRelation(@PathParam("codesUri") String codesUri,
+                               @PathParam("codesUriToRemove") String codesUriToRemove,
+                               @PathParam("relationType") String relationType) {
+
+        koodistoBusinessService.removeRelation(codesUri, Arrays.asList(codesUriToRemove),
+                SuhteenTyyppi.valueOf(relationType));
+    }
+
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})

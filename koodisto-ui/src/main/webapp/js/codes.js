@@ -167,6 +167,20 @@ app.factory('AddRelationCodeElement', function($resource) {
         });
 });
 
+app.factory('AddRelationCodes', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codes/addrelation/:codesUri/:codesUriToAdd/:relationType",
+        {codesUri: "@codesUri",codesUriToAdd: "@codesUriToAdd",relationType: "@relationType"}, {
+            put: {method: "POST"}
+        });
+});
+
+app.factory('RemoveRelationCodes', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codes/removerelation/:codesUri/:codesUriToRemove/:relationType",
+        {codesUri: "@codesUri",codesUriToRemove: "@codesUriToRemove",relationType: "@relationType"}, {
+            put: {method: "POST"}
+        });
+});
+
 app.factory('UpdateCodeElement', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement", {}, {
         put: {method: "POST"}
