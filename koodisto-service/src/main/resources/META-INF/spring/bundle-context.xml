@@ -15,6 +15,7 @@
             <util:properties local-override="true">
                 <prop key="cas_key">koodisto-service</prop>
                 <prop key="cas_service">${cas.service.koodisto-service}</prop>
+                <prop key="cas_callback_url">${cas.callback.koodisto-service}</prop>
                 <!--<prop key="spring_security_default_access">hasRole('ROLE_APP_KOODISTO')</prop>-->
                 <prop key="spring_security_default_access">permitAll</prop>
             </util:properties>
