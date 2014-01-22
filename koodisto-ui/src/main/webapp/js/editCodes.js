@@ -1,5 +1,6 @@
 
-app.factory('CodesEditorModel', function($location, RootCodes, Organizations, CodesByUriAndVersion, OrganizationByOid, $modal) {
+app.factory('CodesEditorModel', function($location, RootCodes, Organizations, CodesByUriAndVersion, OrganizationByOid,
+                                         CodesByUri, $modal) {
     var model;
     model = new function() {
         this.withinCodes = [];
@@ -73,9 +74,15 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 scope.validitylevelsv = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
                 scope.validitylevelen = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
 
-                this.withinCodes = model.codes.withinCodes;
-                this.includesCodes = model.codes.includesCodes;
-                this.levelsWithCodes = model.codes.levelsWithCodes;
+                model.codes.withinCodes.forEach(function(codes){
+                    model.getLatestCodesVersionsByCodesUri(codes,model.withinCodes);
+                });
+                model.codes.includesCodes.forEach(function(codes){
+                    model.getLatestCodesVersionsByCodesUri(codes,model.includesCodes);
+                });
+                model.codes.levelsWithCodes.forEach(function(codes){
+                    model.getLatestCodesVersionsByCodesUri(codes,model.levelsWithCodes);
+                });
 
                 OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result) {
                     if (result.nimi['fi']) {
@@ -84,6 +91,15 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                         model.codes.organizationName = result.nimi['sv'];
                     }
                 });
+            });
+        };
+
+        this.getLatestCodesVersionsByCodesUri = function(codesUri, list) {
+            CodesByUri.get({codesUri: codesUri}, function (result) {
+                var ce = {};
+                ce.uri = codesUri;
+                ce.name = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
+                list.push(ce);
             });
         };
 
