@@ -129,6 +129,23 @@
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
         </dependency>
+
+        <!-- CAS ticket cache replication -->
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>${ehcache.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-jgroupsreplication</artifactId>
+            <version>${ehcache-jgroupsreplication.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jgroups</groupId>
+            <artifactId>jgroups</artifactId>
+            <version>${jgroups.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
