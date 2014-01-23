@@ -88,10 +88,10 @@ public class UploadServiceTest {
         uploadService.upload(koodistoUri, format, "UTF-8", handler);
 
         koodisto = getKoodistoByUri(koodistoUri);
-        assertEquals(koodistoVersio + 1, koodisto.getVersio());
-        assertEquals(TilaType.LUONNOS, koodisto.getTila());
+        assertEquals(koodistoVersio, koodisto.getVersio());
+        assertEquals(TilaType.HYVAKSYTTY, koodisto.getTila());
 
-        assertEquals(1, getKoodisByKoodisto(koodistoUri).size());
+        assertEquals(0, getKoodisByKoodisto(koodistoUri).size());
     }
     
     @Test

@@ -1,12 +1,18 @@
 
 app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion,
-                                       CodeElementVersionsByCodeElementUri, OrganizationByOid) {
+                                       CodeElementVersionsByCodeElementUri, OrganizationByOid, CodesByUri) {
     var model;
     model = new function() {
         codeElements = [];
         this.alerts = [];
+        this.withinCodes = [];
+        this.includesCodes = [];
+        this.levelsWithCodes = [];
 
         this.init = function(codesUri, codesVersion) {
+            this.withinCodes = [];
+            this.includesCodes = [];
+            this.levelsWithCodes = [];
             model.codesUri = codesUri;
             model.codesVersion = codesVersion;
             model.showversion = null;
@@ -64,6 +70,16 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 model.validitylevelsv = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
                 model.validitylevelen = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
 
+                model.codes.withinCodes.forEach(function(codes){
+                    model.getLatestCodesVersionsByCodesUri(codes,model.withinCodes);
+                });
+                model.codes.includesCodes.forEach(function(codes){
+                    model.getLatestCodesVersionsByCodesUri(codes,model.includesCodes);
+                });
+                model.codes.levelsWithCodes.forEach(function(codes){
+                    model.getLatestCodesVersionsByCodesUri(codes,model.levelsWithCodes);
+                });
+
                 OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result) {
                     if (result.nimi['fi']) {
                         model.codes.organizationName = result.nimi['fi'];
@@ -74,6 +90,16 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 model.getCodeElements(codesUri,codesVersion);
             });
         };
+
+        this.getLatestCodesVersionsByCodesUri = function(codesUri, list) {
+            CodesByUri.get({codesUri: codesUri}, function (result) {
+                var ce = {};
+                ce.uri = codesUri;
+                ce.name = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
+                list.push(ce);
+            });
+        };
+
         this.getCodeElements = function(codesUri,codesVersion) {
             CodeElementsByCodesUriAndVersion.get({codesUri: codesUri, codesVersion: codesVersion}, function (result) {
                 model.codeElements = result;
@@ -128,13 +154,45 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             });
         };
 
+        this.removeFromWithinCodes = function(codes) {
+            model.withinRelationToRemove = codes;
+
+            model.modalInstance = $modal.open({
+                templateUrl: 'confirmModalContent.html',
+                controller: ViewCodesController,
+                resolve: {
+                }
+            });
+
+        };
+
+        this.removeFromIncludesCodes = function(codes) {
+            model.includesRelationToRemove = codes;
+            model.modalInstance = $modal.open({
+                templateUrl: 'confirmModalContent.html',
+                controller: ViewCodesController,
+                resolve: {
+                }
+            });
+        };
+
+        this.removeFromLevelsWithCodes = function(codes) {
+            model.levelsRelationToRemove = codes;
+            model.modalInstance = $modal.open({
+                templateUrl: 'confirmModalContent.html',
+                controller: ViewCodesController,
+                resolve: {
+                }
+            });
+        };
+
     };
 
 
     return model;
 });
 
-function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, DownloadCodes) {
+function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, DownloadCodes, RemoveRelationCodes) {
     $scope.model = ViewCodesModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
@@ -245,4 +303,49 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
         $scope.model.alerts.push(alert);
 
     }
+
+    $scope.okconfirm = function() {
+        if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
+            $scope.model.withinCodes.splice($scope.model.withinCodes.indexOf($scope.model.withinRelationToRemove.uri), 1);
+
+            RemoveRelationCodes.put({codesUri: $scope.model.withinRelationToRemove.uri,
+                codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
+
+            }, function(error) {
+                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                $scope.model.alerts.push(alert);
+            });
+        } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
+
+            $scope.model.includesCodes.splice($scope.model.includesCodes.indexOf($scope.model.includesRelationToRemove.uri), 1);
+
+            RemoveRelationCodes.put({codesUri: $scope.model.codes.koodistoUri,
+                codesUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
+
+            }, function(error) {
+                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                $scope.model.alerts.push(alert);
+            });
+        } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
+            $scope.model.levelsWithCodes.splice($scope.model.levelsWithCodes.indexOf($scope.model.levelsRelationToRemove.uri), 1);
+
+            RemoveRelationCodes.put({codesUri: $scope.model.levelsRelationToRemove.uri,
+                codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
+            }, function(error) {
+                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                $scope.model.alerts.push(alert);
+            });
+        }
+        $scope.model.levelsRelationToRemove = null;
+        $scope.model.includesRelationToRemove = null;
+        $scope.model.withinRelationToRemove = null;
+        $scope.model.modalInstance.close();
+    };
+
+    $scope.cancelconfirm = function() {
+        $scope.model.levelsRelationToRemove = null;
+        $scope.model.includesRelationToRemove = null;
+        $scope.model.withinRelationToRemove = null;
+        $scope.model.modalInstance.dismiss('cancel');
+    };
 }

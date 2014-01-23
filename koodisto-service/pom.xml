@@ -136,7 +136,7 @@
             <version>${activemq.version}</version>
         </dependency>
 
-        <!-- CAS ticket cache replication -->
+        <!-- CAS ticket cache replication
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
@@ -152,7 +152,7 @@
             <artifactId>jgroups</artifactId>
             <version>${jgroups.version}</version>
         </dependency>
-
+-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
