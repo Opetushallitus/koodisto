@@ -233,27 +233,30 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         KoodistoVersio koodisto = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
         for (UpdateKoodiDataType updateData : koodiList) {
             if (StringUtils.isNotBlank(updateData.getKoodiUri())) {
-                KoodiVersio latest = getLatestKoodiVersio(updateData.getKoodiUri());
-                if (!latest.getKoodi().getKoodisto().getKoodistoUri().equals(koodisto.getKoodisto().getKoodistoUri())) {
-                    throw new KoodiNotInKoodistoException("Koodi " + latest.getKoodi().getKoodiUri() + " is not in " + "koodisto "
-                            + koodisto.getKoodisto().getKoodistoUri());
+                KoodiVersio latest = null;
+                try {
+                    latest = getLatestKoodiVersio(updateData.getKoodiUri());
+                } catch (KoodiNotFoundException e) {
+                    logger.warn("Koodia ei löytynyt. Luodaan uusi " + updateData.getKoodiUri());
                 }
 
-                KoodiVersioWithKoodistoItem updated = updateKoodi(updateData, true);
-                KoodistoVersioKoodiVersio result = koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(koodisto.getId(), updated.getKoodiVersio()
-                        .getId());
+                if (latest != null && latest.getKoodi().getKoodisto().getKoodistoUri().equals(koodisto.getKoodisto().getKoodistoUri())) {
+                    KoodiVersioWithKoodistoItem updated = updateKoodi(updateData, true);
+                    KoodistoVersioKoodiVersio result = koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(koodisto.getId(), updated.getKoodiVersio()
+                            .getId());
 
-                if (result == null) {
-                    KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
-                    newRelationEntry.setKoodistoVersio(koodisto);
-                    newRelationEntry.setKoodiVersio(updated.getKoodiVersio());
-                    koodistoVersioKoodiVersioDAO.insert(newRelationEntry);
+                    if (result == null) {
+                        KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
+                        newRelationEntry.setKoodistoVersio(koodisto);
+                        newRelationEntry.setKoodiVersio(updated.getKoodiVersio());
+                        koodistoVersioKoodiVersioDAO.insert(newRelationEntry);
+                    }
+
+                } else {
+                    CreateKoodiDataType createData = new CreateKoodiDataType();
+                    EntityUtils.copyFields(updateData, createData);
+                    createKoodi(koodistoUri, createData);
                 }
-
-            } else {
-                CreateKoodiDataType createData = new CreateKoodiDataType();
-                EntityUtils.copyFields(updateData, createData);
-                createKoodi(koodistoUri, createData);
             }
         }
     }
