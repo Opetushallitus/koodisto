@@ -269,42 +269,34 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
         }
     };
 
-    $scope.createCodeElement = function(data) {
-        var ce = {};
-        ce.uri = data.uri;
-        ce.name = data.name;
-
-        return ce;
-    };
 
     $scope.addToWithinCodeElement = function(data) {
-        var ce = {};
-        ce = $scope.createCodeElement(data);
-        if ($scope.model.withinCodeElements.indexOf(ce) === -1) {
-            $scope.model.withinCodeElements.push(ce);
+
+        if ($scope.model.withinCodeElements.indexOf(data) === -1) {
+
             AddRelationCodeElement.put({codeElementUri: data.uri,
                 codeElementUriToAdd: $scope.model.codeElement.koodiUri,relationType: "SISALTYY"},function(result) {
+                $scope.model.withinCodeElements.push(data);
             });
         }
     };
 
     $scope.addToIncludesCodeElement = function(data) {
-        var ce = {};
-        ce = $scope.createCodeElement(data);
-        if ($scope.model.includesCodeElements.indexOf(ce) === -1) {
-            $scope.model.includesCodeElements.push(ce);
+
+        if ($scope.model.includesCodeElements.indexOf(data) === -1) {
+
             AddRelationCodeElement.put({codeElementUri: $scope.model.codeElement.koodiUri,
                 codeElementUriToAdd: data.uri,relationType: "SISALTYY"},function(result) {
+                $scope.model.includesCodeElements.push(data);
             });
         }
     };
     $scope.addToLevelsWithCodeElement = function(data) {
-        var ce = {};
-        ce = $scope.createCodeElement(data);
-        if ($scope.model.levelsWithCodeElements.indexOf(ce) === -1) {
-            $scope.model.levelsWithCodeElements.push(ce);
+
+        if ($scope.model.levelsWithCodeElements.indexOf(data) === -1) {
             AddRelationCodeElement.put({codeElementUri: data.uri,
                 codeElementUriToAdd: $scope.model.codeElement.koodiUri,relationType: "RINNASTEINEN"},function(result) {
+                $scope.model.includesCodeElements.push(data);
             });
         }
     };
@@ -322,12 +314,15 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
             });
 
         } else if ($scope.model.addToListName === 'includescodes') {
+            selectedItems.forEach(function(codeElement){
+                $scope.addToIncludesCodeElement(codeElement);
+            });
 
         } else if ($scope.model.addToListName === 'levelswithcodes') {
-
+            selectedItems.forEach(function(codeElement){
+                $scope.addToLevelsWithCodeElement(codeElement);
+            });
         }
-        $scope.model.withinCodeElements = $filter('filter')($scope.model.shownCodeElements, {checked: true});
-
         $scope.model.codeelementmodalInstance.close();
     }
 
