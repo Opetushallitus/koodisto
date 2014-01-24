@@ -226,7 +226,12 @@ public class CodesResource {
     @Secured({KoodistoRole.READ, KoodistoRole.UPDATE, KoodistoRole.CRUD})
     @Transactional
     public KoodistoDto getCodesByCodesUriAndVersion(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion) {
-        KoodistoVersio koodistoVersio = koodistoBusinessService.getKoodistoVersio(codesUri,codesVersion);
+        KoodistoVersio koodistoVersio = null;
+        if (codesVersion == 0) {
+            koodistoVersio = koodistoBusinessService.getLatestKoodistoVersio(codesUri);
+        } else {
+            koodistoVersio = koodistoBusinessService.getKoodistoVersio(codesUri,codesVersion);
+        }
 
         return conversionService.convert(koodistoVersio, KoodistoDto.class);
     }

@@ -14,13 +14,13 @@ import java.util.List;
  */
 public class KoodistoRyhmaListDto {
 
-    @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class,JsonViews.Simple.class})
     private String koodistoRyhmaUri;
 
-    @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class,JsonViews.Simple.class})
     private List<KoodistoRyhmaMetadata> metadata = new ArrayList<KoodistoRyhmaMetadata>();
 
-    @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class,JsonViews.Simple.class})
     private List<KoodistoListDto> koodistos = new ArrayList<KoodistoListDto>();
 
     public String getKoodistoRyhmaUri() {

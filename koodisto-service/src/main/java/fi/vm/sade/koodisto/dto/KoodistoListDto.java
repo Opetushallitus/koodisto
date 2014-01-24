@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class KoodistoListDto extends AbstractKoodistoDto {
 
-    @JsonView({JsonViews.Basic.class, JsonViews.Simple.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     private KoodistoVersioListDto latestKoodistoVersio;
 
     @JsonView(JsonViews.Basic.class)

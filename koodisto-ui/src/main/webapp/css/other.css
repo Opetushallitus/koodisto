@@ -422,3 +422,13 @@ label, .label {
     text-shadow: none !important;
     font-size: inherit !important;
 }
+
+.codeSelector {
+    min-height: 5em;
+    max-height: 400px;
+    overflow: visible;
+    position: relative;
+    width: 97%;
+    background-color: #ffffff;
+    z-index: 100050;
+}

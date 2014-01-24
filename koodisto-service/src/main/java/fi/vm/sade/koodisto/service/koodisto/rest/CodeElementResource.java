@@ -143,7 +143,12 @@ public class CodeElementResource {
     @Secured({KoodistoRole.READ, KoodistoRole.UPDATE, KoodistoRole.CRUD})
     @Transactional
     public List<SimpleKoodiDto> getAllCodeElementsByCodesUriAndVersion(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion) {
-        List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.getKoodisByKoodistoVersio(codesUri, codesVersion, false);
+        List<KoodiVersioWithKoodistoItem> codeElements = null;
+        if (codesVersion == 0) {
+            codeElements = koodiBusinessService.getKoodisByKoodisto(codesUri, false);
+        } else {
+            codeElements = koodiBusinessService.getKoodisByKoodistoVersio(codesUri, codesVersion, false);
+        }
         return conversionService.convertAll(codeElements, SimpleKoodiDto.class);
     }
 

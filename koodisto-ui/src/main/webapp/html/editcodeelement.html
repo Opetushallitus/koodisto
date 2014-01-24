@@ -1,21 +1,21 @@
-<!-- Node template -->
+
 <script type="text/ng-template" id="codeelement.html">
-    <span class="label">
-        <i class="fa fa-sitemap organisaatio"
-           ng-class="{ auki: (data.open || data.koodistos.length == 0 || data.metadata[0].lyhytNimi),
-                kiinni: (!data.open && data.koodistos.length > 0 && data.metadata[0].nimi)}"
-           ng-click="openChildren(data)"></i>
-        <label>
-            <a href="" ng-if="data.metadata[0].nimi">{{data.metadata[0].nimi || data.metadata[1].nimi || data.metadata[2].nimi}}</a>
-            <a href="" ng-if="data.latestKoodistoVersio.metadata[0].nimi">{{data.latestKoodistoVersio.metadata[0].nimi || data.latestKoodistoVersio.metadata[1].nimi || data.latestKoodistoVersio.metadata[2].nimi}}</a>
-            <a href="" ng-click="close(data)" ng-if="data.metadata[0].lyhytNimi">{{data.metadata[0].lyhytNimi || data.metadata[1].lyhytNimi || data.metadata[2].lyhytNimi}}</a>
-        </label>
-    </span>
-    <ol ng-if="data.open">
-        <li ng-if="data.latestKoodistoVersio.metadata[0].nimi" ng-repeat="data in data.koodistos" ng-include="'codeelement.html'">
-        <li ng-if="data.metadata[0].lyhytNimi" ng-repeat="data in data.children" ng-include="'codeelement.html'">
-        </li>
-    </ol>
+    <table class="table">
+        <thead>
+            <tr>
+                <th><input id="select_all_codeelements" type="checkbox" ng-model="selectallcodelements"/></th>
+                <th>{{'codeelement.editpage.tableheader1' | i18n}}</th>
+                <th>{{'codeelement.editpage.tableheader2' | i18n}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="codeElement in model.shownCodeElements | orderBy:'name'">
+                <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" ng-model="codeElement.checked" ng-checked="selectallcodelements"/></td>
+                <td class="align-center">{{codeElement.value}}</td>
+                <td class="align-center">{{codeElement.name}}</td>
+            </tr>
+        </tbody>
+    </table>
 
 </script>
 
@@ -29,6 +29,20 @@
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="okconfirm()">OK</button>
         <button class="btn btn-warning" ng-click="cancelconfirm()">Cancel</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="codeElementModalContent.html">
+    <div class="modal-header">
+        <h3>{{'codeelement.editpage.choosecodeelements' | i18n}}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="codeSelector" ng-include="'codeelement.html'">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="okcodeelement()">{{'codes.save' | i18n}}</button>
+        <button class="btn btn-warning" ng-click="cancelcodeelement()">{{'codes.cancel' | i18n}}</button>
     </div>
 </script>
 
@@ -179,23 +193,12 @@
             </div>
         </div>
 
-        <div ng-show="codeElementSelector" class="span9">
-            <div class="modal-backdrop" ng-click="close()"></div>
-
-            <div class="orgSelector">
-                <ol class="treelist collapsible">
-                    <li ng-repeat="data in model.allCodes" ng-include="'codeelement.html'">
-                    </li>
-                </ol>
-            </div>
-
-        </div>
 
 
         <div class="control-group">
             <label for="withincodes" class="control-label">{{'codeelement.editpage.withincodeelements' | i18n}}</label><br>
             <div class="controls">
-                <button id="withincodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-show="!codeElementSelector" ng-click="show('withincodes')">Lisää koodi</button>
+                <button id="withincodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-click="show('withincodes')">Lisää koodi</button>
             </div>
         </div>
 
@@ -225,7 +228,7 @@
         <div class="control-group">
             <label for="includescodes" class="control-label">{{'codeelement.editpage.includescodeelements' | i18n}}</label><br>
             <div class="controls">
-                <button id="includescodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-show="!codeElementSelector" ng-click="show('includescodes')">Lisää koodi</button>
+                <button id="includescodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-click="show('includescodes')">Lisää koodi</button>
             </div>
         </div>
 
@@ -255,7 +258,7 @@
         <div class="control-group">
             <label for="levelswithcodes" class="control-label">{{'codeelement.editpage.levelswithcodeelements' | i18n}}</label><br>
             <div class="controls">
-                <button id="levelswithcodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-show="!codeElementSelector" ng-click="show('levelswithcodes')">Lisää koodi</button>
+                <button id="levelswithcodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-click="show('levelswithcodes')">Lisää koodi</button>
             </div>
         </div>
 
