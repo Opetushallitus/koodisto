@@ -87,6 +87,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElementUri}, function (result) {
                 var ce = {};
                 ce.uri = codeElementUri;
+                ce.value = result.koodiArvo;
                 ce.name = model.languageSpecificValue(result.metadata, 'lyhytNimi', 'FI');
                 list.push(ce);
             });
@@ -270,33 +271,65 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
     };
 
 
+    $scope.createCodes = function(data) {
+        var ce = {};
+        ce.uri = data.uri;
+        ce.name = data.name
+        ce.value = data.value;
+        return ce;
+    };
+
     $scope.addToWithinCodeElement = function(data) {
+        var ce = {};
+        ce = $scope.createCodes(data);
 
-        if ($scope.model.withinCodeElements.indexOf(data) === -1) {
+        var found = false;
+        $scope.model.withinCodeElements.forEach(function(codeElement, index){
+            if (codeElement.uri.indexOf(data.uri) !== -1) {
+                found = true;
+            }
+        });
 
+        if (found === false) {
+            $scope.model.withinCodeElements.push(ce);
             AddRelationCodeElement.put({codeElementUri: data.uri,
                 codeElementUriToAdd: $scope.model.codeElement.koodiUri,relationType: "SISALTYY"},function(result) {
-                $scope.model.withinCodeElements.push(data);
             });
         }
     };
 
     $scope.addToIncludesCodeElement = function(data) {
+        var ce = {};
+        ce = $scope.createCodes(data);
+        var found = false;
+        $scope.model.includesCodeElements.forEach(function(codeElement, index){
+            if (codeElement.uri.indexOf(data.uri) !== -1) {
+                found = true;
+            }
+        });
 
-        if ($scope.model.includesCodeElements.indexOf(data) === -1) {
-
+        if (found === false) {
+            $scope.model.includesCodeElements.push(ce);
             AddRelationCodeElement.put({codeElementUri: $scope.model.codeElement.koodiUri,
                 codeElementUriToAdd: data.uri,relationType: "SISALTYY"},function(result) {
-                $scope.model.includesCodeElements.push(data);
+
             });
         }
     };
     $scope.addToLevelsWithCodeElement = function(data) {
-
-        if ($scope.model.levelsWithCodeElements.indexOf(data) === -1) {
+        var ce = {};
+        ce = $scope.createCodes(data);
+        var found = false;
+        $scope.model.levelsWithCodeElements.forEach(function(codeElement, index){
+            if (codeElement.uri.indexOf(data.uri) !== -1) {
+                found = true;
+            }
+        });
+        if (found === false) {
+            $scope.model.levelsWithCodeElements.push(ce);
             AddRelationCodeElement.put({codeElementUri: data.uri,
                 codeElementUriToAdd: $scope.model.codeElement.koodiUri,relationType: "RINNASTEINEN"},function(result) {
-                $scope.model.includesCodeElements.push(data);
+
             });
         }
     };
@@ -408,7 +441,12 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
 
     $scope.okconfirm = function() {
         if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
-            $scope.model.withinCodeElements.splice($scope.model.withinCodeElements.indexOf($scope.model.withinRelationToRemove.uri), 1);
+            $scope.model.withinCodeElements.forEach(function(codeElement, index){
+                if (codeElement.uri.indexOf($scope.model.withinRelationToRemove.uri) !== -1) {
+                    $scope.model.withinCodeElements.splice(index,1);
+                }
+            });
+
 
             RemoveRelationCodeElement.put({codeElementUri: $scope.model.withinRelationToRemove.uri,
                 codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "SISALTYY"},function(result) {
@@ -418,8 +456,11 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
                 $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
-
-            $scope.model.includesCodeElements.splice($scope.model.includesCodeElements.indexOf($scope.model.includesRelationToRemove.uri), 1);
+            $scope.model.includesCodeElements.forEach(function(codeElement, index){
+                if (codeElement.uri.indexOf($scope.model.includesRelationToRemove.uri) !== -1) {
+                    $scope.model.includesCodeElements.splice(index,1);
+                }
+            });
 
             RemoveRelationCodeElement.put({codeElementUri: $scope.model.codeElement.koodiUri,
                 codeElementUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
@@ -429,7 +470,11 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
                 $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
-            $scope.model.levelsWithCodeElements.splice($scope.model.levelsWithCodeElements.indexOf($scope.model.levelsRelationToRemove.uri), 1);
+            $scope.model.levelsWithCodeElements.forEach(function(codeElement, index){
+                if (codeElement.uri.indexOf($scope.model.levelsRelationToRemove.uri) !== -1) {
+                    $scope.model.levelsWithCodeElements.splice(index,1);
+                }
+            });
 
             RemoveRelationCodeElement.put({codeElementUri: $scope.model.levelsRelationToRemove.uri,
                 codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "RINNASTEINEN"},function(result) {

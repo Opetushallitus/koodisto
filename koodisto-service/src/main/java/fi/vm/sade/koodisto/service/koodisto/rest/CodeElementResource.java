@@ -58,7 +58,6 @@ public class CodeElementResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Extended.class})
     @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
-    @Transactional
     public void addRelation(@PathParam("codeElementUri") String codeElementUri,
                                @PathParam("codeElementUriToAdd") String codeElementUriToAdd,
                                @PathParam("relationType") String relationType) {

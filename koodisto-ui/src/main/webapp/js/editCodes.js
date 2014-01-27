@@ -330,7 +330,14 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     $scope.addToWithinCodes = function(data) {
         var ce = {};
         ce = $scope.createCodes(data);
-        if ($scope.model.withinCodes.indexOf(ce) === -1) {
+        var found = false;
+        $scope.model.withinCodes.forEach(function(codes, index){
+            if (codes.uri.indexOf(data.koodistoUri) !== -1) {
+                found = true;
+            }
+        });
+
+        if (found === false) {
             $scope.model.withinCodes.push(ce);
             AddRelationCodes.put({codesUri: data.koodistoUri,
                 codesUriToAdd: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
@@ -341,7 +348,14 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     $scope.addToIncludesCodes = function(data) {
         var ce = {};
         ce = $scope.createCodes(data);
-        if ($scope.model.includesCodes.indexOf(ce) === -1) {
+        var found = false;
+        $scope.model.includesCodes.forEach(function(codes, index){
+            if (codes.uri.indexOf(data.koodistoUri) !== -1) {
+                found = true;
+            }
+        });
+
+        if (found === false) {
             $scope.model.includesCodes.push(ce);
             AddRelationCodes.put({codesUri: $scope.model.codes.koodistoUri,
                 codesUriToAdd: data.koodistoUri,relationType: "SISALTYY"},function(result) {
@@ -351,7 +365,13 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     $scope.addToLevelsWithCodes = function(data) {
         var ce = {};
         ce = $scope.createCodes(data);
-        if ($scope.model.levelsWithCodes.indexOf(ce) === -1) {
+        $scope.model.levelsWithCodes.forEach(function(codes, index){
+            if (codes.uri.indexOf(data.koodistoUri) !== -1) {
+                found = true;
+            }
+        });
+
+        if (found === false) {
             $scope.model.levelsWithCodes.push(ce);
             AddRelationCodes.put({codesUri: data.koodistoUri,
                 codesUriToAdd: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
@@ -405,7 +425,12 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
 
     $scope.okconfirm = function() {
         if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
-            $scope.model.withinCodes.splice($scope.model.withinCodes.indexOf($scope.model.withinRelationToRemove.uri), 1);
+
+            $scope.model.withinCodes.forEach(function(codes, index){
+                if (codes.uri.indexOf($scope.model.withinRelationToRemove.uri) !== -1) {
+                    $scope.model.withinCodes.splice(index,1);
+                }
+            });
 
             RemoveRelationCodes.put({codesUri: $scope.model.withinRelationToRemove.uri,
                 codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
@@ -415,9 +440,11 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
-
-            $scope.model.includesCodes.splice($scope.model.includesCodes.indexOf($scope.model.includesRelationToRemove.uri), 1);
-
+            $scope.model.includesCodes.forEach(function(codes, index){
+                if (codes.uri.indexOf($scope.model.includesRelationToRemove.uri) !== -1) {
+                    $scope.model.includesCodes.splice(index,1);
+                }
+            });
             RemoveRelationCodes.put({codesUri: $scope.model.codes.koodistoUri,
                 codesUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
 
@@ -426,8 +453,11 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
-            $scope.model.levelsWithCodes.splice($scope.model.levelsWithCodes.indexOf($scope.model.levelsRelationToRemove.uri), 1);
-
+            $scope.model.levelsWithCodes.forEach(function(codes, index){
+                if (codes.uri.indexOf($scope.model.levelsRelationToRemove.uri) !== -1) {
+                    $scope.model.levelsWithCodes.splice(index,1);
+                }
+            });
             RemoveRelationCodes.put({codesUri: $scope.model.levelsRelationToRemove.uri,
                 codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
             }, function(error) {
