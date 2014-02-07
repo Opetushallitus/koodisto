@@ -24,7 +24,7 @@
 	</modules>
 
 	<properties>
-		<generic.version>7.0-SNAPSHOT</generic.version>
+		<generic.version>9.0-SNAPSHOT</generic.version>
 		<organisaatio.version>8.0-SNAPSHOT</organisaatio.version>
 
 		<!-- bamboo.data.home and sonar.jdbc.password must be given as env-properties. -->
@@ -45,6 +45,7 @@
         <ehcache-jgroupsreplication.version>1.5</ehcache-jgroupsreplication.version>
         <jgroups.version>2.10.0.GA</jgroups.version>
         <vaadin.version>6.8.13</vaadin.version>
+        <log.client.version>8.0-SNAPSHOT</log.client.version>
 	</properties>
 
 	<dependencyManagement>
@@ -100,6 +101,17 @@
 				<artifactId>gelfj</artifactId>
 				<version>${gelfj.version}</version>
 			</dependency>
+            <dependency>
+                <groupId>fi.vm.sade.log</groupId>
+                <artifactId>log-client</artifactId>
+                <version>${log.client.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 

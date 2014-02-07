@@ -8,6 +8,7 @@ import fi.vm.sade.koodisto.service.GenericFault;
 import fi.vm.sade.koodisto.service.KoodiAdminService;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.log.KoodistoAuditLogger;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
@@ -35,10 +36,15 @@ public class KoodiAdminServiceImpl implements KoodiAdminService {
     @Autowired
     private SadeConversionService conversionService;
 
+    @Autowired
+    private KoodistoAuditLogger koodistoAuditLogger;
+
     @Override
     @Secured({KoodistoRole.UPDATE, KoodistoRole.CRUD})
     public KoodiType updateKoodi(UpdateKoodiDataType updateKoodiData) {
-        return conversionService.convert(koodiBusinessService.updateKoodi(updateKoodiData), KoodiType.class);
+        KoodiType updated = conversionService.convert(koodiBusinessService.updateKoodi(updateKoodiData), KoodiType.class);
+        koodistoAuditLogger.logUpdateKoodi(updateKoodiData);
+        return updated;
     }
 
     public ConversionService getConversionService() {
@@ -57,12 +63,14 @@ public class KoodiAdminServiceImpl implements KoodiAdminService {
     @Secured({KoodistoRole.CRUD})
     public void massCreate(String koodistoUri, List<UpdateKoodiDataType> koodiList) {
         koodiBusinessService.massCreate(koodistoUri, koodiList);
+        koodistoAuditLogger.logMassCreate(koodistoUri, koodiList);
     }
 
     @Override
     @Secured({KoodistoRole.CRUD})
     public void deleteKoodiVersion(String koodiUri, int koodiVersio) {
         koodiBusinessService.delete(koodiUri, koodiVersio);
+        koodistoAuditLogger.logDeleteKoodiVersion(koodiUri, koodiVersio);
     }
 
     @Override
@@ -72,6 +80,7 @@ public class KoodiAdminServiceImpl implements KoodiAdminService {
         fi.vm.sade.koodisto.model.SuhteenTyyppi st = fi.vm.sade.koodisto.model.SuhteenTyyppi.valueOf(suhteenTyyppi
                 .name());
         koodiBusinessService.addRelation(ylaKoodi, alaKoodi, st);
+        koodistoAuditLogger.logAddRelation(ylaKoodi, alaKoodi, suhteenTyyppi);
     }
 
     @Override
@@ -81,7 +90,7 @@ public class KoodiAdminServiceImpl implements KoodiAdminService {
         fi.vm.sade.koodisto.model.SuhteenTyyppi st = fi.vm.sade.koodisto.model.SuhteenTyyppi.valueOf(suhteenTyyppi
                 .name());
         koodiBusinessService.addRelation(ylaKoodi, alaKoodis, st);
-
+        koodistoAuditLogger.logAddRelationByAlakoodi(ylaKoodi, alaKoodis, suhteenTyyppi);
     }
 
     @Override
@@ -91,13 +100,16 @@ public class KoodiAdminServiceImpl implements KoodiAdminService {
         fi.vm.sade.koodisto.model.SuhteenTyyppi st = fi.vm.sade.koodisto.model.SuhteenTyyppi.valueOf(suhteenTyyppi
                 .name());
         koodiBusinessService.removeRelation(ylaKoodi, alaKoodis, st);
+        koodistoAuditLogger.logRemoveRelationByAlakoodi(ylaKoodi, alaKoodis, st);
     }
 
     @Override
     @Secured({KoodistoRole.CRUD})
     public KoodiType createKoodi(String koodistoUri, CreateKoodiDataType createKoodiData) {
-        return conversionService.convert(koodiBusinessService.createKoodi(koodistoUri, createKoodiData),
+        KoodiType koodi = conversionService.convert(koodiBusinessService.createKoodi(koodistoUri, createKoodiData),
                 KoodiType.class);
+        koodistoAuditLogger.logCreateKoodi(koodistoUri, createKoodiData);
+        return koodi;
     }
 
 }
