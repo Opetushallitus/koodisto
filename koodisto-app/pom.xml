@@ -5,7 +5,7 @@
     <parent>
         <artifactId>koodisto</artifactId>
         <groupId>fi.vm.sade.koodisto</groupId>
-        <version>8.0</version>
+        <version>8.1</version>
     </parent>
     <artifactId>koodisto-app</artifactId>
     <packaging>war</packaging>
@@ -58,28 +58,39 @@
     </build>
 
     <dependencies>
-	<dependency>
-                    <groupId>org.graylog2</groupId>
-                    <artifactId>gelfj</artifactId>
-                    </dependency>
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>generic-test-support</artifactId>
             <scope>test</scope>
+            <version>${generic.version}</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>generic-common</artifactId>
+            <version>${generic.version}</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>dependencies-vaadin</artifactId>
             <type>pom</type>
+            <version>${generic.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-expression</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.koodisto</groupId>
@@ -94,38 +105,51 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <scope>test</scope>
+            <version>${mockito.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
         <!-- Needed for aspectj weaver -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
+            <version>${aspectj.version}</version>
         </dependency>
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>generic-test-aspects</artifactId>
             <scope>test</scope>
+            <version>${generic.version}</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.organisaatio</groupId>
             <artifactId>organisaatio-api</artifactId>
+            <version>${organisaatio.version}</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.organisaatio</groupId>
             <artifactId>organisaatio-ui-widgets</artifactId>
+            <version>${organisaatio.version}</version>
             <exclusions>
                 <exclusion>
                     <artifactId>koodisto-widget</artifactId>
@@ -137,6 +161,7 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
+            <version>${servlet.version}</version>
         </dependency>
         <dependency>
             <groupId>net.sourceforge.cpdetector</groupId>
@@ -159,6 +184,7 @@
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>webapp-portal-decorator</artifactId>
             <type>war</type>
+            <version>${generic.version}</version>
         </dependency>
 
     </dependencies>
