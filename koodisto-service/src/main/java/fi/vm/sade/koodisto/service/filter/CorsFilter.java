@@ -3,11 +3,15 @@ package fi.vm.sade.koodisto.service.filter;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerResponse;
 import com.sun.jersey.spi.container.ContainerResponseFilter;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * User: kwuoti Date: 15.4.2013 Time: 8.46
  */
 public class CorsFilter implements ContainerResponseFilter {
+    @Value("${auth.mode}")
+    private String authMode;
+
     @Override
     public ContainerResponse filter(ContainerRequest containerRequest, ContainerResponse containerResponse) {
         if (containerRequest.getRequestHeaders().containsKey("access-control-request-method")) {
@@ -20,7 +24,9 @@ public class CorsFilter implements ContainerResponseFilter {
                 containerResponse.getHttpHeaders().add("Access-Control-Allow-Headers", value);
             }
         }
-        containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", "*");
+        if ("dev".equals(authMode)) {
+            containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", "*");
+        }
         return containerResponse;
     }
 }
