@@ -19,6 +19,18 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-client-support-distributed-ehcache</artifactId>
+            <version>3.1.10</version>
+            <exclusions>
+                <exclusion>
+                   <groupId>net.sf.ehcache</groupId>
+		   <artifactId>ehcache</artifactId>
+		</exclusion>
+            </exclusions>
+	</dependency>
+
+        <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>generic-test-support</artifactId>
             <scope>test</scope>
@@ -125,6 +137,24 @@
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
         </dependency>
+
+        <!-- CAS ticket cache replication -->
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>${ehcache.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-jgroupsreplication</artifactId>
+            <version>${ehcache-jgroupsreplication.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jgroups</groupId>
+            <artifactId>jgroups</artifactId>
+            <version>${jgroups.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -225,6 +255,10 @@
                 <exclusion>
                     <groupId>org.springframework</groupId>
                     <artifactId>spring-context</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-aop</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
