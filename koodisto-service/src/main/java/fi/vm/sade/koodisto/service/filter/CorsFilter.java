@@ -4,12 +4,14 @@ import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerResponse;
 import com.sun.jersey.spi.container.ContainerResponseFilter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * User: kwuoti Date: 15.4.2013 Time: 8.46
  */
+@Component
 public class CorsFilter implements ContainerResponseFilter {
     private static Logger log = LoggerFactory.getLogger(CorsFilter.class);
 	
