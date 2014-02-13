@@ -4,11 +4,15 @@ import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerResponse;
 import com.sun.jersey.spi.container.ContainerResponseFilter;
 import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * User: kwuoti Date: 15.4.2013 Time: 8.46
  */
 public class CorsFilter implements ContainerResponseFilter {
+    private static Logger log = LoggerFactory.getLogger(CorsFilter.class);
+	
     @Value("${auth.mode}")
     private String authMode;
     
@@ -27,6 +31,8 @@ public class CorsFilter implements ContainerResponseFilter {
                 containerResponse.getHttpHeaders().add("Access-Control-Allow-Headers", value);
             }
         }
+        log.info("AuthMode:" + authMode);
+        log.info("AllowOrigin:" + allowOrigin);
         if ("dev".equals(authMode)) {
             // When testing on localhost, allow script access from all domains
             containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", "*");
