@@ -33,9 +33,7 @@ public class CorsFilter implements ContainerResponseFilter {
                 containerResponse.getHttpHeaders().add("Access-Control-Allow-Headers", value);
             }
         }
-        log.error("AuthMode:" + authMode);
-        log.error("AllowOrigin:" + allowOrigin);
-        /*
+
         if ("dev".equals(authMode)) {
             // When testing on localhost, allow script access from all domains
             containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", "*");
@@ -46,8 +44,7 @@ public class CorsFilter implements ContainerResponseFilter {
                 containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", allowOrigin);
             }
         }
-        */
-        containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", "*");
+
         return containerResponse;
     }
 }
