@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd
-        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+          http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <context:property-placeholder
             location="classpath:koodisto-service.properties, file:///${user.home:''}/oph-configuration/common.properties, file:///${user.home:''}/oph-configuration/koodisto-service.properties, file:///${user.home:''}/oph-configuration/override.properties"
@@ -28,6 +29,7 @@
     <!-- Use @Component annotations for bean definitions -->
     <context:component-scan base-package="fi.vm.sade.koodisto" />
 
+    <import resource="classpath:/META-INF/spring/logger-context.xml"/>
     <import resource="classpath:META-INF/spring/context/aspect-context.xml" />
     <import resource="classpath:META-INF/spring/context/service-context.xml"/>
     <import resource="classpath:META-INF/spring/context/dao-context.xml"/>
