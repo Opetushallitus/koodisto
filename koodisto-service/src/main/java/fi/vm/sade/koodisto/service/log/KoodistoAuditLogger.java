@@ -6,7 +6,6 @@ import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.SuhteenTyyppiType;
 import fi.vm.sade.log.client.Logger;
-import fi.vm.sade.log.client.LoggerHelper;
 import fi.vm.sade.log.model.SimpleBeanSerializer;
 import fi.vm.sade.log.model.Tapahtuma;
 import org.apache.commons.lang.StringUtils;
@@ -32,11 +31,6 @@ public class KoodistoAuditLogger {
     @Autowired
     private Logger logger;
 
-
-    private void init() {
-        LoggerHelper.init(logger);
-    }
-
     private static class KeyValue {
         private KeyValue(String key, Serializable value) {
             this.key = key;
@@ -61,8 +55,6 @@ public class KoodistoAuditLogger {
     }
 
     public void logMassCreate(String koodistoUri, List<UpdateKoodiDataType> koodiList) {
-        init();
-
         int newSeq = 1;
 
         Map<String, Serializable> tapahtumaValues = new HashMap<String, Serializable>();
@@ -77,26 +69,23 @@ public class KoodistoAuditLogger {
             }
 
 
-            tapahtumaValues.put(key, (Serializable) serializeUpdatKoodiDataType(up));
+            tapahtumaValues.put(key, (Serializable) serializeUpdateKoodiDataType(up));
         }
         logAuditTapahtuma(createTapahtuma(koodistoUri, TARGET_TYPE_KOODISTO, "massCreate", tapahtumaValues));
     }
 
 
     public void logUpdateKoodi(UpdateKoodiDataType updateKoodiData) {
-        init();
         logAuditTapahtuma(createTapahtuma(updateKoodiData.getKoodiUri(), TARGET_TYPE_KOODI, "updateKoodi",
-                serializeUpdatKoodiDataType(updateKoodiData)));
+                serializeUpdateKoodiDataType(updateKoodiData)));
     }
 
     public void logDeleteKoodiVersion(String koodiUri, int koodiVersio) {
-        init();
         logAuditTapahtuma(createTapahtuma(koodiUri, TARGET_TYPE_KOODI, "deleteKoodiVersion",
                 createMap(keyValue("koodiUri", koodiUri), keyValue("koodiVersio", koodiVersio))));
     }
 
     public void logAddRelation(String ylaKoodi, String alaKoodi, SuhteenTyyppiType suhteenTyyppi) {
-        init();
         logAuditTapahtuma(createTapahtuma(ylaKoodi, TARGET_TYPE_KOODI, "addRelation",
                 createMap(
                         keyValue("ylakoodi", ylaKoodi),
@@ -106,7 +95,6 @@ public class KoodistoAuditLogger {
 
 
     public void logAddRelationByAlakoodi(String ylaKoodi, List<String> alaKoodis, SuhteenTyyppiType suhteenTyyppi) {
-        init();
         logAuditTapahtuma(createTapahtuma(ylaKoodi, TARGET_TYPE_KOODI, "addRelationByAlakoodi",
                 createMap(
                         keyValue("ylakoodi", ylaKoodi),
@@ -116,7 +104,6 @@ public class KoodistoAuditLogger {
 
 
     public void logRemoveRelationByAlakoodi(String ylaKoodi, List<String> alaKoodis, SuhteenTyyppi st) {
-        init();
         logAuditTapahtuma(createTapahtuma(ylaKoodi, TARGET_TYPE_KOODI, "removeRelationByAlakoodi",
                 createMap(
                         keyValue("ylakoodi", ylaKoodi),
@@ -126,14 +113,28 @@ public class KoodistoAuditLogger {
 
 
     public void logCreateKoodi(String koodistoUri, CreateKoodiDataType createKoodiData) {
-        init();
+        logAuditTapahtuma(createTapahtuma(koodistoUri, TARGET_TYPE_KOODISTO, "createKoodi",
+                serializeCreateKoodiDataType(createKoodiData)));
     }
 
     private Tapahtuma createTapahtuma(String target, String targetType, String type, Map<String, Serializable> values) {
         return Tapahtuma.createTapahtuma(SYSTEM, target, targetType, new Date(), type, getTekija(), null, values);
     }
 
-    private Map<String, Serializable> serializeUpdatKoodiDataType(UpdateKoodiDataType up) {
+    private Map<String, Serializable> serializeUpdateKoodiDataType(UpdateKoodiDataType up) {
+        Map<String, Serializable> values = new HashMap<String, Serializable>(SimpleBeanSerializer.getBeanAsMap(up));
+        List<Map<String, String>> metadatas = new ArrayList<Map<String, String>>();
+
+        for (KoodiMetadataType meta : up.getMetadata()) {
+            metadatas.add(SimpleBeanSerializer.getBeanAsMap(meta));
+        }
+
+        values.put("metadatas", (ArrayList<Map<String, String>>) metadatas);
+
+        return values;
+    }
+
+    private Map<String, Serializable> serializeCreateKoodiDataType(CreateKoodiDataType up) {
         Map<String, Serializable> values = new HashMap<String, Serializable>(SimpleBeanSerializer.getBeanAsMap(up));
         List<Map<String, String>> metadatas = new ArrayList<Map<String, String>>();
 
@@ -148,19 +149,7 @@ public class KoodistoAuditLogger {
 
 
     private void logAuditTapahtuma(Tapahtuma tapahtuma) {
-        // Get the (possible) composite log event that can contain "sub" events and update it.
-        Tapahtuma rootTapahtuma = LoggerHelper.getAuditRootTapahtuma();
-        rootTapahtuma.setHost(tapahtuma.getHost());
-        rootTapahtuma.setSystem(tapahtuma.getSystem());
-        rootTapahtuma.setTarget(tapahtuma.getTarget());
-        rootTapahtuma.setTargetType(tapahtuma.getTargetType());
-        rootTapahtuma.setTimestamp(tapahtuma.getTimestamp());
-        rootTapahtuma.setType(tapahtuma.getType());
-        rootTapahtuma.setUser(tapahtuma.getUser());
-        rootTapahtuma.setUserActsForUser(tapahtuma.getUserActsForUser());
-
-        // Log the root event
-        LoggerHelper.log();
+        logger.log(tapahtuma);
     }
 
     private String getTekija() {
