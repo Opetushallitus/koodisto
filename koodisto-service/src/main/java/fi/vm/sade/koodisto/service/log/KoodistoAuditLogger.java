@@ -58,6 +58,7 @@ public class KoodistoAuditLogger {
         int newSeq = 1;
 
         Map<String, Serializable> tapahtumaValues = new HashMap<String, Serializable>();
+        tapahtumaValues.put("koodistoUri", koodistoUri);
         for (UpdateKoodiDataType up : koodiList) {
             String key = null;
 
@@ -114,7 +115,9 @@ public class KoodistoAuditLogger {
 
     public void logCreateKoodi(String koodistoUri, CreateKoodiDataType createKoodiData) {
         logAuditTapahtuma(createTapahtuma(koodistoUri, TARGET_TYPE_KOODISTO, "createKoodi",
-                serializeCreateKoodiDataType(createKoodiData)));
+                createMap(
+                        keyValue("koodistoUri", koodistoUri),
+                        keyValue("koodi", (Serializable) serializeCreateKoodiDataType(createKoodiData)))));
     }
 
     private Tapahtuma createTapahtuma(String target, String targetType, String type, Map<String, Serializable> values) {
