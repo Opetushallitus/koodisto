@@ -23,7 +23,6 @@ import java.util.List;
  * Service interface implementation for KoodiAdminService
  *
  * @author Eetu Blomqvist
- *
  */
 public class KoodiAdminServiceImpl implements KoodiAdminService {
 
