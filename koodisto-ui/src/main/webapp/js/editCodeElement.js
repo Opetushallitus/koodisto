@@ -164,10 +164,22 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
 function CodeElementEditorController($scope, $location, $routeParams, CodeElementEditorModel, UpdateCodeElement,
                                      AddRelationCodeElement, RemoveRelationCodeElement, ValidateService,
                                      CodesByUriAndVersion,CodeElementsByCodesUriAndVersion,$modal, $filter) {
+
     $scope.model = CodeElementEditorModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
     $scope.codeElementVersion = $routeParams.codeElementVersion;
     CodeElementEditorModel.init($scope, $scope.codeElementUri, $scope.codeElementVersion);
+
+    $scope.selectallcodelements = false;
+
+    $scope.onMasterChange = function(master){
+
+        for(var i = 0; i < $scope.model.shownCodeElements.length; i++) {
+            if ($scope.search($scope.model.shownCodeElements[i])) {
+                $scope.model.shownCodeElements[i].checked = master;
+            }
+        }
+    };
 
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
@@ -179,6 +191,13 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
 
     $scope.submit = function() {
         $scope.persistCodes();
+    };
+
+    $scope.search = function (item){
+        if (!$scope.model.query || item.name.toLowerCase().indexOf($scope.model.query.toLowerCase())!==-1 || item.value.toLowerCase().indexOf($scope.model.query.toLowerCase())!==-1) {
+            return true;
+        }
+        return false;
     };
 
     $scope.persistCodes = function() {

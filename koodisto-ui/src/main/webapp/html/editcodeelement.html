@@ -3,14 +3,14 @@
     <table class="table">
         <thead>
             <tr>
-                <th><input id="select_all_codeelements" type="checkbox" ng-model="selectallcodelements"/></th>
+                <th><input id="select_all_codeelements" type="checkbox" ng-model="selectallcodelements" ng-change="onMasterChange(selectallcodelements)"/></th>
                 <th>{{'codeelement.editpage.tableheader1' | i18n}}</th>
                 <th>{{'codeelement.editpage.tableheader2' | i18n}}</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="codeElement in model.shownCodeElements | orderBy:'name'">
-                <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" ng-model="codeElement.checked" ng-checked="selectallcodelements"/></td>
+            <tr ng-repeat="codeElement in model.shownCodeElements | orderBy:'name' | filter:search">
+                <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" ng-model="codeElement.checked"/></td>
                 <td class="align-center">{{codeElement.value}}</td>
                 <td class="align-center">{{codeElement.name}}</td>
             </tr>
@@ -37,6 +37,13 @@
         <h3>{{'codeelement.editpage.choosecodeelements' | i18n}}</h3>
     </div>
     <div class="modal-body">
+        <div class="row-fluid">
+            <div class="offset2 span10 form-inline">
+                <input type="text" maxlength="50"
+                       placeholder="{{'codes.viewpage.codeelements.search.placeholder' | i18n}}" ng-model="model.query"/>
+             </div>
+        </div>
+
         <div class="codeSelector" ng-include="'codeelement.html'">
         </div>
     </div>
