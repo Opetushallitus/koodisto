@@ -48,9 +48,9 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
                 scope.containscodessv = model.languageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'SV');
                 scope.containscodesen = model.languageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'EN');
 
-                if (model.codeElement.tila === "PASSIIVINEN")
+                if (model.codeElement.tila === "PASSIIVINEN") {
                     model.deleteState = "";
-
+                }
 
                 model.codeElement.withinCodeElements.forEach(function(codelement){
                     model.getLatestCodeElementVersionsByCodeElementUri(codelement,model.withinCodeElements);

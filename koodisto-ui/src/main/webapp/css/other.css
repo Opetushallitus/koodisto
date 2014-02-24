@@ -432,3 +432,7 @@ label, .label {
     background-color: #ffffff;
     z-index: 100050;
 }
+
+.btn {
+    margin: 0px 10px 0px 0px;
+}
