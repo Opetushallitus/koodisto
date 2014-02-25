@@ -147,7 +147,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
         this.removeFromWithinCodes = function(codes) {
             model.withinRelationToRemove = codes;
 
-            model.modalInstance = $modal.open({
+            model.modalInstance = $modal.openChildren({
                 templateUrl: 'confirmModalContent.html',
                 controller: CodesEditorController,
                 resolve: {
@@ -216,6 +216,15 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     $scope.submit = function() {
         $scope.persistCodes();
     };
+
+    $scope.search = function (item){
+        if (!$scope.model.query || item.koodistoUri.toLowerCase().indexOf($scope.model.query.toLowerCase())!==-1) {
+            item.open = true;
+            return true;
+        }
+        return false;
+    };
+
 
     $scope.persistCodes = function() {
         var codes = {

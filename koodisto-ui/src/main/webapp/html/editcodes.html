@@ -1,4 +1,5 @@
 <script type="text/ng-template" id="codes.html">
+
     <span class="label">
         <i class="fa fa-sitemap organisaatio"
            ng-class="{ auki: (data.open || data.koodistos.length == 0 || data.metadata[0].lyhytNimi),
@@ -9,8 +10,8 @@
             <a href="" ng-click="close(data)" ng-if="data.latestKoodistoVersio.metadata[0].nimi">{{data.latestKoodistoVersio.metadata[0].nimi || data.latestKoodistoVersio.metadata[1].nimi || data.latestKoodistoVersio.metadata[2].nimi}}</a>
         </label>
     </span>
-    <ol ng-if="data.open">
-        <li ng-if="data.latestKoodistoVersio.metadata[0].nimi" ng-repeat="data in data.koodistos" ng-include="'codes.html'">
+    <ol ng-if="data.open || model.query.length!=0">
+        <li ng-if="data.latestKoodistoVersio.metadata[0].nimi" ng-repeat="data in data.koodistos | orderBy:'latestKoodistoVersio.metadata[0].nimi' | filter:search" ng-include="'codes.html'">
         </li>
     </ol>
 
@@ -162,6 +163,9 @@
             <div class="modal-backdrop" ng-click="close()"></div>
 
             <div class="orgSelector">
+                <input type="text" maxlength="50"
+                       placeholder="{{'codes.mainpage.search.placeholder' | i18n}}" ng-model="model.query"/>
+
                 <ol class="treelist collapsible">
                     <li ng-repeat="data in model.allCodes" ng-include="'codes.html'">
                     </li>
