@@ -291,6 +291,8 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
 
     function uploadComplete(evt) {
         ViewCodesModel.init($scope.codesUri,$scope.codesVersion);
+        var alert = { type: 'success', msg: 'Koodisto ' + $scope.codesUri + ' on p\u00E4ivitetty.' }
+        $scope.model.alerts.push(alert);
     }
 
     function uploadFailed(evt) {
