@@ -374,6 +374,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     $scope.addToLevelsWithCodes = function(data) {
         var ce = {};
         ce = $scope.createCodes(data);
+        var found = false;
         $scope.model.levelsWithCodes.forEach(function(codes, index){
             if (codes.uri.indexOf(data.koodistoUri) !== -1) {
                 found = true;

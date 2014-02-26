@@ -1,3 +1,4 @@
+
 <script type="text/ng-template" id="codes.html">
 
     <span class="label">
@@ -10,7 +11,7 @@
             <a href="" ng-click="close(data)" ng-if="data.latestKoodistoVersio.metadata[0].nimi">{{data.latestKoodistoVersio.metadata[0].nimi || data.latestKoodistoVersio.metadata[1].nimi || data.latestKoodistoVersio.metadata[2].nimi}}</a>
         </label>
     </span>
-    <ol ng-if="data.open || model.query.length!=0">
+    <ol ng-if="data.open || model.query && model.query.length!=0">
         <li ng-if="data.latestKoodistoVersio.metadata[0].nimi" ng-repeat="data in data.koodistos | orderBy:'latestKoodistoVersio.metadata[0].nimi' | filter:search" ng-include="'codes.html'">
         </li>
     </ol>
@@ -179,11 +180,28 @@
             <label for="withincodes" class="control-label">{{'codes.editpage.withincodes' | i18n}}</label><br>
             <div class="controls">
                 <button id="withincodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codesSelector" ng-show="!codesSelector" ng-click="show('withincodes')">{{'codes.editpage.addcodes' | i18n}}</button>
+
+            </div>
+
+        </div>
+
+        <div class="row-fluid">
+            <div class="span9 offset2">
+                <div>
+                    <input type="text" maxlength="50" ng-change="addToListName = 'withincodes'"
+                           placeholder="{{'codes.mainpage.search.placeholder' | i18n}}" ng-model="model.query"/>
+
+                    <ol ng-show="addToListName === 'withincodes' && model.query && model.query.length != 0" class="treelist collapsible">
+                        <li ng-repeat="data in model.allCodes" ng-include="'codes.html'">
+                        </li>
+                    </ol>
+                </div>
+
             </div>
         </div>
 
         <div class="row-fluid" ng-show="model.withinCodes.length">
-            <div class="span6">
+            <div class="span5 offset2">
                 <table class="table">
                     <thead>
                     <tr>
@@ -212,8 +230,24 @@
             </div>
         </div>
 
+        <div class="row-fluid">
+            <div class="span9 offset2">
+                <div>
+                    <input type="text" maxlength="50" ng-change="addToListName = 'includescodes'"
+                           placeholder="{{'codes.mainpage.search.placeholder' | i18n}}" ng-model="model.query"/>
+
+                    <ol ng-show="addToListName === 'includescodes' && model.query && model.query.length != 0" class="treelist collapsible">
+                        <li ng-repeat="data in model.allCodes" ng-include="'codes.html'">
+                        </li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+
+
         <div class="row-fluid" ng-show="model.includesCodes.length">
-            <div class="span6">
+            <div class="span5 offset2">
                 <table class="table">
                     <thead>
                     <tr>
@@ -242,8 +276,23 @@
             </div>
         </div>
 
+        <div class="row-fluid">
+            <div class="span9 offset2">
+                <div>
+                    <input type="text" maxlength="50" ng-change="addToListName = 'levelswithcodes'"
+                           placeholder="{{'codes.mainpage.search.placeholder' | i18n}}" ng-model="model.query"/>
+
+                    <ol ng-show="addToListName === 'levelswithcodes' && model.query && model.query.length != 0" class="treelist collapsible">
+                        <li ng-repeat="data in model.allCodes" ng-include="'codes.html'">
+                        </li>
+                    </ol>
+                </div>
+
+            </div>
+        </div>
+
         <div class="row-fluid" ng-show="model.levelsWithCodes.length">
-            <div class="span6">
+            <div class="span5 offset2">
                 <table class="table">
                     <thead>
                     <tr>
