@@ -14,6 +14,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
         this.allWithinCodeElements = [];
         this.allIncludesCodeElements = [];
         this.allLevelsWithCodeElements = [];
+        this.showCode = '';
 
         this.init = function(scope, codeElementUri, codeElementVersion) {
             this.allCodes = [];
@@ -168,6 +169,8 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
     $scope.model = CodeElementEditorModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
     $scope.codeElementVersion = $routeParams.codeElementVersion;
+    $scope.sortBy = 'name';
+
     CodeElementEditorModel.init($scope, $scope.codeElementUri, $scope.codeElementVersion);
 
     $scope.selectallcodelements = false;
@@ -378,82 +381,95 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
         $scope.model.codeelementmodalInstance.close();
     }
 
+    $scope.getCodeElements = function() {
+        var name = $scope.model.addToListName;
+        CodesByUriAndVersion.get({codesUri: $scope.model.codeElement.koodisto.koodistoUri, codesVersion: 0}, function (result) {
+
+            if (name === 'withincodes') {
+                if ($scope.model.showCode && $scope.model.showCode.length > 0) {
+                    $scope.model.allWithinCodeElements = [];
+                    CodeElementsByCodesUriAndVersion.get({codesUri: $scope.model.showCode, codesVersion: 0}, function (result2) {
+                        result2.forEach(function(codeElement){
+                            var ce = {};
+                            ce.uri = codeElement.koodiUri;
+                            ce.value = codeElement.koodiArvo;
+                            ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'lyhytNimi', 'FI');
+                            $scope.model.allWithinCodeElements.push(ce);
+                        });
+
+                        $scope.model.shownCodeElements = $scope.model.allWithinCodeElements;
+
+                    });
+
+
+
+                }
+                $scope.model.shownCodes=result.withinCodes;
+                $scope.model.shownCodeElements = $scope.model.allWithinCodeElements;
+
+            } else if (name === 'includescodes') {
+                if ($scope.model.showCode && $scope.model.showCode.length > 0) {
+                    $scope.model.allIncludesCodeElements = [];
+                    CodeElementsByCodesUriAndVersion.get({codesUri: $scope.model.showCode, codesVersion: 0}, function (result2) {
+                        result2.forEach(function(codeElement){
+                            var ce = {};
+                            ce.uri = codeElement.koodiUri;
+                            ce.value = codeElement.koodiArvo;
+                            ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'lyhytNimi', 'FI');
+                            $scope.model.allIncludesCodeElements.push(ce);
+                        });
+
+                        $scope.model.shownCodeElements = $scope.model.allIncludesCodeElements;
+
+                    });
+
+
+                }
+                $scope.model.shownCodes=result.includesCodes;
+                $scope.model.shownCodeElements = $scope.model.allIncludesCodeElements;
+
+
+            } else if (name === 'levelswithcodes') {
+                if ($scope.model.showCode && $scope.model.showCode.length > 0) {
+                    $scope.model.allLevelsWithCodeElements = [];
+                    CodeElementsByCodesUriAndVersion.get({codesUri: $scope.model.showCode, codesVersion: 0}, function (result2) {
+                        result2.forEach(function(codeElement){
+                            var ce = {};
+                            ce.uri = codeElement.koodiUri;
+                            ce.value = codeElement.koodiArvo;
+                            ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'lyhytNimi', 'FI');
+                            $scope.model.allLevelsWithCodeElements.push(ce);
+                        });
+
+                        $scope.model.shownCodeElements = $scope.model.allLevelsWithCodeElements;
+
+                    });
+
+                }
+                $scope.model.shownCodes=result.levelsWithCodes;
+                $scope.model.shownCodeElements = $scope.model.allLevelsWithCodeElements;
+
+            }
+
+
+        });
+
+    }
 
     $scope.show = function(name){
+        $scope.model.showCode = '';
         $scope.model.addToListName = name;
         if ($scope.model.allWithinCodeElements.length === 0 || $scope.model.allIncludesCodeElements.length === 0 ||
             $scope.model.allLevelsWithCodeElements.length === 0) {
-            CodesByUriAndVersion.get({codesUri: $scope.model.codeElement.koodisto.koodistoUri, codesVersion: 0}, function (result) {
-                if (name === 'withincodes') {
-                    if ($scope.model.allWithinCodeElements.length === 0) {
-                        result.withinCodes.forEach(function(codes){
-                            CodeElementsByCodesUriAndVersion.get({codesUri: codes, codesVersion: 0}, function (result2) {
-                                result2.forEach(function(codeElement){
-                                     var ce = {};
-                                     ce.uri = codeElement.koodiUri;
-                                     ce.value = codeElement.koodiArvo;
-                                     ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'lyhytNimi', 'FI');
-                                     $scope.model.allWithinCodeElements.push(ce);
-                                });
 
-                                $scope.model.shownCodeElements = $scope.model.allWithinCodeElements;
-
-                             });
-
-                        });
-                    }
-                    $scope.model.shownCodeElements = $scope.model.allWithinCodeElements;
-
-                } else if (name === 'includescodes') {
-                    if ($scope.model.allIncludesCodeElements.length === 0) {
-                        result.includesCodes.forEach(function(codes){
-                            CodeElementsByCodesUriAndVersion.get({codesUri: codes, codesVersion: 0}, function (result2) {
-                                result2.forEach(function(codeElement){
-                                    var ce = {};
-                                    ce.uri = codeElement.koodiUri;
-                                    ce.value = codeElement.koodiArvo;
-                                    ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'lyhytNimi', 'FI');
-                                    $scope.model.allIncludesCodeElements.push(ce);
-                                });
-
-                                $scope.model.shownCodeElements = $scope.model.allIncludesCodeElements;
-
-                            });
-
-                        });
-                    }
-                    $scope.model.shownCodeElements = $scope.model.allIncludesCodeElements;
+            $scope.getCodeElements();
 
 
-                } else if (name === 'levelswithcodes') {
-                    if ($scope.model.allLevelsWithCodeElements.length === 0) {
-                        result.levelsWithCodes.forEach(function(codes){
-                            CodeElementsByCodesUriAndVersion.get({codesUri: codes, codesVersion: 0}, function (result2) {
-                                result2.forEach(function(codeElement){
-                                    var ce = {};
-                                    ce.uri = codeElement.koodiUri;
-                                    ce.value = codeElement.koodiArvo;
-                                    ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'lyhytNimi', 'FI');
-                                    $scope.model.allLevelsWithCodeElements.push(ce);
-                                });
-
-                                $scope.model.shownCodeElements = $scope.model.allLevelsWithCodeElements;
-
-                            });
-
-                        });
-                    }
-                    $scope.model.shownCodeElements = $scope.model.allLevelsWithCodeElements;
-
+            $scope.model.codeelementmodalInstance = $modal.open({
+                templateUrl: 'codeElementModalContent.html',
+                controller: CodeElementEditorController,
+                resolve: {
                 }
-
-                $scope.model.codeelementmodalInstance = $modal.open({
-                    templateUrl: 'codeElementModalContent.html',
-                    controller: CodeElementEditorController,
-                    resolve: {
-                    }
-                });
-
             });
         }
     }

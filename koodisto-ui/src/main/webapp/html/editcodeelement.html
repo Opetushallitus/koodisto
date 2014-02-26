@@ -4,12 +4,12 @@
         <thead>
             <tr>
                 <th><input id="select_all_codeelements" type="checkbox" ng-model="selectallcodelements" ng-change="onMasterChange(selectallcodelements)"/></th>
-                <th>{{'codeelement.editpage.tableheader1' | i18n}}</th>
-                <th>{{'codeelement.editpage.tableheader2' | i18n}}</th>
+                <th ng:click="sortBy='value'" ng-class="{'sort-true': sortBy=='value'}">{{'codeelement.editpage.tableheader1' | i18n}}</th>
+                <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.editpage.tableheader2' | i18n}}</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="codeElement in model.shownCodeElements | orderBy:'name' | filter:search">
+            <tr ng-repeat="codeElement in model.shownCodeElements | orderBy:sortBy | filter:search">
                 <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" ng-model="codeElement.checked"/></td>
                 <td class="align-center">{{codeElement.value}}</td>
                 <td class="align-center">{{codeElement.name}}</td>
@@ -41,6 +41,8 @@
             <div class="offset2 span10 form-inline">
                 <input type="text" maxlength="50"
                        placeholder="{{'codes.viewpage.codeelements.search.placeholder' | i18n}}" ng-model="model.query"/>
+                <select ng-model="model.showCode" ng-options="c as c for c in model.shownCodes" ng-change="getCodeElements()">
+                </select>
              </div>
         </div>
 
