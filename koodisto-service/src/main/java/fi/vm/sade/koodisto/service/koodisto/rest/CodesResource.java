@@ -23,7 +23,6 @@ import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +61,7 @@ public class CodesResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Extended.class})
-    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public void addRelation(@PathParam("codesUri") String codesUri,
                             @PathParam("codesUriToAdd") String codesUriToAdd,
@@ -77,7 +76,7 @@ public class CodesResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Extended.class})
-    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public void removeRelation(@PathParam("codesUri") String codesUri,
                                @PathParam("codesUriToRemove") String codesUriToRemove,
@@ -91,7 +90,7 @@ public class CodesResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public Response update(KoodistoDto codesDTO) {
         try {
@@ -138,7 +137,7 @@ public class CodesResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public Response insert(KoodistoDto codesDTO) {
         List<String> codesGroupUris = new ArrayList();
@@ -181,7 +180,7 @@ public class CodesResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView(JsonViews.Simple.class)
-    @Secured({KoodistoRole.READ, KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public List<KoodistoRyhmaListDto> listAllCodesGroups() {
         return conversionService.convertAll(
@@ -192,7 +191,7 @@ public class CodesResource {
     @Path("group/{codeGroupUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({KoodistoRole.READ, KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public KoodistoRyhmaListDto listAllCodesInCodeGroup(@PathParam("codeGroupUri") String codeGroupUri) {
         return conversionService.convert(koodistoBusinessService.getKoodistoGroup(codeGroupUri), KoodistoRyhmaListDto.class);
     }
@@ -201,7 +200,7 @@ public class CodesResource {
     @Path("all")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({KoodistoRole.READ, KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public List<KoodistoVersioListDto> listAllCodesInAllCodeGroups() {
         SearchKoodistosCriteriaType searchType = KoodistoServiceSearchCriteriaBuilder.latestCodes();
         return conversionService.convertAll(koodistoBusinessService.searchKoodistos(searchType), KoodistoVersioListDto.class);
@@ -211,7 +210,7 @@ public class CodesResource {
     @Path("{codesUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({KoodistoRole.READ, KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public KoodistoListDto getCodesByCodesUri(@PathParam("codesUri") String codesUri) {
         Koodisto koodisto = koodistoBusinessService.getKoodistoByKoodistoUri(codesUri);
@@ -223,7 +222,7 @@ public class CodesResource {
     @Path("{codesUri}/{codesVersion}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Extended.class})
-    @Secured({KoodistoRole.READ, KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public KoodistoDto getCodesByCodesUriAndVersion(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion) {
         KoodistoVersio koodistoVersio = null;
@@ -238,7 +237,7 @@ public class CodesResource {
 
     @POST
     @Path("upload/{codesUri}")
-    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFile(@FormDataParam("uploadedFile") InputStream fileInputStream,
                                @FormDataParam("uploadedFile") com.sun.jersey.core.header.FormDataContentDisposition contentDispositionHeader,
@@ -279,7 +278,7 @@ public class CodesResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({KoodistoRole.READ,KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public FileDto download(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion,
                            FileFormatDto fileFormatDto) {

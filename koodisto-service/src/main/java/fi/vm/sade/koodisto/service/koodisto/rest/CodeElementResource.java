@@ -22,7 +22,6 @@ import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,7 +56,7 @@ public class CodeElementResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Extended.class})
-    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public void addRelation(@PathParam("codeElementUri") String codeElementUri,
                                @PathParam("codeElementUriToAdd") String codeElementUriToAdd,
                                @PathParam("relationType") String relationType) {
@@ -71,7 +70,7 @@ public class CodeElementResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Extended.class})
-    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public void removeRelation(@PathParam("codeElementUri") String codeElementUri,
                                    @PathParam("codeElementUriToRemove") String codeElementUriToRemove,
@@ -85,7 +84,7 @@ public class CodeElementResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Extended.class})
-    @Secured({KoodistoRole.UPDATE,KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public Response update(KoodiDto codeElementDTO) {
         try {
@@ -139,7 +138,7 @@ public class CodeElementResource {
     @Path("codes/{codesUri}/{codesVersion}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Simple.class})
-    @Secured({KoodistoRole.READ, KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public List<SimpleKoodiDto> getAllCodeElementsByCodesUriAndVersion(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion) {
         List<KoodiVersioWithKoodistoItem> codeElements = null;
@@ -155,7 +154,7 @@ public class CodeElementResource {
     @Path("{codeElementUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Simple.class})
-    @Secured({KoodistoRole.READ, KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public List<SimpleKoodiDto> getAllCodeElementVersionsByCodeElementUri(@PathParam("codeElementUri") String codeElementUri) {
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(codeElementUri);
@@ -167,7 +166,7 @@ public class CodeElementResource {
     @Path("{codeElementUri}/{codeElementVersion}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Extended.class})
-    @Secured({KoodistoRole.READ, KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public ExtendedKoodiDto getCodeElementByUriAndVersion(@PathParam("codeElementUri") String codeElementUri, @PathParam("codeElementVersion") int codeElementVersion) {
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(codeElementUri, codeElementVersion);
@@ -180,7 +179,7 @@ public class CodeElementResource {
     @Path("{codesUri}/{codesVersion}/{codeElementUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({KoodistoRole.READ, KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public KoodiDto getCodeElementByCodeElementUri(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion, @PathParam("codeElementUri") String codeElementUri) {
         KoodiVersioWithKoodistoItem codeElement = koodiBusinessService.getKoodiByKoodistoVersio(codesUri, codesVersion, codeElementUri);
         return conversionService.convert(codeElement, KoodiDto.class);
@@ -192,7 +191,7 @@ public class CodeElementResource {
     @Path("latest/{codeElementUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({KoodistoRole.READ, KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public KoodiDto getLatestCodeElementVersionsByCodeElementUri(@PathParam("codeElementUri") String codeElementUri) {
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(codeElementUri);
@@ -205,7 +204,7 @@ public class CodeElementResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
-    @Secured({KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     public Response insert(@PathParam("codesUri") String codesUri, KoodiDto codeelementDTO) {
         try {
             KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem = koodiBusinessService.createKoodi(codesUri, convertFromDTOToCreateKoodiDataType(codeelementDTO));
@@ -251,7 +250,7 @@ public class CodeElementResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Simple.class})
-    @Secured({KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     @Transactional
     public Response delete(@PathParam("codeElementUri") String codeElementUri, @PathParam("codeElementVersion") int codeElementVersion) {
         try {
