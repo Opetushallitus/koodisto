@@ -1,8 +1,8 @@
 package fi.vm.sade.koodisto.service.business.it;
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
-import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
-import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.model.KoodistoRyhma;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioHasRelationsException;
@@ -11,7 +11,6 @@ import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

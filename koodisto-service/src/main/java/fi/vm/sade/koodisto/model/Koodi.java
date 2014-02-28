@@ -5,15 +5,10 @@ package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.generic.model.BaseEntity;
 import org.codehaus.jackson.map.annotate.JsonView;
-import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import org.hibernate.metamodel.relational.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.HashSet;

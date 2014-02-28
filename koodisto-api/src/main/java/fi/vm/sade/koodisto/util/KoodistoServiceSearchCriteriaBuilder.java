@@ -1,12 +1,12 @@
 package fi.vm.sade.koodisto.util;
 
-import java.util.Arrays;
-import java.util.Date;
-
 import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosVersioSelectionType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
+
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Utility class to help create koodisto search criteria for the most common

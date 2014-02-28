@@ -5,8 +5,10 @@ package fi.vm.sade.koodisto.dao.impl;
 
 import fi.vm.sade.generic.dao.AbstractJpaDAOImpl;
 import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
-import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
+import fi.vm.sade.koodisto.model.Koodisto;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistonSuhde;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
 import org.springframework.stereotype.Repository;
 

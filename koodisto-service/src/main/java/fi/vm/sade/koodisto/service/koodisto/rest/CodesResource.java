@@ -1,14 +1,12 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import com.sun.jersey.multipart.FormDataParam;
-import fi.vm.sade.generic.rest.Cacheable;
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.dto.*;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.DownloadService;
 import fi.vm.sade.koodisto.service.UploadService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
-import fi.vm.sade.koodisto.service.impl.KoodistoRole;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
@@ -26,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.ws.rs.*;
@@ -36,7 +35,10 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 @Component
 @Path("codes")

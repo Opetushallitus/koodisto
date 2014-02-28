@@ -1,11 +1,10 @@
 package fi.vm.sade.koodisto.model.constraint.fieldassert;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 public class FieldAssertValidator implements ConstraintValidator<FieldAssert, Object> {
 

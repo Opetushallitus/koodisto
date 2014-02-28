@@ -2,11 +2,10 @@ package fi.vm.sade.koodisto.util;
 
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.*;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Collection;
 import java.util.Locale;
-
-import org.apache.commons.lang.StringUtils;
 
 public abstract class KoodistoHelper {
     public static KoodiMetadataType getKoodiMetadataForLanguage(Collection<KoodiMetadataType> metadatas, KieliType kieli) {

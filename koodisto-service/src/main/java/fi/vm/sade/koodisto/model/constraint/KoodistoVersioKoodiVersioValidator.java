@@ -1,9 +1,9 @@
 package fi.vm.sade.koodisto.model.constraint;
 
+import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
-import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 
 public class KoodistoVersioKoodiVersioValidator implements
         ConstraintValidator<KoodistoVersioKoodiVersioConstraint, KoodistoVersioKoodiVersio> {

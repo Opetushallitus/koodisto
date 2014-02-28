@@ -6,9 +6,9 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoRyhmaListType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.io.FileInputStream;

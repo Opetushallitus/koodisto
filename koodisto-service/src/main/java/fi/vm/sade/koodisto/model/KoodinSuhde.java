@@ -3,13 +3,11 @@
  */
 package fi.vm.sade.koodisto.model;
 
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-
 import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author tommiha
