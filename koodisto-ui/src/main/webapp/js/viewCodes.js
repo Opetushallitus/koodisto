@@ -81,11 +81,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 });
 
                 OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result) {
-                    if (result.nimi['fi']) {
-                        model.codes.organizationName = result.nimi['fi'];
-                    } else {
-                        model.codes.organizationName = result.nimi['sv'];
-                    }
+                    model.codes.organizationName = result.nimi['fi'] || result.nimi['sv'] || result.nimi['en'];
                 });
                 model.getCodeElements(codesUri,codesVersion);
             });

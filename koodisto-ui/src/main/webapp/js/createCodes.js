@@ -183,12 +183,7 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
 
         modalInstance.result.then(function (selectedItem) {
             $scope.organizationOid = selectedItem.oid;
-            if (selectedItem.nimi['fi']) {
-                $scope.organizationName = selectedItem.nimi['fi'];
-            } else {
-                $scope.organizationName = selectedItem.nimi['sv'];
-            }
-
+            $scope.organizationName = selectedItem.nimi['fi'] || selectedItem.nimi['sv'] || selectedItem.nimi['en'];
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());
         });

@@ -85,11 +85,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 });
 
                 OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result) {
-                    if (result.nimi['fi']) {
-                        model.codes.organizationName = result.nimi['fi'];
-                    } else {
-                        model.codes.organizationName = result.nimi['sv'];
-                    }
+                    model.codes.organizationName = result.nimi['fi'] || result.nimi['sv'] || result.nimi['en'];
                 });
             });
         };
@@ -129,13 +125,9 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
         this.getOrganizations = function() {
             Organizations.get({}, function (result) {
                 model.organizations = result;
-                for(var i=0; i < model.organizations.organisaatiot.length; i++) {
-                    if (model.organizations.organisaatiot[i].nimi['fi']) {
-                        model.organizations.organisaatiot[i].name =  model.organizations.organisaatiot[i].nimi['fi'];
-                    } else {
-                        model.organizations.organisaatiot[i].name =  model.organizations.organisaatiot[i].nimi['sv'];
-                    }
-                }
+                model.organizations.forEach(function(item, index) {
+                    item.name = item.nimi['fi'] || item.nimi['sv'] || item.nimi['en'];
+                });
             });
         };
 
@@ -422,12 +414,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
 
         modalInstance.result.then(function (selectedItem) {
             $scope.model.codes.organisaatioOid = selectedItem.oid;
-            if (selectedItem.nimi['fi']) {
-                $scope.model.codes.organizationName = selectedItem.nimi['fi'];
-            } else {
-                $scope.model.codes.organizationName = selectedItem.nimi['sv'];
-            }
-
+            $scope.model.codes.organizationName = selectedItem.nimi['fi'] || selectedItem.nimi['sv'] || selectedItem.nimi['en'];
         }, function () {
             $log.info('Modal dismissed at: ' + new Date());
         });
