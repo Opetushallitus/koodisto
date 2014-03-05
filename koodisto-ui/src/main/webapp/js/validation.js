@@ -6,12 +6,12 @@ app.factory('ValidateService', function() {
             } else {
                 var alert = { type: 'danger', msg: 'Koodiston luonti ep\u00E4onnistui.' }
             }
-            if (scope.form.namefi.$viewValue && !scope.form.descriptionfi.$viewValue ||
-                scope.form.descriptionfi.$viewValue && !scope.form.namefi.$viewValue ||
-                scope.form.namesv.$viewValue && !scope.form.descriptionsv.$viewValue ||
-                scope.form.descriptionsv.$viewValue && !scope.form.namesv.$viewValue ||
-                scope.form.nameen.$viewValue && !scope.form.descriptionen.$viewValue ||
-                scope.form.descriptionen.$viewValue && !scope.form.nameen.$viewValue) {
+            if (scope.namefi && !scope.descriptionfi ||
+                scope.descriptionfi && !scope.namefi ||
+                scope.namesv && !scope.descriptionsv ||
+                scope.descriptionsv && !scope.namesv ||
+                scope.nameen && !scope.descriptionen ||
+                scope.descriptionen && !scope.nameen) {
                 alert = { type: 'danger', msg: 'Nimi ja kuvaus tulee olla annettu samalla kielell\u00E4' };
             }
 
@@ -24,24 +24,24 @@ app.factory('ValidateService', function() {
             } else {
                 var alert = { type: 'danger', msg: 'Koodin luonti ep\u00E4onnistui.' }
             }
-            if (scope.form.namefi.$viewValue && !scope.form.descriptionfi.$viewValue ||
-                scope.form.descriptionfi.$viewValue && !scope.form.namefi.$viewValue ||
-                scope.form.namefi.$viewValue && !scope.form.shortnamefi.$viewValue ||
-                scope.form.descriptionfi.$viewValue && !scope.form.shortnamefi.$viewValue ||
-                scope.form.shortnamefi.$viewValue && !scope.form.namefi.$viewValue ||
-                scope.form.shortnamefi.$viewValue && !scope.form.descriptionfi.$viewValue ||
-                scope.form.namesv.$viewValue && !scope.form.descriptionsv.$viewValue ||
-                scope.form.descriptionsv.$viewValue && !scope.form.namesv.$viewValue ||
-                scope.form.namesv.$viewValue && !scope.form.shortnamesv.$viewValue ||
-                scope.form.descriptionsv.$viewValue && !scope.form.shortnamesv.$viewValue ||
-                scope.form.shortnamesv.$viewValue && !scope.form.namesv.$viewValue ||
-                scope.form.shortnamesv.$viewValue && !scope.form.descriptionsv.$viewValue ||
-                scope.form.nameen.$viewValue && !scope.form.descriptionen.$viewValue ||
-                scope.form.descriptionen.$viewValue && !scope.form.nameen.$viewValue ||
-                scope.form.nameen.$viewValue && !scope.form.shortnameen.$viewValue ||
-                scope.form.descriptionen.$viewValue && !scope.form.shortnameen.$viewValue ||
-                scope.form.shortnameen.$viewValue && !scope.form.nameen.$viewValue ||
-                scope.form.shortnameen.$viewValue && !scope.form.descriptionen.$viewValue) {
+            if (scope.namefi && !scope.descriptionfi ||
+                scope.descriptionfi && !scope.namefi ||
+                scope.namefi && !scope.shortnamefi ||
+                scope.descriptionfi && !scope.shortnamefi ||
+                scope.shortnamefi && !scope.namefi ||
+                scope.shortnamefi && !scope.descriptionfi ||
+                scope.namesv && !scope.descriptionsv ||
+                scope.descriptionsv && !scope.namesv ||
+                scope.namesv && !scope.shortnamesv ||
+                scope.descriptionsv && !scope.shortnamesv ||
+                scope.shortnamesv && !scope.namesv ||
+                scope.shortnamesv && !scope.descriptionsv ||
+                scope.nameen && !scope.descriptionen ||
+                scope.descriptionen && !scope.nameen ||
+                scope.nameen && !scope.shortnameen ||
+                scope.descriptionen && !scope.shortnameen ||
+                scope.shortnameen && !scope.nameen ||
+                scope.shortnameen && !scope.descriptionen) {
                 alert = { type: 'danger', msg: 'Nimi, lyhyt nimi ja kuvaus tulee olla annettu samalla kielell\u00E4' };
             }
 

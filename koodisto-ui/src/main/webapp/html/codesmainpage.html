@@ -3,7 +3,7 @@
 	<span class="disclose icon valintaryhma folder"
           ng-class="{ collapse: domain.isCollapsed(data), open: domain.isExpanded(data)}"
           ng-click="expandNode(data)"></span>
-          {{data.metadata[0].nimi}}
+          <a href="#/koodistoryhma/{{data.koodistoUri}}">{{data.metadata[0].nimi}}</a>
     </div>
     <ol data-valintaryhmaoid="{{data.koodistoRyhmaUri}}">
         <li ng-repeat="data in domain.getKoodistos(data) | orderBy:predicate" data-oid="{{data.koodistoUri}}"
@@ -30,6 +30,8 @@
                 | i18n}}&nbsp;<i class="icon-plus-sign"></i></a>
             <a href="#/tuoKoodisto"auth="crudAny" auth-service="APP_KOODISTO" class="btn">{{'codes.mainpage.uploadbutton'
             | i18n}}</a>
+            <a href="#/lisaaKoodistoryhma" auth="crudAny" auth-service="APP_KOODISTO" class="btn btn-primary">{{'codes.mainpage.creategroupbutton'
+                | i18n}}&nbsp;<i class="icon-plus-sign"></i></a>
         </div>
     </div>
     <div class="row-fluid">

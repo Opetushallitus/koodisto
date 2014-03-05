@@ -239,49 +239,49 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
             codesGroupUri: $scope.model.codes.codesGroupUri,
             metadata : [{
                 kieli: 'FI',
-                nimi: $scope.form.namefi.$viewValue,
-                kuvaus: $scope.form.descriptionfi.$viewValue,
-                kayttoohje: $scope.form.instructionsfi.$viewValue,
-                kohdealue: $scope.form.targetareafi.$viewValue,
-                kohdealueenOsaAlue: $scope.form.targetareapartfi.$viewValue,
-                kasite: $scope.form.conceptfi.$viewValue,
-                toimintaymparisto: $scope.form.operationalenvironmentfi.$viewValue,
-                koodistonLahde: $scope.form.codessourcefi.$viewValue,
-                tarkentaaKoodistoa: $scope.form.specifiescodesfi.$viewValue,
-                huomioitavaKoodisto: $scope.form.totakenoticeoffi.$viewValue,
-                sitovuustaso: $scope.form.validitylevelfi.$viewValue
+                nimi: $scope.namefi,
+                kuvaus: $scope.descriptionfi,
+                kayttoohje: $scope.instructionsfi,
+                kohdealue: $scope.targetareafi,
+                kohdealueenOsaAlue: $scope.targetareapartfi,
+                kasite: $scope.conceptfi,
+                toimintaymparisto: $scope.operationalenvironmentfi,
+                koodistonLahde: $scope.codessourcefi,
+                tarkentaaKoodistoa: $scope.specifiescodesfi,
+                huomioitavaKoodisto: $scope.totakenoticeoffi,
+                sitovuustaso: $scope.validitylevelfi
             }]
         };
-        if ($scope.form.namesv && $scope.form.namesv.$viewValue) {
+        if ($scope.namesv) {
             codes.metadata.push({
                 kieli: 'SV',
-                nimi: $scope.form.namesv.$viewValue,
-                kuvaus: $scope.form.descriptionsv.$viewValue,
-                kayttoohje: $scope.form.instructionssv.$viewValue,
-                kohdealue: $scope.form.targetareasv.$viewValue,
-                kohdealueenOsaAlue: $scope.form.targetareapartsv.$viewValue,
-                kasite: $scope.form.conceptsv.$viewValue,
-                toimintaymparisto: $scope.form.operationalenvironmentsv.$viewValue,
-                koodistonLahde: $scope.form.codessourcesv.$viewValue,
-                tarkentaaKoodistoa: $scope.form.specifiescodessv.$viewValue,
-                huomioitavaKoodisto: $scope.form.totakenoticeofsv.$viewValue,
-                sitovuustaso: $scope.form.validitylevelsv.$viewValue
+                nimi: $scope.namesv,
+                kuvaus: $scope.descriptionsv,
+                kayttoohje: $scope.instructionssv,
+                kohdealue: $scope.targetareasv,
+                kohdealueenOsaAlue: $scope.targetareapartsv,
+                kasite: $scope.conceptsv,
+                toimintaymparisto: $scope.operationalenvironmentsv,
+                koodistonLahde: $scope.codessourcesv,
+                tarkentaaKoodistoa: $scope.specifiescodessv,
+                huomioitavaKoodisto: $scope.totakenoticeofsv,
+                sitovuustaso: $scope.validitylevelsv
             });
         }
-        if ($scope.form.nameen && $scope.form.nameen.$viewValue) {
+        if ($scope.nameen) {
             codes.metadata.push({
                 kieli: 'EN',
-                nimi: $scope.form.nameen.$viewValue,
-                kuvaus: $scope.form.descriptionen.$viewValue,
-                kayttoohje: $scope.form.instructionsen.$viewValue,
-                kohdealue: $scope.form.targetareaen.$viewValue,
-                kohdealueenOsaAlue: $scope.form.targetareaparten.$viewValue,
-                kasite: $scope.form.concepten.$viewValue,
-                toimintaymparisto: $scope.form.operationalenvironmenten.$viewValue,
-                koodistonLahde: $scope.form.codessourceen.$viewValue,
-                tarkentaaKoodistoa: $scope.form.specifiescodesen.$viewValue,
-                huomioitavaKoodisto: $scope.form.totakenoticeofen.$viewValue,
-                sitovuustaso: $scope.form.validitylevelen.$viewValue
+                nimi: $scope.nameen,
+                kuvaus: $scope.descriptionen,
+                kayttoohje: $scope.instructionsen,
+                kohdealue: $scope.targetareaen,
+                kohdealueenOsaAlue: $scope.targetareaparten,
+                kasite: $scope.concepten,
+                toimintaymparisto: $scope.operationalenvironmenten,
+                koodistonLahde: $scope.codessourceen,
+                tarkentaaKoodistoa: $scope.specifiescodesen,
+                huomioitavaKoodisto: $scope.totakenoticeofen,
+                sitovuustaso: $scope.validitylevelen
             });
         }
         UpdateCodes.put({}, codes, function(result) {
@@ -294,38 +294,38 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
 
     $scope.setSameValue = function(name) {
         if (name === 'name' && !$scope.samename) {
-            $scope.namesv = $scope.form.namefi.$viewValue;
-            $scope.nameen = $scope.form.namefi.$viewValue;
+            $scope.namesv = $scope.namefi;
+            $scope.nameen = $scope.namefi;
         } else if (name === 'description' && !$scope.samedescription) {
-            $scope.descriptionsv = $scope.form.descriptionfi.$viewValue;
-            $scope.descriptionen = $scope.form.descriptionfi.$viewValue;
+            $scope.descriptionsv = $scope.descriptionfi;
+            $scope.descriptionen = $scope.descriptionfi;
         } else if (name === 'instructions' && !$scope.sameinstructions) {
-            $scope.instructionssv = $scope.form.instructionsfi.$viewValue;
-            $scope.instructionsen = $scope.form.instructionsfi.$viewValue;
+            $scope.instructionssv = $scope.instructionsfi;
+            $scope.instructionsen = $scope.instructionsfi;
         } else if (name === 'targetarea' && !$scope.sametargetarea) {
-            $scope.targetareasv = $scope.form.targetareafi.$viewValue;
-            $scope.targetareaen = $scope.form.targetareafi.$viewValue;
+            $scope.targetareasv = $scope.targetareafi;
+            $scope.targetareaen = $scope.targetareafi;
         } else if (name === 'targetareapart' && !$scope.sametargetareapart) {
-            $scope.targetareapartsv = $scope.form.targetareapartfi.$viewValue;
-            $scope.targetareaparten = $scope.form.targetareapartfi.$viewValue;
+            $scope.targetareapartsv = $scope.targetareapartfi;
+            $scope.targetareaparten = $scope.targetareapartfi;
         } else if (name === 'concept' && !$scope.sameconcept) {
-            $scope.conceptsv = $scope.form.conceptfi.$viewValue;
-            $scope.concepten = $scope.form.conceptfi.$viewValue;
+            $scope.conceptsv = $scope.conceptfi;
+            $scope.concepten = $scope.conceptfi;
         } else if (name === 'operationalenvironment' && !$scope.sameoperationalenvironment) {
-            $scope.operationalenvironmentsv = $scope.form.operationalenvironmentfi.$viewValue;
-            $scope.operationalenvironmenten = $scope.form.operationalenvironmentfi.$viewValue;
+            $scope.operationalenvironmentsv = $scope.operationalenvironmentfi;
+            $scope.operationalenvironmenten = $scope.operationalenvironmentfi;
         } else if (name === 'codessource' && !$scope.samecodessource) {
-            $scope.codessourcesv = $scope.form.codessourcefi.$viewValue;
-            $scope.codessourceen = $scope.form.codessourcefi.$viewValue;
+            $scope.codessourcesv = $scope.codessourcefi;
+            $scope.codessourceen = $scope.codessourcefi;
         } else if (name === 'specifiescodes' && !$scope.samespecifiescodes) {
-            $scope.specifiescodessv = $scope.form.specifiescodesfi.$viewValue;
-            $scope.specifiescodesen = $scope.form.specifiescodesfi.$viewValue;
+            $scope.specifiescodessv = $scope.specifiescodesfi;
+            $scope.specifiescodesen = $scope.specifiescodesfi;
         } else if (name === 'totakenoticeof' && !$scope.sametotakenoticeof) {
-            $scope.totakenoticeofsv = $scope.form.totakenoticeoffi.$viewValue;
-            $scope.totakenoticeofen = $scope.form.totakenoticeoffi.$viewValue;
+            $scope.totakenoticeofsv = $scope.totakenoticeoffi;
+            $scope.totakenoticeofen = $scope.totakenoticeoffi;
         } else if (name === 'validitylevel' && !$scope.samevaliditylevel) {
-            $scope.validitylevelsv = $scope.form.validitylevelfi.$viewValue;
-            $scope.validitylevelen = $scope.form.validitylevelfi.$viewValue;
+            $scope.validitylevelsv = $scope.validitylevelfi;
+            $scope.validitylevelen = $scope.validitylevelfi;
         }
     };
 

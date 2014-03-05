@@ -45,43 +45,43 @@ function CodeElementCreatorController($scope, $location, $routeParams, CodeEleme
             koodiArvo: $scope.codeValue,
             metadata : [{
                 kieli: 'FI',
-                nimi: $scope.form.namefi.$viewValue,
-                kuvaus: $scope.form.descriptionfi.$viewValue,
-                lyhytNimi: $scope.form.shortnamefi.$viewValue,
-                kayttoohje: $scope.form.instructionsfi.$viewValue,
-                kasite: $scope.form.conceptfi.$viewValue,
-                huomioitavaKoodi: $scope.form.totakenoticeoffi.$viewValue,
-                sisaltaaMerkityksen: $scope.form.containssignificancefi.$viewValue,
-                eiSisallaMerkitysta: $scope.form.doesnotcontainsignificancefi.$viewValue,
-                sisaltaaKoodiston: $scope.form.containscodesfi.$viewValue
+                nimi: $scope.namefi,
+                kuvaus: $scope.descriptionfi,
+                lyhytNimi: $scope.shortnamefi,
+                kayttoohje: $scope.instructionsfi,
+                kasite: $scope.conceptfi,
+                huomioitavaKoodi: $scope.totakenoticeoffi,
+                sisaltaaMerkityksen: $scope.containssignificancefi,
+                eiSisallaMerkitysta: $scope.doesnotcontainsignificancefi,
+                sisaltaaKoodiston: $scope.containscodesfi
             }]
         };
-        if ($scope.form.namesv && $scope.form.namesv.$viewValue) {
+        if ($scope.namesv) {
             codeelement.metadata.push({
                 kieli: 'SV',
-                nimi: $scope.form.namesv.$viewValue,
-                kuvaus: $scope.form.descriptionsv.$viewValue,
-                lyhytNimi: $scope.form.shortnamesv.$viewValue,
-                kayttoohje: $scope.form.instructionssv.$viewValue,
-                kasite: $scope.form.conceptsv.$viewValue,
-                huomioitavaKoodi: $scope.form.totakenoticeofsv.$viewValue,
-                sisaltaaMerkityksen: $scope.form.containssignificancesv.$viewValue,
-                eiSisallaMerkitysta: $scope.form.doesnotcontainsignificancesv.$viewValue,
-                sisaltaaKoodiston: $scope.form.containscodessv.$viewValue
+                nimi: $scope.namesv,
+                kuvaus: $scope.descriptionsv,
+                lyhytNimi: $scope.shortnamesv,
+                kayttoohje: $scope.instructionssv,
+                kasite: $scope.conceptsv,
+                huomioitavaKoodi: $scope.totakenoticeofsv,
+                sisaltaaMerkityksen: $scope.containssignificancesv,
+                eiSisallaMerkitysta: $scope.doesnotcontainsignificancesv,
+                sisaltaaKoodiston: $scope.containscodessv
             });
         }
-        if ($scope.form.nameen && $scope.form.nameen.$viewValue) {
+        if ($scope.nameen) {
             codeelement.metadata.push({
                 kieli: 'EN',
-                nimi: $scope.form.nameen.$viewValue,
-                kuvaus: $scope.form.descriptionen.$viewValue,
-                lyhytNimi: $scope.form.shortnameen.$viewValue,
-                kayttoohje: $scope.form.instructionsen.$viewValue,
-                kasite: $scope.form.concepten.$viewValue,
-                huomioitavaKoodi: $scope.form.totakenoticeofen.$viewValue,
-                sisaltaaMerkityksen: $scope.form.containssignificanceen.$viewValue,
-                eiSisallaMerkitysta: $scope.form.doesnotcontainsignificanceen.$viewValue,
-                sisaltaaKoodiston: $scope.form.containscodesen.$viewValue
+                nimi: $scope.nameen,
+                kuvaus: $scope.descriptionen,
+                lyhytNimi: $scope.shortnameen,
+                kayttoohje: $scope.instructionsen,
+                kasite: $scope.concepten,
+                huomioitavaKoodi: $scope.totakenoticeofen,
+                sisaltaaMerkityksen: $scope.containssignificanceen,
+                eiSisallaMerkitysta: $scope.doesnotcontainsignificanceen,
+                sisaltaaKoodiston: $scope.containscodesen
             });
         }
         NewCodeElement.put({codesUri: $scope.codesUri}, codeelement, function(result) {
@@ -93,32 +93,32 @@ function CodeElementCreatorController($scope, $location, $routeParams, CodeEleme
 
     $scope.setSameValue = function(name) {
         if (name === 'name' && !$scope.samename) {
-            $scope.namesv = $scope.form.namefi.$viewValue;
-            $scope.nameen = $scope.form.namefi.$viewValue;
+            $scope.namesv = $scope.namefi;
+            $scope.nameen = $scope.namefi;
         } else if (name === 'description' && !$scope.samedescription) {
-            $scope.descriptionsv = $scope.form.descriptionfi.$viewValue;
-            $scope.descriptionen = $scope.form.descriptionfi.$viewValue;
+            $scope.descriptionsv = $scope.descriptionfi;
+            $scope.descriptionen = $scope.descriptionfi;
         } else if (name === 'shortname' && !$scope.sameshortname) {
-            $scope.shortnamesv = $scope.form.shortnamefi.$viewValue;
-            $scope.shortnameen = $scope.form.shortnamefi.$viewValue;
+            $scope.shortnamesv = $scope.shortnamefi;
+            $scope.shortnameen = $scope.shortnamefi;
         } else if (name === 'instructions' && !$scope.sameinstructions) {
-            $scope.instructionssv = $scope.form.instructionsfi.$viewValue;
-            $scope.instructionsen = $scope.form.instructionsfi.$viewValue;
+            $scope.instructionssv = $scope.instructionsfi;
+            $scope.instructionsen = $scope.instructionsfi;
         } else if (name === 'concept' && !$scope.sameconcept) {
-            $scope.conceptsv = $scope.form.conceptfi.$viewValue;
-            $scope.concepten = $scope.form.conceptfi.$viewValue;
+            $scope.conceptsv = $scope.conceptfi;
+            $scope.concepten = $scope.conceptfi;
         } else if (name === 'totakenoticeof' && !$scope.sametotakenoticeof) {
-            $scope.totakenoticeofsv = $scope.form.totakenoticeoffi.$viewValue;
-            $scope.totakenoticeofen = $scope.form.totakenoticeoffi.$viewValue;
+            $scope.totakenoticeofsv = $scope.totakenoticeoffi;
+            $scope.totakenoticeofen = $scope.totakenoticeoffi;
         } else if (name === 'containssignificance' && !$scope.samecontainssignificance) {
-            $scope.containssignificancesv = $scope.form.containssignificancefi.$viewValue;
-            $scope.containssignificanceen = $scope.form.containssignificancefi.$viewValue;
+            $scope.containssignificancesv = $scope.containssignificancefi;
+            $scope.containssignificanceen = $scope.containssignificancefi;
         } else if (name === 'doesnotcontainsignificance' && !$scope.samedoesnotcontainsignificance) {
-            $scope.doesnotcontainsignificancesv = $scope.form.doesnotcontainsignificancefi.$viewValue;
-            $scope.doesnotcontainsignificanceen = $scope.form.doesnotcontainsignificancefi.$viewValue;
+            $scope.doesnotcontainsignificancesv = $scope.doesnotcontainsignificancefi;
+            $scope.doesnotcontainsignificanceen = $scope.doesnotcontainsignificancefi;
         } else if (name === 'containscodes' && !$scope.samecontainscodes) {
-            $scope.containscodessv = $scope.form.containscodesfi.$viewValue;
-            $scope.containscodesen = $scope.form.containscodesfi.$viewValue;
+            $scope.containscodessv = $scope.containscodesfi;
+            $scope.containscodesen = $scope.containscodesfi;
         }
     };
 
