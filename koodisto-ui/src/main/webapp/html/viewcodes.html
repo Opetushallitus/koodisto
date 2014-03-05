@@ -59,7 +59,7 @@
         <h3>{{'codes.createpage.modal.header' | i18n}}</h3>
     </div>
     <div class="modal-body">
-        Olet poistamassa koodistojen {{ model.languageSpecificValue( model.codes.metadata , 'nimi', 'FI') }} ja {{ model.withinRelationToRemove.name || model.includesRelationToRemove.name || model.levelsRelationToRemove.name }} v&auml;list&auml; yhteytt&auml;
+        Olet poistamassa koodistojen {{ getLanguageSpecificValue( model.codes.metadata , 'nimi', 'FI') }} ja {{ model.withinRelationToRemove.name || model.includesRelationToRemove.name || model.levelsRelationToRemove.name }} v&auml;list&auml; yhteytt&auml;
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="okconfirm()">OK</button>
@@ -76,7 +76,7 @@
 
     <div class="row-fluid">
         <div class="offset2 span4">
-            <h3>{{ model.languageSpecificValue( model.codes.metadata , 'nimi', 'FI') }}</h3>
+            <h3>{{ getLanguageSpecificValue( model.codes.metadata , 'nimi', 'FI') }}</h3>
         </div>
         <div class="span6">
             <button type="button" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="btn pull-left" ng-click="model.upload()">{{'codes.viewpage.uploadbutton' | i18n}}
@@ -100,7 +100,7 @@
             {{'codes.viewpage.name' | i18n}}
         </div>
         <div class="span10 pull-left bold">
-            {{ model.languageSpecificValue( model.codes.metadata , 'nimi', 'FI') }}
+            {{ getLanguageSpecificValue( model.codes.metadata , 'nimi', 'FI') }}
         </div>
     </div>
     <div class="row-fluid">
@@ -144,7 +144,7 @@
             {{'codes.viewpage.description' | i18n}}
         </div>
         <div class="span10 pull-left bold">
-            {{ model.languageSpecificValue( model.codes.metadata , 'kuvaus', 'FI') }}
+            {{ getLanguageSpecificValue( model.codes.metadata , 'kuvaus', 'FI') }}
         </div>
     </div>
     <div class="row-fluid">

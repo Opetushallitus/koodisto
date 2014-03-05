@@ -26,49 +26,49 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.getCodes = function(codesUri, codesVersion) {
             CodesByUriAndVersion.get({codesUri: codesUri, codesVersion: codesVersion}, function (result) {
                 model.codes = result;
-                model.namefi = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
-                model.namesv = model.languageSpecificValue(result.metadata, 'nimi', 'SV');
-                model.nameen = model.languageSpecificValue(result.metadata, 'nimi', 'EN');
+                model.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
+                model.namesv = getLanguageSpecificValue(result.metadata, 'nimi', 'SV');
+                model.nameen = getLanguageSpecificValue(result.metadata, 'nimi', 'EN');
 
-                model.descriptionfi = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
-                model.descriptionsv = model.languageSpecificValue(result.metadata, 'kuvaus', 'SV');
-                model.descriptionen = model.languageSpecificValue(result.metadata, 'kuvaus', 'EN');
+                model.descriptionfi = getLanguageSpecificValue(result.metadata, 'kuvaus', 'FI');
+                model.descriptionsv = getLanguageSpecificValue(result.metadata, 'kuvaus', 'SV');
+                model.descriptionen = getLanguageSpecificValue(result.metadata, 'kuvaus', 'EN');
 
-                model.instructionsfi = model.languageSpecificValue(result.metadata, 'kayttoohje', 'FI');
-                model.instructionssv = model.languageSpecificValue(result.metadata, 'kayttoohje', 'SV');
-                model.instructionsen = model.languageSpecificValue(result.metadata, 'kayttoohje', 'EN');
+                model.instructionsfi = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'FI');
+                model.instructionssv = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'SV');
+                model.instructionsen = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'EN');
 
-                model.targetareafi = model.languageSpecificValue(result.metadata, 'kohdealue', 'FI');
-                model.targetareasv = model.languageSpecificValue(result.metadata, 'kohdealue', 'SV');
-                model.targetareaen = model.languageSpecificValue(result.metadata, 'kohdealue', 'EN');
+                model.targetareafi = getLanguageSpecificValue(result.metadata, 'kohdealue', 'FI');
+                model.targetareasv = getLanguageSpecificValue(result.metadata, 'kohdealue', 'SV');
+                model.targetareaen = getLanguageSpecificValue(result.metadata, 'kohdealue', 'EN');
 
-                model.targetareapartfi = model.languageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'FI');
-                model.targetareapartsv = model.languageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'SV');
-                model.targetareaparten = model.languageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'EN');
+                model.targetareapartfi = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'FI');
+                model.targetareapartsv = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'SV');
+                model.targetareaparten = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'EN');
 
-                model.conceptfi = model.languageSpecificValue(result.metadata, 'kasite', 'FI');
-                model.conceptsv = model.languageSpecificValue(result.metadata, 'kasite', 'SV');
-                model.concepten = model.languageSpecificValue(result.metadata, 'kasite', 'EN');
+                model.conceptfi = getLanguageSpecificValue(result.metadata, 'kasite', 'FI');
+                model.conceptsv = getLanguageSpecificValue(result.metadata, 'kasite', 'SV');
+                model.concepten = getLanguageSpecificValue(result.metadata, 'kasite', 'EN');
 
-                model.operationalenvironmentfi = model.languageSpecificValue(result.metadata, 'toimintaymparisto', 'FI');
-                model.operationalenvironmentsv = model.languageSpecificValue(result.metadata, 'toimintaymparisto', 'SV');
-                model.operationalenvironmenten = model.languageSpecificValue(result.metadata, 'toimintaymparisto', 'EN');
+                model.operationalenvironmentfi = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'FI');
+                model.operationalenvironmentsv = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'SV');
+                model.operationalenvironmenten = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'EN');
 
-                model.codessourcefi = model.languageSpecificValue(result.metadata, 'koodistonLahde', 'FI');
-                model.codessourcesv = model.languageSpecificValue(result.metadata, 'koodistonLahde', 'SV');
-                model.codessourceen = model.languageSpecificValue(result.metadata, 'koodistonLahde', 'EN');
+                model.codessourcefi = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'FI');
+                model.codessourcesv = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'SV');
+                model.codessourceen = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'EN');
 
-                model.specifiescodesfi = model.languageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'FI');
-                model.specifiescodessv = model.languageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'SV');
-                model.specifiescodesen = model.languageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'EN');
+                model.specifiescodesfi = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'FI');
+                model.specifiescodessv = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'SV');
+                model.specifiescodesen = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'EN');
 
-                model.totakenoticeoffi = model.languageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'FI');
-                model.totakenoticeofsv = model.languageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'SV');
-                model.totakenoticeofen = model.languageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'EN');
+                model.totakenoticeoffi = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'FI');
+                model.totakenoticeofsv = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'SV');
+                model.totakenoticeofen = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'EN');
 
-                model.validitylevelfi = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'FI');
-                model.validitylevelsv = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
-                model.validitylevelen = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
+                model.validitylevelfi = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'FI');
+                model.validitylevelsv = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
+                model.validitylevelen = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
 
                 model.codes.withinCodes.forEach(function(codes){
                     model.getLatestCodesVersionsByCodesUri(codes,model.withinCodes);
@@ -91,7 +91,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             CodesByUri.get({codesUri: codesUri}, function (result) {
                 var ce = {};
                 ce.uri = codesUri;
-                ce.name = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
+                ce.name = getLanguageSpecificValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
                 list.push(ce);
             });
         };
@@ -100,7 +100,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             CodeElementsByCodesUriAndVersion.get({codesUri: codesUri, codesVersion: codesVersion}, function (result) {
                 model.codeElements = result;
                 for(var i=0; i < model.codeElements.length; i++) {
-                    model.codeElements[i].name = model.languageSpecificValue(model.codeElements[i].metadata, 'lyhytNimi', 'FI');
+                    model.codeElements[i].name = getLanguageSpecificValue(model.codeElements[i].metadata, 'lyhytNimi', 'FI');
                 }
             });
 
@@ -121,15 +121,11 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.getCodeElementVersionsByCodeElementUri = function(codeElementUri) {
             CodeElementVersionsByCodeElementUri.get({codeElementUri: codeElementUri}, function (result) {
                 for(var i=0; i < result.length; i++) {
-                    result[i].name = model.languageSpecificValue(result[i].metadata, 'lyhytNimi', 'FI');
+                    result[i].name = getLanguageSpecificValue(result[i].metadata, 'lyhytNimi', 'FI');
                     model.codeElements.push(result[i]);
                 }
             });
         };
-        this.languageSpecificValue = function(fieldArray,fieldName,language) {
-            return getLanguageSpecificValue(fieldArray,fieldName,language);
-        };
-
 
         this.download = function() {
             model.downloadModalInstance = $modal.open({
@@ -346,4 +342,10 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
         $scope.model.withinRelationToRemove = null;
         $scope.model.modalInstance.dismiss('cancel');
     };
+
+
+    $scope.getLanguageSpecificValue = function(fieldArray,fieldName,language) {
+        return getLanguageSpecificValue(fieldArray,fieldName,language);
+    };
+
 }
