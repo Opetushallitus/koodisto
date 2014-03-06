@@ -3,8 +3,6 @@ var UPDATE = "_READ_UPDATE";
 var CRUD = "_CRUD";
 var OPH_ORG = "1.2.246.562.10.00000000001";
 
-/*
-
 app.factory('MyRolesModel', function ($q, $http) {
     var deferred = $q.defer();
 
@@ -22,22 +20,6 @@ app.factory('MyRolesModel', function ($q, $http) {
 
     return deferred.promise;
 });
-*/
-
-app.factory('MyRolesModel', function ($q, $http) {
-    var deferred = $q.defer();
-
-    var factory = (function() {
-        var instance = {};
-        instance.myroles = ["APP_KOODISTO_CRUD_1.2.246.562.10.00000000001"];
-
-        deferred.resolve(instance);
-        return instance;
-    })();
-
-    return deferred.promise;
-});
-
 
 
 app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingService) {
