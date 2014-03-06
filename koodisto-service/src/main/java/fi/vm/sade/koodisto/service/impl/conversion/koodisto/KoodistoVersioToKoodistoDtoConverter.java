@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,8 +33,6 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
             while(itr.hasNext()) {
                 KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
 
-                koodistonSuhde.getYlakoodistoVersio().getMetadatas().size();
-                Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getKoodisto());
                 switch (koodistonSuhde.getSuhteenTyyppi()) {
                     case RINNASTEINEN:
                         if (koodistonSuhde.getYlakoodistoVersio() != null) {
@@ -53,8 +52,6 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
             while(itr.hasNext()) {
                 KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
 
-                koodistonSuhde.getAlakoodistoVersio().getMetadatas().size();
-                Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getKoodisto());
                 switch (koodistonSuhde.getSuhteenTyyppi()) {
                     case RINNASTEINEN:
                         if (koodistonSuhde.getAlakoodistoVersio() != null) {

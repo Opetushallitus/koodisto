@@ -20,16 +20,14 @@ import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author tommiha
@@ -364,6 +362,26 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             throw new KoodistoNotFoundException("No koodisto found for URI " + koodistoUri + " and version " + koodistoVersio);
         }
 
+        Iterator itr = result.get(0).getYlakoodistos().iterator();
+        while(itr.hasNext()) {
+            KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
+            Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getMetadatas());
+            Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getKoodisto());
+        }
+        itr = result.get(0).getAlakoodistos().iterator();
+        while(itr.hasNext()) {
+            KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
+            Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getMetadatas());
+            Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getKoodisto());
+        }
+        itr = result.get(0).getKoodisto().getKoodistoRyhmas().iterator();
+        while(itr.hasNext()) {
+            Hibernate.initialize(itr.next());
+        }
+        itr = result.get(0).getKoodisto().getKoodistoVersios().iterator();
+        while(itr.hasNext()) {
+            Hibernate.initialize(itr.next());
+        }
         return result.get(0);
     }
 

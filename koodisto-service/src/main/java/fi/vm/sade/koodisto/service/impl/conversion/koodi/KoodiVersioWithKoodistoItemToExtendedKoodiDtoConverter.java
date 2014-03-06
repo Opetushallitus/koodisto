@@ -36,8 +36,6 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
             while(itr.hasNext()) {
                 KoodinSuhde koodinSuhde = (KoodinSuhde)itr.next();
 
-                koodinSuhde.getYlakoodiVersio().getMetadatas().size();
-                Hibernate.initialize(koodinSuhde.getYlakoodiVersio().getKoodi());
                 switch (koodinSuhde.getSuhteenTyyppi()) {
                     case RINNASTEINEN:
                         if (koodinSuhde.getYlakoodiVersio() != null) {
@@ -57,8 +55,6 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
             while(itr.hasNext()) {
                 KoodinSuhde koodinSuhde = (KoodinSuhde)itr.next();
 
-                koodinSuhde.getAlakoodiVersio().getMetadatas().size();
-                Hibernate.initialize(koodinSuhde.getAlakoodiVersio().getKoodi());
                 switch (koodinSuhde.getSuhteenTyyppi()) {
                     case RINNASTEINEN:
                         if (koodinSuhde.getAlakoodiVersio() != null) {

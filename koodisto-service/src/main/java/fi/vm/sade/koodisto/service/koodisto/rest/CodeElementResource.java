@@ -70,7 +70,6 @@ public class CodeElementResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Extended.class})
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    @Transactional
     public void removeRelation(@PathParam("codeElementUri") String codeElementUri,
                                    @PathParam("codeElementUriToRemove") String codeElementUriToRemove,
                                    @PathParam("relationType") String relationType) {
@@ -84,7 +83,6 @@ public class CodeElementResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Extended.class})
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    @Transactional
     public Response update(KoodiDto codeElementDTO) {
         try {
 
@@ -138,7 +136,6 @@ public class CodeElementResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Simple.class})
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    @Transactional
     public List<SimpleKoodiDto> getAllCodeElementsByCodesUriAndVersion(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion) {
         List<KoodiVersioWithKoodistoItem> codeElements = null;
         if (codesVersion == 0) {
@@ -154,7 +151,6 @@ public class CodeElementResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Simple.class})
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    @Transactional
     public List<SimpleKoodiDto> getAllCodeElementVersionsByCodeElementUri(@PathParam("codeElementUri") String codeElementUri) {
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(codeElementUri);
         List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
@@ -166,7 +162,6 @@ public class CodeElementResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Extended.class})
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    @Transactional
     public ExtendedKoodiDto getCodeElementByUriAndVersion(@PathParam("codeElementUri") String codeElementUri, @PathParam("codeElementVersion") int codeElementVersion) {
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(codeElementUri, codeElementVersion);
         List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
@@ -191,7 +186,6 @@ public class CodeElementResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Basic.class})
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    @Transactional
     public KoodiDto getLatestCodeElementVersionsByCodeElementUri(@PathParam("codeElementUri") String codeElementUri) {
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(codeElementUri);
         List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
@@ -250,7 +244,6 @@ public class CodeElementResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Simple.class})
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
-    @Transactional
     public Response delete(@PathParam("codeElementUri") String codeElementUri, @PathParam("codeElementVersion") int codeElementVersion) {
         try {
             koodiBusinessService.delete(codeElementUri,codeElementVersion);

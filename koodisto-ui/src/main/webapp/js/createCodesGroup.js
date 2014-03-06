@@ -1,5 +1,5 @@
 
-app.factory('CodesGroupCreatorModel', function($location, RootCodes) {
+app.factory('CodesGroupCreatorModel', function($location) {
     var model;
     model = new function() {
         this.alerts = [];
@@ -13,7 +13,7 @@ app.factory('CodesGroupCreatorModel', function($location, RootCodes) {
     return model;
 });
 
-function CodesGroupCreatorController($scope, $location, $modal, $log, CodesGroupCreatorModel) {
+function CodesGroupCreatorController($scope, $location, CodesGroupCreatorModel, NewCodesGroup) {
     $scope.model = CodesGroupCreatorModel;
     CodesGroupCreatorModel.init();
 
@@ -33,10 +33,21 @@ function CodesGroupCreatorController($scope, $location, $modal, $log, CodesGroup
     };
 
     $scope.submit = function() {
-        $scope.persistCodes();
+        $scope.persistCodesGroup();
     };
 
-    $scope.persistCodes = function() {
-
+    $scope.persistCodesGroup = function() {
+        var codes = {
+            codesGroupUri: $scope.selectedCGoup,
+            voimassaAlkuPvm: $scope.dActiveStart,
+            voimassaLoppuPvm: $scope.dActiveEnd,
+            omistaja: $scope.ownerName
+        };
+        NewCodesGroup.post({}, codes, function(result) {
+            Treemodel.refresh();
+            $location.path("/koodistoryhma/"+result.koodistoUri+"/"+result.versio);
+        }, function(error) {
+            ValidateService.validateCodes($scope,error,false);
+        });
     };
 }
