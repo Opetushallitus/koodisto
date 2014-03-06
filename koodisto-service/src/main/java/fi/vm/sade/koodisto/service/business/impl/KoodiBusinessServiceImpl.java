@@ -670,18 +670,19 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
 
         List<KoodiVersioWithKoodistoItem> versios = koodiVersioDAO.searchKoodis(searchCriteria);
-
-        Iterator itr = versios.get(0).getKoodiVersio().getYlakoodis().iterator();
-        while(itr.hasNext()) {
-            KoodinSuhde koodinSuhde = (KoodinSuhde)itr.next();
-            Hibernate.initialize(koodinSuhde.getYlakoodiVersio().getMetadatas());
-            Hibernate.initialize(koodinSuhde.getYlakoodiVersio().getKoodi());
-        }
-        itr = versios.get(0).getKoodiVersio().getAlakoodis().iterator();
-        while(itr.hasNext()) {
-            KoodinSuhde koodinSuhde = (KoodinSuhde)itr.next();
-            Hibernate.initialize(koodinSuhde.getAlakoodiVersio().getMetadatas());
-            Hibernate.initialize(koodinSuhde.getAlakoodiVersio().getKoodi());
+        if (!versios.isEmpty()) {
+            Iterator itr = versios.get(0).getKoodiVersio().getYlakoodis().iterator();
+            while(itr.hasNext()) {
+                KoodinSuhde koodinSuhde = (KoodinSuhde)itr.next();
+                Hibernate.initialize(koodinSuhde.getYlakoodiVersio().getMetadatas());
+                Hibernate.initialize(koodinSuhde.getYlakoodiVersio().getKoodi());
+            }
+            itr = versios.get(0).getKoodiVersio().getAlakoodis().iterator();
+            while(itr.hasNext()) {
+                KoodinSuhde koodinSuhde = (KoodinSuhde)itr.next();
+                Hibernate.initialize(koodinSuhde.getAlakoodiVersio().getMetadatas());
+                Hibernate.initialize(koodinSuhde.getAlakoodiVersio().getKoodi());
+            }
         }
         return versios;
     }
