@@ -37,7 +37,7 @@ public class KoodistoRyhma extends BaseEntity {
     private Set<Koodisto> koodistos = new HashSet<Koodisto>();
 
     @NotEmpty
-    @OneToMany(mappedBy = "koodistoRyhma", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "koodistoRyhma", fetch = FetchType.EAGER, cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = new HashSet<KoodistoRyhmaMetadata>();
 

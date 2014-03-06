@@ -37,17 +37,28 @@ function CodesGroupCreatorController($scope, $location, CodesGroupCreatorModel, 
     };
 
     $scope.persistCodesGroup = function() {
-        var codes = {
-            codesGroupUri: $scope.selectedCGoup,
-            voimassaAlkuPvm: $scope.dActiveStart,
-            voimassaLoppuPvm: $scope.dActiveEnd,
-            omistaja: $scope.ownerName
+        var codesgroup = {
+            koodistoRyhmaUri: $scope.koodistoRyhmaUri,
+            koodistoRyhmaMetadatas : [{
+                kieli: 'FI',
+                nimi: $scope.namefi
+            }]
         };
-        NewCodesGroup.post({}, codes, function(result) {
-            Treemodel.refresh();
-            $location.path("/koodistoryhma/"+result.koodistoUri+"/"+result.versio);
+        if ($scope.namesv) {
+            codesgroup.koodistoRyhmaMetadatas.push({
+                kieli: 'SV',
+                nimi: $scope.namesv
+            });
+        }
+        if ($scope.nameen) {
+            codesgroup.koodistoRyhmaMetadatas.push({
+                kieli: 'EN',
+                nimi: $scope.nameen
+            });
+        }
+        NewCodesGroup.post({}, codesgroup, function(result) {
+            $location.path("/koodistoryhma/"+result.koodistoRyhmaUri+"/"+result.versio);
         }, function(error) {
-            ValidateService.validateCodes($scope,error,false);
         });
     };
 }

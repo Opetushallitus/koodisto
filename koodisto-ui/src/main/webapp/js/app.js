@@ -65,6 +65,12 @@ app.factory('NewCodes', function($resource) {
     });
 });
 
+app.factory('NewCodesGroup', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codesgroup", {}, {
+        post: {method: "POST"}
+    });
+});
+
 app.factory('UpdateCodes', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes", {}, {
         put: {method: "POST"}
