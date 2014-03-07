@@ -4,7 +4,7 @@
             <h1>{{'codesgroup.createpage.header' | i18n}}</h1>
         </div>
     </div>
-    <form name="form" class="form-horizontal" ng-submit="submit()">
+    <form name="form" class="form-horizontal">
 
         <div class="control-group">
 
@@ -20,21 +20,22 @@
 
             <label for="name_fi" class="control-label">{{'codes.createpage.name' | i18n}}</label>
             <div class="controls">
-                <input id="name_fi" type="text" maxlength="50" class="width-30" ng-model="namefi"
-                       placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codes-combined-field/>
+                <input id="name_fi" type="text" maxlength="50" class="width-30" name="namefi" ng-model="namefi"
+                       placeholder="{{'codes.finnish' | i18n}}" ng-required="true"/>
+                <span class="text-error" ng-show="form.namefi.$error.required">{{'field.required' | i18n}}</span>
             </div>
         </div>
 
         <div class="control-group">
             <div class="controls">
                 <input id="name_sv" type="text" maxlength="50" class="width-30" ng-model="namesv"
-                       placeholder="{{'codes.swedish' | i18n}}" codes-combined-field/>
+                       placeholder="{{'codes.swedish' | i18n}}"/>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
                 <input id="name_en" type="text" maxlength="50" class="width-30"  ng-model="nameen"
-                       placeholder="{{'codes.english' | i18n}}" codes-combined-field/>
+                       placeholder="{{'codes.english' | i18n}}"/>
             </div>
         </div>
 
@@ -42,8 +43,9 @@
         <div class="control-group">
             <label for="uri" class="control-label">{{'codesgroup.createpage.uri' | i18n}}</label>
             <div class="controls">
-                <input id="uri" type="text" maxlength="50" class="width-30" ng-model="koodistoRyhmaUri"
-                       ng-required="true"/>
+                <input id="uri" type="text" maxlength="50" class="width-30" name="koodistoRyhmaUri"
+                ng-model="koodistoRyhmaUri" ng-required="true"/>
+                <span class="text-error" ng-show="form.koodistoRyhmaUri.$error.required">{{'field.required' | i18n}}</span>
             </div>
         </div>
 

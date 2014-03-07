@@ -61,14 +61,14 @@
             <h1>{{'codeelement.editpage.header' | i18n}}</h1>
         </div>
     </div>
-    <form name="form" class="form-horizontal" ng-submit="submit()">
+    <form name="form" class="form-horizontal">
 
         <div class="control-group">
 
             <label for="codesstate" class="control-label">{{'codes.editpage.state' | i18n}}</label>
             <div class="controls">
                 <select id="codesstate" ng-model="model.codeElement.tila" class="width-30"
-                        ng-options="state.key as state.value for state in model.states" ng-required="true">
+                        ng-options="state.key as state.value for state in model.states">
                 </select>
             </div>
         </div>
@@ -84,8 +84,9 @@
         <div class="control-group">
             <label for="name_fi" class="control-label">{{'codeelement.editpage.name' | i18n}}</label>
             <div class="controls">
-                <input id="name_fi" type="text" maxlength="50" class="width-30"  ng-model="namefi"
+                <input id="name_fi" type="text" maxlength="50" class="width-30" ng-model="namefi" name="namefi"
                        placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.namefi.$error.required">{{'field.required' | i18n}}</span>
             </div>
         </div>
         <div class="control-group">
@@ -105,8 +106,8 @@
         <div class="control-group">
             <label for="code" class="control-label">{{'codeelement.editpage.codevalue' | i18n}}</label>
             <div class="controls">
-
-                <input id="code" type="text" maxlength="50" class="width-30" ng-model="codeValue" ng-required="true"/>
+                <input id="code" type="text" maxlength="50" class="width-30" ng-model="codeValue" name="codeValue" ng-required="true"/>
+                <span class="text-error" ng-show="form.codeValue.$error.required">{{'field.required' | i18n}}</span>
             </div>
         </div>
 
@@ -114,12 +115,11 @@
             <label for="datesactivestart" class="control-label">{{'codeelement.editpage.datesactive' | i18n}}</label>
 
             <div class="controls">
-
-                <input id="datesactivestart" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codeElement.voimassaAlkuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" />
+                <input id="datesactivestart" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" name="voimassaAlkuPvm" ng-model="model.codeElement.voimassaAlkuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" />
                 -
                 <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codeElement.voimassaLoppuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" />
                 <i class="icon-calendar"></i>
-
+                <span class="text-error" ng-show="form.voimassaAlkuPvm.$error.required">{{'field.required' | i18n}}</span>
             </div>
         </div>
 
@@ -134,8 +134,9 @@
         <div class="control-group">
             <label for="shortname_fi" class="control-label">{{'codeelement.editpage.shortname' | i18n}}</label>
             <div class="controls">
-                <input id="shortname_fi" type="text" maxlength="50" class="width-30" ng-model="shortnamefi"
-                       placeholder="{{'codes.finnish' | i18n}}" codeelement-combined-field/>
+                <input id="shortname_fi" type="text" maxlength="50" class="width-30" ng-model="shortnamefi" name="shortnamefi"
+                       placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.shortnamefi.$error.required">{{'field.required' | i18n}}</span>
             </div>
         </div>
         <div class="control-group">
@@ -162,8 +163,9 @@
         <div class="control-group">
             <label for="description_fi" class="control-label">{{'codeelement.editpage.description' | i18n}}</label>
             <div class="controls">
-                <textarea id="description_fi" maxlength="350" class="width-30" ng-model="descriptionfi"
+                <textarea id="description_fi" maxlength="350" class="width-30" ng-model="descriptionfi" name="descriptionfi"
                           placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field/>
+                <span class="text-error" ng-show="form.descriptionfi.$error.required">{{'field.required' | i18n}}</span>
             </div>
         </div>
 

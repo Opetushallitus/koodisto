@@ -22,7 +22,6 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             this.alerts = [];
             model.getCodes(scope, codesUri, codesVersion);
             model.getAllCodes();
-            model.getOrganizations();
         };
 
         this.getCodes = function(scope, codesUri, codesVersion) {
@@ -121,14 +120,6 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 }
             }
             return false;
-        };
-        this.getOrganizations = function() {
-            Organizations.get({}, function (result) {
-                model.organizations = result;
-                model.organizations.forEach(function(item, index) {
-                    item.name = item.nimi['fi'] || item.nimi['sv'] || item.nimi['en'];
-                });
-            });
         };
 
         this.languageSpecificValue = function(fieldArray,fieldName,language) {
