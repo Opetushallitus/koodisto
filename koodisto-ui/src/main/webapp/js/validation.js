@@ -51,6 +51,34 @@ app.factory('ValidateService', function() {
     };
 });
 
+app.directive('requiredField', function() {
+    return {
+        require: 'ngModel',
+
+        link: function(scope, elm, attrs, ctrl) {
+            elm.bind('blur', function () {
+                if (!attrs.$$element[0].value || attrs.$$element[0].value.length === 0) {
+                    ctrl.$setValidity('requiredfield', false);
+                    scope.$apply();
+                } else {
+                    ctrl.$setValidity('requiredfield', true);
+                    scope.$apply();
+                }
+            });
+            ctrl.$parsers.unshift(function(viewValue) {
+                if (!viewValue || viewValue.length === 0) {
+                    ctrl.$setValidity('requiredfield', false);
+                    scope.$apply();
+                } else {
+                    ctrl.$setValidity('requiredfield', true);
+                    scope.$apply();
+                }
+
+            });
+        }
+    };
+});
+
 app.directive('codesCombinedField', function() {
     return {
         require: 'ngModel',

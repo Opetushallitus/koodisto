@@ -50,18 +50,18 @@
             <label for="codesstate" class="control-label">{{'codes.editpage.state' | i18n}}</label>
             <div class="controls">
                 <select id="codesstate" name="tila" ng-model="model.codes.tila"
-                        ng-options="state.key as state.value for state in model.states" ng-required="true">
+                        ng-options="state.key as state.value for state in model.states" ng-required="true" required-field>
                 </select>
-                <span class="text-error" ng-show="form.tila.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.tila.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
         <div class="control-group">
             <label for="codesgroup" class="control-label">{{'codes.createpage.codesgroup' | i18n}}</label>
             <div class="controls">
-                <select id="codesgroup" ng-model="model.codes.codesGroupUri" name="codesGroupUri" ng-required="true"
+                <select id="codesgroup" ng-model="model.codes.codesGroupUri" name="codesGroupUri" ng-required="true" required-field
                         ng-options="code.koodistoRyhmaUri as code.metadata[0].nimi for code in model.allCodes | orderBy:'metadata[0].nimi'">
                 </select>
-                <span class="text-error" ng-show="form.codesGroupUri.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.codesGroupUri.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
         <div class="control-group">
@@ -77,8 +77,8 @@
             <label for="name_fi" class="control-label">{{'codes.createpage.name' | i18n}}</label>
             <div class="controls">
                 <input id="name_fi" type="text" maxlength="50" class="width-30" ng-model="namefi" name="namefi"
-                       placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codes-combined-field/>
-                <span class="text-error" ng-show="form.namefi.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
+                       placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codes-combined-field required-field/>
+                <span class="text-error" ng-show="form.namefi.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
         <div class="control-group">
@@ -97,11 +97,11 @@
             <label for="datesactivestart" class="control-label">{{'codes.createpage.datesactive' | i18n}}</label>
 
             <div class="controls">
-                <input id="datesactivestart" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" name="voimassaAlkuPvm" ng-model="model.codes.voimassaAlkuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" />
+                <input id="datesactivestart" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" name="voimassaAlkuPvm" ng-model="model.codes.voimassaAlkuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" required-field/>
                 -
                 <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codes.voimassaLoppuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" />
                 <i class="icon-calendar"></i>
-                <span class="text-error" ng-show="form.voimassaAlkuPvm.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.voimassaAlkuPvm.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
         <div class="control-group">
@@ -117,8 +117,8 @@
             <label for="description_fi" class="control-label">{{'codes.createpage.description' | i18n}}</label>
             <div class="controls">
                 <textarea id="description_fi" maxlength="350" class="width-30" ng-model="descriptionfi"
-                          name="descriptionfi" placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codes-combined-field/>
-                <span class="text-error" ng-show="form.descriptionfi.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
+                          name="descriptionfi" placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codes-combined-field required-field/>
+                <span class="text-error" ng-show="form.descriptionfi.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
         <div class="control-group">
@@ -145,10 +145,10 @@
             <label for="organizationbutton" class="control-label">{{'codes.createpage.organization' | i18n}}</label>
             <div class="controls">
                 <input id="organizationinput" type="text"  class="width-30" name="organizationName"
-                        ng-model="model.codes.organizationName" ng-required="true" disabled/>
+                        ng-model="model.codes.organizationName" ng-required="true" disabled required-field/>
                 <input id="organizationbutton" type="button" value="{{'codes.select' | i18n}}" class="btn btn-small btn-primary"
                        ng-click="open()" ng-model="selected"/>
-                <span class="text-error" ng-show="form.organizationName.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.organizationName.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
 

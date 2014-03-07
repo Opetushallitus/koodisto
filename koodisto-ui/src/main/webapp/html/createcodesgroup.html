@@ -10,8 +10,7 @@
 
             <div class="controls">
                 <label for="same_name" class="checkbox">
-                <input id="same_name" type="checkbox" ng-model="samename" ng-click="setSameValue('name')"
-                       codes-combined-field/>
+                <input id="same_name" type="checkbox" ng-model="samename" ng-click="setSameValue('name')"/>
                 {{'codes.sameinalllanguages' | i18n}}</label>
             </div>
         </div>
@@ -21,8 +20,8 @@
             <label for="name_fi" class="control-label">{{'codes.createpage.name' | i18n}}</label>
             <div class="controls">
                 <input id="name_fi" type="text" maxlength="50" class="width-30" name="namefi" ng-model="namefi"
-                       placeholder="{{'codes.finnish' | i18n}}" ng-required="true"/>
-                <span class="text-error" ng-show="form.namefi.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
+                       placeholder="{{'codes.finnish' | i18n}}" ng-required="true" required-field/>
+                <span class="text-error" ng-show="form.namefi.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
 
@@ -44,8 +43,8 @@
             <label for="uri" class="control-label">{{'codesgroup.createpage.uri' | i18n}}</label>
             <div class="controls">
                 <input id="uri" type="text" maxlength="50" class="width-30" name="koodistoRyhmaUri"
-                ng-model="koodistoRyhmaUri" ng-required="true"/>
-                <span class="text-error" ng-show="form.koodistoRyhmaUri.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
+                ng-model="koodistoRyhmaUri" ng-required="true" required-field/>
+                <span class="text-error" ng-show="form.koodistoRyhmaUri.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
 
