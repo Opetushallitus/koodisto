@@ -61,7 +61,7 @@
             <h1>{{'codeelement.editpage.header' | i18n}}</h1>
         </div>
     </div>
-    <form name="form" class="form-horizontal">
+    <form name="form" class="form-horizontal" ng-submit="submit()">
 
         <div class="control-group">
 
@@ -86,7 +86,7 @@
             <div class="controls">
                 <input id="name_fi" type="text" maxlength="50" class="width-30" ng-model="namefi" name="namefi"
                        placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field/>
-                <span class="text-error" ng-show="form.namefi.$error.required">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.namefi.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
         <div class="control-group">
@@ -107,7 +107,7 @@
             <label for="code" class="control-label">{{'codeelement.editpage.codevalue' | i18n}}</label>
             <div class="controls">
                 <input id="code" type="text" maxlength="50" class="width-30" ng-model="codeValue" name="codeValue" ng-required="true"/>
-                <span class="text-error" ng-show="form.codeValue.$error.required">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.codeValue.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
 
@@ -119,7 +119,7 @@
                 -
                 <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codeElement.voimassaLoppuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" />
                 <i class="icon-calendar"></i>
-                <span class="text-error" ng-show="form.voimassaAlkuPvm.$error.required">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.voimassaAlkuPvm.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
 
@@ -136,7 +136,7 @@
             <div class="controls">
                 <input id="shortname_fi" type="text" maxlength="50" class="width-30" ng-model="shortnamefi" name="shortnamefi"
                        placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field/>
-                <span class="text-error" ng-show="form.shortnamefi.$error.required">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.shortnamefi.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
         <div class="control-group">
@@ -165,7 +165,7 @@
             <div class="controls">
                 <textarea id="description_fi" maxlength="350" class="width-30" ng-model="descriptionfi" name="descriptionfi"
                           placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field/>
-                <span class="text-error" ng-show="form.descriptionfi.$error.required">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.descriptionfi.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
 

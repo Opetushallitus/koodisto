@@ -7,7 +7,7 @@
             <h1>{{'codes.createpage.header' | i18n}}</h1>
         </div>
     </div>
-    <form name="form" class="form-horizontal">
+    <form name="form" class="form-horizontal" ng-submit="submit()">
 
         <div class="control-group">
             <label for="codesgroup" class="control-label">{{'codes.createpage.codesgroup' | i18n}}</label>
@@ -15,7 +15,7 @@
                 <select id="codesgroup" ng-model="selectedCGoup" name="selectedCGoup"
                         ng-options="code.koodistoRyhmaUri as code.metadata[0].nimi for code in model.allCodes | orderBy:'metadata[0].nimi'" ng-required="true">
                 </select>
-                <span class="text-error" ng-show="form.selectedCGoup.$error.required">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.selectedCGoup.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
 
@@ -35,7 +35,7 @@
             <div class="controls">
                 <input id="name_fi" type="text" maxlength="50" class="width-30" ng-model="namefi" name="namefi"
                        placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codes-combined-field/>
-                <span class="text-error" ng-show="form.namefi.$error.required">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.namefi.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
 
@@ -61,7 +61,7 @@
                 -
                 <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="dActiveEnd" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" />
                 <i class="icon-calendar"></i>
-                <span class="text-error" ng-show="form.dActiveStart.$error.required">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.dActiveStart.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
 
@@ -78,7 +78,7 @@
             <div class="controls">
                 <textarea id="description_fi" maxlength="350" class="width-30" name="descriptionfi" ng-model="descriptionfi"
                           placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codes-combined-field/>
-                <span class="text-error" ng-show="form.descriptionfi.$error.required">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.descriptionfi.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
 
@@ -115,7 +115,7 @@
 
                 <input id="organizationbutton" type="button" value="{{'codes.select' | i18n}}" class="btn btn-small btn-primary"
                        ng-click="open()" ng-model="selected"/>
-                <span class="text-error" ng-show="form.organizationName.$error.required">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.organizationName.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
 

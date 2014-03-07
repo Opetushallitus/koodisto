@@ -4,7 +4,7 @@
             <h1>{{'codesgroup.createpage.header' | i18n}}</h1>
         </div>
     </div>
-    <form name="form" class="form-horizontal">
+    <form name="form" class="form-horizontal" ng-submit="submit()">
 
         <div class="control-group">
 
@@ -22,7 +22,7 @@
             <div class="controls">
                 <input id="name_fi" type="text" maxlength="50" class="width-30" name="namefi" ng-model="namefi"
                        placeholder="{{'codes.finnish' | i18n}}" ng-required="true"/>
-                <span class="text-error" ng-show="form.namefi.$error.required">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.namefi.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
 
@@ -45,7 +45,7 @@
             <div class="controls">
                 <input id="uri" type="text" maxlength="50" class="width-30" name="koodistoRyhmaUri"
                 ng-model="koodistoRyhmaUri" ng-required="true"/>
-                <span class="text-error" ng-show="form.koodistoRyhmaUri.$error.required">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-show="form.koodistoRyhmaUri.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
 
