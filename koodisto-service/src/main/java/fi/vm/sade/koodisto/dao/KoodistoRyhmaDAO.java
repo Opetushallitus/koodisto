@@ -16,4 +16,6 @@ public interface KoodistoRyhmaDAO extends JpaDAO<KoodistoRyhma, Long> {
 
     List<KoodistoRyhma> findByUri(List<String> koodistoRyhmaUris);
 
+    KoodistoRyhma findById(Long id);
+
 }

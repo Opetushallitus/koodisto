@@ -1,11 +1,16 @@
 
-app.factory('ViewCodesGroupModel', function($location) {
+app.factory('ViewCodesGroupModel', function($location, CodesGroupByUri) {
     var model;
     model = new function() {
         this.alerts = [];
-        this.init = function() {
+        this.codesgroup = {};
+        this.init = function(id) {
             this.alerts = [];
+            CodesGroupByUri.get({id: id}, function (result) {
+                model.codesgroup = result;
+            });
         };
+
 
     };
 
@@ -13,9 +18,9 @@ app.factory('ViewCodesGroupModel', function($location) {
     return model;
 });
 
-function ViewCodesGroupController($scope, $location, ViewCodesGroupModel) {
+function ViewCodesGroupController($scope, $location, $routeParams, ViewCodesGroupModel) {
     $scope.model = ViewCodesGroupModel;
-    ViewCodesGroupModel.init();
+    ViewCodesGroupModel.init($routeParams.id);
 
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
@@ -25,4 +30,7 @@ function ViewCodesGroupController($scope, $location, ViewCodesGroupModel) {
         $location.path("/");
     };
 
+    $scope.getLanguageSpecificValue = function(fieldArray,fieldName,language) {
+        return getLanguageSpecificValue(fieldArray,fieldName,language);
+    };
 }

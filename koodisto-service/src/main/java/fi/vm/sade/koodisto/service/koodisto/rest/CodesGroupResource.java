@@ -1,8 +1,10 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
+import fi.vm.sade.koodisto.dto.KoodistoListDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import org.codehaus.jackson.map.annotate.JsonView;
@@ -36,12 +38,40 @@ public class CodesGroupResource {
     public Response insert(KoodistoRyhmaDto codesGroupDTO) {
         try {
             KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.createKoodistoRyhma(codesGroupDTO);
-            return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoRyhma,KoodistoRyhmaDto.class)).build();
+            return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
         } catch (Exception e) {
             logger.warn("Koodistoryhmää ei saatu lisättyä. ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
+    @GET
+    @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({JsonViews.Basic.class})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    public Response getCodesByCodesUri(@PathParam("id") Long id) {
+        try {
+            KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.getKoodistoRyhmaById(id);
+            return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
+        } catch (Exception e) {
+            logger.warn("Koodistoryhmää ei saatu haettua. ", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({JsonViews.Basic.class})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    public Response update(KoodistoRyhmaDto codesGroupDTO) {
+        try {
+            koodistoRyhmaBusinessService.updateKoodistoRyhma(codesGroupDTO);
+            return Response.status(Response.Status.CREATED).build();
+        } catch (Exception e) {
+            logger.warn("Koodistoryhmää ei saatu päivitettyä. ", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

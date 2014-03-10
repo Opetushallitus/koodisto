@@ -43,6 +43,7 @@ app.config(function ($routeProvider) {
         when('/muokkaaKoodi/:codeElementUri/:codeElementVersion', {controller: CodeElementEditorController, templateUrl:TEMPLATE_URL_BASE + 'editcodeelement.html'}).
         when('/lisaaKoodistoryhma', {controller: CodesGroupCreatorController, templateUrl:TEMPLATE_URL_BASE + 'createcodesgroup.html'}).
         when('/koodistoryhma/:id', {controller: ViewCodesGroupController, templateUrl:TEMPLATE_URL_BASE + 'viewcodesgroup.html'}).
+        when('/muokkaaKoodistoryhma/:id', {controller: CodesGroupEditorController, templateUrl:TEMPLATE_URL_BASE + 'editcodesgroup.html'}).
          //else
         otherwise({redirectTo: '/etusivu'});
 });
@@ -72,6 +73,12 @@ app.factory('NewCodesGroup', function($resource) {
     });
 });
 
+app.factory('UpdateCodesGroup', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codesgroup", {}, {
+        put: {method: "PUT"}
+    });
+});
+
 app.factory('UpdateCodes', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes", {}, {
         put: {method: "POST"}
@@ -86,6 +93,12 @@ app.factory('CodesByUri', function($resource) {
 
 app.factory('CodesByUriAndVersion', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes/:codesUri/:codesVersion", {codesUri: "@codesUri",codesVersion: "@codesVersion"}, {
+        get: {method: "GET"}
+    });
+});
+
+app.factory('CodesGroupByUri', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codesgroup/:id", {id: "@id"}, {
         get: {method: "GET"}
     });
 });

@@ -1,10 +1,17 @@
 
-app.factory('CodesGroupCreatorModel', function($location) {
+app.factory('CodesGroupEditorModel', function($location, CodesGroupByUri) {
     var model;
     model = new function() {
         this.alerts = [];
-        this.init = function() {
+        this.codesgroup = {};
+        this.init = function(scope, id) {
             this.alerts = [];
+            CodesGroupByUri.get({id: id}, function (result) {
+                model.codesgroup = result;
+                scope.namefi = getLanguageSpecificValue(result.koodistoRyhmaMetadatas, 'nimi', 'FI');
+                scope.namesv = getLanguageSpecificValue(result.koodistoRyhmaMetadatas, 'nimi', 'SV');
+                scope.nameen = getLanguageSpecificValue(result.koodistoRyhmaMetadatas, 'nimi', 'EN');
+            });
         };
 
     };
@@ -13,23 +20,16 @@ app.factory('CodesGroupCreatorModel', function($location) {
     return model;
 });
 
-function CodesGroupCreatorController($scope, $location, CodesGroupCreatorModel, NewCodesGroup, Treemodel) {
-    $scope.model = CodesGroupCreatorModel;
-    CodesGroupCreatorModel.init();
+function CodesGroupEditorController($scope, $location, $routeParams, CodesGroupEditorModel, UpdateCodesGroup, Treemodel) {
+    $scope.model = CodesGroupEditorModel;
+    CodesGroupEditorModel.init($scope, $routeParams.id);
 
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
     };
 
-    $scope.setSameValue = function(name) {
-        if (name === 'name' && !$scope.samename) {
-            $scope.namesv = $scope.namefi;
-            $scope.nameen = $scope.namefi;
-        }
-    };
-
     $scope.cancel = function() {
-        $location.path("/");
+        $location.path("/koodistoryhma/"+$routeParams.id);
     };
 
     $scope.submit = function() {
@@ -38,7 +38,7 @@ function CodesGroupCreatorController($scope, $location, CodesGroupCreatorModel, 
 
     $scope.persistCodesGroup = function() {
         var codesgroup = {
-            koodistoRyhmaUri: $scope.koodistoRyhmaUri,
+            koodistoRyhmaUri: $scope.model.codesgroup.koodistoRyhmaUri,
             koodistoRyhmaMetadatas : [{
                 kieli: 'FI',
                 nimi: $scope.namefi
@@ -56,10 +56,11 @@ function CodesGroupCreatorController($scope, $location, CodesGroupCreatorModel, 
                 nimi: $scope.nameen
             });
         }
-        NewCodesGroup.post({}, codesgroup, function(result) {
+        UpdateCodesGroup.put({}, codesgroup, function(result) {
             Treemodel.refresh();
             $location.path("/koodistoryhma/"+result.id);
         }, function(error) {
         });
     };
 }
+

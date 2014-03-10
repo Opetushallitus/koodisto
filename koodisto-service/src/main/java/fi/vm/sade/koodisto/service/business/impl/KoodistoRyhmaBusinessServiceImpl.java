@@ -53,4 +53,27 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
             checkRequiredMetadataFields(metadatas);
         }
     }
+
+    @Override
+    public void updateKoodistoRyhma(final KoodistoRyhmaDto koodistoRyhmaDto) {
+        if (koodistoRyhmaDto == null || StringUtils.isBlank(koodistoRyhmaDto.getKoodistoRyhmaUri())) {
+            throw new KoodistoRyhmaUriEmptyException("Koodistoryhmä URI is empty");
+        }
+        List<KoodistoRyhmaMetadata> metadatas = new ArrayList();
+        metadatas.addAll(koodistoRyhmaDto.getKoodistoRyhmaMetadatas());
+        checkMetadatas(metadatas);
+
+        KoodistoRyhma koodistoRyhma = new KoodistoRyhma();
+        koodistoRyhma.setKoodistoRyhmaUri(koodistoRyhmaDto.getKoodistoRyhmaUri());
+        for (KoodistoRyhmaMetadata koodistoRyhmaMetadata : koodistoRyhmaDto.getKoodistoRyhmaMetadatas()) {
+            koodistoRyhma.addKoodistoRyhmaMetadata(koodistoRyhmaMetadata);
+        }
+        koodistoRyhmaDAO.update(koodistoRyhma);
+    }
+
+    @Override
+    public KoodistoRyhma getKoodistoRyhmaById(final Long id) {
+        KoodistoRyhma koodistoRyhma = koodistoRyhmaDAO.findById(id);
+        return koodistoRyhma;
+    }
 }
