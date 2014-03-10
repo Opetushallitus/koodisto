@@ -13,6 +13,8 @@ import java.util.List;
  * Time: 9.03
  */
 public class KoodistoRyhmaListDto {
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class,JsonViews.Simple.class})
+    private Long id;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class,JsonViews.Simple.class})
     private String koodistoRyhmaUri;
@@ -22,6 +24,14 @@ public class KoodistoRyhmaListDto {
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class,JsonViews.Simple.class})
     private List<KoodistoListDto> koodistos = new ArrayList<KoodistoListDto>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
     public String getKoodistoRyhmaUri() {
         return koodistoRyhmaUri;

@@ -42,6 +42,7 @@ app.config(function ($routeProvider) {
         when('/lisaaKoodi/:codesUri/:codesVersion', {controller: CodeElementCreatorController, templateUrl:TEMPLATE_URL_BASE + 'createcodeelement.html'}).
         when('/muokkaaKoodi/:codeElementUri/:codeElementVersion', {controller: CodeElementEditorController, templateUrl:TEMPLATE_URL_BASE + 'editcodeelement.html'}).
         when('/lisaaKoodistoryhma', {controller: CodesGroupCreatorController, templateUrl:TEMPLATE_URL_BASE + 'createcodesgroup.html'}).
+        when('/koodistoryhma/:id', {controller: ViewCodesGroupController, templateUrl:TEMPLATE_URL_BASE + 'viewcodesgroup.html'}).
          //else
         otherwise({redirectTo: '/etusivu'});
 });

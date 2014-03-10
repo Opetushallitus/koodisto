@@ -46,6 +46,7 @@
                 <ref bean="koodistoRyhmaMetadataToKoodistoRyhmaMetadataTypeConverter"/>
                 <ref bean="koodistoRyhmaToKoodistoRyhmaListDtoConverter"/>
                 <ref bean="koodistoRyhmaToKoodistoRyhmaListTypeConverter"/>
+                <ref bean="koodistoRyhmaToKoodistoRyhmaDtoConverter"/>
             </list>
         </property>
     </bean>

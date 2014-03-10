@@ -9,9 +9,19 @@ import java.util.Set;
 
 public class KoodistoRyhmaDto {
     @JsonView(JsonViews.Basic.class)
+    private Long id;
+    @JsonView(JsonViews.Basic.class)
     private String koodistoRyhmaUri;
     @JsonView(JsonViews.Basic.class)
     private Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = new HashSet<KoodistoRyhmaMetadata>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(final Long id) {
+        this.id = id;
+    }
 
     public String getKoodistoRyhmaUri() {
         return koodistoRyhmaUri;

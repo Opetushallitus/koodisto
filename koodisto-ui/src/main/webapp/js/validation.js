@@ -68,10 +68,10 @@ app.directive('requiredField', function() {
             ctrl.$parsers.unshift(function(viewValue) {
                 if (!viewValue || viewValue.length === 0) {
                     ctrl.$setValidity('requiredfield', false);
-                    scope.$apply();
+                    return viewValue;
                 } else {
                     ctrl.$setValidity('requiredfield', true);
-                    scope.$apply();
+                    return viewValue;
                 }
 
             });

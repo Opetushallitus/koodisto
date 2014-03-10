@@ -3,7 +3,7 @@
 	<span class="disclose icon valintaryhma folder"
           ng-class="{ collapse: domain.isCollapsed(data), open: domain.isExpanded(data)}"
           ng-click="expandNode(data)"></span>
-          <a href="#/koodistoryhma/{{data.koodistoUri}}">{{data.metadata[0].nimi}}</a>
+          <a href="#/koodistoryhma/{{data.id}}">{{data.metadata[0].nimi}}</a>
     </div>
     <ol data-valintaryhmaoid="{{data.koodistoRyhmaUri}}">
         <li ng-repeat="data in domain.getKoodistos(data) | orderBy:predicate" data-oid="{{data.koodistoUri}}"

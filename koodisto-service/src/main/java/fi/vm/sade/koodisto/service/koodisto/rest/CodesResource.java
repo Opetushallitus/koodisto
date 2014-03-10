@@ -180,7 +180,6 @@ public class CodesResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView(JsonViews.Simple.class)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    @Transactional
     public List<KoodistoRyhmaListDto> listAllCodesGroups() {
         return conversionService.convertAll(
                 koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class);

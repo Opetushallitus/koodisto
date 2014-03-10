@@ -57,7 +57,7 @@ function CodesGroupCreatorController($scope, $location, CodesGroupCreatorModel, 
             });
         }
         NewCodesGroup.post({}, codesgroup, function(result) {
-            $location.path("/koodistoryhma/"+result.koodistoRyhmaUri+"/"+result.versio);
+            $location.path("/koodistoryhma/"+result.koodistoRyhmaUri);
         }, function(error) {
         });
     };
