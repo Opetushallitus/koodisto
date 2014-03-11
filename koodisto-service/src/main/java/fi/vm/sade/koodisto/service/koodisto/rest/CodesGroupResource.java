@@ -1,10 +1,8 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
-import fi.vm.sade.koodisto.dto.KoodistoListDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.JsonViews;
-import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import org.codehaus.jackson.map.annotate.JsonView;
@@ -71,6 +69,22 @@ public class CodesGroupResource {
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
         } catch (Exception e) {
             logger.warn("Koodistoryhmää ei saatu päivitettyä. ", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @POST
+    @Path("delete/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({JsonViews.Simple.class})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
+    public Response delete(@PathParam("id") Long id) {
+        try {
+            koodistoRyhmaBusinessService.delete(id);
+            return Response.status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            logger.warn("Koodiryhmää ei saatu poistettua. ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }

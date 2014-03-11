@@ -1,5 +1,5 @@
 
-app.factory('ViewCodesGroupModel', function($location, CodesGroupByUri) {
+app.factory('ViewCodesGroupModel', function($location, $modal, CodesGroupByUri) {
     var model;
     model = new function() {
         this.alerts = [];
@@ -11,6 +11,14 @@ app.factory('ViewCodesGroupModel', function($location, CodesGroupByUri) {
             });
         };
 
+        this.removeCodesGroup = function() {
+            model.deleteCodesGroupModalInstance = $modal.open({
+                templateUrl: 'confirmDeleteCodesGroupModalContent.html',
+                controller: ViewCodesGroupController,
+                resolve: {
+                }
+            });
+        };
 
     };
 
@@ -18,7 +26,7 @@ app.factory('ViewCodesGroupModel', function($location, CodesGroupByUri) {
     return model;
 });
 
-function ViewCodesGroupController($scope, $location, $routeParams, ViewCodesGroupModel) {
+function ViewCodesGroupController($scope, $location, $routeParams, ViewCodesGroupModel, DeleteCodesGroup, Treemodel) {
     $scope.model = ViewCodesGroupModel;
     ViewCodesGroupModel.init($routeParams.id);
 
@@ -28,6 +36,23 @@ function ViewCodesGroupController($scope, $location, $routeParams, ViewCodesGrou
 
     $scope.cancel = function() {
         $location.path("/");
+    };
+
+
+    $scope.okconfirmdeletecodesgroup = function() {
+        DeleteCodesGroup.post({id: $routeParams.id},function(success) {
+            Treemodel.refresh();
+            $location.path("/");
+        }, function(error) {
+            var alert = { type: 'danger', msg: 'Koodiryhm\u00E4n poisto ep\u00E4onnistui.' }
+            $scope.model.alerts.push(alert);
+        });
+
+        $scope.model.deleteCodesGroupModalInstance.close();
+    };
+
+    $scope.cancelconfirmdeletecodesgroup = function() {
+        $scope.model.deleteCodesGroupModalInstance.dismiss('cancel');
     };
 
     $scope.getLanguageSpecificValue = function(fieldArray,fieldName,language) {

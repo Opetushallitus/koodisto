@@ -1,3 +1,16 @@
+<script type="text/ng-template" id="confirmDeleteCodesGroupModalContent.html">
+    <div class="modal-header">
+        <h3>{{'codeelement.editpage.modal.header' | i18n}}</h3>
+    </div>
+    <div class="modal-body">
+        Olet poistamassa koodistoryhmää {{ getLanguageSpecificValue( model.codesgroup.koodistoRyhmaMetadatas , 'nimi', 'FI') }}, haluatko jatkaa?
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="okconfirmdeletecodesgroup()">OK</button>
+        <button class="btn btn-warning" ng-click="cancelconfirmdeletecodesgroup()">Cancel</button>
+    </div>
+</script>
+
 <div class="container">
     <div class="row-fluid">
         <div class="span12">
@@ -40,6 +53,9 @@
         </button>
         <a href="#/muokkaaKoodistoryhma/{{ model.codesgroup.id }}" auth="updateAny" auth-service="APP_KOODISTO"  class="btn btn-primary pull-right">
             {{'codesgroup.viewpage.editbutton' | i18n}}</a>
+        <button type="button" class="btn btn-primary pull-right"
+                ng-click="model.removeCodesGroup()" auth="crudAny" auth-service="APP_KOODISTO">{{'codesgroup.viewpage.deletebutton' | i18n}}
+            &nbsp;<i class="icon-minus-sign"></i></button>
     </div>
     </div>
 </div>

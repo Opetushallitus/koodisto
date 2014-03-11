@@ -20,6 +20,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
 
             model.getCodeElement(scope, codeElementUri, codeElementVersion);
         };
+
         this.getCodeElement = function(scope, codeElementUri, codeElementVersion) {
             CodeElementByUriAndVersion.get({codeElementUri: codeElementUri, codeElementVersion: codeElementVersion}, function (result) {
                 model.codeElement = result;

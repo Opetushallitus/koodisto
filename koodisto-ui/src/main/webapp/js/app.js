@@ -73,6 +73,12 @@ app.factory('NewCodesGroup', function($resource) {
     });
 });
 
+app.factory('DeleteCodesGroup', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codesgroup/delete/:id", {id: "@id"}, {
+        post: {method: "POST"}
+    });
+});
+
 app.factory('UpdateCodesGroup', function($resource) {
     return $resource(SERVICE_URL_BASE + "codesgroup", {}, {
         put: {method: "PUT"}

@@ -3,8 +3,7 @@ package fi.vm.sade.koodisto.service.business.impl;
 import fi.vm.sade.koodisto.dao.KoodistoRyhmaDAO;
 import fi.vm.sade.koodisto.dao.KoodistoRyhmaMetadataDAO;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
-import fi.vm.sade.koodisto.model.KoodistoRyhma;
-import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
+import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.*;
 import org.apache.commons.lang.StringUtils;
@@ -101,5 +100,15 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     public KoodistoRyhma getKoodistoRyhmaById(final Long id) {
         KoodistoRyhma koodistoRyhma = koodistoRyhmaDAO.findById(id);
         return koodistoRyhma;
+    }
+
+    @Override
+    public void delete(final Long id) {
+        KoodistoRyhma koodistoRyhma = koodistoRyhmaDAO.findById(id);
+        if (koodistoRyhma.getKoodistos().isEmpty()) {
+            koodistoRyhmaDAO.remove(koodistoRyhma);
+        } else {
+            throw new KoodistoRyhmaNotEmptyException("Koodistoryhmä is not empty");
+        }
     }
 }

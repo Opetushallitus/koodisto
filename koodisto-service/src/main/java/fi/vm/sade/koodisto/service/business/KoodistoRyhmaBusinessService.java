@@ -8,4 +8,5 @@ public interface KoodistoRyhmaBusinessService {
     KoodistoRyhma createKoodistoRyhma(KoodistoRyhmaDto koodistoRyhmaDto);
     KoodistoRyhma updateKoodistoRyhma(KoodistoRyhmaDto koodistoRyhmaDto);
     KoodistoRyhma getKoodistoRyhmaById(Long id);
+    void delete(Long id);
 }
