@@ -207,6 +207,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     @Override
+    @Transactional
     public KoodistoVersio updateKoodisto(UpdateKoodistoDataType updateKoodistoData) {
         if (updateKoodistoData == null || StringUtils.isBlank(updateKoodistoData.getKoodistoUri())) {
             throw new KoodistoUriEmptyException("Koodisto URI is empty");
@@ -232,6 +233,20 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         // update the non-version specific fields
         EntityUtils.copyFields(updateKoodistoData, latest.getKoodisto());
 
+        Iterator itr = latest.getYlakoodistos().iterator();
+        while(itr.hasNext()) {
+            KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
+            Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getKoodisto());
+        }
+        itr = latest.getAlakoodistos().iterator();
+        while(itr.hasNext()) {
+            KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
+            Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getKoodisto());
+        }
+        itr = latest.getKoodisto().getKoodistoVersios().iterator();
+        while(itr.hasNext()) {
+            Hibernate.initialize(itr.next());
+        }
         return latest;
     }
 
