@@ -6,6 +6,6 @@ import fi.vm.sade.koodisto.model.KoodistoRyhma;
 
 public interface KoodistoRyhmaBusinessService {
     KoodistoRyhma createKoodistoRyhma(KoodistoRyhmaDto koodistoRyhmaDto);
-    void updateKoodistoRyhma(KoodistoRyhmaDto koodistoRyhmaDto);
+    KoodistoRyhma updateKoodistoRyhma(KoodistoRyhmaDto koodistoRyhmaDto);
     KoodistoRyhma getKoodistoRyhmaById(Long id);
 }

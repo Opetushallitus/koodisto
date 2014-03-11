@@ -53,7 +53,7 @@ public class CodesGroupResource {
     public Response getCodesByCodesUri(@PathParam("id") Long id) {
         try {
             KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.getKoodistoRyhmaById(id);
-            return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
+            return Response.status(Response.Status.OK).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
         } catch (Exception e) {
             logger.warn("Koodistoryhmää ei saatu haettua. ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -67,8 +67,8 @@ public class CodesGroupResource {
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public Response update(KoodistoRyhmaDto codesGroupDTO) {
         try {
-            koodistoRyhmaBusinessService.updateKoodistoRyhma(codesGroupDTO);
-            return Response.status(Response.Status.CREATED).build();
+            KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.updateKoodistoRyhma(codesGroupDTO);
+            return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
         } catch (Exception e) {
             logger.warn("Koodistoryhmää ei saatu päivitettyä. ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

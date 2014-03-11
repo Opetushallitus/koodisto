@@ -38,24 +38,21 @@ function CodesGroupEditorController($scope, $location, $routeParams, CodesGroupE
 
     $scope.persistCodesGroup = function() {
         var codesgroup = {
+            id: $routeParams.id,
             koodistoRyhmaUri: $scope.model.codesgroup.koodistoRyhmaUri,
             koodistoRyhmaMetadatas : [{
                 kieli: 'FI',
                 nimi: $scope.namefi
             }]
         };
-        if ($scope.namesv) {
-            codesgroup.koodistoRyhmaMetadatas.push({
-                kieli: 'SV',
-                nimi: $scope.namesv
-            });
-        }
-        if ($scope.nameen) {
-            codesgroup.koodistoRyhmaMetadatas.push({
-                kieli: 'EN',
-                nimi: $scope.nameen
-            });
-        }
+        codesgroup.koodistoRyhmaMetadatas.push({
+            kieli: 'SV',
+            nimi: $scope.namesv
+        });
+        codesgroup.koodistoRyhmaMetadatas.push({
+            kieli: 'EN',
+            nimi: $scope.nameen
+        });
         UpdateCodesGroup.put({}, codesgroup, function(result) {
             Treemodel.refresh();
             $location.path("/koodistoryhma/"+result.id);

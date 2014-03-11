@@ -71,6 +71,10 @@ public class KoodistoRyhma extends BaseEntity {
         this.koodistoRyhmaMetadatas.remove(metadata);
     }
 
+    public void setKoodistoRyhmaMetadatas(final Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas) {
+        this.koodistoRyhmaMetadatas = koodistoRyhmaMetadatas;
+    }
+
     public void addKoodisto(Koodisto koodisto) {
         this.koodistos.add(koodisto);
     }

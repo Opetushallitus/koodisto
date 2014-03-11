@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
 import fi.vm.sade.koodisto.dao.KoodistoRyhmaDAO;
+import fi.vm.sade.koodisto.dao.KoodistoRyhmaMetadataDAO;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
@@ -12,13 +13,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Transactional
 @Service("koodistoRyhmaBusinessService")
 public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessService {
     @Autowired
     private KoodistoRyhmaDAO koodistoRyhmaDAO;
+    @Autowired
+    private KoodistoRyhmaMetadataDAO koodistoRyhmaMetadataDAO;
 
     @Override
     public KoodistoRyhma createKoodistoRyhma(final KoodistoRyhmaDto koodistoRyhmaDto) {
@@ -31,6 +36,7 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
 
         KoodistoRyhma koodistoRyhma = new KoodistoRyhma();
         koodistoRyhma.setKoodistoRyhmaUri(koodistoRyhmaDto.getKoodistoRyhmaUri());
+
         for (KoodistoRyhmaMetadata koodistoRyhmaMetadata : koodistoRyhmaDto.getKoodistoRyhmaMetadatas()) {
             koodistoRyhma.addKoodistoRyhmaMetadata(koodistoRyhmaMetadata);
         }
@@ -55,20 +61,40 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     }
 
     @Override
-    public void updateKoodistoRyhma(final KoodistoRyhmaDto koodistoRyhmaDto) {
+    public KoodistoRyhma updateKoodistoRyhma(final KoodistoRyhmaDto koodistoRyhmaDto) {
         if (koodistoRyhmaDto == null || StringUtils.isBlank(koodistoRyhmaDto.getKoodistoRyhmaUri())) {
             throw new KoodistoRyhmaUriEmptyException("Koodistoryhmä URI is empty");
         }
         List<KoodistoRyhmaMetadata> metadatas = new ArrayList();
         metadatas.addAll(koodistoRyhmaDto.getKoodistoRyhmaMetadatas());
-        checkMetadatas(metadatas);
 
-        KoodistoRyhma koodistoRyhma = new KoodistoRyhma();
+
+        KoodistoRyhma koodistoRyhma = getKoodistoRyhmaById(koodistoRyhmaDto.getId());
+        Set<KoodistoRyhmaMetadata> koodistoRyhmaDtoMetadatas = koodistoRyhmaDto.getKoodistoRyhmaMetadatas();
+        Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = koodistoRyhma.getKoodistoJoukkoMetadatas();
+        Set<KoodistoRyhmaMetadata> removeKoodistoRyhmaMetadatas = new HashSet();
         koodistoRyhma.setKoodistoRyhmaUri(koodistoRyhmaDto.getKoodistoRyhmaUri());
-        for (KoodistoRyhmaMetadata koodistoRyhmaMetadata : koodistoRyhmaDto.getKoodistoRyhmaMetadatas()) {
-            koodistoRyhma.addKoodistoRyhmaMetadata(koodistoRyhmaMetadata);
+        for (KoodistoRyhmaMetadata metadata : koodistoRyhmaDtoMetadatas) {
+            boolean found = false;
+            for (KoodistoRyhmaMetadata koodistoRyhmaMetadata : koodistoRyhmaMetadatas) {
+                if (metadata.getKieli().equals(koodistoRyhmaMetadata.getKieli())) {
+                    if (metadata.getNimi().isEmpty()) {
+                        removeKoodistoRyhmaMetadatas.add(koodistoRyhmaMetadata);
+                    } else {
+                        koodistoRyhmaMetadata.setNimi(metadata.getNimi());
+                    }
+                    found = true;
+                }
+            }
+            if (!found) {
+                koodistoRyhma.addKoodistoRyhmaMetadata(metadata);
+            }
         }
-        koodistoRyhmaDAO.update(koodistoRyhma);
+        for (KoodistoRyhmaMetadata metadata : removeKoodistoRyhmaMetadatas) {
+            koodistoRyhma.removeKoodistoRyhmaMetadata(metadata);
+            koodistoRyhmaMetadataDAO.remove(metadata);
+        }
+        return koodistoRyhma;
     }
 
     @Override
