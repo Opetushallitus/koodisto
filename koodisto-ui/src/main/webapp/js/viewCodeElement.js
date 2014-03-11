@@ -137,13 +137,13 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
     };
 
     $scope.cancel = function() {
-        $location.path("/koodisto/"+$scope.model.codeElement.koodisto.koodistoUri+"/"+$scope.model.codeElement.koodisto.koodistoVersios[0]);
+        $location.path("/koodisto/"+$scope.model.codeElement.koodisto.koodistoUri+"/"+$scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length-1]);
     };
 
     $scope.okconfirmdeletecodeelement = function() {
         DeleteCodeElement.put({codeElementUri: $scope.codeElementUri,
             codeElementVersion: $scope.codeElementVersion},function(success) {
-            $location.path("/koodisto/"+$scope.model.codeElement.koodisto.koodistoUri+"/"+$scope.model.codeElement.koodisto.koodistoVersios[0]);
+            $location.path("/koodisto/"+$scope.model.codeElement.koodisto.koodistoUri+"/"+$scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length-1]);
         }, function(error) {
             var alert = { type: 'danger', msg: 'Koodin poisto ep\u00E4onnistui.' }
             $scope.model.alerts.push(alert);
