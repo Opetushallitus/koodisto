@@ -260,6 +260,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                 }
             }
         }
+        koodisto.setPaivitysPvm(new Date());
     }
 
     @Override
