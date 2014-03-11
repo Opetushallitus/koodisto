@@ -269,7 +269,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         }
         UpdateCodes.put({}, codes, function(result) {
             Treemodel.refresh();
-            $location.path("/koodisto/"+result.koodistoUri+"/"+result.versio);
+            $location.path("/koodisto/"+$scope.codesUri+"/"+result[0]);
         }, function(error) {
             ValidateService.validateCodes($scope,error,true);
         });
