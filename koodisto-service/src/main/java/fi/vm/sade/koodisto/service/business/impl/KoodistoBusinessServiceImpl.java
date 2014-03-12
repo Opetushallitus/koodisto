@@ -347,7 +347,26 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         if (result.size() != 1) {
             throw new KoodistoNotFoundException("No koodisto found for URI " + koodistoUri);
         }
-
+        Iterator itr = result.get(0).getYlakoodistos().iterator();
+        while(itr.hasNext()) {
+            KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
+            Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getMetadatas());
+            Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getKoodisto());
+        }
+        itr = result.get(0).getAlakoodistos().iterator();
+        while(itr.hasNext()) {
+            KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
+            Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getMetadatas());
+            Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getKoodisto());
+        }
+        itr = result.get(0).getKoodisto().getKoodistoRyhmas().iterator();
+        while(itr.hasNext()) {
+            Hibernate.initialize(itr.next());
+        }
+        itr = result.get(0).getKoodisto().getKoodistoVersios().iterator();
+        while(itr.hasNext()) {
+            Hibernate.initialize(itr.next());
+        }
         return result.get(0);
     }
 
