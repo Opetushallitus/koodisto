@@ -235,8 +235,10 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
                 event.initEvent("click", true, false);
                 link.dispatchEvent(event);
             }
+            var alert = { type: 'success', msg: 'Koodiston vienti onnistui.' }
+            $scope.model.alerts.push(alert);
         }, function(error) {
-            var alert = { type: 'danger', msg: 'Koodiston tuonti ep\u00E4onnistui.' }
+            var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' }
             $scope.model.alerts.push(alert);
         });
         $scope.model.downloadModalInstance.close();
@@ -283,7 +285,7 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
 
     function uploadComplete(evt) {
         ViewCodesModel.init($scope.codesUri,$scope.codesVersion);
-        var alert = { type: 'success', msg: 'Koodisto ' + $scope.codesUri + ' on p\u00E4ivitetty.' }
+        var alert = { type: 'success', msg: 'Koodisto ' + $scope.codesUri + ' on tuotu koodistoryhm\u00E4\u00E4n ' + $scope.model.codes.codesGroupUri }
         $scope.model.alerts.push(alert);
     }
 
