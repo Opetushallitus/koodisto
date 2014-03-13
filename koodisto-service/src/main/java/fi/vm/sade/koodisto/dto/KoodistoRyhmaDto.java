@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.dto;
 
 import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import org.codehaus.jackson.map.annotate.JsonView;
 
@@ -14,6 +15,8 @@ public class KoodistoRyhmaDto {
     private String koodistoRyhmaUri;
     @JsonView(JsonViews.Basic.class)
     private Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = new HashSet<KoodistoRyhmaMetadata>();
+    @JsonView(JsonViews.Basic.class)
+    private Set<Koodisto> koodistos = new HashSet<Koodisto>();
 
     public Long getId() {
         return id;
@@ -37,5 +40,13 @@ public class KoodistoRyhmaDto {
 
     public void setKoodistoRyhmaMetadatas(final Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas) {
         this.koodistoRyhmaMetadatas = koodistoRyhmaMetadatas;
+    }
+
+    public Set<Koodisto> getKoodistos() {
+        return koodistos;
+    }
+
+    public void setKoodistos(Set<Koodisto> koodistos) {
+        this.koodistos = koodistos;
     }
 }

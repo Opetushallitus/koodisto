@@ -17,6 +17,7 @@ public class KoodistoRyhmaToKoodistoRyhmaDtoConverter extends AbstractFromDomain
         converted.setId(source.getId());
         converted.setKoodistoRyhmaUri(source.getKoodistoRyhmaUri());
         converted.setKoodistoRyhmaMetadatas(source.getKoodistoJoukkoMetadatas());
+        converted.setKoodistos(source.getKoodistos());
 
         return converted;
     }

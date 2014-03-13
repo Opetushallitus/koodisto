@@ -53,7 +53,7 @@
         </button>
         <a href="#/muokkaaKoodistoryhma/{{ model.codesgroup.id }}" auth="updateAny" auth-service="APP_KOODISTO"  class="btn btn-primary pull-right">
             {{'codesgroup.viewpage.editbutton' | i18n}}</a>
-        <button type="button" class="btn btn-primary pull-right"
+        <button type="button" class="btn btn-primary pull-right" ng-disabled="model.deleteState"
                 ng-click="model.removeCodesGroup()" auth="crudAny" auth-service="APP_KOODISTO">{{'codesgroup.viewpage.deletebutton' | i18n}}
             &nbsp;<i class="icon-minus-sign"></i></button>
     </div>

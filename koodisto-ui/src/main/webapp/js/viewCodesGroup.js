@@ -4,10 +4,16 @@ app.factory('ViewCodesGroupModel', function($location, $modal, CodesGroupByUri) 
     model = new function() {
         this.alerts = [];
         this.codesgroup = {};
+        this.deleteState = "disabled";
+
         this.init = function(id) {
             this.alerts = [];
+            this.deleteState = "disabled";
             CodesGroupByUri.get({id: id}, function (result) {
                 model.codesgroup = result;
+                if (result.koodistos.length === 0) {
+                    model.deleteState = ""
+                }
             });
         };
 

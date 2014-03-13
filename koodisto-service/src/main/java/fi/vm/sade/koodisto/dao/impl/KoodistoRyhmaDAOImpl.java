@@ -92,4 +92,18 @@ public class KoodistoRyhmaDAOImpl extends AbstractJpaDAOImpl<KoodistoRyhma, Long
 
         return em.createQuery(c).getSingleResult();
     }
+
+    @Override
+    public boolean koodistoRyhmaUriExists(String ryhmaUri) {
+        EntityManager em = getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = cb.createQuery(Long.class);
+        Root<KoodistoRyhma> root = query.from(KoodistoRyhma.class);
+
+        Predicate condition = cb.equal(root.get("koodistoRyhmaUri"), ryhmaUri);
+
+        query.select(cb.count(root.<String> get("koodistoRyhmaUri"))).where(condition);
+
+        return em.createQuery(query).getSingleResult() > 0;
+    }
 }

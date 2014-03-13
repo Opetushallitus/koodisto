@@ -18,4 +18,5 @@ public interface KoodistoRyhmaDAO extends JpaDAO<KoodistoRyhma, Long> {
 
     KoodistoRyhma findById(Long id);
 
+    boolean koodistoRyhmaUriExists(String ryhmaUri);
 }
