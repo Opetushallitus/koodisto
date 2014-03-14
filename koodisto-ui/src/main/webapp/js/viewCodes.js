@@ -241,6 +241,8 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
                 link.href = url.createObjectURL(blob);
                 if (fileFormat.format === "CSV") {
                     link.download = $scope.codesUri+".csv";
+                } else if (fileFormat.format === "XLS") {
+                        link.download = $scope.codesUri+".xls";
                 } else {
                     link.download = $scope.codesUri;
                 }
