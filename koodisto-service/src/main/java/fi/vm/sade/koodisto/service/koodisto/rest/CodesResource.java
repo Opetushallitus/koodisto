@@ -1,9 +1,53 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.GregorianCalendar;
+import java.util.List;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
+import org.codehaus.jackson.map.annotate.JsonView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Component;
+
 import com.sun.jersey.multipart.FormDataParam;
+
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
-import fi.vm.sade.koodisto.dto.*;
-import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.dto.FileDto;
+import fi.vm.sade.koodisto.dto.FileFormatDto;
+import fi.vm.sade.koodisto.dto.KoodistoDto;
+import fi.vm.sade.koodisto.dto.KoodistoListDto;
+import fi.vm.sade.koodisto.dto.KoodistoRyhmaListDto;
+import fi.vm.sade.koodisto.dto.KoodistoVersioListDto;
+import fi.vm.sade.koodisto.model.Format;
+import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.model.Koodisto;
+import fi.vm.sade.koodisto.model.KoodistoMetadata;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.DownloadService;
 import fi.vm.sade.koodisto.service.UploadService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
@@ -14,32 +58,6 @@ import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
-import org.codehaus.jackson.map.annotate.JsonView;
-import org.hibernate.Hibernate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.List;
 
 @Component
 @Path("codes")
@@ -280,10 +298,14 @@ public class CodesResource {
         try {
             ExportImportFormatType formatStr = null;
 
-            if (Format.valueOf(fileFormatDto.getFormat()) == Format.CSV) {
+            Format format = Format.valueOf(fileFormatDto.getFormat());
+
+            if (format == Format.CSV) {
                 formatStr = ExportImportFormatType.CSV;
-            } else if (Format.valueOf(fileFormatDto.getFormat()) == Format.JHS_XML) {
+            } else if (format == Format.JHS_XML) {
                 formatStr = ExportImportFormatType.JHS_XML;
+            } else if (format == Format.XLS) {
+                formatStr = ExportImportFormatType.XLS;
             }
             String encoding = fileFormatDto.getEncoding();
             if (StringUtils.isBlank(encoding) || !Charset.isSupported(encoding)) {
@@ -292,7 +314,13 @@ public class CodesResource {
             DataHandler handler = downloadService.download(codesUri, codesVersion, formatStr, encoding);
             InputStream inputStream = handler.getInputStream();
 
-            String theString = IOUtils.toString(inputStream, encoding);
+            String theString = "";
+            if (format == Format.CSV || format == Format.JHS_XML) {
+                theString = IOUtils.toString(inputStream, encoding);
+            } else { // Binääridataa
+                byte[] val = IOUtils.toByteArray(inputStream);
+                theString = new String(Base64.encodeBase64(val, false));
+            }
             FileDto fileDto = new FileDto();
             fileDto.setData(theString);
             return fileDto;

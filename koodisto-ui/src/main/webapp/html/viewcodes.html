@@ -8,11 +8,12 @@
         <select id="fileFormat" ng-model="model.format">
             <option value="JHS_XML">JHS_XML</option>
             <option value="CSV">CSV</option>
+            <option value="XLS">XLS</option>
         </select>
         <br>
         <label for="fileEncoding">{{'codes.downloadmodal.encoding' | i18n}}</label>
         <br>
-        <select id="fileEncoding" ng-model="model.encoding">
+        <select id="fileEncoding" ng-model="model.encoding" ng-disabled="formatEquals('XLS')">
             <option value="UTF-8">UTF8</option>
             <option value="ISO-88519-1">ISO_88519_1</option>
             <option value="ISO-88519-15">ISO_88519_15</option>
@@ -34,11 +35,12 @@
         <select id="fileFormat2" ng-model="model.format">
             <option value="JHS_XML">JHS_XML</option>
             <option value="CSV">CSV</option>
+            <option value="XLS">XLS</option>
         </select>
         <br>
         <label for="fileEncoding2">{{'codes.downloadmodal.encoding' | i18n}}</label>
         <br>
-        <select id="fileEncoding2" ng-model="model.encoding">
+        <select id="fileEncoding2" ng-model="model.encoding"  ng-disabled="formatEquals('XLS')">
             <option value="UTF-8">UTF8</option>
             <option value="ISO-88519-1">ISO_88519_1</option>
             <option value="ISO-88519-15">ISO_88519_15</option>

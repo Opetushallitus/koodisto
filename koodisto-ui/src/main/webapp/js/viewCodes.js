@@ -210,17 +210,31 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
         var fileFormat = {
             format: $scope.model.format,
             encoding: $scope.model.encoding
-        }
+        };
         DownloadCodes.put({codesUri: $scope.codesUri,codesVersion: $scope.codesVersion}, fileFormat, function(result) {
 
             if (result.data) {
-                var type = 'text/xml';
+                var type = '';
+                var data = '';
 
-                if (fileFormat.format === "CSV") {
+                if(fileFormat.format === "JHS_XML"){
+                    type='text/xml';
+                    data = result.data;
+                } else if (fileFormat.format === "CSV") {
                     type = 'text/csv';
+                    data = result.data;
+                } else if (fileFormat.format === "XLS") {
+                    type = 'application/vnd.ms-excel';
+
+                    // Decode base64 binary data
+                    raw = atob( result.data );
+                    data = new Uint8Array(new ArrayBuffer(raw.length));
+                    for (var i = 0; i < raw.length; i++) {
+                        data[i] = raw.charCodeAt(i);
+                    }
                 }
 
-                var blob = new Blob([ result.data ], { type : type });
+                var blob = new Blob([ data ], { type : type });
 
                 var url  = window.URL || window.webkitURL;
                 var link = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
@@ -235,15 +249,19 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
                 event.initEvent("click", true, false);
                 link.dispatchEvent(event);
             }
-            var alert = { type: 'success', msg: 'Koodiston vienti onnistui.' }
+            var alert = { type: 'success', msg: 'Koodiston vienti onnistui.' };
             $scope.model.alerts.push(alert);
         }, function(error) {
-            var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' }
+            var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' };
             $scope.model.alerts.push(alert);
         });
         $scope.model.downloadModalInstance.close();
     };
 
+    $scope.formatEquals = function(s){
+        return ($scope.model.format === s);
+    };
+    
     $scope.canceldownload = function() {
         $scope.model.downloadModalInstance.dismiss('cancel');
     };
@@ -252,19 +270,19 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
         var fileFormat = {
             format: $scope.model.format,
             encoding: $scope.model.encoding
-        }
-        var fd = new FormData()
+        };
+        var fd = new FormData();
         for (var i in $scope.files) {
-            fd.append("uploadedFile", $scope.files[i])
+            fd.append("uploadedFile", $scope.files[i]);
         }
-        fd.append("fileFormat", $scope.model.format)
-        fd.append("fileEncoding", $scope.model.encoding)
-        var xhr = new XMLHttpRequest()
-        xhr.addEventListener("load", uploadComplete, false)
-        xhr.addEventListener("error", uploadFailed, false)
-        xhr.addEventListener("abort", uploadCanceled, false)
-        xhr.open("POST", SERVICE_URL_BASE + "codes" + "/upload/"+$scope.codesUri)
-        xhr.send(fd)
+        fd.append("fileFormat", $scope.model.format);
+        fd.append("fileEncoding", $scope.model.encoding);
+        var xhr = new XMLHttpRequest();
+        xhr.addEventListener("load", uploadComplete, false);
+        xhr.addEventListener("error", uploadFailed, false);
+        xhr.addEventListener("abort", uploadCanceled, false);
+        xhr.open("POST", SERVICE_URL_BASE + "codes" + "/upload/"+$scope.codesUri);
+        xhr.send(fd);
 
         $scope.model.uploadModalInstance.close();
     };
@@ -276,26 +294,26 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
     $scope.setFiles = function(element) {
         $scope.$apply(function(scope) {
             // Turn the FileList object into an Array
-            $scope.files = []
+            $scope.files = [];
             for (var i = 0; i < element.files.length; i++) {
-                $scope.files.push(element.files[i])
+                $scope.files.push(element.files[i]);
             }
         });
     };
 
     function uploadComplete(evt) {
         ViewCodesModel.init($scope.codesUri,$scope.codesVersion);
-        var alert = { type: 'success', msg: 'Koodisto ' + $scope.codesUri + ' on tuotu koodistoryhm\u00E4\u00E4n ' + $scope.model.codes.codesGroupUri }
+        var alert = { type: 'success', msg: 'Koodisto ' + $scope.codesUri + ' on tuotu koodistoryhm\u00E4\u00E4n ' + $scope.model.codes.codesGroupUri };
         $scope.model.alerts.push(alert);
     }
 
     function uploadFailed(evt) {
-        var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' }
+        var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' };
         $scope.model.alerts.push(alert);
     }
 
     function uploadCanceled(evt) {
-        var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' }
+        var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' };
         $scope.model.alerts.push(alert);
 
     }
@@ -308,7 +326,7 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
                 codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
 
             }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
                 $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
@@ -319,7 +337,7 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
                 codesUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
 
             }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
                 $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
@@ -328,7 +346,7 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
             RemoveRelationCodes.put({codesUri: $scope.model.levelsRelationToRemove.uri,
                 codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
             }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
                 $scope.model.alerts.push(alert);
             });
         }

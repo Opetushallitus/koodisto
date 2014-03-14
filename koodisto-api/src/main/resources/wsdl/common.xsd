@@ -251,6 +251,7 @@
         <xs:restriction base="xs:string">
             <xs:enumeration value="JHS_XML" />
             <xs:enumeration value="CSV" />
+            <xs:enumeration value="XLS" />
         </xs:restriction>
     </xs:simpleType>
 </xs:schema>
