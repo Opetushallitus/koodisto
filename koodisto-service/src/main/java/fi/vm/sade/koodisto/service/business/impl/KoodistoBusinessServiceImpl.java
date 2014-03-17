@@ -459,7 +459,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             KoodiVersio koodiVersio = null;
             if (kv.getKoodiVersio().getKoodi().getKoodiUri().equals(koodiUri)) {
                 koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri(), preserveOldRelations);
-
             } else {
                 koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri(), false);
             }

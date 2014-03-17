@@ -85,7 +85,7 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
                     found = true;
                 }
             }
-            if (!found) {
+            if (!found && !metadata.getNimi().isEmpty()) {
                 koodistoRyhma.addKoodistoRyhmaMetadata(metadata);
             }
         }
