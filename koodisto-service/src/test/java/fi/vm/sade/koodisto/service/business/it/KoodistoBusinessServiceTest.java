@@ -1,20 +1,16 @@
 package fi.vm.sade.koodisto.service.business.it;
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
-import fi.vm.sade.koodisto.dao.KoodiDAO;
-import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
-import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.model.KoodistoRyhma;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioHasRelationsException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
-import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +20,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,8 +40,6 @@ public class KoodistoBusinessServiceTest {
     @Autowired
     private KoodiBusinessService koodiBusinessService;
 
-    @Autowired
-    private KoodiVersioDAO koodiVersioDAO;
 
     @Test
     public void testCreate() {

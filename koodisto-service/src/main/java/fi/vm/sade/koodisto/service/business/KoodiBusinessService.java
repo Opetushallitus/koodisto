@@ -106,4 +106,6 @@ public interface KoodiBusinessService {
     List<KoodiVersioWithKoodistoItem> listByRelation(String koodiUri, boolean child, SuhteenTyyppi suhteenTyyppi);
 
     List<KoodiVersioWithKoodistoItem> listByRelation(String koodiUri, Integer koodiVersio, boolean child, SuhteenTyyppi suhteenTyyppi);
+
+    KoodiVersio getLatestKoodiVersio(String koodiUri);
 }

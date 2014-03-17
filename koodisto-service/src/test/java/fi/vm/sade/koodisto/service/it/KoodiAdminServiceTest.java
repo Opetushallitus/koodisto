@@ -906,7 +906,7 @@ public class KoodiAdminServiceTest {
         assertEquals(1, koodisto.getVersio());
 
         List<KoodiType> koodis = getKoodisByKoodisto(koodistoUri);
-        assertEquals(3, koodis.size());
+        assertEquals(2, koodis.size());
 
         Collections.sort(koodis, new Comparator<KoodiType>() {
             @Override
@@ -917,7 +917,6 @@ public class KoodiAdminServiceTest {
 
         KoodiType koodi1 = koodis.get(0);
         KoodiType koodi2 = koodis.get(1);
-        KoodiType koodi3 = koodis.get(2);
 
         assertEquals(koodiUri1, koodi1.getKoodiUri());
         assertEquals(TilaType.LUONNOS, koodi1.getTila());
@@ -929,13 +928,9 @@ public class KoodiAdminServiceTest {
         assertEquals(1, koodi2.getVersio());
         assertEquals(newName2, KoodistoHelper.getKoodiMetadataForLanguage(koodi2, KieliType.FI).getNimi());
 
-        assertEquals(createdArvo, koodi3.getKoodiArvo());
-        assertEquals(TilaType.LUONNOS, koodi3.getTila());
-        assertEquals(1, koodi3.getVersio());
-        assertEquals(createdNimi, KoodistoHelper.getKoodiMetadataForLanguage(koodi3, KieliType.FI).getNimi());
     }
 
-    @Test(expected = GenericFault.class)
+    @Test
     public void testMassCreateKoodiNotInKoodisto() {
         final String koodistoUri = "http://koodisto9";
         final String koodiUri = "3";
@@ -1006,7 +1001,7 @@ public class KoodiAdminServiceTest {
         assertEquals(2, koodisto.getVersio());
 
         List<KoodiType> koodis = getKoodisByKoodisto(koodistoUri);
-        assertEquals(3, koodis.size());
+        assertEquals(2, koodis.size());
 
         Collections.sort(koodis, new Comparator<KoodiType>() {
             @Override
@@ -1017,7 +1012,6 @@ public class KoodiAdminServiceTest {
 
         KoodiType koodi1 = koodis.get(0);
         KoodiType koodi2 = koodis.get(1);
-        KoodiType koodi3 = koodis.get(2);
 
         assertEquals(koodiUri1, koodi1.getKoodiUri());
         assertEquals(TilaType.LUONNOS, koodi1.getTila());
@@ -1028,11 +1022,6 @@ public class KoodiAdminServiceTest {
         assertEquals(TilaType.LUONNOS, koodi2.getTila());
         assertEquals(1, koodi2.getVersio());
         assertEquals(newName2, KoodistoHelper.getKoodiMetadataForLanguage(koodi2, KieliType.FI).getNimi());
-
-        assertEquals(createdArvo, koodi3.getKoodiArvo());
-        assertEquals(TilaType.LUONNOS, koodi3.getTila());
-        assertEquals(1, koodi3.getVersio());
-        assertEquals(createdNimi, KoodistoHelper.getKoodiMetadataForLanguage(koodi3, KieliType.FI).getNimi());
     }
 
     @Test

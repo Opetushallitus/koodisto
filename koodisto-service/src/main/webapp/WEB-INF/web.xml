@@ -43,15 +43,15 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+
     <servlet>
         <servlet-name>cxf</servlet-name>
         <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-
     <servlet-mapping>
         <servlet-name>cxf</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/services/*</url-pattern>
     </servlet-mapping>
 
     <resource-ref>

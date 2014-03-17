@@ -15,6 +15,7 @@ public class KoodistoVersioToKoodistoVersioListDtoConverter extends
         converted.setPaivitysPvm(source.getPaivitysPvm());
         converted.setTila(source.getTila());
         converted.setVersio(source.getVersio());
+        converted.setVersion(source.getVersion());
         converted.setVoimassaAlkuPvm(source.getVoimassaAlkuPvm());
         converted.setVoimassaLoppuPvm(source.getVoimassaLoppuPvm());
         converted.getMetadata().addAll(source.getMetadatas());

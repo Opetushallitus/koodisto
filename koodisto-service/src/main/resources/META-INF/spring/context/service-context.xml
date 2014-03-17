@@ -30,7 +30,9 @@
                 <ref bean="koodiMetadataToKoodiMetadataTypeConverter"/>
                 <ref bean="koodiMetadataTypeToKoodiMetadataConverter"/>
                 <ref bean="koodiTypeToKoodiVersioConverter"/>
-                <ref bean="koodiVersioWithKoodistoVersioItemsToKoodiDtoConverter"/>
+                <ref bean="koodiVersioWithKoodistoItemToKoodiDtoConverter"/>
+                <ref bean="koodiVersioWithKoodistoItemToSimpleKoodiDtoConverter"/>
+                <ref bean="koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter"/>
                 <ref bean="koodiVersioWithKoodistoVersioItemsToKoodiTypeConverter"/>
                 <ref bean="koodistoMetadataToKoodistoMetadataTypeConverter"/>
                 <ref bean="koodistoMetadataTypeToKoodistoMetadataConverter"/>
@@ -44,6 +46,7 @@
                 <ref bean="koodistoRyhmaMetadataToKoodistoRyhmaMetadataTypeConverter"/>
                 <ref bean="koodistoRyhmaToKoodistoRyhmaListDtoConverter"/>
                 <ref bean="koodistoRyhmaToKoodistoRyhmaListTypeConverter"/>
+                <ref bean="koodistoRyhmaToKoodistoRyhmaDtoConverter"/>
             </list>
         </property>
     </bean>

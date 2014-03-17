@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html ng-app="koodisto">
+
+<head>  
+    <title>Koodistojen ylläpito</title>
+
+
+    <!--conf -->
+    <script type="text/javascript" src="../configuration/configuration.js"></script>
+
+    <!-- libs -->
+    <script type="text/javascript" src="../jslib/jquery-2.0.3.min.js"></script>
+
+    <script type="text/javascript" src="../jslib/jquery.i18n.properties-min-1.0.9.js"></script>
+
+    <script type="text/javascript" src="../jslib/angular-1.2.0/angular.js"></script>
+    <script type="text/javascript" src="../jslib/angular-1.2.0/angular-resource.js"></script>
+    <script type="text/javascript" src="../jslib/angular-1.2.0/angular-route.js"></script>
+    <script type="text/javascript" src="../jslib/angular-1.2.0/angular-animate.js"></script>
+    <script type="text/javascript" src="../jslib/ui-bootstrap-0.6.0.min.js"></script>
+
+    <!-- app js-->
+
+    <script type="text/javascript" src="../js/app.js"></script>
+    <script type="text/javascript" src="../js/validation.js"></script>
+    <script type="text/javascript" src="../js/codesTree.js"></script>
+    <script type="text/javascript" src="../js/organizationTree.js"></script>
+    <script type="text/javascript" src="../js/createCodes.js"></script>
+    <script type="text/javascript" src="../js/viewCodes.js"></script>
+    <script type="text/javascript" src="../js/editCodes.js"></script>
+    <script type="text/javascript" src="../js/viewCodeElement.js"></script>
+    <script type="text/javascript" src="../js/createCodeElement.js"></script>
+    <script type="text/javascript" src="../js/editCodeElement.js"></script>
+    <script type="text/javascript" src="../js/createCodesGroup.js"></script>
+    <script type="text/javascript" src="../js/viewCodesGroup.js"></script>
+    <script type="text/javascript" src="../js/editCodesGroup.js"></script>
+
+    <script type="text/javascript" src="../js/directives.js"></script>
+
+    <script type="text/javascript" src="../js/auth.js"></script>
+
+    <script type="text/javascript" src="../js/loading.js"></script>
+
+
+    <!--Virkailija layout script -->
+    <script type="text/javascript" src="/virkailija-raamit/apply-raamit.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <!-- css -->
+    <link href="../css/font-awesome-4.0.3/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="../css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="../css/virkailija.css" rel="stylesheet" type="text/css" />
+    <link href="../css/other.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <div id="application-wrapper">
+        <div id="angularbox" ng-view=""></div>        
+    </div>
+
+
+    <div ng-controller="LoadingCtrl"><div ng-show="loading" style="position: fixed; left: 0px; top: 0px; background: gold; padding: 0.3em; font-weight: bold;">käsitellään...</div></div>
+</body>
+
+</html>

@@ -3,7 +3,6 @@ package fi.vm.sade.koodisto.service.business.util;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 
 public class KoodiVersioWithKoodistoItem {
-
     private KoodiVersio koodiVersio;
     private KoodistoItem koodistoItem;
 

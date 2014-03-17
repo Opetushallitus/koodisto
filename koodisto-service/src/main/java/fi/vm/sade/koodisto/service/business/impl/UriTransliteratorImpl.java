@@ -2,10 +2,14 @@ package fi.vm.sade.koodisto.service.business.impl;
 
 import fi.vm.sade.koodisto.dao.KoodiDAO;
 import fi.vm.sade.koodisto.dao.KoodistoDAO;
+import fi.vm.sade.koodisto.dao.KoodistoRyhmaDAO;
+import fi.vm.sade.koodisto.model.KoodistoRyhma;
+import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
+import fi.vm.sade.koodisto.service.types.common.KoodistoType;
 import fi.vm.sade.koodisto.util.KoodistoHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,9 @@ public class UriTransliteratorImpl implements UriTransliterator {
 
     @Autowired
     private KoodistoDAO koodistoDAO;
+
+    @Autowired
+    private KoodistoRyhmaDAO koodistoRyhmaDAO;
 
     private static final Map<Character, Character> TRANSLITERATION = new HashMap<Character, Character>();
 
@@ -91,6 +98,53 @@ public class UriTransliteratorImpl implements UriTransliterator {
 
         return koodistoUri;
     }
+
+    private static KoodistoRyhmaMetadata getKoodistoRyhmaMetadataForLanguage(Collection<KoodistoRyhmaMetadata> metadatas, KieliType kieli) {
+        KoodistoRyhmaMetadata found = null;
+
+        for (KoodistoRyhmaMetadata m : metadatas) {
+            if (kieli.value().equals(m.getKieli().name())) {
+                found = m;
+                break;
+            }
+        }
+        return found;
+    }
+
+    @Override
+    public String generateKoodistoGroupUriByMetadata(Collection<KoodistoRyhmaMetadata> metadatas) {
+
+        KoodistoRyhmaMetadata meta = null;
+        for (KieliType k : PREFERRED_ORDER) {
+            meta = getKoodistoRyhmaMetadataForLanguage(metadatas, k);
+            if (meta != null) {
+                break;
+            }
+        }
+
+        if (meta == null) {
+            throw new MetadataEmptyException("Metadata is empty");
+        }
+
+        String baseKoodistoRyhmaUri = transliterate(meta.getNimi());
+        if (StringUtils.isBlank(baseKoodistoRyhmaUri)) {
+            baseKoodistoRyhmaUri = "-";
+        }
+        if (!StringUtils.containsIgnoreCase(baseKoodistoRyhmaUri, "http://")) {
+            baseKoodistoRyhmaUri = "http://" + baseKoodistoRyhmaUri;
+        }
+        String koodistoRyhmaUri = baseKoodistoRyhmaUri;
+
+        int i = 1;
+        while (koodistoRyhmaDAO.koodistoRyhmaUriExists(koodistoRyhmaUri)) {
+            koodistoRyhmaUri = koodistoRyhmaUri + "-" + i;
+            ++i;
+        }
+
+        return koodistoRyhmaUri;
+    }
+
+
 
     @Override
     public String generateKoodiUriByKoodistoUriAndKoodiArvo(String koodistoUri, String koodiArvo) {

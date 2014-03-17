@@ -1,13 +1,10 @@
 package fi.vm.sade.koodisto.model.constraint.fieldassert;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
-import fi.vm.sade.koodisto.model.constraint.exception.KoodistoValidatorRuntimeException;
 
 public class FieldAssertValidator implements ConstraintValidator<FieldAssert, Object> {
 
@@ -28,21 +25,22 @@ public class FieldAssertValidator implements ConstraintValidator<FieldAssert, Ob
                 throw new RuntimeException("Asserter must be an instance of " + Asserter.class.getCanonicalName());
             }
 
-            Constructor<?> declaredConstructor = constraintAnnotation.asserter().getDeclaredConstructor(new Class<?>[] {});
+            Constructor<?> declaredConstructor = constraintAnnotation.asserter().getDeclaredConstructor(
+                    new Class<?>[] {});
 
             asserterInstance = (Asserter<?>) declaredConstructor.newInstance();
         } catch (SecurityException e) {
-            throw new KoodistoValidatorRuntimeException(e);
+            throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
-            throw new KoodistoValidatorRuntimeException(e);
+            throw new RuntimeException(e);
         } catch (IllegalArgumentException e) {
-            throw new KoodistoValidatorRuntimeException(e);
+            throw new RuntimeException(e);
         } catch (InstantiationException e) {
-            throw new KoodistoValidatorRuntimeException(e);
+            throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
-            throw new KoodistoValidatorRuntimeException(e);
+            throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-            throw new KoodistoValidatorRuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -50,12 +48,14 @@ public class FieldAssertValidator implements ConstraintValidator<FieldAssert, Ob
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         try {
-            Method getter1 = value.getClass().getMethod("get" + Character.toUpperCase(fieldName1.charAt(0)) + fieldName1.substring(1), new Class<?>[] {});
+            Method getter1 = value.getClass().getMethod(
+                    "get" + Character.toUpperCase(fieldName1.charAt(0)) + fieldName1.substring(1), new Class<?>[] {});
 
-            Method getter2 = value.getClass().getMethod("get" + Character.toUpperCase(fieldName2.charAt(0)) + fieldName2.substring(1), new Class<?>[] {});
+            Method getter2 = value.getClass().getMethod(
+                    "get" + Character.toUpperCase(fieldName2.charAt(0)) + fieldName2.substring(1), new Class<?>[] {});
 
             if (!getter1.getReturnType().isAssignableFrom(getter2.getReturnType())) {
-                throw new KoodistoValidatorRuntimeException("Field types must be compatible with each other");
+                throw new RuntimeException("Field types must be compatible with each other");
             }
 
             Object value1 = getter1.invoke(value, new Object[] {});
@@ -65,15 +65,15 @@ public class FieldAssertValidator implements ConstraintValidator<FieldAssert, Ob
 
             return isValid;
         } catch (SecurityException e) {
-            throw new KoodistoValidatorRuntimeException(e);
+            throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
-            throw new KoodistoValidatorRuntimeException(e);
+            throw new RuntimeException(e);
         } catch (IllegalArgumentException e) {
-            throw new KoodistoValidatorRuntimeException(e);
+            throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
-            throw new KoodistoValidatorRuntimeException(e);
+            throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
-            throw new KoodistoValidatorRuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 }

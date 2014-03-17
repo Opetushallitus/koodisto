@@ -6,11 +6,9 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoRyhmaListType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoType;
-import fi.vm.sade.koodisto.util.exception.KoodistoFailedReadingPropertiesRuntimeException;
-import fi.vm.sade.koodisto.util.exception.KoodistoServiceRestRuntimeException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,10 +45,16 @@ public class CachingKoodistoClient implements KoodistoClient {
             fis = new FileInputStream(new File(System.getProperty("user.home"), "oph-configuration/common.properties"));
             props.load(fis);
             this.koodistoServiceWebappUrl = props.getProperty("cas.service.koodisto-service");
-            fis.close();
         } catch (IOException e) {
-            throw new KoodistoFailedReadingPropertiesRuntimeException("failed to read common.properties", e);
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException ioe) {
+                }
+            }
+            throw new RuntimeException("failed to read common.properties", e);
         }
+
     }
 
     public void setKoodistoServiceWebappUrl(String koodistoServiceWebappUrl) {
@@ -65,7 +69,7 @@ public class CachingKoodistoClient implements KoodistoClient {
                     cachingRestClient.getCacheStatus(), result });
             return result;
         } catch (IOException e) {
-            throw new KoodistoServiceRestRuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -108,12 +112,12 @@ public class CachingKoodistoClient implements KoodistoClient {
     @Override
     public String buildSearchKoodisUri(SearchKoodisCriteriaType sc) {
         return "/searchKoodis?"
-                + param("koodiUris", sc.getKoodiUris())
-                + param("koodiArvo", sc.getKoodiArvo())
-                + param("koodiTilas", sc.getKoodiTilas())
-                + param("validAt", sc.getValidAt())
-                + param("koodiVersio", sc.getKoodiVersio())
-                + param("koodiVersioSelection", sc.getKoodiVersioSelection());
+                +param("koodiUris", sc.getKoodiUris())
+                +param("koodiArvo", sc.getKoodiArvo())
+                +param("koodiTilas", sc.getKoodiTilas())
+                +param("validAt", sc.getValidAt())
+                +param("koodiVersio", sc.getKoodiVersio())
+                +param("koodiVersioSelection", sc.getKoodiVersioSelection());
     }
 
     private String param(String name, Object val) {

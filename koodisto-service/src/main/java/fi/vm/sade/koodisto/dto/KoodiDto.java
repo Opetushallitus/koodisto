@@ -16,35 +16,39 @@ import java.util.List;
  */
 public class KoodiDto {
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     private String koodiUri;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private String resourceUri;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
+    private Long version;
+
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     private int versio;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private KoodistoItemDto koodisto;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     private String koodiArvo;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Date paivitysPvm;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Date voimassaAlkuPvm;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Date voimassaLoppuPvm;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Tila tila;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     protected List<KoodiMetadata> metadata = new ArrayList<KoodiMetadata>();
+
 
     public String getKoodiUri() {
         return koodiUri;
@@ -124,5 +128,13 @@ public class KoodiDto {
 
     public void setMetadata(List<KoodiMetadata> metadata) {
         this.metadata = metadata;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(final Long version) {
+        this.version = version;
     }
 }

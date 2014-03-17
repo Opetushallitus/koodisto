@@ -1,9 +1,9 @@
 package fi.vm.sade.koodisto.dao;
 
-import java.util.List;
-
 import fi.vm.sade.generic.dao.JpaDAO;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
+
+import java.util.List;
 
 /**
  * @author tommiha
@@ -16,4 +16,7 @@ public interface KoodistoRyhmaDAO extends JpaDAO<KoodistoRyhma, Long> {
 
     List<KoodistoRyhma> findByUri(List<String> koodistoRyhmaUris);
 
+    KoodistoRyhma findById(Long id);
+
+    boolean koodistoRyhmaUriExists(String ryhmaUri);
 }

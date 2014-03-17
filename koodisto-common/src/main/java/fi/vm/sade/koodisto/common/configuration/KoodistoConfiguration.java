@@ -1,11 +1,11 @@
 package fi.vm.sade.koodisto.common.configuration;
 
-import java.net.MalformedURLException;
-import java.text.MessageFormat;
-
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+
+import java.net.MalformedURLException;
+import java.text.MessageFormat;
 
 public class KoodistoConfiguration {
     private Configuration configurationProperties;

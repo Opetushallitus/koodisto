@@ -32,7 +32,7 @@ public class KoodistoRyhmaMetadata extends BaseEntity {
     @NotBlank
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "nimi", length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = false)
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
     private String nimi;
 
     @NotNull
