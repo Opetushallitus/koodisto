@@ -89,6 +89,32 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-core</artifactId>
+                <version>${ehcache.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-jgroupsreplication</artifactId>
+                <version>${ehcache-jgroupsreplication.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jgroups</groupId>
+                <artifactId>jgroups</artifactId>
+                <version>${jgroups.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jasig.cas.client</groupId>
+                <artifactId>cas-client-support-distributed-ehcache</artifactId>
+                <version>${cas-client-support-distributed-ehcache.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.sf.ehcache</groupId>
+                        <artifactId>ehcache</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -107,6 +133,7 @@
         <ehcache.version>2.5.0</ehcache.version>
         <ehcache-jgroupsreplication.version>1.5</ehcache-jgroupsreplication.version>
         <jgroups.version>2.10.0.GA</jgroups.version>
+        <cas-client-support-distributed-ehcache.version>3.1.12</cas-client-support-distributed-ehcache.version>
 
         <vaadin.version>6.8.13</vaadin.version>
         <vaadin.theme.version>6.3-SNAPSHOT</vaadin.theme.version>
