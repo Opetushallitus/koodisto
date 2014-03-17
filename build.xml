@@ -39,18 +39,24 @@
             <fileset dir="${maven.repo}/fi/vm/sade/koodisto/koodisto-app/${pom.version}">
                 <include name="*.war"/>
             </fileset>
+            <fileset dir="${maven.repo}/fi/vm/sade/koodisto/koodisto-ui/${pom.version}">
+                <include name="*.war"/>
+            </fileset>
         </scp>
 
         <echo>unzip files to tomcat webapps-dir...</echo>
         <sshexec command="
 				mkdir ${tomcat.home}/webapps/koodisto-service;
 				mkdir ${tomcat.home}/webapps/koodisto-app;
+				mkdir ${tomcat.home}/webapps/koodisto-ui;
 				
 				unzip -qo -d${tomcat.home}/webapps/koodisto-service ${tomcat.home}/webapps/koodisto-service-*.war;
 				unzip -qo -d${tomcat.home}/webapps/koodisto-app ${tomcat.home}/webapps/koodisto-app-*.war;
+				unzip -qo -d${tomcat.home}/webapps/koodisto-ui ${tomcat.home}/webapps/koodisto-ui-*.war;
 				
 				rm -rf ${tomcat.home}/webapps/koodisto-service-*.war;
-				rm -rf ${tomcat.home}/webapps/koodisto-app-*.war"
+				rm -rf ${tomcat.home}/webapps/koodisto-app-*.war;
+                rm -rf ${tomcat.home}/webapps/koodisto-ui-*.war"
 
                  host="${tomcat-host}" username="tomcat" keyfile="${ssh.keyfile}"
                  passphrase="${ssh.keypass}" trust="true" failonerror="false"/>
@@ -70,6 +76,7 @@
             <and>
                 <http url="http://${tomcat-host}:${tomcat-port}/koodisto-service"/>
                 <http url="http://${tomcat-host}:${tomcat-port}/koodisto-app"/>
+                <http url="http://${tomcat-host}:${tomcat-port}/koodisto-ui"/>
             </and>
         </waitfor>
         <fail message="koodisto-service -webapp did not come up.  Check your log files, fix and try again.  Good Luck :-).">
@@ -86,7 +93,13 @@
                 </not>
             </condition>
         </fail>
-
+        <fail message="koodisto-ui -webapp did not come up.  Check your log files, fix and try again.  Good Luck :-).">
+            <condition>
+                <not>
+                    <http url="http://${tomcat-host}:${tomcat-port}/koodisto-ui"/>
+                </not>
+            </condition>
+        </fail>
         <echo>Successfully deployed to ${tomcat-host}</echo>
 
     </target>
