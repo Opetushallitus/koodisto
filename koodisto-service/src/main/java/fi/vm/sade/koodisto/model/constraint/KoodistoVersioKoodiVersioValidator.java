@@ -1,9 +1,10 @@
 package fi.vm.sade.koodisto.model.constraint;
 
-import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
+import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
+import fi.vm.sade.koodisto.model.constraint.exception.KoodistoValidatorRuntimeException;
 
 public class KoodistoVersioKoodiVersioValidator implements
         ConstraintValidator<KoodistoVersioKoodiVersioConstraint, KoodistoVersioKoodiVersio> {
@@ -17,7 +18,7 @@ public class KoodistoVersioKoodiVersioValidator implements
     public boolean isValid(KoodistoVersioKoodiVersio value, ConstraintValidatorContext context) {
         if (value.getKoodistoVersio() == null || value.getKoodiVersio() == null
                 || value.getKoodistoVersio().getKoodisto() == null || value.getKoodiVersio().getKoodi() == null) {
-            throw new RuntimeException("Both koodisto versio and koodi versio must not be null");
+            throw new KoodistoValidatorRuntimeException("Both koodisto versio and koodi versio must not be null");
         }
 
         final boolean isValid = value.getKoodiVersio().getKoodi().getKoodisto()
