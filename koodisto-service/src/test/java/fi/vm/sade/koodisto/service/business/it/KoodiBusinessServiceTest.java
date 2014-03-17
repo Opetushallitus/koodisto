@@ -11,7 +11,6 @@ import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import org.junit.Test;

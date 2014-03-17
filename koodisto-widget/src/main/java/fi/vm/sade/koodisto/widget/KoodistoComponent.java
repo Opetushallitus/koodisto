@@ -62,10 +62,6 @@ public class KoodistoComponent extends WrapperComponent<KoodiType> {
         return cachingKoodistoClient.getKoodistoTypeByUri(koodistoUri);
     }
 
-    private List<KoodiType> getKoodisByKoodisto(String koodistoUri, Integer koodistoVersio) {
-        return cachingKoodistoClient.getKoodisForKoodisto(koodistoUri, koodistoVersio);
-    }
-    
     private List<KoodiType> getKoodisByKoodisto(String koodistoUri, Integer koodistoVersio, boolean onlyValidKoodis) {
         return cachingKoodistoClient.getKoodisForKoodisto(koodistoUri, koodistoVersio, onlyValidKoodis);
     }

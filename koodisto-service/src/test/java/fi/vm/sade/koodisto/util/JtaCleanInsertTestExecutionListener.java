@@ -1,9 +1,6 @@
 package fi.vm.sade.koodisto.util;
 
-import java.sql.Connection;
-
-import javax.persistence.EntityManager;
-
+import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
@@ -17,7 +14,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
+import javax.persistence.EntityManager;
+import java.sql.Connection;
 
 /**
  * Spring framework transactional test extension for JUnit4. Cleans the database

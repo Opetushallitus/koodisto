@@ -11,6 +11,7 @@
 		<class>fi.vm.sade.koodisto.model.Koodi</class>
 		<class>fi.vm.sade.koodisto.model.Koodisto</class>
 		<class>fi.vm.sade.koodisto.model.KoodinSuhde</class>
+        <class>fi.vm.sade.koodisto.model.KoodistonSuhde</class>
 		<class>fi.vm.sade.koodisto.model.KoodistoMetadata</class>
 		<class>fi.vm.sade.koodisto.model.KoodiMetadata</class>
 		<class>fi.vm.sade.koodisto.model.KoodistoRyhma</class>

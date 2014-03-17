@@ -4,7 +4,7 @@
     <parent>
         <artifactId>koodisto</artifactId>
         <groupId>fi.vm.sade.koodisto</groupId>
-        <version>8.1</version>
+        <version>9.1-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>koodisto-service</artifactId>
@@ -18,17 +18,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.jasig.cas</groupId>
-            <artifactId>cas-client-support-distributed-ehcache</artifactId>
-            <version>3.1.10</version>
-            <exclusions>
-                <exclusion>
-                   <groupId>net.sf.ehcache</groupId>
-		   <artifactId>ehcache</artifactId>
-		</exclusion>
-            </exclusions>
-	</dependency>
 
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
@@ -45,8 +34,26 @@
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>dependencies-service</artifactId>
-            <version>${generic.version}</version>
             <type>pom</type>
+            <exclusions>
+            <exclusion>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+            </exclusion>
+            </exclusions>
+            <version>${generic.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>fi.vm.sade.log</groupId>
+            <artifactId>log-client</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+            <version>${generic.version}</version>
         </dependency>
 
         <dependency>
@@ -59,6 +66,11 @@
             <artifactId>hsqldb</artifactId>
             <scope>test</scope>
             <version>${hsqldb.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -119,6 +131,11 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-transports-jms</artifactId>
             <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
         </dependency>
 
         <!-- ActiveMQ -->
@@ -203,6 +220,17 @@
         </dependency>
 
         <!-- Jersey -->
+
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-multipart</artifactId>
+            <version>1.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+            <version>1.9.1</version>
+        </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
@@ -238,6 +266,10 @@
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>
+                    <artifactId>spring-aop</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
                     <artifactId>spring</artifactId>
                 </exclusion>
                 <exclusion>
@@ -255,10 +287,6 @@
                 <exclusion>
                     <groupId>org.springframework</groupId>
                     <artifactId>spring-context</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-aop</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -290,6 +318,13 @@
             <groupId>net.sf.supercsv</groupId>
             <artifactId>super-csv</artifactId>
             <version>2.0.1</version>
+        </dependency>
+        
+        <!-- Apache POI XLS marshaller -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.9</version>
         </dependency>
 
     </dependencies>

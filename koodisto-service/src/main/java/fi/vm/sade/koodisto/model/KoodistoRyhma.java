@@ -3,22 +3,18 @@
  */
 package fi.vm.sade.koodisto.model;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.validation.constraints.Size;
-
-import org.hibernate.annotations.*;
+import fi.vm.sade.generic.model.BaseEntity;
+import fi.vm.sade.koodisto.common.util.FieldLengths;
 import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import fi.vm.sade.generic.model.BaseEntity;
-import fi.vm.sade.koodisto.common.util.FieldLengths;
+import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 
@@ -41,7 +37,7 @@ public class KoodistoRyhma extends BaseEntity {
     private Set<Koodisto> koodistos = new HashSet<Koodisto>();
 
     @NotEmpty
-    @OneToMany(mappedBy = "koodistoRyhma", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "koodistoRyhma", fetch = FetchType.EAGER, cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = new HashSet<KoodistoRyhmaMetadata>();
 
@@ -73,6 +69,10 @@ public class KoodistoRyhma extends BaseEntity {
 
     public void removeKoodistoRyhmaMetadata(KoodistoRyhmaMetadata metadata) {
         this.koodistoRyhmaMetadatas.remove(metadata);
+    }
+
+    public void setKoodistoRyhmaMetadatas(final Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas) {
+        this.koodistoRyhmaMetadatas = koodistoRyhmaMetadatas;
     }
 
     public void addKoodisto(Koodisto koodisto) {

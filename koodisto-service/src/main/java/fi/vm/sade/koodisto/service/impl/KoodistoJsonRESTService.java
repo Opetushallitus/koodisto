@@ -27,8 +27,9 @@ import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodistoHelper;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -88,6 +89,7 @@ public class KoodistoJsonRESTService {
     @GET
     @Path("/{koodistoUri}")
     @Cacheable(maxAgeSeconds = ONE_HOUR)
+    @Transactional
     public KoodistoDto getKoodistoByUri(@PathParam(KOODISTO_URI) String koodistoUri,
                                         @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
 
@@ -105,6 +107,7 @@ public class KoodistoJsonRESTService {
     @GET
     @Path("/{koodistoUri}/koodi")
     @Cacheable(maxAgeSeconds = ONE_HOUR)
+    @Transactional
     public List<KoodiDto> getKoodisByKoodisto(@PathParam(KOODISTO_URI) String koodistoUri,
                                               @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio,
                                               @QueryParam(ONLY_VALID_KOODIS) @DefaultValue("false") boolean onlyValidKoodis) {
@@ -277,7 +280,7 @@ public class KoodistoJsonRESTService {
     @JsonView(JsonViews.Basic.class)
     @POST
     @Path("/{koodistoUri}/koodi/{koodiUri}/kieli/{lang}/metadata")
-    @Secured({KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public KoodiDto updateKoodiLangMetaData(
             @PathParam(KOODISTO_URI) String koodistoUri,
             @PathParam(KOODI_URI) String koodiUri,

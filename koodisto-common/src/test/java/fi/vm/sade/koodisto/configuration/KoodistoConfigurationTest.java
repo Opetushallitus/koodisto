@@ -1,13 +1,12 @@
 package fi.vm.sade.koodisto.configuration;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.MalformedURLException;
-
+import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.junit.Test;
 
-import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
+import java.net.MalformedURLException;
+
+import static org.junit.Assert.assertEquals;
 
 public class KoodistoConfigurationTest {
 

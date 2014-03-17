@@ -10,19 +10,19 @@ import org.codehaus.jackson.map.annotate.JsonView;
  */
 public abstract class AbstractKoodistoDto {
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class,JsonViews.Basic.class,JsonViews.Simple.class})
     private String koodistoUri;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class,JsonViews.Basic.class,JsonViews.Basic.class})
     private String resourceUri;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class,JsonViews.Basic.class})
     private String omistaja;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class,JsonViews.Basic.class,JsonViews.Simple.class})
     private String organisaatioOid;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class,JsonViews.Basic.class})
     private Boolean lukittu;
 
     public String getKoodistoUri() {

@@ -1,30 +1,19 @@
 package fi.vm.sade.koodisto.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.*;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.hibernate.annotations.*;
-import org.hibernate.annotations.Cache;
-import org.hibernate.validator.constraints.NotEmpty;
-
 import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrAfterAnotherDateAsserter;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.persistence.*;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.util.*;
 
 @FieldAssert(field1 = "voimassaAlkuPvm", field2 = "voimassaLoppuPvm", asserter = DateIsNullOrAfterAnotherDateAsserter.class, message = "{voimassaLoppuPvm.invalid}")
 @Entity
@@ -77,6 +66,13 @@ public class KoodistoVersio extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodistoVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private List<KoodistoMetadata> metadatas = new ArrayList<KoodistoMetadata>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodistoVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
+    private Set<KoodistonSuhde> ylakoodistos = new HashSet<KoodistonSuhde>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ylakoodistoVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
+    private Set<KoodistonSuhde> alakoodistos = new HashSet<KoodistonSuhde>();
+
 
     @PrePersist
     protected void onCreate() {
@@ -164,6 +160,22 @@ public class KoodistoVersio extends BaseEntity {
 
     public void removeKoodiVersio(KoodistoVersioKoodiVersio koodiVersio) {
         this.koodiVersios.remove(koodiVersio);
+    }
+
+    public Set<KoodistonSuhde> getYlakoodistos() {
+        return ylakoodistos;
+    }
+
+    public void setYlakoodistos(final Set<KoodistonSuhde> ylakoodisto) {
+        this.ylakoodistos = ylakoodisto;
+    }
+
+    public Set<KoodistonSuhde> getAlakoodistos() {
+        return alakoodistos;
+    }
+
+    public void setAlakoodistos(final Set<KoodistonSuhde> alakoodisto) {
+        this.alakoodistos = alakoodisto;
     }
 
     @Override

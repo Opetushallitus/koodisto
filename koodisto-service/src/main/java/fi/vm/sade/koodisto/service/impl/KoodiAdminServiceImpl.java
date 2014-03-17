@@ -14,7 +14,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.SuhteenTyyppiType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class KoodiAdminServiceImpl implements KoodiAdminService {
     private SadeConversionService conversionService;
 
     @Override
-    @Secured({KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public KoodiType updateKoodi(UpdateKoodiDataType updateKoodiData) {
         return conversionService.convert(koodiBusinessService.updateKoodi(updateKoodiData), KoodiType.class);
     }
@@ -54,19 +54,19 @@ public class KoodiAdminServiceImpl implements KoodiAdminService {
     }
 
     @Override
-    @Secured({KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     public void massCreate(String koodistoUri, List<UpdateKoodiDataType> koodiList) {
         koodiBusinessService.massCreate(koodistoUri, koodiList);
     }
 
     @Override
-    @Secured({KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     public void deleteKoodiVersion(String koodiUri, int koodiVersio) {
         koodiBusinessService.delete(koodiUri, koodiVersio);
     }
 
     @Override
-    @Secured({KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public void addRelation(String ylaKoodi, String alaKoodi,
                             SuhteenTyyppiType suhteenTyyppi) throws GenericFault {
         fi.vm.sade.koodisto.model.SuhteenTyyppi st = fi.vm.sade.koodisto.model.SuhteenTyyppi.valueOf(suhteenTyyppi
@@ -75,7 +75,7 @@ public class KoodiAdminServiceImpl implements KoodiAdminService {
     }
 
     @Override
-    @Secured({KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public void addRelationByAlakoodi(String ylaKoodi, List<String> alaKoodis,
                                       SuhteenTyyppiType suhteenTyyppi) throws GenericFault {
         fi.vm.sade.koodisto.model.SuhteenTyyppi st = fi.vm.sade.koodisto.model.SuhteenTyyppi.valueOf(suhteenTyyppi
@@ -85,7 +85,7 @@ public class KoodiAdminServiceImpl implements KoodiAdminService {
     }
 
     @Override
-    @Secured({KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public void removeRelationByAlakoodi(String ylaKoodi, List<String> alaKoodis,
                                          SuhteenTyyppiType suhteenTyyppi) throws GenericFault {
         fi.vm.sade.koodisto.model.SuhteenTyyppi st = fi.vm.sade.koodisto.model.SuhteenTyyppi.valueOf(suhteenTyyppi
@@ -94,7 +94,7 @@ public class KoodiAdminServiceImpl implements KoodiAdminService {
     }
 
     @Override
-    @Secured({KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     public KoodiType createKoodi(String koodistoUri, CreateKoodiDataType createKoodiData) {
         return conversionService.convert(koodiBusinessService.createKoodi(koodistoUri, createKoodiData),
                 KoodiType.class);

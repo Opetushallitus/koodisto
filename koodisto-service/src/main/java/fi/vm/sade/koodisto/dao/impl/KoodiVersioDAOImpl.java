@@ -16,6 +16,7 @@ import fi.vm.sade.koodisto.service.types.common.TilaType;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
@@ -368,6 +369,7 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
     }
 
     @Override
+    @Transactional
     public List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisCriteriaType searchCriteria) {
         EntityManager em = getEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();

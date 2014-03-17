@@ -4,16 +4,19 @@ import fi.vm.sade.koodisto.service.KoodiService;
 import fi.vm.sade.koodisto.service.business.DownloadBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoExportException;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoCsvConverter;
+import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXlsConverter;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXmlConverter;
 import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -30,6 +33,9 @@ public class DownloadBusinessServiceImpl implements DownloadBusinessService {
 
     @Autowired
     private KoodistoCsvConverter koodistoCsvConverter;
+
+    @Autowired
+    private KoodistoXlsConverter koodistoXlsConverter;
 
     @Autowired
     private KoodiService koodiService;
@@ -49,6 +55,9 @@ public class DownloadBusinessServiceImpl implements DownloadBusinessService {
                     break;
                 case CSV:
                     returnValue = koodistoCsvConverter.marshal(koodiTypes, encoding);
+                    break;
+                case XLS:
+                    returnValue = koodistoXlsConverter.marshal(koodiTypes, encoding);
                     break;
                 default:
                     throw new KoodistoExportException("Unknown koodisto export format!");

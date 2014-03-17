@@ -1,11 +1,12 @@
 package fi.vm.sade.koodisto.service.it;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
+import fi.vm.sade.dbunit.annotation.DataSetLocation;
+import fi.vm.sade.koodisto.service.KoodistoService;
+import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
+import fi.vm.sade.koodisto.service.types.common.KoodistoType;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
+import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,11 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
-import fi.vm.sade.koodisto.service.KoodistoService;
-import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
-import fi.vm.sade.koodisto.service.types.common.KoodistoType;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
-import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,

@@ -5,13 +5,11 @@ package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
-import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.util.Collections;
 import java.util.HashSet;

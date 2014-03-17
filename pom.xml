@@ -1,99 +1,118 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>fi.vm.sade.koodisto</groupId>
-	<artifactId>koodisto</artifactId>
-	<version>8.1</version>
-	<packaging>pom</packaging>
-	<name>Koodisto :: Parent</name>
+    <groupId>fi.vm.sade.koodisto</groupId>
+    <artifactId>koodisto</artifactId>
+    <version>9.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>Koodisto :: Parent</name>
 
-	<parent>
-		<groupId>fi.vm.sade.generic</groupId>
-		<artifactId>build-parent</artifactId>
-		<version>9.0-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>fi.vm.sade.generic</groupId>
+        <artifactId>build-parent</artifactId>
+        <version>9.0-SNAPSHOT</version>
+    </parent>
 
-	<modules>
-		<module>koodisto-api</module>
-		<module>koodisto-common</module>
-		<module>koodisto-service</module>
-		<module>koodisto-app</module>
-		<module>koodisto-widget</module>
-	</modules>
+    <modules>
+        <module>koodisto-api</module>
+        <module>koodisto-common</module>
+        <module>koodisto-service</module>
+        <module>koodisto-ui</module>
+        <module>koodisto-app</module>
+        <module>koodisto-widget</module>
+    </modules>
 
-	<properties>
-		<generic.version>9.0-SNAPSHOT</generic.version>
-		<organisaatio.version>8.0-SNAPSHOT</organisaatio.version>
 
-		<!-- bamboo.data.home and sonar.jdbc.password must be given as env-properties. -->
-		<clover.version>3.1.8</clover.version>
-		<clover.fullRunEvery>500</clover.fullRunEvery>
-		<clover.generateHistorical>true</clover.generateHistorical>
-		<clover.outputDirectory>${bamboo.data.home}/www/clover_koodisto</clover.outputDirectory>
-		<clover.base>${bamboo.data.home}/clover_koodisto</clover.base>
-		<clover.historyDir>${clover.base}/history</clover.historyDir>
-		<clover.snapshot>${clover.base}/snapshot/clover.snapshot</clover.snapshot>
-		<clover.cloverDatabase>${clover.base}/db/clover.db</clover.cloverDatabase>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>fi.vm.sade.organisaatio</groupId>
+                <artifactId>organisaatio-api</artifactId>
+                <version>${organisaatio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.organisaatio</groupId>
+                <artifactId>organisaatio-ui-widgets</artifactId>
+                <version>${organisaatio.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.vaadin</groupId>
+                <artifactId>vaadin-theme-oph</artifactId>
+                <version>${vaadin.theme.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.generic</groupId>
+                <artifactId>dependencies-vaadin</artifactId>
+                <version>${generic.version}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.generic</groupId>
+                <artifactId>generic-test-aspects</artifactId>
+                <version>${generic.version}</version>
+                <scope>test</scope>
+            </dependency>
 
-		<vaadin.theme.version>6.3-SNAPSHOT</vaadin.theme.version>
+            <dependency>
+                <groupId>fi.vm.sade.generic</groupId>
+                <artifactId>generic-common</artifactId>
+                <version>${generic.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.generic</groupId>
+                <artifactId>dependencies-service</artifactId>
+                <version>${generic.version}</version>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.generic</groupId>
+                <artifactId>webapp-portal-decorator</artifactId>
+                <version>${generic.version}</version>
+                <type>war</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.graylog2</groupId>
+                <artifactId>gelfj</artifactId>
+                <version>${gelfj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>fi.vm.sade.log</groupId>
+                <artifactId>log-client</artifactId>
+                <version>${log.client.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>slf4j-log4j12</artifactId>
+                        <groupId>org.slf4j</groupId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <properties>
+        <!-- bamboo.data.home and sonar.jdbc.password must be given as env-properties. -->
+        <clover.version>3.1.8</clover.version>
+        <clover.fullRunEvery>500</clover.fullRunEvery>
+        <clover.generateHistorical>true</clover.generateHistorical>
+        <clover.outputDirectory>${bamboo.data.home}/www/clover_koodisto</clover.outputDirectory>
+        <clover.base>${bamboo.data.home}/clover_koodisto</clover.base>
+        <clover.historyDir>${clover.base}/history</clover.historyDir>
+        <clover.snapshot>${clover.base}/snapshot/clover.snapshot</clover.snapshot>
+        <clover.cloverDatabase>${clover.base}/db/clover.db</clover.cloverDatabase>
+        <swagger.version>1.3.0</swagger.version>
 
         <ehcache.version>2.5.0</ehcache.version>
         <ehcache-jgroupsreplication.version>1.5</ehcache-jgroupsreplication.version>
         <jgroups.version>2.10.0.GA</jgroups.version>
+
         <vaadin.version>6.8.13</vaadin.version>
-	</properties>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>fi.vm.sade.organisaatio</groupId>
-				<artifactId>organisaatio-api</artifactId>
-				<version>${organisaatio.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>fi.vm.sade.organisaatio</groupId>
-				<artifactId>organisaatio-ui-widgets</artifactId>
-				<version>${organisaatio.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>fi.vm.sade.generic</groupId>
-				<artifactId>generic-test-aspects</artifactId>
-				<version>${generic.version}</version>
-				<scope>test</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>fi.vm.sade.vaadin</groupId>
-				<artifactId>vaadin-theme-oph</artifactId>
-				<version>${vaadin.theme.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>fi.vm.sade.generic</groupId>
-				<artifactId>dependencies-vaadin</artifactId>
-				<version>${generic.version}</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>fi.vm.sade.generic</groupId>
-				<artifactId>generic-common</artifactId>
-				<version>${generic.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>fi.vm.sade.generic</groupId>
-				<artifactId>dependencies-service</artifactId>
-				<version>${generic.version}</version>
-				<type>pom</type>
-			</dependency>
-			<dependency>
-				<groupId>fi.vm.sade.generic</groupId>
-				<artifactId>webapp-portal-decorator</artifactId>
-				<version>${generic.version}</version>
-				<type>war</type>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
+        <vaadin.theme.version>6.3-SNAPSHOT</vaadin.theme.version>
+        <generic.version>8.0-SNAPSHOT</generic.version>
+        <organisaatio.version>8.0-SNAPSHOT</organisaatio.version>
+        <log.client.version>8.0-SNAPSHOT</log.client.version>
+    </properties>
 
 </project>

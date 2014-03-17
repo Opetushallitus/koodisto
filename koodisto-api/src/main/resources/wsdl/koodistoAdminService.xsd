@@ -73,6 +73,8 @@
 
     <xs:complexType name="UpdateKoodistoDataType">
         <xs:sequence>
+            <xs:element name="codesGroupUri" type="xs:string"
+                        maxOccurs="1" minOccurs="0" />
             <xs:element name="koodistoUri" type="xs:string"
                 maxOccurs="1" minOccurs="1" />
             <xs:element minOccurs="0" maxOccurs="1"

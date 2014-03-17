@@ -20,6 +20,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,8 +97,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         koodiVersio.setKoodi(koodi);
 
         for (KoodiMetadataType mt : createKoodiData.getMetadata()) {
-            // Koodilla saa olla sama nimi koodiston sisällä.
-            // checkNimiIsUnique(koodistoUri, mt.getNimi());
             KoodiMetadata metadata = new KoodiMetadata();
             EntityUtils.copyFields(mt, metadata);
             koodiVersio.addMetadata(metadata);
@@ -143,7 +142,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return result.get(0);
     }
 
-    private KoodiVersio getLatestKoodiVersio(String koodiUri) {
+    public KoodiVersio getLatestKoodiVersio(String koodiUri) {
         return getLatestKoodiVersioWithKoodistoVersioItems(koodiUri).getKoodiVersio();
     }
 
@@ -235,29 +234,33 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         KoodistoVersio koodisto = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
         for (UpdateKoodiDataType updateData : koodiList) {
             if (StringUtils.isNotBlank(updateData.getKoodiUri())) {
-                KoodiVersio latest = getLatestKoodiVersio(updateData.getKoodiUri());
-                if (!latest.getKoodi().getKoodisto().getKoodistoUri().equals(koodisto.getKoodisto().getKoodistoUri())) {
-                    throw new KoodiNotInKoodistoException("Koodi " + latest.getKoodi().getKoodiUri() + " is not in " + "koodisto "
-                            + koodisto.getKoodisto().getKoodistoUri());
+                KoodiVersio latest = null;
+                try {
+                    latest = getLatestKoodiVersio(updateData.getKoodiUri());
+                } catch (KoodiNotFoundException e) {
+                    logger.warn("Koodia ei löytynyt. Luodaan uusi " + updateData.getKoodiUri());
                 }
 
-                KoodiVersioWithKoodistoItem updated = updateKoodi(updateData, true);
-                KoodistoVersioKoodiVersio result = koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(koodisto.getId(), updated.getKoodiVersio()
-                        .getId());
+                if (latest != null && latest.getKoodi().getKoodisto().getKoodistoUri().equals(koodisto.getKoodisto().getKoodistoUri())) {
+                    KoodiVersioWithKoodistoItem updated = updateKoodi(updateData, true);
+                    KoodistoVersioKoodiVersio result = koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(koodisto.getId(), updated.getKoodiVersio()
+                            .getId());
 
-                if (result == null) {
-                    KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
-                    newRelationEntry.setKoodistoVersio(koodisto);
-                    newRelationEntry.setKoodiVersio(updated.getKoodiVersio());
-                    koodistoVersioKoodiVersioDAO.insert(newRelationEntry);
+                    if (result == null) {
+                        KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
+                        newRelationEntry.setKoodistoVersio(koodisto);
+                        newRelationEntry.setKoodiVersio(updated.getKoodiVersio());
+                        koodistoVersioKoodiVersioDAO.insert(newRelationEntry);
+                    }
+
+                } else {
+                    CreateKoodiDataType createData = new CreateKoodiDataType();
+                    EntityUtils.copyFields(updateData, createData);
+                    createKoodi(koodistoUri, createData);
                 }
-
-            } else {
-                CreateKoodiDataType createData = new CreateKoodiDataType();
-                EntityUtils.copyFields(updateData, createData);
-                createKoodi(koodistoUri, createData);
             }
         }
+        koodisto.setPaivitysPvm(new Date());
     }
 
     @Override
@@ -401,10 +404,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         List<KoodiMetadata> latestMetadatas = new ArrayList<KoodiMetadata>(latest.getMetadatas());
 
         outer: for (KoodiMetadataType updateMetadata : updateKoodiData.getMetadata()) {
-            // Koodilla saa olla sama nimi koodiston sisällä.
-            // checkNimiIsUnique(latest.getKoodi().getKoodisto().getKoodistoUri(),
-            // updateKoodiData.getKoodiUri(),
-            // updateMetadata.getNimi());
             for (int i = 0; i < latestMetadatas.size(); ++i) {
                 KoodiMetadata oldMd = latestMetadatas.get(i);
                 // Update the old metadata if the language fields match
@@ -457,10 +456,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         // insert new metadatas
         for (KoodiMetadataType md : updateKoodiData.getMetadata()) {
-            // Koodilla saa olla sama nimi koodiston sisällä.
-            // checkNimiIsUnique(newKoodistoVersio.getKoodisto().getKoodistoUri(),
-            // updateKoodiData.getKoodiUri(),
-            // md.getNimi());
             KoodiMetadata metadata = new KoodiMetadata();
             EntityUtils.copyFields(md, metadata);
             newVersio.addMetadata(metadata);
@@ -676,6 +671,20 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
 
         List<KoodiVersioWithKoodistoItem> versios = koodiVersioDAO.searchKoodis(searchCriteria);
+        if (!versios.isEmpty()) {
+            Iterator itr = versios.get(0).getKoodiVersio().getYlakoodis().iterator();
+            while(itr.hasNext()) {
+                KoodinSuhde koodinSuhde = (KoodinSuhde)itr.next();
+                Hibernate.initialize(koodinSuhde.getYlakoodiVersio().getMetadatas());
+                Hibernate.initialize(koodinSuhde.getYlakoodiVersio().getKoodi());
+            }
+            itr = versios.get(0).getKoodiVersio().getAlakoodis().iterator();
+            while(itr.hasNext()) {
+                KoodinSuhde koodinSuhde = (KoodinSuhde)itr.next();
+                Hibernate.initialize(koodinSuhde.getAlakoodiVersio().getMetadatas());
+                Hibernate.initialize(koodinSuhde.getAlakoodiVersio().getKoodi());
+            }
+        }
         return versios;
     }
 

@@ -1,18 +1,17 @@
 package fi.vm.sade.koodisto.service.impl.exceptionwrapper;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-
 import fi.vm.sade.generic.service.exception.AbstractFaultWrapper;
 import fi.vm.sade.generic.service.exception.SadeBusinessException;
 import fi.vm.sade.koodisto.service.GenericFault;
 import fi.vm.sade.koodisto.service.types.common.FieldErrorType;
 import fi.vm.sade.koodisto.service.types.common.GenericFaultInfoType;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 @Aspect
 public class ExceptionWrappingAspect extends AbstractFaultWrapper<GenericFault> {
