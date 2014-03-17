@@ -81,34 +81,30 @@ public class CodesResource {
     @Path("addrelation/{codesUri}/{codesUriToAdd}/{relationType}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({JsonViews.Extended.class})
+    @JsonView({ JsonViews.Extended.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    public void addRelation(@PathParam("codesUri") String codesUri,
-                            @PathParam("codesUriToAdd") String codesUriToAdd,
-                            @PathParam("relationType") String relationType) {
+    public void addRelation(@PathParam("codesUri") String codesUri, @PathParam("codesUriToAdd") String codesUriToAdd,
+            @PathParam("relationType") String relationType) {
 
-        koodistoBusinessService.addRelation(codesUri, codesUriToAdd,
-                SuhteenTyyppi.valueOf(relationType));
+        koodistoBusinessService.addRelation(codesUri, codesUriToAdd, SuhteenTyyppi.valueOf(relationType));
     }
 
     @POST
     @Path("removerelation/{codesUri}/{codesUriToRemove}/{relationType}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({JsonViews.Extended.class})
+    @JsonView({ JsonViews.Extended.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    public void removeRelation(@PathParam("codesUri") String codesUri,
-                               @PathParam("codesUriToRemove") String codesUriToRemove,
-                               @PathParam("relationType") String relationType) {
+    public void removeRelation(@PathParam("codesUri") String codesUri, @PathParam("codesUriToRemove") String codesUriToRemove,
+            @PathParam("relationType") String relationType) {
 
-        koodistoBusinessService.removeRelation(codesUri, Arrays.asList(codesUriToRemove),
-                SuhteenTyyppi.valueOf(relationType));
+        koodistoBusinessService.removeRelation(codesUri, Arrays.asList(codesUriToRemove), SuhteenTyyppi.valueOf(relationType));
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({JsonViews.Basic.class})
+    @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public Response update(KoodistoDto codesDTO) {
         try {
@@ -145,7 +141,7 @@ public class CodesResource {
         updateKoodistoDataType.setTila(TilaType.fromValue(koodistoDto.getTila().toString()));
         updateKoodistoDataType.setLockingVersion(koodistoDto.getVersion());
         for (KoodistoMetadata koodistoMetadata : koodistoDto.getMetadata()) {
-            updateKoodistoDataType.getMetadataList().add(conversionService.convert(koodistoMetadata,KoodistoMetadataType.class));
+            updateKoodistoDataType.getMetadataList().add(conversionService.convert(koodistoMetadata, KoodistoMetadataType.class));
         }
 
         return updateKoodistoDataType;
@@ -154,14 +150,14 @@ public class CodesResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({JsonViews.Basic.class})
+    @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     public Response insert(KoodistoDto codesDTO) {
         List<String> codesGroupUris = new ArrayList();
         codesGroupUris.add(codesDTO.getCodesGroupUri());
         try {
             KoodistoVersio koodistoVersio = koodistoBusinessService.createKoodisto(codesGroupUris, convertFromDTOToCreateKoodistoDataType(codesDTO));
-            return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoVersio,KoodistoDto.class)).build();
+            return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoVersio, KoodistoDto.class)).build();
         } catch (Exception e) {
             logger.warn("Koodistoa ei saatu lisättyä. ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -188,7 +184,7 @@ public class CodesResource {
         createKoodistoDataType.setOmistaja(koodistoDto.getOmistaja());
         createKoodistoDataType.setOrganisaatioOid(koodistoDto.getOrganisaatioOid());
         for (KoodistoMetadata koodistoMetadata : koodistoDto.getMetadata()) {
-            createKoodistoDataType.getMetadataList().add(conversionService.convert(koodistoMetadata,KoodistoMetadataType.class));
+            createKoodistoDataType.getMetadataList().add(conversionService.convert(koodistoMetadata, KoodistoMetadataType.class));
         }
 
         return createKoodistoDataType;
@@ -199,14 +195,13 @@ public class CodesResource {
     @JsonView(JsonViews.Simple.class)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public List<KoodistoRyhmaListDto> listAllCodesGroups() {
-        return conversionService.convertAll(
-                koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class);
+        return conversionService.convertAll(koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class);
     }
 
     @GET
     @Path("group/{codeGroupUri}")
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({JsonViews.Basic.class})
+    @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public KoodistoRyhmaListDto listAllCodesInCodeGroup(@PathParam("codeGroupUri") String codeGroupUri) {
         return conversionService.convert(koodistoBusinessService.getKoodistoGroup(codeGroupUri), KoodistoRyhmaListDto.class);
@@ -215,7 +210,7 @@ public class CodesResource {
     @GET
     @Path("all")
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({JsonViews.Basic.class})
+    @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public List<KoodistoVersioListDto> listAllCodesInAllCodeGroups() {
         SearchKoodistosCriteriaType searchType = KoodistoServiceSearchCriteriaBuilder.latestCodes();
@@ -225,7 +220,7 @@ public class CodesResource {
     @GET
     @Path("{codesUri}")
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({JsonViews.Basic.class})
+    @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public KoodistoListDto getCodesByCodesUri(@PathParam("codesUri") String codesUri) {
         Koodisto koodisto = koodistoBusinessService.getKoodistoByKoodistoUri(codesUri);
@@ -236,14 +231,14 @@ public class CodesResource {
     @GET
     @Path("{codesUri}/{codesVersion}")
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({JsonViews.Extended.class})
+    @JsonView({ JsonViews.Extended.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public KoodistoDto getCodesByCodesUriAndVersion(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion) {
         KoodistoVersio koodistoVersio = null;
         if (codesVersion == 0) {
             koodistoVersio = koodistoBusinessService.getLatestKoodistoVersio(codesUri);
         } else {
-            koodistoVersio = koodistoBusinessService.getKoodistoVersio(codesUri,codesVersion);
+            koodistoVersio = koodistoBusinessService.getKoodistoVersio(codesUri, codesVersion);
         }
 
         return conversionService.convert(koodistoVersio, KoodistoDto.class);
@@ -254,9 +249,8 @@ public class CodesResource {
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response uploadFile(@FormDataParam("uploadedFile") InputStream fileInputStream,
-                               @FormDataParam("uploadedFile") com.sun.jersey.core.header.FormDataContentDisposition contentDispositionHeader,
-                               @FormDataParam("fileFormat") String fileFormat, @FormDataParam("fileEncoding") String fileEncoding,
-                               @PathParam("codesUri") String codesUri) {
+            @FormDataParam("uploadedFile") com.sun.jersey.core.header.FormDataContentDisposition contentDispositionHeader,
+            @FormDataParam("fileFormat") String fileFormat, @FormDataParam("fileEncoding") String fileEncoding, @PathParam("codesUri") String codesUri) {
 
         String filePath = contentDispositionHeader.getFileName();
 
@@ -275,6 +269,9 @@ public class CodesResource {
             } else if (Format.valueOf(fileFormat) == Format.JHS_XML) {
                 formatStr = ExportImportFormatType.JHS_XML;
                 mime = "application/xml";
+            } else if (Format.valueOf(fileFormat) == Format.XLS) {
+                formatStr = ExportImportFormatType.XLS;
+                mime = "application/vnd.ms-excel";
             }
             DataSource ds = new InputStreamDataSource(fileInputStream, mime);
             DataHandler handler = new DataHandler(ds);
@@ -291,10 +288,9 @@ public class CodesResource {
     @Path("download/{codesUri}/{codesVersion}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({JsonViews.Basic.class})
+    @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    public FileDto download(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion,
-                           FileFormatDto fileFormatDto) {
+    public FileDto download(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion, FileFormatDto fileFormatDto) {
         try {
             ExportImportFormatType formatStr = null;
 
