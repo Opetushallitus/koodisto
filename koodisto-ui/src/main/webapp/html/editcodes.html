@@ -178,21 +178,6 @@
 
         </div>
 
-        <div class="row-fluid">
-            <div class="span9 offset2">
-                <div>
-                    <input type="text" maxlength="50" ng-change="addToListName = 'withincodes'"
-                           placeholder="{{'codes.mainpage.search.placeholder' | i18n}}" ng-model="model.query"/>
-
-                    <ol ng-show="addToListName === 'withincodes' && model.query && model.query.length != 0" class="treelist collapsible">
-                        <li ng-repeat="data in model.allCodes" ng-include="'codes.html'">
-                        </li>
-                    </ol>
-                </div>
-
-            </div>
-        </div>
-
         <div class="row-fluid" ng-show="model.withinCodes.length">
             <div class="span5 offset2">
                 <table class="table">
@@ -223,22 +208,6 @@
             </div>
         </div>
 
-        <div class="row-fluid">
-            <div class="span9 offset2">
-                <div>
-                    <input type="text" maxlength="50" ng-change="addToListName = 'includescodes'"
-                           placeholder="{{'codes.mainpage.search.placeholder' | i18n}}" ng-model="model.query"/>
-
-                    <ol ng-show="addToListName === 'includescodes' && model.query && model.query.length != 0" class="treelist collapsible">
-                        <li ng-repeat="data in model.allCodes" ng-include="'codes.html'">
-                        </li>
-                    </ol>
-                </div>
-
-            </div>
-        </div>
-
-
         <div class="row-fluid" ng-show="model.includesCodes.length">
             <div class="span5 offset2">
                 <table class="table">
@@ -266,21 +235,6 @@
             <label for="levelswithcodes" class="control-label">{{'codes.editpage.levelswithcodes' | i18n}}</label><br>
             <div class="controls">
                 <button id="levelswithcodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codesSelector" ng-show="!codesSelector" ng-click="show('levelswithcodes')">{{'codes.editpage.addcodes' | i18n}}</button>
-            </div>
-        </div>
-
-        <div class="row-fluid">
-            <div class="span9 offset2">
-                <div>
-                    <input type="text" maxlength="50" ng-change="addToListName = 'levelswithcodes'"
-                           placeholder="{{'codes.mainpage.search.placeholder' | i18n}}" ng-model="model.query"/>
-
-                    <ol ng-show="addToListName === 'levelswithcodes' && model.query && model.query.length != 0" class="treelist collapsible">
-                        <li ng-repeat="data in model.allCodes" ng-include="'codes.html'">
-                        </li>
-                    </ol>
-                </div>
-
             </div>
         </div>
 
