@@ -3,17 +3,16 @@
  */
 package fi.vm.sade.koodisto.dao.impl;
 
+import fi.vm.sade.generic.dao.AbstractJpaDAOImpl;
+import fi.vm.sade.koodisto.dao.KoodistoDAO;
+import fi.vm.sade.koodisto.model.Koodisto;
+import org.springframework.stereotype.Repository;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import org.springframework.stereotype.Repository;
-
-import fi.vm.sade.generic.dao.AbstractJpaDAOImpl;
-import fi.vm.sade.koodisto.dao.KoodistoDAO;
-import fi.vm.sade.koodisto.model.Koodisto;
 
 /**
  * @author tommiha

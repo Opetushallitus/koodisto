@@ -1,10 +1,10 @@
 package fi.vm.sade.koodisto.model;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-
 import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.model.constraint.KoodistoVersioKoodiVersioConstraint;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "koodistoVersio_koodiVersio", uniqueConstraints = @UniqueConstraint(name = "UK_koodisto_koodiVersio_01", columnNames = {

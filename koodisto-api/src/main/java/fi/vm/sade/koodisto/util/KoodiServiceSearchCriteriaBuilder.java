@@ -1,16 +1,12 @@
 package fi.vm.sade.koodisto.util;
 
+import fi.vm.sade.generic.common.DateHelper;
+import fi.vm.sade.koodisto.service.types.*;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
-import fi.vm.sade.generic.common.DateHelper;
-import fi.vm.sade.koodisto.service.types.KoodiBaseSearchCriteriaType;
-import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
-import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoVersioSelectionType;
-import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
-import fi.vm.sade.koodisto.service.types.SearchKoodisVersioSelectionType;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
 
 /**
  * Utility class to help create koodi search criteria for the most common

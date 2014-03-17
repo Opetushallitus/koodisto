@@ -13,13 +13,13 @@ import java.util.List;
  */
 public class KoodistoItemDto {
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private String koodistoUri;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private String organisaatioOid;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private List<Integer> koodistoVersios = new ArrayList<Integer>();
 
     public String getKoodistoUri() {

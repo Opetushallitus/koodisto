@@ -1,9 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <wsdl:definitions name="koodiService"
-    targetNamespace="http://service.koodisto.sade.vm.fi/" xmlns:ns1="http://service.koodisto.sade.vm.fi/types"
-    xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
-    xmlns:tns="http://service.koodisto.sade.vm.fi/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+                  targetNamespace="http://service.koodisto.sade.vm.fi/"
+                  xmlns:ns1="http://service.koodisto.sade.vm.fi/types"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tns="http://service.koodisto.sade.vm.fi/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     <wsdl:types>
         <xsd:schema targetNamespace="http://service.koodisto.sade.vm.fi/">
             <xsd:import namespace="http://service.koodisto.sade.vm.fi/types"

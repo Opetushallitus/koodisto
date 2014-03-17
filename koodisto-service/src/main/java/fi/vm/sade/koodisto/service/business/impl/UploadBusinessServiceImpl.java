@@ -5,15 +5,18 @@ import fi.vm.sade.koodisto.service.business.UploadBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoExportException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoImportException;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoCsvConverter;
+import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXlsConverter;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXmlConverter;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,9 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
 
     @Autowired
     private KoodistoCsvConverter koodistoCsvConverter;
+    
+    @Autowired
+    private KoodistoXlsConverter koodistoXlsConverter;
 
     @Autowired
     private KoodiBusinessService koodiBusinessService;
@@ -48,6 +54,9 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
                     break;
                 case CSV:
                     koodis = koodistoCsvConverter.unmarshal(file, encoding);
+                    break;
+                case XLS:
+                    koodis = koodistoXlsConverter.unmarshal(file, encoding);
                     break;
                 default:
                     throw new KoodistoExportException("Unknown koodisto import format!");

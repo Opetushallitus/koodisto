@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class KoodistoAdminServiceImpl implements KoodistoAdminService {
     private SadeConversionService conversionService;
 
     @Override
-    @Secured({KoodistoRole.UPDATE, KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public KoodistoType updateKoodisto(UpdateKoodistoDataType updateKoodistoData) {
         return conversionService.convert(koodistoBusinessService.updateKoodisto(updateKoodistoData), KoodistoType.class);
     }
@@ -50,13 +50,13 @@ public class KoodistoAdminServiceImpl implements KoodistoAdminService {
     }
 
     @Override
-    @Secured({KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     public void deleteKoodistoVersion(String koodistoUri, int koodistoVersio) {
         koodistoBusinessService.delete(koodistoUri, koodistoVersio);
     }
 
     @Override
-    @Secured({KoodistoRole.CRUD})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     public KoodistoType createKoodisto(List<String> koodistoRyhmaUris, CreateKoodistoDataType createKoodistoData) {
         return conversionService.convert(koodistoBusinessService.createKoodisto(koodistoRyhmaUris, createKoodistoData), KoodistoType.class);
     }

@@ -16,22 +16,25 @@ import java.util.List;
  */
 public class KoodistoVersioListDto {
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
     private int versio;
 
     @JsonView(JsonViews.Basic.class)
     private Date paivitysPvm;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
     private Date voimassaAlkuPvm;
 
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
     private Date voimassaLoppuPvm;
 
     @JsonView(JsonViews.Basic.class)
     private Tila tila;
 
     @JsonView(JsonViews.Basic.class)
+    private Long version;
+
+    @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
     private List<KoodistoMetadata> metadata = new ArrayList<KoodistoMetadata>();
 
     public int getVersio() {
@@ -80,5 +83,13 @@ public class KoodistoVersioListDto {
 
     public void setMetadata(List<KoodistoMetadata> metadata) {
         this.metadata = metadata;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(final Long version) {
+        this.version = version;
     }
 }

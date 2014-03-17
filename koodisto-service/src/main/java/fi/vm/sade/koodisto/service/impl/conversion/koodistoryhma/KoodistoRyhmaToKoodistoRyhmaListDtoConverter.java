@@ -17,6 +17,7 @@ public class KoodistoRyhmaToKoodistoRyhmaListDtoConverter extends AbstractFromDo
     @Override
     public KoodistoRyhmaListDto convert(KoodistoRyhma source) {
         KoodistoRyhmaListDto converted = new KoodistoRyhmaListDto();
+        converted.setId(source.getId());
         converted.setKoodistoRyhmaUri(source.getKoodistoRyhmaUri());
 
         converted.getMetadata().addAll(source.getKoodistoJoukkoMetadatas());
