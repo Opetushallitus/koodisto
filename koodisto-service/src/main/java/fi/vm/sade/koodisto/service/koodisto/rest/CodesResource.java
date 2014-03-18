@@ -199,15 +199,6 @@ public class CodesResource {
     }
 
     @GET
-    @Path("group/{codeGroupUri}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({ JsonViews.Basic.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    public KoodistoRyhmaListDto listAllCodesInCodeGroup(@PathParam("codeGroupUri") String codeGroupUri) {
-        return conversionService.convert(koodistoBusinessService.getKoodistoGroup(codeGroupUri), KoodistoRyhmaListDto.class);
-    }
-
-    @GET
     @Path("all")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
