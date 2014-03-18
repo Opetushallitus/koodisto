@@ -1,5 +1,5 @@
 "use strict";
-app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, OrganizationChildrenByOid) {
+app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, OrganizationChildrenByOid, OrganizationByOid) {
 
     return (function() {
         var instance = {};
@@ -16,38 +16,39 @@ app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, Organi
             },
             "children": []
         };
-        instance.init = function(organizations) {
+        
+        instance.init = function(organizations) {                       
             instance.model = {};
-            organizations.forEach(function(organization) {
-        	OrganizationChildrenByOid.get({oid: organization}, function(result) {
-
-        	    if(!instance.model.organisaatiot) {
-        		instance.model.organisaatiot = [];
-        		instance.model.numHits = 0;
-        	    }
-        	    
-        	    result.organisaatiot.forEach(function(org) {
-        		instance.model.organisaatiot.unshift(org);
-        	    });
-        	    instance.model.numHits = result.numHits;
+            instance.userBelongsToOph = jQuery.inArray("1.2.246.562.10.00000000001", organizations) != -1; //TODO: move oph oid into auth.js?
+            instance.model.organisaatiot = [];
+            instance.model.numHits = 0;
+            
+            if (instance.userBelongsToOph) {
+        	OrganizationByOid.get({oid: "1.2.246.562.10.00000000001"}, function(result) {
+        	    instance.model.organisaatiot.push(result);
+        	    instance.model.numHits = 1;
         	});
-            });
+            } else {
+        	organizations.forEach(function(organization) {
+        	    OrganizationChildrenByOid.get({oid: organization}, function(result) { //TODO: missing root?
+        		result.organisaatiot.forEach(function(org) {
+        		    instance.model.organisaatiot.push(org);
+        		});
+        		instance.model.numHits += result.numHits;
+        	    });
+        	});
+            }
         };
 
         instance.search = function(searchStr) {
-            searchStr = searchStr.toLowerCase();
-            if (!instance.model.originalOrganizations) {
-        	instance.originalOrganizations = instance.model.organisaatiot;
-            }
             
-            function matchesTranslation(organization, language) {
-        	return organization.nimi[language] && organization.nimi[language].toLowerCase().indexOf(searchStr) > -1;
-            }
             function matchesSearch(organization) {
+        	function matchesTranslation(organization, language) {
+        	    return organization.nimi[language] && organization.nimi[language].toLowerCase().indexOf(searchStr) > -1;
+        	}
         	return matchesTranslation(organization, 'fi') || matchesTranslation(organization, 'sv') || matchesTranslation(organization, 'en');
             }
             
-            var matchingOrgs = new Array();
             function recursivelyAddMatchingOrganizations(organization) { 
         	if (matchesSearch(organization)) {
         	    matchingOrgs.unshift(organization);
@@ -58,23 +59,32 @@ app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, Organi
         	}
             }
             
-            instance.originalOrganizations.forEach(function(organization) {
-        	recursivelyAddMatchingOrganizations(organization);
-            });
+            if (instance.userBelongsToOph) {
+        	Organizations.get({"searchStr": searchStr}, function(result){
+        	    instance.model = result;
+        	});
+            } else {
+        	searchStr = searchStr.toLowerCase();
+        	if (!instance.model.originalOrganizations) {
+        	    instance.originalOrganizations = instance.model.organisaatiot;
+        	}
+
+
+        	var matchingOrgs = new Array();
+
+        	instance.originalOrganizations.forEach(function(organization) {
+        	    recursivelyAddMatchingOrganizations(organization);
+        	});
+
+        	instance.model.organisaatiot = matchingOrgs;
+        	instance.model.numHits = matchingOrgs.length;
+            }
             
-            instance.model.organisaatiot = matchingOrgs;
-            instance.model.numHits = matchingOrgs.length;
-            
-//            var params = {"searchStr": searchStr};
-//            Organizations.get(params, function(result){
-//                instance.model = result;
             if(instance.model.organisaatiot.length < 4) {
         	instance.model.organisaatiot.forEach(function(data){
         	    instance.openChildren(data);
         	});
             }
-//            });
-
         }
 
         instance.openChildren = function(data) {
