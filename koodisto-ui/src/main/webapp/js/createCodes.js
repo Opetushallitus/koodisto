@@ -127,7 +127,7 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
                 sitovuustaso: $scope.validitylevelen
             });
         }
-        NewCodes.put({}, codes, function(result) {
+        NewCodes.post({}, codes, function(result) {
             Treemodel.refresh();
             $location.path("/koodisto/"+result.koodistoUri+"/"+result.versio);
         }, function(error) {

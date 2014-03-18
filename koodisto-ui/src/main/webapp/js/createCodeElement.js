@@ -84,7 +84,7 @@ function CodeElementCreatorController($scope, $location, $routeParams, CodeEleme
                 sisaltaaKoodiston: $scope.containscodesen
             });
         }
-        NewCodeElement.put({codesUri: $scope.codesUri}, codeelement, function(result) {
+        NewCodeElement.post({codesUri: $scope.codesUri}, codeelement, function(result) {
             $location.path("/koodi/"+result.koodiUri+"/"+result.versio);
         }, function(error) {
             ValidateService.validateCodeElement($scope,error,false);

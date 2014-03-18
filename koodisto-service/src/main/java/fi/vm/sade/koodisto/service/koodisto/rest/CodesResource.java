@@ -101,7 +101,7 @@ public class CodesResource {
         koodistoBusinessService.removeRelation(codesUri, Arrays.asList(codesUriToRemove), SuhteenTyyppi.valueOf(relationType));
     }
 
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
@@ -147,7 +147,7 @@ public class CodesResource {
         return updateKoodistoDataType;
     }
 
-    @PUT
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })

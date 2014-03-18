@@ -78,7 +78,7 @@ public class CodeElementResource {
                 SuhteenTyyppi.valueOf(relationType));
     }
 
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Extended.class})
@@ -192,7 +192,7 @@ public class CodeElementResource {
         return conversionService.convert(codeElements.get(0), KoodiDto.class);
     }
 
-    @PUT
+    @POST
     @Path("{codesUri}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

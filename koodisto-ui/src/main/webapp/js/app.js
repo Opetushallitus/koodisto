@@ -63,7 +63,7 @@ app.factory('RootCodes', function ($resource) {
 
 app.factory('NewCodes', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes", {}, {
-        put: {method: "PUT"}
+        post: {method: "POST"}
     });
 });
 
@@ -87,7 +87,7 @@ app.factory('UpdateCodesGroup', function($resource) {
 
 app.factory('UpdateCodes', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes", {}, {
-        put: {method: "POST"}
+        put: {method: "PUT"}
     });
 });
 
@@ -169,7 +169,7 @@ app.factory('LatestCodeElementVersionsByCodeElementUri', function($resource) {
 
 app.factory('NewCodeElement', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/:codesUri", {}, {
-        put: {method: "PUT"}
+        post: {method: "POST"}
     });
 });
 
@@ -210,7 +210,7 @@ app.factory('RemoveRelationCodes', function($resource) {
 
 app.factory('UpdateCodeElement', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement", {}, {
-        put: {method: "POST"}
+        put: {method: "PUT"}
     });
 });
 
