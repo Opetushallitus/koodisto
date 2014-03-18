@@ -1,5 +1,5 @@
 "use strict";
-app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, OrganizationByOid) {
+app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, OrganizationChildrenByOid) {
 
     return (function() {
         var instance = {};
@@ -16,35 +16,64 @@ app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, Organi
             },
             "children": []
         };
-        instance.init = function() {
+        instance.init = function(organizations) {
             instance.model = {};
-            OrganizationByOid.get({oid:"1.2.246.562.10.00000000001"}, function(result){
-                if(!instance.model.organisaatiot) {
-                    instance.model.organisaatiot = [];
-                    instance.model.numHits = 0;
-                }
-                if(!result.parentOidPath) {
-                    result.parentOidPath = result.oid;
-                }
-                if(!result.children) {
-                    result.children = [];
-                }
-                instance.model.organisaatiot.unshift(result);
-                instance.model.numHits+=1;
+            organizations.forEach(function(organization) {
+        	OrganizationChildrenByOid.get({oid: organization}, function(result) {
+
+        	    if(!instance.model.organisaatiot) {
+        		instance.model.organisaatiot = [];
+        		instance.model.numHits = 0;
+        	    }
+        	    
+        	    result.organisaatiot.forEach(function(org) {
+        		instance.model.organisaatiot.unshift(org);
+        	    });
+        	    instance.model.numHits = result.numHits;
+        	});
             });
         };
 
         instance.search = function(searchStr) {
-            var params = {"searchStr": searchStr};
-            Organizations.get(params, function(result){
-                instance.model = result;
-                if(instance.model.organisaatiot.length < 4) {
-                    instance.model.organisaatiot.forEach(function(data){
-                        instance.openChildren(data);
-                    });
-
-                }
+            searchStr = searchStr.toLowerCase();
+            if (!instance.model.originalOrganizations) {
+        	instance.originalOrganizations = instance.model.organisaatiot;
+            }
+            
+            function matchesTranslation(organization, language) {
+        	return organization.nimi[language] && organization.nimi[language].toLowerCase().indexOf(searchStr) > -1;
+            }
+            function matchesSearch(organization) {
+        	return matchesTranslation(organization, 'fi') || matchesTranslation(organization, 'sv') || matchesTranslation(organization, 'en');
+            }
+            
+            var matchingOrgs = new Array();
+            function recursivelyAddMatchingOrganizations(organization) { 
+        	if (matchesSearch(organization)) {
+        	    matchingOrgs.unshift(organization);
+        	} else {
+        	    organization.children.forEach(function(child) {        	    
+        		recursivelyAddMatchingOrganizations(child);
+        	    });
+        	}
+            }
+            
+            instance.originalOrganizations.forEach(function(organization) {
+        	recursivelyAddMatchingOrganizations(organization);
             });
+            
+            instance.model.organisaatiot = matchingOrgs;
+            instance.model.numHits = matchingOrgs.length;
+            
+//            var params = {"searchStr": searchStr};
+//            Organizations.get(params, function(result){
+//                instance.model = result;
+            if(instance.model.organisaatiot.length < 4) {
+        	instance.model.organisaatiot.forEach(function(data){
+        	    instance.openChildren(data);
+        	});
+            }
+//            });
 
         }
 
@@ -70,14 +99,16 @@ app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, Organi
 
 });
 
-function OrganisaatioTreeController($scope, OrganisaatioTreeModel) {
+function OrganisaatioTreeController($scope, AuthService, OrganisaatioTreeModel) {
     $scope.orgTree = OrganisaatioTreeModel;
-
     $scope.$watch('orgTree.searchStr', debounce(function() {
         if($scope.orgTree.searchStr.length > 2) {
             OrganisaatioTreeModel.search($scope.orgTree.searchStr);
         } else {
-            OrganisaatioTreeModel.init();
+            AuthService.getOrganizations(serviceName).then(function(organizations) {
+        	OrganisaatioTreeModel.init(organizations);
+            });
+            
         }
     }, 500));
 
