@@ -68,7 +68,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
             LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElementUri}, function (result) {
                 var ce = {};
                 ce.uri = codeElementUri;
-                ce.name = model.languageSpecificValue(result.metadata, 'lyhytNimi', 'FI');
+                ce.name = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
                 ce.description = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
                 CodesByUri.get({codesUri: result.koodisto.koodistoUri}, function (result) {
                     ce.codesname = model.languageSpecificValue(result.latestKoodistoVersio.metadata,'nimi','FI');

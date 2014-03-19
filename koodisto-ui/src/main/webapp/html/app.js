@@ -35,15 +35,15 @@ app.config(function ($routeProvider) {
     $routeProvider.
         //front page
         when('/etusivu', {controller: KoodistoTreeController, templateUrl: TEMPLATE_URL_BASE + 'codesmainpage.html'}).
-        when('/lisaaKoodisto', {controller: CodesCreatorController, templateUrl:TEMPLATE_URL_BASE + 'createcodes.html'}).
-        when('/muokkaaKoodisto/:codesUri/:codesVersion', {controller: CodesEditorController, templateUrl:TEMPLATE_URL_BASE + 'editcodes.html'}).
-        when('/koodisto/:codesUri/:codesVersion', {controller: ViewCodesController, templateUrl:TEMPLATE_URL_BASE + 'viewcodes.html'}).
-        when('/koodi/:codeElementUri/:codeElementVersion', {controller: ViewCodeElementController, templateUrl:TEMPLATE_URL_BASE + 'viewcodeelement.html'}).
-        when('/lisaaKoodi/:codesUri/:codesVersion', {controller: CodeElementCreatorController, templateUrl:TEMPLATE_URL_BASE + 'createcodeelement.html'}).
-        when('/muokkaaKoodi/:codeElementUri/:codeElementVersion', {controller: CodeElementEditorController, templateUrl:TEMPLATE_URL_BASE + 'editcodeelement.html'}).
-        when('/lisaaKoodistoryhma', {controller: CodesGroupCreatorController, templateUrl:TEMPLATE_URL_BASE + 'createcodesgroup.html'}).
-        when('/koodistoryhma/:id', {controller: ViewCodesGroupController, templateUrl:TEMPLATE_URL_BASE + 'viewcodesgroup.html'}).
-        when('/muokkaaKoodistoryhma/:id', {controller: CodesGroupEditorController, templateUrl:TEMPLATE_URL_BASE + 'editcodesgroup.html'}).
+        when('/lisaaKoodisto', {controller: CodesCreatorController, templateUrl:TEMPLATE_URL_BASE + 'codes/createcodes.html'}).
+        when('/muokkaaKoodisto/:codesUri/:codesVersion', {controller: CodesEditorController, templateUrl:TEMPLATE_URL_BASE + 'codes/editcodes.html'}).
+        when('/koodisto/:codesUri/:codesVersion', {controller: ViewCodesController, templateUrl:TEMPLATE_URL_BASE + 'codes/viewcodes.html'}).
+        when('/koodi/:codeElementUri/:codeElementVersion', {controller: ViewCodeElementController, templateUrl:TEMPLATE_URL_BASE + 'codeelement/viewcodeelement.html'}).
+        when('/lisaaKoodi/:codesUri/:codesVersion', {controller: CodeElementCreatorController, templateUrl:TEMPLATE_URL_BASE + 'codeelement/createcodeelement.html'}).
+        when('/muokkaaKoodi/:codeElementUri/:codeElementVersion', {controller: CodeElementEditorController, templateUrl:TEMPLATE_URL_BASE + 'codeelement/editcodeelement.html'}).
+        when('/lisaaKoodistoryhma', {controller: CodesGroupCreatorController, templateUrl:TEMPLATE_URL_BASE + 'codesgroup/createcodesgroup.html'}).
+        when('/koodistoryhma/:id', {controller: ViewCodesGroupController, templateUrl:TEMPLATE_URL_BASE + 'codesgroup/viewcodesgroup.html'}).
+        when('/muokkaaKoodistoryhma/:id', {controller: CodesGroupEditorController, templateUrl:TEMPLATE_URL_BASE + 'codesgroup/editcodesgroup.html'}).
          //else
         otherwise({redirectTo: '/etusivu'});
 });
