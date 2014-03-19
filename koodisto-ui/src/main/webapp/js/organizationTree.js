@@ -1,5 +1,5 @@
 "use strict";
-app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, OrganizationChildrenByOid, OrganizationByOid) {
+app.factory('OrganisaatioTreeModel', function(Organizations, OrganizationChildrenByOid, OrganizationByOid) {
 
     return (function() {
         var instance = {};
@@ -26,11 +26,11 @@ app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, Organi
             if (instance.userBelongsToOph) {
         	OrganizationByOid.get({oid: "1.2.246.562.10.00000000001"}, function(result) {
         	    instance.model.organisaatiot.push(result);
-        	    instance.model.numHits = 1;
+        	    instance.model.numHits += 1;
         	});
             } else {
         	organizations.forEach(function(organization) {
-        	    OrganizationChildrenByOid.get({oid: organization}, function(result) { //TODO: missing root?
+        	    OrganizationChildrenByOid.get({oid: organization}, function(result) { 
         		result.organisaatiot.forEach(function(org) {
         		    instance.model.organisaatiot.push(org);
         		});
@@ -39,8 +39,21 @@ app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, Organi
         	});
             }
         };
+        
+        instance.resetSearch = function() {
+            if (instance.userBelongsToOph) {
+        	OrganizationByOid.get({oid: "1.2.246.562.10.00000000001"}, function(result) {
+        	    instance.model.organisaatiot.push(result);
+        	    instance.model.numHits += 1;
+        	});
+            } else if (instance.model.originalOrganizations){
+        	instance.model.organisaatiot =  instance.model.originalOrganizations;
+            }
+        }
 
         instance.search = function(searchStr) {
+            
+            var matchingOrgs = new Array();
             
             function matchesSearch(organization) {
         	function matchesTranslation(organization, language) {
@@ -51,7 +64,7 @@ app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, Organi
             
             function recursivelyAddMatchingOrganizations(organization) { 
         	if (matchesSearch(organization)) {
-        	    matchingOrgs.unshift(organization);
+        	    matchingOrgs.push(organization);
         	} else {
         	    organization.children.forEach(function(child) {        	    
         		recursivelyAddMatchingOrganizations(child);
@@ -65,14 +78,12 @@ app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, Organi
         	});
             } else {
         	searchStr = searchStr.toLowerCase();
+        	
         	if (!instance.model.originalOrganizations) {
-        	    instance.originalOrganizations = instance.model.organisaatiot;
+        	    instance.model.originalOrganizations = instance.model.organisaatiot;
         	}
 
-
-        	var matchingOrgs = new Array();
-
-        	instance.originalOrganizations.forEach(function(organization) {
+        	instance.model.originalOrganizations.forEach(function(organization) {
         	    recursivelyAddMatchingOrganizations(organization);
         	});
 
@@ -111,16 +122,18 @@ app.factory('OrganisaatioTreeModel', function(Organizations, AuthService, Organi
 
 function OrganisaatioTreeController($scope, AuthService, OrganisaatioTreeModel) {
     $scope.orgTree = OrganisaatioTreeModel;
-    $scope.$watch('orgTree.searchStr', debounce(function() {
+    if(!OrganisaatioTreeModel.instance) {
+	AuthService.getOrganizations(serviceName).then(function(organizations) {
+	    OrganisaatioTreeModel.init(organizations);
+	});
+    }
+    $scope.$watch('orgTree.searchStr', function() {
         if($scope.orgTree.searchStr.length > 2) {
             OrganisaatioTreeModel.search($scope.orgTree.searchStr);
-        } else {
-            AuthService.getOrganizations(serviceName).then(function(organizations) {
-        	OrganisaatioTreeModel.init(organizations);
-            });
-            
-        }
-    }, 500));
+        } else if ($scope.orgTree.searchStr.length < 1){
+            OrganisaatioTreeModel.resetSearch();
+        }            
+    });
 
     function debounce(fn, delay) {
         var timer = null;
@@ -138,8 +151,8 @@ function OrganisaatioTreeController($scope, AuthService, OrganisaatioTreeModel) 
     }
 
     $scope.clear = function(){
-        OrganisaatioTreeModel.model = {};
         OrganisaatioTreeModel.searchStr = '';
+        OrganisaatioTreeModel.resetSearch();
     }
 
 
