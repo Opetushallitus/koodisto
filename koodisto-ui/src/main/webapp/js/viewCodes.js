@@ -100,7 +100,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             CodeElementsByCodesUriAndVersion.get({codesUri: codesUri, codesVersion: codesVersion}, function (result) {
                 model.codeElements = result;
                 for(var i=0; i < model.codeElements.length; i++) {
-                    model.codeElements[i].name = getLanguageSpecificValue(model.codeElements[i].metadata, 'lyhytNimi', 'FI');
+                    model.codeElements[i].name = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'FI');
                 }
             });
 
