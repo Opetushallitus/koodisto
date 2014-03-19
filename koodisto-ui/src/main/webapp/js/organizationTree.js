@@ -6,17 +6,6 @@ app.factory('OrganisaatioTreeModel', function(Organizations, OrganizationChildre
         instance.model = {};
         instance.searchStr = "";
 
-        var oph = {
-            "oid" : "1.2.246.562.10.00000000001",
-            "parentOidPath" : "1.2.246.562.10.00000000001",
-            "nimi" : {
-                "fi" : "OPH",
-                "sv" : "OPH",
-                "en" : "OPH"
-            },
-            "children": []
-        };
-        
         instance.init = function(organizations) {                       
             instance.model = {};
             instance.userBelongsToOph = jQuery.inArray("1.2.246.562.10.00000000001", organizations) != -1; //TODO: move oph oid into auth.js?
