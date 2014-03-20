@@ -9,7 +9,7 @@
     </parent>
     <artifactId>koodisto-ui</artifactId>
     <packaging>war</packaging>
-    <name>Koodisto :: APP</name>
+    <name>Koodisto :: UI</name>
 
     <build>
         <finalName>${project.artifactId}</finalName>
