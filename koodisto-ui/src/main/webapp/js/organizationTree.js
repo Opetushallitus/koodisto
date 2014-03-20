@@ -20,30 +20,30 @@ app.factory("ChildOpener", function() {
 })
 
 app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOpener) {
-
     return (function() {
         var instance = {};
         instance.model = {};
-        instance.searchStr = "";
 
         instance.init = function(organizations) {                       
             instance.model = {};
             instance.model.organisaatiot = [];
             instance.model.numHits = 0;
-            
-            organizations.forEach(function(organization) {
-        	OrganizationChildrenByOid.get({oid: organization}, function(result) { 
-        	    result.organisaatiot.forEach(function(org) {
-        		instance.model.organisaatiot.push(org);
-        	    });
-        	    instance.model.numHits += result.numHits;
-        	});
-            });
+            instance.organizationsToInitFrom = organizations;
+            instance.searchStr = "";
         };
         
         instance.resetSearch = function() {
-            if (instance.model.originalOrganizations){
+            if (instance.model.originalOrganizations && instance.model.originalOrganizations.length > 0){
         	instance.model.organisaatiot =  instance.model.originalOrganizations;
+            } else {
+        	instance.organizationsToInitFrom.forEach(function(organization) {
+        	    OrganizationChildrenByOid.get({oid: organization}, function(result) { 
+        		result.organisaatiot.forEach(function(org) {
+        		    instance.model.organisaatiot.push(org);
+        		});
+        		instance.model.numHits += result.numHits;
+        	    });
+        	});
             }
         }
 
@@ -70,7 +70,7 @@ app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOp
             
             searchStr = searchStr.toLowerCase();
 
-            if (!instance.model.originalOrganizations) {
+            if (!instance.model.originalOrganizations || instance.model.originalOrganizations.length < 1) {
         	instance.model.originalOrganizations = instance.model.organisaatiot;
             }
 
