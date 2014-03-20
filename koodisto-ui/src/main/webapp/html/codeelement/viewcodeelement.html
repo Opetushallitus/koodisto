@@ -189,14 +189,14 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th>{{'codeelement.viewpage.tableheader1' | i18n}}</th>
-                                    <th>{{'codeelement.viewpage.tableheader2' | i18n}}</th>
+                                    <th ng:click="sortBy='codesname'" ng-class="{'sort-true': sortBy=='codesname'}">{{'codeelement.viewpage.tableheader1' | i18n}}</th>
+                                    <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.viewpage.tableheader2' | i18n}}</th>
                                     <th>{{'codeelement.viewpage.tableheader3' | i18n}}</th>
                                     <th>{{'codes.delete' | i18n}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="codeElement in model.withinCodeElements | orderBy:'name'">
+                                <tr ng-repeat="codeElement in model.withinCodeElements | orderBy:sortBy">
                                     <td>{{codeElement.codesname}}</td>
                                     <td>{{codeElement.name}}</td>
                                     <td>{{codeElement.description}}</td>
@@ -230,14 +230,14 @@
                             <table class="table">
                                 <thead>
                                 <tr>
-                                    <th>{{'codeelement.viewpage.tableheader1' | i18n}}</th>
-                                    <th>{{'codeelement.viewpage.tableheader2' | i18n}}</th>
+                                    <th ng:click="sortBy='codesname'" ng-class="{'sort-true': sortBy=='codesname'}">{{'codeelement.viewpage.tableheader1' | i18n}}</th>
+                                    <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.viewpage.tableheader2' | i18n}}</th>
                                     <th>{{'codeelement.viewpage.tableheader3' | i18n}}</th>
                                     <th>{{'codes.delete' | i18n}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="codeElement in model.includesCodeElements | orderBy:'name'">
+                                <tr ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy">
                                     <td>{{codeElement.codesname}}</td>
                                     <td>{{codeElement.name}}</td>
                                     <td>{{codeElement.description}}</td>
@@ -272,14 +272,14 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th>{{'codeelement.viewpage.tableheader1' | i18n}}</th>
-                                <th>{{'codeelement.viewpage.tableheader2' | i18n}}</th>
+                                <th ng:click="sortBy='codesname'" ng-class="{'sort-true': sortBy=='codesname'}">{{'codeelement.viewpage.tableheader1' | i18n}}</th>
+                                <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.viewpage.tableheader2' | i18n}}</th>
                                 <th>{{'codeelement.viewpage.tableheader3' | i18n}}</th>
                                 <th>{{'codes.delete' | i18n}}</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:'name'">
+                            <tr ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:sortBy">
                                 <td>{{codeElement.codesname}}</td>
                                 <td>{{codeElement.name}}</td>
                                 <td>{{codeElement.description}}</td>

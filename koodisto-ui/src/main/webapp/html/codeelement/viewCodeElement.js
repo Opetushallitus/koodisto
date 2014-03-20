@@ -130,7 +130,7 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
     $scope.codeElementUri = $routeParams.codeElementUri;
     $scope.codeElementVersion = $routeParams.codeElementVersion;
     ViewCodeElementModel.init($scope, $scope.codeElementUri, $scope.codeElementVersion);
-
+    $scope.sortBy = 'name';
 
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
