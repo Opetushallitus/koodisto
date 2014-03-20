@@ -1,5 +1,7 @@
 "use strict";
 
+var SERVICE_NAME = "APP_KOODISTO";
+
 var app = angular.module('koodisto', ['ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization','ui.bootstrap']);
 //
 // i18n toteutus kopioitu osittain http://jsfiddle.net/4tRBY/41/
@@ -217,6 +219,12 @@ app.factory('UpdateCodeElement', function($resource) {
 app.factory('Organizations', function ($resource) {
     return $resource(ORGANIZATION_SERVICE_URL_BASE + "rest/organisaatio/hae", {}, {
         get: {method: "GET"}
+    });
+});
+
+app.factory('OrganizationChildrenByOid', function ($resource) {
+    return $resource(ORGANIZATION_SERVICE_URL_BASE + "rest/organisaatio/hae?oidrestrictionlist=:oid&skipparents=true", {oid: "@oid"}, {
+	get: {method: "GET"}
     });
 });
 
