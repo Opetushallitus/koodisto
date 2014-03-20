@@ -1,5 +1,25 @@
 "use strict";
-app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid) {
+
+app.factory("ChildOpener", function() {
+    return function(data) {
+	data.open = !data.open;
+            if(data.open) {
+
+        	var iter = function(children){
+        	    if(children) {
+        		children.forEach(function(child){
+        		    child.open = true;
+        		    iter(child.children);
+        		});
+        	    }
+        	}
+
+        	iter(data.children);
+            }
+    }
+})
+
+app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOpener) {
 
     return (function() {
         var instance = {};
@@ -69,20 +89,7 @@ app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid) {
         }
 
         instance.openChildren = function(data) {
-            data.open = !data.open;
-            if(data.open) {
-
-                var iter = function(children){
-                    if(children) {
-                        children.forEach(function(child){
-                            child.open = true;
-                            iter(child.children);
-                        });
-                    }
-                }
-
-                iter(data.children);
-            }
+            ChildOpener(data);
         };
 
         return instance;
@@ -90,7 +97,7 @@ app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid) {
 
 });
 
-app.factory('OrganisaatioOPHTreeModel', function(Organizations, OrganizationByOid) {
+app.factory('OrganisaatioOPHTreeModel', function(Organizations, OrganizationByOid, ChildOpener) {
 
     return (function() {
         var instance = {};
@@ -127,20 +134,7 @@ app.factory('OrganisaatioOPHTreeModel', function(Organizations, OrganizationByOi
         }
 
         instance.openChildren = function(data) {
-            data.open = !data.open;
-            if(data.open) {
-
-                var iter = function(children){
-                    if(children) {
-                        children.forEach(function(child){
-                            child.open = true;
-                            iter(child.children);
-                        });
-                    }
-                }
-
-                iter(data.children);
-            }
+               ChildOpener(data);
         };
 
         return instance;
