@@ -1,6 +1,6 @@
 "use strict";
 
-var serviceName = "APP_KOODISTO";
+var SERVICE_NAME = "APP_KOODISTO";
 
 var app = angular.module('koodisto', ['ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization','ui.bootstrap']);
 //

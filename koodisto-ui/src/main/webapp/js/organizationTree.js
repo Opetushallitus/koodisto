@@ -150,13 +150,13 @@ app.factory('OrganisaatioOPHTreeModel', function(Organizations, OrganizationByOi
 
 function OrganisaatioTreeController($scope, AuthService, OrganisaatioTreeModel, OrganisaatioOPHTreeModel) {
     if (!$scope.orgTree) {
-	AuthService.updateOph(serviceName).then(function() {
+	AuthService.updateOph(SERVICE_NAME).then(function() {
 	    $scope.orgTree = OrganisaatioOPHTreeModel;
 	}, function() {
 	    $scope.orgTree = OrganisaatioTreeModel;
 	});
 	
-	AuthService.getOrganizations(serviceName).then(function(organizations) {
+	AuthService.getOrganizations(SERVICE_NAME).then(function(organizations) {
 	    $scope.orgTree.init(organizations);
 	});
 	
