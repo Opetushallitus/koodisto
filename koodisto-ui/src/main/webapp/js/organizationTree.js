@@ -3,19 +3,19 @@
 app.factory("ChildOpener", function() {
     return function(data) {
 	data.open = !data.open;
-            if(data.open) {
+	if(data.open) {
 
-        	var iter = function(children){
-        	    if(children) {
-        		children.forEach(function(child){
-        		    child.open = true;
-        		    iter(child.children);
-        		});
-        	    }
-        	}
+	    var iter = function(children){
+		if(children) {
+		    children.forEach(function(child){
+			child.open = true;
+			iter(child.children);
+		    });
+		}
+	    }
 
-        	iter(data.children);
-            }
+	    iter(data.children);
+	}
     }
 })
 
@@ -70,7 +70,7 @@ app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOp
         	function matchesTranslation(organization, language) {
         	    return organization.nimi[language] && organization.nimi[language].toLowerCase().indexOf(searchStr) > -1;
         	}
-        	return matchesTranslation(organization, 'fi') || matchesTranslation(organization, 'sv') || matchesTranslation(organization, 'en');
+        	return matchesTranslation(organization, 'fi');
             }
             
             function recursivelyAddMatchingOrganizations(organization) { 
@@ -171,7 +171,6 @@ function OrganisaatioTreeController($scope, AuthService, OrganisaatioTreeModel, 
 	});
     }
     
-
     function debounce(fn, delay) {
         var timer = null;
         return function () {
@@ -192,9 +191,7 @@ function OrganisaatioTreeController($scope, AuthService, OrganisaatioTreeModel, 
 	$scope.orgTree.resetSearch();
     }
 
-
 }
-
 
 var ModalInstanceCtrl = function ($scope, $modalInstance) {
 
