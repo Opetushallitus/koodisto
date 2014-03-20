@@ -316,4 +316,20 @@ public class CodesResource {
             return null;
         }
     }
+
+    @POST
+    @Path("delete/{codesUri}/{codesVersion}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({JsonViews.Simple.class})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
+    public Response delete(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion) {
+        try {
+            koodistoBusinessService.delete(codesUri,codesVersion);
+            return Response.status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            logger.warn("Koodistoa ei saatu poistettua. ", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
