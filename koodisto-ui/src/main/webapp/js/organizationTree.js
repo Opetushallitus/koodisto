@@ -131,7 +131,7 @@ app.factory('OrganisaatioOPHTreeModel', function(Organizations, OrganizationByOi
         }
 
         instance.search = function(searchStr) {            
-            Organizations.get({"searchStr": searchStr}, function(result) {
+            Organizations.get({"searchStr": searchStr, "skipparents": true}, function(result) {
         	instance.model = result;
         	if(instance.model.organisaatiot.length < 4) {
         	    instance.model.organisaatiot.forEach(function(data) {
