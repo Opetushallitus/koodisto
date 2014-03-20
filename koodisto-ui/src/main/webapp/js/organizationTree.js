@@ -35,6 +35,7 @@ app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOp
         instance.resetSearch = function() {
             if (instance.model.originalOrganizations && instance.model.originalOrganizations.length > 0){
         	instance.model.organisaatiot =  instance.model.originalOrganizations;
+        	instance.model.numHits = calculateMatchingOrgs(instance.model.originalOrganizations);
             } else {
         	instance.organizationsToInitFrom.forEach(function(organization) {
         	    OrganizationChildrenByOid.get({oid: organization}, function(result) { 
@@ -45,6 +46,20 @@ app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOp
         	    });
         	});
             }
+        }
+        
+        function calculateMatchingOrgs(organizations) {
+            var amount = organizations.length;
+            function calculate(children) {
+        	amount += children.length;
+        	children.forEach(function(child) {
+        	    calculate(child.children);
+        	});
+            }
+            organizations.forEach(function(org) {
+        	calculate(org.children);
+            });
+            return amount;
         }
 
         instance.search = function(searchStr) {
@@ -79,7 +94,7 @@ app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOp
             });
 
             instance.model.organisaatiot = matchingOrgs;
-            instance.model.numHits = matchingOrgs.length;
+            instance.model.numHits = calculateMatchingOrgs(matchingOrgs);
             
             if(instance.model.organisaatiot.length < 4) {
         	instance.model.organisaatiot.forEach(function(data){
@@ -90,7 +105,7 @@ app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOp
 
         instance.openChildren = function(data) {
             ChildOpener(data);
-        };
+        }
 
         return instance;
     })();
