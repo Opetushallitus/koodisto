@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -92,7 +91,7 @@ public class CodeElementResource {
                     (conversionService.convert(koodiVersio,KoodiDto.class)).build();
         } catch (Exception e) {
             logger.warn("Koodia ei saatu päivitettyä. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
