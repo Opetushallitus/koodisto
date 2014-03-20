@@ -67,6 +67,13 @@ app.factory('NewCodes', function($resource) {
     });
 });
 
+app.factory('DeleteCodes', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codes/delete/:codesUri/:codesVersion",
+        {codesUri: "@codesUri",codesVersion: "@codesVersion"}, {
+            put: {method: "POST"}
+        });
+});
+
 app.factory('NewCodesGroup', function($resource) {
     return $resource(SERVICE_URL_BASE + "codesgroup", {}, {
         post: {method: "POST"}

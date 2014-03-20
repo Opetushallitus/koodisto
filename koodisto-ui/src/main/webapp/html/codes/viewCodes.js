@@ -3,11 +3,12 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                                        CodeElementVersionsByCodeElementUri, OrganizationByOid, CodesByUri) {
     var model;
     model = new function() {
-        codeElements = [];
+        this.codeElements = [];
         this.alerts = [];
         this.withinCodes = [];
         this.includesCodes = [];
         this.levelsWithCodes = [];
+        this.deleteState = "disabled";
 
         this.init = function(codesUri, codesVersion) {
             this.withinCodes = [];
@@ -19,6 +20,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             this.alerts = [];
             model.format = "JHS_XML";
             model.encoding = "UTF-8";
+            this.deleteState = "disabled";
 
             model.getCodes(codesUri,codesVersion);
         };
@@ -79,7 +81,9 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 model.codes.levelsWithCodes.forEach(function(codes){
                     model.getLatestCodesVersionsByCodesUri(codes,model.levelsWithCodes);
                 });
-
+                if (model.codes.tila === "PASSIIVINEN") {
+                    model.deleteState = "";
+                }
                 OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result) {
                     model.codes.organizationName = result.nimi['fi'] || result.nimi['sv'] || result.nimi['en'];
                 });
@@ -178,13 +182,22 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             });
         };
 
+        this.removeCodes = function() {
+            model.deleteCodesModalInstance = $modal.open({
+                templateUrl: 'confirmDeleteCodesModalContent.html',
+                controller: ViewCodesController,
+                resolve: {
+                }
+            });
+        };
     };
 
 
     return model;
 });
 
-function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, DownloadCodes, RemoveRelationCodes) {
+function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, DownloadCodes, RemoveRelationCodes,
+                             DeleteCodes) {
     $scope.model = ViewCodesModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
@@ -197,6 +210,22 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
 
     $scope.cancel = function() {
         $location.path("/");
+    };
+
+    $scope.okconfirmdeletecodes = function() {
+        DeleteCodes.put({codesUri: $scope.codesUri,
+            codesVersion: $scope.codesVersion},function(success) {
+            $location.path("/");
+        }, function(error) {
+            var alert = { type: 'danger', msg: 'Koodiston poisto ep\u00E4onnistui.' };
+            $scope.model.alerts.push(alert);
+        });
+
+        $scope.model.deleteCodesModalInstance.close();
+    };
+
+    $scope.cancelconfirmdeletecodes = function() {
+        $scope.model.deleteCodesModalInstance.dismiss('cancel');
     };
 
     $scope.search = function (item){
