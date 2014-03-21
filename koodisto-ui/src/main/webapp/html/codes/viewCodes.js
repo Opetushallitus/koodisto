@@ -332,11 +332,26 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
         });
     };
 
-    function uploadComplete(evt) {
-        ViewCodesModel.init($scope.codesUri,$scope.codesVersion);
-        var alert = { type: 'success', msg: 'Koodisto ' + $scope.codesUri + ' on tuotu koodistoryhm\u00E4\u00E4n ' + $scope.model.codes.codesGroupUri };
-        $scope.model.alerts.push(alert);
-    }
+	function uploadComplete(evt) {
+		ViewCodesModel.init($scope.codesUri, $scope.codesVersion);
+		var alert;
+		if(evt.originalTarget.status == "202"){
+			alert = {
+					type : 'success',
+					msg : 'Koodisto ' + $scope.codesUri
+							+ ' on tuotu koodistoryhm\u00E4\u00E4n '
+							+ $scope.model.codes.codesGroupUri
+				};
+		} else {
+			alert = {
+					type : 'danger',
+					msg : 'Koodiston ' + $scope.codesUri
+							+ ' vienti ep\u00E4onnistui: '
+							+ evt.originalTarget.status + ': ' + evt.originalTarget.statusText
+				};
+		}
+		$scope.model.alerts.push(alert);
+	}
 
     function uploadFailed(evt) {
         var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' };
