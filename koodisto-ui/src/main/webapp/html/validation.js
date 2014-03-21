@@ -1,11 +1,8 @@
 app.factory('ValidateService', function() {
     return {
         validateCodes: function(scope,error,isupdate) {
-            if (isupdate) {
-                var alert = { type: 'danger', msg: 'Koodiston muokkaus ep\u00E4onnistui.' }
-            } else {
-                var alert = { type: 'danger', msg: 'Koodiston luonti ep\u00E4onnistui.' }
-            }
+            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) }
+
             if (scope.namefi && !scope.descriptionfi ||
                 scope.descriptionfi && !scope.namefi ||
                 scope.namesv && !scope.descriptionsv ||
@@ -19,11 +16,9 @@ app.factory('ValidateService', function() {
 
         },
         validateCodeElement: function(scope,error,isupdate) {
-            if (isupdate) {
-                var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) }
-            } else {
-                var alert = { type: 'danger', msg: 'Koodin luonti ep\u00E4onnistui.' }
-            }
+
+            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) }
+
             if (scope.namefi && !scope.descriptionfi ||
                 scope.descriptionfi && !scope.namefi ||
                 scope.namefi && !scope.shortnamefi ||

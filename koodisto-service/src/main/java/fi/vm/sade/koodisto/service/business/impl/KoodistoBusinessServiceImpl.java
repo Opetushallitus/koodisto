@@ -77,14 +77,14 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Override
     public KoodistoVersio createKoodisto(List<String> koodistoRyhmaUris, CreateKoodistoDataType createKoodistoData) {
         if (koodistoRyhmaUris == null || koodistoRyhmaUris.isEmpty()) {
-            throw new KoodistoRyhmaUriEmptyException("No koodistoryhmä URIs given");
+            throw new KoodistoRyhmaUriEmptyException("codesgroup.uri.is.empty");
         }
 
         checkMetadatas(createKoodistoData.getMetadataList());
 
         List<KoodistoRyhma> koodistoRyhmas = koodistoRyhmaDAO.findByUri(koodistoRyhmaUris);
         if (koodistoRyhmas.isEmpty()) {
-            throw new KoodistoRyhmaNotFoundException("No koodistoryhmas found for given URIs");
+            throw new KoodistoRyhmaNotFoundException("codesgroup.uri.not.found");
         }
 
         // authorize creation
@@ -178,13 +178,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
      */
     private void checkNimiIsUnique(String koodistoUri, String nimi) {
         if (koodistoMetadataDAO.nimiExistsForSomeOtherKoodisto(koodistoUri, nimi)) {
-            throw new KoodistoNimiNotUniqueException("Another koodisto with nimi " + nimi + " already exists");
+            throw new KoodistoNimiNotUniqueException("codes.name.not.unique");
         }
     }
 
     private void checkNimiIsUnique(String nimi) {
         if (koodistoMetadataDAO.nimiExists(nimi)) {
-            throw new KoodistoNimiNotUniqueException("Another koodisto with nimi " + nimi + " already exists");
+            throw new KoodistoNimiNotUniqueException("codes.name.not.unique");
         }
     }
 
@@ -200,7 +200,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     private void checkMetadatas(Collection<KoodistoMetadataType> metadatas) {
         if (metadatas == null || metadatas.isEmpty()) {
-            throw new MetadataEmptyException("Metadata list is empty");
+            throw new MetadataEmptyException("codes.metadata.is.empty");
         } else {
             checkRequiredMetadataFields(metadatas);
         }
@@ -209,7 +209,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Override
     public KoodistoVersio updateKoodisto(UpdateKoodistoDataType updateKoodistoData) {
         if (updateKoodistoData == null || StringUtils.isBlank(updateKoodistoData.getKoodistoUri())) {
-            throw new KoodistoUriEmptyException("Koodisto URI is empty");
+            throw new KoodistoUriEmptyException("codes.uri.is.empty");
         }
 
         checkMetadatas(updateKoodistoData.getMetadataList());
@@ -219,7 +219,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         if (latest.getVersio() != updateKoodistoData.getVersio()
                 || (latest.getVersio() == updateKoodistoData.getVersio() &&
                 latest.getVersion() != updateKoodistoData.getLockingVersion())) {
-            throw new KoodistoOptimisticLockingException("Koodisto has already been modified.");
+            throw new KoodistoOptimisticLockingException("codes.already.modified");
         }
 
         changeCodesGroup(updateKoodistoData, latest);
@@ -267,7 +267,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         List<KoodistoRyhma> koodistoGroups = koodistoRyhmaDAO.findByUri(koodistoGroupUris);
 
         if (koodistoGroups.isEmpty()) {
-            throw new KoodistoRyhmaNotFoundException("No koodistoryhmas found for given URIs");
+            throw new KoodistoRyhmaNotFoundException("codesgroup.uri.not.found");
         }
 
         return koodistoGroups.get(0);

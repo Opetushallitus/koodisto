@@ -71,7 +71,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     @Override
     public KoodiVersioWithKoodistoItem createKoodi(String koodistoUri, CreateKoodiDataType createKoodiData) {
         if (createKoodiData == null || StringUtils.isBlank(koodistoUri)) {
-            throw new KoodistoUriEmptyException("Koodisto URI is empty");
+            throw new KoodistoUriEmptyException("codes.uri.is.empty");
         }
 
         checkMetadatas(createKoodiData.getMetadata());
@@ -123,7 +123,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
             if (!koodiUri.equals(koodiVersio.getKoodiVersio().getKoodi().getKoodiUri()) &&
                     koodiArvo.equals(koodiVersio.getKoodiVersio().getKoodiarvo())) {
-                throw new KoodiValueNotUniqueException("codeelementvalue.not.unique");
+                throw new KoodiValueNotUniqueException("codeelement.value.not.unique");
             }
         }
     }
@@ -135,13 +135,13 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
      */
     private void checkNimiIsUnique(String koodistoUri, String koodiUri, String nimi) {
         if (koodiMetadataDAO.nimiExistsInKoodistoForSomeOtherKoodi(koodistoUri, koodiUri, nimi)) {
-            throw new KoodiNimiNotUniqueException("Another koodi with nimi " + nimi + " already exists");
+            throw new KoodiNimiNotUniqueException("codeelement.name.not.unique");
         }
     }
 
     private void checkNimiIsUnique(String koodistoUri, String nimi) {
         if (koodiMetadataDAO.nimiExistsInKoodisto(koodistoUri, nimi)) {
-            throw new KoodiNimiNotUniqueException("Another koodi with nimi " + nimi + " already exists");
+            throw new KoodiNimiNotUniqueException("codeelement.name.not.unique");
         }
     }
 
@@ -149,7 +149,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(koodiUri);
         List<KoodiVersioWithKoodistoItem> result = koodiVersioDAO.searchKoodis(searchCriteria);
         if (result.size() != 1) {
-            throw new KoodiNotFoundException("No koodi found for URI " + koodiUri);
+            throw new KoodiNotFoundException("codeelement.uri.not.found");
         }
 
         return result.get(0);
@@ -172,7 +172,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(koodiUri, koodiVersio);
         List<KoodiVersioWithKoodistoItem> result = koodiVersioDAO.searchKoodis(searchCriteria);
         if (result.size() != 1) {
-            throw new KoodiNotFoundException("No koodi found for URI " + koodiUri);
+            throw new KoodiNotFoundException("codeelement.uri.not.found");
         }
 
         return result.get(0);
@@ -200,7 +200,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private void checkMetadatas(Collection<KoodiMetadataType> metadatas) {
         if (metadatas == null || metadatas.isEmpty()) {
-            throw new MetadataEmptyException("Metadata list is empty");
+            throw new MetadataEmptyException("codeelement.metadata.is.empty");
         } else {
             checkRequiredMetadataFields(metadatas);
         }
@@ -213,7 +213,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     public KoodiVersioWithKoodistoItem updateKoodi(UpdateKoodiDataType updateKoodiData, boolean skipAlreadyUpdatedVerification) {
         if (updateKoodiData == null || StringUtils.isBlank(updateKoodiData.getKoodiUri())) {
-            throw new KoodiUriEmptyException("Koodi URI is empty");
+            throw new KoodiUriEmptyException("codeelement.uri.is.empty");
         }
         KoodiVersioWithKoodistoItem latest = getLatestKoodiVersioWithKoodistoVersioItems(updateKoodiData.getKoodiUri());
 
@@ -221,14 +221,13 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         if (!skipAlreadyUpdatedVerification
                 && (latestKoodiVersion.getVersio() != updateKoodiData.getVersio() || (latestKoodiVersion.getVersio() == updateKoodiData.getVersio() && latestKoodiVersion
                         .getVersion() != updateKoodiData.getLockingVersion()))) {
-            throw new KoodiOptimisticLockingException("Koodi has already been modified.");
+            throw new KoodiOptimisticLockingException("codeelement.already.modified");
         }
 
         KoodistoVersio latestKoodisto = koodistoBusinessService.getLatestKoodistoVersio(latest.getKoodiVersio().getKoodi().getKoodisto().getKoodistoUri());
 
         if (!latest.getKoodistoItem().getVersios().contains(latestKoodisto.getVersio())) {
-            throw new KoodiNotInKoodistoException("Cannot update koodi " + updateKoodiData.getKoodiUri() + ". "
-                    + "Koodi is not part of the latest koodisto versio");
+            throw new KoodiNotInKoodistoException("codeelement.is.not.part.of.codes");
         }
 
         checkMetadatas(updateKoodiData.getMetadata());

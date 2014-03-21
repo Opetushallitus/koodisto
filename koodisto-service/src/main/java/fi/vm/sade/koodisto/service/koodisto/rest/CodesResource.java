@@ -112,7 +112,7 @@ public class CodesResource {
             return Response.status(Response.Status.CREATED).entity(koodistoVersio.getVersio()).build();
         } catch (Exception e) {
             logger.warn("Koodistoa ei saatu päivitettyä. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
@@ -160,7 +160,7 @@ public class CodesResource {
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoVersio, KoodistoDto.class)).build();
         } catch (Exception e) {
             logger.warn("Koodistoa ei saatu lisättyä. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
