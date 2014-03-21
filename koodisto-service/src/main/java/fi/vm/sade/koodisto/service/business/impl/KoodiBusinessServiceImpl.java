@@ -82,7 +82,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         KoodistoVersio koodistoVersio = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
         authorizer.checkOrganisationAccess(koodistoVersio.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD);
 
-        checkIfCodeElementValueExistsAlready(createKoodiData.getKoodiArvo(), koodistoVersio.getKoodiVersios());
+        checkIfCodeElementValueExistsAlready("", createKoodiData.getKoodiArvo(), koodistoVersio.getKoodiVersios());
 
         Koodi koodi = new Koodi();
         koodi.setKoodisto(koodistoVersio.getKoodisto());
@@ -117,10 +117,12 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return new KoodiVersioWithKoodistoItem(koodiVersio, new KoodistoItem(koodistoUri, versio));
     }
 
-    private void checkIfCodeElementValueExistsAlready(final String koodiArvo,
-                                                      final Set<KoodistoVersioKoodiVersio> koodiVersios) {
+    private void checkIfCodeElementValueExistsAlready(String koodiUri,
+                                                      String koodiArvo,
+                                                      Set<KoodistoVersioKoodiVersio> koodiVersios) {
         for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
-            if (koodiArvo.equals(koodiVersio.getKoodiVersio().getKoodiarvo())) {
+            if (!koodiUri.equals(koodiVersio.getKoodiVersio().getKoodi().getKoodiUri()) &&
+                    koodiArvo.equals(koodiVersio.getKoodiVersio().getKoodiarvo())) {
                 throw new KoodiValueNotUniqueException("codeelementvalue.not.unique");
             }
         }
@@ -231,7 +233,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         checkMetadatas(updateKoodiData.getMetadata());
 
-        checkIfCodeElementValueExistsAlready(updateKoodiData.getKoodiArvo(), latestKoodisto.getKoodiVersios());
+        checkIfCodeElementValueExistsAlready(updateKoodiData.getKoodiUri(), updateKoodiData.getKoodiArvo(), latestKoodisto.getKoodiVersios());
 
         KoodiVersio newVersion = createNewVersionIfNeeded(latest.getKoodiVersio(), updateKoodiData);
 
