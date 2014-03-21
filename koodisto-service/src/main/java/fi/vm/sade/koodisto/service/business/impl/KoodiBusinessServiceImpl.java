@@ -82,6 +82,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         KoodistoVersio koodistoVersio = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
         authorizer.checkOrganisationAccess(koodistoVersio.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD);
 
+        checkIfCodeElementValueExistsAlready(createKoodiData.getKoodiArvo(), koodistoVersio.getKoodiVersios());
+
         Koodi koodi = new Koodi();
         koodi.setKoodisto(koodistoVersio.getKoodisto());
         koodi.setKoodiUri(uriTransliterator.generateKoodiUriByKoodistoUriAndKoodiArvo(koodistoUri, createKoodiData.getKoodiArvo()));
@@ -113,6 +115,15 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         versio.add(koodistoVersio.getVersio());
 
         return new KoodiVersioWithKoodistoItem(koodiVersio, new KoodistoItem(koodistoUri, versio));
+    }
+
+    private void checkIfCodeElementValueExistsAlready(final String koodiArvo,
+                                                      final Set<KoodistoVersioKoodiVersio> koodiVersios) {
+        for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
+            if (koodiArvo.equals(koodiVersio.getKoodiVersio().getKoodiarvo())) {
+                throw new KoodiValueNotUniqueException("codeelementvalue.not.unique");
+            }
+        }
     }
 
     /**
@@ -219,6 +230,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
 
         checkMetadatas(updateKoodiData.getMetadata());
+
+        checkIfCodeElementValueExistsAlready(updateKoodiData.getKoodiArvo(), latestKoodisto.getKoodiVersios());
 
         KoodiVersio newVersion = createNewVersionIfNeeded(latest.getKoodiVersio(), updateKoodiData);
 
