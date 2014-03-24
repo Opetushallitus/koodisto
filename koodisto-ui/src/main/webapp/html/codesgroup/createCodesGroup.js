@@ -60,6 +60,8 @@ function CodesGroupCreatorController($scope, $location, CodesGroupCreatorModel, 
             Treemodel.refresh();
             $location.path("/koodistoryhma/"+result.id);
         }, function(error) {
+            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
+            $scope.model.alerts.push(alert);
         });
     };
 }
