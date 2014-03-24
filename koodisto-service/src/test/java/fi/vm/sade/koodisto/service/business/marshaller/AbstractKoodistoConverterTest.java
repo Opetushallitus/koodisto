@@ -7,10 +7,13 @@ import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.ByteArrayDataSource;
 import fi.vm.sade.koodisto.util.KoodistoHelper;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import javax.activation.DataHandler;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,7 +33,8 @@ public abstract class AbstractKoodistoConverterTest {
     @Test
     public void testUnmarshall() throws IOException {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(getTestFile());
-        DataHandler handler = new DataHandler(new ByteArrayDataSource(convertStreamToString(inputStream).getBytes()));
+//        DataHandler handler = new DataHandler(new ByteArrayDataSource(convertStreamToString(inputStream).getBytes()));
+        DataHandler handler = new DataHandler(new ByteArrayDataSource(IOUtils.toByteArray(inputStream)));
 
         List<KoodiType> koodis = getConverter().unmarshal(handler, "UTF-8");
         assertEquals(1, koodis.size());
