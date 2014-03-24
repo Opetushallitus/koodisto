@@ -8,6 +8,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.ByteArrayDataSource;
 import fi.vm.sade.koodisto.util.KoodistoHelper;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.supercsv.io.CsvListReader;
@@ -16,6 +17,7 @@ import org.supercsv.prefs.CsvPreference;
 
 import javax.activation.DataHandler;
 import javax.xml.datatype.XMLGregorianCalendar;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.text.ParseException;
@@ -54,14 +56,15 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     protected static final String HUOMIOITAVAKOODI_COLUMN = "HUOMIOITAVAKOODI";
     protected static final String SISALTAAKOODISTON_COLUMN = "SISALTAAKOODISTON";
 
+    protected static final String[] basicFields = { VERSIO_COLUMN, KOODIURI_COLUMN, KOODIARVO_COLUMN, PAIVITYSPVM_COLUMN, VOIMASSAALKUPVM_COLUMN,
+            VOIMASSALOPPUPVM_COLUMN, TILA_COLUMN };
+
+    protected static final String[] metadataFields = { NIMI_COLUMN, KUVAUS_COLUMN, LYHYTNIMI_COLUMN, KAYTTOOHJE_COLUMN, KASITE_COLUMN,
+            SISALTAAMERKITYKSEN_COLUMN, EISISALLAMERKITYSTA_COLUMN, HUOMIOITAVAKOODI_COLUMN, SISALTAAKOODISTON_COLUMN };
+
+    protected static final KieliType[] kielet = { KieliType.FI, KieliType.SV, KieliType.EN };
+
     static {
-        String[] basicFields = { VERSIO_COLUMN, KOODIURI_COLUMN, KOODIARVO_COLUMN, PAIVITYSPVM_COLUMN, VOIMASSAALKUPVM_COLUMN, VOIMASSALOPPUPVM_COLUMN,
-                TILA_COLUMN };
-
-        String[] metadataFields = { NIMI_COLUMN, KUVAUS_COLUMN, LYHYTNIMI_COLUMN, KAYTTOOHJE_COLUMN, KASITE_COLUMN, SISALTAAMERKITYKSEN_COLUMN,
-                EISISALLAMERKITYSTA_COLUMN, HUOMIOITAVAKOODI_COLUMN, SISALTAAKOODISTON_COLUMN };
-
-        KieliType[] kielet = { KieliType.FI, KieliType.SV, KieliType.EN };
 
         HEADER_FIELDS = new LinkedList<String>(Arrays.asList(basicFields));
         for (KieliType kieli : kielet) {
@@ -79,6 +82,41 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         }
 
         return map;
+    }
+
+    protected Map<Integer, String> createFieldNameToIndexMap(List<String> row) { // Use the header row instead of predefined array
+        Map<Integer, String> map = new HashMap<Integer, String>();
+        int rowLenght = row.size();
+        String[] headerFields = row.toArray(new String[rowLenght]);
+        for (int i = 0; i < rowLenght; i++) {
+            String header = headerFields[i];
+            if (checkFieldHeaderValid(header)) {
+                if (!Character.isLetter(header.charAt(0))) { // Removing BOM
+                    header = header.substring(1);
+                }
+                map.put(i, header);
+            }
+        }
+
+        return map;
+    }
+
+    private boolean checkFieldHeaderValid(String header) {
+        if (StringUtils.isBlank(header))
+            return false;
+        if (!Character.isLetter(header.charAt(0))) { // Removing BOM
+            header = header.substring(1);
+        }
+        if (Arrays.asList(basicFields).contains(header)) { // Basic field
+            return true;
+        } else { // Meta fields
+            String[] splitHeader = header.split("_");
+            String[] kieliNames = { KieliType.FI.name(), KieliType.SV.name(), KieliType.EN.name() };
+            if (Arrays.asList(metadataFields).contains(splitHeader[0]) && Arrays.asList(kieliNames).contains(splitHeader[1])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -137,6 +175,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
             boolean first = true;
             while ((row = csvReader.read()) != null) {
                 if (first) { // Skip header
+                    fieldNameToIndex = createFieldNameToIndexMap(row);
                     first = false;
                 } else {
                     koodis.add(createKoodiFromCsvRow(row, fieldNameToIndex));
@@ -157,8 +196,9 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     protected KoodiType createKoodiFromCsvRow(List<String> row, Map<Integer, String> fieldNameToIndex) {
-        if (HEADER_FIELDS.size() != row.size()) {
-            throw new InvalidKoodiCsvLineException("Invalid number of fields for koodi CSV line. Required " + HEADER_FIELDS.size() + " but got " + row.size());
+        if (fieldNameToIndex.size() != row.size()) {
+            throw new InvalidKoodiCsvLineException("Invalid number of fields for koodi CSV line. Required " + fieldNameToIndex.size() + " but got "
+                    + row.size());
         }
 
         KoodiType koodi = new KoodiType();
