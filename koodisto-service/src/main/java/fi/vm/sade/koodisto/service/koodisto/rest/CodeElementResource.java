@@ -121,7 +121,9 @@ public class CodeElementResource {
         updateKoodiDataType.setVersio(koodiDto.getVersio());
         updateKoodiDataType.setLockingVersion(koodiDto.getVersion());
 
-        updateKoodiDataType.setTila(UpdateKoodiTilaType.fromValue(koodiDto.getTila().toString()));
+        if (!koodiDto.getTila().toString().equals("HYVAKSYTTY")) {
+            updateKoodiDataType.setTila(UpdateKoodiTilaType.fromValue(koodiDto.getTila().toString()));
+        }
         for (KoodiMetadata koodiMetadata : koodiDto.getMetadata()) {
             updateKoodiDataType.getMetadata().add(conversionService.convert(koodiMetadata,KoodiMetadataType.class));
         }
