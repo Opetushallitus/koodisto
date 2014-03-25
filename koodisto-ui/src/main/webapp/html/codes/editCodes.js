@@ -130,7 +130,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
         this.removeFromWithinCodes = function(codes) {
             model.withinRelationToRemove = codes;
 
-            model.modalInstance = $modal.openChildren({
+            model.modalInstance = $modal.open({
                 templateUrl: 'confirmModalContent.html',
                 controller: CodesEditorController,
                 resolve: {
