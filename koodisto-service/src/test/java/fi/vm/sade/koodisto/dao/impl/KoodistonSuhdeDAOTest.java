@@ -47,6 +47,17 @@ public class KoodistonSuhdeDAOTest {
 		assertEquals(original.getYlakoodistos().size(), newVersion.getYlakoodistos().size());
 		assertEquals(original.getAlakoodistos().size(), newVersion.getAlakoodistos().size());
 	}
+	
+	@Test
+	public void copiedRelationsAreActuallyStoredInDb() {
+		KoodistoVersio original = versionDAO.read(new Long(1));
+		KoodistoVersio newVersion = givenNewKoodistoVersio(original);
+		suhdeDAO.copyRelations(original, newVersion);
+		versionDAO.detach(newVersion);
+		newVersion = versionDAO.read(newVersion.getId());
+		assertEquals(original.getYlakoodistos().size(), newVersion.getYlakoodistos().size());
+		assertEquals(original.getAlakoodistos().size(), newVersion.getAlakoodistos().size());
+	}
 
 	private KoodistoVersio givenNewKoodistoVersio(KoodistoVersio original) {
 		KoodistoVersio newVersion = new KoodistoVersio();
