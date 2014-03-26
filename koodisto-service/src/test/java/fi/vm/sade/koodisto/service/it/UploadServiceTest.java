@@ -14,6 +14,8 @@ import fi.vm.sade.koodisto.util.ByteArrayDataSource;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import javax.activation.DataHandler;
+
 import java.io.*;
 import java.util.List;
 
@@ -71,27 +74,32 @@ public class UploadServiceTest {
         return koodiService.searchKoodisByKoodisto(searchData);
     }
 
+    // Muutettu niin, että koodit ilman koodiUria hyväksytään [koodistoUri_koodiArvo] -urilla 26.3.14
     private void testUpload(ExportImportFormatType format, String testFile) throws IOException {
         final String koodistoUri = "http://koodisto16";
         final int koodistoVersio = 1;
         final TilaType koodistoTila = TilaType.HYVAKSYTTY;
+        
+        final int koodistoVersioAfter = 2;
+        final TilaType koodistoTilaAfter = TilaType.LUONNOS;
 
         KoodistoType koodisto = getKoodistoByUri(koodistoUri);
-        assertEquals(koodistoVersio, koodisto.getVersio());
-        assertEquals(koodistoTila, koodisto.getTila());
+        assertEquals("koodistoVersio", koodistoVersio, koodisto.getVersio());
+        assertEquals("koodistoTila", koodistoTila, koodisto.getTila());
 
-        assertEquals(0, getKoodisByKoodisto(koodistoUri).size());
+        assertEquals("getKoodisByKoodisto", 0, getKoodisByKoodisto(koodistoUri).size());
 
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(testFile);
-        DataHandler handler = new DataHandler(new ByteArrayDataSource(convertStreamToString(inputStream).getBytes()));
+//        DataHandler handler = new DataHandler(new ByteArrayDataSource(convertStreamToString(inputStream).getBytes()));
+        DataHandler handler = new DataHandler(new ByteArrayDataSource(IOUtils.toByteArray(inputStream)));
 
         uploadService.upload(koodistoUri, format, "UTF-8", handler);
 
         koodisto = getKoodistoByUri(koodistoUri);
-        assertEquals(koodistoVersio, koodisto.getVersio());
-        assertEquals(TilaType.HYVAKSYTTY, koodisto.getTila());
+        assertEquals("koodistoVersioAfter", koodistoVersioAfter, koodisto.getVersio());
+        assertEquals("koodistoTilaAfter", koodistoTilaAfter, koodisto.getTila());
 
-        assertEquals(0, getKoodisByKoodisto(koodistoUri).size());
+        assertEquals("getKoodisByKoodistoAfter", 1, getKoodisByKoodisto(koodistoUri).size());
     }
     
     @Test
@@ -102,6 +110,11 @@ public class UploadServiceTest {
     @Test
     public void testUploadJhsXml() throws IOException {
         testUpload(ExportImportFormatType.JHS_XML, "jhs_xml_example.xml");
+    }
+
+    @Test
+    public void testUploadJhsXls() throws IOException {
+        testUpload(ExportImportFormatType.XLS, "excel_example.xls");
     }
 
     public static final String convertStreamToString(InputStream is) throws IOException {

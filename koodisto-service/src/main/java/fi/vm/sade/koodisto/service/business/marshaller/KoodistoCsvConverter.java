@@ -1,5 +1,31 @@
 package fi.vm.sade.koodisto.service.business.marshaller;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.activation.DataHandler;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
+import org.supercsv.io.CsvListReader;
+import org.supercsv.io.CsvListWriter;
+import org.supercsv.prefs.CsvPreference;
+
 import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
@@ -8,21 +34,6 @@ import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.ByteArrayDataSource;
 import fi.vm.sade.koodisto.util.KoodistoHelper;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Component;
-import org.supercsv.io.CsvListReader;
-import org.supercsv.io.CsvListWriter;
-import org.supercsv.prefs.CsvPreference;
-
-import javax.activation.DataHandler;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import java.io.*;
-import java.nio.charset.Charset;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * User: kwuoti Date: 8.4.2013 Time: 15.23
@@ -251,7 +262,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     private void populateKoodiFields(KoodiType koodi, String fieldName, String value) {
-        if (VERSIO_COLUMN.equals(fieldName)) {
+        if (VERSIO_COLUMN.equals(fieldName) && StringUtils.isNotBlank(value)) {
             koodi.setVersio(Integer.parseInt(value));
         } else if (KOODIURI_COLUMN.equals(fieldName)) {
             koodi.setKoodiUri(value);

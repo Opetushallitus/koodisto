@@ -127,7 +127,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
         for (int cellIterator = 0; cellIterator < rowLength; cellIterator++) {
             Cell cell = row.getCell(cellIterator);
             if (cell == null) { // Empty cell
-                rowAsCSV.add("");
+                rowAsCSV.add(null);
                 continue;
             }
 
@@ -151,7 +151,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
         case Cell.CELL_TYPE_NUMERIC:
             return String.valueOf((int)cell.getNumericCellValue());
         default:
-            return "";
+            return null;
         }
     }
 
@@ -162,7 +162,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
         case Cell.CELL_TYPE_NUMERIC:
             return csvConverter.convertFromDate(cell.getDateCellValue(), Charset.defaultCharset());
         default:
-            return "";
+            return null;
         }
     }
 
@@ -173,7 +173,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
         case Cell.CELL_TYPE_NUMERIC:
             return (String.valueOf(cell.getNumericCellValue()));
         default:
-            return "";
+            return null;
         }
     }
 
