@@ -505,6 +505,8 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             newRelation.setKoodistoVersio(inserted);
             inserted.addKoodiVersio(newRelation);
         }
+        
+        koodistonSuhdeDAO.copyRelations(latest, inserted);
 
         koodisto.addKoodistoVersion(inserted);
         return inserted;
