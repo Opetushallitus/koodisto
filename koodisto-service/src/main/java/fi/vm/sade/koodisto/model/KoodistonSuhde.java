@@ -22,7 +22,7 @@ public class KoodistonSuhde extends BaseEntity {
     private static final long serialVersionUID = -8875747407128912635L;
 
     public static final String TABLE_NAME = "koodistonSuhde";
-
+    
     public static final String YLAKOODISTO_COLUMN_NAME = "ylakoodistoVersio_id";
     public static final String ALAKOODISTO_COLUMN_NAME = "alakoodistoVersio_id";
     public static final String SUHTEEN_TYYPPI_COLUMN_NAME = "suhteenTyyppi";
@@ -64,6 +64,15 @@ public class KoodistonSuhde extends BaseEntity {
 
     public void setSuhteenTyyppi(SuhteenTyyppi suhteenTyyppi) {
         this.suhteenTyyppi = suhteenTyyppi;
+    }
+    
+    @Override
+    public String toString() {
+    	StringBuilder sb = new StringBuilder(super.toString()).append(": ");
+    	sb.append(KoodistonSuhde.YLAKOODISTO_COLUMN_NAME).append('=').append(ylakoodistoVersio.getId()).append(',');
+    	sb.append(KoodistonSuhde.ALAKOODISTO_COLUMN_NAME).append('=').append(alakoodistoVersio.getId()).append(',');
+    	sb.append(KoodistonSuhde.SUHTEEN_TYYPPI_COLUMN_NAME).append('=').append(suhteenTyyppi);
+    	return sb.toString();
     }
 
 }
