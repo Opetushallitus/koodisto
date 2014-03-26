@@ -2,8 +2,6 @@ package fi.vm.sade.koodisto.dao.impl;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,6 @@ import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
 import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 
@@ -44,8 +41,7 @@ public class KoodistonSuhdeDAOTest {
 		KoodistoVersio original = versionDAO.read(new Long(1));
 		KoodistoVersio newVersion = givenNewKoodistoVersio(original);
 		suhdeDAO.copyRelations(original, newVersion);
-		assertEquals(original.getYlakoodistos().size(), newVersion.getYlakoodistos().size());
-		assertEquals(original.getAlakoodistos().size(), newVersion.getAlakoodistos().size());
+		assertRelations(original, newVersion);
 	}
 	
 	@Test
@@ -55,6 +51,10 @@ public class KoodistonSuhdeDAOTest {
 		suhdeDAO.copyRelations(original, newVersion);
 		versionDAO.detach(newVersion);
 		newVersion = versionDAO.read(newVersion.getId());
+		assertRelations(original, newVersion);
+	}
+	
+	private void assertRelations(KoodistoVersio original, KoodistoVersio newVersion) {
 		assertEquals(original.getYlakoodistos().size(), newVersion.getYlakoodistos().size());
 		assertEquals(original.getAlakoodistos().size(), newVersion.getAlakoodistos().size());
 	}
