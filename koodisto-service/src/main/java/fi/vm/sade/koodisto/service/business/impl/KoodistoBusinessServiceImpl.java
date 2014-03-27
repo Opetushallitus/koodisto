@@ -451,7 +451,8 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         // insert KoodistoVersio
         KoodistoVersio inserted = koodistoVersioDAO.insert(input);
-
+        koodistonSuhdeDAO.copyRelations(base, inserted);
+        
         // add KoodiVersios from previous KoodistoVersio
         for (KoodistoVersioKoodiVersio kv : base.getKoodiVersios()) {
             KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
