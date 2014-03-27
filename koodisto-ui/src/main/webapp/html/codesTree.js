@@ -11,7 +11,7 @@ app.factory('Treemodel', function ($resource, RootCodes, MyRoles) {
             codesfound: 0
         },
         isVisibleNode: function (data) {
-            return (data.koodistoUri.indexOf(this.filter.name) > -1 || !this.filter.name) &&
+            return ((this.filter.name && data.koodistoUri.indexOf(this.filter.name.toLowerCase()) > -1) || !this.filter.name) &&
                 (!this.filter.own || this.filter.own && this.isOwnedNode(data)) &&
                 (this.filter.passivated || !this.filter.passivated && !this.isPassivatedNode(data)) &&
                 (this.filter.planned || !this.filter.planned && !this.isPlannedNode(data));
