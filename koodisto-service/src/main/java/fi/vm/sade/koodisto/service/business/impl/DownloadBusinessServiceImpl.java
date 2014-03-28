@@ -42,6 +42,13 @@ public class DownloadBusinessServiceImpl implements DownloadBusinessService {
 
     @Override
     public DataHandler download(String koodistoUri, int koodistoVersio, ExportImportFormatType exportFormat, String encoding) {
+        if(koodistoUri.equals("blankKoodistoDocument") && koodistoVersio == -1){
+            try {
+                return koodistoXlsConverter.getBlancDocument();
+            } catch (IOException e) {
+                throw new KoodistoExportException(e);
+            }
+        }
         SearchKoodisByKoodistoCriteriaType searchData =
                 KoodiServiceSearchCriteriaBuilder.koodisByKoodistoUriAndKoodistoVersio(koodistoUri, koodistoVersio);
 

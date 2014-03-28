@@ -3,9 +3,9 @@ package fi.vm.sade.koodisto.service.business.marshaller;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.stereotype.Component;
 
+import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.util.ByteArrayDataSource;
 
@@ -28,13 +29,28 @@ import fi.vm.sade.koodisto.util.ByteArrayDataSource;
 @Component
 public class KoodistoXlsConverter extends KoodistoConverter {
 
-    public static final SimpleDateFormat CSV_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+    private static final KoodistoCsvConverter csvConverter = new KoodistoCsvConverter();
 
-    public static final KoodistoCsvConverter csvConverter = new KoodistoCsvConverter();
-
-    public static final String[] numberFieldHeaders = { KoodistoCsvConverter.VERSIO_COLUMN };
-    public static final String[] dateFieldHeaders = { KoodistoCsvConverter.PAIVITYSPVM_COLUMN, KoodistoCsvConverter.VOIMASSAALKUPVM_COLUMN,
+    private static final String[] numberFieldHeaders = { KoodistoCsvConverter.VERSIO_COLUMN };
+    private static final String[] dateFieldHeaders = { KoodistoCsvConverter.PAIVITYSPVM_COLUMN, KoodistoCsvConverter.VOIMASSAALKUPVM_COLUMN,
             KoodistoCsvConverter.VOIMASSALOPPUPVM_COLUMN };
+
+    private static final List<String> blankDocumentHeaderFields;
+    protected static final String[] metadataFields = { KoodistoCsvConverter.NIMI_COLUMN, KoodistoCsvConverter.KUVAUS_COLUMN,
+            KoodistoCsvConverter.LYHYTNIMI_COLUMN };
+
+    static {
+        blankDocumentHeaderFields = new LinkedList<String>();
+        blankDocumentHeaderFields.add(KoodistoCsvConverter.KOODIARVO_COLUMN);
+        for (KieliType kieli : KoodistoCsvConverter.kielet) {
+            for (String metadataField : metadataFields) {
+                blankDocumentHeaderFields.add(metadataField + "_" + kieli.name());
+            }
+        }
+        blankDocumentHeaderFields.add(KoodistoCsvConverter.VOIMASSAALKUPVM_COLUMN);
+        blankDocumentHeaderFields.add(KoodistoCsvConverter.VOIMASSALOPPUPVM_COLUMN);
+    }
+
 
     @Override
     public DataHandler marshal(List<KoodiType> koodis, String encoding) throws IOException {
@@ -149,7 +165,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
         case Cell.CELL_TYPE_STRING:
             return cell.getStringCellValue();
         case Cell.CELL_TYPE_NUMERIC:
-            return String.valueOf((int)cell.getNumericCellValue());
+            return String.valueOf((int) cell.getNumericCellValue());
         default:
             return null;
         }
@@ -175,6 +191,35 @@ public class KoodistoXlsConverter extends KoodistoConverter {
         default:
             return null;
         }
+    }
+
+    public DataHandler getBlancDocument() throws IOException {
+        ByteArrayOutputStream outputStream = null;
+
+        HSSFWorkbook book = new HSSFWorkbook();
+        HSSFSheet sheet = book.createSheet("Koodisto");
+        writeBlankHeader(sheet);
+        postprocess(sheet);
+
+        outputStream = new ByteArrayOutputStream();
+        try {
+            book.write(outputStream);
+            outputStream.flush();
+            return new DataHandler(new ByteArrayDataSource(outputStream.toByteArray()));
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
+    }
+
+    private void writeBlankHeader(HSSFSheet sheet) {
+        Row headerRow = sheet.createRow(0);
+        int iterator = 0;
+        for (String header : blankDocumentHeaderFields) {
+            headerRow.createCell(iterator++).setCellValue(header);
+        }
+
     }
 
 }

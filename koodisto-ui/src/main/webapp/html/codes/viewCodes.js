@@ -280,13 +280,24 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
                 event.initEvent("click", true, false);
                 link.dispatchEvent(event);
             }
-            var alert = { type: 'success', msg: 'Koodiston vienti onnistui.' };
-            $scope.model.alerts.push(alert);
+            if($scope.codesVersion != -1){ // Downloading blank document
+	            var alert = { type: 'success', msg: 'Koodiston vienti onnistui.' };
+	            $scope.model.alerts.push(alert);
+            }
         }, function(error) {
             var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' };
             $scope.model.alerts.push(alert);
         });
         $scope.model.downloadModalInstance.close();
+    };
+    
+    
+    $scope.downloadBlank = function() {
+    	$scope.model.format = "XLS";
+    	$scope.codesUri = "blankKoodistoDocument";
+    	$scope.codesVersion = "-1";
+    	
+    	$scope.okdownload();
     };
 
     $scope.formatEquals = function(s){
@@ -298,10 +309,6 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
     };
 
     $scope.okupload = function() {
-        var fileFormat = {
-            format: $scope.model.format,
-            encoding: $scope.model.encoding
-        };
         var fd = new FormData();
         for (var i in $scope.files) {
             fd.append("uploadedFile", $scope.files[i]);
