@@ -188,7 +188,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="codes in model.withinCodes | orderBy:'name'">
+                    <tr ng-repeat="codes in model.withinCodes | unique:'name' | orderBy:'name'">
                         <td class="align-center">{{codes.name}}</td>
                         <td class="align-center">
                             <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromWithinCodes(codes)"></i>
@@ -218,7 +218,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="codes in model.includesCodes | orderBy:'name'">
+                    <tr ng-repeat="codes in model.includesCodes | unique:'name' | orderBy:'name'">
                         <td class="align-center">{{codes.name}}</td>
                         <td class="align-center">
                             <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromIncludesCodes(codes)"></i>
@@ -248,7 +248,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="codes in model.levelsWithCodes | orderBy:'name'">
+                    <tr ng-repeat="codes in model.levelsWithCodes | unique:'name' | orderBy:'name'">
                         <td class="align-center">{{codes.name}}</td>
                         <td class="align-center">
                             <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromLevelsWithCodes(codes)"></i>
