@@ -26,7 +26,7 @@ public class ConfigController {
     @ResponseBody
     public String index() {
         StringBuilder b = new StringBuilder();
-        append(b, "KOODISTO_URL_BASE", koodistoServiceRestURL);
+        append(b, "SERVICE_URL_BASE", koodistoServiceRestURL);
         append(b, "ORGANIZATION_SERVICE_URL_BASE", organisaatioServiceURL);
 
         append(b, "TEMPLATE_URL_BASE", "");
