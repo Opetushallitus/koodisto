@@ -100,11 +100,15 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
             }
         }
         if (StringUtils.isBlank(koodi.getKoodiUri())) {
-            String koodiUri = (koodistoUri + "_" + koodi.getKoodiArvo()).toLowerCase();
+            String koodiUri = (koodistoUri + "_" + trimKoodiArvo(koodi.getKoodiArvo()));
             koodi.setKoodiUri(koodiUri);
         }
         if (koodi.getVersio() == 0){
             koodi.setVersio(1);
         }
+    }
+
+    private String trimKoodiArvo(String value) {
+        return value.replaceAll("[^A-Za-z0-9]", "").toLowerCase();
     }
 }

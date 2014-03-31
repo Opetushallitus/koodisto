@@ -262,7 +262,10 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     private void populateKoodiFields(KoodiType koodi, String fieldName, String value) {
-        if (VERSIO_COLUMN.equals(fieldName) && StringUtils.isNotBlank(value)) {
+        if(StringUtils.isBlank(value)){
+            return;
+        }
+        if (VERSIO_COLUMN.equals(fieldName)) {
             koodi.setVersio(Integer.parseInt(value));
         } else if (KOODIURI_COLUMN.equals(fieldName)) {
             koodi.setKoodiUri(value);
@@ -280,6 +283,9 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     private void populateMetadataField(String fieldName, String value, KoodiMetadataType metadata) {
+        if(StringUtils.isBlank(value)){
+            return;
+        }
         if (fieldName.startsWith(NIMI_COLUMN)) {
             metadata.setNimi(value);
         } else if (fieldName.startsWith(KUVAUS_COLUMN)) {
