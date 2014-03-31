@@ -286,14 +286,14 @@
                                 <tr ng-repeat="codes in model.withinCodes | unique:'name' | orderBy:'name'">
                                     <td class="align-center">{{codes.name}}</td>
                                     <td class="align-center">
-                                        <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromWithinCodes(codes)"></i>
+                                        <i class="icon-trash" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" ng-click="model.removeFromWithinCodes(codes)"></i>
                                     </td>
                                 </tr>
 
                                 </tbody>
 
                             </table>
-                            <a href="#/muokkaaKoodisto/{{model.codes.koodistoUri}}/{{model.codes.versio}}" auth="updateAny" auth-service="APP_KOODISTO" class="pull-right btn btn-primary">
+                            <a href="#/muokkaaKoodisto/{{model.codes.koodistoUri}}/{{model.codes.versio}}" auth="update" auth-org="{{model.codes.organisaatioOid}}" auth-service="APP_KOODISTO" class="pull-right btn btn-primary">
                                 {{'codeelement.viewpage.editrelationsbutton' | i18n}}</a>
                         </div>
                     </div>
@@ -323,14 +323,14 @@
                                 <tr ng-repeat="codes in model.includesCodes | unique:'name' | orderBy:'name'">
                                     <td class="align-center">{{codes.name}}</td>
                                     <td class="align-center">
-                                        <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromIncludesCodes(codes)"></i>
+                                        <i class="icon-trash" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" ng-click="model.removeFromIncludesCodes(codes)"></i>
                                     </td>
                                 </tr>
 
                                 </tbody>
 
                             </table>
-                            <a href="#/muokkaaKoodisto/{{model.codes.koodistoUri}}/{{model.codes.versio}}" auth="updateAny" auth-service="APP_KOODISTO" class="pull-right btn btn-primary">
+                            <a href="#/muokkaaKoodisto/{{model.codes.koodistoUri}}/{{model.codes.versio}}" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="pull-right btn btn-primary">
                                 {{'codeelement.viewpage.editrelationsbutton' | i18n}}</a>
                         </div>
                     </div>
@@ -361,14 +361,14 @@
                                 <tr ng-repeat="codes in model.levelsWithCodes | unique:'name' | orderBy:'name'">
                                     <td class="align-center">{{codes.name}}</td>
                                     <td class="align-center">
-                                        <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromLevelsWithCodes(codes)"></i>
+                                        <i class="icon-trash" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" ng-click="model.removeFromLevelsWithCodes(codes)"></i>
                                     </td>
                                 </tr>
 
                                 </tbody>
 
                             </table>
-                            <a href="#/muokkaaKoodisto/{{model.codes.koodistoUri}}/{{model.codes.versio}}" auth="updateAny" auth-service="APP_KOODISTO" class="pull-right btn btn-primary">
+                            <a href="#/muokkaaKoodisto/{{model.codes.koodistoUri}}/{{model.codes.versio}}" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="pull-right btn btn-primary">
                                 {{'codeelement.viewpage.editrelationsbutton' | i18n}}</a>
                         </div>
                     </div>
@@ -431,9 +431,9 @@
         <div class="span12">
         <button type="button" class="btn pull-right" ng-click="cancel()">{{'codes.back' | i18n}}
         </button>
-        <button type="button" class="btn btn-primary pull-right"
-                ng-click="model.removeCodes()" auth="crudAny" auth-service="APP_KOODISTO" ng-disabled="model.deleteState">{{'codes.viewpage.deletebutton' | i18n}}
-            &nbsp;<i class="icon-minus-sign"></i></button>
+        <button type="button" class="btn btn-primary pull-right" ng-click="model.removeCodes()" auth="crud" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" ng-disabled="model.deleteState">
+        	{{'codes.viewpage.deletebutton' | i18n}}&nbsp;<i class="icon-minus-sign"></i>
+        </button>
         <a href="#/lisaaKoodi/{{ codesUri }}/{{ model.codes.versio }}" auth="crud" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="btn btn-primary pull-right">
             {{'codes.viewpage.codeelements.create' | i18n}}&nbsp;<i class="icon-plus-sign"></i></a>
         <a href="#/muokkaaKoodisto/{{ codesUri }}/{{ model.codes.versio }}" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="btn btn-primary pull-right">
