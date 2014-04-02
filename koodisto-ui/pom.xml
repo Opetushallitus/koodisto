@@ -68,11 +68,11 @@
                 <configuration>
                     <preloadSources>
                         <source>${project.basedir}/src/main/webapp/jslib/jquery-2.0.3.min.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.0/angular.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.0/angular-mocks.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.0/angular-resource.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.0/angular-route.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.0/angular-sanitize.js</source>
+                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.15/angular.js</source>
+                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.15/angular-mocks.js</source>
+                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.15/angular-resource.js</source>
+                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.15/angular-route.js</source>
+                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.15/angular-sanitize.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/ui-bootstrap-0.6.0.min.js</source>
                     </preloadSources>
                     <jsSrcDir>${project.basedir}/src/main/webapp</jsSrcDir>
