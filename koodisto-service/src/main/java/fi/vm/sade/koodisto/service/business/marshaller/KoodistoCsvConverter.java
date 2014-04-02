@@ -178,7 +178,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         CsvListReader csvReader = null;
         try {
 
-            // Kopioidaan DataHandlerin inputStream, jotta voidaan iteroida se l‰pi kahdesti
+            // Kopioidaan DataHandlerin inputStream, jotta voidaan iteroida se l√§pi kahdesti
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             IOUtils.copy(handler.getInputStream(), baos);
             byte[] bytes = baos.toByteArray();
