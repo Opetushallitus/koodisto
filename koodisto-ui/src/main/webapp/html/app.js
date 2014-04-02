@@ -26,14 +26,26 @@ angular.module('localization', [])
         };
     }]);
 
-
 var SERVICE_URL_BASE = SERVICE_URL_BASE || "http://localhost:8180/koodisto-service/";
 var ORGANIZATION_SERVICE_URL_BASE = ORGANIZATION_SERVICE_URL_BASE || "/organisaatio-service/";
 var TEMPLATE_URL_BASE = TEMPLATE_URL_BASE || "";
 var CAS_URL = CAS_URL || "/cas/myroles";
 
+app.factory('NoCacheInterceptor', function () {
+    return {
+	request: function (config) {
+	    if (config.method && config.method == 'GET' && config.url.indexOf('html') === -1 && config.url.indexOf(ORGANIZATION_SERVICE_URL_BASE) === -1){
+		var separator = config.url.indexOf('?') === -1 ? '?' : '&';
+		config.url = config.url+separator+'noCache=' + new Date().getTime();
+	    }
+	    return config;
+	}
+    };
+});
+
 //Route configuration
-app.config(function ($routeProvider) {
+app.config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
+    $httpProvider.interceptors.push('NoCacheInterceptor');
     $routeProvider.
         //front page
         when('/etusivu', {controller: KoodistoTreeController, templateUrl: TEMPLATE_URL_BASE + 'codesmainpage.html'}).
@@ -48,18 +60,14 @@ app.config(function ($routeProvider) {
         when('/muokkaaKoodistoryhma/:id', {controller: CodesGroupEditorController, templateUrl:TEMPLATE_URL_BASE + 'codesgroup/editcodesgroup.html'}).
          //else
         otherwise({redirectTo: '/etusivu'});
-});
-
+}]);
 
 //rest resources
 
 //Koodistot
 app.factory('RootCodes', function ($resource) {
     return $resource(SERVICE_URL_BASE + "codes", {}, {
-        get: {method: "GET", isArray: true,
-            params: {
-            }
-        }
+        get: {method: "GET", isArray: true, params: {} }
     });
 });
 
@@ -102,7 +110,7 @@ app.factory('UpdateCodes', function($resource) {
 
 app.factory('CodesByUri', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes/:codesUri", {codesUri: "@codesUri"}, {
-        get: {method: "GET"}
+        get: {method: "GET"} 
     });
 });
 
@@ -120,10 +128,7 @@ app.factory('CodesGroupByUri', function($resource) {
 
 app.factory('AllCodes', function ($resource) {
     return $resource(SERVICE_URL_BASE + "codes/all", {}, {
-        get: {method: "GET", isArray: true,
-            params: {
-            }
-        }
+        get: {method: "GET", isArray: true}
     });
 });
 
@@ -144,17 +149,13 @@ app.factory('MyRoles', function($resource) {
 
 app.factory('CodeElementsByCodesUriAndVersion', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/codes/:codesUri/:codesVersion", {codesUri: "@codesUri", codesVersion: "@codesVersion"}, {
-        get: {method: "GET", isArray: true,
-            params: {
-            }}
+        get: {method: "GET", isArray: true}
     });
 });
 
 app.factory('CodeElementByUriAndVersion', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/:codeElementUri/:codeElementVersion", {codeElementUri: "@codeElementUri", codeElementVersion: "@codeElementVersion"}, {
-        get: {method: "GET", isArray: false,
-            params: {
-            }}
+        get: {method: "GET", isArray: false}
     });
 });
 
