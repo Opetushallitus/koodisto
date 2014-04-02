@@ -2,6 +2,7 @@ package fi.vm.sade.koodisto.service.business.marshaller;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,6 +21,7 @@ import java.util.Map;
 import javax.activation.DataHandler;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 import org.supercsv.io.CsvListReader;
@@ -175,8 +177,19 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         BufferedReader reader = null;
         CsvListReader csvReader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(handler.getInputStream(), getCharset(encoding)));
-            csvReader = new CsvListReader(reader, CsvPreference.STANDARD_PREFERENCE);
+
+            // Kopioidaan DataHandlerin inputStream, jotta voidaan iteroida se läpi kahdesti
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            IOUtils.copy(handler.getInputStream(), baos);
+            byte[] bytes = baos.toByteArray();
+            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+
+            CsvPreference pref = guessCsvPreference(bais);
+
+            bais.reset();
+            reader = new BufferedReader(new InputStreamReader(bais, getCharset(encoding)));
+            
+            csvReader = new CsvListReader(reader, pref);
             List<String> row = null;
 
             Map<Integer, String> fieldNameToIndex = createFieldNameToIndexMap();
@@ -204,6 +217,26 @@ public class KoodistoCsvConverter extends KoodistoConverter {
                 csvReader.close();
             }
         }
+    }
+
+    private CsvPreference guessCsvPreference(ByteArrayInputStream bais) {
+        int comma = Character.valueOf(',');
+        int semicolon = Character.valueOf(';');
+        int commaCount = 0;
+        int semicolonCount = 0;
+        int c;
+        while((c = bais.read()) != -1){
+            if(c==comma)
+                commaCount++;
+            if(c==semicolon)
+                semicolonCount++;
+        }
+        if(commaCount > semicolonCount){
+            return CsvPreference.STANDARD_PREFERENCE;
+        } else {
+            return CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE;
+        }
+    
     }
 
     protected KoodiType createKoodiFromCsvRow(List<String> row, Map<Integer, String> fieldNameToIndex) {
@@ -262,7 +295,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     private void populateKoodiFields(KoodiType koodi, String fieldName, String value) {
-        if(StringUtils.isBlank(value)){
+        if (StringUtils.isBlank(value)) {
             return;
         }
         if (VERSIO_COLUMN.equals(fieldName)) {
@@ -283,7 +316,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     private void populateMetadataField(String fieldName, String value, KoodiMetadataType metadata) {
-        if(StringUtils.isBlank(value)){
+        if (StringUtils.isBlank(value)) {
             return;
         }
         if (fieldName.startsWith(NIMI_COLUMN)) {
