@@ -380,6 +380,22 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
         }
         $scope.model.codeelementmodalInstance.close();
     }
+    
+    showCodeElementsInCodeSet = function(array) {
+	array = [];
+        CodeElementsByCodesUriAndVersion.get({codesUri: $scope.model.showCode, codesVersion: 0}, function (result2) {
+            result2.forEach(function(codeElement){
+                var ce = {};
+                ce.uri = codeElement.koodiUri;
+                ce.value = codeElement.koodiArvo;
+                ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'lyhytNimi', 'FI');
+                array.push(ce);
+            });
+
+            $scope.model.shownCodeElements = array;
+
+        });
+    }
 
     $scope.getCodeElements = function() {
         var name = $scope.model.addToListName;
@@ -387,43 +403,14 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
 
             if (name === 'withincodes') {
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
-                    $scope.model.allWithinCodeElements = [];
-                    CodeElementsByCodesUriAndVersion.get({codesUri: $scope.model.showCode, codesVersion: 0}, function (result2) {
-                        result2.forEach(function(codeElement){
-                            var ce = {};
-                            ce.uri = codeElement.koodiUri;
-                            ce.value = codeElement.koodiArvo;
-                            ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'lyhytNimi', 'FI');
-                            $scope.model.allWithinCodeElements.push(ce);
-                        });
-
-                        $scope.model.shownCodeElements = $scope.model.allWithinCodeElements;
-
-                    });
-
-
-
+                    showCodeElementsInCodeSet($scope.model.allWithinCodeElements);
                 }
                 $scope.model.shownCodes=result.withinCodes;
                 $scope.model.shownCodeElements = $scope.model.allWithinCodeElements;
 
             } else if (name === 'includescodes') {
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
-                    $scope.model.allIncludesCodeElements = [];
-                    CodeElementsByCodesUriAndVersion.get({codesUri: $scope.model.showCode, codesVersion: 0}, function (result2) {
-                        result2.forEach(function(codeElement){
-                            var ce = {};
-                            ce.uri = codeElement.koodiUri;
-                            ce.value = codeElement.koodiArvo;
-                            ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'lyhytNimi', 'FI');
-                            $scope.model.allIncludesCodeElements.push(ce);
-                        });
-
-                        $scope.model.shownCodeElements = $scope.model.allIncludesCodeElements;
-
-                    });
-
-
+                    showCodeElementsInCodeSet($scope.model.allIncludesCodeElements);
                 }
                 $scope.model.shownCodes=result.includesCodes;
                 $scope.model.shownCodeElements = $scope.model.allIncludesCodeElements;
@@ -431,20 +418,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
 
             } else if (name === 'levelswithcodes') {
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
-                    $scope.model.allLevelsWithCodeElements = [];
-                    CodeElementsByCodesUriAndVersion.get({codesUri: $scope.model.showCode, codesVersion: 0}, function (result2) {
-                        result2.forEach(function(codeElement){
-                            var ce = {};
-                            ce.uri = codeElement.koodiUri;
-                            ce.value = codeElement.koodiArvo;
-                            ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'lyhytNimi', 'FI');
-                            $scope.model.allLevelsWithCodeElements.push(ce);
-                        });
-
-                        $scope.model.shownCodeElements = $scope.model.allLevelsWithCodeElements;
-
-                    });
-
+                    showCodeElementsInCodeSet($scope.model.allLevelsWithCodeElements);
                 }
                 $scope.model.shownCodes=result.levelsWithCodes;
                 $scope.model.shownCodeElements = $scope.model.allLevelsWithCodeElements;
