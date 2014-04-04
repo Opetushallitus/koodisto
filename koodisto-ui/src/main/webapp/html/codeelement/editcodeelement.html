@@ -10,7 +10,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="codeElement in model.shownCodeElements | orderBy:sortBy | filter:search">
-                <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" ng-model="codeElement.checked"/></td>
+                <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" value="{{codeElement.checked}}" ng-model="codeElement.checked"/></td>
                 <td class="align-center">{{codeElement.value}}</td>
                 <td class="align-center">{{codeElement.name}}</td>
             </tr>
@@ -188,7 +188,7 @@
         <div class="control-group">
             <label for="withincodes" class="control-label">{{'codeelement.editpage.withincodeelements' | i18n}}</label><br>
             <div class="controls">
-                <button id="withincodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-click="show('withincodes')">Lisää koodi</button>
+                <button id="withincodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-click="show('withincodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
             </div>
         </div>
 
@@ -218,7 +218,7 @@
         <div class="control-group">
             <label for="includescodes" class="control-label">{{'codeelement.editpage.includescodeelements' | i18n}}</label><br>
             <div class="controls">
-                <button id="includescodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-click="show('includescodes')">Lisää koodi</button>
+                <button id="includescodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-click="show('includescodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
             </div>
         </div>
 
@@ -248,7 +248,7 @@
         <div class="control-group">
             <label for="levelswithcodes" class="control-label">{{'codeelement.editpage.levelswithcodeelements' | i18n}}</label><br>
             <div class="controls">
-                <button id="levelswithcodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-click="show('levelswithcodes')">Lisää koodi</button>
+                <button id="levelswithcodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-click="show('levelswithcodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
             </div>
         </div>
 

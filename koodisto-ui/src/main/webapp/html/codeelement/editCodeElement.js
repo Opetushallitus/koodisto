@@ -300,61 +300,49 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
         ce.value = data.value;
         return ce;
     };
-
-    $scope.addToWithinCodeElement = function(data) {
-        var ce = {};
-        ce = $scope.createCodes(data);
-
-        var found = false;
-        $scope.model.withinCodeElements.forEach(function(codeElement, index){
-            if (codeElement.uri.indexOf(data.uri) !== -1) {
-                found = true;
-            }
-        });
-
-        if (found === false) {
-            $scope.model.withinCodeElements.push(ce);
-            AddRelationCodeElement.put({codeElementUri: data.uri,
-                codeElementUriToAdd: $scope.model.codeElement.koodiUri,relationType: "SISALTYY"},function(result) {
-            });
-        }
-    };
-
-    $scope.addToIncludesCodeElement = function(data) {
-        var ce = {};
-        ce = $scope.createCodes(data);
-        var found = false;
-        $scope.model.includesCodeElements.forEach(function(codeElement, index){
-            if (codeElement.uri.indexOf(data.uri) !== -1) {
-                found = true;
-            }
-        });
-
-        if (found === false) {
-            $scope.model.includesCodeElements.push(ce);
-            AddRelationCodeElement.put({codeElementUri: $scope.model.codeElement.koodiUri,
-                codeElementUriToAdd: data.uri,relationType: "SISALTYY"},function(result) {
-
-            });
-        }
-    };
-    $scope.addToLevelsWithCodeElement = function(data) {
-        var ce = {};
-        ce = $scope.createCodes(data);
-        var found = false;
-        $scope.model.levelsWithCodeElements.forEach(function(codeElement, index){
-            if (codeElement.uri.indexOf(data.uri) !== -1) {
-                found = true;
-            }
-        });
-        if (found === false) {
-            $scope.model.levelsWithCodeElements.push(ce);
-            AddRelationCodeElement.put({codeElementUri: data.uri,
-                codeElementUriToAdd: $scope.model.codeElement.koodiUri,relationType: "RINNASTEINEN"},function(result) {
-
-            });
-        }
-    };
+          
+    $scope.addRelationCodeElement = function(codeElementToAdd, collectionToAddTo, relationTypeString, modelCodeElementIsHost) {
+	var found = false;
+	collectionToAddTo.forEach(function(codeElement, index){
+	    if (codeElement.uri.indexOf(codeElementToAdd.uri) !== -1) {
+		found = true;
+	    }
+	});
+	if (found === false) {
+	   collectionToAddTo.push($scope.createCodes(codeElementToAdd));
+	   var uriToBeAddedTo = modelCodeElementIsHost ? $scope.model.codeElement.koodiUri : codeElementToAdd.uri;
+	   var uriToBeAdded = modelCodeElementIsHost ? codeElementToAdd.uri : $scope.model.codeElement.koodiUri;
+	   AddRelationCodeElement.put({codeElementUri: uriToBeAddedTo,
+	       codeElementUriToAdd: uriToBeAdded, relationType: relationTypeString}, function(result) {}
+	   );
+	}
+    }
+    
+    $scope.removeRelationsCodeElement = function(unselectedItems, collectionToRemoveFrom, relationTypeString, modelCodeElementIsHost) {
+	var itemsToRemove = [];
+	unselectedItems.forEach(function(codeElement) {
+	    collectionToRemoveFrom.forEach(function(innerCodeElement) {
+		if(codeElement.uri == innerCodeElement.uri) {
+		    itemsToRemove.push(innerCodeElement);
+		};
+	    });
+	});
+	
+	itemsToRemove.forEach(function(codeElementToRemove) {
+	    var uriToRemoveFrom = modelCodeElementIsHost ? $scope.model.codeElement.koodiUri : codeElementToRemove.uri;
+	    var uriToRemove = modelCodeElementIsHost ? codeElementToRemove.uri : $scope.model.codeElement.koodiUri; 
+	    RemoveRelationCodeElement.put({codeElementUri: uriToRemoveFrom,
+	            codeElementUriToRemove: uriToRemove, relationType: relationTypeString}, function(result) {
+	        	collectionToRemoveFrom.splice(jQuery.inArray(codeElementToRemove, collectionToRemoveFrom), 1);
+	        }, function(error) {
+	            //TODO: this should be made to handle multiple instances and possibly to inform which removals did not succeed
+	            var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+	            $scope.model.alerts.push(alert);
+	        });
+	})
+	
+    }
+    
 
 
     $scope.cancelcodeelement = function () {
@@ -363,36 +351,43 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
 
     $scope.okcodeelement = function() {
         var selectedItems = $filter('filter')($scope.model.shownCodeElements, {checked: true});
+        var unselectedItems = $filter('filter')($scope.model.shownCodeElements, {checked: false});
         if ($scope.model.addToListName === 'withincodes') {
             selectedItems.forEach(function(codeElement){
-                $scope.addToWithinCodeElement(codeElement);
+        	$scope.addRelationCodeElement(codeElement, $scope.model.withinCodeElements, "SISALTYY");
             });
+            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.withinCodeElements, "SISALTYY");
 
         } else if ($scope.model.addToListName === 'includescodes') {
             selectedItems.forEach(function(codeElement){
-                $scope.addToIncludesCodeElement(codeElement);
+        	$scope.addRelationCodeElement(codeElement, $scope.model.includesCodeElements, "SISALTYY", true);
             });
+            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.includesCodeElements, "SISALTYY", true);
 
         } else if ($scope.model.addToListName === 'levelswithcodes') {
             selectedItems.forEach(function(codeElement){
-                $scope.addToLevelsWithCodeElement(codeElement);
+        	$scope.addRelationCodeElement(codeElement, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
             });
+            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
         }
         $scope.model.codeelementmodalInstance.close();
     }
     
-    showCodeElementsInCodeSet = function(array) {
-	array = [];
+    showCodeElementsInCodeSet = function(toBeShown, existingSelections) {
+	toBeShown = [];
         CodeElementsByCodesUriAndVersion.get({codesUri: $scope.model.showCode, codesVersion: 0}, function (result2) {
             result2.forEach(function(codeElement){
                 var ce = {};
                 ce.uri = codeElement.koodiUri;
+                ce.checked = jQuery.grep(existingSelections, function(element) {
+                    return codeElement.koodiUri == element.uri;
+                }).length > 0;
                 ce.value = codeElement.koodiArvo;
                 ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'lyhytNimi', 'FI');
-                array.push(ce);
+                toBeShown.push(ce);
             });
 
-            $scope.model.shownCodeElements = array;
+            $scope.model.shownCodeElements = toBeShown;
 
         });
     }
@@ -403,14 +398,14 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
 
             if (name === 'withincodes') {
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
-                    showCodeElementsInCodeSet($scope.model.allWithinCodeElements);
+                    showCodeElementsInCodeSet($scope.model.allWithinCodeElements, $scope.model.withinCodeElements);
                 }
                 $scope.model.shownCodes=result.withinCodes;
                 $scope.model.shownCodeElements = $scope.model.allWithinCodeElements;
 
             } else if (name === 'includescodes') {
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
-                    showCodeElementsInCodeSet($scope.model.allIncludesCodeElements);
+                    showCodeElementsInCodeSet($scope.model.allIncludesCodeElements, $scope.model.includesCodeElements);
                 }
                 $scope.model.shownCodes=result.includesCodes;
                 $scope.model.shownCodeElements = $scope.model.allIncludesCodeElements;
@@ -418,11 +413,10 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
 
             } else if (name === 'levelswithcodes') {
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
-                    showCodeElementsInCodeSet($scope.model.allLevelsWithCodeElements);
+                    showCodeElementsInCodeSet($scope.model.allLevelsWithCodeElements, $scope.model.levelsWithCodeElements);
                 }
                 $scope.model.shownCodes=result.levelsWithCodes;
                 $scope.model.shownCodeElements = $scope.model.allLevelsWithCodeElements;
-
             }
 
 
