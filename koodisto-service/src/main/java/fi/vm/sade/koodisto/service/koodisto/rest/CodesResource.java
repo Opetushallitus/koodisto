@@ -101,7 +101,7 @@ public class CodesResource {
         koodistoBusinessService.removeRelation(codesUri, Arrays.asList(codesUriToRemove), SuhteenTyyppi.valueOf(relationType));
     }
 
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
@@ -112,7 +112,7 @@ public class CodesResource {
             return Response.status(Response.Status.CREATED).entity(koodistoVersio.getVersio()).build();
         } catch (Exception e) {
             logger.warn("Koodistoa ei saatu päivitettyä. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
@@ -147,7 +147,7 @@ public class CodesResource {
         return updateKoodistoDataType;
     }
 
-    @PUT
+    @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
@@ -160,7 +160,7 @@ public class CodesResource {
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoVersio, KoodistoDto.class)).build();
         } catch (Exception e) {
             logger.warn("Koodistoa ei saatu lisättyä. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
@@ -196,15 +196,6 @@ public class CodesResource {
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     public List<KoodistoRyhmaListDto> listAllCodesGroups() {
         return conversionService.convertAll(koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class);
-    }
-
-    @GET
-    @Path("group/{codeGroupUri}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({ JsonViews.Basic.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    public KoodistoRyhmaListDto listAllCodesInCodeGroup(@PathParam("codeGroupUri") String codeGroupUri) {
-        return conversionService.convert(koodistoBusinessService.getKoodistoGroup(codeGroupUri), KoodistoRyhmaListDto.class);
     }
 
     @GET
@@ -323,6 +314,22 @@ public class CodesResource {
         } catch (Exception e) {
             logger.warn("Koodistoa ei saatu tuotua. ", e);
             return null;
+        }
+    }
+
+    @POST
+    @Path("delete/{codesUri}/{codesVersion}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({JsonViews.Simple.class})
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
+    public Response delete(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion) {
+        try {
+            koodistoBusinessService.delete(codesUri,codesVersion);
+            return Response.status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            logger.warn("Koodistoa ei saatu poistettua. ", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

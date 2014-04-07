@@ -3,7 +3,6 @@ package fi.vm.sade.koodisto.service.business.marshaller;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -30,45 +29,28 @@ import fi.vm.sade.koodisto.util.ByteArrayDataSource;
 @Component
 public class KoodistoXlsConverter extends KoodistoConverter {
 
-    public static final SimpleDateFormat CSV_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+    private static final KoodistoCsvConverter csvConverter = new KoodistoCsvConverter();
 
-    public static final List<String> HEADER_FIELDS;
-    public static final KoodistoCsvConverter csvConverter = new KoodistoCsvConverter();
+    private static final String[] numberFieldHeaders = { KoodistoCsvConverter.VERSIO_COLUMN };
+    private static final String[] dateFieldHeaders = { KoodistoCsvConverter.PAIVITYSPVM_COLUMN, KoodistoCsvConverter.VOIMASSAALKUPVM_COLUMN,
+            KoodistoCsvConverter.VOIMASSALOPPUPVM_COLUMN };
 
-    private static final String VERSIO_COLUMN = "VERSIO";
-    private static final String KOODIURI_COLUMN = "KOODIURI";
-    private static final String KOODIARVO_COLUMN = "KOODIARVO";
-    private static final String PAIVITYSPVM_COLUMN = "PAIVITYSPVM";
-    private static final String VOIMASSAALKUPVM_COLUMN = "VOIMASSAALKUPVM";
-    private static final String VOIMASSALOPPUPVM_COLUMN = "VOIMASSALOPPUPVM";
-    private static final String TILA_COLUMN = "TILA";
-
-    private static final String NIMI_COLUMN = "NIMI";
-    private static final String KUVAUS_COLUMN = "KUVAUS";
-    private static final String LYHYTNIMI_COLUMN = "LYHYTNIMI";
-    private static final String KAYTTOOHJE_COLUMN = "KAYTTOOHJE";
-    private static final String KASITE_COLUMN = "KASITE";
-    private static final String SISALTAAMERKITYKSEN_COLUMN = "SISALTAAMERKITYKSEN";
-    private static final String EISISALLAMERKITYSTA_COLUMN = "EISISALLAMERKITYSTA";
-    private static final String HUOMIOITAVAKOODI_COLUMN = "HUOMIOITAVAKOODI";
-    private static final String SISALTAAKOODISTON_COLUMN = "SISALTAAKOODISTON";
+    private static final List<String> blankDocumentHeaderFields;
+    protected static final String[] metadataFields = { KoodistoCsvConverter.NIMI_COLUMN, KoodistoCsvConverter.KUVAUS_COLUMN,
+            KoodistoCsvConverter.LYHYTNIMI_COLUMN };
 
     static {
-        String[] basicFields = { VERSIO_COLUMN, KOODIURI_COLUMN, KOODIARVO_COLUMN, PAIVITYSPVM_COLUMN, VOIMASSAALKUPVM_COLUMN, VOIMASSALOPPUPVM_COLUMN,
-                TILA_COLUMN };
-
-        String[] metadataFields = { NIMI_COLUMN, KUVAUS_COLUMN, LYHYTNIMI_COLUMN, KAYTTOOHJE_COLUMN, KASITE_COLUMN, SISALTAAMERKITYKSEN_COLUMN,
-                EISISALLAMERKITYSTA_COLUMN, HUOMIOITAVAKOODI_COLUMN, SISALTAAKOODISTON_COLUMN };
-
-        KieliType[] kielet = { KieliType.FI, KieliType.SV, KieliType.EN };
-
-        HEADER_FIELDS = new LinkedList<String>(Arrays.asList(basicFields));
-        for (KieliType kieli : kielet) {
+        blankDocumentHeaderFields = new LinkedList<String>();
+        blankDocumentHeaderFields.add(KoodistoCsvConverter.KOODIARVO_COLUMN);
+        for (KieliType kieli : KoodistoCsvConverter.kielet) {
             for (String metadataField : metadataFields) {
-                HEADER_FIELDS.add(metadataField + "_" + kieli.name());
+                blankDocumentHeaderFields.add(metadataField + "_" + kieli.name());
             }
         }
+        blankDocumentHeaderFields.add(KoodistoCsvConverter.VOIMASSAALKUPVM_COLUMN);
+        blankDocumentHeaderFields.add(KoodistoCsvConverter.VOIMASSALOPPUPVM_COLUMN);
     }
+
 
     @Override
     public DataHandler marshal(List<KoodiType> koodis, String encoding) throws IOException {
@@ -93,7 +75,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
     }
 
     private void postprocess(HSSFSheet sheet) {
-        for (int i = 0; i < HEADER_FIELDS.size(); i++) {
+        for (int i = 0; i < KoodistoCsvConverter.HEADER_FIELDS.size(); i++) {
             sheet.autoSizeColumn(i);
         }
     }
@@ -101,7 +83,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
     private void writeHeader(HSSFSheet sheet) {
         HSSFRow headerRow = sheet.createRow(0);
         int iterator = 0;
-        for (String fieldHeader : HEADER_FIELDS) {
+        for (String fieldHeader : KoodistoCsvConverter.HEADER_FIELDS) {
             headerRow.createCell(iterator++).setCellValue(fieldHeader);
         }
     }
@@ -125,48 +107,119 @@ public class KoodistoXlsConverter extends KoodistoConverter {
         HSSFWorkbook workbook = null;
         workbook = new HSSFWorkbook(handler.getInputStream());
         List<KoodiType> koodis = new ArrayList<KoodiType>();
-
-        Map<Integer, String> fieldNameToIndex = csvConverter.createFieldNameToIndexMap();
+        HSSFRow firstRow = workbook.getSheetAt(0).getRow(0);
+        List<String> firstRowAsList = convertRowToStringArray(firstRow);
+        Map<Integer, String> fieldNameToIndex = csvConverter.createFieldNameToIndexMap(firstRowAsList);
+        int rowLength = fieldNameToIndex.size();
 
         boolean first = true; // Skip the header row
         for (Row row : workbook.getSheetAt(0)) {
             if (first) {
                 first = false;
             } else {
-                List<String> rowAsCSV = new ArrayList<String>();
-                for (int cellIterator = 0; cellIterator < HEADER_FIELDS.size(); cellIterator++) {
-                    Cell cell = row.getCell(cellIterator);
-                    if (cell == null) { // Empty cell
-                        rowAsCSV.add("");
-                        continue;
-                    }
-                    switch (cell.getCellType()) {
-                    case Cell.CELL_TYPE_STRING:
-                        rowAsCSV.add(cell.getStringCellValue());
-                        break;
-                    case Cell.CELL_TYPE_NUMERIC:
-                        if (cell.getColumnIndex() == 0) { // versio number
-                            rowAsCSV.add(String.valueOf((int)cell.getNumericCellValue()));
-                        } else { // date
-                            String date = csvConverter.convertFromDate(cell.getDateCellValue(), Charset.defaultCharset());
-                            rowAsCSV.add(date);
-                        }
-                        break;
-                    case Cell.CELL_TYPE_BLANK:
-                        rowAsCSV.add("");
-                        break;
-                    case Cell.CELL_TYPE_BOOLEAN:
-                    case Cell.CELL_TYPE_ERROR:
-                    case Cell.CELL_TYPE_FORMULA:
-                        // TODO: Error?
-                        rowAsCSV.add("");
-                        break;
-                    }
-                }
+                List<String> rowAsCSV = convertRowToStringArray(rowLength, row, fieldNameToIndex);
                 koodis.add(csvConverter.createKoodiFromCsvRow(rowAsCSV, fieldNameToIndex)); // Huom! Käyttää KoodistoCsvConverter :ia!
             }
         }
 
         return koodis;
     }
+
+    private List<String> convertRowToStringArray(Row row) {
+        ArrayList<String> rowAsCSV = new ArrayList<String>();
+        for (int cellIterator = 0; cellIterator < row.getLastCellNum(); cellIterator++) {
+            Cell cell = row.getCell(cellIterator);
+            if (cell == null) { // Empty cell
+                rowAsCSV.add("");
+                continue;
+            }
+            rowAsCSV.add(cell.getStringCellValue());
+        }
+        return rowAsCSV;
+    }
+
+    private List<String> convertRowToStringArray(int rowLength, Row row, Map<Integer, String> fieldNameToIndex) {
+        ArrayList<String> rowAsCSV = new ArrayList<String>();
+        for (int cellIterator = 0; cellIterator < rowLength; cellIterator++) {
+            Cell cell = row.getCell(cellIterator);
+            if (cell == null) { // Empty cell
+                rowAsCSV.add(null);
+                continue;
+            }
+
+            // The cell can have any CELL_TYPE associated with it, so we need to know how to interpret the content.
+            String headerName = fieldNameToIndex.get(cellIterator);
+            if (Arrays.asList(numberFieldHeaders).contains(headerName)) { // Number (versio)
+                rowAsCSV.add(cellValueAsInteger(cell));
+            } else if (Arrays.asList(dateFieldHeaders).contains(headerName)) { // Date (is represented as CELL_TYPE_NUMERIC)
+                rowAsCSV.add(cellValueAsDate(cell));
+            } else { // String field (all other fields)
+                rowAsCSV.add(cellValueAsString(cell));
+            }
+        }
+        return rowAsCSV;
+    }
+
+    private String cellValueAsInteger(Cell cell) {
+        switch (cell.getCellType()) {
+        case Cell.CELL_TYPE_STRING:
+            return cell.getStringCellValue();
+        case Cell.CELL_TYPE_NUMERIC:
+            return String.valueOf((int) cell.getNumericCellValue());
+        default:
+            return null;
+        }
+    }
+
+    private String cellValueAsDate(Cell cell) {
+        switch (cell.getCellType()) {
+        case Cell.CELL_TYPE_STRING:
+            return cell.getStringCellValue();
+        case Cell.CELL_TYPE_NUMERIC:
+            return csvConverter.convertFromDate(cell.getDateCellValue(), Charset.defaultCharset());
+        default:
+            return null;
+        }
+    }
+
+    private String cellValueAsString(Cell cell) {
+        switch (cell.getCellType()) {
+        case Cell.CELL_TYPE_STRING:
+            return cell.getStringCellValue();
+        case Cell.CELL_TYPE_NUMERIC:
+            return (String.valueOf(cell.getNumericCellValue()));
+        default:
+            return null;
+        }
+    }
+
+    public DataHandler getBlancDocument() throws IOException {
+        ByteArrayOutputStream outputStream = null;
+
+        HSSFWorkbook book = new HSSFWorkbook();
+        HSSFSheet sheet = book.createSheet("Koodisto");
+        writeBlankHeader(sheet);
+        postprocess(sheet);
+
+        outputStream = new ByteArrayOutputStream();
+        try {
+            book.write(outputStream);
+            outputStream.flush();
+            return new DataHandler(new ByteArrayDataSource(outputStream.toByteArray()));
+        } finally {
+            if (outputStream != null) {
+                outputStream.close();
+            }
+        }
+    }
+
+    private void writeBlankHeader(HSSFSheet sheet) {
+        Row headerRow = sheet.createRow(0);
+        int iterator = 0;
+        for (String header : blankDocumentHeaderFields) {
+            headerRow.createCell(iterator++).setCellValue(header);
+        }
+
+    }
+
 }

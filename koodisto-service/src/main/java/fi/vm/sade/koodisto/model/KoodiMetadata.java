@@ -30,7 +30,7 @@ public class KoodiMetadata extends BaseEntity {
 
     private static final long serialVersionUID = -6996174469669634802L;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     @NotBlank
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "nimi", length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = false)

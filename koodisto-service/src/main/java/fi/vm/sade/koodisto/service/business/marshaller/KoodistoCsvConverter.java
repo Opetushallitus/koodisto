@@ -1,5 +1,33 @@
 package fi.vm.sade.koodisto.service.business.marshaller;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.activation.DataHandler;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
+import org.supercsv.io.CsvListReader;
+import org.supercsv.io.CsvListWriter;
+import org.supercsv.prefs.CsvPreference;
+
 import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
@@ -8,19 +36,6 @@ import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.ByteArrayDataSource;
 import fi.vm.sade.koodisto.util.KoodistoHelper;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.stereotype.Component;
-import org.supercsv.io.CsvListReader;
-import org.supercsv.io.CsvListWriter;
-import org.supercsv.prefs.CsvPreference;
-
-import javax.activation.DataHandler;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.io.*;
-import java.nio.charset.Charset;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * User: kwuoti Date: 8.4.2013 Time: 15.23
@@ -54,14 +69,15 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     protected static final String HUOMIOITAVAKOODI_COLUMN = "HUOMIOITAVAKOODI";
     protected static final String SISALTAAKOODISTON_COLUMN = "SISALTAAKOODISTON";
 
+    protected static final String[] basicFields = { VERSIO_COLUMN, KOODIURI_COLUMN, KOODIARVO_COLUMN, PAIVITYSPVM_COLUMN, VOIMASSAALKUPVM_COLUMN,
+            VOIMASSALOPPUPVM_COLUMN, TILA_COLUMN };
+
+    protected static final String[] metadataFields = { NIMI_COLUMN, KUVAUS_COLUMN, LYHYTNIMI_COLUMN, KAYTTOOHJE_COLUMN, KASITE_COLUMN,
+            SISALTAAMERKITYKSEN_COLUMN, EISISALLAMERKITYSTA_COLUMN, HUOMIOITAVAKOODI_COLUMN, SISALTAAKOODISTON_COLUMN };
+
+    protected static final KieliType[] kielet = { KieliType.FI, KieliType.SV, KieliType.EN };
+
     static {
-        String[] basicFields = { VERSIO_COLUMN, KOODIURI_COLUMN, KOODIARVO_COLUMN, PAIVITYSPVM_COLUMN, VOIMASSAALKUPVM_COLUMN, VOIMASSALOPPUPVM_COLUMN,
-                TILA_COLUMN };
-
-        String[] metadataFields = { NIMI_COLUMN, KUVAUS_COLUMN, LYHYTNIMI_COLUMN, KAYTTOOHJE_COLUMN, KASITE_COLUMN, SISALTAAMERKITYKSEN_COLUMN,
-                EISISALLAMERKITYSTA_COLUMN, HUOMIOITAVAKOODI_COLUMN, SISALTAAKOODISTON_COLUMN };
-
-        KieliType[] kielet = { KieliType.FI, KieliType.SV, KieliType.EN };
 
         HEADER_FIELDS = new LinkedList<String>(Arrays.asList(basicFields));
         for (KieliType kieli : kielet) {
@@ -79,6 +95,41 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         }
 
         return map;
+    }
+
+    protected Map<Integer, String> createFieldNameToIndexMap(List<String> row) { // Use the header row instead of predefined array
+        Map<Integer, String> map = new HashMap<Integer, String>();
+        int rowLenght = row.size();
+        String[] headerFields = row.toArray(new String[rowLenght]);
+        for (int i = 0; i < rowLenght; i++) {
+            String header = headerFields[i];
+            if (checkFieldHeaderValid(header)) {
+                if (!Character.isLetter(header.charAt(0))) { // Removing BOM
+                    header = header.substring(1);
+                }
+                map.put(i, header);
+            }
+        }
+
+        return map;
+    }
+
+    private boolean checkFieldHeaderValid(String header) {
+        if (StringUtils.isBlank(header))
+            return false;
+        if (!Character.isLetter(header.charAt(0))) { // Removing BOM
+            header = header.substring(1);
+        }
+        if (Arrays.asList(basicFields).contains(header)) { // Basic field
+            return true;
+        } else { // Meta fields
+            String[] splitHeader = header.split("_");
+            String[] kieliNames = { KieliType.FI.name(), KieliType.SV.name(), KieliType.EN.name() };
+            if (Arrays.asList(metadataFields).contains(splitHeader[0]) && Arrays.asList(kieliNames).contains(splitHeader[1])) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -126,8 +177,19 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         BufferedReader reader = null;
         CsvListReader csvReader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(handler.getInputStream(), getCharset(encoding)));
-            csvReader = new CsvListReader(reader, CsvPreference.STANDARD_PREFERENCE);
+
+            // Kopioidaan DataHandlerin inputStream, jotta voidaan iteroida se läpi kahdesti
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            IOUtils.copy(handler.getInputStream(), baos);
+            byte[] bytes = baos.toByteArray();
+            ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+
+            CsvPreference pref = guessCsvPreference(bais);
+
+            bais.reset();
+            reader = new BufferedReader(new InputStreamReader(bais, getCharset(encoding)));
+            
+            csvReader = new CsvListReader(reader, pref);
             List<String> row = null;
 
             Map<Integer, String> fieldNameToIndex = createFieldNameToIndexMap();
@@ -137,6 +199,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
             boolean first = true;
             while ((row = csvReader.read()) != null) {
                 if (first) { // Skip header
+                    fieldNameToIndex = createFieldNameToIndexMap(row);
                     first = false;
                 } else {
                     koodis.add(createKoodiFromCsvRow(row, fieldNameToIndex));
@@ -156,9 +219,30 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         }
     }
 
+    private CsvPreference guessCsvPreference(ByteArrayInputStream bais) {
+        int comma = Character.valueOf(',');
+        int semicolon = Character.valueOf(';');
+        int commaCount = 0;
+        int semicolonCount = 0;
+        int c;
+        while((c = bais.read()) != -1){
+            if(c==comma)
+                commaCount++;
+            if(c==semicolon)
+                semicolonCount++;
+        }
+        if(commaCount > semicolonCount){
+            return CsvPreference.STANDARD_PREFERENCE;
+        } else {
+            return CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE;
+        }
+    
+    }
+
     protected KoodiType createKoodiFromCsvRow(List<String> row, Map<Integer, String> fieldNameToIndex) {
-        if (HEADER_FIELDS.size() != row.size()) {
-            throw new InvalidKoodiCsvLineException("Invalid number of fields for koodi CSV line. Required " + HEADER_FIELDS.size() + " but got " + row.size());
+        if (fieldNameToIndex.size() != row.size()) {
+            throw new InvalidKoodiCsvLineException("Invalid number of fields for koodi CSV line. Required " + fieldNameToIndex.size() + " but got "
+                    + row.size());
         }
 
         KoodiType koodi = new KoodiType();
@@ -211,6 +295,9 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     private void populateKoodiFields(KoodiType koodi, String fieldName, String value) {
+        if (StringUtils.isBlank(value)) {
+            return;
+        }
         if (VERSIO_COLUMN.equals(fieldName)) {
             koodi.setVersio(Integer.parseInt(value));
         } else if (KOODIURI_COLUMN.equals(fieldName)) {
@@ -229,6 +316,9 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     private void populateMetadataField(String fieldName, String value, KoodiMetadataType metadata) {
+        if (StringUtils.isBlank(value)) {
+            return;
+        }
         if (fieldName.startsWith(NIMI_COLUMN)) {
             metadata.setNimi(value);
         } else if (fieldName.startsWith(KUVAUS_COLUMN)) {

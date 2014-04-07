@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -78,7 +77,7 @@ public class CodeElementResource {
                 SuhteenTyyppi.valueOf(relationType));
     }
 
-    @POST
+    @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({JsonViews.Extended.class})
@@ -92,7 +91,7 @@ public class CodeElementResource {
                     (conversionService.convert(koodiVersio,KoodiDto.class)).build();
         } catch (Exception e) {
             logger.warn("Koodia ei saatu päivitettyä. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
@@ -122,7 +121,9 @@ public class CodeElementResource {
         updateKoodiDataType.setVersio(koodiDto.getVersio());
         updateKoodiDataType.setLockingVersion(koodiDto.getVersion());
 
-        updateKoodiDataType.setTila(UpdateKoodiTilaType.fromValue(koodiDto.getTila().toString()));
+        if (!koodiDto.getTila().toString().equals("HYVAKSYTTY")) {
+            updateKoodiDataType.setTila(UpdateKoodiTilaType.fromValue(koodiDto.getTila().toString()));
+        }
         for (KoodiMetadata koodiMetadata : koodiDto.getMetadata()) {
             updateKoodiDataType.getMetadata().add(conversionService.convert(koodiMetadata,KoodiMetadataType.class));
         }
@@ -192,7 +193,7 @@ public class CodeElementResource {
         return conversionService.convert(codeElements.get(0), KoodiDto.class);
     }
 
-    @PUT
+    @POST
     @Path("{codesUri}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -207,7 +208,7 @@ public class CodeElementResource {
             return Response.status(Response.Status.CREATED).entity(koodiVersioWithKoodistoItemToKoodiDtoConverter.convert(koodiVersioWithKoodistoItem)).build();
         } catch (Exception e) {
             logger.warn("Koodia ei saatu lisättyä. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
