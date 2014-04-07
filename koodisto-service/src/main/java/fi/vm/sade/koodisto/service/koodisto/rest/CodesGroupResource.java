@@ -45,7 +45,7 @@ public class CodesGroupResource {
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
         } catch (Exception e) {
             logger.warn("Koodistoryhmää ei saatu lisättyä. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 
@@ -75,7 +75,7 @@ public class CodesGroupResource {
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
         } catch (Exception e) {
             logger.warn("Koodistoryhmää ei saatu päivitettyä. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
 

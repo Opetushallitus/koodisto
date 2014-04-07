@@ -27,7 +27,7 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     @Override
     public KoodistoRyhma createKoodistoRyhma(final KoodistoRyhmaDto koodistoRyhmaDto) {
         if (koodistoRyhmaDto == null || StringUtils.isBlank(koodistoRyhmaDto.getKoodistoRyhmaUri())) {
-            throw new KoodistoRyhmaUriEmptyException("Koodistoryhmä URI is empty");
+            throw new KoodistoRyhmaUriEmptyException("codesgroup.uri.is.empty");
         }
         List<KoodistoRyhmaMetadata> metadatas = new ArrayList();
         metadatas.addAll(koodistoRyhmaDto.getKoodistoRyhmaMetadatas());
@@ -53,7 +53,7 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
 
     private void checkMetadatas(List<KoodistoRyhmaMetadata> metadatas) {
         if (metadatas == null || metadatas.isEmpty()) {
-            throw new MetadataEmptyException("Metadata list is empty");
+            throw new MetadataEmptyException("codes.metadata.is.empty");
         } else {
             checkRequiredMetadataFields(metadatas);
         }
@@ -62,7 +62,7 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     @Override
     public KoodistoRyhma updateKoodistoRyhma(final KoodistoRyhmaDto koodistoRyhmaDto) {
         if (koodistoRyhmaDto == null || StringUtils.isBlank(koodistoRyhmaDto.getKoodistoRyhmaUri())) {
-            throw new KoodistoRyhmaUriEmptyException("Koodistoryhmä URI is empty");
+            throw new KoodistoRyhmaUriEmptyException("codesgroup.uri.is.empty");
         }
         List<KoodistoRyhmaMetadata> metadatas = new ArrayList();
         metadatas.addAll(koodistoRyhmaDto.getKoodistoRyhmaMetadatas());

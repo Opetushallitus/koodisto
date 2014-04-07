@@ -262,7 +262,7 @@ public class KoodiAdminServiceTest {
         KoodiMetadataType enMeta = KoodistoHelper.getKoodiMetadataForLanguage(updateData.getMetadata(), KieliType.EN);
         updateData.getMetadata().remove(enMeta);
         assertEquals(2, updateData.getMetadata().size());
-
+        updateData.setKoodiArvo("2");
         koodiAdminService.updateKoodi(updateData);
 
         KoodiType updated = getKoodiByUri(koodiUri);

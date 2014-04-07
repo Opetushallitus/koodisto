@@ -3,6 +3,20 @@
  */
 package fi.vm.sade.koodisto.dao.impl;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.springframework.stereotype.Repository;
+
 import fi.vm.sade.generic.dao.AbstractJpaDAOImpl;
 import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.model.Koodisto;
@@ -10,12 +24,6 @@ import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
-import org.springframework.stereotype.Repository;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -99,4 +107,32 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
 
         return em.createQuery(cquery).getResultList();
     }
+
+
+
+	@Override
+	public void copyRelations(KoodistoVersio old, KoodistoVersio fresh) {
+		copyRelations(old.getYlakoodistos(), fresh, true);
+		copyRelations(old.getAlakoodistos(), fresh, false);
+	}
+
+
+
+	private void copyRelations(Set<KoodistonSuhde> relations, KoodistoVersio fresh, boolean ylaKoodistos) {
+		Set<KoodistonSuhde> copiedRelations = new HashSet<KoodistonSuhde>();
+		for (KoodistonSuhde relation : relations) {
+			KoodistonSuhde newRelation = new KoodistonSuhde();
+			newRelation.setAlakoodistoVersio(ylaKoodistos ? fresh : relation.getAlakoodistoVersio());
+			newRelation.setYlakoodistoVersio(ylaKoodistos ? relation.getYlakoodistoVersio() : fresh);
+			newRelation.setVersion(relation.getVersion() + 1);
+			newRelation.setSuhteenTyyppi(relation.getSuhteenTyyppi());
+			insert(newRelation);
+			copiedRelations.add(newRelation);
+		}
+		if (ylaKoodistos) {
+			fresh.setYlakoodistos(copiedRelations);
+		} else {
+			fresh.setAlakoodistos(copiedRelations);
+		}
+	}
 }
