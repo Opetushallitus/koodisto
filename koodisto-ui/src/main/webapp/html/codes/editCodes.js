@@ -98,20 +98,31 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             });
         };
 
+        
         this.getAllCodes = function() {
-            RootCodes.get({}, function (result) {
+            RootCodes.get({}, function(result) {
                 model.allCodes = result;
-                for(var i=0; i < model.allCodes.length; i++) {
-                    if (model.allCodes[i].koodistos) {
-                        for(var j=0; j < model.allCodes[i].koodistos.length; j++) {
-                            if (!model.inCodesList(model.onlyCodes,model.allCodes[i].koodistos[j])) {
-                                model.onlyCodes.push(model.allCodes[i].koodistos[j]);
+
+                for (var i = 0; i < model.allCodes.length; i++) {
+                    var koodistos = model.allCodes[i].koodistos;
+                    var temp = [];
+                    if (koodistos) {
+                        for (var j = 0; j < koodistos.length; j++) {
+                            var koodisto = koodistos[j];
+                            // Vain ne koodistot näytetään, jotka ovat samssa organisaatiossa tämän kanssa
+                            if (koodisto.organisaatioOid === model.codes.organisaatioOid) {
+                                temp.push(koodisto);
+                                if (!model.inCodesList(model.onlyCodes, koodisto)) {
+                                    model.onlyCodes.push(koodisto);
+                                }
                             }
                         }
+                        model.allCodes[i].koodistos = temp;
                     }
                 }
             });
         };
+
 
         this.inCodesList = function(codesList,codesToFind) {
             for(var i=0; i < codesList.length; i++) {

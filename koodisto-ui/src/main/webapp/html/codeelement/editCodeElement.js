@@ -130,8 +130,23 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
         };
 
         this.getAllCodes = function() {
-            RootCodes.get({}, function (result) {
+            RootCodes.get({}, function(result) {
                 model.allCodes = result;
+
+                for (var i = 0; i < model.allCodes.length; i++) {
+                    var koodistos = model.allCodes[i].koodistos;
+                    var temp = [];
+                    if (koodistos) {
+                        for (var j = 0; j < koodistos.length; j++) {
+                            var koodisto = koodistos[j];
+                            // Vain ne koodit näytetään, jotka ovat samssa organisaatiossa tämän kanssa
+                            if (koodisto.organisaatioOid === model.codeElement.koodisto.organisaatioOid) {
+                                temp.push(koodisto);
+                            }
+                        }
+                        model.allCodes[i].koodistos = temp;
+                    }
+                }
             });
         };
 
