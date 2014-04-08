@@ -565,9 +565,20 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         if (Tila.LUONNOS.equals(latest.getTila()) && TilaType.HYVAKSYTTY.equals(tila)) {
 
             KoodiVersio previousVersion = koodiVersioDAO.getPreviousKoodiVersio(latest.getKoodi().getKoodiUri(), latest.getVersio());
-
+            if (previousVersion != null) {
+            	previousVersion.setVoimassaLoppuPvm(getValidEndDateForKoodiVersio(previousVersion, latest));            
+            }
             latest.setTila(Tila.valueOf(tila.name()));
         }
+    }
+    
+    private Date getValidEndDateForKoodiVersio(KoodiVersio previous, KoodiVersio latest) {
+    	final Date previousStartDate = previous.getVoimassaAlkuPvm();
+    	final Date latestStartDate = latest.getVoimassaAlkuPvm();
+    	if (latestStartDate.after(previousStartDate) && latestStartDate.after(new Date())) {
+    		return latestStartDate;
+    	}
+    	return previousStartDate.after(new Date()) ? previousStartDate: new Date();
     }
 
     @Override

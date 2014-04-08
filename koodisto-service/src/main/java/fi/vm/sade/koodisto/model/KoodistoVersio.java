@@ -2,7 +2,7 @@ package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
-import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrAfterAnotherDateAsserter;
+import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAnotherDateAsserter;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Cache;
@@ -15,7 +15,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
-@FieldAssert(field1 = "voimassaAlkuPvm", field2 = "voimassaLoppuPvm", asserter = DateIsNullOrAfterAnotherDateAsserter.class, message = "{voimassaLoppuPvm.invalid}")
+@FieldAssert(field1 = "voimassaAlkuPvm", field2 = "voimassaLoppuPvm", asserter = DateIsNullOrNotBeforeAnotherDateAsserter.class, message = "{voimassaLoppuPvm.invalid}")
 @Entity
 @Table(name = KoodistoVersio.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistoVersio.TABLE_NAME
         + "_01", columnNames = { KoodistoVersio.VERSIO_COLUMN_NAME, KoodistoVersio.KOODISTO_COLUMN_NAME }))
@@ -183,8 +183,8 @@ public class KoodistoVersio extends BaseEntity {
         return new ToStringBuilder(this).append(this.getId()).append(this.versio).toString();
     }
 
-    @AssertTrue(message = "Validation start date must be before validation end date")
+    @AssertTrue(message = "Validation end date must not be before start date")
     private boolean getValidateDates() {
-        return voimassaAlkuPvm != null && (voimassaLoppuPvm == null || voimassaLoppuPvm.after(voimassaAlkuPvm));
+        return voimassaAlkuPvm != null && (voimassaLoppuPvm == null || !voimassaLoppuPvm.before(voimassaAlkuPvm));
     }
 }

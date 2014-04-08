@@ -4,6 +4,7 @@
 package fi.vm.sade.koodisto.service.business.it;
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
+import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
@@ -11,8 +12,10 @@ import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +28,12 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * @author tommiha
@@ -45,6 +50,9 @@ public class KoodiBusinessServiceTest {
 
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;
+    
+    @Autowired
+    private KoodiVersioDAO koodiVersioDAO;
 
     @Test
     public void testCreate() {
@@ -109,6 +117,18 @@ public class KoodiBusinessServiceTest {
     	KoodistoVersio afterUpdate = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
     	assertEquals(Tila.LUONNOS, afterUpdate.getTila());
     	assertEquals(koodistoVersioAfterTilaChange, afterUpdate.getVersio());
+    }
+    
+    @Test
+    public void setsEndDatePreviousVersionWhenNewVersionIsSetToHyvaksytty() {
+    	KoodiVersio latest = koodiBusinessService.getLatestKoodiVersio("436");
+    	KoodiVersio updated = koodiBusinessService.createNewVersion(latest.getKoodi().getKoodiUri(), true);
+    	assertEquals(Tila.HYVAKSYTTY, latest.getTila());
+    	assertNull(latest.getVoimassaLoppuPvm());
+    	assertEquals(Tila.LUONNOS, updated.getTila());
+    	koodiBusinessService.setKoodiTila(updated.getKoodi().getKoodiUri(), TilaType.HYVAKSYTTY);
+    	latest = koodiVersioDAO.read(latest.getId());
+    	assertNotNull(latest.getVoimassaLoppuPvm());
     }
     
     private List<KoodiVersioWithKoodistoItem> listByUri(String koodiUri) {
