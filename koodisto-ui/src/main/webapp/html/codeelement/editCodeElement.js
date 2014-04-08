@@ -140,7 +140,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                         for (var j = 0; j < koodistos.length; j++) {
                             var koodisto = koodistos[j];
                             // Vain ne koodit näytetään, jotka ovat samssa organisaatiossa tämän kanssa
-                            if (koodisto.organisaatioOid === model.codes.organisaatioOid) {
+                            if (koodisto.organisaatioOid === model.codeElement.koodisto.organisaatioOid) {
                                 temp.push(koodisto);
                             }
                         }
