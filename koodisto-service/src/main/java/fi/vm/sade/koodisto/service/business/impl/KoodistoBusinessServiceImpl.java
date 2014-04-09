@@ -134,6 +134,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         koodistonSuhde.setSuhteenTyyppi(suhteenTyyppi);
         koodistonSuhde.setYlakoodistoVersio(ylakoodisto);
         koodistonSuhde.setAlakoodistoVersio(alakoodisto);
+        koodistonSuhde.setVersio(1);
         koodistonSuhdeDAO.insert(koodistonSuhde);
 
     }

@@ -124,7 +124,7 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
 			KoodistonSuhde newRelation = new KoodistonSuhde();
 			newRelation.setAlakoodistoVersio(ylaKoodistos ? fresh : relation.getAlakoodistoVersio());
 			newRelation.setYlakoodistoVersio(ylaKoodistos ? relation.getYlakoodistoVersio() : fresh);
-			newRelation.setVersion(relation.getVersion() + 1);
+			newRelation.setVersio(relation.getVersio() + 1);
 			newRelation.setSuhteenTyyppi(relation.getSuhteenTyyppi());
 			insert(newRelation);
 			copiedRelations.add(newRelation);
