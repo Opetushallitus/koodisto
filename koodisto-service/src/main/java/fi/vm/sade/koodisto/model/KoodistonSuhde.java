@@ -7,6 +7,7 @@ import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -14,7 +15,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = KoodistonSuhde.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistonSuhde.TABLE_NAME + "_01", columnNames = {
-        KoodistonSuhde.ALAKOODISTO_COLUMN_NAME, KoodistonSuhde.YLAKOODISTO_COLUMN_NAME, KoodistonSuhde.SUHTEEN_TYYPPI_COLUMN_NAME }))
+        KoodistonSuhde.ALAKOODISTO_COLUMN_NAME, KoodistonSuhde.YLAKOODISTO_COLUMN_NAME, KoodistonSuhde.SUHTEEN_TYYPPI_COLUMN_NAME, KoodistonSuhde.VERSIO_COLUMN_NAME }))
 @org.hibernate.annotations.Table(appliesTo = KoodistonSuhde.TABLE_NAME, comment = "Määrittää kahden koodiston välisen suhteen. Suhteen tyyppi voi olla SISALTYY tai RINNASTEINEN.")
 @Cacheable
 public class KoodistonSuhde extends BaseEntity {
@@ -26,7 +27,13 @@ public class KoodistonSuhde extends BaseEntity {
     public static final String YLAKOODISTO_COLUMN_NAME = "ylakoodistoVersio_id";
     public static final String ALAKOODISTO_COLUMN_NAME = "alakoodistoVersio_id";
     public static final String SUHTEEN_TYYPPI_COLUMN_NAME = "suhteenTyyppi";
+    public static final String VERSIO_COLUMN_NAME = "versio";
 
+    @NotNull
+    @Min(1)
+    @Column(name = VERSIO_COLUMN_NAME, nullable = false)
+    private Integer versio;
+    
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = YLAKOODISTO_COLUMN_NAME, nullable = false)
@@ -64,6 +71,14 @@ public class KoodistonSuhde extends BaseEntity {
 
     public void setSuhteenTyyppi(SuhteenTyyppi suhteenTyyppi) {
         this.suhteenTyyppi = suhteenTyyppi;
+    }
+    
+    public Integer getVersio() {
+        return versio;
+    }
+
+    public void setVersio(Integer versio) {
+        this.versio = versio;
     }
     
     @Override
