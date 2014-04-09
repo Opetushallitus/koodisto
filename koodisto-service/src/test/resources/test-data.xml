@@ -1128,8 +1128,8 @@
   <koodistoryhmametadata id="428" koodistoryhma_id="426" kieli="SV" nimi="mycket av versioner" version="0"/>
   <koodistoryhmametadata id="429" koodistoryhma_id="426" kieli="EN" nimi="lots of versions" version="0"/>
   
-  <koodistonsuhde alakoodistoversio_id="400" ylakoodistoversio_id="1" suhteentyyppi="RINNASTEINEN" version="0"/>
-  <koodistonsuhde alakoodistoversio_id="423" ylakoodistoversio_id="1" suhteentyyppi="SISALTYY" version="0"/>
-  <koodistonsuhde alakoodistoversio_id="1" ylakoodistoversio_id="483" suhteentyyppi="RINNASTEINEN" version="0"/>
-  <koodistonsuhde alakoodistoversio_id="1" ylakoodistoversio_id="484" suhteentyyppi="SISALTYY" version="0"/>
+  <koodistonsuhde alakoodistoversio_id="400" ylakoodistoversio_id="1" versio="1" suhteentyyppi="RINNASTEINEN" version="0"/>
+  <koodistonsuhde alakoodistoversio_id="423" ylakoodistoversio_id="1" versio="1" suhteentyyppi="SISALTYY" version="0"/>
+  <koodistonsuhde alakoodistoversio_id="1" ylakoodistoversio_id="483" versio="1" suhteentyyppi="RINNASTEINEN" version="0"/>
+  <koodistonsuhde alakoodistoversio_id="1" ylakoodistoversio_id="484" versio="1" suhteentyyppi="SISALTYY" version="0"/>
 </dataset>
