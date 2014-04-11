@@ -128,23 +128,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
     }
 
-    /**
-     * Checks that the nimi is unique among koodis. It's ok if there is another
-     * version of this koodi with the same nimi. Throws an exception if the nimi
-     * is not unique.
-     */
-    private void checkNimiIsUnique(String koodistoUri, String koodiUri, String nimi) {
-        if (koodiMetadataDAO.nimiExistsInKoodistoForSomeOtherKoodi(koodistoUri, koodiUri, nimi)) {
-            throw new KoodiNimiNotUniqueException("codeelement.name.not.unique");
-        }
-    }
-
-    private void checkNimiIsUnique(String koodistoUri, String nimi) {
-        if (koodiMetadataDAO.nimiExistsInKoodisto(koodistoUri, nimi)) {
-            throw new KoodiNimiNotUniqueException("codeelement.name.not.unique");
-        }
-    }
-
     private KoodiVersioWithKoodistoItem getLatestKoodiVersioWithKoodistoVersioItems(String koodiUri) {
         SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(koodiUri);
         List<KoodiVersioWithKoodistoItem> result = koodiVersioDAO.searchKoodis(searchCriteria);
@@ -157,10 +140,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     public KoodiVersio getLatestKoodiVersio(String koodiUri) {
         return getLatestKoodiVersioWithKoodistoVersioItems(koodiUri).getKoodiVersio();
-    }
-
-    private List<KoodiVersio> getKoodiVersios(KoodiUriAndVersioType... koodis) {
-        return koodiVersioDAO.getKoodiVersios(koodis);
     }
 
     private List<KoodiVersioWithKoodistoItem> getLatestKoodiVersios(String... koodiUris) {
@@ -180,10 +159,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private KoodiVersio getKoodiVersio(String koodiUri, Integer koodiVersio) {
         return getKoodiVersioWithKoodistoVersioItems(koodiUri, koodiVersio).getKoodiVersio();
-    }
-
-    private KoodiVersio getKoodiVersio(KoodiUriAndVersioType koodi) {
-        return getKoodiVersio(koodi.getKoodiUri(), koodi.getVersio());
     }
 
     private void checkRequiredMetadataFields(Collection<KoodiMetadataType> metadatas) {
@@ -311,7 +286,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         if (SuhteenTyyppi.SISALTYY.equals(suhteenTyyppi)) {
             koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri(), ylakoodi.getKoodi().getKoodiUri(), true);
 
-            latestYlakoodi = createNewVersion(getLatestKoodiVersio(ylakoodi.getKoodi().getKoodiUri()), true);
+            latestYlakoodi = createNewVersion(getLatestKoodiVersio(ylakoodi.getKoodi().getKoodiUri()));
         }
 
         for (KoodiVersioWithKoodistoItem alakoodi : alakoodis) {
@@ -363,7 +338,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         KoodiVersio ylakoodi = getLatestKoodiVersio(ylakoodiUri);
         if (SuhteenTyyppi.SISALTYY.equals(st)) {
             koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri(), ylakoodi.getKoodi().getKoodiUri(), true);
-            createNewVersion(getLatestKoodiVersio(ylakoodiUri), true);
+            createNewVersion(getLatestKoodiVersio(ylakoodiUri));
         }
 
         List<KoodinSuhde> relations = getRelations(ylakoodiUri, alakoodiUris, st);
@@ -478,7 +453,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         // insert new version
         KoodiVersio inserted = koodiVersioDAO.insert(newVersio);
-        copyRelations(latest, inserted, true);
+        copyRelations(latest, inserted);
 
         KoodistoVersioKoodiVersio relation = koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(newKoodistoVersio.getId(), latest.getId());
         if (relation != null) {
@@ -496,7 +471,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return inserted;
     }
 
-    private KoodiVersio createNewVersion(KoodiVersio latest, boolean preserveOldRelations) {
+    private KoodiVersio createNewVersion(KoodiVersio latest) {
         if (!Tila.HYVAKSYTTY.equals(latest.getTila())) {
             return latest;
         }
@@ -508,22 +483,22 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             EntityUtils.copyFields(m, newMeta);
             newVersio.addMetadata(newMeta);
         }
-        return createNewVersion(latest, newVersio, preserveOldRelations);
+        return createNewVersion(latest, newVersio);
     }
 
-    private KoodiVersio createNewVersion(KoodiVersio base, KoodiVersio input, boolean preserveOldRelations) {
+    private KoodiVersio createNewVersion(KoodiVersio base, KoodiVersio input) {
         input.setId(null);
         input.setVersio(base.getVersio() + 1);
         input.setTila(Tila.LUONNOS);
 
         input.setKoodi(base.getKoodi());
         KoodiVersio inserted = koodiVersioDAO.insert(input);
-        copyRelations(base, inserted, preserveOldRelations);
+        copyRelations(base, inserted);
 
         return inserted;
     }
 
-    private void copyRelations(KoodiVersio latest, KoodiVersio newVersio, boolean preserveOldRelations) {
+    private void copyRelations(KoodiVersio latest, KoodiVersio newVersio) {
         // copy relations
         Iterator<KoodinSuhde> ylakooodiIterator = latest.getYlakoodis().iterator();
         while (ylakooodiIterator.hasNext()) {
@@ -534,11 +509,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             newSuhde.setYlakoodiVersio(ks.getYlakoodiVersio());
             newSuhde.setSuhteenTyyppi(ks.getSuhteenTyyppi());
             newVersio.addYlakoodi(newSuhde);
-
-            if (!preserveOldRelations) {
-                ylakooodiIterator.remove();
-                koodinSuhdeDAO.remove(ks);
-            }
         }
 
         Iterator<KoodinSuhde> alakoodiIterator = latest.getAlakoodis().iterator();
@@ -551,17 +521,12 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             newSuhde.setYlakoodiVersio(newVersio);
             newSuhde.setSuhteenTyyppi(ks.getSuhteenTyyppi());
             newVersio.addAlakoodi(newSuhde);
-
-            if (!preserveOldRelations) {
-                alakoodiIterator.remove();
-                koodinSuhdeDAO.remove(ks);
-            }
         }
     }
 
     @Override
-    public KoodiVersio createNewVersion(String koodiUri, boolean preserveOldRelations) {
-        return createNewVersion(getLatestKoodiVersio(koodiUri), preserveOldRelations);
+    public KoodiVersio createNewVersion(String koodiUri) {
+        return createNewVersion(getLatestKoodiVersio(koodiUri));
     }
 
     private void setKoodiTila(KoodiVersio latest, TilaType tila) {
@@ -700,9 +665,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         List<KoodiVersioWithKoodistoItem> versios = koodiVersioDAO.searchKoodis(searchCriteria);
         if (!versios.isEmpty()) {
-            Iterator itr = versios.get(0).getKoodiVersio().getYlakoodis().iterator();
+            Iterator<KoodinSuhde> itr = versios.get(0).getKoodiVersio().getYlakoodis().iterator();
             while(itr.hasNext()) {
-                KoodinSuhde koodinSuhde = (KoodinSuhde)itr.next();
+                KoodinSuhde koodinSuhde = itr.next();
                 Hibernate.initialize(koodinSuhde.getYlakoodiVersio().getMetadatas());
                 Hibernate.initialize(koodinSuhde.getYlakoodiVersio().getKoodi());
             }

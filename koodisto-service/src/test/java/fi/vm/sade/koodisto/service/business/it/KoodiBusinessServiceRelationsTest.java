@@ -113,7 +113,7 @@ public class KoodiBusinessServiceRelationsTest {
     @Test
     public void updatingKoodiVersioDoesNotRemoveOldRelations() {
     	KoodiUriAndVersioType kv = givenKoodiUriAndVersioType("7", 1);
-    	koodiBusinessService.createNewVersion(kv.getKoodiUri(), true);
+    	koodiBusinessService.createNewVersion(kv.getKoodiUri());
      	List<KoodiVersioWithKoodistoItem> newItems = koodiBusinessService.listByRelation(givenKoodiUriAndVersioType("7", 2), SuhteenTyyppi.RINNASTEINEN, true);
     	assertEquals(2, newItems.size());
     	assertEquals(2, koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, true).size());
