@@ -319,6 +319,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             koodinSuhde.setSuhteenTyyppi(suhteenTyyppi);
             koodinSuhde.setYlakoodiVersio(latestYlakoodi);
             koodinSuhde.setAlakoodiVersio(alakoodi.getKoodiVersio());
+            koodinSuhde.setVersio(1);
             koodinSuhdeDAO.insert(koodinSuhde);
         }
     }
@@ -477,7 +478,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         // insert new version
         KoodiVersio inserted = koodiVersioDAO.insert(newVersio);
-        copyRelations(latest, inserted, false);
+        copyRelations(latest, inserted, true);
 
         KoodistoVersioKoodiVersio relation = koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(newKoodistoVersio.getId(), latest.getId());
         if (relation != null) {
@@ -528,6 +529,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         while (ylakooodiIterator.hasNext()) {
             KoodinSuhde ks = ylakooodiIterator.next();
             KoodinSuhde newSuhde = new KoodinSuhde();
+            newSuhde.setVersio(ks.getVersio() + 1);
             newSuhde.setAlakoodiVersio(newVersio);
             newSuhde.setYlakoodiVersio(ks.getYlakoodiVersio());
             newSuhde.setSuhteenTyyppi(ks.getSuhteenTyyppi());
@@ -544,6 +546,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         while (alakoodiIterator.hasNext()) {
             KoodinSuhde ks = alakoodiIterator.next();
             KoodinSuhde newSuhde = new KoodinSuhde();
+            newSuhde.setVersio(ks.getVersio() + 1);
             newSuhde.setAlakoodiVersio(ks.getAlakoodiVersio());
             newSuhde.setYlakoodiVersio(newVersio);
             newSuhde.setSuhteenTyyppi(ks.getSuhteenTyyppi());
