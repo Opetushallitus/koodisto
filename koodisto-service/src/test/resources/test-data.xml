@@ -785,21 +785,21 @@
   <koodimetadata id="575" kieli="FI" nimi="koodi38" version="0" koodiversio_id="505" lyhytnimi="koodi38" kuvaus="koodi38"/>
   <koodimetadata id="576" kieli="FI" nimi="koodi39" version="0" koodiversio_id="506" lyhytnimi="koodi39" kuvaus="koodi39"/>
 
-  <koodinsuhde id="1" alakoodiversio_id="3" ylakoodiversio_id="7" suhteentyyppi="RINNASTEINEN" version="0"/>
-  <koodinsuhde id="2" alakoodiversio_id="7" ylakoodiversio_id="5" suhteentyyppi="RINNASTEINEN" version="0"/>
-  <koodinsuhde id="3" alakoodiversio_id="5" ylakoodiversio_id="3" suhteentyyppi="RINNASTEINEN" version="0"/>
-  <koodinsuhde id="4" alakoodiversio_id="3" ylakoodiversio_id="9" suhteentyyppi="SISALTYY" version="0"/>
-  <koodinsuhde id="5" alakoodiversio_id="9" ylakoodiversio_id="3" suhteentyyppi="SISALTYY" version="0"/>
-  <koodinsuhde id="6" alakoodiversio_id="11" ylakoodiversio_id="3" suhteentyyppi="SISALTYY" version="0"/>
-  <koodinsuhde id="7" alakoodiversio_id="412" ylakoodiversio_id="411" suhteentyyppi="RINNASTEINEN" version="0"/>
-  <koodinsuhde id="8" alakoodiversio_id="465" ylakoodiversio_id="464" suhteentyyppi="SISALTYY" version="0"/>
-  <koodinsuhde id="9" alakoodiversio_id="487" ylakoodiversio_id="486" suhteentyyppi="SISALTYY" version="0"/>
-  <koodinsuhde id="10" alakoodiversio_id="489" ylakoodiversio_id="488" suhteentyyppi="SISALTYY" version="0"/>
-  <koodinsuhde id="11" alakoodiversio_id="490" ylakoodiversio_id="488" suhteentyyppi="SISALTYY" version="0"/>
-  <koodinsuhde id="12" alakoodiversio_id="494" ylakoodiversio_id="493" suhteentyyppi="RINNASTEINEN" version="0"/>
-  <koodinsuhde id="13" alakoodiversio_id="501" ylakoodiversio_id="499" suhteentyyppi="SISALTYY" version="0"/>
-  <koodinsuhde id="14" alakoodiversio_id="500" ylakoodiversio_id="501" suhteentyyppi="SISALTYY" version="0"/>
-  <koodinsuhde id="15" alakoodiversio_id="501" ylakoodiversio_id="500" suhteentyyppi="RINNASTEINEN" version="0"/>
+  <koodinsuhde id="1" alakoodiversio_id="3" ylakoodiversio_id="7" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
+  <koodinsuhde id="2" alakoodiversio_id="7" ylakoodiversio_id="5" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
+  <koodinsuhde id="3" alakoodiversio_id="5" ylakoodiversio_id="3" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
+  <koodinsuhde id="4" alakoodiversio_id="3" ylakoodiversio_id="9" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="5" alakoodiversio_id="9" ylakoodiversio_id="3" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="6" alakoodiversio_id="11" ylakoodiversio_id="3" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="7" alakoodiversio_id="412" ylakoodiversio_id="411" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
+  <koodinsuhde id="8" alakoodiversio_id="465" ylakoodiversio_id="464" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="9" alakoodiversio_id="487" ylakoodiversio_id="486" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="10" alakoodiversio_id="489" ylakoodiversio_id="488" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="11" alakoodiversio_id="490" ylakoodiversio_id="488" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="12" alakoodiversio_id="494" ylakoodiversio_id="493" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
+  <koodinsuhde id="13" alakoodiversio_id="501" ylakoodiversio_id="499" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="14" alakoodiversio_id="500" ylakoodiversio_id="501" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="15" alakoodiversio_id="501" ylakoodiversio_id="500" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
   <koodistoversio id="1" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="1" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="303" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="303" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="365" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="365" voimassaalkupvm="2012-11-20"/>

@@ -1092,7 +1092,7 @@ public class KoodiAdminServiceTest {
         fiMeta.setNimi(newName);
 
         koodiAdminService.updateKoodi(updateData);
-        assertEquals(0, koodiService.listKoodiByRelation(createKoodiUriAndVersioType(ylakoodiUri, ylakoodiVersio),
+        assertEquals(1, koodiService.listKoodiByRelation(createKoodiUriAndVersioType(ylakoodiUri, ylakoodiVersio),
                 false, SuhteenTyyppiType.SISALTYY).size());
 
         List<KoodiType> koodis = koodiService.listKoodiByRelation(createKoodiUriAndVersioType(ylakoodiUri, ylakoodiVersio + 1),

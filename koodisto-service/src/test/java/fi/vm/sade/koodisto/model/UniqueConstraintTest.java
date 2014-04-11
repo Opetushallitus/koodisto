@@ -65,6 +65,7 @@ public class UniqueConstraintTest {
         suhde.setAlakoodiVersio(genericDAO.read(KoodiVersio.class, alaKoodiId));
         suhde.setYlakoodiVersio(genericDAO.read(KoodiVersio.class, ylaKoodiId));
         suhde.setSuhteenTyyppi(SuhteenTyyppi.SISALTYY);
+        suhde.setVersio(1);
 
         insertEntityTwice(suhde);
     }
