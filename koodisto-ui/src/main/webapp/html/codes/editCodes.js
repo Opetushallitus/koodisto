@@ -1,6 +1,6 @@
 
 app.factory('CodesEditorModel', function($location, RootCodes, Organizations, CodesByUriAndVersion, OrganizationByOid,
-                                         CodesByUri, $modal) {
+                                         CodesByUri, AuthService, $modal) {
     var model;
     model = new function() {
         this.withinCodes = [];
@@ -97,29 +97,32 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 list.push(ce);
             });
         };
+        
+        this.filterCodes = function() {
+            for (var i = 0; i < model.allCodes.length; i++) {
+                var koodistos = model.allCodes[i].koodistos;
+                var temp = [];
+                if (koodistos) {
+                    for (var j = 0; j < koodistos.length; j++) {
+                        var koodisto = koodistos[j];
+                        // Vain ne koodistot näytetään, jotka ovat samassa organisaatiossa tämän kanssa
+                        if (koodisto.organisaatioOid === model.codes.organisaatioOid) {
+                            temp.push(koodisto);
+                            if (!model.inCodesList(model.onlyCodes, koodisto)) {
+                                model.onlyCodes.push(koodisto);
+                            }
+                        }
+                    }
+                    model.allCodes[i].koodistos = temp;
+                }
+            }
+        };
 
         
         this.getAllCodes = function() {
             RootCodes.get({}, function(result) {
                 model.allCodes = result;
-
-                for (var i = 0; i < model.allCodes.length; i++) {
-                    var koodistos = model.allCodes[i].koodistos;
-                    var temp = [];
-                    if (koodistos) {
-                        for (var j = 0; j < koodistos.length; j++) {
-                            var koodisto = koodistos[j];
-                            // Vain ne koodistot näytetään, jotka ovat samssa organisaatiossa tämän kanssa
-                            if (koodisto.organisaatioOid === model.codes.organisaatioOid) {
-                                temp.push(koodisto);
-                                if (!model.inCodesList(model.onlyCodes, koodisto)) {
-                                    model.onlyCodes.push(koodisto);
-                                }
-                            }
-                        }
-                        model.allCodes[i].koodistos = temp;
-                    }
-                }
+                AuthService.updateOph(SERVICE_NAME).then(function() {}, model.filterCodes);
             });
         };
 

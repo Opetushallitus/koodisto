@@ -86,7 +86,7 @@ public interface KoodiBusinessService {
 
     void delete(String koodiUri, Integer koodiVersio, boolean skipPassiivinenCheck);
 
-    KoodiVersio createNewVersion(String koodiUri, boolean preserveOldRelations);
+    KoodiVersio createNewVersion(String koodiUri);
 
     void setKoodiTila(String koodiUri, TilaType tila);
 

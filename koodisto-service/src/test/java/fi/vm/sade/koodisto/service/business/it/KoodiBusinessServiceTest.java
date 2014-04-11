@@ -122,7 +122,7 @@ public class KoodiBusinessServiceTest {
     @Test
     public void setsEndDatePreviousVersionWhenNewVersionIsSetToHyvaksytty() {
     	KoodiVersio latest = koodiBusinessService.getLatestKoodiVersio("436");
-    	KoodiVersio updated = koodiBusinessService.createNewVersion(latest.getKoodi().getKoodiUri(), true);
+    	KoodiVersio updated = koodiBusinessService.createNewVersion(latest.getKoodi().getKoodiUri());
     	assertEquals(Tila.HYVAKSYTTY, latest.getTila());
     	assertNull(latest.getVoimassaLoppuPvm());
     	assertEquals(Tila.LUONNOS, updated.getTila());

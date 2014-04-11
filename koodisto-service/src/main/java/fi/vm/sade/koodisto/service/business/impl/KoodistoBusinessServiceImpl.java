@@ -460,9 +460,9 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
             KoodiVersio koodiVersio = null;
             if (kv.getKoodiVersio().getKoodi().getKoodiUri().equals(koodiUri)) {
-                koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri(), preserveOldRelations);
+                koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri());
             } else {
-                koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri(), false);
+                koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri());
             }
 
             newRelationEntry.setKoodiVersio(koodiVersio);
@@ -502,7 +502,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         // copy koodi versios
         for (KoodistoVersioKoodiVersio kv : latest.getKoodiVersios()) {
             KoodistoVersioKoodiVersio newRelation = new KoodistoVersioKoodiVersio();
-            KoodiVersio koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri(), false);
+            KoodiVersio koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri());
             newRelation.setKoodiVersio(koodiVersio);
             newRelation.setKoodistoVersio(inserted);
             inserted.addKoodiVersio(newRelation);
