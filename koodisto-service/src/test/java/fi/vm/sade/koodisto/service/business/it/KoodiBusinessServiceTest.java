@@ -131,6 +131,17 @@ public class KoodiBusinessServiceTest {
     	assertNotNull(latest.getVoimassaLoppuPvm());
     }
     
+    @Test
+    public void koodiIsCopiedIntoNewVersionOfKoodistoWhenNewKoodiIsAdded() {
+    	CreateKoodiDataType createKoodiData = fi.vm.sade.koodisto.service.it.DataUtils.createCreateKoodiDataType("new",
+                new Date(), null, "uusi");
+    	koodiBusinessService.createKoodi("koodisiirtyykoodisto", createKoodiData);
+    	List<KoodiVersioWithKoodistoItem> items = koodiBusinessService.getKoodisByKoodistoVersio("koodisiirtyykoodisto", 2, true);
+    	assertEquals(2, items.size());
+    	assertNotNull(koodiBusinessService.getKoodiByKoodistoVersio("koodisiirtyykoodisto", 2, "koodisiirtyy"));
+    	assertNotNull(koodiBusinessService.getKoodiByKoodistoVersio("koodisiirtyykoodisto", 2, "koodisiirtyykoodisto_new"));
+    }
+    
     private List<KoodiVersioWithKoodistoItem> listByUri(String koodiUri) {
     	SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(koodiUri);
     	return koodiBusinessService.searchKoodis(searchType);
