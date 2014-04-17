@@ -105,6 +105,8 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 model.codeElements = result;
                 for(var i=0; i < model.codeElements.length; i++) {
                     model.codeElements[i].name = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'FI');
+                    model.codeElements[i].namesv = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'SV');
+                    model.codeElements[i].nameen = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'EN');
                 }
             });
 
@@ -229,7 +231,10 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
     };
 
     $scope.search = function (item){
-        if (!$scope.query || item.name.toLowerCase().indexOf($scope.query.toLowerCase())!==-1 || item.koodiArvo.toLowerCase().indexOf($scope.query.toLowerCase())!==-1) {
+	function matchesName(name) {
+	    return name && name.toLowerCase().indexOf($scope.query.toLowerCase()) > -1;
+	}
+        if (!$scope.query || matchesName(item.name) || matchesName(item.namesv) || matchesName(item.nameen) || item.koodiArvo.toLowerCase().indexOf($scope.query.toLowerCase())!==-1) {
             return true;
         }
         return false;

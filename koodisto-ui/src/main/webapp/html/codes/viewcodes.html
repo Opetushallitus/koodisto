@@ -407,7 +407,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="codeElement in model.codeElements | orderBy:'koodiArvo' | filter:search">
+                <tr ng-repeat="codeElement in model.codeElements |  filter:search | orderBy:'koodiArvo'">
                     <td>
                         {{codeElement.koodiArvo}}
                     </td>
