@@ -21,6 +21,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             model.format = "JHS_XML";
             model.encoding = "UTF-8";
             this.deleteState = "disabled";
+            this.editState = "";
 
             model.getCodes(codesUri,codesVersion);
         };
@@ -84,6 +85,11 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 if (model.codes.tila === "PASSIIVINEN") {
                     model.deleteState = "";
                 }
+                
+                model.codes.codesVersions.forEach(function (version) {
+                    if (version > codesVersion) model.editState = "disabled";
+                });
+                
                 OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result) {
                     model.codes.organizationName = result.nimi['fi'] || result.nimi['sv'] || result.nimi['en'];
                 });

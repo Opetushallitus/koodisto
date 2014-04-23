@@ -16,6 +16,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
             this.includesCodeElements = [];
             this.levelsWithCodeElements = [];
             this.deleteState = "disabled";
+            this.editState = "";
             this.alerts = [];
 
             model.getCodeElement(scope, codeElementUri, codeElementVersion);
@@ -52,6 +53,10 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
                 if (model.codeElement.tila === "PASSIIVINEN") {
                     model.deleteState = "";
                 }
+                
+                LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElementUri}, function (result) {
+                   model.editState = result.versio > codeElementVersion ? "disabled" : ""; 
+                });
 
                 model.codeElement.withinCodeElements.forEach(function(codelement){
                     model.getLatestCodeElementVersionsByCodeElementUri(codelement,model.withinCodeElements);

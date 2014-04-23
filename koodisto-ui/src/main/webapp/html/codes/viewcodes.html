@@ -436,9 +436,9 @@
         <button type="button" class="btn btn-primary pull-right" ng-click="model.removeCodes()" auth="crud" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" ng-disabled="model.deleteState">
         	{{'codes.viewpage.deletebutton' | i18n}}&nbsp;<i class="icon-minus-sign"></i>
         </button>
-        <a href="#/lisaaKoodi/{{ codesUri }}/{{ model.codes.versio }}" auth="crud" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="btn btn-primary pull-right">
+        <a href="#/lisaaKoodi/{{ codesUri }}/{{ model.codes.versio }}" auth="crud" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="btn btn-primary pull-right" ng-disabled="model.editState">
             {{'codes.viewpage.codeelements.create' | i18n}}&nbsp;<i class="icon-plus-sign"></i></a>
-        <a href="#/muokkaaKoodisto/{{ codesUri }}/{{ model.codes.versio }}" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="btn btn-primary pull-right">
+        <a href="#/muokkaaKoodisto/{{ codesUri }}/{{ model.codes.versio }}" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="btn btn-primary pull-right" ng-disabled="model.editState">
             {{'codes.viewpage.editbutton' | i18n}}</a>
     </div>
     </div>
