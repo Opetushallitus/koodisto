@@ -22,7 +22,7 @@
     <WatchedResource>WEB-INF/web.xml</WatchedResource>
 
     <Resource name="jdbc/koodisto" auth="Container" type="javax.sql.DataSource"
-              maxActive="250" maxIdle="30" maxWait="10000"
+              maxActive="50" maxIdle="10" maxWait="10000"
               username="oph" password="oph" driverClassName="org.postgresql.Driver"
               url="jdbc:postgresql://localhost:5432/koodisto"/>
 </Context>

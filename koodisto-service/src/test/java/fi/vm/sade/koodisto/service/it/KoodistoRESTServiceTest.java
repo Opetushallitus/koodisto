@@ -271,7 +271,7 @@ public class KoodistoRESTServiceTest {
         final String koodiUri = "474";
 
         List<KoodiType> koodis = koodistoRESTService.getYlakoodis(koodiUri, null).getValue().getKoodi();
-        assertEquals(1, koodis.size());
+        assertEquals(2, koodis.size());
         KoodiType koodi = koodis.get(0);
 
         final String alakoodiUri = "475";
@@ -287,7 +287,7 @@ public class KoodistoRESTServiceTest {
         final Integer koodiVersio = 1;
 
         List<KoodiType> koodis = koodistoRESTService.getYlakoodis(koodiUri, koodiVersio).getValue().getKoodi();
-        assertEquals(1, koodis.size());
+        assertEquals(2, koodis.size());
         KoodiType koodi = koodis.get(0);
 
         final String alakoodiUri = "475";

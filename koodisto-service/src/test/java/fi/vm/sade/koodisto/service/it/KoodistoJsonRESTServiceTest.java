@@ -283,7 +283,7 @@ public class KoodistoJsonRESTServiceTest {
         final String koodiUri = "474";
 
         List<KoodiDto> koodis = koodistoJsonRESTService.getYlakoodis(koodiUri, null);
-        assertEquals(1, koodis.size());
+        assertEquals(2, koodis.size());
         KoodiDto koodi = koodis.get(0);
 
         final String alakoodiUri = "475";
@@ -299,7 +299,7 @@ public class KoodistoJsonRESTServiceTest {
         final Integer koodiVersio = 1;
 
         List<KoodiDto> koodis = koodistoJsonRESTService.getYlakoodis(koodiUri, koodiVersio);
-        assertEquals(1, koodis.size());
+        assertEquals(2, koodis.size());
         KoodiDto koodi = koodis.get(0);
 
         final String alakoodiUri = "475";
@@ -406,7 +406,7 @@ public class KoodistoJsonRESTServiceTest {
     @Test
     public void testSearchKoodis() throws Exception {
         // all
-        assertEquals(174, koodistoJsonRESTService.searchKoodis(null, null, null, null, null, null).size());
+        assertEquals(175, koodistoJsonRESTService.searchKoodis(null, null, null, null, null, null).size());
         // by koodiuri
         assertEquals(1, koodistoJsonRESTService.searchKoodis(Arrays.asList("475"), null, null, null, null, null).size());
         // by koodiarvo

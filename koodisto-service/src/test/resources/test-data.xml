@@ -30,7 +30,8 @@
   <koodisto id="452" koodistouri="http://koodisto19" version="0" organisaatioOid="1.2.2004.6"/>
   <koodisto id="453" koodistouri="http://koodisto20" version="0" organisaatioOid="1.2.2004.6"/>
   <koodisto id="454" koodistouri="http://koodisto21" version="0" organisaatioOid="1.2.2004.6"/>
-
+  <koodisto id="500" koodistouri="koodisiirtyykoodisto" version="0" organisaatioOid="1.2.2004.6"/>
+  
   <koodi id="3" koodisto_id="1" version="0" koodiuri="3"/>
   <koodi id="5" koodisto_id="1" version="0" koodiuri="5"/>
   <koodi id="7" koodisto_id="1" version="0" koodiuri="7"/>
@@ -205,6 +206,7 @@
   <koodi id="476" koodisto_id="453" version="0" koodiuri="476"/>
   <koodi id="477" koodisto_id="454" version="0" koodiuri="477"/>
   <koodi id="478" koodisto_id="453" version="0" koodiuri="478"/>
+  <koodi id="500" koodisto_id="500" version="0" koodiuri="koodisiirtyy"/>;
 
   <koodiversio id="3" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="3" koodiarvo="005"/>
   <koodiversio id="5" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="5" koodiarvo="009"/>
@@ -407,6 +409,7 @@
   <koodiversio id="504" version="0" paivityspvm="2013-08-13" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="2013-04-15" koodi_id="477" koodiarvo="777"/>
   <koodiversio id="505" version="0" paivityspvm="2013-08-13" tila="PASSIIVINEN" versio="2" voimassaalkupvm="2013-04-11" koodi_id="477" koodiarvo="777"/>
   <koodiversio id="506" version="0" paivityspvm="2013-08-13" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="2013-04-15" koodi_id="478" koodiarvo="666"/>
+  <koodiversio id="600" version="0" paivityspvm="2013-08-13" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="2013-04-14" koodi_id="500" koodiarvo="999"/>
 
   <koodimetadata id="4" kieli="FI" nimi="Alajärvi" version="0" koodiversio_id="3" lyhytnimi="Alajärvi" kuvaus="Alajärvi"/>
   <koodimetadata id="6" kieli="FI" nimi="Alavieska" version="0" koodiversio_id="5" lyhytnimi="Alavieska" kuvaus="Alavieska"/>
@@ -784,6 +787,7 @@
   <koodimetadata id="574" kieli="FI" nimi="koodi37" version="0" koodiversio_id="504" lyhytnimi="koodi37" kuvaus="koodi37"/>
   <koodimetadata id="575" kieli="FI" nimi="koodi38" version="0" koodiversio_id="505" lyhytnimi="koodi38" kuvaus="koodi38"/>
   <koodimetadata id="576" kieli="FI" nimi="koodi39" version="0" koodiversio_id="506" lyhytnimi="koodi39" kuvaus="koodi39"/>
+  <koodimetadata id="577" kieli="FI" nimi="koodisiirtyy" version="0" koodiversio_id="600" lyhytnimi="siirtyy" kuvaus="Koodi siirtyy"/>
 
   <koodinsuhde id="1" alakoodiversio_id="3" ylakoodiversio_id="7" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
   <koodinsuhde id="2" alakoodiversio_id="7" ylakoodiversio_id="5" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
@@ -800,6 +804,8 @@
   <koodinsuhde id="13" alakoodiversio_id="501" ylakoodiversio_id="499" suhteentyyppi="SISALTYY" version="0" versio="1"/>
   <koodinsuhde id="14" alakoodiversio_id="500" ylakoodiversio_id="501" suhteentyyppi="SISALTYY" version="0" versio="1"/>
   <koodinsuhde id="15" alakoodiversio_id="501" ylakoodiversio_id="500" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
+  <koodinsuhde id="16" alakoodiversio_id="500" ylakoodiversio_id="600" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  
   <koodistoversio id="1" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="1" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="303" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="303" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="365" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="365" voimassaalkupvm="2012-11-20"/>
@@ -844,7 +850,8 @@
   <koodistoversio id="513" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-11" tila="PASSIIVINEN" versio="1" koodisto_id="453"/>
   <koodistoversio id="514" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-11" tila="HYVAKSYTTY" versio="1" koodisto_id="454"/>
   <koodistoversio id="515" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="2" koodisto_id="454"/>
-
+  <koodistoversio id="600" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="500"/>
+  
   <koodistometadata id="2" kieli="FI" nimi="Kunnat" version="0" koodistoversio_id="1" kuvaus="Kunnat"/>
   <koodistometadata id="304" kieli="FI" nimi="Maakunnat" version="0" koodistoversio_id="303" kuvaus="Maakunnat"/>
   <koodistometadata id="305" kieli="FI" nimi="Foobaar!" version="0" koodistoversio_id="398" kuvaus="Foobaar!"/>
@@ -902,6 +909,7 @@
   <koodistometadata id="516" kieli="FI" nimi="koodistoo20" version="0" koodistoversio_id="513" kuvaus="koodistoo20kuvaus"/>
   <koodistometadata id="517" kieli="FI" nimi="koodistoo21" version="0" koodistoversio_id="514" kuvaus="koodistoo21kuvaus"/>
   <koodistometadata id="518" kieli="FI" nimi="koodistoo22" version="0" koodistoversio_id="515" kuvaus="koodistoo22kuvaus"/>
+  <koodistometadata id="519" kieli="FI" nimi="koodisiirtyy" version="0" koodistoversio_id="600" kuvaus="koodi siirtyy"/>
 
   <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="1" koodiversio_id="3"/>
   <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="1" koodiversio_id="5"/>
@@ -1085,6 +1093,7 @@
   <koodistoversio_koodiversio id="183" version="0" koodistoversio_id="514" koodiversio_id="504"/>
   <koodistoversio_koodiversio id="184" version="0" koodistoversio_id="515" koodiversio_id="505"/>
   <koodistoversio_koodiversio id="185" version="0" koodistoversio_id="513" koodiversio_id="506"/>
+  <koodistoversio_koodiversio id="600" version="0" koodistoversio_id="600" koodiversio_id="600"/>
 
   <koodistoryhma id="1" koodistoryhmauri="foobarrr" version="0"/>
   <koodistoryhma id="2" koodistoryhmauri="baafoorrr" version="0"/>
@@ -1118,6 +1127,7 @@
   <koodistoryhma_koodisto koodistoryhma_id="426" koodisto_id="450"/>
   <koodistoryhma_koodisto koodistoryhma_id="426" koodisto_id="451"/>
   <koodistoryhma_koodisto koodistoryhma_id="426" koodisto_id="452"/>
+  <koodistoryhma_koodisto koodistoryhma_id="426" koodisto_id="500"/>
   <koodistoryhmametadata id="1" koodistoryhma_id="1" kieli="FI" nimi="nimi1" version="0"/>
   <koodistoryhmametadata id="2" koodistoryhma_id="1" kieli="SV" nimi="namn1" version="0"/>
   <koodistoryhmametadata id="3" koodistoryhma_id="2" kieli="FI" nimi="nimi2" version="0"/>
@@ -1132,4 +1142,5 @@
   <koodistonsuhde alakoodistoversio_id="423" ylakoodistoversio_id="1" versio="1" suhteentyyppi="SISALTYY" version="0"/>
   <koodistonsuhde alakoodistoversio_id="1" ylakoodistoversio_id="483" versio="1" suhteentyyppi="RINNASTEINEN" version="0"/>
   <koodistonsuhde alakoodistoversio_id="1" ylakoodistoversio_id="484" versio="1" suhteentyyppi="SISALTYY" version="0"/>
+  <koodistonsuhde alakoodistoversio_id="511" ylakoodistoversio_id="600" versio="1" suhteentyyppi="SISALTYY" version="0"/>
 </dataset>
