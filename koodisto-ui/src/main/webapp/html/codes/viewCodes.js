@@ -21,6 +21,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             model.format = "JHS_XML";
             model.encoding = "UTF-8";
             this.deleteState = "disabled";
+            this.editState = "";
 
             model.getCodes(codesUri,codesVersion);
         };
@@ -84,6 +85,11 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 if (model.codes.tila === "PASSIIVINEN") {
                     model.deleteState = "";
                 }
+                
+                model.codes.codesVersions.forEach(function (version) {
+                    if (version > codesVersion) model.editState = "disabled";
+                });
+                
                 OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result) {
                     model.codes.organizationName = result.nimi['fi'] || result.nimi['sv'] || result.nimi['en'];
                 });
@@ -105,6 +111,8 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 model.codeElements = result;
                 for(var i=0; i < model.codeElements.length; i++) {
                     model.codeElements[i].name = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'FI');
+                    model.codeElements[i].namesv = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'SV');
+                    model.codeElements[i].nameen = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'EN');
                 }
             });
 
@@ -150,38 +158,6 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             });
         };
 
-        this.removeFromWithinCodes = function(codes) {
-            model.withinRelationToRemove = codes;
-
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: ViewCodesController,
-                resolve: {
-                }
-            });
-
-        };
-
-        this.removeFromIncludesCodes = function(codes) {
-            model.includesRelationToRemove = codes;
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: ViewCodesController,
-                resolve: {
-                }
-            });
-        };
-
-        this.removeFromLevelsWithCodes = function(codes) {
-            model.levelsRelationToRemove = codes;
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: ViewCodesController,
-                resolve: {
-                }
-            });
-        };
-
         this.removeCodes = function() {
             model.deleteCodesModalInstance = $modal.open({
                 templateUrl: 'confirmDeleteCodesModalContent.html',
@@ -211,6 +187,14 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
     $scope.cancel = function() {
         $location.path("/");
     };
+    
+    $scope.addCodeElement = function() {
+	$location.path("/lisaaKoodi/" + $scope.codesUri + "/" + $scope.codesVersion);
+    }
+    
+    $scope.editCodes = function() {
+	$location.path("/muokkaaKoodisto/" + $scope.codesUri + "/" + $scope.codesVersion);
+    }
 
     $scope.okconfirmdeletecodes = function() {
         DeleteCodes.put({codesUri: $scope.codesUri,
@@ -229,7 +213,10 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
     };
 
     $scope.search = function (item){
-        if (!$scope.query || item.name.toLowerCase().indexOf($scope.query.toLowerCase())!==-1 || item.koodiArvo.toLowerCase().indexOf($scope.query.toLowerCase())!==-1) {
+	function matchesName(name) {
+	    return name && name.toLowerCase().indexOf($scope.query.toLowerCase()) > -1;
+	}
+        if (!$scope.query || matchesName(item.name) || matchesName(item.namesv) || matchesName(item.nameen) || item.koodiArvo.toLowerCase().indexOf($scope.query.toLowerCase())!==-1) {
             return true;
         }
         return false;
@@ -370,52 +357,6 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
         $scope.model.alerts.push(alert);
 
     }
-
-    $scope.okconfirm = function() {
-        if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
-            $scope.model.withinCodes.splice($scope.model.withinCodes.indexOf($scope.model.withinRelationToRemove.uri), 1);
-
-            RemoveRelationCodes.put({codesUri: $scope.model.withinRelationToRemove.uri,
-                codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
-
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
-                $scope.model.alerts.push(alert);
-            });
-        } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
-
-            $scope.model.includesCodes.splice($scope.model.includesCodes.indexOf($scope.model.includesRelationToRemove.uri), 1);
-
-            RemoveRelationCodes.put({codesUri: $scope.model.codes.koodistoUri,
-                codesUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
-
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
-                $scope.model.alerts.push(alert);
-            });
-        } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
-            $scope.model.levelsWithCodes.splice($scope.model.levelsWithCodes.indexOf($scope.model.levelsRelationToRemove.uri), 1);
-
-            RemoveRelationCodes.put({codesUri: $scope.model.levelsRelationToRemove.uri,
-                codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
-                $scope.model.alerts.push(alert);
-            });
-        }
-        $scope.model.levelsRelationToRemove = null;
-        $scope.model.includesRelationToRemove = null;
-        $scope.model.withinRelationToRemove = null;
-        $scope.model.modalInstance.close();
-    };
-
-    $scope.cancelconfirm = function() {
-        $scope.model.levelsRelationToRemove = null;
-        $scope.model.includesRelationToRemove = null;
-        $scope.model.withinRelationToRemove = null;
-        $scope.model.modalInstance.dismiss('cancel');
-    };
-
 
     $scope.getLanguageSpecificValue = function(fieldArray,fieldName,language) {
         return getLanguageSpecificValue(fieldArray,fieldName,language);

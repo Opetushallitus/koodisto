@@ -452,26 +452,24 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         // insert KoodistoVersio
         KoodistoVersio inserted = koodistoVersioDAO.insert(input);
-        koodistonSuhdeDAO.copyRelations(base, inserted);
         
-        // add KoodiVersios from previous KoodistoVersio
-        for (KoodistoVersioKoodiVersio kv : base.getKoodiVersios()) {
+        copyKoodiVersiosFromOldKoodistoToNew(base, inserted);
+        koodistonSuhdeDAO.copyRelations(base, inserted);
+
+        return inserted;
+    }
+
+	private void copyKoodiVersiosFromOldKoodistoToNew(KoodistoVersio base, KoodistoVersio inserted) {
+		for (KoodistoVersioKoodiVersio kv : base.getKoodiVersios()) {
             KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
 
-            KoodiVersio koodiVersio = null;
-            if (kv.getKoodiVersio().getKoodi().getKoodiUri().equals(koodiUri)) {
-                koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri());
-            } else {
-                koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri());
-            }
+            KoodiVersio koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri());
 
             newRelationEntry.setKoodiVersio(koodiVersio);
             newRelationEntry.setKoodistoVersio(inserted);
             koodistoVersioKoodiVersioDAO.insert(newRelationEntry);
         }
-
-        return inserted;
-    }
+	}
 
     private KoodistoVersio createNewVersion(KoodistoVersio latest, UpdateKoodistoDataType updateKoodistoData) {
         KoodistoVersio newVersio = new KoodistoVersio();
@@ -498,15 +496,8 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         }
 
         KoodistoVersio inserted = koodistoVersioDAO.insert(newVersio);
-
-        // copy koodi versios
-        for (KoodistoVersioKoodiVersio kv : latest.getKoodiVersios()) {
-            KoodistoVersioKoodiVersio newRelation = new KoodistoVersioKoodiVersio();
-            KoodiVersio koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri());
-            newRelation.setKoodiVersio(koodiVersio);
-            newRelation.setKoodistoVersio(inserted);
-            inserted.addKoodiVersio(newRelation);
-        }
+        
+        copyKoodiVersiosFromOldKoodistoToNew(latest, inserted);
         
         koodistonSuhdeDAO.copyRelations(latest, inserted);
 

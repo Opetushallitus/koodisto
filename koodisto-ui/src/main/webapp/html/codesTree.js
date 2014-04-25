@@ -11,10 +11,24 @@ app.factory('Treemodel', function ($resource, RootCodes, MyRoles) {
             codesfound: 0
         },
         isVisibleNode: function (data) {
-            return ((this.filter.name && data.koodistoUri.indexOf(this.filter.name.toLowerCase()) > -1) || !this.filter.name) &&
+            return ( this.nameOrTunnusMatchesSearch(data) &&
                 (!this.filter.own || this.filter.own && this.isOwnedNode(data)) &&
                 (this.filter.passivated || !this.filter.passivated && !this.isPassivatedNode(data)) &&
-                (this.filter.planned || !this.filter.planned && !this.isPlannedNode(data));
+                (this.filter.planned || !this.filter.planned && !this.isPlannedNode(data)));
+        }, 
+        nameOrTunnusMatchesSearch: function (data) {
+            function matchesLanguage(data, language, searchString) {
+        	var found = false;
+        	data.latestKoodistoVersio.metadata.forEach(function (metadata) {
+        	    found = found || metadata.kieli == language && metadata.nimi.replace(/ /g,'').toLowerCase().indexOf(searchString) > -1;
+        	});
+        	return found;
+            }
+            if (!this.filter.name) {
+        	return true;
+            }            
+            var searchString = this.filter.name.replace(/ /g,'').toLowerCase();            
+            return data.koodistoUri.indexOf(searchString) > -1 || matchesLanguage(data, "FI", searchString) || matchesLanguage(data, "EN", searchString) || matchesLanguage(data, "SV", searchString);
         },
         isOwnedNode: function (data) {
             /*MyRoles.get({}, function (result) {
