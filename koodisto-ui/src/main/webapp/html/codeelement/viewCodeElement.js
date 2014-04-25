@@ -54,8 +54,9 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
                     model.deleteState = "";
                 }
                 
-                LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElementUri}, function (result) {
-                   model.editState = result.versio > codeElementVersion ? "disabled" : ""; 
+                CodesByUri.get({codesUri: result.koodisto.koodistoUri}, function (codes) {
+                    var inLatestCodes = jQuery.inArray( codes.latestKoodistoVersio.versio, model.codeElement.koodisto.koodistoVersios) != -1; 
+                    model.editState = inLatestCodes ? "" : "disabled"; 
                 });
 
                 model.codeElement.withinCodeElements.forEach(function(codelement){
@@ -94,37 +95,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
                 }
             });
         };
-        this.removeFromWithinCodeElements = function(codeelement) {
-            model.withinRelationToRemove = codeelement;
-
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: ViewCodeElementController,
-                resolve: {
-                }
-            });
-
-        };
-
-        this.removeFromIncludesCodeElements = function(codeelement) {
-            model.includesRelationToRemove = codeelement;
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: ViewCodeElementController,
-                resolve: {
-                }
-            });
-        };
-
-        this.removeFromLevelsWithCodeElements = function(codeelement) {
-            model.levelsRelationToRemove = codeelement;
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: ViewCodeElementController,
-                resolve: {
-                }
-            });
-        };
+        
     };
 
     return model;
@@ -144,6 +115,10 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
     $scope.cancel = function() {
         $location.path("/koodisto/"+$scope.model.codeElement.koodisto.koodistoUri+"/"+$scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length-1]);
     };
+    
+    $scope.editCodeElement = function() {
+	$location.path("/muokkaaKoodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion);
+    }
 
     $scope.okconfirmdeletecodeelement = function() {
         DeleteCodeElement.put({codeElementUri: $scope.codeElementUri,
@@ -161,47 +136,4 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
         $scope.model.deleteCodeElementModalInstance.dismiss('cancel');
     };
 
-    $scope.okconfirm = function() {
-        if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
-            $scope.model.withinCodeElements.splice($scope.model.withinCodeElements.indexOf($scope.model.withinRelationToRemove.uri), 1);
-
-            RemoveRelationCodeElement.put({codeElementUri: $scope.model.withinRelationToRemove.uri,
-                codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "SISALTYY"},function(result) {
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
-                $scope.model.alerts.push(alert);
-            });
-        } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
-
-            $scope.model.includesCodeElements.splice($scope.model.includesCodeElements.indexOf($scope.model.includesRelationToRemove.uri), 1);
-
-            RemoveRelationCodeElement.put({codeElementUri: $scope.model.codeElement.koodiUri,
-                codeElementUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
-
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
-                $scope.model.alerts.push(alert);
-            });
-        } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
-            $scope.model.levelsWithCodeElements.splice($scope.model.levelsWithCodeElements.indexOf($scope.model.levelsRelationToRemove.uri), 1);
-
-            RemoveRelationCodeElement.put({codeElementUri: $scope.model.levelsRelationToRemove.uri,
-                codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "RINNASTEINEN"},function(result) {
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
-                $scope.model.alerts.push(alert);
-            });
-        }
-        $scope.model.levelsRelationToRemove = null;
-        $scope.model.includesRelationToRemove = null;
-        $scope.model.withinRelationToRemove = null;
-        $scope.model.modalInstance.close();
-    };
-
-    $scope.cancelconfirm = function() {
-        $scope.model.levelsRelationToRemove = null;
-        $scope.model.includesRelationToRemove = null;
-        $scope.model.withinRelationToRemove = null;
-        $scope.model.modalInstance.dismiss('cancel');
-    };
 }

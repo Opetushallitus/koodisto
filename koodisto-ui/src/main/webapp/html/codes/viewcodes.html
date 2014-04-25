@@ -56,19 +56,6 @@
     </div>
 </script>
 
-<script type="text/ng-template" id="confirmModalContent.html">
-    <div class="modal-header">
-        <h3>{{'codes.createpage.modal.header' | i18n}}</h3>
-    </div>
-    <div class="modal-body">
-        Olet poistamassa koodistojen {{ getLanguageSpecificValue( model.codes.metadata , 'nimi', 'FI') }} ja {{ model.withinRelationToRemove.name || model.includesRelationToRemove.name || model.levelsRelationToRemove.name }} v&auml;list&auml; yhteytt&auml;
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="okconfirm()">OK</button>
-        <button class="btn btn-warning" ng-click="cancelconfirm()">Cancel</button>
-    </div>
-</script>
-
 <script type="text/ng-template" id="confirmDeleteCodesModalContent.html">
     <div class="modal-header">
         <h3>{{'codeelement.editpage.modal.header' | i18n}}</h3>
@@ -281,22 +268,14 @@
                                 <thead>
                                 <tr>
                                     <th>{{'codes.editpage.codes' | i18n}}</th>
-                                    <th>{{'codes.delete' | i18n}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="codes in model.withinCodes | unique:'name' | orderBy:'name'">
                                     <td class="align-center">{{codes.name}}</td>
-                                    <td class="align-center">
-                                        <i class="icon-trash" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" ng-click="model.removeFromWithinCodes(codes)"></i>
-                                    </td>
                                 </tr>
-
                                 </tbody>
-
                             </table>
-                            <a href="#/muokkaaKoodisto/{{model.codes.koodistoUri}}/{{model.codes.versio}}" auth="update" auth-org="{{model.codes.organisaatioOid}}" auth-service="APP_KOODISTO" class="pull-right btn btn-primary">
-                                {{'codeelement.viewpage.editrelationsbutton' | i18n}}</a>
                         </div>
                     </div>
                 </accordion-group>
@@ -318,22 +297,14 @@
                                 <thead>
                                 <tr>
                                     <th>{{'codes.editpage.codes' | i18n}}</th>
-                                    <th>{{'codes.delete' | i18n}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="codes in model.includesCodes | unique:'name' | orderBy:'name'">
                                     <td class="align-center">{{codes.name}}</td>
-                                    <td class="align-center">
-                                        <i class="icon-trash" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" ng-click="model.removeFromIncludesCodes(codes)"></i>
-                                    </td>
                                 </tr>
-
                                 </tbody>
-
                             </table>
-                            <a href="#/muokkaaKoodisto/{{model.codes.koodistoUri}}/{{model.codes.versio}}" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="pull-right btn btn-primary">
-                                {{'codeelement.viewpage.editrelationsbutton' | i18n}}</a>
                         </div>
                     </div>
                 </accordion-group>
@@ -356,22 +327,14 @@
                                 <thead>
                                 <tr>
                                     <th>{{'codes.editpage.codes' | i18n}}</th>
-                                    <th>{{'codes.delete' | i18n}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr ng-repeat="codes in model.levelsWithCodes | unique:'name' | orderBy:'name'">
                                     <td class="align-center">{{codes.name}}</td>
-                                    <td class="align-center">
-                                        <i class="icon-trash" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" ng-click="model.removeFromLevelsWithCodes(codes)"></i>
-                                    </td>
                                 </tr>
-
                                 </tbody>
-
                             </table>
-                            <a href="#/muokkaaKoodisto/{{model.codes.koodistoUri}}/{{model.codes.versio}}" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="pull-right btn btn-primary">
-                                {{'codeelement.viewpage.editrelationsbutton' | i18n}}</a>
                         </div>
                     </div>
                 </accordion-group>
@@ -436,10 +399,10 @@
         <button type="button" class="btn btn-primary pull-right" ng-click="model.removeCodes()" auth="crud" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" ng-disabled="model.deleteState">
         	{{'codes.viewpage.deletebutton' | i18n}}&nbsp;<i class="icon-minus-sign"></i>
         </button>
-        <a href="#/lisaaKoodi/{{ codesUri }}/{{ model.codes.versio }}" auth="crud" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="btn btn-primary pull-right" ng-disabled="model.editState">
-            {{'codes.viewpage.codeelements.create' | i18n}}&nbsp;<i class="icon-plus-sign"></i></a>
-        <a href="#/muokkaaKoodisto/{{ codesUri }}/{{ model.codes.versio }}" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="btn btn-primary pull-right" ng-disabled="model.editState">
-            {{'codes.viewpage.editbutton' | i18n}}</a>
+        <button type="button" ng-click="addCodeElement()" auth="crud" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="btn btn-primary pull-right" ng-disabled="model.editState">
+            {{'codes.viewpage.codeelements.create' | i18n}}&nbsp;<i class="icon-plus-sign"></i></button>
+        <button type="button" ng-click="editCodes()" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="btn btn-primary pull-right" ng-disabled="model.editState">
+            {{'codes.viewpage.editbutton' | i18n}}</button>
     </div>
     </div>
 </div>

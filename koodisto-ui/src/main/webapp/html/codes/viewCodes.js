@@ -158,38 +158,6 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             });
         };
 
-        this.removeFromWithinCodes = function(codes) {
-            model.withinRelationToRemove = codes;
-
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: ViewCodesController,
-                resolve: {
-                }
-            });
-
-        };
-
-        this.removeFromIncludesCodes = function(codes) {
-            model.includesRelationToRemove = codes;
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: ViewCodesController,
-                resolve: {
-                }
-            });
-        };
-
-        this.removeFromLevelsWithCodes = function(codes) {
-            model.levelsRelationToRemove = codes;
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: ViewCodesController,
-                resolve: {
-                }
-            });
-        };
-
         this.removeCodes = function() {
             model.deleteCodesModalInstance = $modal.open({
                 templateUrl: 'confirmDeleteCodesModalContent.html',
@@ -219,6 +187,14 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
     $scope.cancel = function() {
         $location.path("/");
     };
+    
+    $scope.addCodeElement = function() {
+	$location.path("/lisaaKoodi/" + $scope.codesUri + "/" + $scope.codesVersion);
+    }
+    
+    $scope.editCodes = function() {
+	$location.path("/muokkaaKoodisto/" + $scope.codesUri + "/" + $scope.codesVersion);
+    }
 
     $scope.okconfirmdeletecodes = function() {
         DeleteCodes.put({codesUri: $scope.codesUri,
@@ -381,52 +357,6 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
         $scope.model.alerts.push(alert);
 
     }
-
-    $scope.okconfirm = function() {
-        if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
-            $scope.model.withinCodes.splice($scope.model.withinCodes.indexOf($scope.model.withinRelationToRemove.uri), 1);
-
-            RemoveRelationCodes.put({codesUri: $scope.model.withinRelationToRemove.uri,
-                codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
-
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
-                $scope.model.alerts.push(alert);
-            });
-        } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
-
-            $scope.model.includesCodes.splice($scope.model.includesCodes.indexOf($scope.model.includesRelationToRemove.uri), 1);
-
-            RemoveRelationCodes.put({codesUri: $scope.model.codes.koodistoUri,
-                codesUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
-
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
-                $scope.model.alerts.push(alert);
-            });
-        } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
-            $scope.model.levelsWithCodes.splice($scope.model.levelsWithCodes.indexOf($scope.model.levelsRelationToRemove.uri), 1);
-
-            RemoveRelationCodes.put({codesUri: $scope.model.levelsRelationToRemove.uri,
-                codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
-                $scope.model.alerts.push(alert);
-            });
-        }
-        $scope.model.levelsRelationToRemove = null;
-        $scope.model.includesRelationToRemove = null;
-        $scope.model.withinRelationToRemove = null;
-        $scope.model.modalInstance.close();
-    };
-
-    $scope.cancelconfirm = function() {
-        $scope.model.levelsRelationToRemove = null;
-        $scope.model.includesRelationToRemove = null;
-        $scope.model.withinRelationToRemove = null;
-        $scope.model.modalInstance.dismiss('cancel');
-    };
-
 
     $scope.getLanguageSpecificValue = function(fieldArray,fieldName,language) {
         return getLanguageSpecificValue(fieldArray,fieldName,language);
