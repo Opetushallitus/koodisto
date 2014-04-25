@@ -45,8 +45,6 @@ public interface KoodistoBusinessService {
 
     KoodistoVersio updateKoodisto(UpdateKoodistoDataType updateKoodistoData);
 
-    KoodistoVersio createNewVersion(String koodistoUri, String koodiUri, boolean preserveOldRelations);
-
     boolean koodistoExists(String koodistoUri);
 
     boolean koodistoExists(String koodistoUri, Integer koodistoVersio);

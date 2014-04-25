@@ -284,7 +284,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         KoodiVersio latestYlakoodi = ylakoodi;
 
         if (SuhteenTyyppi.SISALTYY.equals(suhteenTyyppi)) {
-            koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri(), ylakoodi.getKoodi().getKoodiUri(), true);
+            koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri());
 
             latestYlakoodi = createNewVersion(getLatestKoodiVersio(ylakoodi.getKoodi().getKoodiUri()));
         }
@@ -337,7 +337,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         KoodiVersio ylakoodi = getLatestKoodiVersio(ylakoodiUri);
         if (SuhteenTyyppi.SISALTYY.equals(st)) {
-            koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri(), ylakoodi.getKoodi().getKoodiUri(), true);
+            koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri());
             createNewVersion(getLatestKoodiVersio(ylakoodiUri));
         }
 

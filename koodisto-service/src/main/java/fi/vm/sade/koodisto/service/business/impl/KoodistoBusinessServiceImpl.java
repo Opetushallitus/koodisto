@@ -163,8 +163,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             return;
         }
 
-        KoodistoVersio ylakoodi = getLatestKoodistoVersio(ylakoodistoUri);
-
         List<KoodistonSuhde> relations = getRelations(ylakoodistoUri, alakoodistoUris, st);
 
         for (KoodistonSuhde k : relations) {
@@ -263,7 +261,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Override
     @Transactional(readOnly = true)
     public KoodistoRyhma getKoodistoGroup(String koodistoGroupUri) {
-        List<String> koodistoGroupUris = new ArrayList();
+        List<String> koodistoGroupUris = new ArrayList<String>();
         koodistoGroupUris.add(koodistoGroupUri);
         List<KoodistoRyhma> koodistoGroups = koodistoRyhmaDAO.findByUri(koodistoGroupUris);
 
@@ -327,11 +325,11 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         if (result == null) {
             throw new KoodistoNotFoundException("No koodisto found for URI " + koodistoUri);
         }
-        Iterator itr = result.getKoodistoVersios().iterator();
+        Iterator<KoodistoVersio> itr = result.getKoodistoVersios().iterator();
         while(itr.hasNext()) {
             KoodistoVersio koodistoVersio = (KoodistoVersio)itr.next();
             Hibernate.initialize(koodistoVersio);
-            Iterator itr2 = koodistoVersio.getMetadatas().iterator();
+            Iterator<KoodistoMetadata> itr2 = koodistoVersio.getMetadatas().iterator();
             while(itr2.hasNext()) {
                 KoodistoMetadata koodistoMetadata = (KoodistoMetadata)itr2.next();
                 Hibernate.initialize(koodistoMetadata);
@@ -348,28 +346,26 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         if (result.size() != 1) {
             throw new KoodistoNotFoundException("No koodisto found for URI " + koodistoUri);
         }
-        Iterator itr = result.get(0).getYlakoodistos().iterator();
-        while(itr.hasNext()) {
-            KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
+        initializeKoodistoVersio(result.get(0));
+        return result.get(0);
+    }
+
+	private void initializeKoodistoVersio(KoodistoVersio koodistoVersio) {
+		for(KoodistonSuhde koodistonSuhde : koodistoVersio.getYlakoodistos()) {
             Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getMetadatas());
             Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getKoodisto());
         }
-        itr = result.get(0).getAlakoodistos().iterator();
-        while(itr.hasNext()) {
-            KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
+        for(KoodistonSuhde koodistonSuhde : koodistoVersio.getAlakoodistos()) {
             Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getMetadatas());
             Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getKoodisto());
         }
-        itr = result.get(0).getKoodisto().getKoodistoRyhmas().iterator();
-        while(itr.hasNext()) {
-            Hibernate.initialize(itr.next());
+        for(KoodistoRyhma ryhma : koodistoVersio.getKoodisto().getKoodistoRyhmas()) {
+            Hibernate.initialize(ryhma);
         }
-        itr = result.get(0).getKoodisto().getKoodistoVersios().iterator();
-        while(itr.hasNext()) {
-            Hibernate.initialize(itr.next());
+        for(KoodistoVersio versio : koodistoVersio.getKoodisto().getKoodistoVersios()) {
+            Hibernate.initialize(versio);
         }
-        return result.get(0);
-    }
+	}
 
     private List<KoodistoVersio> getLatestKoodistoVersios(String... koodistoUris) {
         SearchKoodistosCriteriaType searchCriteria = KoodistoServiceSearchCriteriaBuilder.latestKoodistosByUri(koodistoUris);
@@ -389,31 +385,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         if (result.size() != 1) {
             throw new KoodistoNotFoundException("No koodisto found for URI " + koodistoUri + " and version " + koodistoVersio);
         }
-
-        Iterator itr = result.get(0).getYlakoodistos().iterator();
-        while(itr.hasNext()) {
-            KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
-            Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getMetadatas());
-            Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getKoodisto());
-        }
-        itr = result.get(0).getAlakoodistos().iterator();
-        while(itr.hasNext()) {
-            KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
-            Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getMetadatas());
-            Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getKoodisto());
-        }
-        itr = result.get(0).getKoodisto().getKoodistoRyhmas().iterator();
-        while(itr.hasNext()) {
-            Hibernate.initialize(itr.next());
-        }
-        itr = result.get(0).getKoodisto().getKoodistoVersios().iterator();
-        while(itr.hasNext()) {
-            Hibernate.initialize(itr.next());
-        }
+        
+        initializeKoodistoVersio(result.get(0));
+        
         return result.get(0);
     }
 
-    private KoodistoVersio createNewVersion(KoodistoVersio latest, String koodiUri, boolean preserveOldRelations) {
+    private KoodistoVersio createNewVersion(KoodistoVersio latest) {
         authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD, KoodistoRole.UPDATE);
         if (latest.getTila() != Tila.HYVAKSYTTY) {
             return latest;
@@ -426,10 +404,10 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             EntityUtils.copyFields(md, newMd);
             input.addMetadata(newMd);
         }
-        return createNewVersion(latest, input, koodiUri, preserveOldRelations);
+        return createNewVersion(latest, input);
     }
 
-    private KoodistoVersio createNewVersion(KoodistoVersio base, KoodistoVersio input, String koodiUri, boolean preserveOldRelations) {
+    private KoodistoVersio createNewVersion(KoodistoVersio base, KoodistoVersio input) {
 
         logger.info("Creating new version of KoodistoVersio, koodisto id =" + base.getKoodisto().getId() + ", base versio=" + base.getVersio());
 
@@ -565,12 +543,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Override
     public KoodistoVersio createNewVersion(String koodistoUri) {
-        return createNewVersion(koodistoUri, null, false);
-    }
-
-    @Override
-    public KoodistoVersio createNewVersion(String koodistoUri, String koodiUri, boolean preserveOldRelations) {
-        return createNewVersion(getLatestKoodistoVersio(koodistoUri), koodiUri, preserveOldRelations);
+        return createNewVersion(getLatestKoodistoVersio(koodistoUri));
     }
 
     @Override
