@@ -5,8 +5,6 @@ package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -48,15 +46,12 @@ public class Koodisto extends BaseEntity {
     private Boolean lukittu;
 
     @ManyToMany(mappedBy = "koodistos", fetch = FetchType.LAZY)
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<KoodistoRyhma> koodistoRyhmas = new HashSet<KoodistoRyhma>();
 
     @OneToMany(mappedBy = "koodisto", fetch = FetchType.LAZY)
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<KoodistoVersio> koodistoVersios = new HashSet<KoodistoVersio>();
 
     @OneToMany(mappedBy = "koodisto", fetch = FetchType.LAZY)
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Koodi> koodis = new HashSet<Koodi>();
 
     public String getKoodistoUri() {

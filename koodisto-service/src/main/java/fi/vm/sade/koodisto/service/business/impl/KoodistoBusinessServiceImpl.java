@@ -445,7 +445,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
             newRelationEntry.setKoodiVersio(koodiVersio);
             newRelationEntry.setKoodistoVersio(inserted);
-            koodistoVersioKoodiVersioDAO.insert(newRelationEntry);
+            inserted.addKoodiVersio(newRelationEntry);
         }
 	}
 

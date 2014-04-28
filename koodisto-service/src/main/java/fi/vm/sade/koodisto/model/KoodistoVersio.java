@@ -59,7 +59,6 @@ public class KoodistoVersio extends BaseEntity {
     private Tila tila;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodistoVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<KoodistoVersioKoodiVersio> koodiVersios = new HashSet<KoodistoVersioKoodiVersio>();
 
     @NotEmpty
