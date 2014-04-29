@@ -41,6 +41,7 @@ public class KoodistonSuhdeDAOTest {
 	@Autowired
 	private KoodistoVersioDAO versionDAO;
 	
+	@Transactional
 	@Test
 	public void copiesRelationsFromOldKoodistonVersioToNewOne() {
 		KoodistoVersio original = versionDAO.read(new Long(1));
@@ -61,7 +62,7 @@ public class KoodistonSuhdeDAOTest {
 	
 	@Test
 	public void deleRelations() {
-		KoodistonSuhde toBeDeleted = suhdeDAO.read(new Long(1));
+		KoodistonSuhde toBeDeleted = suhdeDAO.read(new Long(5));
 		KoodistoUriAndVersioType yla = getKoodistoUriAndVersioType(versionDAO.read(toBeDeleted.getYlakoodistoVersio().getId()));
 		KoodistoUriAndVersioType ala = getKoodistoUriAndVersioType(versionDAO.read(toBeDeleted.getAlakoodistoVersio().getId()));
 		suhdeDAO.deleteRelations(yla, Arrays.asList(ala), toBeDeleted.getSuhteenTyyppi());
