@@ -135,4 +135,19 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
 			fresh.setAlakoodistos(copiedRelations);
 		}
 	}
+
+
+	@Override
+	public void deleteRelations(KoodistoUriAndVersioType ylaKoodisto, List<KoodistoUriAndVersioType> alaKoodistos,
+            SuhteenTyyppi st) {
+		EntityManager em = getEntityManager();
+		for(KoodistonSuhde suhde : getRelations(ylaKoodisto, alaKoodistos, st)) {
+			KoodistoVersio ala = suhde.getAlakoodistoVersio();
+			KoodistoVersio yla = suhde.getYlakoodistoVersio();
+			ala.removeYlaKoodistonSuhde(suhde);
+			yla.removeAlaKoodistonSuhde(suhde);
+			em.remove(suhde);
+		}
+		em.flush();
+	}
 }

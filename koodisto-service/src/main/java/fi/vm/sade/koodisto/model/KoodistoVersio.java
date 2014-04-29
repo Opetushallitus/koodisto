@@ -176,6 +176,14 @@ public class KoodistoVersio extends BaseEntity {
     public void setAlakoodistos(final Set<KoodistonSuhde> alakoodisto) {
         this.alakoodistos = alakoodisto;
     }
+    
+    public void removeYlaKoodistonSuhde(KoodistonSuhde ks) {
+    	ylakoodistos.remove(ks);
+    }
+    
+    public void removeAlaKoodistonSuhde(KoodistonSuhde ks) {
+    	alakoodistos.remove(ks);
+    }
 
     @Override
     public String toString() {
