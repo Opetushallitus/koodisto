@@ -19,6 +19,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -139,7 +140,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     }
 
-    private List<KoodistonSuhde> getRelations(String ylakoodistoUri, List<String> alakoodistoUris, SuhteenTyyppi st) {
+    private void removeRelations(String ylakoodistoUri, List<String> alakoodistoUris, SuhteenTyyppi st) {
         KoodistoVersio ylakoodisto = getLatestKoodistoVersio(ylakoodistoUri);
         KoodistoUriAndVersioType yk = new KoodistoUriAndVersioType();
         yk.setKoodistoUri(ylakoodisto.getKoodisto().getKoodistoUri());
@@ -147,30 +148,34 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         List<KoodistoUriAndVersioType> aks = new ArrayList<KoodistoUriAndVersioType>();
         for (KoodistoVersio ak : getLatestKoodistoVersios(alakoodistoUris.toArray(new String[alakoodistoUris.size()]))) {
+        	checkForPossibleCodeElementRelations(ylakoodisto, ak);
             KoodistoUriAndVersioType a = new KoodistoUriAndVersioType();
             a.setKoodistoUri(ak.getKoodisto().getKoodistoUri());
             a.setVersio(ak.getVersio());
 
             aks.add(a);
         }
-
-        return koodistonSuhdeDAO.getRelations(yk, aks, st);
+        koodistonSuhdeDAO.deleteRelations(yk, aks, st);
     }
 
     @Override
     public void removeRelation(String ylakoodistoUri, List<String> alakoodistoUris, SuhteenTyyppi st) {
-        if (alakoodistoUris == null || alakoodistoUris.isEmpty() || getRelations(ylakoodistoUri, alakoodistoUris, st).size() == 0) {
-            return;
-        }
-
-        List<KoodistonSuhde> relations = getRelations(ylakoodistoUri, alakoodistoUris, st);
-
-        for (KoodistonSuhde k : relations) {
-            koodistonSuhdeDAO.remove(k);
+        if (alakoodistoUris != null && !alakoodistoUris.isEmpty()) {
+            removeRelations(ylakoodistoUri, alakoodistoUris, st);
         }
     }
 
-    /**
+    private void checkForPossibleCodeElementRelations(KoodistoVersio ylakoodisto, KoodistoVersio alakoodisto) {
+		for (KoodistoVersioKoodiVersio ylaKoodiVersio : ylakoodisto.getKoodiVersios()) {
+			for (KoodistoVersioKoodiVersio alaKoodiVersio : alakoodisto.getKoodiVersios()) {
+				if (koodiBusinessService.hasRelationBetweenCodeElements(ylaKoodiVersio.getKoodiVersio(), alaKoodiVersio.getKoodiVersio())) {
+					throw new KoodistonSuhdeContainsKoodinSuhdeException("codesrelation.contains.codeelementrelations");
+				};
+			}
+		}
+	}
+
+	/**
      * Checks that the nimi is unique among koodistos. It's ok if there is
      * another version of this koodisto with the same nimi. Throws an exception
      * if the nimi is not unique.

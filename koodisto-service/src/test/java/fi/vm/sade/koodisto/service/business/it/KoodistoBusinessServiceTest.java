@@ -1,16 +1,20 @@
 package fi.vm.sade.koodisto.service.business.it;
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
+import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioHasRelationsException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistonSuhdeContainsKoodinSuhdeException;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -40,7 +45,11 @@ public class KoodistoBusinessServiceTest {
     @Autowired
     private KoodiBusinessService koodiBusinessService;
 
-
+    @Autowired
+    private KoodistonSuhdeDAO suhdeDAO;
+    
+    private final static Long KOODISTON_SUHDE = 6l;
+    
     @Test
     public void testCreate() {
         KoodistoVersio koodistoVersio = createKoodisto("omistaja", "organisaatioOid", new Date(), null,
@@ -142,5 +151,16 @@ public class KoodistoBusinessServiceTest {
         assertFalse(koodistoBusinessService.koodistoExists(koodistoUri));
 
     }
+    
+    @Test(expected = KoodistonSuhdeContainsKoodinSuhdeException.class)
+    public void existingCodeElementRelationsPreventDeletingKoodisto() {
+    	koodistoBusinessService.removeRelation("koodisiirtyykoodisto", Arrays.asList("http://koodisto18"), SuhteenTyyppi.SISALTYY);
+    }
 
+    @Test
+    public void removeRelation() {
+    	assertNotNull(suhdeDAO.read(KOODISTON_SUHDE));
+    	koodistoBusinessService.removeRelation("suhde502kanssa", Arrays.asList("suhde501kanssa"), SuhteenTyyppi.SISALTYY);
+    	assertNull(suhdeDAO.read(KOODISTON_SUHDE));   	
+    }
 }
