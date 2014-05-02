@@ -28,6 +28,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
 import java.util.*;
 
 /**
@@ -122,7 +125,9 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Override
     public void addRelation(String ylaKoodisto, String alaKoodisto, SuhteenTyyppi suhteenTyyppi) {
-
+    	if(this.hasAnyRelation(ylaKoodisto, alaKoodisto)) {
+    		throw new KoodistosAlreadyHaveSuhdeException("codes.already.have.relation");
+    	}
         KoodistoVersio yla = getLatestKoodistoVersio(ylaKoodisto);
         KoodistoVersio ala = getLatestKoodistoVersio(alaKoodisto);
 
@@ -601,5 +606,21 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             koodistoDAO.remove(koodisto);
         }
 
+    }
+    
+    @Override
+    public boolean hasAnyRelation(String koodistoUri, String anotherKoodistoUri) {
+    	final KoodistoVersio koodistoVersio = getLatestKoodistoVersio(koodistoUri);
+    	final KoodistoVersio koodistoVersio2 = getLatestKoodistoVersio(anotherKoodistoUri);
+    	List<KoodistonSuhde> relations = new ArrayList<KoodistonSuhde>(koodistoVersio.getAlakoodistos());
+    	relations.addAll(koodistoVersio.getYlakoodistos());    	
+    	return Iterables.tryFind(relations, new Predicate<KoodistonSuhde>() {
+
+			@Override
+			public boolean apply(KoodistonSuhde input) {
+				return input.getAlakoodistoVersio().equals(koodistoVersio2) || input.getYlakoodistoVersio().equals(koodistoVersio2);
+			}
+    		    		
+    	}).isPresent();
     }
 }

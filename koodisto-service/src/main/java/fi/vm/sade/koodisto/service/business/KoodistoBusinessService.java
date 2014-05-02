@@ -56,4 +56,6 @@ public interface KoodistoBusinessService {
 
     void addRelation(String ylaKoodisto, String alaKoodisto, SuhteenTyyppi suhteenTyyppi);
     void removeRelation(String ylakoodistoUri, List<String> alakoodistoUris, SuhteenTyyppi st);
+
+	boolean hasAnyRelation(String koodistoUri, String anotherKoodistoUri);
 }

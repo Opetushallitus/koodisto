@@ -344,10 +344,13 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         });
 
         if (found === false) {
-            $scope.model.withinCodes.push(ce);
             AddRelationCodes.put({codesUri: data.koodistoUri,
                 codesUriToAdd: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
-            });
+                    $scope.model.withinCodes.push(ce);
+                }, function(error) {
+                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' }
+                    $scope.model.alerts.push(alert);
+                });
         }
     };
 
@@ -362,10 +365,13 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         });
 
         if (found === false) {
-            $scope.model.includesCodes.push(ce);
             AddRelationCodes.put({codesUri: $scope.model.codes.koodistoUri,
                 codesUriToAdd: data.koodistoUri,relationType: "SISALTYY"},function(result) {
-            });
+                    $scope.model.includesCodes.push(ce);
+                }, function(error) {
+                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' }
+                    $scope.model.alerts.push(alert);
+                });
         }
     };
     $scope.addToLevelsWithCodes = function(data) {
@@ -379,10 +385,13 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         });
 
         if (found === false) {
-            $scope.model.levelsWithCodes.push(ce);
             AddRelationCodes.put({codesUri: data.koodistoUri,
                 codesUriToAdd: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
-            });
+                    $scope.model.levelsWithCodes.push(ce);
+                }, function(error) {
+                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' }
+                    $scope.model.alerts.push(alert);
+                });
         }
     };
 

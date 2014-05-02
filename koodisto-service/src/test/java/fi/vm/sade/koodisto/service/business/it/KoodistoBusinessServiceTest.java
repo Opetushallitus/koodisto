@@ -10,6 +10,7 @@ import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioHasRelationsException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistonSuhdeContainsKoodinSuhdeException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistosAlreadyHaveSuhdeException;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
@@ -162,5 +163,23 @@ public class KoodistoBusinessServiceTest {
     	assertNotNull(suhdeDAO.read(KOODISTON_SUHDE));
     	koodistoBusinessService.removeRelation("suhde502kanssa", Arrays.asList("suhde501kanssa"), SuhteenTyyppi.SISALTYY);
     	assertNull(suhdeDAO.read(KOODISTON_SUHDE));   	
+    }
+    
+    @Test
+    public void addsRelation() {
+    	koodistoBusinessService.addRelation("http://koodisto20", "http://koodisto21", SuhteenTyyppi.RINNASTEINEN);
+    	assertTrue(koodistoBusinessService.hasAnyRelation("http://koodisto20", "http://koodisto21"));
+    }
+    
+    @Test(expected = KoodistosAlreadyHaveSuhdeException.class)
+    public void preventsAddingSameRelationMoreThanOnce() {
+    	koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.SISALTYY);
+    	koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.SISALTYY);
+    }
+    
+    @Test(expected = KoodistosAlreadyHaveSuhdeException.class)
+    public void preventsAddingSameRelationMoreThanOnceDespiteRelationType() {
+    	koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.RINNASTEINEN);
+    	koodistoBusinessService.addRelation("suhde501kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY);
     }
 }
