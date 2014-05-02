@@ -839,10 +839,12 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
 			@Override
 			public boolean apply(KoodinSuhde input) {
+				System.out.println(input.getAlakoodiVersio());
+				System.out.println(alaKoodiVersio);
 				return input.getAlakoodiVersio().equals(alaKoodiVersio);
 			}
     		
-    	}) != null;
+    	}).isPresent();
     }
 
 }
