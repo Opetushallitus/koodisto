@@ -1,6 +1,5 @@
-
-app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion,
-                                       CodeElementVersionsByCodeElementUri, OrganizationByOid, CodesByUri) {
+app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion, CodeElementVersionsByCodeElementUri,
+        OrganizationByOid, CodesByUri) {
     var model;
     model = new function() {
         this.codeElements = [];
@@ -23,11 +22,21 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             this.deleteState = "disabled";
             this.editState = "";
 
-            model.getCodes(codesUri,codesVersion);
+            this.currentPage = 0;
+            this.pageSize = 10;
+            this.pageSizeOptions = [ 10, 50, 100, 200, 500 ];
+            this.sortOrder = "koodiArvo";
+            this.sortOrderSelection = 1;
+            this.sortOrderReversed = false;
+
+            model.getCodes(codesUri, codesVersion);
         };
 
         this.getCodes = function(codesUri, codesVersion) {
-            CodesByUriAndVersion.get({codesUri: codesUri, codesVersion: codesVersion}, function (result) {
+            CodesByUriAndVersion.get({
+                codesUri : codesUri,
+                codesVersion : codesVersion
+            }, function(result) {
                 model.codes = result;
                 model.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
                 model.namesv = getLanguageSpecificValue(result.metadata, 'nimi', 'SV');
@@ -73,32 +82,37 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 model.validitylevelsv = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
                 model.validitylevelen = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
 
-                model.codes.withinCodes.forEach(function(codes){
-                    model.getLatestCodesVersionsByCodesUri(codes,model.withinCodes);
+                model.codes.withinCodes.forEach(function(codes) {
+                    model.getLatestCodesVersionsByCodesUri(codes, model.withinCodes);
                 });
-                model.codes.includesCodes.forEach(function(codes){
-                    model.getLatestCodesVersionsByCodesUri(codes,model.includesCodes);
+                model.codes.includesCodes.forEach(function(codes) {
+                    model.getLatestCodesVersionsByCodesUri(codes, model.includesCodes);
                 });
-                model.codes.levelsWithCodes.forEach(function(codes){
-                    model.getLatestCodesVersionsByCodesUri(codes,model.levelsWithCodes);
+                model.codes.levelsWithCodes.forEach(function(codes) {
+                    model.getLatestCodesVersionsByCodesUri(codes, model.levelsWithCodes);
                 });
                 if (model.codes.tila === "PASSIIVINEN") {
                     model.deleteState = "";
                 }
-                
-                model.codes.codesVersions.forEach(function (version) {
-                    if (version > codesVersion) model.editState = "disabled";
+
+                model.codes.codesVersions.forEach(function(version) {
+                    if (version > codesVersion)
+                        model.editState = "disabled";
                 });
-                
-                OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result) {
+
+                OrganizationByOid.get({
+                    oid : model.codes.organisaatioOid
+                }, function(result) {
                     model.codes.organizationName = result.nimi['fi'] || result.nimi['sv'] || result.nimi['en'];
                 });
-                model.getCodeElements(codesUri,codesVersion);
+                model.getCodeElements(codesUri, codesVersion);
             });
         };
 
         this.getLatestCodesVersionsByCodesUri = function(codesUri, list) {
-            CodesByUri.get({codesUri: codesUri}, function (result) {
+            CodesByUri.get({
+                codesUri : codesUri
+            }, function(result) {
                 var ce = {};
                 ce.uri = codesUri;
                 ce.name = getLanguageSpecificValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
@@ -106,10 +120,13 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             });
         };
 
-        this.getCodeElements = function(codesUri,codesVersion) {
-            CodeElementsByCodesUriAndVersion.get({codesUri: codesUri, codesVersion: codesVersion}, function (result) {
+        this.getCodeElements = function(codesUri, codesVersion) {
+            CodeElementsByCodesUriAndVersion.get({
+                codesUri : codesUri,
+                codesVersion : codesVersion
+            }, function(result) {
                 model.codeElements = result;
-                for(var i=0; i < model.codeElements.length; i++) {
+                for (var i = 0; i < model.codeElements.length; i++) {
                     model.codeElements[i].name = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'FI');
                     model.codeElements[i].namesv = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'SV');
                     model.codeElements[i].nameen = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'EN');
@@ -122,17 +139,19 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 var elements = model.codeElements;
                 model.codeElements = [];
                 if (elements) {
-                    for(var i=0; i < elements.length; i++) {
+                    for (var i = 0; i < elements.length; i++) {
                         model.getCodeElementVersionsByCodeElementUri(elements[i].koodiUri);
                     }
                 }
             } else {
-                model.getCodes(model.codesUri,model.codesVersion);
+                model.getCodes(model.codesUri, model.codesVersion);
             }
         };
         this.getCodeElementVersionsByCodeElementUri = function(codeElementUri) {
-            CodeElementVersionsByCodeElementUri.get({codeElementUri: codeElementUri}, function (result) {
-                for(var i=0; i < result.length; i++) {
+            CodeElementVersionsByCodeElementUri.get({
+                codeElementUri : codeElementUri
+            }, function(result) {
+                for (var i = 0; i < result.length; i++) {
                     result[i].name = getLanguageSpecificValue(result[i].metadata, 'lyhytNimi', 'FI');
                     model.codeElements.push(result[i]);
                 }
@@ -141,44 +160,39 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
 
         this.download = function() {
             model.downloadModalInstance = $modal.open({
-                templateUrl: 'downloadModalContent.html',
-                controller: ViewCodesController,
-                resolve: {
-                }
+                templateUrl : 'downloadModalContent.html',
+                controller : ViewCodesController,
+                resolve : {}
             });
 
         };
 
         this.upload = function() {
             model.uploadModalInstance = $modal.open({
-                templateUrl: 'uploadModalContent.html',
-                controller: ViewCodesController,
-                resolve: {
-                }
+                templateUrl : 'uploadModalContent.html',
+                controller : ViewCodesController,
+                resolve : {}
             });
         };
 
         this.removeCodes = function() {
             model.deleteCodesModalInstance = $modal.open({
-                templateUrl: 'confirmDeleteCodesModalContent.html',
-                controller: ViewCodesController,
-                resolve: {
-                }
+                templateUrl : 'confirmDeleteCodesModalContent.html',
+                controller : ViewCodesController,
+                resolve : {}
             });
         };
     };
 
-
     return model;
 });
 
-function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, DownloadCodes, RemoveRelationCodes,
-                             DeleteCodes) {
+function ViewCodesController($scope, $location, $filter, $routeParams, ViewCodesModel, DownloadCodes, RemoveRelationCodes, DeleteCodes) {
     $scope.model = ViewCodesModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
     $scope.identity = angular.identity;
-    ViewCodesModel.init($scope.codesUri,$scope.codesVersion);
+    ViewCodesModel.init($scope.codesUri, $scope.codesVersion);
 
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
@@ -187,21 +201,26 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
     $scope.cancel = function() {
         $location.path("/");
     };
-    
+
     $scope.addCodeElement = function() {
-	$location.path("/lisaaKoodi/" + $scope.codesUri + "/" + $scope.codesVersion);
+        $location.path("/lisaaKoodi/" + $scope.codesUri + "/" + $scope.codesVersion);
     }
-    
+
     $scope.editCodes = function() {
-	$location.path("/muokkaaKoodisto/" + $scope.codesUri + "/" + $scope.codesVersion);
+        $location.path("/muokkaaKoodisto/" + $scope.codesUri + "/" + $scope.codesVersion);
     }
 
     $scope.okconfirmdeletecodes = function() {
-        DeleteCodes.put({codesUri: $scope.codesUri,
-            codesVersion: $scope.codesVersion},function(success) {
+        DeleteCodes.put({
+            codesUri : $scope.codesUri,
+            codesVersion : $scope.codesVersion
+        }, function(success) {
             $location.path("/");
         }, function(error) {
-            var alert = { type: 'danger', msg: 'Koodiston poisto ep\u00E4onnistui.' };
+            var alert = {
+                type : 'danger',
+                msg : 'Koodiston poisto ep\u00E4onnistui.'
+            };
             $scope.model.alerts.push(alert);
         });
 
@@ -212,11 +231,12 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
         $scope.model.deleteCodesModalInstance.dismiss('cancel');
     };
 
-    $scope.search = function (item){
-	function matchesName(name) {
-	    return name && name.toLowerCase().indexOf($scope.query.toLowerCase()) > -1;
-	}
-        if (!$scope.query || matchesName(item.name) || matchesName(item.namesv) || matchesName(item.nameen) || item.koodiArvo.toLowerCase().indexOf($scope.query.toLowerCase())!==-1) {
+    $scope.search = function(item) {
+        function matchesName(name) {
+            return name && name.toLowerCase().indexOf($scope.query.toLowerCase()) > -1;
+        }
+        if (!$scope.query || matchesName(item.name) || matchesName(item.namesv) || matchesName(item.nameen)
+                || item.koodiArvo.toLowerCase().indexOf($scope.query.toLowerCase()) !== -1) {
             return true;
         }
         return false;
@@ -224,17 +244,20 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
 
     $scope.okdownload = function() {
         var fileFormat = {
-            format: $scope.model.format,
-            encoding: $scope.model.encoding
+            format : $scope.model.format,
+            encoding : $scope.model.encoding
         };
-        DownloadCodes.put({codesUri: $scope.codesUri,codesVersion: $scope.codesVersion}, fileFormat, function(result) {
+        DownloadCodes.put({
+            codesUri : $scope.codesUri,
+            codesVersion : $scope.codesVersion
+        }, fileFormat, function(result) {
 
             if (result.data) {
                 var type = '';
                 var data = '';
 
-                if(fileFormat.format === "JHS_XML"){
-                    type='text/xml';
+                if (fileFormat.format === "JHS_XML") {
+                    type = 'text/xml';
                     data = result.data;
                 } else if (fileFormat.format === "CSV") {
                     type = 'text/csv';
@@ -243,22 +266,24 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
                     type = 'application/vnd.ms-excel';
 
                     // Decode base64 binary data
-                    raw = atob( result.data );
+                    raw = atob(result.data);
                     data = new Uint8Array(new ArrayBuffer(raw.length));
                     for (var i = 0; i < raw.length; i++) {
                         data[i] = raw.charCodeAt(i);
                     }
                 }
 
-                var blob = new Blob([ data ], { type : type });
+                var blob = new Blob([ data ], {
+                    type : type
+                });
 
-                var url  = window.URL || window.webkitURL;
+                var url = window.URL || window.webkitURL;
                 var link = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
                 link.href = url.createObjectURL(blob);
                 if (fileFormat.format === "CSV") {
-                    link.download = $scope.codesUri+".csv";
+                    link.download = $scope.codesUri + ".csv";
                 } else if (fileFormat.format === "XLS") {
-                        link.download = $scope.codesUri+".xls";
+                    link.download = $scope.codesUri + ".xls";
                 } else {
                     link.download = $scope.codesUri;
                 }
@@ -267,37 +292,42 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
                 event.initEvent("click", true, false);
                 link.dispatchEvent(event);
             }
-            if($scope.codesVersion != -1){ // Downloading blank document
-	            var alert = { type: 'success', msg: 'Koodiston vienti onnistui.' };
-	            $scope.model.alerts.push(alert);
+            if ($scope.codesVersion != -1) { // Downloading blank document
+                var alert = {
+                    type : 'success',
+                    msg : 'Koodiston vienti onnistui.'
+                };
+                $scope.model.alerts.push(alert);
             }
         }, function(error) {
-            var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' };
+            var alert = {
+                type : 'danger',
+                msg : 'Koodiston vienti ep\u00E4onnistui.'
+            };
             $scope.model.alerts.push(alert);
         });
         $scope.model.downloadModalInstance.close();
     };
-    
-    
+
     $scope.downloadBlank = function() {
-    	$scope.model.format = "XLS";
-    	$scope.codesUri = "blankKoodistoDocument";
-    	$scope.codesVersion = "-1";
-    	
-    	$scope.okdownload();
+        $scope.model.format = "XLS";
+        $scope.codesUri = "blankKoodistoDocument";
+        $scope.codesVersion = "-1";
+
+        $scope.okdownload();
     };
 
-    $scope.formatEquals = function(s){
+    $scope.formatEquals = function(s) {
         return ($scope.model.format === s);
     };
-    
+
     $scope.canceldownload = function() {
         $scope.model.downloadModalInstance.dismiss('cancel');
     };
 
     $scope.okupload = function() {
         var fd = new FormData();
-        for (var i in $scope.files) {
+        for ( var i in $scope.files) {
             fd.append("uploadedFile", $scope.files[i]);
         }
         fd.append("fileFormat", $scope.model.format);
@@ -306,7 +336,7 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
         xhr.addEventListener("load", uploadComplete, false);
         xhr.addEventListener("error", uploadFailed, false);
         xhr.addEventListener("abort", uploadCanceled, false);
-        xhr.open("POST", SERVICE_URL_BASE + "codes" + "/upload/"+$scope.codesUri);
+        xhr.open("POST", SERVICE_URL_BASE + "codes" + "/upload/" + $scope.codesUri);
         xhr.send(fd);
 
         $scope.model.uploadModalInstance.close();
@@ -326,40 +356,144 @@ function ViewCodesController($scope, $location, $routeParams, ViewCodesModel, Do
         });
     };
 
-	function uploadComplete(evt) {
-		ViewCodesModel.init($scope.codesUri, $scope.codesVersion);
-		var alert;
-		if(evt.originalTarget.status == "202"){
-			alert = {
-					type : 'success',
-					msg : 'Koodisto ' + $scope.codesUri
-							+ ' on tuotu koodistoryhm\u00E4\u00E4n '
-							+ $scope.model.codes.codesGroupUri
-				};
-		} else {
-			alert = {
-					type : 'danger',
-					msg : 'Koodiston ' + $scope.codesUri
-							+ ' vienti ep\u00E4onnistui: '
-							+ evt.originalTarget.status + ': ' + evt.originalTarget.statusText
-				};
-		}
-		$scope.model.alerts.push(alert);
-	}
+    function uploadComplete(evt) {
+        ViewCodesModel.init($scope.codesUri, $scope.codesVersion);
+        var alert;
+        if (evt.originalTarget.status == "202") {
+            alert = {
+                type : 'success',
+                msg : 'Koodisto ' + $scope.codesUri + ' on tuotu koodistoryhm\u00E4\u00E4n ' + $scope.model.codes.codesGroupUri
+            };
+        } else {
+            alert = {
+                type : 'danger',
+                msg : 'Koodiston ' + $scope.codesUri + ' vienti ep\u00E4onnistui: ' + evt.originalTarget.status + ': ' + evt.originalTarget.statusText
+            };
+        }
+        $scope.model.alerts.push(alert);
+    }
 
     function uploadFailed(evt) {
-        var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' };
+        var alert = {
+            type : 'danger',
+            msg : 'Koodiston vienti ep\u00E4onnistui.'
+        };
         $scope.model.alerts.push(alert);
     }
 
     function uploadCanceled(evt) {
-        var alert = { type: 'danger', msg: 'Koodiston vienti ep\u00E4onnistui.' };
+        var alert = {
+            type : 'danger',
+            msg : 'Koodiston vienti ep\u00E4onnistui.'
+        };
         $scope.model.alerts.push(alert);
 
     }
 
-    $scope.getLanguageSpecificValue = function(fieldArray,fieldName,language) {
-        return getLanguageSpecificValue(fieldArray,fieldName,language);
+    $scope.getLanguageSpecificValue = function(fieldArray, fieldName, language) {
+        return getLanguageSpecificValue(fieldArray, fieldName, language);
     };
 
+    // Get the filtered page count
+    var cachedPageCount = 0;
+    $scope.getNumberOfPages = function() {
+        if(cachedPageCount == 0) {
+            $scope.refreshNumberOfPages();
+        }
+        return cachedPageCount;
+    };
+
+    // Refresh the page count (less redundant filtering)
+    $scope.refreshNumberOfPages = function() {
+        cachedPageCount = Math.ceil(($filter("filter")($scope.model.codeElements, $scope.search)).length / $scope.model.pageSize);
+        return cachedPageCount;
+    };
+
+    
+    // Change the currentPage when the pageSize is changed.
+    var oldValueForPageSize = 10;
+    $scope.pageSizeChanged = function() {
+        var topmostCodeElement = $scope.model.currentPage * oldValueForPageSize;
+        $scope.model.currentPage = Math.floor(topmostCodeElement / $scope.model.pageSize);
+        oldValueForPageSize = $scope.model.pageSize;
+        $scope.refreshNumberOfPages;
+    };
+    
+    $scope.sortOrderChanged = function(){
+        var selection = parseInt($scope.model.sortOrderSelection);
+        switch (selection) {
+        case 1:
+        case 2:
+            $scope.model.sortOrder = "koodiArvo";
+            break;
+        case 3:
+        case 4:
+            $scope.model.sortOrder = "name";
+            break;
+        case 5:
+        case 6:
+            $scope.model.sortOrder = "versio";
+            break;
+
+        default:
+            break;
+        }
+
+        switch (selection) {
+        case 1:
+        case 3:
+        case 5:
+            $scope.model.sortOrderReversed = false;
+            break;
+        case 2:
+        case 4:
+        case 6:
+            $scope.model.sortOrderReversed = true;
+            break;
+
+        default:
+            break;
+        }
+};
+
+    // When user changes the search string the page count changes and the current page must be adjusted
+    $scope.filterChangedPageCount = function() {
+        currentNumberOfPages = $scope.refreshNumberOfPages();
+        if ($scope.model.currentPage >= currentNumberOfPages) {
+            $scope.model.currentPage = currentNumberOfPages - 1;
+        }
+        if (currentNumberOfPages != 0 && $scope.model.currentPage < 0){
+            $scope.model.currentPage = 0;
+        }
+    };
+    
+    $scope.changePage = function(i){
+        $scope.model.currentPage = i;
+    };
+    
+    $scope.incrementPage = function(i){
+        var newPageNumber = $scope.model.currentPage + i;
+        if(newPageNumber > -1 && newPageNumber < $scope.getNumberOfPages()){
+            $scope.model.currentPage = newPageNumber;
+        }
+
+    };
 }
+
+// Filter used to slice array to start pagination from correct location
+app.filter('startFrom', function() {
+    return function(input, start) {
+        start = +start; // parse to int
+        return input.slice(start);
+    };
+});
+
+app.filter('forLoop', function() {
+    return function(input, start, end) {
+        input = new Array(end - start);
+        for (var i = 0; start < end; start++, i++) {
+            input[i] = start;
+        }
+        return input;
+    };
+});
