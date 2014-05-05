@@ -5,8 +5,6 @@ package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.generic.model.BaseEntity;
 import org.codehaus.jackson.map.annotate.JsonView;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -39,7 +37,6 @@ public class Koodi extends BaseEntity {
     private String koodiUri;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodi", cascade = CascadeType.REMOVE)
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<KoodiVersio> koodiVersios = new HashSet<KoodiVersio>();
 
     public Koodisto getKoodisto() {

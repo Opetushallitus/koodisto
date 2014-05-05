@@ -45,8 +45,6 @@ public interface KoodistoBusinessService {
 
     KoodistoVersio updateKoodisto(UpdateKoodistoDataType updateKoodistoData);
 
-    KoodistoVersio createNewVersion(String koodistoUri, String koodiUri, boolean preserveOldRelations);
-
     boolean koodistoExists(String koodistoUri);
 
     boolean koodistoExists(String koodistoUri, Integer koodistoVersio);
@@ -58,4 +56,6 @@ public interface KoodistoBusinessService {
 
     void addRelation(String ylaKoodisto, String alaKoodisto, SuhteenTyyppi suhteenTyyppi);
     void removeRelation(String ylakoodistoUri, List<String> alakoodistoUris, SuhteenTyyppi st);
+
+	boolean hasAnyRelation(String koodistoUri, String anotherKoodistoUri);
 }

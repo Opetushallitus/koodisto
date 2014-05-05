@@ -3,22 +3,15 @@
  */
 package fi.vm.sade.koodisto.service.business.impl;
 
-import fi.vm.sade.authentication.business.service.Authorizer;
-import fi.vm.sade.generic.common.DateHelper;
-import fi.vm.sade.koodisto.dao.*;
-import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
-import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
-import fi.vm.sade.koodisto.service.business.UriTransliterator;
-import fi.vm.sade.koodisto.service.business.exception.*;
-import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
-import fi.vm.sade.koodisto.service.impl.KoodistoRole;
-import fi.vm.sade.koodisto.service.types.*;
-import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
-import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -27,7 +20,59 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
+import fi.vm.sade.authentication.business.service.Authorizer;
+import fi.vm.sade.generic.common.DateHelper;
+import fi.vm.sade.koodisto.dao.KoodiDAO;
+import fi.vm.sade.koodisto.dao.KoodiMetadataDAO;
+import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
+import fi.vm.sade.koodisto.dao.KoodinSuhdeDAO;
+import fi.vm.sade.koodisto.dao.KoodistoDAO;
+import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
+import fi.vm.sade.koodisto.dao.KoodistoVersioKoodiVersioDAO;
+import fi.vm.sade.koodisto.model.Koodi;
+import fi.vm.sade.koodisto.model.KoodiMetadata;
+import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.KoodinSuhde;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
+import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.business.UriTransliterator;
+import fi.vm.sade.koodisto.service.business.exception.KoodiKuvausEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiLyhytNimiEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiNimiEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiNotInKoodistoException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiOptimisticLockingException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiUriEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiValueNotUniqueException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiVersioHasRelationsException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiVersionNumberEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoUriEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoVersionNumberEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.SearchCriteriaEmptyException;
+import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
+import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
+import fi.vm.sade.koodisto.service.impl.KoodistoRole;
+import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
+import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
+import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoVersioSelectionType;
+import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
+import fi.vm.sade.koodisto.service.types.SearchKoodisVersioSelectionType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodiTilaType;
+import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
+import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
+import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 
 /**
  * @author tommiha
@@ -284,7 +329,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         KoodiVersio latestYlakoodi = ylakoodi;
 
         if (SuhteenTyyppi.SISALTYY.equals(suhteenTyyppi)) {
-            koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri(), ylakoodi.getKoodi().getKoodiUri(), true);
+            koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri());
 
             latestYlakoodi = createNewVersion(getLatestKoodiVersio(ylakoodi.getKoodi().getKoodiUri()));
         }
@@ -337,7 +382,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         KoodiVersio ylakoodi = getLatestKoodiVersio(ylakoodiUri);
         if (SuhteenTyyppi.SISALTYY.equals(st)) {
-            koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri(), ylakoodi.getKoodi().getKoodiUri(), true);
+            koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri());
             createNewVersion(getLatestKoodiVersio(ylakoodiUri));
         }
 
@@ -786,6 +831,20 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             searchData.setKoodiSearchCriteria(new SearchKoodisCriteriaType());
         }
         searchData.getKoodiSearchCriteria().setValidAt(DateHelper.DateToXmlCal(new Date()));
+    }
+    
+    @Override
+    public boolean hasRelationBetweenCodeElements(KoodiVersio ylaKoodiVersio, final KoodiVersio alaKoodiVersio) {
+    	return Iterables.tryFind(ylaKoodiVersio.getAlakoodis(), new Predicate<KoodinSuhde>() {
+
+			@Override
+			public boolean apply(KoodinSuhde input) {
+				System.out.println(input.getAlakoodiVersio());
+				System.out.println(alaKoodiVersio);
+				return input.getAlakoodiVersio().equals(alaKoodiVersio);
+			}
+    		
+    	}).isPresent();
     }
 
 }
