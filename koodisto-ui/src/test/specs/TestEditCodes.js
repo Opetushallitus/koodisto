@@ -1,14 +1,22 @@
 describe("Edit codes test", function() {
     
-    var model, scope, mockBackend;
+    var model, scope, mockBackend, q;
     
     beforeEach(module("koodisto", function ($provide) {
 	$provide.value('NoCacheInterceptor', {});
+	$provide.value('AuthService', {
+	    updateOph : function(parameter) {
+		var deferred = q.defer();
+		deferred.resolve();
+		return deferred.promise;
+	    }
+	});
     }));
 
-    beforeEach(inject(function ($controller, $injector, $rootScope, $routeParams, CodesEditorModel) {	
+    beforeEach(inject(function ($controller, $injector, $rootScope, $routeParams, CodesEditorModel, $q) {	
 	scope = $rootScope.$new();
 	model = CodesEditorModel;
+	q = $q;
 	$routeParams.codesUri = "espoonoikeudet";
 	$routeParams.codesVersion = 1;
 	controller = $controller("CodesEditorController", {$scope: scope, CodesEditorModel : model});
