@@ -41,7 +41,7 @@
             <div class="offset2 span10 form-inline">
                 <input type="text" maxlength="50"
                        placeholder="{{'codes.viewpage.codeelements.search.placeholder' | i18n}}" ng-model="model.query"/>
-                <select ng-model="model.showCode" ng-options="c as c for c in model.shownCodes" ng-change="getCodeElements()">
+                <select ng-model="model.showCode" ng-options="c for c in model.shownCodes | unique" ng-change="getCodeElements()">
                 </select>
              </div>
         </div>

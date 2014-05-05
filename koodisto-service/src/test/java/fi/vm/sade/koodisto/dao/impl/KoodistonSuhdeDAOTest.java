@@ -1,6 +1,9 @@
 package fi.vm.sade.koodisto.dao.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
+import java.util.Arrays;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +21,9 @@ import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
 import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
@@ -36,6 +41,7 @@ public class KoodistonSuhdeDAOTest {
 	@Autowired
 	private KoodistoVersioDAO versionDAO;
 	
+	@Transactional
 	@Test
 	public void copiesRelationsFromOldKoodistonVersioToNewOne() {
 		KoodistoVersio original = versionDAO.read(new Long(1));
@@ -54,6 +60,22 @@ public class KoodistonSuhdeDAOTest {
 		assertRelations(original, newVersion);
 	}
 	
+	@Test
+	public void deleRelations() {
+		KoodistonSuhde toBeDeleted = suhdeDAO.read(new Long(5));
+		KoodistoUriAndVersioType yla = getKoodistoUriAndVersioType(versionDAO.read(toBeDeleted.getYlakoodistoVersio().getId()));
+		KoodistoUriAndVersioType ala = getKoodistoUriAndVersioType(versionDAO.read(toBeDeleted.getAlakoodistoVersio().getId()));
+		suhdeDAO.deleteRelations(yla, Arrays.asList(ala), toBeDeleted.getSuhteenTyyppi());
+		assertNull(suhdeDAO.read(toBeDeleted.getId()));
+	}
+	
+	private KoodistoUriAndVersioType getKoodistoUriAndVersioType(KoodistoVersio versio) {
+		KoodistoUriAndVersioType type = new KoodistoUriAndVersioType();
+		type.setKoodistoUri(versio.getKoodisto().getKoodistoUri());
+		type.setVersio(versio.getVersio());
+		return type;
+	}
+
 	private void assertRelations(KoodistoVersio original, KoodistoVersio newVersion) {
 		assertEquals(original.getYlakoodistos().size(), newVersion.getYlakoodistos().size());
 		assertEquals(original.getAlakoodistos().size(), newVersion.getAlakoodistos().size());
