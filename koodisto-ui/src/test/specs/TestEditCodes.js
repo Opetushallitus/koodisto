@@ -75,28 +75,26 @@ describe("Edit codes test", function() {
 	
 	var relationCodes = jQuery.extend({}, codesBeingEdited); 
 	
-	expectGETS = function() {
+	beforeEach(function() {
+	    mockBackend.expectGET(SERVICE_URL_BASE + "codes").respond([]);
 	    mockBackend.expectGET(SERVICE_URL_BASE + "codes/espoonoikeudet/1").respond(codesBeingEdited);
 	    mockBackend.expectGET(SERVICE_URL_BASE + "codes").respond([]); //requests this twice, but why?
 	    mockBackend.expectGET("/organisaatio-service/rest/organisaatio/1.2.246.562.10.90008375488").respond({"nimi" : {
 		    "fi" : "Espoon kaupunki"
 	    }});
-	}
-	
-	beforeEach(function() {
-	    mockBackend.expectGET(SERVICE_URL_BASE + "codes").respond([]);
-	    expectGETS();
 	    mockBackend.flush();
 	})
 	
 	it("Error message will be shown when relation is being removed", function() {
-//	    scope.model.removeFromWithinCodes(relationCodes);
-//	    scope.okconfirm();
-//	    mockBackend.expectGET("confirmModalContent.html").respond("<br />");
-//	    mockBackend.expectPOST(SERVICE_URL_BASE + "codes/removerelation/espoonoikeudet/espoonoikeudet/SISALTYY").respond(500, "");
-//	    expectGETS();
-//	    mockBackend.flush();	    
-//	    expect(scope.model.alerts.length).toEqual(1);
+	    scope.model.modalInstance = {
+		    close: jasmine.createSpy('modalInstance.close')
+	    }
+	    scope.model.withinRelationToRemove = relationCodes;
+	    scope.okconfirm();
+	    mockBackend.expectPOST(SERVICE_URL_BASE + "codes/removerelation/espoonoikeudet/espoonoikeudet/SISALTYY").respond(500, "");
+	    mockBackend.flush();	    
+	    expect(scope.model.alerts.length).toEqual(1);
+	    expect(scope.model.modalInstance.close).toHaveBeenCalledWith();
 	})
 	
 	it("Error message will be shown when relation is being added", function() {
