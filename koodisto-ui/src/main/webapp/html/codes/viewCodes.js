@@ -403,6 +403,15 @@ function ViewCodesController($scope, $location, $filter, $routeParams, ViewCodes
         return cachedPageCount;
     };
 
+    // Refresh the page count when the model changes
+    var cachedElementCount = 0;
+    $scope.$watch('model.codeElements', function(){
+        if($scope.model.codeElements.length != cachedElementCount){
+            $scope.refreshNumberOfPages();
+            cachedElementCount = $scope.model.codeElements.length;
+        }
+    });
+    
     // Refresh the page count (less redundant filtering)
     $scope.refreshNumberOfPages = function() {
         cachedPageCount = Math.ceil(($filter("filter")($scope.model.codeElements, $scope.search)).length / $scope.model.pageSize);
