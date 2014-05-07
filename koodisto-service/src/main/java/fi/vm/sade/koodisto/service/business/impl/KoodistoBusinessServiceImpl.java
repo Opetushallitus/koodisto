@@ -125,9 +125,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Override
     public void addRelation(String ylaKoodisto, String alaKoodisto, SuhteenTyyppi suhteenTyyppi) {
-    	if(ylaKoodisto.equalsIgnoreCase(alaKoodisto)) {
-    		throw new KoodistonSuhdeInvalidArgumentException("codesrelation.creating.relation.with.itself");
-    	}
     	if(this.hasAnyRelation(ylaKoodisto, alaKoodisto)) {
     		throw new KoodistosAlreadyHaveSuhdeException("codes.already.have.relation");
     	}
@@ -168,7 +165,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Override
     public void removeRelation(String ylakoodistoUri, List<String> alakoodistoUris, SuhteenTyyppi st) {
-    	if (alakoodistoUris != null && !alakoodistoUris.isEmpty()) {
+        if (alakoodistoUris != null && !alakoodistoUris.isEmpty()) {
             removeRelations(ylakoodistoUri, alakoodistoUris, st);
         }
     }
