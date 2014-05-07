@@ -364,7 +364,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 		for(KoodistonSuhde koodistonSuhde : koodistoVersio.getYlakoodistos()) {
             Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getMetadatas());
             Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getKoodisto());
-        }
+        }		
         for(KoodistonSuhde koodistonSuhde : koodistoVersio.getAlakoodistos()) {
             Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getMetadatas());
             Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getKoodisto());
@@ -374,6 +374,9 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         }
         for(KoodistoVersio versio : koodistoVersio.getKoodisto().getKoodistoVersios()) {
             Hibernate.initialize(versio);
+        }
+        if(!(koodistoVersio.getKoodisto().getLatestKoodistoVersioNumber() > koodistoVersio.getVersio())) {
+        	stripKoodistonSuhdesFromKoodistoVersioThatAreNotInTheLatestKoodistoVersio(koodistoVersio);
         }
 	}
 
@@ -400,6 +403,22 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         
         return result.get(0);
     }
+    
+    private void stripKoodistonSuhdesFromKoodistoVersioThatAreNotInTheLatestKoodistoVersio(KoodistoVersio koodistoVersio) {
+    	stripKoodistonSuhdesFromKoodistoVersioThatAreNotInTheLatestKoodistoVersio(koodistoVersio, true);
+    	stripKoodistonSuhdesFromKoodistoVersioThatAreNotInTheLatestKoodistoVersio(koodistoVersio, false);
+    }
+
+	private void stripKoodistonSuhdesFromKoodistoVersioThatAreNotInTheLatestKoodistoVersio(KoodistoVersio koodistoVersio, boolean fromAlaKoodistos) {
+		Iterator<KoodistonSuhde> suhdes = fromAlaKoodistos ? koodistoVersio.getAlakoodistos().iterator() : koodistoVersio.getYlakoodistos().iterator();
+    	while(suhdes.hasNext()) {
+    		KoodistonSuhde suhde = suhdes.next();
+    		KoodistoVersio kv = fromAlaKoodistos ? suhde.getAlakoodistoVersio() : suhde.getYlakoodistoVersio();
+    		if (kv.getKoodisto().getLatestKoodistoVersioNumber() > kv.getVersio()) {
+    			suhdes.remove();
+    		}
+    	}
+	}
 
     private KoodistoVersio createNewVersion(KoodistoVersio latest) {
         authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD, KoodistoRole.UPDATE);
