@@ -476,7 +476,6 @@ function ViewCodesController($scope, $location, $filter, $routeParams, ViewCodes
         if(newPageNumber > -1 && newPageNumber < $scope.getNumberOfPages()){
             $scope.model.currentPage = newPageNumber;
         }
-
     };
 }
 

@@ -322,70 +322,67 @@
 
 			<div class="row-fluid">
 
-				<div>
+				{{(model.codeElements  |  filter:search ).length }} {{'codes.viewpage.codeelements.pagination.hakutulosta' | i18n}}
+				<div class="pagination">
+					<ul>
+						<li ng-click="incrementPage(-1)"><span>&#8592;</span></li>
 
-					{{model.codeElements.length}} {{'codes.viewpage.codeelements.pagination.hakutulosta' | i18n}}
-					<div class="pagination">
-						<ul>
-							<li ng-click="incrementPage(-1)"><span>&#8592;</span></li>
+						<li ng-if="getNumberOfPages() <= 9"
+							ng-repeat="i in [] | forLoop:0:getNumberOfPages()"
+							ng-class="{disabled: (i==model.currentPage)}"><a
+							ng-click="changePage(i)">{{i+1}}</a>
+						<li ng-if="getNumberOfPages() > 9 && model.currentPage < 5"
+							ng-repeat="i in [] | forLoop:0:6"
+							ng-class="{disabled: (i==model.currentPage)}"><a
+							ng-click="changePage(i)">{{i+1}}</a>
+						<li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5"
+							ng-repeat="i in [] | forLoop:0:3"
+							ng-class="{disabled: (i==model.currentPage)}"><a
+							ng-click="changePage(i)">{{i+1}}</a>
+						<li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5">
+							<span>...</span></li>
+						<li
+							ng-if="getNumberOfPages() > 9 && model.currentPage >= 5 && model.currentPage < getNumberOfPages()-5"
+							ng-repeat="i in [] | forLoop:model.currentPage-1:model.currentPage+2"
+							ng-class="{disabled: (i==model.currentPage)}">
+							<a ng-click="changePage(i)">{{i+1}}</a>
+						</li>
+						<li
+							ng-if="getNumberOfPages() > 9 && model.currentPage < getNumberOfPages()-5">
+							<span>...</span></li>
+						<li
+							ng-if="getNumberOfPages() > 9 && model.currentPage > getNumberOfPages()-6"
+							ng-repeat="i in [] | forLoop:getNumberOfPages()-6:getNumberOfPages()"
+							ng-class="{disabled: (i==model.currentPage)}">
+							<a ng-click="changePage(i)">{{i+1}}</a>
+						</li>
+						<li
+							ng-if="getNumberOfPages() > 9 && model.currentPage <= getNumberOfPages()-6"
+							ng-repeat="i in [] | forLoop:getNumberOfPages()-3:getNumberOfPages()"
+							ng-class="{disabled: (i==model.currentPage)}">
+							<a ng-click="changePage(i)">{{i+1}}</a>
+						</li>
 
-							<li ng-if="getNumberOfPages() <= 9"
-								ng-repeat="i in [] | forLoop:0:getNumberOfPages()"
-								ng-class="{disabled: (i==model.currentPage)}"><a
-								ng-click="changePage(i)">{{i+1}}</a>
-							<li ng-if="getNumberOfPages() > 9 && model.currentPage < 5"
-								ng-repeat="i in [] | forLoop:0:6"
-								ng-class="{disabled: (i==model.currentPage)}"><a
-								ng-click="changePage(i)">{{i+1}}</a>
-							<li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5"
-								ng-repeat="i in [] | forLoop:0:3"
-								ng-class="{disabled: (i==model.currentPage)}"><a
-								ng-click="changePage(i)">{{i+1}}</a>
-							<li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5">
-								<span>...</span></li>
-							<li
-								ng-if="getNumberOfPages() > 9 && model.currentPage >= 5 && model.currentPage < getNumberOfPages()-5"
-								ng-repeat="i in [] | forLoop:model.currentPage-1:model.currentPage+2"
-								ng-class="{disabled: (i==model.currentPage)}">
-								<a ng-click="changePage(i)">{{i+1}}</a>
-							</li>
-							<li
-								ng-if="getNumberOfPages() > 9 && model.currentPage < getNumberOfPages()-5">
-								<span>...</span></li>
-							<li
-								ng-if="getNumberOfPages() > 9 && model.currentPage > getNumberOfPages()-6"
-								ng-repeat="i in [] | forLoop:getNumberOfPages()-6:getNumberOfPages()"
-								ng-class="{disabled: (i==model.currentPage)}">
-								<a ng-click="changePage(i)">{{i+1}}</a>
-							</li>
-							<li
-								ng-if="getNumberOfPages() > 9 && model.currentPage <= getNumberOfPages()-6"
-								ng-repeat="i in [] | forLoop:getNumberOfPages()-3:getNumberOfPages()"
-								ng-class="{disabled: (i==model.currentPage)}">
-								<a ng-click="changePage(i)">{{i+1}}</a>
-							</li>
-
-							<li ng-click="incrementPage(1)"><span>&#8594;</span></li>
-						</ul>
-					</div>
-						{{'codes.viewpage.codeelements.pagination.nayta' | i18n}}
-						<select ng-model="model.pageSize"
-							ng-options="n for n in model.pageSizeOptions"
-							ng-change="pageSizeChanged()"
-							style="width:auto;">
-						</select>
-						<select
-							ng-model="model.sortOrderSelection"
-							ng-change="sortOrderChanged()"
-							style="width:auto;">
-							<option value="1">{{'codes.viewpage.codeelements.pagination.koodiarvo' | i18n}}</option>
-							<option value="2">{{'codes.viewpage.codeelements.pagination.koodiarvoRev' | i18n}}</option>
-							<option value="3">{{'codes.viewpage.codeelements.pagination.koodinimi' | i18n}}</option>
-							<option value="4">{{'codes.viewpage.codeelements.pagination.koodinimiRev' | i18n}}</option>
-							<option value="5">{{'codes.viewpage.codeelements.pagination.koodiversio' | i18n}}</option>
-							<option value="6">{{'codes.viewpage.codeelements.pagination.koodiversioRev' | i18n}}</option>
-						</select>
+						<li ng-click="incrementPage(1)"><span>&#8594;</span></li>
+					</ul>
 				</div>
+				{{'codes.viewpage.codeelements.pagination.nayta' | i18n}}
+				<select ng-model="model.pageSize"
+					ng-options="n for n in model.pageSizeOptions"
+					ng-change="pageSizeChanged()"
+					style="width:auto;">
+				</select>
+				<select
+					ng-model="model.sortOrderSelection"
+					ng-change="sortOrderChanged()"
+					style="width:auto;">
+					<option value="1">{{'codes.viewpage.codeelements.pagination.koodiarvo' | i18n}}</option>
+					<option value="2">{{'codes.viewpage.codeelements.pagination.koodiarvoRev' | i18n}}</option>
+					<option value="3">{{'codes.viewpage.codeelements.pagination.koodinimi' | i18n}}</option>
+					<option value="4">{{'codes.viewpage.codeelements.pagination.koodinimiRev' | i18n}}</option>
+					<option value="5">{{'codes.viewpage.codeelements.pagination.koodiversio' | i18n}}</option>
+					<option value="6">{{'codes.viewpage.codeelements.pagination.koodiversioRev' | i18n}}</option>
+				</select>
 			</div>
 			<table class="table">
 				<thead>
