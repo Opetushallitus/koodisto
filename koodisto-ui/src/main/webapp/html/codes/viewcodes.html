@@ -366,15 +366,18 @@
 						<li ng-click="incrementPage(1)"><span>&#8594;</span></li>
 					</ul>
 				</div>
-				{{'codes.viewpage.codeelements.pagination.nayta' | i18n}}
+				<label for="page_size_select">{{'codes.viewpage.codeelements.pagination.nayta'
+				| i18n}}</label>
 				<select ng-model="model.pageSize"
 					ng-options="n for n in model.pageSizeOptions"
 					ng-change="pageSizeChanged()"
+					id="page_size_select"
 					style="width:auto;">
 				</select>
 				<select
 					ng-model="model.sortOrderSelection"
 					ng-change="sortOrderChanged()"
+					id="ordering_select"
 					style="width:auto;">
 					<option value="1">{{'codes.viewpage.codeelements.pagination.koodiarvo' | i18n}}</option>
 					<option value="2">{{'codes.viewpage.codeelements.pagination.koodiarvoRev' | i18n}}</option>

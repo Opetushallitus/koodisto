@@ -152,7 +152,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 codeElementUri : codeElementUri
             }, function(result) {
                 for (var i = 0; i < result.length; i++) {
-                    result[i].name = getLanguageSpecificValue(result[i].metadata, 'lyhytNimi', 'FI');
+                    result[i].name = getLanguageSpecificValue(result[i].metadata, 'nimi', 'FI');
                     model.codeElements.push(result[i]);
                 }
             });
