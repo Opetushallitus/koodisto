@@ -5,10 +5,12 @@ describe("Application Test", function() {
     var CodeElementVersionsByCodeElementUri, LatestCodeElementVersionsByCodeElementUri, NewCodeElement, DeleteCodeElement, RemoveRelationCodeElement;
     var AddRelationCodeElement, AddRelationCodes, RemoveRelationCodes, UpdateCodeElement;
     var Organizations, OrganizationChildrenByOid, OrganizationByOid;
+    var scope;
     
     beforeEach(module("koodisto"));
     beforeEach(function () {
-        inject(function ($injector) {
+        inject(function ($injector, $rootScope) {
+            scope = $rootScope;
             RootCodes = $injector.get('RootCodes');
             NewCodes = $injector.get('NewCodes');
             DeleteCodes = $injector.get('DeleteCodes');
@@ -83,4 +85,41 @@ describe("Application Test", function() {
 	expect(OrganizationChildrenByOid).toBeDefined();
 	expect(OrganizationByOid).toBeDefined();
     });
+    
+    describe("Test natural ordering", function() {
+	var compile;
+	
+	beforeEach(inject(function($compile) {
+	    compile = $compile;
+	}))
+	
+	createElementAndCompile = function(elementString) {
+	    var element = angular.element(elementString);
+	    compile(element)(scope);
+	    scope.$digest();
+	    return element
+	}
+	
+	assertOutputOrder = function(element, expected) {
+	    var childValues = "";
+	    angular.forEach(element.children(), function(child) {
+		childValues = childValues + child.textContent;
+	    })
+	    expect(childValues).toBe(expected);
+	}
+	
+	it("Sorts string array naturally", function() {
+	    scope.stringArray = ["a10", "cba", "abc", "a2", "3", "10", "11"];
+	    var element = createElementAndCompile("<ul><li ng-repeat='value in stringArray | naturalSort'>{{value}}</li></ul>");
+	    assertOutputOrder(element, "31011a2a10abccba");
+	})
+	
+	it("Sorts object array by fieldname", function() {
+	    scope.objectArray = [{content: "a1"}, {content: "a10"}, {content: "a2"}];
+	    var naturalSort = 'naturalSort:"content"';
+	    var element = createElementAndCompile("<ul><li ng-repeat='value in objectArray | " + naturalSort + " '>{{value.content}}</li></ul>");
+	    assertOutputOrder(element, "a1a2a10");
+	})
+    })
+    
 });

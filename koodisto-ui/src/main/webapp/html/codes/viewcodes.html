@@ -370,7 +370,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="codeElement in model.codeElements |  filter:search | orderBy:'koodiArvo'">
+                <tr ng-repeat="codeElement in model.codeElements |  filter:search | naturalSort:'koodiArvo'">
                     <td>
                         {{codeElement.koodiArvo}}
                     </td>

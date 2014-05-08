@@ -242,6 +242,17 @@ app.factory('OrganizationByOid', function ($resource) {
     });
 });
 
+app.filter('naturalSort', function() {
+    return function(arrInput, field) {
+	var arr = arrInput.sort(function(a, b) {
+	    var valueA = field ? "a." + field : "a"; 
+	    var valueB = field ? "b." + field : "b";
+	    return naturalSort(eval(valueA), eval(valueB));
+	});
+	return arr;
+    }
+})
+
 function getLanguageSpecificValue(fieldArray,fieldName,language) {
     var returnStr = "";
     if (fieldArray) {
