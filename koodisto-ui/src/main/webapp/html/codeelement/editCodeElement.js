@@ -89,7 +89,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                 var ce = {};
                 ce.uri = codeElementUri;
                 ce.value = result.koodiArvo;
-                ce.name = model.languageSpecificValue(result.metadata, 'lyhytNimi', 'FI');
+                ce.name = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
                 list.push(ce);
             });
         };
@@ -401,7 +401,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
                     return codeElement.koodiUri == element.uri;
                 }).length > 0;
                 ce.value = codeElement.koodiArvo;
-                ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'lyhytNimi', 'FI');
+                ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'nimi', 'FI');
                 toBeShown.push(ce);
             });
 

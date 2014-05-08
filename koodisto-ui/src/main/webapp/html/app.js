@@ -243,13 +243,13 @@ app.factory('OrganizationByOid', function ($resource) {
 });
 
 app.filter('naturalSort', function() {
-    return function(arrInput, field) {
+    return function(arrInput, field, reverse) {
 	var arr = arrInput.sort(function(a, b) {
 	    var valueA = field ? "a." + field : "a"; 
 	    var valueB = field ? "b." + field : "b";
-	    return naturalSort(eval(valueA), eval(valueB));
+	    return naturalSort(eval(valueA).toLowerCase(), eval(valueB).toLowerCase());
 	});
-	return arr;
+	return reverse? arr.reverse(): arr;
     }
 })
 

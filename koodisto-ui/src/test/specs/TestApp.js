@@ -120,6 +120,12 @@ describe("Application Test", function() {
 	    var element = createElementAndCompile("<ul><li ng-repeat='value in objectArray | " + naturalSort + " '>{{value.content}}</li></ul>");
 	    assertOutputOrder(element, "a1a2a10");
 	})
+	
+	it("Sorts strings in reverse"), function() {
+	    scope.stringArray = ["abc", "bca", "f10"];
+	    var element = createElementAndCompile("<ul><li ng-repeat='value in stringArray | naturalSort:reverse'>{{value}}</li></ul>");
+	    assertOutputOrder(element, "f10bcaabc");
+	}
     })
     
 });
