@@ -121,11 +121,11 @@ describe("Application Test", function() {
 	    assertOutputOrder(element, "a1a2a10");
 	})
 	
-	it("Sorts strings in reverse"), function() {
+	it("Sorts strings in reverse", function() {
 	    scope.stringArray = ["abc", "bca", "f10"];
-	    var element = createElementAndCompile("<ul><li ng-repeat='value in stringArray | naturalSort:reverse'>{{value}}</li></ul>");
+	    var element = createElementAndCompile("<ul><li ng-repeat='value in stringArray | naturalSort:value:true'>{{value}}</li></ul>");
 	    assertOutputOrder(element, "f10bcaabc");
-	}
+	})
     })
     
 });
