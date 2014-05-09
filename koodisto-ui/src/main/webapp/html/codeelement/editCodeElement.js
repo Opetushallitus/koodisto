@@ -414,18 +414,26 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
         var name = $scope.model.addToListName;
         CodesByUriAndVersion.get({codesUri: $scope.model.codeElement.koodisto.koodistoUri, codesVersion: 0}, function (result) {
 
+            function getCodesUris(relationArray) {
+        	var codesUris = [];
+        	angular.forEach(relationArray, function(value) { 
+        	    codesUris.push(value.codesUri);
+        	})        	
+        	return codesUris;
+            }
+            
             if (name === 'withincodes') {
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
                     showCodeElementsInCodeSet($scope.model.allWithinCodeElements, $scope.model.withinCodeElements);
                 }
-                $scope.model.shownCodes=result.withinCodes;
+                $scope.model.shownCodes=getCodesUris(result.withinCodes);
                 $scope.model.shownCodeElements = $scope.model.allWithinCodeElements;
 
             } else if (name === 'includescodes') {
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
                     showCodeElementsInCodeSet($scope.model.allIncludesCodeElements, $scope.model.includesCodeElements);
                 }
-                $scope.model.shownCodes=result.includesCodes;
+                $scope.model.shownCodes=getCodesUris(result.includesCodes);
                 $scope.model.shownCodeElements = $scope.model.allIncludesCodeElements;
 
 
@@ -433,7 +441,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
                     showCodeElementsInCodeSet($scope.model.allLevelsWithCodeElements, $scope.model.levelsWithCodeElements);
                 }
-                $scope.model.shownCodes=result.levelsWithCodes;
+                $scope.model.shownCodes=getCodesUris(result.levelsWithCodes);
                 $scope.model.shownCodeElements = $scope.model.allLevelsWithCodeElements;
             }
 
