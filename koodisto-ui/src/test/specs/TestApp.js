@@ -126,6 +126,12 @@ describe("Application Test", function() {
 	    var element = createElementAndCompile("<ul><li ng-repeat='value in stringArray | naturalSort:value:true'>{{value}}</li></ul>");
 	    assertOutputOrder(element, "f10bcaabc");
 	})
+	
+	it("Handles numbers properly", function() {
+	    scope.numberArray = [106,21,19,17,20,100,105,3,1000,2001,5213,6213,4,5,6,107,99];
+	    var element = createElementAndCompile("<ul><li ng-repeat='value in numberArray | naturalSort:value'>{{value}}</li></ul>");
+	    assertOutputOrder(element, "345617192021991001051061071000200152136213");
+	})
     })
     
 });
