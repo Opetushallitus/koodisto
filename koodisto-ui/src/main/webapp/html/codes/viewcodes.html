@@ -224,12 +224,14 @@
 						<thead>
 							<tr>
 								<th>{{'codes.editpage.codes' | i18n}}</th>
+								<th>{{'codes.editpage.codes.version' | i18n}}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr
 								ng-repeat="codes in model.withinCodes | unique:'name' | orderBy:'name'">
 								<td class="align-center">{{codes.name}}</td>
+								<td class="align-center">{{codes.versio}}</td>
 							</tr>
 						</tbody>
 					</table>
@@ -254,12 +256,14 @@
 						<thead>
 							<tr>
 								<th>{{'codes.editpage.codes' | i18n}}</th>
+								<th>{{'codes.editpage.codes.version' | i18n}}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr
 								ng-repeat="codes in model.includesCodes | unique:'name' | orderBy:'name'">
 								<td class="align-center">{{codes.name}}</td>
+								<td class="align-center">{{codes.versio}}</td>
 							</tr>
 						</tbody>
 					</table>
@@ -285,12 +289,14 @@
 						<thead>
 							<tr>
 								<th>{{'codes.editpage.codes' | i18n}}</th>
+								<th>{{'codes.editpage.codes.version' | i18n}}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr
 								ng-repeat="codes in model.levelsWithCodes | unique:'name' | orderBy:'name'">
 								<td class="align-center">{{codes.name}}</td>
+								<td class="align-center">{{codes.versio}}</td>
 							</tr>
 						</tbody>
 					</table>

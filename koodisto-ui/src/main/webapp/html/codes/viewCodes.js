@@ -109,13 +109,14 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             });
         };
 
-        this.getLatestCodesVersionsByCodesUri = function(codesUri, list) {
+        this.getLatestCodesVersionsByCodesUri = function(codes, list) {
             CodesByUri.get({
-                codesUri : codesUri
-            }, function(result) {
+                codesUri : codes.codesUri
+            }, function(result) {        	
                 var ce = {};
-                ce.uri = codesUri;
+                ce.uri = codes.codesUri;
                 ce.name = getLanguageSpecificValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
+                ce.versio = codes.codesVersion;
                 list.push(ce);
             });
         };
