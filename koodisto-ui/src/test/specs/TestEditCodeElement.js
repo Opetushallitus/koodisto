@@ -1,12 +1,20 @@
 describe("Code Element Edit test", function() {
     
-    var model, scope, mockBackend;
+    var model, scope, mockBackend, q;
     
     beforeEach(module("koodisto", function ($provide) {
 	$provide.value('NoCacheInterceptor', {});
+	$provide.value('AuthService', {
+	    updateOph : function(parameter) {
+		var deferred = q.defer();
+		deferred.resolve();
+		return deferred.promise;
+	    }
+	});
     }));
 
-    beforeEach(inject(function ($controller, $injector, $rootScope, $routeParams, CodeElementEditorModel) {	
+    beforeEach(inject(function ($controller, $injector, $rootScope, $routeParams, CodeElementEditorModel, $q) {
+	q = $q;
 	scope = $rootScope.$new();
 	model = CodeElementEditorModel;
 	$routeParams.codeElementUri = "versiointitesti_uudi";
