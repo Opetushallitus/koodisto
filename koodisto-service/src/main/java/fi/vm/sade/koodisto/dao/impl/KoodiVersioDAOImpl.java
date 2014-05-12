@@ -371,6 +371,8 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
     @Override
     @Transactional
     public List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisCriteriaType searchCriteria) {
+        if(searchCriteriaIsBlank(searchCriteria)) return new ArrayList<KoodiVersioWithKoodistoItem>();
+        
         EntityManager em = getEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Tuple> criteriaQuery = cb.createTupleQuery();
@@ -393,6 +395,21 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
 
         List<Tuple> result = query.getResultList();
         return convertSearchResultSet(result);
+    }
+
+    private boolean searchCriteriaIsBlank(SearchKoodisCriteriaType searchCriteria) {
+        if(!StringUtils.isBlank(searchCriteria.getKoodiArvo())) return false;
+        if(searchCriteria.getKoodiVersio() != null) return false;
+        if(searchCriteria.getValidAt() != null) return false;
+
+        boolean isBlank = true;
+        for (String s : searchCriteria.getKoodiUris()) {
+            if(!StringUtils.isBlank(s)){
+                System.out.println(s);
+                isBlank = false;
+            }
+        }
+        return isBlank;
     }
 
     private static Subquery<Integer> selectMaxVersionSubQuery(CriteriaBuilder cb, CriteriaQuery<Tuple> criteriaQuery, SearchKoodisCriteriaType searchCriteria,
