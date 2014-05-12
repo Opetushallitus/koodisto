@@ -84,13 +84,13 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             });
         };
 
-        this.getLatestCodeElementVersionsByCodeElementUri = function(codeElementUri, list) {
-            LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElementUri}, function (result) {
+        this.getLatestCodeElementVersionsByCodeElementUri = function(codeElement, list) {
+            LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElement.codeElementUri}, function (result) {
                 var ce = {};
-                ce.uri = codeElementUri;
+                ce.uri = codeElement.codeElementUri;
                 ce.value = result.koodiArvo;
                 ce.name = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
-                ce.versio = result.versio;
+                ce.versio = codeElement.codeElementVersion;
                 list.push(ce);
             });
         };
