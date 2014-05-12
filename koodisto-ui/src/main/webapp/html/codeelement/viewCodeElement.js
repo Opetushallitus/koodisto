@@ -76,6 +76,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
                 ce.uri = codeElementUri;
                 ce.name = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
                 ce.description = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
+                ce.versio = result.versio;
                 CodesByUri.get({codesUri: result.koodisto.koodistoUri}, function (result) {
                     ce.codesname = model.languageSpecificValue(result.latestKoodistoVersio.metadata,'nimi','FI');
                 });

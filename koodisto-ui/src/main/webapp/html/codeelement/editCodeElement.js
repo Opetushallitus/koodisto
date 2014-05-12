@@ -90,6 +90,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                 ce.uri = codeElementUri;
                 ce.value = result.koodiArvo;
                 ce.name = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
+                ce.versio = result.versio;
                 list.push(ce);
             });
         };
