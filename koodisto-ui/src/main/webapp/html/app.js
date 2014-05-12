@@ -249,7 +249,9 @@ app.filter('naturalSort', function() {
 	    var valueB = field ? "b." + field : "b";
 	    valueA = eval(valueA);
 	    valueB = eval(valueB);
-	    return naturalSort(isNaN(valueA) ? valueA.trim().toLowerCase() : valueA, isNaN(valueB) ? valueB.trim().toLowerCase() : valueB);
+	    var aIsString = typeof valueA === 'string';
+	    var bIsString = typeof valueB === 'string';
+	    return naturalSort(aIsString ? valueA.trim().toLowerCase() : valueA, bIsString ? valueB.trim().toLowerCase() : valueB);
 	});
 	return reverse? arr.reverse(): arr;
     }
