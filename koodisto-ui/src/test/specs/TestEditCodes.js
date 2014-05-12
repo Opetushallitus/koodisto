@@ -109,7 +109,6 @@ describe("Edit codes test", function() {
 	})
 	
 	it("Error message will be shown when relation is being added", function() {
-	    console.log(relationCodes);
 	    scope.addToWithinCodes(relationCodes);
 	    mockBackend.expectPOST(SERVICE_URL_BASE + "codes/addrelation/espoonoikeudet/espoonoikeudet/SISALTYY").respond(500, "");
 	    mockBackend.flush();

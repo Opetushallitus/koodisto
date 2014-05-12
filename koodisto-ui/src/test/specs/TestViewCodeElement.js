@@ -138,7 +138,10 @@ describe("Code Element View test", function() {
 		    "sisaltaaKoodiston" : null,
 		    "kieli" : "FI"
 		} ],
-		"withinCodeElements" : [ "relaatiotesti" ],
+		"withinCodeElements" : [{
+		    "codeElementUri" : "relaatiotesti",
+		    "codeElementVersion" : 2
+		}],
 		"includesCodeElements" : [ ],
 		"levelsWithCodeElements" : [ ]
 	    }

@@ -54,9 +54,7 @@ describe("Code Element Edit test", function() {
 		}
 	};
 	
-	givenCodeElementWithRelation = function() {
-	    mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/latest/relaatiotesti").respond(codeElementRelation);
-	    return {
+	var codeElementWithRelation = {
 		"koodiUri" : "versiointitesti_uudi",
 		"resourceUri" : "http://koodistopalvelu.opintopolku.fi/versiointitesti/koodi/versiointitesti_uudi",
 		"version" : 1,
@@ -83,13 +81,16 @@ describe("Code Element Edit test", function() {
 		    "sisaltaaKoodiston" : null,
 		    "kieli" : "FI"
 		} ],
-		"withinCodeElements" : [],
-		"includesCodeElements" : [ "relaatiotesti" ],
+		"withinCodeElements" : [ ],
+		"includesCodeElements" : [{
+		    "codeElementUri" : "relaatiotesti",
+		    "codeElementVersion" : 3
+		}],
 		"levelsWithCodeElements" : [ ]
-	    }
-	};
+	}
 	
 	var codeElementRelation = {
+		"koodiUri" : "relaatiotesti",
 		"koodisto" : {
 		    "koodistoUri" : "relaatiotestikoodisto"
 		},
@@ -102,7 +103,8 @@ describe("Code Element Edit test", function() {
 	
 	beforeEach(function() {
 	    mockBackend.expectGET(SERVICE_URL_BASE + "codes").respond([]);
-	    mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(givenCodeElementWithRelation())
+	    mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(codeElementWithRelation)
+	    mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/latest/relaatiotesti").respond(codeElementRelation);
 	    mockBackend.flush();
 	})
 	
