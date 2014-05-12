@@ -138,6 +138,12 @@ describe("Application Test", function() {
 	    var element = createElementAndCompile("<ul><li ng-repeat='value in numberArray | naturalSort:value'>{{value}}</li></ul>");
 	    assertOutputOrder(element, "123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778798081828384858687888990919293949596979899100101102103104105106107108109110111112113114115116117118119120121122123124125126");
 	})
+	
+	it("Handles leading and trailing whitespace", function() {
+	    scope.mixedArray = ["3 ", " 17 ", "1", " 2", " bca", " abc", "cdu", " cia "];
+	    var element = createElementAndCompile("<ul><li ng-repeat='value in mixedArray | naturalSort:value'>{{value}}</li></ul>");
+	    assertOutputOrder(element, "1 23  17  abc bcacdu cia ");
+	})
     })
     
 });

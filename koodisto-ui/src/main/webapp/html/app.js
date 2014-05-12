@@ -249,7 +249,7 @@ app.filter('naturalSort', function() {
 	    var valueB = field ? "b." + field : "b";
 	    valueA = eval(valueA);
 	    valueB = eval(valueB);
-	    return naturalSort(isNaN(valueA) ? valueA.toLowerCase() : valueA, isNaN(valueB) ? valueB.toLowerCase() : valueB);
+	    return naturalSort(isNaN(valueA) ? valueA.trim().toLowerCase() : valueA, isNaN(valueB) ? valueB.trim().toLowerCase() : valueB);
 	});
 	return reverse? arr.reverse(): arr;
     }
