@@ -1,17 +1,17 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
-import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
-import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
-import fi.vm.sade.koodisto.dto.KoodistoItemDto;
-import fi.vm.sade.koodisto.model.KoodinSuhde;
-import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.util.Iterator;
+import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
+import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
+import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
+import fi.vm.sade.koodisto.dto.KoodistoItemDto;
+import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.KoodinSuhde;
+import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 
 
 @Component("koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter")
@@ -31,46 +31,29 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
 
         converted.setKoodiArvo(source.getKoodiVersio().getKoodiarvo());
         converted.setKoodiUri(source.getKoodiVersio().getKoodi().getKoodiUri());
-        if (source.getKoodiVersio().getYlakoodis() != null && source.getKoodiVersio().getYlakoodis().size() > 0) {
-            Iterator itr = source.getKoodiVersio().getYlakoodis().iterator();
-            while(itr.hasNext()) {
-                KoodinSuhde koodinSuhde = (KoodinSuhde)itr.next();
-
-                switch (koodinSuhde.getSuhteenTyyppi()) {
-                    case RINNASTEINEN:
-                        if (koodinSuhde.getYlakoodiVersio() != null) {
-                            converted.getLevelsWithCodeElements().add(koodinSuhde.getYlakoodiVersio().getKoodi().getKoodiUri());
-                        }
-                        break;
-                    case SISALTYY:
-                        if (koodinSuhde.getYlakoodiVersio() != null) {
-                            converted.getWithinCodeElements().add(koodinSuhde.getYlakoodiVersio().getKoodi().getKoodiUri());
-                        }
-                        break;
-                }
-            }
+        for(KoodinSuhde koodinSuhde : source.getKoodiVersio().getYlakoodis()) {
+        	KoodiVersio koodiVersio = koodinSuhde.getYlakoodiVersio();
+        	switch (koodinSuhde.getSuhteenTyyppi()) {
+        	case RINNASTEINEN:
+        		converted.getLevelsWithCodeElements().add(new RelationCodeElement(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio()));
+        		break;
+        	case SISALTYY:
+        		converted.getWithinCodeElements().add(new RelationCodeElement(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio()));
+        		break;
+        	}
         }
-        if (source.getKoodiVersio().getAlakoodis() != null && source.getKoodiVersio().getAlakoodis().size() > 0) {
-            Iterator itr = source.getKoodiVersio().getAlakoodis().iterator();
-            while(itr.hasNext()) {
-                KoodinSuhde koodinSuhde = (KoodinSuhde)itr.next();
-
-                switch (koodinSuhde.getSuhteenTyyppi()) {
-                    case RINNASTEINEN:
-                        if (koodinSuhde.getAlakoodiVersio() != null) {
-                            converted.getLevelsWithCodeElements().add(koodinSuhde.getAlakoodiVersio().getKoodi().getKoodiUri());
-                        }
-                        break;
-                    case SISALTYY:
-                        if (koodinSuhde.getAlakoodiVersio() != null) {
-                            converted.getIncludesCodeElements().add(koodinSuhde.getAlakoodiVersio().getKoodi().getKoodiUri());
-                        }
-                        break;
-                }
-            }
+        for(KoodinSuhde koodinSuhde : source.getKoodiVersio().getAlakoodis()) {
+        	KoodiVersio koodiVersio = koodinSuhde.getAlakoodiVersio();
+        	switch (koodinSuhde.getSuhteenTyyppi()) {
+        	case RINNASTEINEN:
+        		converted.getLevelsWithCodeElements().add(new RelationCodeElement(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio()));
+        		break;
+        	case SISALTYY:
+        		converted.getIncludesCodeElements().add(new RelationCodeElement(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio()));
+        		break;
+        	}
         }
-
-
+        
         converted.getMetadata().addAll(source.getKoodiVersio().getMetadatas());
         converted.setPaivitysPvm(source.getKoodiVersio().getPaivitysPvm());
         converted.setTila(source.getKoodiVersio().getTila());

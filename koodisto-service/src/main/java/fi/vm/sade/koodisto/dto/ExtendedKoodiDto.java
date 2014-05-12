@@ -3,6 +3,7 @@ package fi.vm.sade.koodisto.dto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.Tila;
+
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;
@@ -50,13 +51,13 @@ public class ExtendedKoodiDto {
     protected List<KoodiMetadata> metadata = new ArrayList<KoodiMetadata>();
 
     @JsonView({JsonViews.Extended.class})
-    protected List<String> withinCodeElements = new ArrayList<String>();
+    protected List<RelationCodeElement> withinCodeElements = new ArrayList<RelationCodeElement>();
 
     @JsonView({JsonViews.Extended.class})
-    protected List<String> includesCodeElements = new ArrayList<String>();
+    protected List<RelationCodeElement> includesCodeElements = new ArrayList<RelationCodeElement>();
 
     @JsonView({JsonViews.Extended.class})
-    protected List<String> levelsWithCodeElements = new ArrayList<String>();
+    protected List<RelationCodeElement> levelsWithCodeElements = new ArrayList<RelationCodeElement>();
 
 
     public String getKoodiUri() {
@@ -147,27 +148,39 @@ public class ExtendedKoodiDto {
         this.version = version;
     }
 
-    public List<String> getWithinCodeElements() {
+    public List<RelationCodeElement> getWithinCodeElements() {
         return withinCodeElements;
     }
 
-    public void setWithinCodeElements(final List<String> withinCodeElements) {
+    public void setWithinCodeElements(final List<RelationCodeElement> withinCodeElements) {
         this.withinCodeElements = withinCodeElements;
     }
 
-    public List<String> getIncludesCodeElements() {
+    public List<RelationCodeElement> getIncludesCodeElements() {
         return includesCodeElements;
     }
 
-    public void setIncludesCodeElements(final List<String> includesCodeElements) {
+    public void setIncludesCodeElements(final List<RelationCodeElement> includesCodeElements) {
         this.includesCodeElements = includesCodeElements;
     }
 
-    public List<String> getLevelsWithCodeElements() {
+    public List<RelationCodeElement> getLevelsWithCodeElements() {
         return levelsWithCodeElements;
     }
 
-    public void setLevelsWithCodeElements(final List<String> levelsWithCodeElements) {
+    public void setLevelsWithCodeElements(final List<RelationCodeElement> levelsWithCodeElements) {
         this.levelsWithCodeElements = levelsWithCodeElements;
+    }
+    
+    public static class RelationCodeElement {
+    	@JsonView({JsonViews.Extended.class})
+    	public final String codeElementUri;
+    	@JsonView({JsonViews.Extended.class})
+    	public final Integer codeElementVersion;
+    	
+    	public RelationCodeElement(String codeElementUri, Integer codeElementVersion) {
+			this.codeElementUri = codeElementUri;
+			this.codeElementVersion = codeElementVersion;
+		}
     }
 }
