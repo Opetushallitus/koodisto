@@ -84,12 +84,13 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             });
         };
 
-        this.getLatestCodeElementVersionsByCodeElementUri = function(codeElementUri, list) {
-            LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElementUri}, function (result) {
+        this.getLatestCodeElementVersionsByCodeElementUri = function(codeElement, list) {
+            LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElement.codeElementUri}, function (result) {
                 var ce = {};
-                ce.uri = codeElementUri;
+                ce.uri = codeElement.codeElementUri;
                 ce.value = result.koodiArvo;
-                ce.name = model.languageSpecificValue(result.metadata, 'lyhytNimi', 'FI');
+                ce.name = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
+                ce.versio = codeElement.codeElementVersion;
                 list.push(ce);
             });
         };
@@ -401,7 +402,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
                     return codeElement.koodiUri == element.uri;
                 }).length > 0;
                 ce.value = codeElement.koodiArvo;
-                ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'lyhytNimi', 'FI');
+                ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'nimi', 'FI');
                 toBeShown.push(ce);
             });
 
@@ -414,18 +415,26 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
         var name = $scope.model.addToListName;
         CodesByUriAndVersion.get({codesUri: $scope.model.codeElement.koodisto.koodistoUri, codesVersion: 0}, function (result) {
 
+            function getCodesUris(relationArray) {
+        	var codesUris = [];
+        	angular.forEach(relationArray, function(value) { 
+        	    codesUris.push(value.codesUri);
+        	})        	
+        	return codesUris;
+            }
+            
             if (name === 'withincodes') {
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
                     showCodeElementsInCodeSet($scope.model.allWithinCodeElements, $scope.model.withinCodeElements);
                 }
-                $scope.model.shownCodes=result.withinCodes;
+                $scope.model.shownCodes=getCodesUris(result.withinCodes);
                 $scope.model.shownCodeElements = $scope.model.allWithinCodeElements;
 
             } else if (name === 'includescodes') {
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
                     showCodeElementsInCodeSet($scope.model.allIncludesCodeElements, $scope.model.includesCodeElements);
                 }
-                $scope.model.shownCodes=result.includesCodes;
+                $scope.model.shownCodes=getCodesUris(result.includesCodes);
                 $scope.model.shownCodeElements = $scope.model.allIncludesCodeElements;
 
 
@@ -433,7 +442,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
                     showCodeElementsInCodeSet($scope.model.allLevelsWithCodeElements, $scope.model.levelsWithCodeElements);
                 }
-                $scope.model.shownCodes=result.levelsWithCodes;
+                $scope.model.shownCodes=getCodesUris(result.levelsWithCodes);
                 $scope.model.shownCodeElements = $scope.model.allLevelsWithCodeElements;
             }
 

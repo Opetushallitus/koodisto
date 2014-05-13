@@ -198,12 +198,14 @@
                         <thead>
                         <tr>
                             <th>{{'codeelement.editpage.codeelement' | i18n}}</th>
+                            <th>{{'codeelement.viewpage.version' | i18n}}</th>
                             <th>{{'codes.delete' | i18n}}</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr ng-repeat="codeElement in model.withinCodeElements | orderBy:'name'">
                             <td class="align-center">{{codeElement.name}}</td>
+                            <td class="align-center">{{codeElement.versio}}</td>
                             <td class="align-center">
                                 <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromWithinCodeElements(codeElement)"></i>
                             </td>
@@ -228,12 +230,14 @@
                     <thead>
                     <tr>
                         <th>{{'codeelement.editpage.codeelement' | i18n}}</th>
+                        <th>{{'codeelement.viewpage.version' | i18n}}</th>
                         <th>{{'codes.delete' | i18n}}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="codeElement in model.includesCodeElements | orderBy:'name'">
                         <td class="align-center">{{codeElement.name}}</td>
+                        <td class="align-center">{{codeElement.versio}}</td>
                         <td class="align-center">
                             <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromIncludesCodeElements(codeElement)"></i>
                         </td>
@@ -258,12 +262,14 @@
                     <thead>
                     <tr>
                         <th>{{'codeelement.editpage.codeelement' | i18n}}</th>
+                        <th>{{'codeelement.viewpage.version' | i18n}}</th>
                         <th>{{'codes.delete' | i18n}}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:'name'">
                         <td class="align-center">{{codeElement.name}}</td>
+                        <td class="align-center">{{codeElement.versio}}</td>
                         <td class="align-center">
                             <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromLevelsWithCodeElements(codeElement)"></i>
                         </td>

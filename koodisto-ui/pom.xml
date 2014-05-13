@@ -5,7 +5,7 @@
     <parent>
         <artifactId>koodisto</artifactId>
         <groupId>fi.vm.sade.koodisto</groupId>
-        <version>9.1-SNAPSHOT</version>
+        <version>10.1-SNAPSHOT</version>
     </parent>
     <artifactId>koodisto-ui</artifactId>
     <packaging>war</packaging>
@@ -53,6 +53,22 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+
+			<plugin>
+				<groupId>com.github.klieber</groupId>
+				<artifactId>phantomjs-maven-plugin</artifactId>
+				<version>0.3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>install</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<version>1.9.2</version>
+				</configuration>
+			</plugin>
             
             <plugin>
                 <groupId>com.github.searls</groupId>
@@ -66,6 +82,10 @@
                     </execution>
                 </executions>
                 <configuration>
+                	<webDriverClassName>org.openqa.selenium.phantomjs.PhantomJSDriver</webDriverClassName>
+            		<webDriverCapabilities>
+              			<phantomjs.binary.path>${phantomjs.binary}</phantomjs.binary.path>
+            		</webDriverCapabilities>
                     <preloadSources>
                         <source>${project.basedir}/src/main/webapp/jslib/jquery-2.0.3.min.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.15/angular.js</source>
@@ -75,6 +95,7 @@
                         <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.15/angular-sanitize.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.15/angular-animate.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/ui-bootstrap-0.6.0.min.js</source>
+                        <source>${project.basedir}/src/main/webapp/jslib/naturalSort.js</source>
                     </preloadSources>
                     <jsSrcDir>${project.basedir}/src/main/webapp</jsSrcDir>
                     <sourceExcludes>

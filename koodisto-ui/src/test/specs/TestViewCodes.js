@@ -70,9 +70,6 @@ describe("Codes View test", function() {
 	})
 	
 	it("Editing old version of codes is prevented", function() {
-	    mockBackend.expectGET(SERVICE_URL_BASE + "codes/espoonoikeudet/1").respond(givenCodesResponse(true));
-	    model.init("espoonoikeudet", 1);
-	    mockBackend.flush();
 	    expect(model.editState).toEqual("disabled");
 	})
 	
@@ -81,6 +78,69 @@ describe("Codes View test", function() {
 	    model.init("espoonoikeudet", 2);
 	    mockBackend.flush();
 	    expect(model.editState).toEqual("");
+	})
+    })
+    
+    describe("Relations", function() {
+	
+	function givenCodesWithRelationsResponse() {
+	    mockBackend.expectGET(SERVICE_URL_BASE + "codes/kauniaisenkoodit").respond( {
+		"latestKoodistoVersio" : [{
+		    "metadata": [{
+			"kieli" : "FI",
+			"nimi" : "Kauniaisen koodit"
+		    }]
+		}]
+	    })
+	    mockBackend.expectGET("/organisaatio-service/rest/organisaatio/1.2.246.562.10.90008375488").respond({"nimi" : {
+		    "fi" : "Espoon kaupunki"
+	    }});
+	    mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/codes/espoonoikeudet/1").respond([]);
+	    return {
+		    "koodistoUri" : "espoonoikeudet",
+		    "resourceUri" : "http://koodistopalvelu.opintopolku.fi/espoonoikeudet",
+		    "omistaja" : null,
+		    "organisaatioOid" : "1.2.246.562.10.90008375488",
+		    "lukittu" : null,
+		    "codesGroupUri" : "876876",
+		    "version" : 3,
+		    "versio" : 1,
+		    "paivitysPvm" : 1397543271409,
+		    "voimassaAlkuPvm" : "2014-04-11",
+		    "voimassaLoppuPvm" : "2014-04-15",
+		    "tila" : "HYVAKSYTTY",
+		    "metadata" : [ {
+		      "kieli" : "FI",
+		      "nimi" : "Espoon oikeudet",
+		      "kuvaus" : "faefaewf",
+		      "kayttoohje" : null,
+		      "kasite" : null,
+		      "kohdealue" : null,
+		      "sitovuustaso" : null,
+		      "kohdealueenOsaAlue" : null,
+		      "toimintaymparisto" : null,
+		      "tarkentaaKoodistoa" : null,
+		      "huomioitavaKoodisto" : null,
+		      "koodistonLahde" : null
+		    } ],
+		    "codesVersions" : [ 1 ],
+		    "withinCodes" : [ {
+			"codesUri": "kauniaisenkoodit",
+			"codesVersion": 2
+		    } ],
+		    "includesCodes" : [ ],
+		    "levelsWithCodes" : [ ]
+		  }
+	}
+	
+	beforeEach(function() {
+	    mockBackend.expectGET(SERVICE_URL_BASE + "codes/espoonoikeudet/1").respond(givenCodesWithRelationsResponse());
+	    mockBackend.flush();
+	})
+	
+	it("Should contain version number of codes relation references", function() {
+	    expect(model.withinCodes.length).toEqual(1);
+	    expect(model.withinCodes[0].versio).toEqual(2);
 	})
     })
 })

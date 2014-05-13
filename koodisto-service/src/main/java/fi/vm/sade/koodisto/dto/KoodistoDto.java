@@ -43,13 +43,13 @@ public class KoodistoDto extends AbstractKoodistoDto {
     private List<Integer> codesVersions;
 
     @JsonView({JsonViews.Extended.class})
-    protected List<String> withinCodes = new ArrayList<String>();
+    protected List<RelationCodes> withinCodes = new ArrayList<RelationCodes>();
 
     @JsonView({JsonViews.Extended.class})
-    protected List<String> includesCodes = new ArrayList<String>();
+    protected List<RelationCodes> includesCodes = new ArrayList<RelationCodes>();
 
     @JsonView({JsonViews.Extended.class})
-    protected List<String> levelsWithCodes = new ArrayList<String>();
+    protected List<RelationCodes> levelsWithCodes = new ArrayList<RelationCodes>();
 
     public int getVersio() {
         return versio;
@@ -123,27 +123,39 @@ public class KoodistoDto extends AbstractKoodistoDto {
         this.codesVersions = codesVersions;
     }
 
-    public List<String> getWithinCodes() {
+    public List<RelationCodes> getWithinCodes() {
         return withinCodes;
     }
 
-    public void setWithinCodes(final List<String> withinCodes) {
+    public void setWithinCodes(final List<RelationCodes> withinCodes) {
         this.withinCodes = withinCodes;
     }
 
-    public List<String> getIncludesCodes() {
+    public List<RelationCodes> getIncludesCodes() {
         return includesCodes;
     }
 
-    public void setIncludesCodes(final List<String> includesCodes) {
+    public void setIncludesCodes(final List<RelationCodes> includesCodes) {
         this.includesCodes = includesCodes;
     }
 
-    public List<String> getLevelsWithCodes() {
+    public List<RelationCodes> getLevelsWithCodes() {
         return levelsWithCodes;
     }
 
-    public void setLevelsWithCodes(final List<String> levelsWithCodes) {
+    public void setLevelsWithCodes(final List<RelationCodes> levelsWithCodes) {
         this.levelsWithCodes = levelsWithCodes;
+    }
+    
+    public static class RelationCodes {
+    	@JsonView({JsonViews.Extended.class})
+    	public final String codesUri;
+    	@JsonView({JsonViews.Extended.class})
+    	public final Integer codesVersion;
+    	
+    	public RelationCodes(String codesUri, Integer codesVersion) {
+			this.codesUri = codesUri;
+			this.codesVersion = codesVersion;
+		}
     }
 }

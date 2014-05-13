@@ -3,15 +3,16 @@ package fi.vm.sade.koodisto.service.impl.conversion.koodisto;
 import fi.vm.sade.generic.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
+import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistonSuhde;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Component("koodistoVersioToKoodistoDtoConverter")
@@ -26,43 +27,31 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         KoodistoDto converted = new KoodistoDto();
         converted.setKoodistoUri(source.getKoodisto().getKoodistoUri());
 
-        if (source.getYlakoodistos() != null && source.getYlakoodistos().size() > 0) {
-            Iterator itr = source.getYlakoodistos().iterator();
-            while(itr.hasNext()) {
-                KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
-
-                switch (koodistonSuhde.getSuhteenTyyppi()) {
-                    case RINNASTEINEN:
-                        if (koodistonSuhde.getYlakoodistoVersio() != null) {
-                            converted.getLevelsWithCodes().add(koodistonSuhde.getYlakoodistoVersio().getKoodisto().getKoodistoUri());
-                        }
-                        break;
-                    case SISALTYY:
-                        if (koodistonSuhde.getYlakoodistoVersio() != null) {
-                            converted.getWithinCodes().add(koodistonSuhde.getYlakoodistoVersio().getKoodisto().getKoodistoUri());
-                        }
-                        break;
-                }
-            }
+        for(KoodistonSuhde koodistonSuhde : source.getYlakoodistos()) {
+        	if (koodistonSuhde.getYlakoodistoVersio() != null) {
+        		KoodistoVersio relatedKoodisto = koodistonSuhde.getYlakoodistoVersio();
+        		switch (koodistonSuhde.getSuhteenTyyppi()) {
+        		case RINNASTEINEN:
+        			converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
+        			break;
+        		case SISALTYY: 
+        			converted.getWithinCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
+        			break;
+        		}
+        	}
         }
-        if (source.getAlakoodistos() != null && source.getAlakoodistos().size() > 0) {
-            Iterator itr = source.getAlakoodistos().iterator();
-            while(itr.hasNext()) {
-                KoodistonSuhde koodistonSuhde = (KoodistonSuhde)itr.next();
-
-                switch (koodistonSuhde.getSuhteenTyyppi()) {
-                    case RINNASTEINEN:
-                        if (koodistonSuhde.getAlakoodistoVersio() != null) {
-                            converted.getLevelsWithCodes().add(koodistonSuhde.getAlakoodistoVersio().getKoodisto().getKoodistoUri());
-                        }
-                        break;
-                    case SISALTYY:
-                        if (koodistonSuhde.getAlakoodistoVersio() != null) {
-                            converted.getIncludesCodes().add(koodistonSuhde.getAlakoodistoVersio().getKoodisto().getKoodistoUri());
-                        }
-                        break;
-                }
-            }
+        for(KoodistonSuhde koodistonSuhde : source.getAlakoodistos()) {
+        	if (koodistonSuhde.getAlakoodistoVersio() != null) {
+        		KoodistoVersio relatedKoodisto = koodistonSuhde.getAlakoodistoVersio();
+        		switch (koodistonSuhde.getSuhteenTyyppi()) {
+        		case RINNASTEINEN:
+        			converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
+        			break;
+        		case SISALTYY: 
+        			converted.getIncludesCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
+        			break;
+        		}
+        	}
         }
 
 
