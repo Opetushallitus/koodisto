@@ -5,7 +5,7 @@
     <parent>
         <artifactId>koodisto</artifactId>
         <groupId>fi.vm.sade.koodisto</groupId>
-        <version>10.1-SNAPSHOT</version>
+        <version>9.4</version>
     </parent>
     <artifactId>koodisto-ui</artifactId>
     <packaging>war</packaging>
