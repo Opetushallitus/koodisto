@@ -70,12 +70,13 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
                 });
             });
         };
-        this.getLatestCodeElementVersionsByCodeElementUri = function(codeElementUri, list) {
-            LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElementUri}, function (result) {
+        this.getLatestCodeElementVersionsByCodeElementUri = function(codeElement, list) {
+            LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElement.codeElementUri}, function (result) {
                 var ce = {};
-                ce.uri = codeElementUri;
+                ce.uri = codeElement.codeElementUri;                
                 ce.name = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
                 ce.description = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
+                ce.versio = codeElement.codeElementVersion;
                 CodesByUri.get({codesUri: result.koodisto.koodistoUri}, function (result) {
                     ce.codesname = model.languageSpecificValue(result.latestKoodistoVersio.metadata,'nimi','FI');
                 });

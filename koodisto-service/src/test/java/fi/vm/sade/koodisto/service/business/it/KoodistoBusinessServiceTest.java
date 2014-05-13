@@ -4,6 +4,7 @@ import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
@@ -182,4 +183,14 @@ public class KoodistoBusinessServiceTest {
     	koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.RINNASTEINEN);
     	koodistoBusinessService.addRelation("suhde501kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY);
     }
+    
+    @Test
+    public void onlyFetchesRelationsThatArePartOfTheLatestVersion() {
+    	assertEquals(1, koodistoBusinessService.getLatestKoodistoVersio("vaintuoreimmatrelaatiot").getAlakoodistos().size());
+    }
+    
+    @Test
+    public void willFetchRelationsForOlderVersions() {
+    	assertEquals(2, koodistoBusinessService.getKoodistoVersio("vaintuoreimmatrelaatiot", 1).getAlakoodistos().size());
+    }      
 }

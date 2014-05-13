@@ -184,12 +184,14 @@
                     <thead>
                     <tr>
                         <th>{{'codes.editpage.codes' | i18n}}</th>
+                        <th>{{'codes.editpage.codes.version' | i18n}}</th>
                         <th>{{'codes.delete' | i18n}}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="codes in model.withinCodes | unique:'name' | orderBy:'name'">
                         <td class="align-center">{{codes.name}}</td>
+                        <td class="align-center">{{codes.versio}}</td>
                         <td class="align-center">
                             <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromWithinCodes(codes)"></i>
                         </td>
@@ -214,12 +216,14 @@
                     <thead>
                     <tr>
                         <th>{{'codes.editpage.codes' | i18n}}</th>
+                        <th>{{'codes.editpage.codes.version' | i18n}}</th>
                         <th>{{'codes.delete' | i18n}}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="codes in model.includesCodes | unique:'name' | orderBy:'name'">
                         <td class="align-center">{{codes.name}}</td>
+                        <td class="align-center">{{codes.versio}}</td>
                         <td class="align-center">
                             <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromIncludesCodes(codes)"></i>
                         </td>
@@ -244,12 +248,14 @@
                     <thead>
                     <tr>
                         <th>{{'codes.editpage.codes' | i18n}}</th>
+                        <th>{{'codes.editpage.codes.version' | i18n}}</th>
                         <th>{{'codes.delete' | i18n}}</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr ng-repeat="codes in model.levelsWithCodes | unique:'name' | orderBy:'name'">
                         <td class="align-center">{{codes.name}}</td>
+                        <td class="align-center">{{codes.versio}}</td>
                         <td class="align-center">
                             <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromLevelsWithCodes(codes)"></i>
                         </td>

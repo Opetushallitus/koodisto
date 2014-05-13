@@ -406,17 +406,19 @@ public class KoodistoJsonRESTServiceTest {
     @Test
     public void testSearchKoodis() throws Exception {
         // all
-        assertEquals(175, koodistoJsonRESTService.searchKoodis(null, null, null, null, null, null).size());
+        assertEquals(0, koodistoJsonRESTService.searchKoodis(null, null, null, null, null, null).size()); // Empty search disabled for performance reasons
         // by koodiuri
         assertEquals(1, koodistoJsonRESTService.searchKoodis(Arrays.asList("475"), null, null, null, null, null).size());
         // by koodiarvo
         assertEquals(6, koodistoJsonRESTService.searchKoodis(null, "3", null, null, null, null).size());
         // by tila
-        assertEquals(15, koodistoJsonRESTService.searchKoodis(null, null, Arrays.asList(TilaType.LUONNOS, TilaType.PASSIIVINEN), null, null, null).size());
+        assertEquals(0, koodistoJsonRESTService.searchKoodis(null, null, Arrays.asList(TilaType.LUONNOS, TilaType.PASSIIVINEN), null, null, null).size());  // Empty search disabled for performance reasons
+        assertEquals(1, koodistoJsonRESTService.searchKoodis(null, "27", Arrays.asList(TilaType.LUONNOS, TilaType.PASSIIVINEN), null, null, null).size());
         // by validAtDate
         assertEquals(134, koodistoJsonRESTService.searchKoodis(null, null, null, "2013-01-01", null, null).size());
         // by versio & versioselectiontype
-        assertEquals(8, koodistoJsonRESTService.searchKoodis(null, null, null, null, 2, SearchKoodisVersioSelectionType.SPECIFIC).size());
+        assertEquals(0, koodistoJsonRESTService.searchKoodis(null, null, null, null, 2, SearchKoodisVersioSelectionType.SPECIFIC).size()); // Empty search disabled for performance reasons
+        assertEquals(2, koodistoJsonRESTService.searchKoodis(null, "versio 10", null, null, 10, SearchKoodisVersioSelectionType.SPECIFIC).size());
     }
 
     @Test

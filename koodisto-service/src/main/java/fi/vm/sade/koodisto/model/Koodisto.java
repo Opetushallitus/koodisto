@@ -93,6 +93,14 @@ public class Koodisto extends BaseEntity {
     public Set<KoodistoVersio> getKoodistoVersios() {
         return Collections.unmodifiableSet(koodistoVersios);
     }
+    
+    public int getLatestKoodistoVersioNumber() {
+    	int latestVersio = 1;
+    	for (KoodistoVersio kv : koodistoVersios) {
+    		latestVersio = kv.getVersio() > latestVersio ? kv.getVersio() : latestVersio;
+    	}
+    	return latestVersio;
+    }
 
     public void addKoodistoVersion(KoodistoVersio koodistoVersio) {
         this.koodistoVersios.add(koodistoVersio);

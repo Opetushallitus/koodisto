@@ -89,11 +89,12 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             });
         };
 
-        this.getLatestCodesVersionsByCodesUri = function(codesUri, list) {
-            CodesByUri.get({codesUri: codesUri}, function (result) {
+        this.getLatestCodesVersionsByCodesUri = function(codes, list) {
+            CodesByUri.get({codesUri: codes.codesUri}, function (result) {
                 var ce = {};
-                ce.uri = codesUri;
+                ce.uri = codes.codesUri;
                 ce.name = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
+                ce.versio = codes.codesVersion;
                 list.push(ce);
             });
         };
