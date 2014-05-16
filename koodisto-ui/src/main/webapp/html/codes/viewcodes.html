@@ -333,6 +333,8 @@
 					<ul>
 						<li ng-click="incrementPage(-1)"><span>&#8592;</span></li>
 
+						<li ng-if="getNumberOfPages() == 0" class="disabled"><a>0</a>
+
 						<li ng-if="getNumberOfPages() <= 9"
 							ng-repeat="i in [] | forLoop:0:getNumberOfPages()"
 							ng-class="{disabled: (i==model.currentPage)}"><a

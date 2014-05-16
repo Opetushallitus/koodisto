@@ -25,6 +25,16 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             this.allWithinCodeElements = [];
             this.allIncludesCodeElements = [];
             this.allLevelsWithCodeElements = [];
+            this.shownCodeElements = [];
+            
+            // Pagination
+            this.currentPage = 0;
+            this.pageSize = 10;
+            this.pageSizeOptions = [ 10, 50, 100, 200, 500 ];
+            this.sortOrder = "koodiArvo";
+            this.sortOrderSelection = 1;
+            this.sortOrderReversed = false;
+            
             model.getAllCodes();
             model.getCodeElement(scope, codeElementUri, codeElementVersion);
         };
@@ -166,7 +176,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
 
                         });
                     }
-                }
+                };
                 if (data.latestKoodistoVersio) {
                     CodeElementsByCodesUriAndVersion.get({codesUri: data.koodistoUri, codesVersion: data.latestKoodistoVersio.versio}, function (result) {
                         data.children = result;
@@ -181,9 +191,9 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
     return model;
 });
 
-function CodeElementEditorController($scope, $location, $routeParams, CodeElementEditorModel, UpdateCodeElement,
+function CodeElementEditorController($scope, $location, $routeParams, $filter, CodeElementEditorModel, UpdateCodeElement,
                                      AddRelationCodeElement, RemoveRelationCodeElement, ValidateService,
-                                     CodesByUriAndVersion,CodeElementsByCodesUriAndVersion,$modal, $filter) {
+                                     CodesByUriAndVersion,CodeElementsByCodesUriAndVersion,$modal) {
 
     $scope.model = CodeElementEditorModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
@@ -315,7 +325,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
     $scope.createCodes = function(data) {
         var ce = {};
         ce.uri = data.uri;
-        ce.name = data.name
+        ce.name = data.name;
         ce.value = data.value;
         return ce;
     };
@@ -335,7 +345,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
 	       codeElementUriToAdd: uriToBeAdded, relationType: relationTypeString}, function(result) {}
 	   );
 	}
-    }
+    };
     
     $scope.removeRelationsCodeElement = function(unselectedItems, collectionToRemoveFrom, relationTypeString, modelCodeElementIsHost) {
 	var itemsToRemove = [];
@@ -355,12 +365,12 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
 	        	collectionToRemoveFrom.splice(jQuery.inArray(codeElementToRemove, collectionToRemoveFrom), 1);
 	        }, function(error) {
 	            //TODO: this should be made to handle multiple instances and possibly to inform which removals did not succeed
-	            var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+	            var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
 	            $scope.model.alerts.push(alert);
 	        });
-	})
+	});
 	
-    }
+    };
     
 
 
@@ -390,7 +400,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
             $scope.removeRelationsCodeElement(unselectedItems, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
         }
         $scope.model.codeelementmodalInstance.close();
-    }
+    };
     
     showCodeElementsInCodeSet = function(toBeShown, existingSelections) {
 	toBeShown = [];
@@ -407,9 +417,9 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
             });
 
             $scope.model.shownCodeElements = toBeShown;
-
+            $scope.refreshNumberOfPages();
         });
-    }
+    };
 
     $scope.getCodeElements = function() {
         var name = $scope.model.addToListName;
@@ -419,7 +429,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
         	var codesUris = [];
         	angular.forEach(relationArray, function(value) { 
         	    codesUris.push(value.codesUri);
-        	})        	
+        	});        	
         	return codesUris;
             }
             
@@ -448,8 +458,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
 
 
         });
-
-    }
+    };
 
     $scope.show = function(name){
         $scope.model.showCode = '';
@@ -467,7 +476,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
                 }
             });
         }
-    }
+    };
 
     $scope.okconfirm = function() {
         if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
@@ -482,7 +491,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
                 codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "SISALTYY"},function(result) {
 
             }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
                 $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
@@ -496,7 +505,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
                 codeElementUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
 
             }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
                 $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
@@ -509,7 +518,7 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
             RemoveRelationCodeElement.put({codeElementUri: $scope.model.levelsRelationToRemove.uri,
                 codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "RINNASTEINEN"},function(result) {
             }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
                 $scope.model.alerts.push(alert);
             });
         }
@@ -525,4 +534,101 @@ function CodeElementEditorController($scope, $location, $routeParams, CodeElemen
         $scope.model.withinRelationToRemove = null;
         $scope.model.modalInstance.dismiss('cancel');
     };
+    
+    // Pagination
+
+    // Get the filtered page count
+    var cachedPageCount = 0;
+    $scope.getNumberOfPages = function() {
+        if(cachedPageCount == 0) {
+            $scope.refreshNumberOfPages();
+        }
+        return cachedPageCount;
+    };
+
+    // Refresh the page count when the model changes
+    var cachedElementCount = 0;
+    $scope.$watch('model.shownCodeElements', function(){
+        if($scope.model.shownCodeElements.length != cachedElementCount){
+            $scope.refreshNumberOfPages();
+            cachedElementCount = $scope.model.shownCodeElements.length;
+        }
+    });
+    
+    // Refresh the page count (less redundant filtering)
+    $scope.refreshNumberOfPages = function() {
+        cachedPageCount = Math.ceil(($filter("filter")($scope.model.shownCodeElements, $scope.search)).length / $scope.model.pageSize);
+        return cachedPageCount;
+    };
+
+    
+    // Change the currentPage when the pageSize is changed.
+    var oldValueForPageSize = 10;
+    $scope.pageSizeChanged = function() {
+        var topmostCodeElement = $scope.model.currentPage * oldValueForPageSize;
+        $scope.model.currentPage = Math.floor(topmostCodeElement / $scope.model.pageSize);
+        oldValueForPageSize = $scope.model.pageSize;
+        $scope.refreshNumberOfPages();
+    };
+    
+    $scope.sortOrderChanged = function(){
+        var selection = parseInt($scope.model.sortOrderSelection);
+        switch (selection) {
+        case 1:
+        case 2:
+            $scope.model.sortOrder = "koodiArvo";
+            break;
+        case 3:
+        case 4:
+            $scope.model.sortOrder = "name";
+            break;
+        case 5:
+        case 6:
+            $scope.model.sortOrder = "versio";
+            break;
+
+        default:
+            break;
+        }
+
+        switch (selection) {
+        case 1:
+        case 3:
+        case 5:
+            $scope.model.sortOrderReversed = false;
+            break;
+        case 2:
+        case 4:
+        case 6:
+            $scope.model.sortOrderReversed = true;
+            break;
+
+        default:
+            break;
+        }
+};
+
+    // When user changes the search string the page count changes and the current page must be adjusted
+    $scope.filterChangedPageCount = function() {
+        currentNumberOfPages = $scope.refreshNumberOfPages();
+        if ($scope.model.currentPage >= currentNumberOfPages) {
+            $scope.model.currentPage = currentNumberOfPages - 1;
+        }
+        if (currentNumberOfPages != 0 && $scope.model.currentPage < 0){
+            $scope.model.currentPage = 0;
+        }
+    };
+    
+    $scope.changePage = function(i){
+        $scope.model.currentPage = i;
+    };
+    
+    $scope.incrementPage = function(i){
+        var newPageNumber = $scope.model.currentPage + i;
+        if(newPageNumber > -1 && newPageNumber < $scope.getNumberOfPages()){
+            $scope.model.currentPage = newPageNumber;
+        }
+    };
+    
+    // Pagination ends
 }

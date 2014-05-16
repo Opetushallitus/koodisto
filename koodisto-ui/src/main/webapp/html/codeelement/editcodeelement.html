@@ -1,6 +1,74 @@
 
 <script type="text/ng-template" id="codeelement.html">
     <table class="table">
+
+		<div class="row-fluid">
+
+			{{(model.shownCodeElements  |  filter:search ).length }} {{'codes.viewpage.codeelements.pagination.hakutulosta' | i18n}}
+			<div class="pagination">
+				<ul>
+					<li ng-click="incrementPage(-1)"><span>&#8592;</span></li>
+					<li ng-if="getNumberOfPages() == 0" class="disabled"><a>0</a>
+						<li ng-if="getNumberOfPages() <= 9"
+						ng-repeat="i in [] | forLoop:0:getNumberOfPages()"
+						ng-class="{disabled: (i==model.currentPage)}"><a
+						ng-click="changePage(i)">{{i+1}}</a>
+					<li ng-if="getNumberOfPages() > 9 && model.currentPage < 5"
+						ng-repeat="i in [] | forLoop:0:6"
+						ng-class="{disabled: (i==model.currentPage)}"><a
+						ng-click="changePage(i)">{{i+1}}</a>
+					<li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5"
+						ng-repeat="i in [] | forLoop:0:3"
+						ng-class="{disabled: (i==model.currentPage)}"><a
+						ng-click="changePage(i)">{{i+1}}</a>
+					<li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5">
+						<span>...</span></li>
+					<li
+						ng-if="getNumberOfPages() > 9 && model.currentPage >= 5 && model.currentPage < getNumberOfPages()-5"
+						ng-repeat="i in [] | forLoop:model.currentPage-1:model.currentPage+2"
+						ng-class="{disabled: (i==model.currentPage)}">
+						<a ng-click="changePage(i)">{{i+1}}</a>
+					</li>
+					<li
+						ng-if="getNumberOfPages() > 9 && model.currentPage < getNumberOfPages()-5">
+						<span>...</span></li>
+					<li
+						ng-if="getNumberOfPages() > 9 && model.currentPage > getNumberOfPages()-6"
+						ng-repeat="i in [] | forLoop:getNumberOfPages()-6:getNumberOfPages()"
+						ng-class="{disabled: (i==model.currentPage)}">
+						<a ng-click="changePage(i)">{{i+1}}</a>
+					</li>
+					<li
+						ng-if="getNumberOfPages() > 9 && model.currentPage <= getNumberOfPages()-6"
+						ng-repeat="i in [] | forLoop:getNumberOfPages()-3:getNumberOfPages()"
+						ng-class="{disabled: (i==model.currentPage)}">
+						<a ng-click="changePage(i)">{{i+1}}</a>
+					</li>
+						<li ng-click="incrementPage(1)"><span>&#8594;</span></li>
+				</ul>
+			</div>
+			<label for="page_size_select">{{'codes.viewpage.codeelements.pagination.nayta'
+			| i18n}}</label>
+			<select ng-model="model.pageSize"
+				ng-options="n for n in model.pageSizeOptions"
+				ng-change="pageSizeChanged()"
+				id="page_size_select"
+				style="width:auto;">
+			</select>
+			<select
+				ng-model="model.sortOrderSelection"
+				ng-change="sortOrderChanged()"
+				id="ordering_select"
+				style="width:auto;">
+				<option value="1">{{'codes.viewpage.codeelements.pagination.koodiarvo' | i18n}}</option>
+				<option value="2">{{'codes.viewpage.codeelements.pagination.koodiarvoRev' | i18n}}</option>
+				<option value="3">{{'codes.viewpage.codeelements.pagination.koodinimi' | i18n}}</option>
+				<option value="4">{{'codes.viewpage.codeelements.pagination.koodinimiRev' | i18n}}</option>
+				<option value="5">{{'codes.viewpage.codeelements.pagination.koodiversio' | i18n}}</option>
+				<option value="6">{{'codes.viewpage.codeelements.pagination.koodiversioRev' | i18n}}</option>
+			</select>
+		</div>
+
         <thead>
             <tr>
                 <th><input id="select_all_codeelements" type="checkbox" ng-model="selectallcodelements" ng-change="onMasterChange(selectallcodelements)"/></th>
@@ -9,7 +77,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="codeElement in model.shownCodeElements | orderBy:sortBy | filter:search">
+            <tr ng-repeat="codeElement in model.shownCodeElements | filter:search | naturalSort:model.sortOrder:model.sortOrderReversed  |  startFrom:model.currentPage*model.pageSize  |  limitTo:model.pageSize">
                 <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" value="{{codeElement.checked}}" ng-model="codeElement.checked"/></td>
                 <td class="align-center">{{codeElement.value}}</td>
                 <td class="align-center">{{codeElement.name}}</td>
@@ -39,10 +107,11 @@
     <div class="modal-body">
         <div class="row-fluid">
             <div class="offset2 span10 form-inline">
-                <input type="text" maxlength="50"
-                       placeholder="{{'codes.viewpage.codeelements.search.placeholder' | i18n}}" ng-model="model.query"/>
-                <select ng-model="model.showCode" ng-options="c for c in model.shownCodes | unique" ng-change="getCodeElements()">
-                </select>
+                <label for="codeSelection">{{'codes.viewpage.codeelements.codesSelection.label' | i18n}}</label>
+                <select id="codeSelection" ng-model="model.showCode" ng-options="c for c in model.shownCodes | unique" ng-change="getCodeElements()"></select></br>
+                <label for="CodeElementSearchBox">{{'codes.viewpage.codeelements.search.label' | i18n}}</label>
+                <input id="CodeElementSearchBox" type="text" maxlength="50"
+                       placeholder="{{'codes.viewpage.codeelements.search.placeholder' | i18n}}" ng-model="model.query" ng-change="filterChangedPageCount()"/>
              </div>
         </div>
 

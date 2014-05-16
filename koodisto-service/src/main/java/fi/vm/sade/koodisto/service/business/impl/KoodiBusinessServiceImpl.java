@@ -184,6 +184,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     public KoodiVersio getLatestKoodiVersio(String koodiUri) {
+        if(StringUtils.isBlank(koodiUri)) return null;
         return getLatestKoodiVersioWithKoodistoVersioItems(koodiUri).getKoodiVersio();
     }
 
