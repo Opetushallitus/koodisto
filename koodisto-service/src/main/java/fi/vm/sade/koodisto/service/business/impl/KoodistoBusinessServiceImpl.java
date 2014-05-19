@@ -125,9 +125,12 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Override
     public void addRelation(String ylaKoodisto, String alaKoodisto, SuhteenTyyppi suhteenTyyppi) {
-    	if(this.hasAnyRelation(ylaKoodisto, alaKoodisto)) {
-    		throw new KoodistosAlreadyHaveSuhdeException("codes.already.have.relation");
-    	}
+        if(this.hasAnyRelation(ylaKoodisto, alaKoodisto)) {
+            throw new KoodistosAlreadyHaveSuhdeException("codes.already.have.relation");
+        }
+        if(suhteenTyyppi == SuhteenTyyppi.SISALTYY && this.haveDifferentOrganisations(ylaKoodisto, alaKoodisto)) {
+            throw new KoodistosHaveDifferentOrganizationsException("codes.have.different.organizations");
+        }
         KoodistoVersio yla = getLatestKoodistoVersio(ylaKoodisto);
         KoodistoVersio ala = getLatestKoodistoVersio(alaKoodisto);
 
@@ -629,17 +632,24 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     
     @Override
     public boolean hasAnyRelation(String koodistoUri, String anotherKoodistoUri) {
-    	final KoodistoVersio koodistoVersio = getLatestKoodistoVersio(koodistoUri);
-    	final KoodistoVersio koodistoVersio2 = getLatestKoodistoVersio(anotherKoodistoUri);
-    	List<KoodistonSuhde> relations = new ArrayList<KoodistonSuhde>(koodistoVersio.getAlakoodistos());
+        final KoodistoVersio koodistoVersio = getLatestKoodistoVersio(koodistoUri);
+        final KoodistoVersio koodistoVersio2 = getLatestKoodistoVersio(anotherKoodistoUri);
+        List<KoodistonSuhde> relations = new ArrayList<KoodistonSuhde>(koodistoVersio.getAlakoodistos());
     	relations.addAll(koodistoVersio.getYlakoodistos());    	
-    	return Iterables.tryFind(relations, new Predicate<KoodistonSuhde>() {
+        return Iterables.tryFind(relations, new Predicate<KoodistonSuhde>() {
 
-			@Override
-			public boolean apply(KoodistonSuhde input) {
-				return input.getAlakoodistoVersio().equals(koodistoVersio2) || input.getYlakoodistoVersio().equals(koodistoVersio2);
-			}
-    		    		
-    	}).isPresent();
+            @Override
+            public boolean apply(KoodistonSuhde input) {
+                return input.getAlakoodistoVersio().equals(koodistoVersio2) || input.getYlakoodistoVersio().equals(koodistoVersio2);
+            }
+                        
+        }).isPresent();
+    }
+    
+    
+    private boolean haveDifferentOrganisations(String koodistoUri, String anotherKoodistoUri) {
+        String organisaatio1 = getKoodistoByKoodistoUri(koodistoUri).getOrganisaatioOid();
+        String organisaatio2 = getKoodistoByKoodistoUri(anotherKoodistoUri).getOrganisaatioOid();
+        return !StringUtils.equals(organisaatio1, organisaatio2);
     }
 }
