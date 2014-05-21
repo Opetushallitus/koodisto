@@ -330,21 +330,28 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         return ce;
     };
           
+    
     $scope.addRelationCodeElement = function(codeElementToAdd, collectionToAddTo, relationTypeString, modelCodeElementIsHost) {
-	var found = false;
-	collectionToAddTo.forEach(function(codeElement, index){
-	    if (codeElement.uri.indexOf(codeElementToAdd.uri) !== -1) {
-		found = true;
-	    }
-	});
-	if (found === false) {
-	   collectionToAddTo.push($scope.createCodes(codeElementToAdd));
-	   var uriToBeAddedTo = modelCodeElementIsHost ? $scope.model.codeElement.koodiUri : codeElementToAdd.uri;
-	   var uriToBeAdded = modelCodeElementIsHost ? codeElementToAdd.uri : $scope.model.codeElement.koodiUri;
-	   AddRelationCodeElement.put({codeElementUri: uriToBeAddedTo,
-	       codeElementUriToAdd: uriToBeAdded, relationType: relationTypeString}, function(result) {}
-	   );
-	}
+        var found = false;
+        collectionToAddTo.forEach(function(codeElement, index) {
+            if (codeElement.uri.indexOf(codeElementToAdd.uri) !== -1) {
+                found = true;
+            }
+        });
+        if (found === false) {
+            var uriToBeAddedTo = modelCodeElementIsHost ? $scope.model.codeElement.koodiUri : codeElementToAdd.uri;
+            var uriToBeAdded = modelCodeElementIsHost ? codeElementToAdd.uri : $scope.model.codeElement.koodiUri;
+            AddRelationCodeElement.put({
+                codeElementUri : uriToBeAddedTo,
+                codeElementUriToAdd : uriToBeAdded,
+                relationType : relationTypeString
+            }, function(result) {
+                collectionToAddTo.push($scope.createCodes(codeElementToAdd));
+            }, function(result) {
+                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen luominen ep\u00E4onnistui' };
+                $scope.model.alerts.push(alert);
+            });
+        }
     };
     
     $scope.removeRelationsCodeElement = function(unselectedItems, collectionToRemoveFrom, relationTypeString, modelCodeElementIsHost) {
@@ -383,19 +390,19 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         var unselectedItems = $filter('filter')($scope.model.shownCodeElements, {checked: false});
         if ($scope.model.addToListName === 'withincodes') {
             selectedItems.forEach(function(codeElement){
-        	$scope.addRelationCodeElement(codeElement, $scope.model.withinCodeElements, "SISALTYY");
+                $scope.addRelationCodeElement(codeElement, $scope.model.withinCodeElements, "SISALTYY");
             });
             $scope.removeRelationsCodeElement(unselectedItems, $scope.model.withinCodeElements, "SISALTYY");
 
         } else if ($scope.model.addToListName === 'includescodes') {
             selectedItems.forEach(function(codeElement){
-        	$scope.addRelationCodeElement(codeElement, $scope.model.includesCodeElements, "SISALTYY", true);
+                $scope.addRelationCodeElement(codeElement, $scope.model.includesCodeElements, "SISALTYY", true);
             });
             $scope.removeRelationsCodeElement(unselectedItems, $scope.model.includesCodeElements, "SISALTYY", true);
 
         } else if ($scope.model.addToListName === 'levelswithcodes') {
             selectedItems.forEach(function(codeElement){
-        	$scope.addRelationCodeElement(codeElement, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
+                $scope.addRelationCodeElement(codeElement, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
             });
             $scope.removeRelationsCodeElement(unselectedItems, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
         }
