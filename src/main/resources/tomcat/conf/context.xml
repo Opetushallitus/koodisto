@@ -23,7 +23,7 @@
 
     <Resource name="jdbc/koodisto" auth="Container" type="javax.sql.DataSource"
               maxActive="250" maxIdle="30" maxWait="10000"
-              username="{{host.postgresql.koodisto.user}}" password="{{host.postgresql.koodisto.password}}" driverClassName="org.postgresql.Driver"
-              url="jdbc:postgresql://{{host.postgresql.koodisto}}:{{port.postgresql}}/koodisto"/>
+              username="{{host_postgresql_koodisto_user}}" password="{{host_postgresql_koodisto_password}}" driverClassName="org.postgresql.Driver"
+              url="jdbc:postgresql://{{host_postgresql_koodisto}}:{{port_postgresql}}/koodisto"/>
               
 </Context>
