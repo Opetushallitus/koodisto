@@ -43,13 +43,6 @@ koodisto-service/.settings/org.eclipse.wst.common.component
 koodisto-service/.settings/org.eclipse.wst.common.project.facet.core.xml
 koodisto-service/.settings/org.eclipse.wst.jsdt.ui.superType.container
 koodisto-service/.settings/org.eclipse.wst.jsdt.ui.superType.name
-koodisto-widget/.classpath
-koodisto-widget/.project
-koodisto-widget/.settings/org.eclipse.core.resources.prefs
-koodisto-widget/.settings/org.eclipse.jdt.core.prefs
-koodisto-widget/.settings/org.eclipse.m2e.core.prefs
-koodisto-widget/.settings/org.eclipse.wst.common.component
-koodisto-widget/.settings/org.eclipse.wst.common.project.facet.core.xml
 
 koodisto-api/.settings/org.eclipse.wst.validation.prefs
 *.prefs

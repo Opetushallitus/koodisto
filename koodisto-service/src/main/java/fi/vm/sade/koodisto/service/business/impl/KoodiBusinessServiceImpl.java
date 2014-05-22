@@ -54,6 +54,7 @@ import fi.vm.sade.koodisto.service.business.exception.KoodiValueNotUniqueExcepti
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioHasRelationsException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersionNumberEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodisHaveDifferentOrganizationsException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoVersionNumberEmptyException;
@@ -318,7 +319,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     @Override
     public void addRelation(String ylaKoodi, String alaKoodi, SuhteenTyyppi suhteenTyyppi) {
-
         KoodiVersio yla = getLatestKoodiVersio(ylaKoodi);
         KoodiVersioWithKoodistoItem ala = getLatestKoodiVersioWithKoodistoVersioItems(alaKoodi);
 
@@ -326,7 +326,11 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void addRelation(KoodiVersio ylakoodi, SuhteenTyyppi suhteenTyyppi, KoodiVersioWithKoodistoItem... alakoodis) {
+        if(suhteenTyyppi == SuhteenTyyppi.SISALTYY && this.haveDifferentOrganisations(ylakoodi, alakoodis)) {
+            throw new KoodisHaveDifferentOrganizationsException("codeelements.have.different.organizations");
+        }
 
+        
         KoodiVersio latestYlakoodi = ylakoodi;
 
         if (SuhteenTyyppi.SISALTYY.equals(suhteenTyyppi)) {
@@ -846,4 +850,11 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     	}).isPresent();
     }
 
+    private boolean haveDifferentOrganisations(KoodiVersio ylakoodi, KoodiVersioWithKoodistoItem[] alakoodis) {
+        if(alakoodis.length==0) return true;
+        String organisaatio1 = ylakoodi.getKoodi().getKoodisto().getOrganisaatioOid();
+        String organisaatio2 = alakoodis[0].getKoodiVersio().getKoodi().getKoodisto().getOrganisaatioOid();
+        return !StringUtils.equals(organisaatio1, organisaatio2);
+    }
+    
 }

@@ -22,13 +22,13 @@ describe("Edit codes test", function() {
 	controller = $controller("CodesEditorController", {$scope: scope, CodesEditorModel : model});
 	angular.mock.inject(function ($injector) {
 	    mockBackend = $injector.get('$httpBackend');
-	})        
+	});     
     }));
     
     it("CodesEditorModel is defined and it is in scope", function() {
 	expect(model).toBeDefined();
 	expect(scope.model).toEqual(model);
-    })
+    });
     
     describe("Relations", function() {
 	
@@ -74,7 +74,7 @@ describe("Edit codes test", function() {
 		"includesCodes" : [ ],
 		"levelsWithCodes" : [ ],
 		"uri" : "espoonoikeudet"
-	}
+	};
 	
 	var relationCodes = jQuery.extend({}, givenCodesWithRelationsResponse); 
 	
@@ -89,36 +89,40 @@ describe("Edit codes test", function() {
 			"nimi" : "Kauniaisen koodit"
 		    }]
 		}]
-	    })
+	    });
 	    mockBackend.expectGET("/organisaatio-service/rest/organisaatio/1.2.246.562.10.90008375488").respond({"nimi" : {
 		"fi" : "Espoon kaupunki"
 	    }});
 	    mockBackend.flush();
-	})
+	});
 	
-	it("Error message will be shown when relation is being removed", function() {
+	it("should show error message when removerelation is rejected", function() {
 	    scope.model.modalInstance = {
 		    close: jasmine.createSpy('modalInstance.close')
 	    }
+	    var relationCount = scope.model.withinCodes.length;
 	    scope.model.withinRelationToRemove = relationCodes;
 	    scope.okconfirm();
 	    mockBackend.expectPOST(SERVICE_URL_BASE + "codes/removerelation/espoonoikeudet/espoonoikeudet/SISALTYY").respond(500, "");
 	    mockBackend.flush();	    
 	    expect(scope.model.alerts.length).toEqual(1);
+	    expect(scope.model.withinCodes.length).toEqual(relationCount);
 	    expect(scope.model.modalInstance.close).toHaveBeenCalledWith();
-	})
+	});
 	
-	it("Error message will be shown when relation is being added", function() {
+	it("should show error message when addrelation is rejected", function() {
+        var relationCount = scope.model.withinCodes.length;
 	    scope.addToWithinCodes(relationCodes);
 	    mockBackend.expectPOST(SERVICE_URL_BASE + "codes/addrelation/espoonoikeudet/espoonoikeudet/SISALTYY").respond(500, "");
 	    mockBackend.flush();
+        expect(scope.model.withinCodes.length).toEqual(relationCount);
 	    expect(scope.model.alerts.length).toEqual(1);
-	})
+	});
 	
 	it("Should contain version number of codes relation references", function() {
 	    expect(model.withinCodes.length).toEqual(1);
 	    expect(model.withinCodes[0].versio).toEqual(2);
-	})
-    })
-        
-})
+	});
+    });
+    
+});

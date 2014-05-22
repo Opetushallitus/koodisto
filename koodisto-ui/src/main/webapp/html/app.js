@@ -254,8 +254,8 @@ app.filter('naturalSort', function() {
 	    return naturalSort(aIsString ? valueA.trim().toLowerCase() : valueA, bIsString ? valueB.trim().toLowerCase() : valueB);
 	});
 	return reverse? arr.reverse(): arr;
-    }
-})
+    };
+});
 
 function getLanguageSpecificValue(fieldArray,fieldName,language) {
     var returnStr = "";
