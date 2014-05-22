@@ -29,9 +29,9 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:p="http://www.springframework.org/schema/p"
              xsi:schemaLocation="http://www.springframework.org/schema/beans
-                    http://www.springframework.org/schema/beans/spring-beans.xsd
+                    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                     http://www.springframework.org/schema/security
-                    http://www.springframework.org/schema/security/spring-security.xsd">
+                    http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
     <global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
     </global-method-security>
@@ -39,7 +39,6 @@
     <!-- /buildversion.txt?auth forced to require authentication (needed for auth health checking purposes) -->
     <http entry-point-ref="casEntryPoint" use-expressions="true" request-matcher="regex" pattern="/buildversion.txt.auth|/healthcheck.auth|/healthcheck.userinfo">
         <intercept-url pattern="/**" access="isAuthenticated()"/>
-        <custom-filter before="CAS_FILTER" ref="urlRewriteFilter" />
         <custom-filter position="CAS_FILTER" ref="casFilter" />
     </http>
 
@@ -57,14 +56,12 @@
 
     <http entry-point-ref="casEntryPoint" use-expressions="true" request-matcher="regex" pattern="/user/postLogin.*">
         <intercept-url pattern="/user/postLogin.*" access="isAuthenticated()"/> <!-- todo: -->
-        <custom-filter before="CAS_FILTER" ref="urlRewriteFilter" />
         <custom-filter position="CAS_FILTER" ref="casFilter" />
     </http>
 
     <!-- own config for single logout, because: xTODO: singleLogoutFilter aiheuttaa POSTeissa formin tyhjenemisen, consuumaa formin mystisesti, ilmeni haku-projektin yhteydessa -->
     <http entry-point-ref="casEntryPoint" use-expressions="true" request-matcher="regex" pattern="/j_spring_cas_security_check.*">
         <intercept-url pattern="/**" access="${spring_security_default_access}"/>
-        <custom-filter ref="urlRewriteFilter" before="CHANNEL_FILTER"/>
         <!-- tata ei tarvita, kun logout tehdaan suoraan casin kautta, ja singleLogoutFilter on paalla -->
         <!--<custom-filter ref="requestSingleLogoutFilter" before="LOGOUT_FILTER" />-->
         <custom-filter ref="singleLogoutFilter" before="CAS_FILTER" />
@@ -96,7 +93,6 @@
         <intercept-url pattern="(/.*)?/secured(/.*)?" access="isAuthenticated()"/>
         <intercept-url pattern="/public(/.*)?" access="permitAll"/>
         <intercept-url pattern="/**" access="${spring_security_default_access}"/>
-        <custom-filter ref="urlRewriteFilter" before="CHANNEL_FILTER"/>
         <custom-filter ref="casFilter" position="CAS_FILTER"/>
         <logout logout-success-url="/user/logout"/> <!-- huom! vain haku tarvitsee tata? -->
     </http>
@@ -107,9 +103,6 @@
     <!--<custom-filter ref="singleLogoutFilter" before="CAS_FILTER" />-->
 
     <!--  ===== end of mappings ===== -->
-
-    <!-- urlRewriteFilter is needed only for auth.mode=dev !!! -->
-    <beans:bean id="urlRewriteFilter" class="fi.vm.sade.security.UrlRewriteFilter"/>
 
     <beans:bean id="casFilter" class="fi.vm.sade.security.CustomCasAuthenticationFilter">
         <beans:property name="authenticationManager" ref="authenticationManager"/>
@@ -135,10 +128,6 @@
     <!--
       NOTE: In a real application you should not use an in memory implementation.
     -->
-    <beans:bean id="pgtStorage" class="org.jasig.cas.client.proxy.ProxyGrantingTicketStorageImpl"/>
-    
-    <!-- TODO Sopisiko ehcache koodistoonkin?? -->
-    <!--
     <beans:bean id="pgtStorage" class="org.jasig.cas.client.proxy.EhcacheBackedProxyGrantingTicketStorageImpl">
         <beans:constructor-arg name="cache">
             <beans:bean class="org.springframework.cache.ehcache.EhCacheFactoryBean">
@@ -161,7 +150,6 @@
             </beans:bean>
         </beans:constructor-arg>
     </beans:bean>
-    -->
 
     <beans:bean id="casEntryPoint" class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
         <beans:property name="loginUrl" value="${web.url.cas}/login"/>
@@ -190,7 +178,9 @@
     </beans:bean>
 
     <beans:bean id="ehCacheBasedTicketCache" class="org.springframework.security.cas.authentication.EhCacheBasedTicketCache">
-        <beans:property name="cache" ref="casTicketsCacheBean"/>
+        <beans:property name="cache">
+                <beans:ref local="casTicketsCacheBean"/>
+        </beans:property>
     </beans:bean>
 
     <beans:bean id="casAuthenticationProvider" class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
@@ -199,7 +189,9 @@
         <beans:property name="ticketValidator" ref="casTicketValidator"/>
         <beans:property name="key" value="${cas_key}"/>
         <!-- enable proxy authentication (in backend) -->
-        <beans:property name="statelessTicketCache" ref="ehCacheBasedTicketCache" />
+        <beans:property name="statelessTicketCache">
+            <beans:ref local="ehCacheBasedTicketCache" />
+        </beans:property>
     </beans:bean>
 
     <beans:bean id="jgroupsEventListener" class="net.sf.ehcache.distribution.jgroups.JGroupsCacheReplicator">
@@ -221,7 +213,7 @@
     <!-- TODO: cacheasetukset ihan arvalla nyt, statelessTicketCache kuitenkin sallii saman proxytiketin kayttamisen, joka vahentaa huomattavasti cas-liikennetta -->
     <beans:bean id="casTicketCache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
         <beans:property name="configLocation" value="file://${user.home}/oph-configuration/ehcache.xml" />
-        <beans:property name="shared" value="true" />
+        <beans:property name="shared" value="false" />
         <beans:property name="cacheManagerName" value="casTicketCache" />
     </beans:bean>
 
