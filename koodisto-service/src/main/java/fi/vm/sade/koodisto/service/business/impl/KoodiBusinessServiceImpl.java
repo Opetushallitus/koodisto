@@ -17,6 +17,7 @@ import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,6 +83,8 @@ import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 @Service("koodiBusinessService")
 public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
+    private static final String ROOT_USER_OID = "1.2.246.562.10.00000000001";
+    
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -326,7 +329,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void addRelation(KoodiVersio ylakoodi, SuhteenTyyppi suhteenTyyppi, KoodiVersioWithKoodistoItem... alakoodis) {
-        if(suhteenTyyppi == SuhteenTyyppi.SISALTYY && this.haveDifferentOrganisations(ylakoodi, alakoodis)) {
+        if(suhteenTyyppi == SuhteenTyyppi.SISALTYY && this.haveDifferentOrganisations(ylakoodi, alakoodis) && !currentUserIsRootUser()) {
             throw new KoodisHaveDifferentOrganizationsException("codeelements.have.different.organizations");
         }
 
@@ -857,4 +860,16 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return !StringUtils.equals(organisaatio1, organisaatio2);
     }
     
+
+
+    // Check if logged in user is not a root user
+    private boolean currentUserIsRootUser() {
+        try {
+            String userOid = SecurityContextHolder.getContext().getAuthentication().getName();
+            return userOid.equals(ROOT_USER_OID);
+        } catch (NullPointerException e) { // Authentication is not available
+            return false;
+        }
+    }
+
 }
