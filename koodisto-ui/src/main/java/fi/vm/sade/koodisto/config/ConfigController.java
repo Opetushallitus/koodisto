@@ -21,6 +21,9 @@ public class ConfigController {
 
     @Value("${valintalaskenta-ui.cas.url:/cas/myroles}")
     private String casUrl;
+    
+    @Value("${koodisto-ui.session-keepalive-interval.seconds}")
+    private Integer sessionKeepAliveIntervalInSeconds;
 
     @RequestMapping(value = "/configuration.js", method = RequestMethod.GET, produces = "text/javascript")
     @ResponseBody
@@ -32,11 +35,11 @@ public class ConfigController {
         append(b, "TEMPLATE_URL_BASE", "");
 
         append(b, "CAS_URL", casUrl);
+        append(b, "SESSION_KEEPALIVE_INTERVAL_IN_SECODS", Integer.toString(sessionKeepAliveIntervalInSeconds));
         if (!authMode.isEmpty()) {
             append(b, "AUTH_MODE", authMode);
 
         }
-
         return b.toString();
     }
 

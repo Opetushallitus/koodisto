@@ -2,7 +2,7 @@
 
 var SERVICE_NAME = "APP_KOODISTO";
 
-var app = angular.module('koodisto', ['ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization','ui.bootstrap','ui.utils']);
+var app = angular.module('koodisto', ['ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization','ui.bootstrap','ui.utils', 'ngIdle']);
 //
 // i18n toteutus kopioitu osittain http://jsfiddle.net/4tRBY/41/
 //
@@ -30,6 +30,7 @@ var SERVICE_URL_BASE = SERVICE_URL_BASE || "http://localhost:8180/koodisto-servi
 var ORGANIZATION_SERVICE_URL_BASE = ORGANIZATION_SERVICE_URL_BASE || "/organisaatio-service/";
 var TEMPLATE_URL_BASE = TEMPLATE_URL_BASE || "";
 var CAS_URL = CAS_URL || "/cas/myroles";
+var SESSION_KEEPALIVE_INTERVAL_IN_SECODS = SESSION_KEEPALIVE_INTERVAL_IN_SECODS || 30;
 
 app.factory('NoCacheInterceptor', function () {
     return {
