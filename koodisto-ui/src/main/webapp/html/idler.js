@@ -78,7 +78,8 @@ app.controller('EventsCtrl', ['$scope','$idle', 'SessionTimeout', '$modal', '$ro
 .config(['$idleProvider', '$keepaliveProvider', function($idleProvider, $keepaliveProvider) {    
     var warningDuration = 300;
     jQuery.get(SERVICE_URL_BASE + "session/maxinactiveinterval", function( result ) {
-	$idleProvider.idleDuration((result < warningDuration) ? result : result - warningDuration);
+	console.log(result);
+	$idleProvider.idleDuration((result < warningDuration) ? (1800 - warningDuration) : (result - warningDuration));
     });
     $idleProvider.warningDuration(warningDuration);
     $keepaliveProvider.interval(SESSION_KEEPALIVE_INTERVAL_IN_SECONDS);
