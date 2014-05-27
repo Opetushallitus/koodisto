@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Properties;
+import com.wordnik.swagger.annotations.*;
 
 /**
  * User: wuoti
@@ -50,6 +51,7 @@ import java.util.Properties;
  */
 @Component
 @Path("/json")
+@Api(value = "/json", description = "JSON rajapinta")
 @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
 public class KoodistoJsonRESTService {
 
@@ -79,6 +81,7 @@ public class KoodistoJsonRESTService {
 
     @JsonView(JsonViews.Basic.class)
     @GET
+    @ApiOperation(value = "Find pet by ID", notes = "More notes about this method", response = KoodistoRyhmaListDto.class)
     @Cacheable(maxAgeSeconds = ONE_HOUR)
     public List<KoodistoRyhmaListDto> listAllKoodistoRyhmas() {
         return conversionService.convertAll(
@@ -88,6 +91,7 @@ public class KoodistoJsonRESTService {
     @JsonView(JsonViews.Basic.class)
     @GET
     @Path("/{koodistoUri}")
+    @ApiOperation(value = "Get koodisto", notes = "Hephei! kuvaus!", response = KoodistoDto.class)
     @Cacheable(maxAgeSeconds = ONE_HOUR)
     @Transactional
     public KoodistoDto getKoodistoByUri(@PathParam(KOODISTO_URI) String koodistoUri,
