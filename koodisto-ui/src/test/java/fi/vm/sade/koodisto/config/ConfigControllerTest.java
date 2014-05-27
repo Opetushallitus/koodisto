@@ -21,6 +21,7 @@ public class ConfigControllerTest {
 		assertTrue(result.contains("ORGANIZATION_SERVICE_URL_BASE ="));
 		assertTrue(result.contains("CAS_URL = "));
 		assertTrue(result.contains("SESSION_KEEPALIVE_INTERVAL_IN_SECONDS ="));
+		assertTrue(result.contains("MAX_SESSION_IDLE_TIME_IN_SECONDS ="));
 	}
 
 
