@@ -35,7 +35,7 @@ public class ConfigController {
         append(b, "TEMPLATE_URL_BASE", "");
 
         append(b, "CAS_URL", casUrl);
-        append(b, "SESSION_KEEPALIVE_INTERVAL_IN_SECODS", Integer.toString(sessionKeepAliveIntervalInSeconds));
+        append(b, "SESSION_KEEPALIVE_INTERVAL_IN_SECONDS", Integer.toString(sessionKeepAliveIntervalInSeconds));
         if (!authMode.isEmpty()) {
             append(b, "AUTH_MODE", authMode);
 

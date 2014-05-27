@@ -81,7 +81,7 @@ app.controller('EventsCtrl', ['$scope','$idle', 'SessionTimeout', '$modal', '$ro
 	$idleProvider.idleDuration((result < warningDuration) ? result : result - warningDuration);
     });
     $idleProvider.warningDuration(warningDuration);
-    $keepaliveProvider.interval(SESSION_KEEPALIVE_INTERVAL_IN_SECODS);
+    $keepaliveProvider.interval(SESSION_KEEPALIVE_INTERVAL_IN_SECONDS);
 }])
 .run(['$idle', function($idle){
     $idle.watch();

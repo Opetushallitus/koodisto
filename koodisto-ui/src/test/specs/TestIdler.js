@@ -36,7 +36,7 @@ describe("Idler test", function() {
     
     it("configures $idle with default values", inject(function($idle, $keepalive) {
 	expect($idle._options().warningDuration).toEqual(300);
-	expect($keepalive._options().interval).toEqual(SESSION_KEEPALIVE_INTERVAL_IN_SECODS);
+	expect($keepalive._options().interval).toEqual(SESSION_KEEPALIVE_INTERVAL_IN_SECONDS);
     }))
     
     
