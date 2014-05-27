@@ -51,7 +51,8 @@ app.controller('EventsCtrl', ['$scope','$idle', 'SessionTimeout', '$modal', func
 		templateUrl: template,
 		controller: 'SessionExpiresCtrl',
 		keyboard: false,
-		backdrop: 'static'
+		backdrop: 'static',
+		windowClass: 'modal-warning'
 	    });
     }
 
