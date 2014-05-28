@@ -18,6 +18,12 @@ app.directive('idle', ['$idle', '$timeout', '$interval', function($idle, $timeou
       // If it is, reset the ng-idle timer and update the last known event timestamp to the value found in localStorage
       $interval(function() {
         if (localStorage.lastEventTime > timestamp) {
+          var element = angular.element('#sessionWarning .btn');
+          if (element.length > 0) {
+              $timeout(function() {
+        	  element.click();
+              }, 200);
+          }
           $idle.watch();
           timestamp = localStorage.lastEventTime;
         } 
@@ -61,6 +67,7 @@ app.controller('EventsCtrl', ['$scope','$idle', '$modal', '$http', function($sco
     $scope.$on('$idleTimeout', function() {
 	$scope.sessionWarning.close();
 	$scope.sessionWarning = openModal('sessionExpired.html');
+	$idle.unwatch();
     })
 
 }])
