@@ -26,10 +26,6 @@ app.directive('idle', ['$idle', '$timeout', '$interval', function($idle, $timeou
   }
 }])
 
-app.factory('SessionTimeout', ['$http', function($http) {
-    return $http.get(SERVICE_URL_BASE + "session/maxinactiveinterval");
-}])
-
 app.controller('SessionExpiresCtrl', ['$idle', '$scope', '$modalInstance', '$window', function( $idle, $scope, $modalInstance, $window) {
     $scope.timeoutMessage = function() {
 	var duration = Math.floor(MAX_SESSION_IDLE_TIME_IN_SECONDS / 60);
@@ -45,7 +41,7 @@ app.controller('SessionExpiresCtrl', ['$idle', '$scope', '$modalInstance', '$win
     }
 }])
 
-app.controller('EventsCtrl', ['$scope','$idle', 'SessionTimeout', '$modal', function($scope, $idle, SessionTimeout, $modal) {
+app.controller('EventsCtrl', ['$scope','$idle', '$modal', '$http', function($scope, $idle, $modal, $http) {
     openModal = function(template) {
 	return $modal.open({
 		templateUrl: template,
@@ -67,17 +63,13 @@ app.controller('EventsCtrl', ['$scope','$idle', 'SessionTimeout', '$modal', func
 	$scope.sessionWarning = openModal('sessionExpired.html');
     })
 
-    $scope.$on('$keepalive', function() {
-	SessionTimeout.success(function(result){
-	});
-    })
-
 }])
 .config(['$idleProvider', '$keepaliveProvider', function($idleProvider, $keepaliveProvider) {    
     var warningDuration = 300;
     $idleProvider.idleDuration(MAX_SESSION_IDLE_TIME_IN_SECONDS - warningDuration);
     $idleProvider.warningDuration(warningDuration);
     $keepaliveProvider.interval(SESSION_KEEPALIVE_INTERVAL_IN_SECONDS);
+    $keepaliveProvider.http(SERVICE_URL_BASE + "session/maxinactiveinterval");
 }])
 .run(['$idle', function($idle){
     $idle.watch();

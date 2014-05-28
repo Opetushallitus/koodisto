@@ -28,12 +28,6 @@ describe("Idler test", function() {
 	spyOn(modal, 'open').andReturn(fakeModal);
     }));
         
-    it("refreshes session on $keepalive", function() {
-	mockBackend.expectGET(SERVICE_URL_BASE + "session/maxinactiveinterval").respond(6);
-	scope.$emit('$keepalive');	    
-	mockBackend.flush();
-    })
-    
     it("configures $idle with default values", inject(function($idle, $keepalive) {
 	expect($idle._options().warningDuration).toEqual(300);
 	expect($idle._options().idleDuration).toEqual(MAX_SESSION_IDLE_TIME_IN_SECONDS - 300);
