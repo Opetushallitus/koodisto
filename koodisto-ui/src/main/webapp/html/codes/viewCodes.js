@@ -394,6 +394,8 @@ function ViewCodesController($scope, $location, $filter, $routeParams, ViewCodes
     $scope.getLanguageSpecificValue = function(fieldArray, fieldName, language) {
         return getLanguageSpecificValue(fieldArray, fieldName, language);
     };
+    
+    // Pagination
 
     // Get the filtered page count
     var cachedPageCount = 0;
@@ -426,7 +428,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, ViewCodes
         var topmostCodeElement = $scope.model.currentPage * oldValueForPageSize;
         $scope.model.currentPage = Math.floor(topmostCodeElement / $scope.model.pageSize);
         oldValueForPageSize = $scope.model.pageSize;
-        $scope.refreshNumberOfPages;
+        $scope.refreshNumberOfPages();
     };
     
     $scope.sortOrderChanged = function(){
@@ -487,22 +489,6 @@ function ViewCodesController($scope, $location, $filter, $routeParams, ViewCodes
             $scope.model.currentPage = newPageNumber;
         }
     };
+    
+    // Pagination ends
 }
-
-// Filter used to slice array to start pagination from correct location
-app.filter('startFrom', function() {
-    return function(input, start) {
-        start = +start; // parse to int
-        return input.slice(start);
-    };
-});
-
-app.filter('forLoop', function() {
-    return function(input, start, end) {
-        input = new Array(end - start);
-        for (var i = 0; start < end; start++, i++) {
-            input[i] = start;
-        }
-        return input;
-    };
-});

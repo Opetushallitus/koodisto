@@ -202,12 +202,6 @@
         <dependency>
             <groupId>fi.vm.sade.organisaatio</groupId>
             <artifactId>organisaatio-ui-widgets</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>koodisto-widget</artifactId>
-                    <groupId>fi.vm.sade.koodisto</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
