@@ -254,8 +254,8 @@ app.filter('naturalSort', function() {
 	    return naturalSort(aIsString ? valueA.trim().toLowerCase() : valueA, bIsString ? valueB.trim().toLowerCase() : valueB);
 	});
 	return reverse? arr.reverse(): arr;
-    }
-})
+    };
+});
 
 function getLanguageSpecificValue(fieldArray,fieldName,language) {
     var returnStr = "";
@@ -270,3 +270,24 @@ function getLanguageSpecificValue(fieldArray,fieldName,language) {
     return returnStr;
 }
 
+
+// Pagination
+
+//Filter used to slice array to start pagination from correct location
+app.filter('startFrom', function() {
+ return function(input, start) {
+     start = +start; // parse to int
+     return input.slice(start);
+ };
+});
+
+// Forloop for angularjs
+app.filter('forLoop', function() {
+ return function(input, start, end) {
+     input = new Array(end - start);
+     for (var i = 0; start < end; start++, i++) {
+         input[i] = start;
+     }
+     return input;
+ };
+});

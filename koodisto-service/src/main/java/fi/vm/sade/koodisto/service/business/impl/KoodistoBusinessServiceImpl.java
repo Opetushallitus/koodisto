@@ -25,6 +25,7 @@ import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +40,8 @@ import java.util.*;
 @Transactional
 @Service("koodistoBusinessService")
 public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
+
+    private static final String ROOT_USER_OID = "1.2.246.562.10.00000000001";
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -125,9 +128,12 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Override
     public void addRelation(String ylaKoodisto, String alaKoodisto, SuhteenTyyppi suhteenTyyppi) {
-    	if(this.hasAnyRelation(ylaKoodisto, alaKoodisto)) {
-    		throw new KoodistosAlreadyHaveSuhdeException("codes.already.have.relation");
-    	}
+        if(this.hasAnyRelation(ylaKoodisto, alaKoodisto)) {
+            throw new KoodistosAlreadyHaveSuhdeException("codes.already.have.relation");
+        }
+        if(suhteenTyyppi == SuhteenTyyppi.SISALTYY && this.haveDifferentOrganisations(ylaKoodisto, alaKoodisto) && !currentUserIsRootUser()) {
+            throw new KoodistosHaveDifferentOrganizationsException("codes.have.different.organizations");
+        }
         KoodistoVersio yla = getLatestKoodistoVersio(ylaKoodisto);
         KoodistoVersio ala = getLatestKoodistoVersio(alaKoodisto);
 
@@ -233,8 +239,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         changeCodesGroup(updateKoodistoData, latest);
         // authorize update
-        authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(),
-                KoodistoRole.CRUD, KoodistoRole.UPDATE);
+        authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD, KoodistoRole.UPDATE);
         latest = createNewVersionIfNeeded(latest, updateKoodistoData);
 
 
@@ -629,17 +634,36 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     
     @Override
     public boolean hasAnyRelation(String koodistoUri, String anotherKoodistoUri) {
-    	final KoodistoVersio koodistoVersio = getLatestKoodistoVersio(koodistoUri);
-    	final KoodistoVersio koodistoVersio2 = getLatestKoodistoVersio(anotherKoodistoUri);
-    	List<KoodistonSuhde> relations = new ArrayList<KoodistonSuhde>(koodistoVersio.getAlakoodistos());
+        final KoodistoVersio koodistoVersio = getLatestKoodistoVersio(koodistoUri);
+        final KoodistoVersio koodistoVersio2 = getLatestKoodistoVersio(anotherKoodistoUri);
+        List<KoodistonSuhde> relations = new ArrayList<KoodistonSuhde>(koodistoVersio.getAlakoodistos());
     	relations.addAll(koodistoVersio.getYlakoodistos());    	
-    	return Iterables.tryFind(relations, new Predicate<KoodistonSuhde>() {
+        return Iterables.tryFind(relations, new Predicate<KoodistonSuhde>() {
 
-			@Override
-			public boolean apply(KoodistonSuhde input) {
-				return input.getAlakoodistoVersio().equals(koodistoVersio2) || input.getYlakoodistoVersio().equals(koodistoVersio2);
-			}
-    		    		
-    	}).isPresent();
+            @Override
+            public boolean apply(KoodistonSuhde input) {
+                return input.getAlakoodistoVersio().equals(koodistoVersio2) || input.getYlakoodistoVersio().equals(koodistoVersio2);
+            }
+                        
+        }).isPresent();
     }
+    
+    
+    private boolean haveDifferentOrganisations(String koodistoUri, String anotherKoodistoUri) {
+        String organisaatio1 = getKoodistoByKoodistoUri(koodistoUri).getOrganisaatioOid();
+        String organisaatio2 = getKoodistoByKoodistoUri(anotherKoodistoUri).getOrganisaatioOid();
+        return !StringUtils.equals(organisaatio1, organisaatio2);
+    }
+    
+
+    // Check if logged in user is not a root user
+    private boolean currentUserIsRootUser() {
+        try {
+            String userOid = SecurityContextHolder.getContext().getAuthentication().getName();
+            return userOid.equals(ROOT_USER_OID);
+        } catch (NullPointerException e) { // Authentication is not available
+            return false;
+        }
+    }
+
 }

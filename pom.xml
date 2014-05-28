@@ -20,7 +20,6 @@
         <module>koodisto-common</module>
         <module>koodisto-service</module>
         <module>koodisto-ui</module>
-        <module>koodisto-widget</module>
     </modules>
 
 
