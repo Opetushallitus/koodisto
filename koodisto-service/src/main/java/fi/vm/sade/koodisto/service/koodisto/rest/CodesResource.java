@@ -34,6 +34,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.multipart.FormDataParam;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.dto.FileDto;
@@ -60,8 +63,9 @@ import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 
 @Component
-@Path("codes")
+@Path("/codes")
 @PreAuthorize("isAuthenticated()")
+@Api(value = "/rest/codes", description = "Koodistot")
 public class CodesResource {
     protected final static Logger logger = LoggerFactory.getLogger(CodesResource.class);
 
@@ -78,25 +82,35 @@ public class CodesResource {
     private DownloadService downloadService;
 
     @POST
-    @Path("addrelation/{codesUri}/{codesUriToAdd}/{relationType}")
+    @Path("/addrelation/{codesUri}/{codesUriToAdd}/{relationType}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Extended.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    public void addRelation(@PathParam("codesUri") String codesUri, @PathParam("codesUriToAdd") String codesUriToAdd,
-            @PathParam("relationType") String relationType) {
+    @ApiOperation(
+            value = "Lisää relaatio koodistojen välille",
+            notes = "")
+    public void addRelation(
+            @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
+            @ApiParam(value = "Linkitettävän koodiston URI") @PathParam("codesUriToAdd") String codesUriToAdd,
+            @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType) {
 
         koodistoBusinessService.addRelation(codesUri, codesUriToAdd, SuhteenTyyppi.valueOf(relationType));
     }
 
     @POST
-    @Path("removerelation/{codesUri}/{codesUriToRemove}/{relationType}")
+    @Path("/removerelation/{codesUri}/{codesUriToRemove}/{relationType}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Extended.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    public void removeRelation(@PathParam("codesUri") String codesUri, @PathParam("codesUriToRemove") String codesUriToRemove,
-            @PathParam("relationType") String relationType) {
+    @ApiOperation(
+            value = "Poistaa relaatio koodistojen väliltä",
+            notes = "")
+    public void removeRelation(
+            @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
+            @ApiParam(value = "Irrotettavan koodiston URI") @PathParam("codesUriToRemove") String codesUriToRemove,
+            @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType) {
 
         koodistoBusinessService.removeRelation(codesUri, Arrays.asList(codesUriToRemove), SuhteenTyyppi.valueOf(relationType));
     }
@@ -106,7 +120,12 @@ public class CodesResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    public Response update(KoodistoDto codesDTO) {
+    @ApiOperation(
+            value = "Päivittää koodistoa",
+            notes = "",
+            response = Response.class)
+    public Response update(
+            @ApiParam(value = "Koodisto") KoodistoDto codesDTO) {
         try {
             KoodistoVersio koodistoVersio = koodistoBusinessService.updateKoodisto(convertFromDTOToUpdateKoodistoDataType(codesDTO));
             return Response.status(Response.Status.CREATED).entity(koodistoVersio.getVersio()).build();
@@ -152,7 +171,12 @@ public class CodesResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
-    public Response insert(KoodistoDto codesDTO) {
+    @ApiOperation(
+            value = "Lisää koodiston",
+            notes = "",
+            response = Response.class)
+    public Response insert(
+            @ApiParam(value = "Koodisto") KoodistoDto codesDTO) {
         List<String> codesGroupUris = new ArrayList();
         codesGroupUris.add(codesDTO.getCodesGroupUri());
         try {
@@ -194,37 +218,58 @@ public class CodesResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView(JsonViews.Simple.class)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @ApiOperation(
+            value = "Palauttaa kaikki koodistoryhmät",
+            notes = "",
+            response = KoodistoRyhmaListDto.class,
+            responseContainer = "List")
     public List<KoodistoRyhmaListDto> listAllCodesGroups() {
         return conversionService.convertAll(koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class);
     }
 
     @GET
-    @Path("all")
+    @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @ApiOperation(
+            value = "Palauttaa kaikki koodistoryhmät ja niiden sisältämät koodistot",
+            notes = "",
+            response = KoodistoVersioListDto.class,
+            responseContainer = "List")
     public List<KoodistoVersioListDto> listAllCodesInAllCodeGroups() {
         SearchKoodistosCriteriaType searchType = KoodistoServiceSearchCriteriaBuilder.latestCodes();
         return conversionService.convertAll(koodistoBusinessService.searchKoodistos(searchType), KoodistoVersioListDto.class);
     }
 
     @GET
-    @Path("{codesUri}")
+    @Path("/{codesUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    public KoodistoListDto getCodesByCodesUri(@PathParam("codesUri") String codesUri) {
+    @ApiOperation(
+            value = "Palauttaa koodiston",
+            notes = "",
+            response = KoodistoListDto.class)
+    public KoodistoListDto getCodesByCodesUri(
+            @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri) {
         Koodisto koodisto = koodistoBusinessService.getKoodistoByKoodistoUri(codesUri);
 
         return conversionService.convert(koodisto, KoodistoListDto.class);
     }
 
     @GET
-    @Path("{codesUri}/{codesVersion}")
+    @Path("/{codesUri}/{codesVersion}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Extended.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    public KoodistoDto getCodesByCodesUriAndVersion(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion) {
+    @ApiOperation(
+            value = "Palauttaa tietyn koodistoversion",
+            notes = "",
+            response = KoodistoListDto.class)
+    public KoodistoDto getCodesByCodesUriAndVersion(
+            @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
+            @ApiParam(value = "Koodiston vesio") @PathParam("codesVersion") int codesVersion) {
         KoodistoVersio koodistoVersio = null;
         if (codesVersion == 0) {
             koodistoVersio = koodistoBusinessService.getLatestKoodistoVersio(codesUri);
@@ -236,12 +281,19 @@ public class CodesResource {
     }
 
     @POST
-    @Path("upload/{codesUri}")
+    @Path("/upload/{codesUri}")
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response uploadFile(@FormDataParam("uploadedFile") InputStream fileInputStream,
-            @FormDataParam("uploadedFile") com.sun.jersey.core.header.FormDataContentDisposition contentDispositionHeader,
-            @FormDataParam("fileFormat") String fileFormat, @FormDataParam("fileEncoding") String fileEncoding, @PathParam("codesUri") String codesUri) {
+    @ApiOperation(
+            value = "Tuo koodiston tiedostosta",
+            notes = "",
+            response = Response.class)
+    public Response uploadFile(
+            @ApiParam(value = "Tuotava tiedosto") @FormDataParam("uploadedFile") InputStream fileInputStream,
+            @ApiParam(value = "") @FormDataParam("uploadedFile") com.sun.jersey.core.header.FormDataContentDisposition contentDispositionHeader,
+            @ApiParam(value = "Tiedostotyyppi") @FormDataParam("fileFormat") String fileFormat,
+            @ApiParam(value = "Tiedoston koodaus") @FormDataParam("fileEncoding") String fileEncoding,
+            @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri) {
 
         String filePath = contentDispositionHeader.getFileName();
 
@@ -276,12 +328,18 @@ public class CodesResource {
     }
 
     @POST
-    @Path("download/{codesUri}/{codesVersion}")
+    @Path("/download/{codesUri}/{codesVersion}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    public FileDto download(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion, FileFormatDto fileFormatDto) {
+    @ApiOperation(
+            value = "Lataa koodisto XML, CSV tai Excel tiedostona",
+            notes = "",
+            response = FileDto.class)
+    public FileDto download(
+            @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
+            @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") int codesVersion, FileFormatDto fileFormatDto) {
         try {
             ExportImportFormatType formatStr = null;
 
@@ -318,14 +376,20 @@ public class CodesResource {
     }
 
     @POST
-    @Path("delete/{codesUri}/{codesVersion}")
+    @Path("/delete/{codesUri}/{codesVersion}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({JsonViews.Simple.class})
+    @JsonView({ JsonViews.Simple.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
-    public Response delete(@PathParam("codesUri") String codesUri, @PathParam("codesVersion") int codesVersion) {
+    @ApiOperation(
+            value = "Poistaa koodiston",
+            notes = "",
+            response = Response.class)
+    public Response delete(
+            @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
+            @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") int codesVersion) {
         try {
-            koodistoBusinessService.delete(codesUri,codesVersion);
+            koodistoBusinessService.delete(codesUri, codesVersion);
             return Response.status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
             logger.warn("Koodistoa ei saatu poistettua. ", e);
