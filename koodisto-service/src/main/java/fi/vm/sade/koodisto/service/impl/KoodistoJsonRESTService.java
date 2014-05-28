@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 
 import fi.vm.sade.generic.rest.Cacheable;
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
@@ -92,7 +93,10 @@ public class KoodistoJsonRESTService {
     @JsonView(JsonViews.Basic.class)
     @GET
     @Cacheable(maxAgeSeconds = ONE_HOUR)
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodistoRyhmaListDto.class, responseContainer = "List")
+    @ApiOperation(
+            value = "Listaa kaikki koodistoryhmät",
+            notes = "", response = KoodistoRyhmaListDto.class, 
+            responseContainer = "List")
     public List<KoodistoRyhmaListDto> listAllKoodistoRyhmas() {
         return conversionService.convertAll(koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class);
     }
@@ -102,8 +106,13 @@ public class KoodistoJsonRESTService {
     @Path("/{koodistoUri}")
     @Cacheable(maxAgeSeconds = ONE_HOUR)
     @Transactional
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodistoDto.class)
-    public KoodistoDto getKoodistoByUri(@PathParam(KOODISTO_URI) String koodistoUri, @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
+    @ApiOperation(
+            value = "Lataa koodisto URIn perusteella", 
+            notes = "", 
+            response = KoodistoDto.class)
+    public KoodistoDto getKoodistoByUri(
+            @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri, 
+            @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
 
         KoodistoVersio koodisto = null;
         if (koodistoVersio == null) {
@@ -120,9 +129,15 @@ public class KoodistoJsonRESTService {
     @Path("/{koodistoUri}/koodi")
     @Cacheable(maxAgeSeconds = ONE_HOUR)
     @Transactional
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiDto.class, responseContainer = "List")
-    public List<KoodiDto> getKoodisByKoodisto(@PathParam(KOODISTO_URI) String koodistoUri, @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio,
-            @QueryParam(ONLY_VALID_KOODIS) @DefaultValue("false") boolean onlyValidKoodis) {
+    @ApiOperation(
+            value = "Listaa koodiston kaikki koodit", 
+            notes = "", 
+            response = KoodiDto.class, 
+            responseContainer = "List")
+    public List<KoodiDto> getKoodisByKoodisto(
+            @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri, 
+            @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio,
+            @ApiParam(value = "Palauta vain voimassa olevia koodeja") @QueryParam(ONLY_VALID_KOODIS) @DefaultValue("false") boolean onlyValidKoodis) {
 
         List<KoodiVersioWithKoodistoItem> koodis = null;
         if (koodistoVersio == null) {
@@ -138,9 +153,16 @@ public class KoodistoJsonRESTService {
     @GET
     @Path("/{koodistoUri}/koodi/arvo/{koodiArvo}")
     @Cacheable(maxAgeSeconds = ONE_HOUR)
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiDto.class, responseContainer = "List")
-    public List<KoodiDto> getKoodisByArvo(@PathParam(KOODISTO_URI) String koodistoUri, @PathParam(KOODI_ARVO) String koodiArvo,
-            @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
+    @ApiOperation(
+            value = "Listaa koodit arvon perusteella", 
+            notes = "Nykyisellä toteutuksella palauttaa vain yhden koodin.", 
+            response = KoodiDto.class, 
+            responseContainer = "List")
+    public List<KoodiDto> getKoodisByArvo(
+            @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri,
+            @ApiParam(value = "Koodin arvo") @PathParam(KOODI_ARVO) String koodiArvo,
+            @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
+        //TODO: tämän pitäisi palauttaa vain yksi koodi
         List<KoodiVersioWithKoodistoItem> koodis = null;
         if (koodistoVersio == null) {
             koodis = koodiBusinessService.getKoodisByKoodistoWithKoodiArvo(koodistoUri, koodiArvo);
@@ -155,9 +177,15 @@ public class KoodistoJsonRESTService {
     @GET
     @Path("/{koodistoUri}/koodi/{koodiUri}")
     @Cacheable(maxAgeSeconds = ONE_HOUR)
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiDto.class, responseContainer = "List")
-    public KoodiDto getKoodiByUri(@PathParam(KOODISTO_URI) String koodistoUri, @PathParam(KOODI_URI) String koodiUri,
-            @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
+    @ApiOperation(
+            value = "Lataa koodi URIn perusteella",
+            notes = "",
+            response = KoodiDto.class, 
+            responseContainer = "List")
+    public KoodiDto getKoodiByUri(
+            @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri,
+            @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
+            @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
         KoodiVersioWithKoodistoItem koodi;
         if (koodistoVersio == null) {
             koodi = koodiBusinessService.getKoodiByKoodisto(koodistoUri, koodiUri);
@@ -172,9 +200,13 @@ public class KoodistoJsonRESTService {
     @GET
     @Path("/relaatio/sisaltyy-alakoodit/{koodiUri}")
     @Cacheable(maxAgeSeconds = ONE_HOUR)
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiDto.class, responseContainer = "List")
-    public List<KoodiDto> getAlakoodis(@PathParam(KOODI_URI) String koodiUri, @QueryParam(KOODI_VERSIO) Integer koodiVersio) {
-
+    @ApiOperation(
+            value = "Listaa koodin sisältämät koodit", 
+            notes = "Lista koodeista, joilla on SISÄLTYY-relaatio annettuun koodiin.", 
+            response = KoodiDto.class, responseContainer = "List")
+    public List<KoodiDto> getAlakoodis(
+            @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
+            @ApiParam(value = "Koodin versio") @QueryParam(KOODI_VERSIO) Integer koodiVersio) {
         final boolean isChild = false;
         final SuhteenTyyppi suhteenTyyppi = SuhteenTyyppi.SISALTYY;
 
@@ -185,9 +217,14 @@ public class KoodistoJsonRESTService {
     @GET
     @Path("/relaatio/sisaltyy-ylakoodit/{koodiUri}")
     @Cacheable(maxAgeSeconds = ONE_HOUR)
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiDto.class, responseContainer = "List")
-    public List<KoodiDto> getYlakoodis(@PathParam(KOODI_URI) String koodiUri, @QueryParam(KOODI_VERSIO) Integer koodiVersio) {
-
+    @ApiOperation(
+            value = "Listaa koodit, joihin koodi sisältyy",
+            notes = "Lista koodeista, joilla on SISÄLTÄÄ-relaatio annettuun koodiin.",
+            response = KoodiDto.class,
+            responseContainer = "List")
+    public List<KoodiDto> getYlakoodis(
+            @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
+            @ApiParam(value = "Koodin versio") @QueryParam(KOODI_VERSIO) Integer koodiVersio) {
         final boolean isChild = true;
         final SuhteenTyyppi suhteenTyyppi = SuhteenTyyppi.SISALTYY;
 
@@ -198,9 +235,15 @@ public class KoodistoJsonRESTService {
     @GET
     @Path("/relaatio/rinnasteinen/{koodiUri}")
     @Cacheable(maxAgeSeconds = ONE_HOUR)
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiDto.class, responseContainer = "List")
-    public List<KoodiDto> getRinnasteinenKoodis(@PathParam(KOODI_URI) String koodiUri, @QueryParam(KOODI_VERSIO) Integer koodiVersio) {
-
+    @ApiOperation(
+            value = "Listaa koodiin rinnastuvat koodit",
+            notes = "Lista koodeista, joilla on RINNASTUU-relaatio annettuun koodiin.",
+            response = KoodiDto.class,
+            responseContainer = "List")
+    public List<KoodiDto> getRinnasteinenKoodis(
+            @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
+            @ApiParam(value = "Koodin versio") @QueryParam(KOODI_VERSIO) Integer koodiVersio
+            ) {
         final boolean isChild = false;
         final SuhteenTyyppi suhteenTyyppi = SuhteenTyyppi.RINNASTEINEN;
 
@@ -214,7 +257,6 @@ public class KoodistoJsonRESTService {
         } else {
             koodis = koodiBusinessService.listByRelation(koodiUri, koodiVersio, isChild, suhteenTyyppi);
         }
-
         return conversionService.convertAll(koodis, KoodiDto.class);
     }
 
@@ -225,10 +267,19 @@ public class KoodistoJsonRESTService {
     @GET
     @Path("/searchKoodis")
     @Cacheable(maxAgeSeconds = ONE_HOUR)
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiDto.class, responseContainer = "List")
-    public List<KoodiDto> searchKoodis(@QueryParam(KOODI_URIS) List<String> koodiUris, @QueryParam(KOODI_ARVO) String koodiArvo,
-            @QueryParam(KOODI_TILAS) List<TilaType> koodiTilas, @QueryParam(VALID_AT) String validAtDate, @QueryParam(KOODI_VERSIO) Integer koodiVersio,
-            @QueryParam(KOODI_VERSIO_SELECTION) SearchKoodisVersioSelectionType koodiVersioSelection) throws IllegalAccessException, NoSuchMethodException,
+    @ApiOperation(
+            value = "Listaa koodit hakukriteerien perusteella",
+            notes = "Haun rajaamiseksi ainakin jokin seuraavista kentistä pitää olla annettu: koodiUris, koodiArvo, validAt",
+            response = KoodiDto.class,
+            responseContainer = "List")
+    public List<KoodiDto> searchKoodis(
+            @ApiParam(value = "Lista koodi URI:ja") @QueryParam(KOODI_URIS) List<String> koodiUris,
+            @ApiParam(value = "Koodin arvo") @QueryParam(KOODI_ARVO) String koodiArvo,
+            @ApiParam(value = "Koodin tila: PASIIVINEN, LUONNOS, HYVAKSYTTY") @QueryParam(KOODI_TILAS) List<TilaType> koodiTilas,
+            @ApiParam(value = "Päiväys, jolloin koodi on voimassa") @QueryParam(VALID_AT) String validAtDate,
+            @ApiParam(value = "Koodin versio, ainoastaan, jos version valinta on SPECIFIC") @QueryParam(KOODI_VERSIO) Integer koodiVersio,
+            @ApiParam(value = "Koodin version valinta: ALL, LATEST, SPECIFIC") @QueryParam(KOODI_VERSIO_SELECTION) SearchKoodisVersioSelectionType koodiVersioSelection
+            ) throws IllegalAccessException, NoSuchMethodException,
             InvocationTargetException, ParseException {
 
         SearchKoodisCriteriaType searchCriteria = new SearchKoodisCriteriaType();
@@ -256,8 +307,13 @@ public class KoodistoJsonRESTService {
     @Path("/{koodistoUri}.properties")
     @Produces(value = MediaType.TEXT_PLAIN)
     @Cacheable(maxAgeSeconds = ONE_HOUR)
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = String.class)
-    public String getKoodistoAsPropertiesDefaultLang(@PathParam(KOODISTO_URI) String koodistoUri) throws IOException {
+    @ApiOperation(
+            value = "Hae koodiston tiedot suomeksi",
+            notes = "Sisältää listan koodiston koodiarvoista ja niiden nimistä.",
+            response = String.class)
+    public String getKoodistoAsPropertiesDefaultLang(
+            @ApiParam(value = "Koodisto URI") @PathParam(KOODISTO_URI) String koodistoUri
+            ) throws IOException {
         return getKoodistoAsProperties(koodistoUri, "FI");
     }
 
@@ -265,8 +321,14 @@ public class KoodistoJsonRESTService {
     @Path("/{koodistoUri}_{lang}.properties")
     @Produces(value = MediaType.TEXT_PLAIN)
     @Cacheable(maxAgeSeconds = ONE_HOUR)
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = String.class)
-    public String getKoodistoAsProperties(@PathParam(KOODISTO_URI) String koodistoUri, @PathParam(LANG) String lang) throws IOException {
+    @ApiOperation(
+            value = "Hae koodiston tiedot kielen perusteella",
+            notes = "Sisältää listan koodiston koodiarvoista ja niiden nimistä.",
+            response = String.class)
+    public String getKoodistoAsProperties(
+            @ApiParam(value = "Koodisto URI") @PathParam(KOODISTO_URI) String koodistoUri,
+            @ApiParam(value = "Kieli (FI, SV tai EN)") @PathParam(LANG) String lang
+            ) throws IOException {
         List<KoodiVersioWithKoodistoItem> koodis = koodiBusinessService.getKoodisByKoodisto(koodistoUri, false);
         Properties props = new Properties();
         // iterate all koodis
@@ -291,9 +353,17 @@ public class KoodistoJsonRESTService {
     @POST
     @Path("/{koodistoUri}/koodi/{koodiUri}/kieli/{lang}/metadata")
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiDto.class)
-    public KoodiDto updateKoodiLangMetaData(@PathParam(KOODISTO_URI) String koodistoUri, @PathParam(KOODI_URI) String koodiUri, @PathParam(LANG) String lang,
-            @FormParam(NIMI) String nimi, @FormParam(KUVAUS) String kuvaus) {
+    @ApiOperation(
+            value = "Päivitä tai luo koodin kielitiedot",
+            notes = "Jos koodilla on jo nimi ja kuvaus annetulla kielellä, ne päivitetään. Muussa tapauksessa koodille luodaan kyseiset kielitiedot.",
+            response = KoodiDto.class)
+    public KoodiDto updateKoodiLangMetaData(
+            @ApiParam(value = "Koodisto URI") @PathParam(KOODISTO_URI) String koodistoUri,
+            @ApiParam(value = "Koodi URI") @PathParam(KOODI_URI) String koodiUri,
+            @ApiParam(value = "Kieli (FI, SV tai EN)") @PathParam(LANG) String lang,
+            @ApiParam(value = "Koodin nimi") @FormParam(NIMI) String nimi,
+            @ApiParam(value = "Koodin kuvaus") @FormParam(KUVAUS) String kuvaus
+            ) {
         nimi = nimi.substring(0, Math.min(nimi.length(), FieldLengths.DEFAULT_FIELD_LENGTH)); // nimi cannot be longer
 
         // find/create koodi

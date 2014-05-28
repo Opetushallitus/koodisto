@@ -100,8 +100,8 @@
 	  <property name="resourcePackage" value="fi.vm.sade.koodisto.service.impl"/>
 	  <property name="version" value="1.0.0"/>
 	  <property name="basePath" value="https://${host.virkailija}/koodisto-service"/>
-	  <property name="title" value="Koodisto resources at ${host.virkailija}"/>
-	  <property name="description" value="Koodisto offered resources."/>
+	  <property name="title" value="Koodiston rajapinta palvelussa ${host.virkailija}"/>
+	  <property name="description" value="API offered by Koodisto service."/>
 	  <property name="contact" value=""/>
 	  <property name="license" value="Apache 2.0 License"/>
 	  <property name="licenseUrl" value="http://www.apache.org/licenses/LICENSE-2.0.html"/>

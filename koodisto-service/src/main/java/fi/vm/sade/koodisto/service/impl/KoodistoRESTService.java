@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiParam;
 
 import fi.vm.sade.generic.rest.Cacheable;
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
@@ -56,7 +57,10 @@ public class KoodistoRESTService {
     private SadeConversionService conversionService;
 
     @GET
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodistoRyhmaCollectionType.class)
+    @ApiOperation(
+            value = "Listaa kaikki koodistoryhmät",
+            notes = "", response = KoodistoRyhmaCollectionType.class,
+            responseContainer = "List")
     public JAXBElement<KoodistoRyhmaCollectionType> listAllKoodistoRyhmas() {
         KoodistoRyhmaCollectionType collection = new KoodistoRyhmaCollectionType();
         collection.getKoodistoryhma().addAll(conversionService.convertAll(koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListType.class));
@@ -66,8 +70,13 @@ public class KoodistoRESTService {
 
     @GET
     @Path("/{koodistoUri}")
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodistoType.class)
-    public JAXBElement<KoodistoType> getKoodistoByUri(@PathParam(KOODISTO_URI) String koodistoUri, @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
+    @ApiOperation(
+            value = "Lataa koodisto URIn perusteella",
+            notes = "",
+            response = KoodistoType.class)
+    public JAXBElement<KoodistoType> getKoodistoByUri(
+            @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri,
+            @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
 
         KoodistoVersio koodisto = null;
         if (koodistoVersio == null) {
@@ -75,14 +84,18 @@ public class KoodistoRESTService {
         } else {
             koodisto = koodistoBusinessService.getKoodistoVersio(koodistoUri, koodistoVersio);
         }
-
         return new ObjectFactory().createKoodisto(conversionService.convert(koodisto, KoodistoType.class));
     }
 
     @GET
     @Path("/{koodistoUri}/koodi")
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiCollectionType.class)
-    public JAXBElement<KoodiCollectionType> getKoodisByKoodisto(@PathParam(KOODISTO_URI) String koodistoUri, @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
+    @ApiOperation(
+            value = "Listaa koodiston kaikki koodit", 
+            notes = "", 
+            response = KoodiCollectionType.class)
+    public JAXBElement<KoodiCollectionType> getKoodisByKoodisto(
+            @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri,
+            @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
 
         List<KoodiVersioWithKoodistoItem> koodis = null;
         if (koodistoVersio == null) {
@@ -99,9 +112,14 @@ public class KoodistoRESTService {
 
     @GET
     @Path("/{koodistoUri}/koodi/arvo/{koodiArvo}")
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiCollectionType.class)
-    public JAXBElement<KoodiCollectionType> getKoodisByArvo(@PathParam(KOODISTO_URI) String koodistoUri, @PathParam(KOODI_ARVO) String koodiArvo,
-            @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
+    @ApiOperation(
+            value = "Listaa koodit arvon perusteella", 
+            notes = "Nykyisellä toteutuksella palauttaa vain yhden koodin.", 
+            response = KoodiCollectionType.class)
+    public JAXBElement<KoodiCollectionType> getKoodisByArvo(
+            @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri,
+            @ApiParam(value = "Koodin arvo") @PathParam(KOODI_ARVO) String koodiArvo,
+            @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
         List<KoodiVersioWithKoodistoItem> koodis = null;
         if (koodistoVersio == null) {
             koodis = koodiBusinessService.getKoodisByKoodistoWithKoodiArvo(koodistoUri, koodiArvo);
@@ -117,9 +135,14 @@ public class KoodistoRESTService {
 
     @GET
     @Path("/{koodistoUri}/koodi/{koodiUri}")
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiType.class)
-    public JAXBElement<KoodiType> getKoodiByUri(@PathParam(KOODISTO_URI) String koodistoUri, @PathParam(KOODI_URI) String koodiUri,
-            @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
+    @ApiOperation(
+            value = "Lataa koodi URIn perusteella",
+            notes = "",
+            response = KoodiType.class)
+    public JAXBElement<KoodiType> getKoodiByUri(
+            @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri,
+            @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
+            @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
         KoodiVersioWithKoodistoItem koodi;
         if (koodistoVersio == null) {
             koodi = koodiBusinessService.getKoodiByKoodisto(koodistoUri, koodiUri);
@@ -132,8 +155,13 @@ public class KoodistoRESTService {
 
     @GET
     @Path("/relaatio/sisaltyy-alakoodit/{koodiUri}")
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiCollectionType.class)
-    public JAXBElement<KoodiCollectionType> getAlakoodis(@PathParam(KOODI_URI) String koodiUri, @QueryParam(KOODI_VERSIO) Integer koodiVersio) {
+    @ApiOperation(
+            value = "Listaa koodin sisältämät koodit", 
+            notes = "Lista koodeista, joilla on SISÄLTYY-relaatio annettuun koodiin.", 
+            response = KoodiCollectionType.class)
+    public JAXBElement<KoodiCollectionType> getAlakoodis(
+            @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
+            @ApiParam(value = "Koodin versio") @QueryParam(KOODI_VERSIO) Integer koodiVersio) {
 
         final boolean isChild = false;
         final SuhteenTyyppi suhteenTyyppi = SuhteenTyyppi.SISALTYY;
@@ -143,8 +171,13 @@ public class KoodistoRESTService {
 
     @GET
     @Path("/relaatio/sisaltyy-ylakoodit/{koodiUri}")
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiCollectionType.class)
-    public JAXBElement<KoodiCollectionType> getYlakoodis(@PathParam(KOODI_URI) String koodiUri, @QueryParam(KOODI_VERSIO) Integer koodiVersio) {
+    @ApiOperation(
+            value = "Listaa koodit, joihin koodi sisältyy",
+            notes = "Lista koodeista, joilla on SISÄLTÄÄ-relaatio annettuun koodiin.",
+            response = KoodiCollectionType.class)
+    public JAXBElement<KoodiCollectionType> getYlakoodis(
+            @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
+            @ApiParam(value = "Koodin versio") @QueryParam(KOODI_VERSIO) Integer koodiVersio) {
 
         final boolean isChild = true;
         final SuhteenTyyppi suhteenTyyppi = SuhteenTyyppi.SISALTYY;
@@ -154,8 +187,13 @@ public class KoodistoRESTService {
 
     @GET
     @Path("/relaatio/rinnasteinen/{koodiUri}")
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = KoodiCollectionType.class)
-    public JAXBElement<KoodiCollectionType> getRinnasteinenKoodis(@PathParam(KOODI_URI) String koodiUri, @QueryParam(KOODI_VERSIO) Integer koodiVersio) {
+    @ApiOperation(
+            value = "Listaa koodiin rinnastuvat koodit",
+            notes = "Lista koodeista, joilla on RINNASTUU-relaatio annettuun koodiin.",
+            response = KoodiCollectionType.class)
+    public JAXBElement<KoodiCollectionType> getRinnasteinenKoodis(
+            @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
+            @ApiParam(value = "Koodin versio") @QueryParam(KOODI_VERSIO) Integer koodiVersio) {
 
         final boolean isChild = false;
         final SuhteenTyyppi suhteenTyyppi = SuhteenTyyppi.RINNASTEINEN;
@@ -181,8 +219,13 @@ public class KoodistoRESTService {
     @Path("/{koodistoUri}.xsd")
     @Cacheable(maxAgeSeconds = KoodistoJsonRESTService.ONE_HOUR)
     @Transactional
-    @ApiOperation(value = "Kuvaus", notes = "Pidempikuvauspiilotettuna", response = String.class)
-    public String getKoodistoXsdSkeema(@PathParam(KOODISTO_URI) String koodistoUri, @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
+    @ApiOperation(
+            value = "Lataa koodiston XML malli",
+            notes = "",
+            response = String.class)
+    public String getKoodistoXsdSkeema(
+            @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri,
+            @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
         KoodistoVersio koodisto = null;
         if (koodistoVersio == null) {
             koodisto = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
@@ -190,7 +233,7 @@ public class KoodistoRESTService {
             koodisto = koodistoBusinessService.getKoodistoVersio(koodistoUri, koodistoVersio);
         }
 
-        // todo: streamaus vois olla kohdillaan kun esim posti -koodistosta tulee 1,4 meganen xsd-dokkari
+        // TODO: streamaus vois olla kohdillaan kun esim posti -koodistosta tulee 1,4 meganen xsd-dokkari
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("<?xml version=\"1.0\"?>\n" + "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"\n"
                 + "           targetNamespace=\"http://service.koodisto.sade.vm.fi/types/koodisto\"\n"
