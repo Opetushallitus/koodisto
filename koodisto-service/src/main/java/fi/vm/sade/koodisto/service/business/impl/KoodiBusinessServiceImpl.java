@@ -326,7 +326,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void addRelation(KoodiVersio ylakoodi, SuhteenTyyppi suhteenTyyppi, KoodiVersioWithKoodistoItem... alakoodis) {
-        if(suhteenTyyppi == SuhteenTyyppi.SISALTYY && this.koodisHaveSameOrganisaatio(ylakoodi, alakoodis)) {
+        if(suhteenTyyppi == SuhteenTyyppi.SISALTYY && !koodisHaveSameOrganisaatio(ylakoodi, alakoodis)) {
             throw new KoodisHaveDifferentOrganizationsException("codeelements.have.different.organizations");
         }
 
