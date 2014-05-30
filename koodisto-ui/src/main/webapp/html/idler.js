@@ -8,10 +8,12 @@ app.directive('idle', ['$idle', '$timeout', '$interval', function($idle, $timeou
 	    // Watch for the events set in ng-idle's options
 	    // If any of them fire (considering 500ms debounce), update localStorage.lastEventTime with a current timestamp
 	    elem.on($idle._options().events, function(){
-		if (timeout) { $timeout.cancel(timeout); }
-		timeout = $timeout(function(){
-		    localStorage.setItem('lastEventTime', new Date().getTime());
-		}, 3000, false);
+		if($idle.running()) {
+		    if (timeout) { $timeout.cancel(timeout); }
+		    timeout = $timeout(function(){
+			localStorage.setItem('lastEventTime', new Date().getTime());
+		    }, 3000, false);
+		}
 	    });
 
 	    // Every 5s, poll localStorage.lastEventTime to see if its value is greater than the timestamp set for the last known event
