@@ -1,36 +1,35 @@
 app.directive('idle', ['$idle', '$timeout', '$interval', function($idle, $timeout, $interval){
-  return {
-    restrict: 'A',
-    link: function(scope, elem, attrs) {
-      var timeout;
-      var timestamp = localStorage.lastEventTime;
+    return {
+	restrict: 'A',
+	link: function(scope, elem, attrs) {
+	    var timeout;
+	    var timestamp = localStorage.lastEventTime;
 
-      // Watch for the events set in ng-idle's options
-      // If any of them fire (considering 500ms debounce), update localStorage.lastEventTime with a current timestamp
-      elem.on($idle._options().events, function(){
-        if (timeout) { $timeout.cancel(timeout); }
-        timeout = $timeout(function(){
-          localStorage.setItem('lastEventTime', new Date().getTime());
-        }, 3000, false);
-      });
+	    // Watch for the events set in ng-idle's options
+	    // If any of them fire (considering 500ms debounce), update localStorage.lastEventTime with a current timestamp
+	    elem.on($idle._options().events, function(){
+		if (timeout) { $timeout.cancel(timeout); }
+		timeout = $timeout(function(){
+		    localStorage.setItem('lastEventTime', new Date().getTime());
+		}, 3000, false);
+	    });
 
-      // Every 5s, poll localStorage.lastEventTime to see if its value is greater than the timestamp set for the last known event
-      // If it is, reset the ng-idle timer and update the last known event timestamp to the value found in localStorage
-      window.setInterval(function() {
-        if (localStorage.lastEventTime > timestamp) {
-           console.log(timestamp);
-          var element = angular.element('#sessionWarning .btn');
-          if (element.length > 0) {
-              $timeout(function() {
-        	  element.click();
-              }, 500, false);
-          }
-          $idle.watch();
-          timestamp = localStorage.lastEventTime;
-        } 
-      }, 5000, false);
+	    // Every 5s, poll localStorage.lastEventTime to see if its value is greater than the timestamp set for the last known event
+	    // If it is, reset the ng-idle timer and update the last known event timestamp to the value found in localStorage
+	    window.setInterval(function() {
+		if (localStorage.lastEventTime > timestamp) {
+		    var element = angular.element('#sessionWarning .btn');
+		    if (element.length > 0) {
+			$timeout(function() {
+			    element.click();
+			}, 500, false);
+		    }
+		    $idle.watch();
+		    timestamp = localStorage.lastEventTime;
+		} 
+	    }, 5000, false);
+	}
     }
-  }
 }])
 
 app.controller('SessionExpiresCtrl', ['$idle', '$scope', '$modalInstance', '$window', function( $idle, $scope, $modalInstance, $window) {
