@@ -6,19 +6,28 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+
 @Component
 @Path("session")
+@Api(value = "/rest/session", description = "Sessionhallinta")
 public class SessionResource {
-	
-	@GET
-	@PreAuthorize("isAuthenticated()")
-	@Produces(MediaType.TEXT_PLAIN)
-	@Path("maxinactiveinterval")
-	public String maxInactiveInterval(@Context HttpServletRequest req) {
-		return Integer.toString(req.getSession().getMaxInactiveInterval());
-	}
+
+    @GET
+    @Path("/maxinactiveinterval")
+    @PreAuthorize("isAuthenticated()")
+    @Produces(MediaType.TEXT_PLAIN)
+    @ApiOperation(
+            value = "Palauttaa session erääntymisen aikarajan sekunteina",
+            notes = "Tarvitsee HTTP kutsun, jossa on session id",
+            response = String.class)
+    public String maxInactiveInterval(@Context HttpServletRequest req) {
+        return Integer.toString(req.getSession().getMaxInactiveInterval());
+    }
 }

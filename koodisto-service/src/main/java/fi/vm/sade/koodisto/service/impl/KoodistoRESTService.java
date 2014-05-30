@@ -59,7 +59,8 @@ public class KoodistoRESTService {
     @GET
     @ApiOperation(
             value = "Listaa kaikki koodistoryhmät",
-            notes = "", response = KoodistoRyhmaCollectionType.class,
+            notes = "Palauttaa kaikki koodistoryhmät ja niiden sisältämät koodistot",
+            response = KoodistoRyhmaCollectionType.class,
             responseContainer = "List")
     public JAXBElement<KoodistoRyhmaCollectionType> listAllKoodistoRyhmas() {
         KoodistoRyhmaCollectionType collection = new KoodistoRyhmaCollectionType();
@@ -72,7 +73,7 @@ public class KoodistoRESTService {
     @Path("/{koodistoUri}")
     @ApiOperation(
             value = "Lataa koodisto URIn perusteella",
-            notes = "",
+            notes = "Palautaa koodiston, jonka URI on {koodistouri}. Versionumeron voi antaa URL-parametrina",
             response = KoodistoType.class)
     public JAXBElement<KoodistoType> getKoodistoByUri(
             @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri,
@@ -90,8 +91,8 @@ public class KoodistoRESTService {
     @GET
     @Path("/{koodistoUri}/koodi")
     @ApiOperation(
-            value = "Listaa koodiston kaikki koodit", 
-            notes = "", 
+            value = "Listaa koodiston kaikki koodit",
+            notes = "Palauttaa koodiston, jonka URI on {koodistouri} koodit. Koodiston versionumeron voi antaa URL-parametrina",
             response = KoodiCollectionType.class)
     public JAXBElement<KoodiCollectionType> getKoodisByKoodisto(
             @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri,
@@ -113,8 +114,8 @@ public class KoodistoRESTService {
     @GET
     @Path("/{koodistoUri}/koodi/arvo/{koodiArvo}")
     @ApiOperation(
-            value = "Listaa koodit arvon perusteella", 
-            notes = "Nykyisellä toteutuksella palauttaa vain yhden koodin.", 
+            value = "Listaa koodit arvon perusteella",
+            notes = "Palauttaa koodistosta, jonka URI on {koodistouri}, koodin, jonka arvo on {koodiArvo}. Koodiston ja koodin versionumerot voi antaa URL-parametreina. Nykyisellä toteutuksella palauttaa vain yhden koodin.",
             response = KoodiCollectionType.class)
     public JAXBElement<KoodiCollectionType> getKoodisByArvo(
             @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri,
@@ -137,7 +138,7 @@ public class KoodistoRESTService {
     @Path("/{koodistoUri}/koodi/{koodiUri}")
     @ApiOperation(
             value = "Lataa koodi URIn perusteella",
-            notes = "",
+            notes = "Palauttaa koodistosto, jonka URI on {koodistouri}, koodin, jonka URI on {koodiuri}. Koodiston ja koodin versionumerot voi antaa URL-parametreina",
             response = KoodiType.class)
     public JAXBElement<KoodiType> getKoodiByUri(
             @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri,
@@ -156,8 +157,8 @@ public class KoodistoRESTService {
     @GET
     @Path("/relaatio/sisaltyy-alakoodit/{koodiUri}")
     @ApiOperation(
-            value = "Listaa koodin sisältämät koodit", 
-            notes = "Lista koodeista, joilla on SISÄLTYY-relaatio annettuun koodiin.", 
+            value = "Listaa koodin sisältämät koodit",
+            notes = "Palauttaa koodille, jonka URI on {koodiuri}, sisältyvyyssuhteessa alapuolelle määritellyt koodit. Koodin versionumeron voi antaa URL-parametrina.",
             response = KoodiCollectionType.class)
     public JAXBElement<KoodiCollectionType> getAlakoodis(
             @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
@@ -173,7 +174,7 @@ public class KoodistoRESTService {
     @Path("/relaatio/sisaltyy-ylakoodit/{koodiUri}")
     @ApiOperation(
             value = "Listaa koodit, joihin koodi sisältyy",
-            notes = "Lista koodeista, joilla on SISÄLTÄÄ-relaatio annettuun koodiin.",
+            notes = "Palauttaa koodille, jonka URI on {koodiuri}, sisältyvyyssuhteessa yläpuolelle määritellyt koodit. Koodin versionumeron voi antaa URL-parametrina.",
             response = KoodiCollectionType.class)
     public JAXBElement<KoodiCollectionType> getYlakoodis(
             @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
@@ -189,7 +190,7 @@ public class KoodistoRESTService {
     @Path("/relaatio/rinnasteinen/{koodiUri}")
     @ApiOperation(
             value = "Listaa koodiin rinnastuvat koodit",
-            notes = "Lista koodeista, joilla on RINNASTUU-relaatio annettuun koodiin.",
+            notes = "Palauttaa koodille, jonka URI on {koodiuri}, rinnastuvuussuhteessa määritellyt koodit. Koodin versionumeron voi antaa URL-parametrina.",
             response = KoodiCollectionType.class)
     public JAXBElement<KoodiCollectionType> getRinnasteinenKoodis(
             @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
