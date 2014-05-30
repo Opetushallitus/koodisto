@@ -11,23 +11,24 @@ app.directive('idle', ['$idle', '$timeout', '$interval', function($idle, $timeou
         if (timeout) { $timeout.cancel(timeout); }
         timeout = $timeout(function(){
           localStorage.setItem('lastEventTime', new Date().getTime());
-        }, 500);
+        }, 3000, false);
       });
 
       // Every 5s, poll localStorage.lastEventTime to see if its value is greater than the timestamp set for the last known event
       // If it is, reset the ng-idle timer and update the last known event timestamp to the value found in localStorage
-      $interval(function() {
+      window.setInterval(function() {
         if (localStorage.lastEventTime > timestamp) {
+           console.log(timestamp);
           var element = angular.element('#sessionWarning .btn');
           if (element.length > 0) {
               $timeout(function() {
         	  element.click();
-              }, 200);
+              }, 500, false);
           }
           $idle.watch();
           timestamp = localStorage.lastEventTime;
         } 
-      }, 5000);
+      }, 5000, false);
     }
   }
 }])
