@@ -46,12 +46,19 @@
 
     <servlet>
         <servlet-name>cxf</servlet-name>
-        <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
+	    <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>cxf</servlet-name>
         <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+
+	<!-- Swagger-ui -->
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/swagger/*</url-pattern>
     </servlet-mapping>
 
     <resource-ref>

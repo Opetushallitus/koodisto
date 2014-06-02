@@ -19,7 +19,7 @@ describe("Edit codes test", function() {
 	q = $q;
 	$routeParams.codesUri = "espoonoikeudet";
 	$routeParams.codesVersion = 1;
-	controller = $controller("CodesEditorController", {$scope: scope, CodesEditorModel : model});
+	$controller("CodesEditorController", {$scope: scope, CodesEditorModel : model});
 	angular.mock.inject(function ($injector) {
 	    mockBackend = $injector.get('$httpBackend');
 	});     
