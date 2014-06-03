@@ -188,7 +188,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
     return model;
 });
 
-function ViewCodesController($scope, $location, $filter, $routeParams, ViewCodesModel, DownloadCodes, RemoveRelationCodes, DeleteCodes) {
+function ViewCodesController($scope, $location, $filter, $routeParams, $window, ViewCodesModel, DownloadCodes, RemoveRelationCodes, DeleteCodes) {
     $scope.model = ViewCodesModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
@@ -205,11 +205,11 @@ function ViewCodesController($scope, $location, $filter, $routeParams, ViewCodes
 
     $scope.addCodeElement = function() {
         $location.path("/lisaaKoodi/" + $scope.codesUri + "/" + $scope.codesVersion);
-    }
+    };
 
     $scope.editCodes = function() {
         $location.path("/muokkaaKoodisto/" + $scope.codesUri + "/" + $scope.codesVersion);
-    }
+    };
 
     $scope.okconfirmdeletecodes = function() {
         DeleteCodes.put({
@@ -244,70 +244,11 @@ function ViewCodesController($scope, $location, $filter, $routeParams, ViewCodes
     };
 
     $scope.okdownload = function() {
-        var fileFormat = {
-            format : $scope.model.format,
-            encoding : $scope.model.encoding
-        };
-        DownloadCodes.put({
-            codesUri : $scope.codesUri,
-            codesVersion : $scope.codesVersion
-        }, fileFormat, function(result) {
-
-            if (result.data) {
-                var type = '';
-                var data = '';
-
-                if (fileFormat.format === "JHS_XML") {
-                    type = 'text/xml';
-                    data = result.data;
-                } else if (fileFormat.format === "CSV") {
-                    type = 'text/csv';
-                    data = result.data;
-                } else if (fileFormat.format === "XLS") {
-                    type = 'application/vnd.ms-excel';
-
-                    // Decode base64 binary data
-                    raw = atob(result.data);
-                    data = new Uint8Array(new ArrayBuffer(raw.length));
-                    for (var i = 0; i < raw.length; i++) {
-                        data[i] = raw.charCodeAt(i);
-                    }
-                }
-
-                var blob = new Blob([ data ], {
-                    type : type
-                });
-
-                var url = window.URL || window.webkitURL;
-                var link = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
-                link.href = url.createObjectURL(blob);
-                if (fileFormat.format === "CSV") {
-                    link.download = $scope.codesUri + ".csv";
-                } else if (fileFormat.format === "XLS") {
-                    link.download = $scope.codesUri + ".xls";
-                } else {
-                    link.download = $scope.codesUri;
-                }
-
-                var event = document.createEvent("MouseEvents");
-                event.initEvent("click", true, false);
-                link.dispatchEvent(event);
-            }
-            if ($scope.codesVersion != -1) { // Downloading blank document
-                var alert = {
-                    type : 'success',
-                    msg : 'Koodiston vienti onnistui.'
-                };
-                $scope.model.alerts.push(alert);
-            }
-        }, function(error) {
-            var alert = {
-                type : 'danger',
-                msg : 'Koodiston vienti ep\u00E4onnistui.'
-            };
-            $scope.model.alerts.push(alert);
-        });
-        $scope.model.downloadModalInstance.close();
+        var url = DownloadCodes($scope.codesUri, $scope.codesVersion, $scope.model.format, $scope.model.encoding);
+        $window.open(url);
+        if ($scope.model.downloadModalInstance) {
+            $scope.model.downloadModalInstance.close();
+        }
     };
 
     $scope.downloadBlank = function() {
