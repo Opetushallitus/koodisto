@@ -95,13 +95,24 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
         };
 
         this.getLatestCodeElementVersionsByCodeElementUri = function(codeElement, list) {
-            LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElement.codeElementUri}, function (result) {
+            LatestCodeElementVersionsByCodeElementUri.get({
+                codeElementUri : codeElement.codeElementUri
+            }, function(result) {
                 var ce = {};
-                ce.uri = codeElement.codeElementUri;
+                ce.uri = result.koodiUri;
                 ce.value = result.koodiArvo;
                 ce.name = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
-                ce.versio = codeElement.codeElementVersion;
-                list.push(ce);
+                ce.versio = result.versio;
+                var duplicate = false;
+                list.forEach(function(code) {
+                    if (code.uri == ce.uri) {
+                        duplicate = true;
+                        code.versio = code.versio > ce.versio ? code.versio : ce.versio; // Päivitä versio uusimpaan
+                    }
+                });
+                if (!duplicate) {
+                    list.push(ce);
+                }
             });
         };
 
