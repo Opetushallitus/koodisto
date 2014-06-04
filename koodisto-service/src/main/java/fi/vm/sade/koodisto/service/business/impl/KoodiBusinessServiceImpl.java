@@ -17,7 +17,6 @@ import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +25,7 @@ import com.google.common.collect.Iterables;
 
 import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.generic.common.DateHelper;
+import fi.vm.sade.generic.service.exception.NotAuthorizedException;
 import fi.vm.sade.koodisto.dao.KoodiDAO;
 import fi.vm.sade.koodisto.dao.KoodiMetadataDAO;
 import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
@@ -83,9 +83,8 @@ import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 @Service("koodiBusinessService")
 public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
-    private static final String ROOT_USER_OID = "1.2.246.562.10.00000000001";
-    
     private Logger logger = LoggerFactory.getLogger(getClass());
+    public static final String ROOT_ORG = "1.2.246.562.10.00000000001";
 
     @Autowired
     private KoodiDAO koodiDAO;
@@ -167,8 +166,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void checkIfCodeElementValueExistsAlready(String koodiUri,
-                                                      String koodiArvo,
-                                                      Set<KoodistoVersioKoodiVersio> koodiVersios) {
+            String koodiArvo,
+            Set<KoodistoVersioKoodiVersio> koodiVersios) {
         for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
             if (!koodiUri.equals(koodiVersio.getKoodiVersio().getKoodi().getKoodiUri()) &&
                     koodiArvo.equals(koodiVersio.getKoodiVersio().getKoodiarvo())) {
@@ -188,7 +187,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     public KoodiVersio getLatestKoodiVersio(String koodiUri) {
-        if(StringUtils.isBlank(koodiUri)) return null;
+        if (StringUtils.isBlank(koodiUri))
+            return null;
         return getLatestKoodiVersioWithKoodistoVersioItems(koodiUri).getKoodiVersio();
     }
 
@@ -282,7 +282,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
                 if (latest != null && latest.getKoodi().getKoodisto().getKoodistoUri().equals(koodisto.getKoodisto().getKoodistoUri())) {
                     KoodiVersioWithKoodistoItem updated = updateKoodi(updateData, true);
-                    KoodistoVersioKoodiVersio result = koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(koodisto.getId(), updated.getKoodiVersio()
+                    KoodistoVersioKoodiVersio result = koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(koodisto.getId(), updated
+                            .getKoodiVersio()
                             .getId());
 
                     if (result == null) {
@@ -329,11 +330,10 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void addRelation(KoodiVersio ylakoodi, SuhteenTyyppi suhteenTyyppi, KoodiVersioWithKoodistoItem... alakoodis) {
-        if(suhteenTyyppi == SuhteenTyyppi.SISALTYY && this.haveDifferentOrganisations(ylakoodi, alakoodis) && !currentUserIsRootUser()) {
+        if (suhteenTyyppi == SuhteenTyyppi.SISALTYY && !userIsRootUser() && koodisHaveSameOrganisaatio(ylakoodi, alakoodis)) {
             throw new KoodisHaveDifferentOrganizationsException("codeelements.have.different.organizations");
         }
 
-        
         KoodiVersio latestYlakoodi = ylakoodi;
 
         if (SuhteenTyyppi.SISALTYY.equals(suhteenTyyppi)) {
@@ -587,19 +587,19 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
             KoodiVersio previousVersion = koodiVersioDAO.getPreviousKoodiVersio(latest.getKoodi().getKoodiUri(), latest.getVersio());
             if (previousVersion != null) {
-            	previousVersion.setVoimassaLoppuPvm(getValidEndDateForKoodiVersio(previousVersion, latest));            
+                previousVersion.setVoimassaLoppuPvm(getValidEndDateForKoodiVersio(previousVersion, latest));
             }
             latest.setTila(Tila.valueOf(tila.name()));
         }
     }
-    
+
     private Date getValidEndDateForKoodiVersio(KoodiVersio previous, KoodiVersio latest) {
-    	final Date previousStartDate = previous.getVoimassaAlkuPvm();
-    	final Date latestStartDate = latest.getVoimassaAlkuPvm();
-    	if (latestStartDate.after(previousStartDate) && latestStartDate.after(new Date())) {
-    		return latestStartDate;
-    	}
-    	return previousStartDate.after(new Date()) ? previousStartDate: new Date();
+        final Date previousStartDate = previous.getVoimassaAlkuPvm();
+        final Date latestStartDate = latest.getVoimassaAlkuPvm();
+        if (latestStartDate.after(previousStartDate) && latestStartDate.after(new Date())) {
+            return latestStartDate;
+        }
+        return previousStartDate.after(new Date()) ? previousStartDate : new Date();
     }
 
     @Override
@@ -719,14 +719,14 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         List<KoodiVersioWithKoodistoItem> versios = koodiVersioDAO.searchKoodis(searchCriteria);
         if (!versios.isEmpty()) {
             Iterator<KoodinSuhde> itr = versios.get(0).getKoodiVersio().getYlakoodis().iterator();
-            while(itr.hasNext()) {
+            while (itr.hasNext()) {
                 KoodinSuhde koodinSuhde = itr.next();
                 Hibernate.initialize(koodinSuhde.getYlakoodiVersio().getMetadatas());
                 Hibernate.initialize(koodinSuhde.getYlakoodiVersio().getKoodi());
             }
             itr = versios.get(0).getKoodiVersio().getAlakoodis().iterator();
-            while(itr.hasNext()) {
-                KoodinSuhde koodinSuhde = (KoodinSuhde)itr.next();
+            while (itr.hasNext()) {
+                KoodinSuhde koodinSuhde = (KoodinSuhde) itr.next();
                 Hibernate.initialize(koodinSuhde.getAlakoodiVersio().getMetadatas());
                 Hibernate.initialize(koodinSuhde.getAlakoodiVersio().getKoodi());
             }
@@ -840,36 +840,34 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
         searchData.getKoodiSearchCriteria().setValidAt(DateHelper.DateToXmlCal(new Date()));
     }
-    
+
     @Override
     public boolean hasRelationBetweenCodeElements(KoodiVersio ylaKoodiVersio, final KoodiVersio alaKoodiVersio) {
-    	return Iterables.tryFind(ylaKoodiVersio.getAlakoodis(), new Predicate<KoodinSuhde>() {
+        return Iterables.tryFind(ylaKoodiVersio.getAlakoodis(), new Predicate<KoodinSuhde>() {
 
-			@Override
-			public boolean apply(KoodinSuhde input) {
-				return input.getAlakoodiVersio().equals(alaKoodiVersio);
-			}
-    		
-    	}).isPresent();
+            @Override
+            public boolean apply(KoodinSuhde input) {
+                return input.getAlakoodiVersio().equals(alaKoodiVersio);
+            }
+
+        }).isPresent();
     }
 
-    private boolean haveDifferentOrganisations(KoodiVersio ylakoodi, KoodiVersioWithKoodistoItem[] alakoodis) {
-        if(alakoodis.length==0) return true;
+    private boolean koodisHaveSameOrganisaatio(KoodiVersio ylakoodi, KoodiVersioWithKoodistoItem[] alakoodis) {
+        if (alakoodis.length == 0)
+            return true;
         String organisaatio1 = ylakoodi.getKoodi().getKoodisto().getOrganisaatioOid();
         String organisaatio2 = alakoodis[0].getKoodiVersio().getKoodi().getKoodisto().getOrganisaatioOid();
-        return !StringUtils.equals(organisaatio1, organisaatio2);
+        authorizer.checkOrganisationAccess(organisaatio1, KoodistoRole.CRUD);
+        return StringUtils.equals(organisaatio1, organisaatio2);
     }
-    
 
-
-    // Check if logged in user is not a root user
-    private boolean currentUserIsRootUser() {
+    private boolean userIsRootUser() {
         try {
-            String userOid = SecurityContextHolder.getContext().getAuthentication().getName();
-            return userOid.equals(ROOT_USER_OID);
-        } catch (NullPointerException e) { // Authentication is not available
+            authorizer.checkOrganisationAccess(ROOT_ORG, KoodistoRole.CRUD);
+        } catch (NotAuthorizedException e) {
             return false;
         }
+        return true;
     }
-
 }

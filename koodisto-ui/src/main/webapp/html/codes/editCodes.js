@@ -197,7 +197,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
 });
 
 function CodesEditorController($scope, $location, $modal, $log, $routeParams, CodesEditorModel, UpdateCodes, Treemodel,
-                               ValidateService, AddRelationCodes, RemoveRelationCodes) {
+                               ValidateService, AddRelationCodes, RemoveRelationCodes, CodesMatcher) {
     $scope.model = CodesEditorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
@@ -216,7 +216,8 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     };
 
     $scope.search = function (item){
-        if (!$scope.model.query || item.koodistoUri.toLowerCase().indexOf($scope.model.query.toLowerCase())!==-1) {
+	
+        if (!$scope.model.query || CodesMatcher.nameOrTunnusMatchesSearch(item, $scope.model.query)) {
             item.open = true;
             return true;
         }
