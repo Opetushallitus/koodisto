@@ -3,24 +3,20 @@
  */
 package fi.vm.sade.koodisto.service.business.impl;
 
-import fi.vm.sade.authentication.business.service.Authorizer;
-import fi.vm.sade.generic.service.exception.NotAuthorizedException;
-import fi.vm.sade.koodisto.dao.*;
-import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
-import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
-import fi.vm.sade.koodisto.service.business.UriTransliterator;
-import fi.vm.sade.koodisto.service.business.exception.*;
-import fi.vm.sade.koodisto.service.impl.KoodistoRole;
-import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
-import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
-import fi.vm.sade.koodisto.service.types.SearchKoodistosVersioSelectionType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
-import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
-import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
+import javax.activation.DataHandler;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -32,7 +28,56 @@ import org.springframework.transaction.annotation.Transactional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
-import java.util.*;
+import fi.vm.sade.authentication.business.service.Authorizer;
+import fi.vm.sade.generic.service.exception.NotAuthorizedException;
+import fi.vm.sade.koodisto.dao.KoodiDAO;
+import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
+import fi.vm.sade.koodisto.dao.KoodistoDAO;
+import fi.vm.sade.koodisto.dao.KoodistoMetadataDAO;
+import fi.vm.sade.koodisto.dao.KoodistoRyhmaDAO;
+import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
+import fi.vm.sade.koodisto.dao.KoodistoVersioKoodiVersioDAO;
+import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
+import fi.vm.sade.koodisto.model.Format;
+import fi.vm.sade.koodisto.model.Koodi;
+import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.Koodisto;
+import fi.vm.sade.koodisto.model.KoodistoMetadata;
+import fi.vm.sade.koodisto.model.KoodistoRyhma;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
+import fi.vm.sade.koodisto.model.KoodistonSuhde;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.service.DownloadService;
+import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
+import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.business.UriTransliterator;
+import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoKuvausEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiNotUniqueException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoOptimisticLockingException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoUriEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoVersioNotPassiivinenException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoVersionNumberEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistonSuhdeContainsKoodinSuhdeException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistosAlreadyHaveSuhdeException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistosHaveDifferentOrganizationsException;
+import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
+import fi.vm.sade.koodisto.service.impl.KoodistoRole;
+import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
+import fi.vm.sade.koodisto.service.types.SearchKoodistosVersioSelectionType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
+import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
+import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
+import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 
 /**
  * @author tommiha
@@ -79,6 +124,9 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Autowired
     private UriTransliterator uriTransliterator;
+
+    @Autowired
+    private DownloadService downloadService;
 
     @Override
     public KoodistoVersio createKoodisto(List<String> koodistoRyhmaUris, CreateKoodistoDataType createKoodistoData) {
@@ -663,5 +711,45 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public File downloadFile(String codesUri, int codesVersion, Format fileFormat, String encoding) {
+        try {
+
+            String extension = "";
+            ExportImportFormatType formatStr = null;
+            if (fileFormat == Format.CSV) {
+                formatStr = ExportImportFormatType.CSV;
+                extension = ".csv";
+            } else if (fileFormat == Format.JHS_XML) {
+                formatStr = ExportImportFormatType.JHS_XML;
+                extension = ".xml";
+            } else if (fileFormat == Format.XLS) {
+                formatStr = ExportImportFormatType.XLS;
+                extension = ".xls";
+            }
+            if (StringUtils.isBlank(encoding) || !Charset.isSupported(encoding)) {
+                encoding = "UTF-8";
+            }
+
+            DataHandler handler = downloadService.download(codesUri, codesVersion, formatStr, encoding);
+
+            File file = createTemporaryFile(codesUri, extension, handler);
+
+            return file;
+        } catch (IOException e) {
+            throw new RuntimeException("Writing Codes to file failed:\n" + e);
+        }
+    }
+
+    private File createTemporaryFile(String codesUri, String extension, DataHandler handler) throws IOException, FileNotFoundException {
+        File file = File.createTempFile(codesUri, extension);
+        logger.debug("Created temporary file " + file.getAbsolutePath());
+        FileOutputStream fos = new FileOutputStream(file);
+        IOUtils.copy(handler.getInputStream(), fos);
+        fos.close();
+        file.deleteOnExit(); // Delete file when VM is closed
+        return file;
     }
 }

@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -10,14 +12,17 @@ import java.util.List;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -54,6 +59,7 @@ import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.DownloadService;
 import fi.vm.sade.koodisto.service.UploadService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.impl.stream.TemporaryFileInputStream;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
@@ -327,6 +333,68 @@ public class CodesResource {
 
     }
 
+    @GET
+    @Path("/download/{codesUri}/{codesVersion}/{fileFormat}")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @JsonView({ JsonViews.Basic.class })
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @ApiOperation(
+            value = "Lataa tiedoston CSV, XML tai XLS tiedostona.",
+            notes = "Palauttaa tyhjän koodistopohjan, jos koodiston URI on 'blankKoodistoDocument' ja versio on -1.",
+            response = Response.class)
+    public Response download(
+            @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
+            @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") int codesVersion,
+            @ApiParam(value = "Tiedostotyyppi (JHS_XML, CSV, XLS)") @PathParam("fileFormat") Format fileFormat,
+            @ApiParam(value = "Tiedoston merkistö (UTF-8, ISO-88519-1, ISO-88519-15)") @DefaultValue("UTF-8") @QueryParam("encoding") String encoding) {
+        File file = koodistoBusinessService.downloadFile(codesUri, codesVersion, fileFormat, encoding);
+        TemporaryFileInputStream is = null;
+        try {
+            is = new TemporaryFileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String extension = "";
+        switch (fileFormat) {
+        case JHS_XML:
+            extension = ".xml";
+            break;
+        case CSV:
+            extension = ".csv";
+            break;
+        case XLS:
+            extension = ".xls";
+            break;
+        }
+        ResponseBuilder responseBuilder = Response.ok((Object) is);
+        responseBuilder.header("Content-Disposition", "inline; filename=\"" + codesUri + extension + "\"");
+        Response response = responseBuilder.build();
+        return response;
+    }
+
+    @POST
+    @Path("/delete/{codesUri}/{codesVersion}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({ JsonViews.Simple.class })
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
+    @ApiOperation(
+            value = "Poistaa koodiston",
+            notes = "",
+            response = Response.class)
+    public Response delete(
+            @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
+            @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") int codesVersion) {
+        try {
+            koodistoBusinessService.delete(codesUri, codesVersion);
+            return Response.status(Response.Status.ACCEPTED).build();
+        } catch (Exception e) {
+            logger.warn("Koodistoa ei saatu poistettua. ", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    // TODO: LEGACY rajapintametodi, korvattu uudella download-metodilla 3.6.2014. Poistetaan, kun muut palvelut eivät varmasti käytä tätä.
     @POST
     @Path("/download/{codesUri}/{codesVersion}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -335,7 +403,7 @@ public class CodesResource {
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Lataa koodisto XML, CSV tai Excel tiedostona",
-            notes = "",
+            notes = "LEGACY rajapintametodi, korvattu uudella download-metodilla 3.6.2014. Poistetaan, kun muut palvelut eivät varmasti käytä tätä.",
             response = FileDto.class)
     public FileDto download(
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
@@ -372,28 +440,6 @@ public class CodesResource {
         } catch (Exception e) {
             logger.warn("Koodistoa ei saatu tuotua. ", e);
             return null;
-        }
-    }
-
-    @POST
-    @Path("/delete/{codesUri}/{codesVersion}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({ JsonViews.Simple.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
-    @ApiOperation(
-            value = "Poistaa koodiston",
-            notes = "",
-            response = Response.class)
-    public Response delete(
-            @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
-            @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") int codesVersion) {
-        try {
-            koodistoBusinessService.delete(codesUri, codesVersion);
-            return Response.status(Response.Status.ACCEPTED).build();
-        } catch (Exception e) {
-            logger.warn("Koodistoa ei saatu poistettua. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 }
