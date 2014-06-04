@@ -8,21 +8,25 @@
 			<div class="pagination">
 				<ul>
 					<li ng-click="incrementPage(-1)"><span>&#8592;</span></li>
-					<li ng-if="getNumberOfPages() == 0" class="disabled"><a>0</a>
-						<li ng-if="getNumberOfPages() <= 9"
+					<li ng-if="getNumberOfPages() == 0" class="disabled"><a>0</a></li>
+					<li ng-if="getNumberOfPages() <= 9"
 						ng-repeat="i in [] | forLoop:0:getNumberOfPages()"
 						ng-class="{disabled: (i==model.currentPage)}"><a
 						ng-click="changePage(i)">{{i+1}}</a>
+					</li>
 					<li ng-if="getNumberOfPages() > 9 && model.currentPage < 5"
 						ng-repeat="i in [] | forLoop:0:6"
 						ng-class="{disabled: (i==model.currentPage)}"><a
 						ng-click="changePage(i)">{{i+1}}</a>
+					</li>
 					<li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5"
 						ng-repeat="i in [] | forLoop:0:3"
 						ng-class="{disabled: (i==model.currentPage)}"><a
 						ng-click="changePage(i)">{{i+1}}</a>
+					</li>
 					<li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5">
-						<span>...</span></li>
+						<span>...</span>
+					</li>
 					<li
 						ng-if="getNumberOfPages() > 9 && model.currentPage >= 5 && model.currentPage < getNumberOfPages()-5"
 						ng-repeat="i in [] | forLoop:model.currentPage-1:model.currentPage+2"
@@ -31,7 +35,8 @@
 					</li>
 					<li
 						ng-if="getNumberOfPages() > 9 && model.currentPage < getNumberOfPages()-5">
-						<span>...</span></li>
+						<span>...</span>
+					</li>
 					<li
 						ng-if="getNumberOfPages() > 9 && model.currentPage > getNumberOfPages()-6"
 						ng-repeat="i in [] | forLoop:getNumberOfPages()-6:getNumberOfPages()"
@@ -44,7 +49,8 @@
 						ng-class="{disabled: (i==model.currentPage)}">
 						<a ng-click="changePage(i)">{{i+1}}</a>
 					</li>
-						<li ng-click="incrementPage(1)"><span>&#8594;</span></li>
+					<li ng-click="incrementPage(1)"><span>&#8594;</span>
+					</li>
 				</ul>
 			</div>
 			<label for="page_size_select">{{'codes.viewpage.codeelements.pagination.nayta'
