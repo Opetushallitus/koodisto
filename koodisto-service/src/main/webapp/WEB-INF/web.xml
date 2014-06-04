@@ -54,7 +54,11 @@
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
-
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/buildversion.txt</url-pattern>
+    </servlet-mapping>
+	
 	<!-- Swagger-ui -->
     <servlet-mapping>
         <servlet-name>default</servlet-name>
