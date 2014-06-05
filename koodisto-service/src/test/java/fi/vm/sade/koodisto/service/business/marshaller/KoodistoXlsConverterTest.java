@@ -29,5 +29,4 @@ public class KoodistoXlsConverterTest extends AbstractKoodistoConverterTest {
     protected String getTestFile() {
         return "excel_example.xls";
     }
-
 }
