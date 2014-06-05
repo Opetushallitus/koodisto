@@ -75,7 +75,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
                 codeElementUri : codeElement.codeElementUri
             }, function(result) {
                 var ce = {};
-                ce.uri = result.koodiUri;
+                ce.uri = codeElement.codeElementUri;
                 ce.name = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
                 ce.description = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
                 ce.versio = codeElement.codeElementVersion;
@@ -84,16 +84,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
                 }, function(result2) {
                     ce.codesname = model.languageSpecificValue(result2.latestKoodistoVersio.metadata, 'nimi', 'FI');
                 });
-                var duplicate = false;
-                list.forEach(function(code) {
-                    if (code.uri == ce.uri) {
-                        duplicate = true;
-                        code.versio = code.versio > ce.versio ? code.versio : ce.versio; // Päivitä versio uusimpaan
-                    }
-                });
-                if (!duplicate) {
-                    list.push(ce);
-                }
+                list.push(ce);
             });
         };
 

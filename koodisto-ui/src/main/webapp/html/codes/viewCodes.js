@@ -8,6 +8,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.includesCodes = [];
         this.levelsWithCodes = [];
         this.deleteState = "disabled";
+        this.codeElements = [];
 
         this.init = function(codesUri, codesVersion) {
             this.withinCodes = [];
@@ -21,6 +22,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             model.encoding = "UTF-8";
             this.deleteState = "disabled";
             this.editState = "";
+            model.codeElements = [];
 
             this.currentPage = 0;
             this.pageSize = 10;

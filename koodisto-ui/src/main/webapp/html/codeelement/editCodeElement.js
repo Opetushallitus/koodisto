@@ -99,20 +99,11 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                 codeElementUri : codeElement.codeElementUri
             }, function(result) {
                 var ce = {};
-                ce.uri = result.koodiUri;
+                ce.uri = codeElement.codeElementUri;
                 ce.value = result.koodiArvo;
                 ce.name = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
-                ce.versio = result.versio;
-                var duplicate = false;
-                list.forEach(function(code) {
-                    if (code.uri == ce.uri) {
-                        duplicate = true;
-                        code.versio = code.versio > ce.versio ? code.versio : ce.versio; // Päivitä versio uusimpaan
-                    }
-                });
-                if (!duplicate) {
-                    list.push(ce);
-                }
+                ce.versio = codeElement.codeElementVersion;
+                list.push(ce);
             });
         };
 
