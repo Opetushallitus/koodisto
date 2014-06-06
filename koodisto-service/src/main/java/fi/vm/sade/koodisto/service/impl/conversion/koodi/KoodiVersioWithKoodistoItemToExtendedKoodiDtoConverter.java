@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
@@ -31,25 +33,32 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
 
         converted.setKoodiArvo(source.getKoodiVersio().getKoodiarvo());
         converted.setKoodiUri(source.getKoodiVersio().getKoodi().getKoodiUri());
+        List<RelationCodeElement> list = null;
         for(KoodinSuhde koodinSuhde : source.getKoodiVersio().getYlakoodis()) {
         	KoodiVersio koodiVersio = koodinSuhde.getYlakoodiVersio();
-        	switch (koodinSuhde.getSuhteenTyyppi()) {
+        	String koodiUri = koodiVersio.getKoodi().getKoodiUri();
+            switch (koodinSuhde.getSuhteenTyyppi()) {
         	case RINNASTEINEN:
-        		converted.getLevelsWithCodeElements().add(new RelationCodeElement(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio()));
+        		list = converted.getLevelsWithCodeElements();
+        		addOrUpdate(list, koodiUri, koodiVersio.getVersio());
         		break;
         	case SISALTYY:
-        		converted.getWithinCodeElements().add(new RelationCodeElement(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio()));
+        		list = converted.getWithinCodeElements();
+                addOrUpdate(list, koodiUri, koodiVersio.getVersio());
         		break;
         	}
         }
         for(KoodinSuhde koodinSuhde : source.getKoodiVersio().getAlakoodis()) {
         	KoodiVersio koodiVersio = koodinSuhde.getAlakoodiVersio();
+            String koodiUri = koodiVersio.getKoodi().getKoodiUri();
         	switch (koodinSuhde.getSuhteenTyyppi()) {
         	case RINNASTEINEN:
-        		converted.getLevelsWithCodeElements().add(new RelationCodeElement(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio()));
+        		list = converted.getLevelsWithCodeElements();
+                addOrUpdate(list, koodiUri, koodiVersio.getVersio());
         		break;
         	case SISALTYY:
-        		converted.getIncludesCodeElements().add(new RelationCodeElement(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio()));
+        		list = converted.getIncludesCodeElements();
+                addOrUpdate(list, koodiUri, koodiVersio.getVersio());
         		break;
         	}
         }
@@ -81,4 +90,34 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
 
         return converted;
     }
+
+    /**
+     * Lisää koodin listaan, jos listalla on jo kyseinen koodi vanhemmalla versiolla, päivittää sen
+     * 
+     * @param list
+     * @param koodiUri
+     * @param versio
+     */
+    private void addOrUpdate(List<RelationCodeElement> list, String koodiUri, Integer versio) {
+        if (list == null)
+            return;
+        boolean duplicate = false;
+        for (int i = 0; i < list.size(); i++) {
+            RelationCodeElement relationCodeElement = list.get(i);
+            if (relationCodeElement.codeElementUri == null || relationCodeElement.codeElementVersion == null)
+                continue;
+            if (relationCodeElement.codeElementUri.equals(koodiUri)) {
+                duplicate = true;
+                // Jos koodien versiot ovat listassa väärässä versiojärjestyksessä (uudempi tulee myöhemmin)
+                if (versio > relationCodeElement.codeElementVersion) {
+                    list.set(i, new RelationCodeElement(koodiUri, versio));
+                }
+            }
+        }
+        if (!duplicate) {
+            list.add(new RelationCodeElement(koodiUri, versio));
+        }
+    }
+
+
 }

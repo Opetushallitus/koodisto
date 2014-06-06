@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.service.business.marshaller;
 
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -10,10 +9,12 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
+import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = {JtaCleanInsertTestExecutionListener.class,
+@TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
-        TransactionalTestExecutionListener.class})
+        TransactionalTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
 public class KoodistoXlsConverterTest extends AbstractKoodistoConverterTest {
     @Autowired
