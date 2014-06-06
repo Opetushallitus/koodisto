@@ -177,10 +177,8 @@ describe("Code Element View test", function() {
 
     describe("Caching", function() {
 
-        givenResponseCodeElementCaching = function(first) {
-            if (first) {
-                mockBackend.expectGET(SERVICE_URL_BASE + "codes/versiointitesti").respond(codesResponse);
-            }
+        givenResponseCodeElementCaching = function() {
+            mockBackend.expectGET(SERVICE_URL_BASE + "codes/versiointitesti").respond(codesResponse);
             return {
                 "koodiUri" : "versiointitesti_uudi",
                 "resourceUri" : "http://koodistopalvelu.opintopolku.fi/versiointitesti/koodi/versiointitesti_uudi",
@@ -216,20 +214,21 @@ describe("Code Element View test", function() {
 
         beforeEach(function() {
             // in order to get rid of controller's initialization
-            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(givenResponseCodeElementCaching(true));
+            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(givenResponseCodeElementCaching());
             mockBackend.flush();
         });
 
-        it("Subsequent inits should not cause backend calls for codes", function() {
-            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(givenResponseCodeElementCaching(false));
+        it("Calling subsequent inits should make no calls to backend", function() {
             scope.model.init(scope, "versiointitesti_uudi", 3);
-            mockBackend.flush();
-
-            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(givenResponseCodeElementCaching(false));
             scope.model.init(scope, "versiointitesti_uudi", 3);
-            mockBackend.flush();
+            scope.model.init(scope, "versiointitesti_uudi", 3);
+        });
 
-            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(givenResponseCodeElementCaching(false));
+        it("Calling init after forcerefresh should load eveything", function() {
+            scope.model.init(scope, "versiointitesti_uudi", 3);
+
+            model.forceRefresh = true; // simulates clicking the edit link
+            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(givenResponseCodeElementCaching());
             scope.model.init(scope, "versiointitesti_uudi", 3);
             mockBackend.flush();
         });

@@ -9,7 +9,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
         this.alerts = [];
 
         this.init = function(scope, codeElementUri, codeElementVersion) {
-            if (!(model.codeElement && model.codeElement.koodiUri == codeElementUri && model.codeElement.versio == codeElementVersion)) {
+            if (model.forceRefresh || !(model.codeElement && model.codeElement.koodiUri == codeElementUri && model.codeElement.versio == codeElementVersion)) {
                 model.codeElement = null;
                 this.withinCodeElements = [];
                 this.includesCodeElements = [];
@@ -17,8 +17,9 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
                 this.deleteState = "disabled";
                 this.editState = "";
                 this.alerts = [];
+
+                model.getCodeElement(scope, codeElementUri, codeElementVersion);
             }
-            model.getCodeElement(scope, codeElementUri, codeElementVersion);
         };
 
         this.getCodeElement = function(scope, codeElementUri, codeElementVersion) {
@@ -26,10 +27,6 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
                 codeElementUri : codeElementUri,
                 codeElementVersion : codeElementVersion
             }, function(result) {
-                if (model.codeElement && model.codeElement.koodiUri == result.koodiUri && model.codeElement.versio == result.versio) {
-                    return; // Edelleen sama koodisto, ei tarvitse päivittää.
-                }
-
                 model.codeElement = result;
 
                 scope.instructionsfi = model.languageSpecificValue(result.metadata, 'kayttoohje', 'FI');
@@ -131,8 +128,9 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
     };
 
     $scope.editCodeElement = function() {
+        $scope.model.forceRefresh = true;
         $location.path("/muokkaaKoodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion);
-    }
+    };
 
     $scope.okconfirmdeletecodeelement = function() {
         DeleteCodeElement.put({

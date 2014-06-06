@@ -10,7 +10,9 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.deleteState = "disabled";
 
         this.init = function(codesUri, codesVersion) {
-            if (!(model.codes && model.codes.koodistoUri == codesUri && model.codes.versio == codesVersion)) { // Samaa koodistoa on turha päivittää
+            // Samaa koodistoa on turha päivittää
+            if (model.forceRefresh || !(model.codes && model.codes.koodistoUri == codesUri && model.codes.versio == codesVersion)) {
+                model.forceRefresh = false;
                 model.codes = null;
                 this.withinCodes = [];
                 this.includesCodes = [];
@@ -31,9 +33,9 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 this.sortOrder = "koodiArvo";
                 this.sortOrderSelection = 1;
                 this.sortOrderReversed = false;
-            }
 
-            model.getCodes(codesUri, codesVersion);
+                model.getCodes(codesUri, codesVersion);
+            }
         };
 
         this.getCodes = function(codesUri, codesVersion) {
@@ -41,9 +43,6 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 codesUri : codesUri,
                 codesVersion : codesVersion
             }, function(result) {
-                if (model.codes && model.codes.koodistoUri == result.koodistoUri && model.codes.koodistoVersio == result.koodistoVersio) {
-                    return; // Edelleen sama koodisto, ei tarvitse päivittää.
-                }
                 model.codes = result;
                 model.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
                 model.namesv = getLanguageSpecificValue(result.metadata, 'nimi', 'SV');
@@ -215,6 +214,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     };
 
     $scope.editCodes = function() {
+        $scope.model.forceRefresh = true;
         $location.path("/muokkaaKoodisto/" + $scope.codesUri + "/" + $scope.codesVersion);
     };
 

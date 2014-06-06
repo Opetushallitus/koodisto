@@ -17,13 +17,13 @@ describe("Codes View test", function() {
         });
         angular.mock.inject(function($injector) {
             mockBackend = $injector.get('$httpBackend');
-        })
+        });
     }));
 
     it("ViewCodesModel is defined and it is in scope", function() {
         expect(model).toBeDefined();
         expect(scope.model).toEqual(model);
-    })
+    });
 
     describe("Versioning", function() {
 
@@ -73,19 +73,19 @@ describe("Codes View test", function() {
             // in order to get rid of controller's initialization
             mockBackend.expectGET(SERVICE_URL_BASE + "codes/espoonoikeudet/1").respond(givenCodesResponse(true));
             mockBackend.flush();
-        })
+        });
 
         it("Editing old version of codes is prevented", function() {
             expect(model.editState).toEqual("disabled");
-        })
+        });
 
         it("Editing latest version of codes is permitted", function() {
             mockBackend.expectGET(SERVICE_URL_BASE + "codes/espoonoikeudet/2").respond(givenCodesResponse(false));
             model.init("espoonoikeudet", 2);
             mockBackend.flush();
             expect(model.editState).toEqual("");
-        })
-    })
+        });
+    });
 
     describe("Relations", function() {
 
@@ -97,7 +97,7 @@ describe("Codes View test", function() {
                         "nimi" : "Kauniaisen koodit"
                     } ]
                 } ]
-            })
+            });
             mockBackend.expectGET("/organisaatio-service/rest/organisaatio/1.2.246.562.10.90008375488").respond({
                 "nimi" : {
                     "fi" : "Espoon kaupunki"
@@ -138,39 +138,38 @@ describe("Codes View test", function() {
                 } ],
                 "includesCodes" : [],
                 "levelsWithCodes" : []
-            }
+            };
         }
 
         beforeEach(function() {
             mockBackend.expectGET(SERVICE_URL_BASE + "codes/espoonoikeudet/1").respond(givenCodesWithRelationsResponse());
             mockBackend.flush();
-        })
+        });
 
         it("Should contain version number of codes relation references", function() {
             expect(model.withinCodes.length).toEqual(1);
             expect(model.withinCodes[0].versio).toEqual(2);
-        })
-    })
+        });
+    });
 
     describe("Caching", function() {
 
-        function givenCodesWithRelationsResponse(first) {
-            if (first) {
-                mockBackend.expectGET(SERVICE_URL_BASE + "codes/kauniaisenkoodit").respond({
-                    "latestKoodistoVersio" : [ {
-                        "metadata" : [ {
-                            "kieli" : "FI",
-                            "nimi" : "Kauniaisen koodit"
-                        } ]
+        function givenCodesWithRelationsResponse() {
+            mockBackend.expectGET(SERVICE_URL_BASE + "codes/kauniaisenkoodit").respond({
+                "latestKoodistoVersio" : [ {
+                    "metadata" : [ {
+                        "kieli" : "FI",
+                        "nimi" : "Kauniaisen koodit"
                     } ]
-                })
-                mockBackend.expectGET("/organisaatio-service/rest/organisaatio/1.2.246.562.10.90008375488").respond({
-                    "nimi" : {
-                        "fi" : "Espoon kaupunki"
-                    }
-                });
-                mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/codes/espoonoikeudet/1").respond([]);
-            }
+                } ]
+            });
+            mockBackend.expectGET("/organisaatio-service/rest/organisaatio/1.2.246.562.10.90008375488").respond({
+                "nimi" : {
+                    "fi" : "Espoon kaupunki"
+                }
+            });
+            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/codes/espoonoikeudet/1").respond([]);
+
             return {
                 "koodistoUri" : "espoonoikeudet",
                 "resourceUri" : "http://koodistopalvelu.opintopolku.fi/espoonoikeudet",
@@ -205,18 +204,27 @@ describe("Codes View test", function() {
                 } ],
                 "includesCodes" : [],
                 "levelsWithCodes" : []
-            }
+            };
         }
 
         beforeEach(function() {
-            mockBackend.expectGET(SERVICE_URL_BASE + "codes/espoonoikeudet/1").respond(givenCodesWithRelationsResponse(true));
+            mockBackend.expectGET(SERVICE_URL_BASE + "codes/espoonoikeudet/1").respond(givenCodesWithRelationsResponse());
             mockBackend.flush();
-        })
+        });
 
-        it("Calling subsequent inits should make only one call to backend", function() {
-            mockBackend.expectGET(SERVICE_URL_BASE + "codes/espoonoikeudet/1").respond(givenCodesWithRelationsResponse(false));
+        it("Calling subsequent inits should make no calls to backend", function() {
+            model.init("espoonoikeudet", 1);
+            model.init("espoonoikeudet", 1);
+            model.init("espoonoikeudet", 1);
+        });
+
+        it("Calling init after forcerefresh should load eveything", function() {
+            model.init("espoonoikeudet", 1);
+
+            model.forceRefresh = true; // simulates clicking the edit link
+            mockBackend.expectGET(SERVICE_URL_BASE + "codes/espoonoikeudet/1").respond(givenCodesWithRelationsResponse());
             model.init("espoonoikeudet", 1);
             mockBackend.flush();
-        })
-    })
-})
+        });
+    });
+});
