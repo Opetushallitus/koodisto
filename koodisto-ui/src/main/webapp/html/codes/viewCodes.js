@@ -8,28 +8,30 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.includesCodes = [];
         this.levelsWithCodes = [];
         this.deleteState = "disabled";
-        this.codeElements = [];
 
         this.init = function(codesUri, codesVersion) {
-            this.withinCodes = [];
-            this.includesCodes = [];
-            this.levelsWithCodes = [];
-            model.codesUri = codesUri;
-            model.codesVersion = codesVersion;
-            model.showversion = null;
-            this.alerts = [];
-            model.format = "JHS_XML";
-            model.encoding = "UTF-8";
-            this.deleteState = "disabled";
-            this.editState = "";
-            model.codeElements = [];
+            if (!(model.codes && model.codes.koodistoUri == codesUri && model.codes.versio == codesVersion)) { // Samaa koodistoa on turha päivittää
+                model.codes = null;
+                this.withinCodes = [];
+                this.includesCodes = [];
+                this.levelsWithCodes = [];
+                model.codesUri = codesUri;
+                model.codesVersion = codesVersion;
+                model.showversion = null;
+                this.alerts = [];
+                model.format = "JHS_XML";
+                model.encoding = "UTF-8";
+                this.deleteState = "disabled";
+                this.editState = "";
+                this.codeElements = [];
 
-            this.currentPage = 0;
-            this.pageSize = 10;
-            this.pageSizeOptions = [ 10, 50, 100, 200, 500 ];
-            this.sortOrder = "koodiArvo";
-            this.sortOrderSelection = 1;
-            this.sortOrderReversed = false;
+                this.currentPage = 0;
+                this.pageSize = 10;
+                this.pageSizeOptions = [ 10, 50, 100, 200, 500 ];
+                this.sortOrder = "koodiArvo";
+                this.sortOrderSelection = 1;
+                this.sortOrderReversed = false;
+            }
 
             model.getCodes(codesUri, codesVersion);
         };
@@ -39,6 +41,9 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 codesUri : codesUri,
                 codesVersion : codesVersion
             }, function(result) {
+                if (model.codes && model.codes.koodistoUri == result.koodistoUri && model.codes.koodistoVersio == result.koodistoVersio) {
+                    return; // Edelleen sama koodisto, ei tarvitse päivittää.
+                }
                 model.codes = result;
                 model.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
                 model.namesv = getLanguageSpecificValue(result.metadata, 'nimi', 'SV');
@@ -104,8 +109,8 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
 
                 OrganizationByOid.get({
                     oid : model.codes.organisaatioOid
-                }, function(result) {
-                    model.codes.organizationName = result.nimi['fi'] || result.nimi['sv'] || result.nimi['en'];
+                }, function(result2) {
+                    model.codes.organizationName = result2.nimi['fi'] || result2.nimi['sv'] || result2.nimi['en'];
                 });
                 model.getCodeElements(codesUri, codesVersion);
             });
@@ -114,7 +119,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.getLatestCodesVersionsByCodesUri = function(codes, list) {
             CodesByUri.get({
                 codesUri : codes.codesUri
-            }, function(result) {        	
+            }, function(result) {
                 var ce = {};
                 ce.uri = codes.codesUri;
                 ce.name = getLanguageSpecificValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
@@ -337,13 +342,13 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     $scope.getLanguageSpecificValue = function(fieldArray, fieldName, language) {
         return getLanguageSpecificValue(fieldArray, fieldName, language);
     };
-    
+
     // Pagination
 
     // Get the filtered page count
     var cachedPageCount = 0;
     $scope.getNumberOfPages = function() {
-        if(cachedPageCount == 0) {
+        if (cachedPageCount == 0) {
             $scope.refreshNumberOfPages();
         }
         return cachedPageCount;
@@ -351,20 +356,19 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
 
     // Refresh the page count when the model changes
     var cachedElementCount = 0;
-    $scope.$watch('model.codeElements', function(){
-        if($scope.model.codeElements.length != cachedElementCount){
+    $scope.$watch('model.codeElements', function() {
+        if ($scope.model.codeElements.length != cachedElementCount) {
             $scope.refreshNumberOfPages();
             cachedElementCount = $scope.model.codeElements.length;
         }
     });
-    
+
     // Refresh the page count (less redundant filtering)
     $scope.refreshNumberOfPages = function() {
         cachedPageCount = Math.ceil(($filter("filter")($scope.model.codeElements, $scope.search)).length / $scope.model.pageSize);
         return cachedPageCount;
     };
 
-    
     // Change the currentPage when the pageSize is changed.
     var oldValueForPageSize = 10;
     $scope.pageSizeChanged = function() {
@@ -373,8 +377,8 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
         oldValueForPageSize = $scope.model.pageSize;
         $scope.refreshNumberOfPages();
     };
-    
-    $scope.sortOrderChanged = function(){
+
+    $scope.sortOrderChanged = function() {
         var selection = parseInt($scope.model.sortOrderSelection);
         switch (selection) {
         case 1:
@@ -409,7 +413,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
         default:
             break;
         }
-};
+    };
 
     // When user changes the search string the page count changes and the current page must be adjusted
     $scope.filterChangedPageCount = function() {
@@ -417,21 +421,21 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
         if ($scope.model.currentPage >= currentNumberOfPages) {
             $scope.model.currentPage = currentNumberOfPages - 1;
         }
-        if (currentNumberOfPages != 0 && $scope.model.currentPage < 0){
+        if (currentNumberOfPages != 0 && $scope.model.currentPage < 0) {
             $scope.model.currentPage = 0;
         }
     };
-    
-    $scope.changePage = function(i){
+
+    $scope.changePage = function(i) {
         $scope.model.currentPage = i;
     };
-    
-    $scope.incrementPage = function(i){
+
+    $scope.incrementPage = function(i) {
         var newPageNumber = $scope.model.currentPage + i;
-        if(newPageNumber > -1 && newPageNumber < $scope.getNumberOfPages()){
+        if (newPageNumber > -1 && newPageNumber < $scope.getNumberOfPages()) {
             $scope.model.currentPage = newPageNumber;
         }
     };
-    
+
     // Pagination ends
 }
