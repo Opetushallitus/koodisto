@@ -47,8 +47,6 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     private static final int UTF8_BYTE_ORDER_187 = 187;
     private static final int UTF8_BYTE_ORDER_191 = 191;
 
-    public static final SimpleDateFormat CSV_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-
     public static final List<String> HEADER_FIELDS;
 
     protected static final String VERSIO_COLUMN = "VERSIO";
@@ -113,6 +111,10 @@ public class KoodistoCsvConverter extends KoodistoConverter {
 
         return map;
     }
+    
+    private SimpleDateFormat getCSVDateFormat() {
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+	}
 
     private boolean checkFieldHeaderValid(String header) {
         if (StringUtils.isBlank(header))
@@ -346,7 +348,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
             return null;
         }
         try {
-            date = DateHelper.DateToXmlCal(CSV_DATE_FORMAT.parse(paivamaaraString));
+            date = DateHelper.DateToXmlCal(getCSVDateFormat().parse(paivamaaraString));
         } catch (ParseException e) {
             return null;
         }
@@ -433,7 +435,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         if (date == null) {
             return "";
         } else {
-            String convertedString = new String(CSV_DATE_FORMAT.format(date).getBytes(), UTF8ENCODING);
+            String convertedString = new String(getCSVDateFormat().format(date).getBytes(), UTF8ENCODING);
             return new String(convertedString.getBytes(), encoding);
         }
     }
