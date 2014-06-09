@@ -1,6 +1,4 @@
-
-app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUriAndVersion,
-                                             CodesByUri, LatestCodeElementVersionsByCodeElementUri) {
+app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUriAndVersion, CodesByUri, LatestCodeElementVersionsByCodeElementUri) {
     var model;
     model = new function() {
 
@@ -11,19 +9,24 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
         this.alerts = [];
 
         this.init = function(scope, codeElementUri, codeElementVersion) {
+            if (model.forceRefresh || !(model.codeElement && model.codeElement.koodiUri == codeElementUri && model.codeElement.versio == codeElementVersion)) {
+                model.codeElement = null;
+                this.withinCodeElements = [];
+                this.includesCodeElements = [];
+                this.levelsWithCodeElements = [];
+                this.deleteState = "disabled";
+                this.editState = "";
+                this.alerts = [];
 
-            this.withinCodeElements = [];
-            this.includesCodeElements = [];
-            this.levelsWithCodeElements = [];
-            this.deleteState = "disabled";
-            this.editState = "";
-            this.alerts = [];
-
-            model.getCodeElement(scope, codeElementUri, codeElementVersion);
+                model.getCodeElement(scope, codeElementUri, codeElementVersion);
+            }
         };
 
         this.getCodeElement = function(scope, codeElementUri, codeElementVersion) {
-            CodeElementByUriAndVersion.get({codeElementUri: codeElementUri, codeElementVersion: codeElementVersion}, function (result) {
+            CodeElementByUriAndVersion.get({
+                codeElementUri : codeElementUri,
+                codeElementVersion : codeElementVersion
+            }, function(result) {
                 model.codeElement = result;
 
                 scope.instructionsfi = model.languageSpecificValue(result.metadata, 'kayttoohje', 'FI');
@@ -53,50 +56,56 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
                 if (model.codeElement.tila === "PASSIIVINEN") {
                     model.deleteState = "";
                 }
-                
-                CodesByUri.get({codesUri: result.koodisto.koodistoUri}, function (codes) {
-                    var inLatestCodes = jQuery.inArray( codes.latestKoodistoVersio.versio, model.codeElement.koodisto.koodistoVersios) != -1; 
-                    model.editState = inLatestCodes ? "" : "disabled"; 
+
+                CodesByUri.get({
+                    codesUri : result.koodisto.koodistoUri
+                }, function(codes) {
+                    var inLatestCodes = jQuery.inArray(codes.latestKoodistoVersio.versio, model.codeElement.koodisto.koodistoVersios) != -1;
+                    model.editState = inLatestCodes ? "" : "disabled";
                 });
 
-                model.codeElement.withinCodeElements.forEach(function(codelement){
-                    model.getLatestCodeElementVersionsByCodeElementUri(codelement,model.withinCodeElements);
+                model.codeElement.withinCodeElements.forEach(function(codelement) {
+                    model.getLatestCodeElementVersionsByCodeElementUri(codelement, model.withinCodeElements);
                 });
-                model.codeElement.includesCodeElements.forEach(function(codelement){
-                    model.getLatestCodeElementVersionsByCodeElementUri(codelement,model.includesCodeElements);
+                model.codeElement.includesCodeElements.forEach(function(codelement) {
+                    model.getLatestCodeElementVersionsByCodeElementUri(codelement, model.includesCodeElements);
                 });
-                model.codeElement.levelsWithCodeElements.forEach(function(codelement){
-                    model.getLatestCodeElementVersionsByCodeElementUri(codelement,model.levelsWithCodeElements);
+                model.codeElement.levelsWithCodeElements.forEach(function(codelement) {
+                    model.getLatestCodeElementVersionsByCodeElementUri(codelement, model.levelsWithCodeElements);
                 });
             });
         };
+
         this.getLatestCodeElementVersionsByCodeElementUri = function(codeElement, list) {
-            LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElement.codeElementUri}, function (result) {
+            LatestCodeElementVersionsByCodeElementUri.get({
+                codeElementUri : codeElement.codeElementUri
+            }, function(result) {
                 var ce = {};
-                ce.uri = codeElement.codeElementUri;                
+                ce.uri = codeElement.codeElementUri;
                 ce.name = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
                 ce.description = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
                 ce.versio = codeElement.codeElementVersion;
-                CodesByUri.get({codesUri: result.koodisto.koodistoUri}, function (result) {
-                    ce.codesname = model.languageSpecificValue(result.latestKoodistoVersio.metadata,'nimi','FI');
+                CodesByUri.get({
+                    codesUri : result.koodisto.koodistoUri
+                }, function(result2) {
+                    ce.codesname = model.languageSpecificValue(result2.latestKoodistoVersio.metadata, 'nimi', 'FI');
                 });
                 list.push(ce);
             });
         };
 
-        this.languageSpecificValue = function(fieldArray,fieldName,language) {
-            return getLanguageSpecificValue(fieldArray,fieldName,language);
+        this.languageSpecificValue = function(fieldArray, fieldName, language) {
+            return getLanguageSpecificValue(fieldArray, fieldName, language);
         };
 
         this.removeCodeElement = function() {
             model.deleteCodeElementModalInstance = $modal.open({
-                templateUrl: 'confirmDeleteCodeElementModalContent.html',
-                controller: ViewCodeElementController,
-                resolve: {
-                }
+                templateUrl : 'confirmDeleteCodeElementModalContent.html',
+                controller : ViewCodeElementController,
+                resolve : {}
             });
         };
-        
+
     };
 
     return model;
@@ -114,19 +123,27 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
     };
 
     $scope.cancel = function() {
-        $location.path("/koodisto/"+$scope.model.codeElement.koodisto.koodistoUri+"/"+$scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length-1]);
+        $location.path("/koodisto/" + $scope.model.codeElement.koodisto.koodistoUri + "/"
+                + $scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length - 1]);
     };
-    
+
     $scope.editCodeElement = function() {
-	$location.path("/muokkaaKoodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion);
-    }
+        $scope.model.forceRefresh = true;
+        $location.path("/muokkaaKoodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion);
+    };
 
     $scope.okconfirmdeletecodeelement = function() {
-        DeleteCodeElement.put({codeElementUri: $scope.codeElementUri,
-            codeElementVersion: $scope.codeElementVersion},function(success) {
-            $location.path("/koodisto/"+$scope.model.codeElement.koodisto.koodistoUri+"/"+$scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length-1]);
+        DeleteCodeElement.put({
+            codeElementUri : $scope.codeElementUri,
+            codeElementVersion : $scope.codeElementVersion
+        }, function(success) {
+            $location.path("/koodisto/" + $scope.model.codeElement.koodisto.koodistoUri + "/"
+                    + $scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length - 1]);
         }, function(error) {
-            var alert = { type: 'danger', msg: 'Koodin poisto ep\u00E4onnistui.' }
+            var alert = {
+                type : 'danger',
+                msg : 'Koodin poisto ep\u00E4onnistui.'
+            }
             $scope.model.alerts.push(alert);
         });
 
