@@ -95,7 +95,9 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
         };
 
         this.getLatestCodeElementVersionsByCodeElementUri = function(codeElement, list) {
-            LatestCodeElementVersionsByCodeElementUri.get({codeElementUri: codeElement.codeElementUri}, function (result) {
+            LatestCodeElementVersionsByCodeElementUri.get({
+                codeElementUri : codeElement.codeElementUri
+            }, function(result) {
                 var ce = {};
                 ce.uri = codeElement.codeElementUri;
                 ce.value = result.koodiArvo;
