@@ -391,7 +391,7 @@ public class KoodiAdminServiceTest {
         KoodiType koodiDTO = getKoodiByUriAndVersio(koodiUri, versio);
         assertEquals(koodiUri, koodiDTO.getKoodiUri());
         assertEquals(versio, koodiDTO.getVersio());
-        assertEquals(numberOfMetadatas, new Integer(koodiDTO.getMetadata().size()));
+        assertEquals(numberOfMetadatas, Integer.valueOf(koodiDTO.getMetadata().size()));
 
         UpdateKoodiDataType updateKoodiData = new UpdateKoodiDataType();
         DataUtils.copyFields(koodiDTO, updateKoodiData);

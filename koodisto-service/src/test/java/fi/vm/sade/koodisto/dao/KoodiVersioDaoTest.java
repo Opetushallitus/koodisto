@@ -103,8 +103,7 @@ public class KoodiVersioDaoTest {
 
             @Override
             public int compare(KoodiVersioWithKoodistoItem o1, KoodiVersioWithKoodistoItem o2) {
-                return new Integer(o1.getKoodiVersio().getVersio()).compareTo(new Integer(o2.getKoodiVersio()
-                        .getVersio()));
+                return o1.getKoodiVersio().getVersio().compareTo(o2.getKoodiVersio().getVersio());
             }
 
         });
@@ -175,8 +174,7 @@ public class KoodiVersioDaoTest {
 
             @Override
             public int compare(KoodiVersioWithKoodistoItem o1, KoodiVersioWithKoodistoItem o2) {
-                return new Integer(o1.getKoodiVersio().getVersio()).compareTo(new Integer(o2.getKoodiVersio()
-                        .getVersio()));
+                return o1.getKoodiVersio().getVersio().compareTo(o2.getKoodiVersio().getVersio());
             }
         });
 
@@ -274,8 +272,7 @@ public class KoodiVersioDaoTest {
 
             @Override
             public int compare(KoodiVersioWithKoodistoItem o1, KoodiVersioWithKoodistoItem o2) {
-                return new Integer(o1.getKoodiVersio().getVersio()).compareTo(new Integer(o2.getKoodiVersio()
-                        .getVersio()));
+                return o1.getKoodiVersio().getVersio().compareTo(o2.getKoodiVersio().getVersio());
             }
 
         });

@@ -88,7 +88,7 @@ public class KoodistoServiceTest {
 
             @Override
             public int compare(KoodistoType o1, KoodistoType o2) {
-                return new Integer(o1.getVersio()).compareTo(new Integer(o2.getVersio()));
+                return Integer.valueOf(o1.getVersio()).compareTo(o2.getVersio());
             }
         });
 
@@ -131,6 +131,6 @@ public class KoodistoServiceTest {
         List<KoodistoType> koodistos = koodistoService.searchKoodistos(criteriaType);
         assertEquals(1, koodistos.size());
         assertEquals(koodistoUri, koodistos.get(0).getKoodistoUri());
-        assertEquals(koodistoVersio, new Integer(koodistos.get(0).getVersio()));
+        assertEquals(koodistoVersio, Integer.valueOf(koodistos.get(0).getVersio()));
     }
 }
