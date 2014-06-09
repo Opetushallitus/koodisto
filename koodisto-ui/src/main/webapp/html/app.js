@@ -396,16 +396,14 @@ app.filter('naturalSort', function() {
 });
 
 function getLanguageSpecificValue(fieldArray, fieldName, language) {
-    var returnStr = "";
     if (fieldArray) {
         for (var i = 0; i < fieldArray.length; i++) {
             if (fieldArray[i].kieli === language) {
-                var fieldName = "fieldArray[i]." + fieldName;
-                return eval(fieldName);
+                return eval("fieldArray[i]." + fieldName);
             }
         }
     }
-    return returnStr;
+    return "";
 }
 
 // Pagination
