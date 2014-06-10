@@ -68,10 +68,10 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     protected static final String SISALTAAKOODISTON_COLUMN = "SISALTAAKOODISTON";
 
     protected static final String[] basicFields = { VERSIO_COLUMN, KOODIURI_COLUMN, KOODIARVO_COLUMN, PAIVITYSPVM_COLUMN, VOIMASSAALKUPVM_COLUMN,
-            VOIMASSALOPPUPVM_COLUMN, TILA_COLUMN };
+        VOIMASSALOPPUPVM_COLUMN, TILA_COLUMN };
 
     protected static final String[] metadataFields = { NIMI_COLUMN, KUVAUS_COLUMN, LYHYTNIMI_COLUMN, KAYTTOOHJE_COLUMN, KASITE_COLUMN,
-            SISALTAAMERKITYKSEN_COLUMN, EISISALLAMERKITYSTA_COLUMN, HUOMIOITAVAKOODI_COLUMN, SISALTAAKOODISTON_COLUMN };
+        SISALTAAMERKITYKSEN_COLUMN, EISISALLAMERKITYSTA_COLUMN, HUOMIOITAVAKOODI_COLUMN, SISALTAAKOODISTON_COLUMN };
 
     protected static final KieliType[] kielet = { KieliType.FI, KieliType.SV, KieliType.EN };
 
@@ -111,10 +111,10 @@ public class KoodistoCsvConverter extends KoodistoConverter {
 
         return map;
     }
-    
+
     private SimpleDateFormat getCSVDateFormat() {
-		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-	}
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+    }
 
     private boolean checkFieldHeaderValid(String header) {
         if (StringUtils.isBlank(header)) {
@@ -191,7 +191,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
 
             bais.reset();
             reader = new BufferedReader(new InputStreamReader(bais, getCharset(encoding)));
-            
+
             csvReader = new CsvListReader(reader, pref);
             List<String> row = null;
 
@@ -241,7 +241,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         } else {
             return CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE;
         }
-    
+
     }
 
     protected KoodiType createKoodiFromCsvRow(List<String> row, Map<Integer, String> fieldNameToIndex) {
