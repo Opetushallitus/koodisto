@@ -189,8 +189,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     public KoodiVersio getLatestKoodiVersio(String koodiUri) {
-        if (StringUtils.isBlank(koodiUri))
+        if (StringUtils.isBlank(koodiUri)) {
             return null;
+        }
         return getLatestKoodiVersioWithKoodistoVersioItems(koodiUri).getKoodiVersio();
     }
 
@@ -856,8 +857,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private boolean koodisHaveSameOrganisaatio(KoodiVersio ylakoodi, KoodiVersioWithKoodistoItem[] alakoodis) {
-        if (alakoodis.length == 0)
+        if (alakoodis.length == 0) {
             return true;
+        }
         String organisaatio1 = ylakoodi.getKoodi().getKoodisto().getOrganisaatioOid();
         String organisaatio2 = alakoodis[0].getKoodiVersio().getKoodi().getKoodisto().getOrganisaatioOid();
         authorizer.checkOrganisationAccess(organisaatio1, KoodistoRole.CRUD);

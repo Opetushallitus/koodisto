@@ -59,8 +59,9 @@ public abstract class KoodistoHelper {
                     mEn = m;
                 }
             }
-            if (mSv != null)
+            if (mSv != null) {
                 return mSv;
+            }
             return mEn;
         }
         return null;
@@ -93,8 +94,9 @@ public abstract class KoodistoHelper {
                     mEn = m;
                 }
             }
-            if (mSv != null)
+            if (mSv != null) {
                 return mSv;
+            }
             return mEn;
         }
         return null;

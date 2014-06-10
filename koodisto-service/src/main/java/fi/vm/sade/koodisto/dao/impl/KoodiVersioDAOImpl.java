@@ -400,11 +400,12 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
     
 
     private static boolean searchCriteriaIsBlank(SearchKoodisCriteriaType searchCriteria) {
-        if(!StringUtils.isBlank(searchCriteria.getKoodiArvo())) return false;
-        if(searchCriteria.getValidAt() != null) return false;
+        if(!StringUtils.isBlank(searchCriteria.getKoodiArvo()) || searchCriteria.getValidAt() != null) {
+            return false;
+        }
         boolean isBlank = true;
         for (String s : searchCriteria.getKoodiUris()) {
-            if(!StringUtils.isBlank(s)) isBlank = false;
+            isBlank = isBlank && StringUtils.isBlank(s);
         }
         return isBlank;
     }

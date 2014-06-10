@@ -99,13 +99,15 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
      * @param versio
      */
     private void addOrUpdate(List<RelationCodeElement> list, String koodiUri, Integer versio) {
-        if (list == null)
+        if (list == null) {
             return;
+        }
         boolean duplicate = false;
         for (int i = 0; i < list.size(); i++) {
             RelationCodeElement relationCodeElement = list.get(i);
-            if (relationCodeElement.codeElementUri == null || relationCodeElement.codeElementVersion == null)
+            if (relationCodeElement.codeElementUri == null || relationCodeElement.codeElementVersion == null) {
                 continue;
+            }
             if (relationCodeElement.codeElementUri.equals(koodiUri)) {
                 duplicate = true;
                 // Jos koodien versiot ovat listassa väärässä versiojärjestyksessä (uudempi tulee myöhemmin)

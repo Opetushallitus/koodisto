@@ -80,8 +80,9 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         List<Integer> codesVersions = new ArrayList<Integer>();
         if (source.getKoodisto().getKoodistoVersios() != null) {
             for (KoodistoVersio koodistoVersio : source.getKoodisto().getKoodistoVersios()) {
-                if (!source.getVersio().equals(koodistoVersio.getVersio()))
+                if (!source.getVersio().equals(koodistoVersio.getVersio())) {
                     codesVersions.add(koodistoVersio.getVersio());
+                }
             }
         }
         converted.setCodesVersions(codesVersions);

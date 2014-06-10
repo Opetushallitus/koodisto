@@ -117,8 +117,9 @@ public class KoodistoCsvConverter extends KoodistoConverter {
 	}
 
     private boolean checkFieldHeaderValid(String header) {
-        if (StringUtils.isBlank(header))
+        if (StringUtils.isBlank(header)) {
             return false;
+        }
         if (!Character.isLetter(header.charAt(0))) { // Removing BOM
             header = header.substring(1);
         }
@@ -227,11 +228,13 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         int commaCount = 0;
         int semicolonCount = 0;
         int c;
-        while((c = bais.read()) != -1){
-            if(c==comma)
+        while ((c = bais.read()) != -1) {
+            if (c==comma) {
                 commaCount++;
-            if(c==semicolon)
+            }
+            if (c==semicolon) {
                 semicolonCount++;
+            }
         }
         if(commaCount > semicolonCount){
             return CsvPreference.STANDARD_PREFERENCE;
