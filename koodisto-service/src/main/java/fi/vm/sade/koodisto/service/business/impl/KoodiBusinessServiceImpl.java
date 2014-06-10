@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -846,7 +848,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return Iterables.tryFind(ylaKoodiVersio.getAlakoodis(), new Predicate<KoodinSuhde>() {
 
             @Override
-            public boolean apply(KoodinSuhde input) {
+            public boolean apply(@Nonnull KoodinSuhde input) {
                 return input.getAlakoodiVersio().equals(alaKoodiVersio);
             }
 
