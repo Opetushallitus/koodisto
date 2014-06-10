@@ -17,6 +17,9 @@ import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
+import fi.vm.sade.koodisto.model.KoodistoMetadata;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
@@ -28,13 +31,29 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
 	@Autowired()
     private SadeConversionService conversionService;
 	
+	private Integer koodiVersio = 1;
+	
 	@Test
 	public void convertsKoodinSuhdeToRelationCodeElement() {
 		KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
 		ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
 		assertEquals(1, dto.getIncludesCodeElements().size());
-		assertEquals(2, dto.getLevelsWithCodeElements().size());
+		assertEquals(1, dto.getLevelsWithCodeElements().size());
 		assertEquals(1, dto.getWithinCodeElements().size());
+	}
+	
+	@Test
+	public void storesCodeElementNameToRelationCodeElement() {
+	    KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
+        ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
+        assertEquals(givenKoodiMetadata(), dto.getIncludesCodeElements().get(0).relationMetadata.get(0));
+	}
+	
+	@Test
+	public void storesParentCodesMetadataToRelationCodeElement() {
+	    KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
+        ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
+        assertEquals(givenKoodiMetadata(), dto.getIncludesCodeElements().get(0).relationMetadata.get(0));
 	}
 
 	private KoodiVersioWithKoodistoItem givenKoodiVersioWithKoodistoItem() {
@@ -45,8 +64,6 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
 		kv.addAlakoodi(givenKoodinSuhde(kv, givenKoodiVersio(), SuhteenTyyppi.RINNASTEINEN));
 		kv.addYlakoodi(givenKoodinSuhde(givenKoodiVersio(), kv, SuhteenTyyppi.SISALTYY));
 		kv.addYlakoodi(givenKoodinSuhde(givenKoodiVersio(), kv, SuhteenTyyppi.RINNASTEINEN));
-		kv.addMetadata(givenKoodiMetadata());
-		kv.setVersio(1);
 		item.setKoodiVersio(kv);	
 		return item;
 	}
@@ -62,6 +79,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
 
 	private KoodiMetadata givenKoodiMetadata() {
 		KoodiMetadata data = new KoodiMetadata();
+		data.setId(1l);
 		data.setKieli(Kieli.FI);
 		data.setNimi("Name");
 		data.setKuvaus("Kuvaus");
@@ -75,6 +93,15 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
 		item.setOrganisaatioOid("1.9.2.3.405");
 		return item;
 	}
+	
+	private KoodistoVersioKoodiVersio givenKoodistoVersio(KoodiVersio koodiv) {
+	    KoodistoVersio kv = new KoodistoVersio();
+	    kv.addMetadata(new KoodistoMetadata());
+	    KoodistoVersioKoodiVersio kvkv = new KoodistoVersioKoodiVersio();
+	    kvkv.setKoodistoVersio(kv);
+	    kvkv.setKoodiVersio(koodiv);
+	    return kvkv;
+	}
 
 	private KoodiVersio givenKoodiVersio() {
 		Koodi koodi = new Koodi();
@@ -82,7 +109,10 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
 		KoodiVersio kv = new KoodiVersio();
 		kv.setKoodi(koodi);
 		kv.setKoodiarvo("testi koodin arvo");
-		kv.setVoimassaAlkuPvm(Calendar.getInstance().getTime());		
+		kv.setVoimassaAlkuPvm(Calendar.getInstance().getTime());	
+		kv.addMetadata(givenKoodiMetadata());
+		kv.addKoodistoVersio(givenKoodistoVersio(kv));
+		kv.setVersio(koodiVersio++);
 		return kv;
 	}
 	
