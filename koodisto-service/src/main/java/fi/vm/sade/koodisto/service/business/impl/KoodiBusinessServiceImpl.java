@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -187,8 +189,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     public KoodiVersio getLatestKoodiVersio(String koodiUri) {
-        if (StringUtils.isBlank(koodiUri))
+        if (StringUtils.isBlank(koodiUri)) {
             return null;
+        }
         return getLatestKoodiVersioWithKoodistoVersioItems(koodiUri).getKoodiVersio();
     }
 
@@ -846,7 +849,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return Iterables.tryFind(ylaKoodiVersio.getAlakoodis(), new Predicate<KoodinSuhde>() {
 
             @Override
-            public boolean apply(KoodinSuhde input) {
+            public boolean apply(@Nonnull KoodinSuhde input) {
                 return input.getAlakoodiVersio().equals(alaKoodiVersio);
             }
 
@@ -854,8 +857,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private boolean koodisHaveSameOrganisaatio(KoodiVersio ylakoodi, KoodiVersioWithKoodistoItem[] alakoodis) {
-        if (alakoodis.length == 0)
+        if (alakoodis.length == 0) {
             return true;
+        }
         String organisaatio1 = ylakoodi.getKoodi().getKoodisto().getOrganisaatioOid();
         String organisaatio2 = alakoodis[0].getKoodiVersio().getKoodi().getKoodisto().getOrganisaatioOid();
         authorizer.checkOrganisationAccess(organisaatio1, KoodistoRole.CRUD);

@@ -183,7 +183,7 @@ public class CodesResource {
             response = Response.class)
     public Response insert(
             @ApiParam(value = "Koodisto") KoodistoDto codesDTO) {
-        List<String> codesGroupUris = new ArrayList();
+        List<String> codesGroupUris = new ArrayList<String>();
         codesGroupUris.add(codesDTO.getCodesGroupUri());
         try {
             KoodistoVersio koodistoVersio = koodistoBusinessService.createKoodisto(codesGroupUris, convertFromDTOToCreateKoodistoDataType(codesDTO));
@@ -300,8 +300,6 @@ public class CodesResource {
             @ApiParam(value = "Tiedostotyyppi") @FormDataParam("fileFormat") String fileFormat,
             @ApiParam(value = "Tiedoston koodaus") @FormDataParam("fileEncoding") String fileEncoding,
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri) {
-
-        String filePath = contentDispositionHeader.getFileName();
 
         try {
             String mime = "";

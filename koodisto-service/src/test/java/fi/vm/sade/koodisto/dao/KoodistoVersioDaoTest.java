@@ -45,7 +45,7 @@ public class KoodistoVersioDaoTest {
         List<KoodistoVersio> koodistos = koodistoVersioDAO.searchKoodistos(criteriaType);
         assertEquals(1, koodistos.size());
         assertEquals(koodistoUri, koodistos.get(0).getKoodisto().getKoodistoUri());
-        assertEquals(new Integer(1), koodistos.get(0).getVersio());
+        assertEquals(Integer.valueOf(1), koodistos.get(0).getVersio());
         assertEquals(hyvaksyttyTila, koodistos.get(0).getTila());
 
         final Tila passiivinenTila = Tila.PASSIIVINEN;
@@ -55,7 +55,7 @@ public class KoodistoVersioDaoTest {
         koodistos = koodistoVersioDAO.searchKoodistos(criteriaType);
         assertEquals(1, koodistos.size());
         assertEquals(koodistoUri, koodistos.get(0).getKoodisto().getKoodistoUri());
-        assertEquals(new Integer(2), koodistos.get(0).getVersio());
+        assertEquals(Integer.valueOf(2), koodistos.get(0).getVersio());
         assertEquals(passiivinenTila, koodistos.get(0).getTila());
     }
 
@@ -72,14 +72,14 @@ public class KoodistoVersioDaoTest {
 
             @Override
             public int compare(KoodistoVersio o1, KoodistoVersio o2) {
-                return new Integer(o1.getVersio()).compareTo(new Integer(o2.getVersio()));
+                return o1.getVersio().compareTo(o2.getVersio());
             }
         });
 
         assertEquals(koodistoUri, koodistos.get(0).getKoodisto().getKoodistoUri());
         assertEquals(koodistoUri, koodistos.get(1).getKoodisto().getKoodistoUri());
-        assertEquals(new Integer(1), koodistos.get(0).getVersio());
-        assertEquals(new Integer(2), koodistos.get(1).getVersio());
+        assertEquals(Integer.valueOf(1), koodistos.get(0).getVersio());
+        assertEquals(Integer.valueOf(2), koodistos.get(1).getVersio());
     }
 
     @Test
@@ -90,7 +90,7 @@ public class KoodistoVersioDaoTest {
         List<KoodistoVersio> koodistos = koodistoVersioDAO.searchKoodistos(criteriaType);
         assertEquals(1, koodistos.size());
         assertEquals(koodistoUri, koodistos.get(0).getKoodisto().getKoodistoUri());
-        assertEquals(new Integer(2), koodistos.get(0).getVersio());
+        assertEquals(Integer.valueOf(2), koodistos.get(0).getVersio());
     }
 
     @Test
@@ -102,7 +102,7 @@ public class KoodistoVersioDaoTest {
         List<KoodistoVersio> koodistos = koodistoVersioDAO.searchKoodistos(criteriaType);
         assertEquals(1, koodistos.size());
         assertEquals(koodistoUri, koodistos.get(0).getKoodisto().getKoodistoUri());
-        assertEquals(koodistoVersio, new Integer(koodistos.get(0).getVersio()));
+        assertEquals(koodistoVersio, koodistos.get(0).getVersio());
     }
 
     @Test
