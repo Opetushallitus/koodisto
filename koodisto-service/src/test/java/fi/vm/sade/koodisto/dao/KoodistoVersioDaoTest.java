@@ -55,7 +55,7 @@ public class KoodistoVersioDaoTest {
         koodistos = koodistoVersioDAO.searchKoodistos(criteriaType);
         assertEquals(1, koodistos.size());
         assertEquals(koodistoUri, koodistos.get(0).getKoodisto().getKoodistoUri());
-        assertEquals(new Integer(2), koodistos.get(0).getVersio());
+        assertEquals(Integer.valueOf(2), koodistos.get(0).getVersio());
         assertEquals(passiivinenTila, koodistos.get(0).getTila());
     }
 
