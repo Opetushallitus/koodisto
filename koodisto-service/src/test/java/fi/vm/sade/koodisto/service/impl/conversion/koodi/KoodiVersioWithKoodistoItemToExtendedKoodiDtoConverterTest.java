@@ -46,14 +46,14 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
 	public void storesCodeElementNameToRelationCodeElement() {
 	    KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
         ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
-        assertEquals(givenKoodiMetadata(), dto.getIncludesCodeElements().get(0).relationMetadata.get(0));
+        assertEquals(givenKoodiMetadata().getKieli(), dto.getIncludesCodeElements().get(0).relationMetadata.get(0).kieli);
 	}
 	
 	@Test
 	public void storesParentCodesMetadataToRelationCodeElement() {
 	    KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
         ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
-        assertEquals(givenKoodiMetadata(), dto.getIncludesCodeElements().get(0).relationMetadata.get(0));
+        assertEquals(Kieli.EN, dto.getIncludesCodeElements().get(0).parentMetadata.get(0).kieli);
 	}
 
 	private KoodiVersioWithKoodistoItem givenKoodiVersioWithKoodistoItem() {
@@ -96,7 +96,9 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
 	
 	private KoodistoVersioKoodiVersio givenKoodistoVersio(KoodiVersio koodiv) {
 	    KoodistoVersio kv = new KoodistoVersio();
-	    kv.addMetadata(new KoodistoMetadata());
+	    KoodistoMetadata data = new KoodistoMetadata();
+	    data.setKieli(Kieli.EN);
+	    kv.addMetadata(data);
 	    KoodistoVersioKoodiVersio kvkv = new KoodistoVersioKoodiVersio();
 	    kvkv.setKoodistoVersio(kv);
 	    kvkv.setKoodiVersio(koodiv);

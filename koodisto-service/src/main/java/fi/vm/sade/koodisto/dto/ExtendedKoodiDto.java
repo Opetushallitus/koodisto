@@ -179,11 +179,11 @@ public class ExtendedKoodiDto {
     	@JsonView({JsonViews.Extended.class})
     	public final Integer codeElementVersion;
     	@JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-        public final List<KoodiMetadata> relationMetadata;
+        public final List<SimpleMetadataDto> relationMetadata;
     	@JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-        public final List<KoodistoMetadata> parentMetadata;
+        public final List<SimpleMetadataDto> parentMetadata;
     	
-    	public RelationCodeElement(String codeElementUri, Integer codeElementVersion, List<KoodiMetadata> relationMetadata, List<KoodistoMetadata> parentMetadata) {
+    	public RelationCodeElement(String codeElementUri, Integer codeElementVersion, List<SimpleMetadataDto> relationMetadata, List<SimpleMetadataDto> parentMetadata) {
 			this.codeElementUri = codeElementUri;
 			this.codeElementVersion = codeElementVersion;
 			this.relationMetadata = relationMetadata;

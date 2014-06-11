@@ -8,10 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+
 import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
+import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
@@ -19,6 +23,7 @@ import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
+import fi.vm.sade.koodisto.service.impl.conversion.MetadataToSimpleMetadataConverter;
 
 
 @Component("koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter")
@@ -100,7 +105,14 @@ Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
      */
     private void addOrUpdate(List<RelationCodeElement> list, String koodiUri, KoodiVersio koodiVersio) {
         Integer versio = koodiVersio.getVersio();
-        List<KoodiMetadata> metadatas = new ArrayList<KoodiMetadata>(koodiVersio.getMetadatas());
+        List<SimpleMetadataDto> metadatas = new ArrayList<SimpleMetadataDto>(Collections2.transform(koodiVersio.getMetadatas(), new Function<KoodiMetadata, SimpleMetadataDto>() {
+
+            @Override
+            public SimpleMetadataDto apply(KoodiMetadata input) {
+                return MetadataToSimpleMetadataConverter.convert(input);
+            }
+            
+        }));
         boolean duplicate = false;
         for (int i = 0; i < list.size(); i++) {
             RelationCodeElement relationCodeElement = list.get(i);
@@ -117,13 +129,19 @@ Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
         }
     }
     
-    private List<KoodistoMetadata> getKoodistoMetadatas(KoodiVersio kv) {
+    private List<SimpleMetadataDto> getKoodistoMetadatas(KoodiVersio kv) {
         KoodistoVersio latest = null;
         for (KoodistoVersioKoodiVersio kvkv: kv.getKoodistoVersios()) {
             KoodistoVersio koodistoVersio = kvkv.getKoodistoVersio();
             latest = (latest == null || koodistoVersio.getVersio() > latest.getVersio()) ? koodistoVersio : latest;     
         }
-        return new ArrayList<KoodistoMetadata>(latest.getMetadatas());
+        return new ArrayList<SimpleMetadataDto>(Collections2.transform(latest.getMetadatas(), new Function<KoodistoMetadata, SimpleMetadataDto>() {
+
+            @Override
+            public SimpleMetadataDto apply(KoodistoMetadata input) {
+                return MetadataToSimpleMetadataConverter.convert(input);
+            }
+        }));
     }
 
 
