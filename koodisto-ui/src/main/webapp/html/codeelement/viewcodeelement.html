@@ -183,10 +183,10 @@
                                 </thead>
                                 <tbody>
                                 <tr bindonce ng-repeat="codeElement in model.withinCodeElements | orderBy:sortBy">
-                                    <td>{{codeElement.codesname}}</td>
-                                    <td>{{codeElement.name}}</td>
-                                    <td>{{codeElement.versio}}</td>
-                                    <td>{{codeElement.description}}</td>
+                                    <td bo-text="codeElement.codesname"></td>
+                                    <td bo-text="codeElement.name"></td>
+                                    <td bo-text="codeElement.versio"></td>
+                                    <td bo-text="codeElement.description"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -218,10 +218,10 @@
                                 </thead>
                                 <tbody>
                                 <tr bindonce ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy">
-                                    <td>{{codeElement.codesname}}</td>
-                                    <td>{{codeElement.name}}</td>
-                                    <td>{{codeElement.versio}}</td>
-                                    <td>{{codeElement.description}}</td>
+                                    <td bo-text="codeElement.codesname"></td>
+                                    <td bo-text="codeElement.name"></td>
+                                    <td bo-text="codeElement.versio"></td>
+                                    <td bo-text="codeElement.description"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -254,10 +254,10 @@
                             </thead>
                             <tbody>
                             <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:sortBy">
-                                <td>{{codeElement.codesname}}</td>
-                                <td>{{codeElement.name}}</td>
-                                <td>{{codeElement.versio}}</td>
-                                <td>{{codeElement.description}}</td>
+                                    <td bo-text="codeElement.codesname"></td>
+                                    <td bo-text="codeElement.name"></td>
+                                    <td bo-text="codeElement.versio"></td>
+                                    <td bo-text="codeElement.description"></td>
                             </tr>
                             </tbody>
                         </table>
