@@ -1,10 +1,14 @@
-
-app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, CodeElementByUriAndVersion, AllCodes,
-                                               CodeElementsByCodesUriAndVersion, RemoveRelationCodeElement,
-                                               LatestCodeElementVersionsByCodeElementUri, AuthService) {
+app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, CodeElementByUriAndVersion, AllCodes, CodeElementsByCodesUriAndVersion,
+        RemoveRelationCodeElement, LatestCodeElementVersionsByCodeElementUri, AuthService) {
     var model;
     model = new function() {
-        this.states = [{key:'PASSIIVINEN', value:'PASSIIVINEN'},{key:'LUONNOS', value:'LUONNOS'}];
+        this.states = [ {
+            key : 'PASSIIVINEN',
+            value : 'PASSIIVINEN'
+        }, {
+            key : 'LUONNOS',
+            value : 'LUONNOS'
+        } ];
 
         this.allCodes = [];
         this.withinCodeElements = [];
@@ -26,7 +30,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             this.allIncludesCodeElements = [];
             this.allLevelsWithCodeElements = [];
             this.shownCodeElements = [];
-            
+
             // Pagination
             this.currentPage = 0;
             this.pageSize = 10;
@@ -34,13 +38,16 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             this.sortOrder = "koodiArvo";
             this.sortOrderSelection = 1;
             this.sortOrderReversed = false;
-            
+
             model.getAllCodes();
             model.getCodeElement(scope, codeElementUri, codeElementVersion);
         };
 
         this.getCodeElement = function(scope, codeElementUri, codeElementVersion) {
-            CodeElementByUriAndVersion.get({codeElementUri: codeElementUri, codeElementVersion: codeElementVersion}, function (result) {
+            CodeElementByUriAndVersion.get({
+                codeElementUri : codeElementUri,
+                codeElementVersion : codeElementVersion
+            }, function(result) {
                 model.codeElement = result;
                 scope.codeValue = result.koodiArvo;
 
@@ -55,7 +62,6 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                 scope.descriptionfi = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
                 scope.descriptionsv = model.languageSpecificValue(result.metadata, 'kuvaus', 'SV');
                 scope.descriptionen = model.languageSpecificValue(result.metadata, 'kuvaus', 'EN');
-
 
                 scope.instructionsfi = model.languageSpecificValue(result.metadata, 'kayttoohje', 'FI');
                 scope.instructionssv = model.languageSpecificValue(result.metadata, 'kayttoohje', 'SV');
@@ -81,43 +87,38 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                 scope.containscodessv = model.languageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'SV');
                 scope.containscodesen = model.languageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'EN');
 
-
-                model.codeElement.withinCodeElements.forEach(function(codelement){
-                    model.getLatestCodeElementVersionsByCodeElementUri(codelement,model.withinCodeElements);
+                model.codeElement.withinCodeElements.forEach(function(codeElement) {
+                    model.extractAndPushCodeElementInformation(codeElement, model.withinCodeElements);
                 });
-                model.codeElement.includesCodeElements.forEach(function(codelement){
-                    model.getLatestCodeElementVersionsByCodeElementUri(codelement,model.includesCodeElements);
+                model.codeElement.includesCodeElements.forEach(function(codeElement) {
+                    model.extractAndPushCodeElementInformation(codeElement, model.includesCodeElements);
                 });
-                model.codeElement.levelsWithCodeElements.forEach(function(codelement){
-                    model.getLatestCodeElementVersionsByCodeElementUri(codelement,model.levelsWithCodeElements);
+                model.codeElement.levelsWithCodeElements.forEach(function(codeElement) {
+                    model.extractAndPushCodeElementInformation(codeElement, model.levelsWithCodeElements);
                 });
             });
         };
 
-        this.getLatestCodeElementVersionsByCodeElementUri = function(codeElement, list) {
-            LatestCodeElementVersionsByCodeElementUri.get({
-                codeElementUri : codeElement.codeElementUri
-            }, function(result) {
-                var ce = {};
-                ce.uri = codeElement.codeElementUri;
-                ce.value = result.koodiArvo;
-                ce.name = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
-                ce.versio = codeElement.codeElementVersion;
-                list.push(ce);
-            });
+        this.extractAndPushCodeElementInformation = function(codeElement, list) {
+            var ce = {};
+            ce.uri = codeElement.codeElementUri;
+            ce.name = model.languageSpecificValue(codeElement.relationMetadata, 'nimi', 'FI');
+            ce.value = codeElement.codeElementValue;
+            ce.versio = codeElement.codeElementVersion;
+            ce.codesname = model.languageSpecificValue(codeElement.parentMetadata, 'nimi', 'FI');
+            list.push(ce);
         };
 
-        this.languageSpecificValue = function(fieldArray,fieldName,language) {
-            return getLanguageSpecificValue(fieldArray,fieldName,language);
+        this.languageSpecificValue = function(fieldArray, fieldName, language) {
+            return getLanguageSpecificValue(fieldArray, fieldName, language);
         };
         this.removeFromWithinCodeElements = function(codeelement) {
             model.withinRelationToRemove = codeelement;
 
             model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: CodeElementEditorController,
-                resolve: {
-                }
+                templateUrl : 'confirmModalContent.html',
+                controller : CodeElementEditorController,
+                resolve : {}
             });
 
         };
@@ -125,62 +126,63 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
         this.removeFromIncludesCodeElements = function(codeelement) {
             model.includesRelationToRemove = codeelement;
             model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: CodeElementEditorController,
-                resolve: {
-                }
+                templateUrl : 'confirmModalContent.html',
+                controller : CodeElementEditorController,
+                resolve : {}
             });
         };
 
         this.removeFromLevelsWithCodeElements = function(codeelement) {
             model.levelsRelationToRemove = codeelement;
             model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: CodeElementEditorController,
-                resolve: {
-                }
+                templateUrl : 'confirmModalContent.html',
+                controller : CodeElementEditorController,
+                resolve : {}
             });
         };
-        
+
         this.filterCodes = function() {
             for (var i = 0; i < model.allCodes.length; i++) {
-        	var koodistos = model.allCodes[i].koodistos;
-        	var temp = [];
-        	if (koodistos) {
-        	    for (var j = 0; j < koodistos.length; j++) {
-        		var koodisto = koodistos[j];
-        		// Vain ne koodit näytetään, jotka ovat samssa organisaatiossa tämän kanssa
-        		if (koodisto.organisaatioOid === model.codeElement.koodisto.organisaatioOid) {
-        		    temp.push(koodisto);
-        		}
-        	    }
-        	    model.allCodes[i].koodistos = temp;
-        	}
+                var koodistos = model.allCodes[i].koodistos;
+                var temp = [];
+                if (koodistos) {
+                    for (var j = 0; j < koodistos.length; j++) {
+                        var koodisto = koodistos[j];
+                        // Vain ne koodit näytetään, jotka ovat samssa organisaatiossa tämän kanssa
+                        if (koodisto.organisaatioOid === model.codeElement.koodisto.organisaatioOid) {
+                            temp.push(koodisto);
+                        }
+                    }
+                    model.allCodes[i].koodistos = temp;
+                }
             }
         };
 
         this.getAllCodes = function() {
-            RootCodes.get({}, function(result) {        	
+            RootCodes.get({}, function(result) {
                 model.allCodes = result;
-                AuthService.updateOph(SERVICE_NAME).then(function() {}, model.filterCodes);
+                AuthService.updateOph(SERVICE_NAME).then(function() {
+                }, model.filterCodes);
             });
         };
 
-
         this.openChildren = function(data) {
             data.open = !data.open;
-            if(data.open) {
+            if (data.open) {
 
-                var iter = function(children){
-                    if(children) {
-                        children.forEach(function(child){
+                var iter = function(children) {
+                    if (children) {
+                        children.forEach(function(child) {
                             child.open = true;
 
                         });
                     }
                 };
                 if (data.latestKoodistoVersio) {
-                    CodeElementsByCodesUriAndVersion.get({codesUri: data.koodistoUri, codesVersion: data.latestKoodistoVersio.versio}, function (result) {
+                    CodeElementsByCodesUriAndVersion.get({
+                        codesUri : data.koodistoUri,
+                        codesVersion : data.latestKoodistoVersio.versio
+                    }, function(result) {
                         data.children = result;
                     });
                 }
@@ -189,13 +191,11 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
         };
     };
 
-
     return model;
 });
 
-function CodeElementEditorController($scope, $location, $routeParams, $filter, CodeElementEditorModel, UpdateCodeElement,
-                                     AddRelationCodeElement, RemoveRelationCodeElement, ValidateService,
-                                     CodesByUriAndVersion,CodeElementsByCodesUriAndVersion,$modal) {
+function CodeElementEditorController($scope, $location, $routeParams, $filter, CodeElementEditorModel, UpdateCodeElement, AddRelationCodeElement,
+        RemoveRelationCodeElement, ValidateService, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion, $modal) {
 
     $scope.model = CodeElementEditorModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
@@ -206,9 +206,9 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
 
     $scope.selectallcodelements = false;
 
-    $scope.onMasterChange = function(master){
+    $scope.onMasterChange = function(master) {
 
-        for(var i = 0; i < $scope.model.shownCodeElements.length; i++) {
+        for (var i = 0; i < $scope.model.shownCodeElements.length; i++) {
             if ($scope.search($scope.model.shownCodeElements[i])) {
                 $scope.model.shownCodeElements[i].checked = master;
             }
@@ -220,15 +220,16 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     };
 
     $scope.cancel = function() {
-        $location.path("/koodi/"+$scope.codeElementUri+"/"+$scope.codeElementVersion);
+        $location.path("/koodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion);
     };
 
     $scope.submit = function() {
         $scope.persistCodes();
     };
 
-    $scope.search = function (item){
-        if (!$scope.model.query || item.name.toLowerCase().indexOf($scope.model.query.toLowerCase())!==-1 || item.value.toLowerCase().indexOf($scope.model.query.toLowerCase())!==-1) {
+    $scope.search = function(item) {
+        if (!$scope.model.query || item.name.toLowerCase().indexOf($scope.model.query.toLowerCase()) !== -1
+                || item.value.toLowerCase().indexOf($scope.model.query.toLowerCase()) !== -1) {
             return true;
         }
         return false;
@@ -236,59 +237,59 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
 
     $scope.persistCodes = function() {
         var codeelement = {
-            koodiUri: $scope.codeElementUri,
-            versio: $scope.codeElementVersion,
-            voimassaAlkuPvm: $scope.model.codeElement.voimassaAlkuPvm,
-            voimassaLoppuPvm: $scope.model.codeElement.voimassaLoppuPvm,
-            koodiArvo: $scope.codeValue,
-            tila: $scope.model.codeElement.tila,
-            version: $scope.model.codeElement.version,
+            koodiUri : $scope.codeElementUri,
+            versio : $scope.codeElementVersion,
+            voimassaAlkuPvm : $scope.model.codeElement.voimassaAlkuPvm,
+            voimassaLoppuPvm : $scope.model.codeElement.voimassaLoppuPvm,
+            koodiArvo : $scope.codeValue,
+            tila : $scope.model.codeElement.tila,
+            version : $scope.model.codeElement.version,
 
-            metadata : [{
-                kieli: 'FI',
-                nimi: $scope.namefi,
-                kuvaus: $scope.descriptionfi,
-                lyhytNimi: $scope.shortnamefi,
-                kayttoohje: $scope.instructionsfi,
-                kasite: $scope.conceptfi,
-                huomioitavaKoodi: $scope.totakenoticeoffi,
-                sisaltaaMerkityksen: $scope.containssignificancefi,
-                eiSisallaMerkitysta: $scope.doesnotcontainsignificancefi,
-                sisaltaaKoodiston: $scope.containscodesfi
-            }]
+            metadata : [ {
+                kieli : 'FI',
+                nimi : $scope.namefi,
+                kuvaus : $scope.descriptionfi,
+                lyhytNimi : $scope.shortnamefi,
+                kayttoohje : $scope.instructionsfi,
+                kasite : $scope.conceptfi,
+                huomioitavaKoodi : $scope.totakenoticeoffi,
+                sisaltaaMerkityksen : $scope.containssignificancefi,
+                eiSisallaMerkitysta : $scope.doesnotcontainsignificancefi,
+                sisaltaaKoodiston : $scope.containscodesfi
+            } ]
         };
         if ($scope.namesv) {
             codeelement.metadata.push({
-                kieli: 'SV',
-                nimi: $scope.namesv,
-                kuvaus: $scope.descriptionsv,
-                lyhytNimi: $scope.shortnamesv,
-                kayttoohje: $scope.instructionssv,
-                kasite: $scope.conceptsv,
-                huomioitavaKoodi: $scope.totakenoticeofsv,
-                sisaltaaMerkityksen: $scope.containssignificancesv,
-                eiSisallaMerkitysta: $scope.doesnotcontainsignificancesv,
-                sisaltaaKoodiston: $scope.containscodessv
+                kieli : 'SV',
+                nimi : $scope.namesv,
+                kuvaus : $scope.descriptionsv,
+                lyhytNimi : $scope.shortnamesv,
+                kayttoohje : $scope.instructionssv,
+                kasite : $scope.conceptsv,
+                huomioitavaKoodi : $scope.totakenoticeofsv,
+                sisaltaaMerkityksen : $scope.containssignificancesv,
+                eiSisallaMerkitysta : $scope.doesnotcontainsignificancesv,
+                sisaltaaKoodiston : $scope.containscodessv
             });
         }
         if ($scope.nameen) {
             codeelement.metadata.push({
-                kieli: 'EN',
-                nimi: $scope.nameen,
-                kuvaus: $scope.descriptionen,
-                lyhytNimi: $scope.shortnameen,
-                kayttoohje: $scope.instructionsen,
-                kasite: $scope.concepten,
-                huomioitavaKoodi: $scope.totakenoticeofen,
-                sisaltaaMerkityksen: $scope.containssignificanceen,
-                eiSisallaMerkitysta: $scope.doesnotcontainsignificanceen,
-                sisaltaaKoodiston: $scope.containscodesen
+                kieli : 'EN',
+                nimi : $scope.nameen,
+                kuvaus : $scope.descriptionen,
+                lyhytNimi : $scope.shortnameen,
+                kayttoohje : $scope.instructionsen,
+                kasite : $scope.concepten,
+                huomioitavaKoodi : $scope.totakenoticeofen,
+                sisaltaaMerkityksen : $scope.containssignificanceen,
+                eiSisallaMerkitysta : $scope.doesnotcontainsignificanceen,
+                sisaltaaKoodiston : $scope.containscodesen
             });
         }
         UpdateCodeElement.put({}, codeelement, function(result) {
-            $location.path("/koodi/"+result.koodiUri+"/"+result.versio);
+            $location.path("/koodi/" + result.koodiUri + "/" + result.versio);
         }, function(error) {
-            ValidateService.validateCodeElement($scope,error,true);
+            ValidateService.validateCodeElement($scope, error, true);
         });
     };
 
@@ -323,7 +324,6 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         }
     };
 
-
     $scope.createCodes = function(data) {
         var ce = {};
         ce.uri = data.uri;
@@ -331,8 +331,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         ce.value = data.value;
         return ce;
     };
-          
-    
+
     $scope.addRelationCodeElement = function(codeElementToAdd, collectionToAddTo, relationTypeString, modelCodeElementIsHost) {
         var found = false;
         collectionToAddTo.forEach(function(codeElement, index) {
@@ -350,71 +349,86 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             }, function(result) {
                 collectionToAddTo.push($scope.createCodes(codeElementToAdd));
             }, function(result) {
-                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen luominen ep\u00E4onnistui' };
+                var alert = {
+                    type : 'danger',
+                    msg : 'Koodien v\u00E4lisen suhteen luominen ep\u00E4onnistui'
+                };
                 $scope.model.alerts.push(alert);
             });
         }
     };
-    
+
     $scope.removeRelationsCodeElement = function(unselectedItems, collectionToRemoveFrom, relationTypeString, modelCodeElementIsHost) {
-	var itemsToRemove = [];
-	unselectedItems.forEach(function(codeElement) {
-	    collectionToRemoveFrom.forEach(function(innerCodeElement) {
-		if(codeElement.uri == innerCodeElement.uri) {
-		    itemsToRemove.push(innerCodeElement);
-		};
-	    });
-	});
-	
-	itemsToRemove.forEach(function(codeElementToRemove) {
-	    var uriToRemoveFrom = modelCodeElementIsHost ? $scope.model.codeElement.koodiUri : codeElementToRemove.uri;
-	    var uriToRemove = modelCodeElementIsHost ? codeElementToRemove.uri : $scope.model.codeElement.koodiUri; 
-	    RemoveRelationCodeElement.put({codeElementUri: uriToRemoveFrom,
-	            codeElementUriToRemove: uriToRemove, relationType: relationTypeString}, function(result) {
-	        	collectionToRemoveFrom.splice(jQuery.inArray(codeElementToRemove, collectionToRemoveFrom), 1);
-	        }, function(error) {
-	            //TODO: this should be made to handle multiple instances and possibly to inform which removals did not succeed
-	            var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
-	            $scope.model.alerts.push(alert);
-	        });
-	});
-	
+        var itemsToRemove = [];
+        unselectedItems.forEach(function(codeElement) {
+            collectionToRemoveFrom.forEach(function(innerCodeElement) {
+                if (codeElement.uri == innerCodeElement.uri) {
+                    itemsToRemove.push(innerCodeElement);
+                }
+                ;
+            });
+        });
+
+        itemsToRemove.forEach(function(codeElementToRemove) {
+            var uriToRemoveFrom = modelCodeElementIsHost ? $scope.model.codeElement.koodiUri : codeElementToRemove.uri;
+            var uriToRemove = modelCodeElementIsHost ? codeElementToRemove.uri : $scope.model.codeElement.koodiUri;
+            RemoveRelationCodeElement.put({
+                codeElementUri : uriToRemoveFrom,
+                codeElementUriToRemove : uriToRemove,
+                relationType : relationTypeString
+            }, function(result) {
+                collectionToRemoveFrom.splice(jQuery.inArray(codeElementToRemove, collectionToRemoveFrom), 1);
+            }, function(error) {
+                // TODO: this should be made to handle multiple instances and possibly to inform which removals did not succeed
+                var alert = {
+                    type : 'danger',
+                    msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
+                };
+                $scope.model.alerts.push(alert);
+            });
+        });
+
     };
-    
 
-
-    $scope.cancelcodeelement = function () {
+    $scope.cancelcodeelement = function() {
         $scope.model.codeelementmodalInstance.dismiss('cancel');
     };
 
     $scope.okcodeelement = function() {
-        var selectedItems = $filter('filter')($scope.model.shownCodeElements, {checked: true});
-        var unselectedItems = $filter('filter')($scope.model.shownCodeElements, {checked: false});
+        var selectedItems = $filter('filter')($scope.model.shownCodeElements, {
+            checked : true
+        });
+        var unselectedItems = $filter('filter')($scope.model.shownCodeElements, {
+            checked : false
+        });
         if ($scope.model.addToListName === 'withincodes') {
-            selectedItems.forEach(function(codeElement){
+            selectedItems.forEach(function(codeElement) {
                 $scope.addRelationCodeElement(codeElement, $scope.model.withinCodeElements, "SISALTYY");
             });
             $scope.removeRelationsCodeElement(unselectedItems, $scope.model.withinCodeElements, "SISALTYY");
 
         } else if ($scope.model.addToListName === 'includescodes') {
-            selectedItems.forEach(function(codeElement){
+            selectedItems.forEach(function(codeElement) {
                 $scope.addRelationCodeElement(codeElement, $scope.model.includesCodeElements, "SISALTYY", true);
             });
             $scope.removeRelationsCodeElement(unselectedItems, $scope.model.includesCodeElements, "SISALTYY", true);
 
         } else if ($scope.model.addToListName === 'levelswithcodes') {
-            selectedItems.forEach(function(codeElement){
+            selectedItems.forEach(function(codeElement) {
                 $scope.addRelationCodeElement(codeElement, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
             });
             $scope.removeRelationsCodeElement(unselectedItems, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
         }
         $scope.model.codeelementmodalInstance.close();
     };
-    
+
     showCodeElementsInCodeSet = function(toBeShown, existingSelections) {
-	toBeShown = [];
-        CodeElementsByCodesUriAndVersion.get({codesUri: $scope.model.showCode, codesVersion: 0}, function (result2) {
-            result2.forEach(function(codeElement){
+        toBeShown = [];
+        CodeElementsByCodesUriAndVersion.get({
+            codesUri : $scope.model.showCode,
+            codesVersion : 0
+        }, function(result2) {
+            result2.forEach(function(codeElement) {
                 var ce = {};
                 ce.uri = codeElement.koodiUri;
                 ce.checked = jQuery.grep(existingSelections, function(element) {
@@ -432,102 +446,118 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
 
     $scope.getCodeElements = function() {
         var name = $scope.model.addToListName;
-        CodesByUriAndVersion.get({codesUri: $scope.model.codeElement.koodisto.koodistoUri, codesVersion: 0}, function (result) {
+        CodesByUriAndVersion.get({
+            codesUri : $scope.model.codeElement.koodisto.koodistoUri,
+            codesVersion : 0
+        }, function(result) {
 
             function getCodesUris(relationArray) {
-        	var codesUris = [];
-        	angular.forEach(relationArray, function(value) { 
-        	    codesUris.push(value.codesUri);
-        	});        	
-        	return codesUris;
+                var codesUris = [];
+                angular.forEach(relationArray, function(value) {
+                    codesUris.push(value.codesUri);
+                });
+                return codesUris;
             }
-            
+
             if (name === 'withincodes') {
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
                     showCodeElementsInCodeSet($scope.model.allWithinCodeElements, $scope.model.withinCodeElements);
                 }
-                $scope.model.shownCodes=getCodesUris(result.withinCodes);
+                $scope.model.shownCodes = getCodesUris(result.withinCodes);
                 $scope.model.shownCodeElements = $scope.model.allWithinCodeElements;
 
             } else if (name === 'includescodes') {
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
                     showCodeElementsInCodeSet($scope.model.allIncludesCodeElements, $scope.model.includesCodeElements);
                 }
-                $scope.model.shownCodes=getCodesUris(result.includesCodes);
+                $scope.model.shownCodes = getCodesUris(result.includesCodes);
                 $scope.model.shownCodeElements = $scope.model.allIncludesCodeElements;
-
 
             } else if (name === 'levelswithcodes') {
                 if ($scope.model.showCode && $scope.model.showCode.length > 0) {
                     showCodeElementsInCodeSet($scope.model.allLevelsWithCodeElements, $scope.model.levelsWithCodeElements);
                 }
-                $scope.model.shownCodes=getCodesUris(result.levelsWithCodes);
+                $scope.model.shownCodes = getCodesUris(result.levelsWithCodes);
                 $scope.model.shownCodeElements = $scope.model.allLevelsWithCodeElements;
             }
-
 
         });
     };
 
-    $scope.show = function(name){
+    $scope.show = function(name) {
         $scope.model.showCode = '';
         $scope.model.addToListName = name;
-        if ($scope.model.allWithinCodeElements.length === 0 || $scope.model.allIncludesCodeElements.length === 0 ||
-            $scope.model.allLevelsWithCodeElements.length === 0) {
+        if ($scope.model.allWithinCodeElements.length === 0 || $scope.model.allIncludesCodeElements.length === 0
+                || $scope.model.allLevelsWithCodeElements.length === 0) {
 
             $scope.getCodeElements();
 
-
             $scope.model.codeelementmodalInstance = $modal.open({
-                templateUrl: 'codeElementModalContent.html',
-                controller: CodeElementEditorController,
-                resolve: {
-                }
+                templateUrl : 'codeElementModalContent.html',
+                controller : CodeElementEditorController,
+                resolve : {}
             });
         }
     };
 
     $scope.okconfirm = function() {
         if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
-            $scope.model.withinCodeElements.forEach(function(codeElement, index){
+            $scope.model.withinCodeElements.forEach(function(codeElement, index) {
                 if (codeElement.uri.indexOf($scope.model.withinRelationToRemove.uri) !== -1) {
-                    $scope.model.withinCodeElements.splice(index,1);
+                    $scope.model.withinCodeElements.splice(index, 1);
                 }
             });
 
-
-            RemoveRelationCodeElement.put({codeElementUri: $scope.model.withinRelationToRemove.uri,
-                codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "SISALTYY"},function(result) {
+            RemoveRelationCodeElement.put({
+                codeElementUri : $scope.model.withinRelationToRemove.uri,
+                codeElementUriToRemove : $scope.model.codeElement.koodiUri,
+                relationType : "SISALTYY"
+            }, function(result) {
 
             }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
+                var alert = {
+                    type : 'danger',
+                    msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
+                };
                 $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
-            $scope.model.includesCodeElements.forEach(function(codeElement, index){
+            $scope.model.includesCodeElements.forEach(function(codeElement, index) {
                 if (codeElement.uri.indexOf($scope.model.includesRelationToRemove.uri) !== -1) {
-                    $scope.model.includesCodeElements.splice(index,1);
+                    $scope.model.includesCodeElements.splice(index, 1);
                 }
             });
 
-            RemoveRelationCodeElement.put({codeElementUri: $scope.model.codeElement.koodiUri,
-                codeElementUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
+            RemoveRelationCodeElement.put({
+                codeElementUri : $scope.model.codeElement.koodiUri,
+                codeElementUriToRemove : $scope.model.includesRelationToRemove.uri,
+                relationType : "SISALTYY"
+            }, function(result) {
 
             }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
+                var alert = {
+                    type : 'danger',
+                    msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
+                };
                 $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
-            $scope.model.levelsWithCodeElements.forEach(function(codeElement, index){
+            $scope.model.levelsWithCodeElements.forEach(function(codeElement, index) {
                 if (codeElement.uri.indexOf($scope.model.levelsRelationToRemove.uri) !== -1) {
-                    $scope.model.levelsWithCodeElements.splice(index,1);
+                    $scope.model.levelsWithCodeElements.splice(index, 1);
                 }
             });
 
-            RemoveRelationCodeElement.put({codeElementUri: $scope.model.levelsRelationToRemove.uri,
-                codeElementUriToRemove: $scope.model.codeElement.koodiUri,relationType: "RINNASTEINEN"},function(result) {
+            RemoveRelationCodeElement.put({
+                codeElementUri : $scope.model.levelsRelationToRemove.uri,
+                codeElementUriToRemove : $scope.model.codeElement.koodiUri,
+                relationType : "RINNASTEINEN"
+            }, function(result) {
             }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
+                var alert = {
+                    type : 'danger',
+                    msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
+                };
                 $scope.model.alerts.push(alert);
             });
         }
@@ -543,13 +573,13 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         $scope.model.withinRelationToRemove = null;
         $scope.model.modalInstance.dismiss('cancel');
     };
-    
+
     // Pagination
 
     // Get the filtered page count
     var cachedPageCount = 0;
     $scope.getNumberOfPages = function() {
-        if(cachedPageCount == 0) {
+        if (cachedPageCount == 0) {
             $scope.refreshNumberOfPages();
         }
         return cachedPageCount;
@@ -557,20 +587,19 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
 
     // Refresh the page count when the model changes
     var cachedElementCount = 0;
-    $scope.$watch('model.shownCodeElements', function(){
-        if($scope.model.shownCodeElements.length != cachedElementCount){
+    $scope.$watch('model.shownCodeElements', function() {
+        if ($scope.model.shownCodeElements.length != cachedElementCount) {
             $scope.refreshNumberOfPages();
             cachedElementCount = $scope.model.shownCodeElements.length;
         }
     });
-    
+
     // Refresh the page count (less redundant filtering)
     $scope.refreshNumberOfPages = function() {
         cachedPageCount = Math.ceil(($filter("filter")($scope.model.shownCodeElements, $scope.search)).length / $scope.model.pageSize);
         return cachedPageCount;
     };
 
-    
     // Change the currentPage when the pageSize is changed.
     var oldValueForPageSize = 10;
     $scope.pageSizeChanged = function() {
@@ -579,8 +608,8 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         oldValueForPageSize = $scope.model.pageSize;
         $scope.refreshNumberOfPages();
     };
-    
-    $scope.sortOrderChanged = function(){
+
+    $scope.sortOrderChanged = function() {
         var selection = parseInt($scope.model.sortOrderSelection);
         switch (selection) {
         case 1:
@@ -615,7 +644,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         default:
             break;
         }
-};
+    };
 
     // When user changes the search string the page count changes and the current page must be adjusted
     $scope.filterChangedPageCount = function() {
@@ -623,21 +652,21 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         if ($scope.model.currentPage >= currentNumberOfPages) {
             $scope.model.currentPage = currentNumberOfPages - 1;
         }
-        if (currentNumberOfPages != 0 && $scope.model.currentPage < 0){
+        if (currentNumberOfPages != 0 && $scope.model.currentPage < 0) {
             $scope.model.currentPage = 0;
         }
     };
-    
-    $scope.changePage = function(i){
+
+    $scope.changePage = function(i) {
         $scope.model.currentPage = i;
     };
-    
-    $scope.incrementPage = function(i){
+
+    $scope.incrementPage = function(i) {
         var newPageNumber = $scope.model.currentPage + i;
-        if(newPageNumber > -1 && newPageNumber < $scope.getNumberOfPages()){
+        if (newPageNumber > -1 && newPageNumber < $scope.getNumberOfPages()) {
             $scope.model.currentPage = newPageNumber;
         }
     };
-    
+
     // Pagination ends
 }
