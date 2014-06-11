@@ -182,7 +182,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="codeElement in model.withinCodeElements | orderBy:sortBy">
+                                <tr bindonce ng-repeat="codeElement in model.withinCodeElements | orderBy:sortBy">
                                     <td>{{codeElement.codesname}}</td>
                                     <td>{{codeElement.name}}</td>
                                     <td>{{codeElement.versio}}</td>
@@ -217,7 +217,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy">
+                                <tr bindonce ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy">
                                     <td>{{codeElement.codesname}}</td>
                                     <td>{{codeElement.name}}</td>
                                     <td>{{codeElement.versio}}</td>
@@ -253,7 +253,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:sortBy">
+                            <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:sortBy">
                                 <td>{{codeElement.codesname}}</td>
                                 <td>{{codeElement.name}}</td>
                                 <td>{{codeElement.versio}}</td>

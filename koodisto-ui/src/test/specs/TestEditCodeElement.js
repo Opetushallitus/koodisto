@@ -90,36 +90,49 @@ describe("Code Element Edit test", function() {
     		    "kieli" : "FI"
     		} ],
     		"withinCodeElements" : [ ],
-    		"includesCodeElements" : [{
-    		    "codeElementUri" : "relaatiotesti",
-    		    "codeElementVersion" : 3
-    		}],
+    		"includesCodeElements" : [ {
+    		    "codeElementUri" : "hep2_2",
+    		    "codeElementVersion" : 2,
+    		    "relationMetadata" : [ {
+    		      "nimi" : "2",
+    		      "kuvaus" : "2",
+    		      "lyhytNimi" : "2",
+    		      "kayttoohje" : null,
+    		      "kasite" : null,
+    		      "sisaltaaMerkityksen" : null,
+    		      "eiSisallaMerkitysta" : null,
+    		      "huomioitavaKoodi" : null,
+    		      "sisaltaaKoodiston" : null,
+    		      "kieli" : "FI"
+    		    } ],
+    		    "parentMetadata" : [ {
+    		      "kieli" : "FI",
+    		      "nimi" : "hep2",
+    		      "kuvaus" : "hep2",
+    		      "kayttoohje" : null,
+    		      "kasite" : null,
+    		      "kohdealue" : null,
+    		      "sitovuustaso" : null,
+    		      "kohdealueenOsaAlue" : null,
+    		      "toimintaymparisto" : null,
+    		      "tarkentaaKoodistoa" : null,
+    		      "huomioitavaKoodisto" : null,
+    		      "koodistonLahde" : null
+    		    } ]
+    		  } ],
     		"levelsWithCodeElements" : [ ]
     	};
-    	
-    	var codeElementRelation = {
-    		"koodiUri" : "relaatiotesti",
-    		"koodisto" : {
-    		    "koodistoUri" : "relaatiotestikoodisto"
-    		},
-    		"metadata" : [ {
-    		    "nimi" : "ReferenssiKoodi",
-    		    "kieli" : "FI"
-    		}],
-    		"versio" : 3
-    	};
-    	
+    	    	
     	beforeEach(function() {
     	    mockBackend.expectGET(SERVICE_URL_BASE + "codes").respond([]);
     	    mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(codeElementWithRelation);
-    	    mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/latest/relaatiotesti").respond(codeElementRelation);
     	    mockBackend.flush();
     	});
     	
         it("Should contain version number of latest code element relation references", function() {
             expect(model.includesCodeElements.length).toEqual(1);
-            expect(model.includesCodeElements[0].versio).toEqual(3);
-            expect(model.includesCodeElements[0].name).toEqual("ReferenssiKoodi");
+            expect(model.includesCodeElements[0].versio).toEqual(2);
+            expect(model.includesCodeElements[0].name).toEqual("2");
         });
     
     });
@@ -166,7 +179,7 @@ describe("Code Element Edit test", function() {
 
             scope.model.codeelementmodalInstance = {
                     close: jasmine.createSpy('modalInstance.close')
-                }
+                };
             scope.model.addToListName = addToListName;
             scope.model.shownCodeElements = shownCodeElements;
             scope.model.withinCodeElements = withinCodeElements;
@@ -174,7 +187,7 @@ describe("Code Element Edit test", function() {
             
             mockBackend.expectGET(SERVICE_URL_BASE + "codes").respond([]);
             mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(codeElement1);
-            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/latest/2organisaatiotesti_arvonen").respond(codeElement2);
+//            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/latest/2organisaatiotesti_arvonen").respond(codeElement2);
             mockBackend.flush();
         });
 
