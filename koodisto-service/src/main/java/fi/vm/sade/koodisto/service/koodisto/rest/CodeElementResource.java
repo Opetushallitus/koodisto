@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -86,6 +87,7 @@ public class CodeElementResource {
     @Path("/{codeElementUri}/{codeElementVersion}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Extended.class })
+    @Transactional
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa tietyn koodiversion",
