@@ -104,7 +104,8 @@ Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
      * @param versio
      */
     private void addOrUpdate(List<RelationCodeElement> list, String koodiUri, KoodiVersio koodiVersio) {
-        Integer versio = koodiVersio.getVersio();
+        final Integer versio = koodiVersio.getVersio();
+        final String koodiArvo = koodiVersio.getKoodiarvo();
         List<SimpleMetadataDto> metadatas = new ArrayList<SimpleMetadataDto>(Collections2.transform(koodiVersio.getMetadatas(), new Function<KoodiMetadata, SimpleMetadataDto>() {
 
             @Override
@@ -120,12 +121,12 @@ Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
                 duplicate = true;
                 // Jos koodien versiot ovat listassa väärässä versiojärjestyksessä (uudempi tulee myöhemmin)
                 if (versio > relationCodeElement.codeElementVersion) {
-                    list.set(i, new RelationCodeElement(koodiUri, versio, metadatas, getKoodistoMetadatas(koodiVersio)));
+                    list.set(i, new RelationCodeElement(koodiUri, versio, koodiArvo, metadatas, getKoodistoMetadatas(koodiVersio)));
                 }
             }
         }
         if (!duplicate) {
-            list.add(new RelationCodeElement(koodiUri, versio, metadatas, getKoodistoMetadatas(koodiVersio)));
+            list.add(new RelationCodeElement(koodiUri, versio, koodiArvo, metadatas, getKoodistoMetadatas(koodiVersio)));
         }
     }
     

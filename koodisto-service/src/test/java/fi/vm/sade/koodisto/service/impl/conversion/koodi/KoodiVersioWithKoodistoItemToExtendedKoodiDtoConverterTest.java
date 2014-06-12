@@ -12,6 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
+import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
+import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
@@ -28,7 +30,7 @@ import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
 	
-	@Autowired()
+    @Autowired()
     private SadeConversionService conversionService;
 	
 	private Integer koodiVersio = 1;
@@ -39,14 +41,20 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
 		ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
 		assertEquals(1, dto.getIncludesCodeElements().size());
 		assertEquals(1, dto.getLevelsWithCodeElements().size());
-		assertEquals(1, dto.getWithinCodeElements().size());
+		assertEquals(1, dto.getWithinCodeElements().size());		
 	}
 	
 	@Test
-	public void storesCodeElementNameToRelationCodeElement() {
+	public void storesCodeElementNameLanguageDescriptionAndValueToRelationCodeElement() {
 	    KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
         ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
-        assertEquals(givenKoodiMetadata().getKieli(), dto.getIncludesCodeElements().get(0).relationMetadata.get(0).kieli);
+        RelationCodeElement rel = dto.getIncludesCodeElements().get(0);
+        SimpleMetadataDto data = rel.relationMetadata.get(0);
+        KoodiMetadata givenKoodiMetadata = givenKoodiMetadata();
+        assertEquals(givenKoodiMetadata.getKieli(), data.kieli);
+        assertEquals(givenKoodiMetadata.getNimi(), data.nimi);
+        assertEquals(givenKoodiMetadata.getKuvaus(), data.kuvaus);
+        assertEquals(givenKoodiVersio().getKoodiarvo(), rel.codeElementValue);
 	}
 	
 	@Test
@@ -110,7 +118,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
 		koodi.setKoodiUri("testikoodi");
 		KoodiVersio kv = new KoodiVersio();
 		kv.setKoodi(koodi);
-		kv.setKoodiarvo("testi koodin arvo");
+		kv.setKoodiarvo("koodi elementin arvo");
 		kv.setVoimassaAlkuPvm(Calendar.getInstance().getTime());	
 		kv.addMetadata(givenKoodiMetadata());
 		kv.addKoodistoVersio(givenKoodistoVersio(kv));
