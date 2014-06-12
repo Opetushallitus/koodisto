@@ -200,6 +200,10 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     $scope.codesVersion = $routeParams.codesVersion;
     $scope.identity = angular.identity;
     ViewCodesModel.init($scope.codesUri, $scope.codesVersion);
+    $scope.sortBy1 = 'name';
+    $scope.sortBy2 = 'name';
+    $scope.sortBy3 = 'name';
+
 
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
@@ -378,36 +382,35 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
         $scope.refreshNumberOfPages();
     };
 
-    $scope.sortOrderChanged = function() {
+    $scope.sortOrderChanged = function(value) {
+        if(value){
+            $scope.model.sortOrderSelection = value;
+        }
         var selection = parseInt($scope.model.sortOrderSelection);
         switch (selection) {
         case 1:
+            $scope.model.sortOrderReversed = false;
+            $scope.model.sortOrder = "koodiArvo";
+            break;
         case 2:
+            $scope.model.sortOrderReversed = true;
             $scope.model.sortOrder = "koodiArvo";
             break;
         case 3:
+            $scope.model.sortOrderReversed = false;
+            $scope.model.sortOrder = "name";
+            break;
         case 4:
+            $scope.model.sortOrderReversed = true;
             $scope.model.sortOrder = "name";
             break;
         case 5:
-        case 6:
+            $scope.model.sortOrderReversed = false;
             $scope.model.sortOrder = "versio";
             break;
-
-        default:
-            break;
-        }
-
-        switch (selection) {
-        case 1:
-        case 3:
-        case 5:
-            $scope.model.sortOrderReversed = false;
-            break;
-        case 2:
-        case 4:
         case 6:
             $scope.model.sortOrderReversed = true;
+            $scope.model.sortOrder = "versio";
             break;
 
         default:

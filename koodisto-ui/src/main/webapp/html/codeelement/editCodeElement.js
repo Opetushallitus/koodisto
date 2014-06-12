@@ -35,7 +35,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             this.currentPage = 0;
             this.pageSize = 10;
             this.pageSizeOptions = [ 10, 50, 100, 200, 500 ];
-            this.sortOrder = "koodiArvo";
+            this.sortOrder = "value";
             this.sortOrderSelection = 1;
             this.sortOrderReversed = false;
 
@@ -609,36 +609,27 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         $scope.refreshNumberOfPages();
     };
 
-    $scope.sortOrderChanged = function() {
+    $scope.sortOrderChanged = function(value) {
+        if (value) {
+            $scope.model.sortOrderSelection = value;
+        }
         var selection = parseInt($scope.model.sortOrderSelection);
         switch (selection) {
         case 1:
+            $scope.model.sortOrderReversed = false;
+            $scope.model.sortOrder = "value";
+            break;
         case 2:
-            $scope.model.sortOrder = "koodiArvo";
+            $scope.model.sortOrderReversed = true;
+            $scope.model.sortOrder = "value";
             break;
         case 3:
-        case 4:
+            $scope.model.sortOrderReversed = false;
             $scope.model.sortOrder = "name";
             break;
-        case 5:
-        case 6:
-            $scope.model.sortOrder = "versio";
-            break;
-
-        default:
-            break;
-        }
-
-        switch (selection) {
-        case 1:
-        case 3:
-        case 5:
-            $scope.model.sortOrderReversed = false;
-            break;
-        case 2:
         case 4:
-        case 6:
             $scope.model.sortOrderReversed = true;
+            $scope.model.sortOrder = "name";
             break;
 
         default:
