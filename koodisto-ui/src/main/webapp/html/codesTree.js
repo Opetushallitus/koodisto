@@ -67,21 +67,15 @@ app.factory('Treemodel', function($resource, RootCodes, MyRoles, CodesMatcher) {
                 modelInterface.update();
             });
         },
-        update : function(filterUpdated) {
+        update : function() {
             modelInterface.search.codesfound = 0;
             for (var i = 0; i < model.codeList.length; i++) {
                 if (model.codeList[i].koodistos) {
                     for (var j = 0; j < model.codeList[i].koodistos.length; j++) {
-                        if (filterUpdated && this.filter.name.length < 2) {
-                            model.codeList[i].koodistos[j].isVisible = false;
-                            model.codeList[i].isVisible = false;
+                        model.codeList[i].koodistos[j].isVisible = this.isVisibleNode(model.codeList[i].koodistos[j]);
+                        model.codeList[i].isVisible = this.filter && this.filter.name && this.filter.name.length > 1;
+                        if (model.codeList[i].koodistos[j].isVisible) {
                             modelInterface.search.codesfound++;
-                        } else {
-                            model.codeList[i].koodistos[j].isVisible = this.isVisibleNode(model.codeList[i].koodistos[j]);
-                            model.codeList[i].isVisible = this.filter && this.filter.name && this.filter.name.length > 1;
-                            if (model.codeList[i].koodistos[j].isVisible) {
-                                modelInterface.search.codesfound++;
-                            }
                         }
                     }
                 }
