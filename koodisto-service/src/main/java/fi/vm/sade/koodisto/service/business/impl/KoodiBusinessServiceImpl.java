@@ -874,4 +874,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
         return true;
     }
+
+    @Override
+    public boolean isLatestKoodiVersio(String koodiUri, Integer versio) {
+        return koodiVersioDAO.isLatestKoodiVersio(koodiUri, versio);
+    }
 }
