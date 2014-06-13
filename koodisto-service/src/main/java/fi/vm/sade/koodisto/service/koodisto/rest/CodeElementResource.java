@@ -91,7 +91,7 @@ public class CodeElementResource {
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa tietyn koodiversion",
-            notes = "",
+            notes = "sisältää koodiversion koodinsuhteet",
             response = ExtendedKoodiDto.class)
     public ExtendedKoodiDto getCodeElementByUriAndVersion(
             @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
