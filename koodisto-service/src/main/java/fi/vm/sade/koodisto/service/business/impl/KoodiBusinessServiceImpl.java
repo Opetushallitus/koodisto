@@ -721,20 +721,18 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         List<KoodiVersioWithKoodistoItem> versios = koodiVersioDAO.searchKoodis(searchCriteria);
         if (!versios.isEmpty()) {
-            Iterator<KoodinSuhde> itr = versios.get(0).getKoodiVersio().getYlakoodis().iterator();
-            while (itr.hasNext()) {
-                KoodinSuhde koodinSuhde = itr.next();
-                Hibernate.initialize(koodinSuhde.getYlakoodiVersio().getMetadatas());
-                Hibernate.initialize(koodinSuhde.getYlakoodiVersio().getKoodi());
-            }
-            itr = versios.get(0).getKoodiVersio().getAlakoodis().iterator();
-            while (itr.hasNext()) {
-                KoodinSuhde koodinSuhde = (KoodinSuhde) itr.next();
-                Hibernate.initialize(koodinSuhde.getAlakoodiVersio().getMetadatas());
-                Hibernate.initialize(koodinSuhde.getAlakoodiVersio().getKoodi());
-            }
+            initializeRelations(versios.get(0).getKoodiVersio().getYlakoodis(), true);
+            initializeRelations(versios.get(0).getKoodiVersio().getAlakoodis(), false);
         }
         return versios;
+    }
+
+    private void initializeRelations(Set<KoodinSuhde> relations, boolean upperRelation) {
+        for (KoodinSuhde koodinSuhde : relations) {
+            KoodiVersio koodiVersio = upperRelation ? koodinSuhde.getYlakoodiVersio() : koodinSuhde.getAlakoodiVersio(); 
+            Hibernate.initialize(koodiVersio.getMetadatas());
+            Hibernate.initialize(koodiVersio.getKoodi());
+        }
     }
 
     @Override
