@@ -21,4 +21,11 @@ public class SimpleMetadataDto {
         this.kieli = kieli;
         this.kuvaus = kuvaus;
     }
+    
+    @SuppressWarnings("unused")
+    private SimpleMetadataDto() {
+        nimi = null;
+        kieli = null;
+        kuvaus = null;
+    }
 }
