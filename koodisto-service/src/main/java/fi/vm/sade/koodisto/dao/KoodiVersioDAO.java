@@ -27,4 +27,6 @@ public interface KoodiVersioDAO extends JpaDAO<KoodiVersio, Long> {
     List<KoodiVersio> getKoodiVersiosByKoodistoAndKoodiTila(Long koodistoVersioId, Tila koodiTila);
 
     KoodiVersio getPreviousKoodiVersio(String koodiUri, Integer koodiVersio);
+    
+    boolean isLatestKoodiVersio(String koodiUri, Integer versio);
 }
