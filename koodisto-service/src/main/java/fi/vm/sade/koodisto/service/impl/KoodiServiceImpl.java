@@ -1,6 +1,13 @@
 package fi.vm.sade.koodisto.service.impl;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.GenericFault;
 import fi.vm.sade.koodisto.service.KoodiService;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
@@ -9,11 +16,6 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.SuhteenTyyppiType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 /**
  * Implementation for KoodiService interface
@@ -36,10 +38,8 @@ public class KoodiServiceImpl implements KoodiService {
             SuhteenTyyppiType suhdeTyyppi) throws GenericFault {
         log.info("listKoodiByRelation called with parameters koodiUri=" + koodi.getKoodiUri() + ", versio="
                 + koodi.getVersio() + ", isChild=" + onAlaKoodi + " relationType=" + suhdeTyyppi);
-        fi.vm.sade.koodisto.model.SuhteenTyyppi st = fi.vm.sade.koodisto.model.SuhteenTyyppi
-                .valueOf(suhdeTyyppi.name());
-        return conversionService
-                .convertAll(koodiBusinessService.listByRelation(koodi, st, onAlaKoodi), KoodiType.class);
+        SuhteenTyyppi st = SuhteenTyyppi.valueOf(suhdeTyyppi.name());
+        return conversionService.convertAll(koodiBusinessService.listByRelation(koodi, st, onAlaKoodi), KoodiType.class);
     }
 
     @Override
