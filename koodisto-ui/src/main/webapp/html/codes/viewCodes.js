@@ -214,6 +214,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     };
 
     $scope.addCodeElement = function() {
+        $scope.model.forceRefresh = true;
         $location.path("/lisaaKoodi/" + $scope.codesUri + "/" + $scope.codesVersion);
     };
 
