@@ -208,7 +208,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     };
 
     $scope.cancel = function() {
-        $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.codesVersion);
+        $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.codesVersion).search({forceRefresh: true});
     };
 
     $scope.submit = function() {
@@ -285,7 +285,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         }
         UpdateCodes.put({}, codes, function(result) {
             Treemodel.refresh();
-            $location.path("/koodisto/"+$scope.codesUri+"/"+result[0]);
+            $location.path("/koodisto/"+$scope.codesUri+"/"+result[0]).search({forceRefresh: true});
         }, function(error) {
             ValidateService.validateCodes($scope,error,true);
         });

@@ -89,9 +89,12 @@ app.factory('Treemodel', function($resource, RootCodes, MyRoles, CodesMatcher) {
     return modelInterface;
 });
 
-function KoodistoTreeController($scope, $resource, Treemodel) {
+function KoodistoTreeController($scope, $resource, $routeParams, Treemodel) {
     $scope.predicate = 'koodistoUri';
     $scope.domain = Treemodel;
+    if($routeParams.forceRefresh){
+        $scope.domain.refresh();
+    }
 
     $scope.addClass = function(cssClass, ehto) {
         return ehto ? cssClass : "";

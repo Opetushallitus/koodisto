@@ -215,12 +215,10 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     };
 
     $scope.addCodeElement = function() {
-        $scope.model.forceRefresh = true;
         $location.path("/lisaaKoodi/" + $scope.codesUri + "/" + $scope.codesVersion);
     };
 
     $scope.editCodes = function() {
-        $scope.model.forceRefresh = true;
         $location.path("/muokkaaKoodisto/" + $scope.codesUri + "/" + $scope.codesVersion);
     };
 
@@ -229,7 +227,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
             codesUri : $scope.codesUri,
             codesVersion : $scope.codesVersion
         }, function(success) {
-            $location.path("/");
+            $location.path("/etusivu").search({forceRefresh: true});
         }, function(error) {
             var alert = {
                 type : 'danger',
