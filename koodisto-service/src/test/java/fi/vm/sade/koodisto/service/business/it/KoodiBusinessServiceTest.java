@@ -35,6 +35,7 @@ import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
@@ -166,6 +167,28 @@ public class KoodiBusinessServiceTest {
     @Test
     public void koodiVersioShouldBeLatest() {
         assertTrue(koodiBusinessService.isLatestKoodiVersio("455", 4));
+    }
+    
+    @Test
+    public void onlyCopiesUpperRelationsThatReferencesLatestKoodiVersioWhenNewKoodiVersioIsCreated() {
+        String koodiUri = "vanhasuhdeeiversioiduA";
+        koodiBusinessService.createNewVersion(koodiUri);
+        List<KoodiVersioWithKoodistoItem> items = koodiBusinessService.listByRelation(koodiUri, 2, true, SuhteenTyyppi.SISALTYY);
+        assertEquals(1, items.size());
+        KoodiVersio kv = items.get(0).getKoodiVersio();
+        assertEquals(Integer.valueOf(2), kv.getVersio());
+        assertEquals("vanhasuhdeeiversioiduB", kv.getKoodi().getKoodiUri());
+    }
+    
+    @Test
+    public void onlyCopiesLowerRelationsThatReferencesLatestKoodiVersioWhenNewKoodiVersioIsCreated() {
+        String koodiUri = "vanhasuhdeeiversioiduBTake2";
+        koodiBusinessService.createNewVersion(koodiUri);
+        List<KoodiVersioWithKoodistoItem> items = koodiBusinessService.listByRelation(koodiUri, 2, false, SuhteenTyyppi.SISALTYY);
+        assertEquals(1, items.size());
+        KoodiVersio kv = items.get(0).getKoodiVersio();
+        assertEquals(Integer.valueOf(2), kv.getVersio());
+        assertEquals("vanhasuhdeeiversioiduATake2", kv.getKoodi().getKoodiUri());
     }
     
     private List<KoodiVersioWithKoodistoItem> listByUri(String koodiUri) {

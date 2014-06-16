@@ -555,28 +555,29 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void copyRelations(KoodiVersio latest, KoodiVersio newVersio) {
-        // copy relations
-        Iterator<KoodinSuhde> ylakooodiIterator = latest.getYlakoodis().iterator();
-        while (ylakooodiIterator.hasNext()) {
-            KoodinSuhde ks = ylakooodiIterator.next();
-            KoodinSuhde newSuhde = new KoodinSuhde();
-            newSuhde.setVersio(ks.getVersio() + 1);
-            newSuhde.setAlakoodiVersio(newVersio);
-            newSuhde.setYlakoodiVersio(ks.getYlakoodiVersio());
-            newSuhde.setSuhteenTyyppi(ks.getSuhteenTyyppi());
-            newVersio.addYlakoodi(newSuhde);
+        for (KoodinSuhde ks : latest.getYlakoodis()) {            
+            createNewKoodinSuhdeIfRelationReferencesLatestKoodiVersio(ks, newVersio, ks.getYlakoodiVersio(), true);
         }
 
-        Iterator<KoodinSuhde> alakoodiIterator = latest.getAlakoodis().iterator();
-
-        while (alakoodiIterator.hasNext()) {
-            KoodinSuhde ks = alakoodiIterator.next();
-            KoodinSuhde newSuhde = new KoodinSuhde();
-            newSuhde.setVersio(ks.getVersio() + 1);
-            newSuhde.setAlakoodiVersio(ks.getAlakoodiVersio());
-            newSuhde.setYlakoodiVersio(newVersio);
-            newSuhde.setSuhteenTyyppi(ks.getSuhteenTyyppi());
-            newVersio.addAlakoodi(newSuhde);
+        for (KoodinSuhde ks : latest.getAlakoodis()) {
+            createNewKoodinSuhdeIfRelationReferencesLatestKoodiVersio(ks, ks.getAlakoodiVersio(), newVersio, false);
+        }
+    }
+    
+    private void createNewKoodinSuhdeIfRelationReferencesLatestKoodiVersio(KoodinSuhde ks, KoodiVersio ala, KoodiVersio yla, boolean checkUpperCode) {
+        KoodiVersio toCheck = checkUpperCode ? yla : ala;
+        if (!koodiVersioDAO.isLatestKoodiVersio(toCheck.getKoodi().getKoodiUri(), toCheck.getVersio())) {
+            return;
+        }
+        KoodinSuhde newSuhde = new KoodinSuhde();
+        newSuhde.setVersio(ks.getVersio() + 1);
+        newSuhde.setAlakoodiVersio(ala);
+        newSuhde.setYlakoodiVersio(yla);
+        newSuhde.setSuhteenTyyppi(ks.getSuhteenTyyppi());
+        if (checkUpperCode) {
+            ala.addYlakoodi(newSuhde);
+        } else {
+            yla.addAlakoodi(newSuhde);
         }
     }
 
