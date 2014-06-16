@@ -198,6 +198,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     $scope.model = ViewCodesModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
+    $scope.model.forceRefresh=$routeParams.forceRefresh;
     $scope.identity = angular.identity;
     ViewCodesModel.init($scope.codesUri, $scope.codesVersion);
     $scope.sortBy1 = 'name';
@@ -293,6 +294,8 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
         xhr.open("POST", SERVICE_URL_BASE + "codes" + "/upload/" + $scope.codesUri);
         xhr.send(fd);
 
+        $scope.model.forceRefresh = true;
+        
         $scope.model.uploadModalInstance.close();
     };
 

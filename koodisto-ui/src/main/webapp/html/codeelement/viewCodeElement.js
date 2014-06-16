@@ -129,7 +129,7 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
             codeElementVersion : $scope.codeElementVersion
         }, function(success) {
             $location.path("/koodisto/" + $scope.model.codeElement.koodisto.koodistoUri + "/"
-                    + $scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length - 1]);
+                    + $scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length - 1]).search({forceRefresh: true});;
         }, function(error) {
             var alert = {
                 type : 'danger',
