@@ -13,6 +13,8 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoVersioSelectionTy
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
+import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -22,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -182,7 +185,7 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
         return restrictions;
     }
 
-    private static List<Predicate> createRestrictionsForKoodiCriteria(CriteriaBuilder cb, CriteriaQuery<Tuple> criteriaQuery,
+    private static List<Predicate> createRestrictionsForKoodiCriteria(CriteriaBuilder cb, CriteriaQuery<?> criteriaQuery,
             SearchKoodisCriteriaType searchCriteria, Path<Koodi> koodi, Path<KoodiVersio> koodiVersio) {
         List<Predicate> restrictions = createRestrictionsForKoodiCriteria(cb, (KoodiBaseSearchCriteriaType) searchCriteria, koodi, koodiVersio);
 
@@ -411,7 +414,7 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
     }
 
 
-    private static Subquery<Integer> selectMaxVersionSubQuery(CriteriaBuilder cb, CriteriaQuery<Tuple> criteriaQuery, SearchKoodisCriteriaType searchCriteria,
+    private static Subquery<Integer> selectMaxVersionSubQuery(CriteriaBuilder cb, CriteriaQuery<?> criteriaQuery, SearchKoodisCriteriaType searchCriteria,
             Path<Koodi> koodiPath) {
         final Subquery<Integer> subquery = criteriaQuery.subquery(Integer.class);
         final Root<KoodiVersio> koodiVersioRoot = subquery.from(KoodiVersio.class);
@@ -507,5 +510,21 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
         criteriaQuery.distinct(true);
         criteriaQuery.select(root).where(connectedRestrictions);
         return em.createQuery(criteriaQuery).getResultList();
+    }
+
+    @Override
+    public boolean isLatestKoodiVersio(String koodiUri, Integer versio) {        
+        SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(koodiUri);
+        EntityManager em = getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<KoodiVersio> criteriaQuery = cb.createQuery(KoodiVersio.class);
+        Root<KoodiVersio> root = criteriaQuery.from(KoodiVersio.class);
+        final Join<KoodiVersio, Koodi> koodi = root.join(KOODI);
+        root.fetch(KOODI);                
+        List<Predicate> restrictions = createRestrictionsForKoodiCriteria(cb, criteriaQuery, searchCriteria, koodi, root);
+        criteriaQuery.select(root).where(cb.and(restrictions.toArray(new Predicate[restrictions.size()])));
+        criteriaQuery.distinct(true);
+        TypedQuery<KoodiVersio> query = em.createQuery(criteriaQuery);
+        return query.getSingleResult().getVersio().equals(versio);
     }
 }
