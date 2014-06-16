@@ -125,30 +125,6 @@
             <version>${spring.version}</version>
         </dependency>
 
-        <!-- CAS ticket cache replication-->
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-jgroupsreplication</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jgroups</groupId>
-            <artifactId>jgroups</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jasig.cas.client</groupId>
-            <artifactId>cas-client-support-distributed-ehcache</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.sf.ehcache</groupId>
-                    <artifactId>ehcache</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
