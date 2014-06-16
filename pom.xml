@@ -31,11 +31,6 @@
                 <version>${organisaatio.version}</version>
             </dependency>
             <dependency>
-                <groupId>fi.vm.sade.organisaatio</groupId>
-                <artifactId>organisaatio-ui-widgets</artifactId>
-                <version>${organisaatio.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>fi.vm.sade.generic</groupId>
                 <artifactId>generic-test-aspects</artifactId>
                 <version>${generic.version}</version>
