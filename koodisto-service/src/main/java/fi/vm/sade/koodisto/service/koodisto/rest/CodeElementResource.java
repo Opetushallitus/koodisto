@@ -232,18 +232,28 @@ public class CodeElementResource {
     @ApiOperation(value = "Poistaa koodien välisiä relaatioita, massatoiminto", notes = "")
     public Response removeRelations(@ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri, 
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType, 
-            @ApiParam(value = "Poistettavien koodien URIt") @QueryParam("relationsToRemove") List<String> relationsToRemove) {
+            @ApiParam(value = "Poistettavien koodien URIt") @QueryParam("relationsToRemove") List<String> relationsToRemove,
+            @ApiParam(value = "Sisältyysuhde relaatioiden kanssa") @QueryParam("isChild") boolean isChild) {
         if (relationsToRemove == null || relationsToRemove.isEmpty()) {
             logger.info("Called mass remove for relations without required query param (relationsToRemove)");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         try {
-            koodiBusinessService.removeRelation(codeElementUri, relationsToRemove, SuhteenTyyppi.valueOf(relationType));
+            SuhteenTyyppi typeOfRelation = SuhteenTyyppi.valueOf(relationType);
+            if (isChild && SuhteenTyyppi.RINNASTEINEN != typeOfRelation) {
+                for (String relationToRemove : relationsToRemove) {
+                    koodiBusinessService.removeRelation(relationToRemove, Arrays.asList(codeElementUri), typeOfRelation);                    
+                }
+            } else {
+                koodiBusinessService.removeRelation(codeElementUri, relationsToRemove, typeOfRelation);
+            }
+            return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
             logger.warn("Exception caught while trying remove relations for codeelement " + codeElementUri, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-        return Response.status(Response.Status.OK).build();
     }
     
 

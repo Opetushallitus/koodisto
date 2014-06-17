@@ -3,6 +3,7 @@
   <koodisto id="1" koodistouri="sisaltyysuhde2kanssa" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="2" koodistouri="sisaltaasuhde1kanssa" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="3" koodistouri="rinnasteinensuhde1kanssa" version="0" organisaatioOid="1.2.2004.6" />
+  <koodisto id="4" koodistouri="sisaltyysuhde1kanssa" version="0" organisaatioOid="1.2.2004.6" />
   
   <koodi id="1" koodisto_id="1" version="0" koodiuri="sisaltyysuhde4kanssa1"/>
   <koodi id="2" koodisto_id="1" version="0" koodiuri="sisaltyysuhde4kanssa2"/>
@@ -11,6 +12,7 @@
   <koodi id="5" koodisto_id="3" version="0" koodiuri="rinnastuu4kanssa1"/>
   <koodi id="6" koodisto_id="3" version="0" koodiuri="rinnastuu4kanssa2"/>
   <koodi id="7" koodisto_id="3" version="0" koodiuri="rinnastuu4kanssa3"/>
+  <koodi id="8" koodisto_id="4" version="0" koodiuri="sisaltyykoodisto1koodienkanssa"/>
   
   <koodiversio id="1" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="1" koodiarvo="ss4k1"/>
   <koodiversio id="2" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="ss4k2"/>
@@ -19,6 +21,7 @@
   <koodiversio id="5" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="5" koodiarvo="r4k1"/>
   <koodiversio id="6" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="6" koodiarvo="r4k2"/>
   <koodiversio id="7" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="7" koodiarvo="r4k3"/>
+  <koodiversio id="8" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="8" koodiarvo="sk1kk"/>
   
   <koodimetadata id="1" kieli="FI" nimi="Alajärvi" version="0" koodiversio_id="1" lyhytnimi="Alajärvi" kuvaus="Alajärvi"/>
   <koodimetadata id="2" kieli="FI" nimi="Olajärvi" version="0" koodiversio_id="2" lyhytnimi="Olajärvi" kuvaus="Olajärvi"/>
@@ -27,6 +30,7 @@
   <koodimetadata id="5" kieli="FI" nimi="Alapuro" version="0" koodiversio_id="5" lyhytnimi="Puro" kuvaus="Alapuro"/>
   <koodimetadata id="6" kieli="FI" nimi="Kivipuro" version="0" koodiversio_id="6" lyhytnimi="Puro" kuvaus="Kivipuro"/>
   <koodimetadata id="7" kieli="FI" nimi="Sorapuro" version="0" koodiversio_id="7" lyhytnimi="Puro" kuvaus="Sorapuro"/>
+  <koodimetadata id="8" kieli="FI" nimi="Soralampi" version="0" koodiversio_id="8" lyhytnimi="Lampi" kuvaus="Soralampi"/>
   
   <koodinsuhde id="1" alakoodiversio_id="1" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1"/>
   <koodinsuhde id="2" alakoodiversio_id="2" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1"/>
@@ -34,14 +38,19 @@
   <koodinsuhde id="4" alakoodiversio_id="4" ylakoodiversio_id="5" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
   <koodinsuhde id="5" alakoodiversio_id="4" ylakoodiversio_id="6" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
   <koodinsuhde id="6" alakoodiversio_id="4" ylakoodiversio_id="7" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
+  <koodinsuhde id="7" alakoodiversio_id="8" ylakoodiversio_id="1" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="8" alakoodiversio_id="8" ylakoodiversio_id="2" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="9" alakoodiversio_id="8" ylakoodiversio_id="3" suhteentyyppi="SISALTYY" version="0" versio="1"/>
   
   <koodistoversio id="1" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="1" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="2" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="2" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="3" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="3" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="4" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="4" voimassaalkupvm="2012-11-20"/>
   
   <koodistometadata id="1" kieli="FI" nimi="Järvet" version="0" koodistoversio_id="1" kuvaus="Järvet"/>
   <koodistometadata id="2" kieli="FI" nimi="Joet" version="0" koodistoversio_id="2" kuvaus="Joet"/>
   <koodistometadata id="3" kieli="FI" nimi="Purot" version="0" koodistoversio_id="3" kuvaus="Purot"/>
+  <koodistometadata id="4" kieli="FI" nimi="Lammet" version="0" koodistoversio_id="4" kuvaus="Lammet"/>
   
   <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="1" koodiversio_id="1"/>
   <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="1" koodiversio_id="2"/>
@@ -50,15 +59,18 @@
   <koodistoversio_koodiversio id="5" version="0" koodistoversio_id="3" koodiversio_id="5"/>
   <koodistoversio_koodiversio id="6" version="0" koodistoversio_id="3" koodiversio_id="6"/>
   <koodistoversio_koodiversio id="7" version="0" koodistoversio_id="3" koodiversio_id="7"/>
+  <koodistoversio_koodiversio id="8" version="0" koodistoversio_id="4" koodiversio_id="8"/>
   
   <koodistoryhma id="1" koodistoryhmauri="maantieto" version="0"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="1"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="2"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="3"/>
+  <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="4"/>
   <koodistoryhmametadata id="1" koodistoryhma_id="1" kieli="FI" nimi="Maantieto" version="0"/>
   
   <koodistonsuhde id="1" alakoodistoversio_id="1" ylakoodistoversio_id="2" versio="1" suhteentyyppi="SISALTYY" version="0"/>
   <koodistonsuhde id="2" alakoodistoversio_id="2" ylakoodistoversio_id="3" versio="1" suhteentyyppi="RINNASTEINEN" version="0"/>
+  <koodistonsuhde id="3" alakoodistoversio_id="4" ylakoodistoversio_id="1" versio="1" suhteentyyppi="SISALTYY" version="0"/>
   
     
 </dataset>
