@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+  <koodisto id="1" koodistouri="sisaltyysuhde2kanssa" version="0" organisaatioOid="1.2.2004.6" />
+  <koodisto id="2" koodistouri="sisaltaasuhde1kanssa" version="0" organisaatioOid="1.2.2004.6" />
+  
+  <koodi id="1" koodisto_id="1" version="0" koodiuri="sisaltyysuhde4kanssa1"/>
+  <koodi id="2" koodisto_id="1" version="0" koodiuri="sisaltyysuhde4kanssa2"/>
+  <koodi id="3" koodisto_id="1" version="0" koodiuri="sisaltyysuhde4kanssa3"/>
+  <koodi id="4" koodisto_id="2" version="0" koodiuri="sisaltaakoodisto1koodit"/>
+  
+  <koodiversio id="1" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="1" koodiarvo="ss4k1"/>
+  <koodiversio id="2" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="ss4k2"/>
+  <koodiversio id="3" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="3" koodiarvo="ss4k3"/>
+  <koodiversio id="4" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="4" koodiarvo="skk"/>
+  
+  <koodimetadata id="1" kieli="FI" nimi="Alajärvi" version="0" koodiversio_id="1" lyhytnimi="Alajärvi" kuvaus="Alajärvi"/>
+  <koodimetadata id="2" kieli="FI" nimi="Olajärvi" version="0" koodiversio_id="2" lyhytnimi="Olajärvi" kuvaus="Olajärvi"/>
+  <koodimetadata id="3" kieli="FI" nimi="Iijärvi" version="0" koodiversio_id="3" lyhytnimi="Iijärvi" kuvaus="Iijärvi"/>
+  <koodimetadata id="4" kieli="FI" nimi="Joki" version="0" koodiversio_id="4" lyhytnimi="Joki" kuvaus="Joki"/>
+  
+  <koodinsuhde id="1" alakoodiversio_id="1" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="2" alakoodiversio_id="2" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="3" alakoodiversio_id="3" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  
+  <koodistoversio id="1" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="1" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="2" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="2" voimassaalkupvm="2012-11-20"/>
+  
+  <koodistometadata id="1" kieli="FI" nimi="Järvet" version="0" koodistoversio_id="1" kuvaus="Järvet"/>
+  <koodistometadata id="2" kieli="FI" nimi="Joet" version="0" koodistoversio_id="2" kuvaus="Joet"/>
+  
+  <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="1" koodiversio_id="1"/>
+  <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="1" koodiversio_id="2"/>
+  <koodistoversio_koodiversio id="3" version="0" koodistoversio_id="1" koodiversio_id="3"/>
+  <koodistoversio_koodiversio id="4" version="0" koodistoversio_id="2" koodiversio_id="4"/>
+  
+  <koodistoryhma id="1" koodistoryhmauri="maantieto" version="0"/>
+  <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="1"/>
+  <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="2"/>
+  <koodistoryhmametadata id="1" koodistoryhma_id="1" kieli="FI" nimi="Maantieto" version="0"/>
+  
+  <koodistonsuhde id="1" alakoodistoversio_id="1" ylakoodistoversio_id="2" versio="1" suhteentyyppi="SISALTYY" version="0"/>
+  
+</dataset>
