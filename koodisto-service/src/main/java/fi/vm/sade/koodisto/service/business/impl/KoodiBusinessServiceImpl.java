@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -394,7 +393,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         KoodiVersio ylakoodi = getLatestKoodiVersio(ylakoodiUri);
         if (SuhteenTyyppi.SISALTYY.equals(st)) {
             koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri());
-            createNewVersion(getLatestKoodiVersio(ylakoodiUri));
         }
 
         List<KoodinSuhde> relations = getRelations(ylakoodiUri, alakoodiUris, st);
