@@ -237,7 +237,12 @@ public class CodeElementResource {
             logger.info("Called mass remove for relations without required query param (relationsToRemove)");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        koodiBusinessService.removeRelation(codeElementUri, relationsToRemove, SuhteenTyyppi.valueOf(relationType));
+        try {
+            koodiBusinessService.removeRelation(codeElementUri, relationsToRemove, SuhteenTyyppi.valueOf(relationType));
+        } catch (Exception e) {
+            logger.warn("Exception caught while trying remove relations for codeelement " + codeElementUri, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
         return Response.status(Response.Status.OK).build();
     }
     

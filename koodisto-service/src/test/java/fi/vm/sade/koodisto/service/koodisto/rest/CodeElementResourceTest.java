@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,12 +45,14 @@ public class CodeElementResourceTest {
     
     @Test
     public void returns500IfErrorOccurs() {
-        
+        assertResponse(resource.removeRelations("codeelementuri", "SISALTYY", Arrays.asList("koodi")), 500);        
     }
     
     @Test
     public void removesMultipleCodeElementRelationsWithTypeRINNASTEINEN() {
-        
+        String codeElementUri = "sisaltaakoodisto1koodit";
+        assertResponse(resource.removeRelations(codeElementUri, "RINNASTEINEN", Arrays.asList("rinnastuu4kanssa1", "rinnastuu4kanssa2", "rinnastuu4kanssa3")), 200);
+        assertTrue(service.listByRelation(codeElementUri, 1, true, SuhteenTyyppi.RINNASTEINEN).isEmpty());
     }
     
     @Test
