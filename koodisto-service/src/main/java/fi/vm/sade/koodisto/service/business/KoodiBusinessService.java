@@ -3,6 +3,8 @@
  */
 package fi.vm.sade.koodisto.service.business;
 
+import java.util.List;
+
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
@@ -12,8 +14,6 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-
-import java.util.List;
 
 /**
  * @author tommiha
@@ -67,14 +67,13 @@ public interface KoodiBusinessService {
                      SuhteenTyyppi st);
 
     /**
-     * Removes relation between provided ylaKoodi and alaKoodis with given type.
-     * 
-     * @param ylaKoodiId
-     * @param alaKoodiIds
-     * @param st
+     * Removes relation between provided codeElement and relations with given type.
+     * @param st type of relation
+     * @param isChild is provided codeElementUri child or parent
+     * @param codeElementUri
+     * @param relatedCodeElements
      */
-    void removeRelation(String ylaKoodi, List<String> alakoodis,
-            fi.vm.sade.koodisto.model.SuhteenTyyppi st);
+    void removeRelation(String codeElementUri, List<String> relatedCodeElements, SuhteenTyyppi st, boolean isChild);
 
     List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisByKoodistoCriteriaType searchCriteria);
 

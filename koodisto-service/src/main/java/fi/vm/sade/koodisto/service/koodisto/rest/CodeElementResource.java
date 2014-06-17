@@ -221,7 +221,7 @@ public class CodeElementResource {
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType) {
 
         koodiBusinessService.removeRelation(codeElementUri, Arrays.asList(codeElementUriToRemove),
-                SuhteenTyyppi.valueOf(relationType));
+                SuhteenTyyppi.valueOf(relationType), false);
     }
     
     @DELETE
@@ -239,18 +239,9 @@ public class CodeElementResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         try {
-            SuhteenTyyppi typeOfRelation = SuhteenTyyppi.valueOf(relationType);
-            if (isChild && SuhteenTyyppi.RINNASTEINEN != typeOfRelation) {
-                for (String relationToRemove : relationsToRemove) {
-                    koodiBusinessService.removeRelation(relationToRemove, Arrays.asList(codeElementUri), typeOfRelation);                    
-                }
-            } else {
-                koodiBusinessService.removeRelation(codeElementUri, relationsToRemove, typeOfRelation);
-            }
+            koodiBusinessService.removeRelation(codeElementUri, relationsToRemove, SuhteenTyyppi.valueOf(relationType), isChild);
             return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getStackTrace());
             logger.warn("Exception caught while trying remove relations for codeelement " + codeElementUri, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }

@@ -383,9 +383,20 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         return koodinSuhdeDAO.getRelations(yk, aks, st);
     }
-
+    
     @Override
-    public void removeRelation(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st) {
+    public void removeRelation(String codeElementUri, List<String> relatedCodeElements, SuhteenTyyppi st, boolean isChild) {
+        if (isChild && SuhteenTyyppi.RINNASTEINEN != st) {
+            for (String relationToRemove : relatedCodeElements) {
+                removeRelation(relationToRemove, Arrays.asList(codeElementUri), st);                    
+            }
+        } else {
+            removeRelation(codeElementUri, relatedCodeElements, st);
+        }        
+    }
+
+    
+    private void removeRelation(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st) {
         if (alakoodiUris == null || alakoodiUris.isEmpty() || getRelations(ylakoodiUri, alakoodiUris, st).size() == 0) {
             return;
         }
