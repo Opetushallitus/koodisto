@@ -379,15 +379,10 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             isChild : !modelCodeElementIsHost,
             relationsToRemove : itemsToRemove
         }, function(result) {
-            //TODO: simplify
-            codeElementsToRemove = [];
-            itemsToRemove.forEach(function(itemToRemove) {
-        	codeElementsToRemove.push($filter('filter')(collectionToRemoveFrom, function(item) {
-        	    return item.uri === itemToRemove;
-        	}));
-            });
-            codeElementsToRemove.forEach(function(item) {
-        	collectionToRemoveFrom.splice(jQuery.inArray(item, collectionToRemoveFrom), 1);
+            itemsToRemove.forEach(function(item) {
+        	collectionToRemoveFrom.splice(jQuery.grep(collectionToRemoveFrom, function(from) {
+        	    return from.uri = item;
+        	}), 1);
             });
         }, function(error) {
             var alert = {
