@@ -48,6 +48,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                 codeElementUri : codeElementUri,
                 codeElementVersion : codeElementVersion
             }, function(result) {
+        	
                 model.codeElement = result;
                 scope.codeValue = result.koodiArvo;
 
@@ -195,7 +196,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
 });
 
 function CodeElementEditorController($scope, $location, $routeParams, $filter, CodeElementEditorModel, UpdateCodeElement, AddRelationCodeElement,
-        RemoveRelationCodeElement, ValidateService, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion, $modal) {
+        RemoveRelationCodeElement, MassRemoveRelationCodeElements, ValidateService, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion, $modal) {
 
     $scope.model = CodeElementEditorModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
@@ -363,31 +364,39 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         unselectedItems.forEach(function(codeElement) {
             collectionToRemoveFrom.forEach(function(innerCodeElement) {
                 if (codeElement.uri == innerCodeElement.uri) {
-                    itemsToRemove.push(innerCodeElement);
+                    itemsToRemove.push(innerCodeElement.uri);
                 }
-                ;
             });
         });
+        
+        if (itemsToRemove.length < 1) {
+            return;
+        }
 
-        itemsToRemove.forEach(function(codeElementToRemove) {
-            var uriToRemoveFrom = modelCodeElementIsHost ? $scope.model.codeElement.koodiUri : codeElementToRemove.uri;
-            var uriToRemove = modelCodeElementIsHost ? codeElementToRemove.uri : $scope.model.codeElement.koodiUri;
-            RemoveRelationCodeElement.put({
-                codeElementUri : uriToRemoveFrom,
-                codeElementUriToRemove : uriToRemove,
-                relationType : relationTypeString
-            }, function(result) {
-                collectionToRemoveFrom.splice(jQuery.inArray(codeElementToRemove, collectionToRemoveFrom), 1);
-            }, function(error) {
-                // TODO: this should be made to handle multiple instances and possibly to inform which removals did not succeed
-                var alert = {
-                    type : 'danger',
-                    msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
-                };
-                $scope.model.alerts.push(alert);
+        MassRemoveRelationCodeElements.remove({
+            codeElementUri : $scope.model.codeElement.koodiUri,
+            relationType : relationTypeString,
+            isChild : !modelCodeElementIsHost,
+            relationsToRemove : itemsToRemove
+        }, function(result) {
+            //TODO: simplify
+            codeElementsToRemove = [];
+            itemsToRemove.forEach(function(itemToRemove) {
+        	codeElementsToRemove.push($filter('filter')(collectionToRemoveFrom, function(item) {
+        	    return item.uri === itemToRemove;
+        	}));
             });
+            codeElementsToRemove.forEach(function(item) {
+        	collectionToRemoveFrom.splice(jQuery.inArray(item, collectionToRemoveFrom), 1);
+            });
+        }, function(error) {
+            var alert = {
+        	    type : 'danger',
+        	    msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
+            };
+            $scope.model.alerts.push(alert);
         });
-
+        
     };
 
     $scope.cancelcodeelement = function() {
