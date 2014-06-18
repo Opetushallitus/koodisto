@@ -77,7 +77,9 @@ public class CodeElementResourceTest {
     
     @Test
     public void removesMultipleCodeElementRelationsThatBelongToDifferentCodes() {
-        
+        String codeElementUri = "sisaltaakoodisto6ja7ja8koodit";
+        assertResponse(resource.removeRelations(codeElementUri, "SISALTYY", Arrays.asList("sisaltyysuhde9kanssa1", "sisaltyysuhde9kanssa2", "sisaltyysuhde9kanssa3"), false), 200);
+        assertEquals(1, service.listByRelation(codeElementUri, 2, false, SuhteenTyyppi.SISALTYY).size());
     }
     
     private void assertResponse(Response response, int expectedStatus) {
