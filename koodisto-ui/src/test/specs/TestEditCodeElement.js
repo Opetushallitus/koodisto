@@ -240,7 +240,7 @@ describe("Code Element Edit test", function() {
 	    mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/SISALTYY?isChild=true&relationsToRemove=postimerkki&relationsToRemove=kirjekuori&relationsToRemove=osoitetarra").respond();
 	    scope.okcodeelement();
 	    mockBackend.flush();
-	    expect(scope.model.withinCodeElements.length === 0).toBeTruthy();
+	    expect(scope.model.withinCodeElements.length).toEqual(0);
 	});
 	
 	it("should remove multiple relations with relation type *includes*", function() {
@@ -255,7 +255,7 @@ describe("Code Element Edit test", function() {
 	    mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/SISALTYY?isChild=false&relationsToRemove=sulkakyna&relationsToRemove=mustepullo").respond();
 	    scope.okcodeelement();
 	    mockBackend.flush();
-	    expect(scope.model.includesCodeElements.length === 0).toBeTruthy();
+	    expect(scope.model.includesCodeElements.length).toEqual(0);
 	});
 	
 	it("should remove multiple relations with relation type *levelswith*", function() {
@@ -270,7 +270,7 @@ describe("Code Element Edit test", function() {
 	    mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/RINNASTEINEN?isChild=true&relationsToRemove=postiluukku&relationsToRemove=postilaatikko").respond();
 	    scope.okcodeelement();
 	    mockBackend.flush();
-	    expect(scope.model.levelsWithCodeElements.length === 0).toBeTruthy();
+	    expect(scope.model.levelsWithCodeElements.length).toEqual(0);
 	});
 	
 	afterEach(function(){
@@ -327,7 +327,7 @@ describe("Code Element Edit test", function() {
 	    mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/SISALTYY?isChild=true&relationsToRemove=postimerkki&relationsToRemove=kirjekuori").respond();
 	    scope.okcodeelement();
 	    mockBackend.flush();
-	    expect(scope.model.withinCodeElements.length === 1).toBeTruthy();
+	    expect(scope.model.withinCodeElements.length).toEqual(1);
 	});
 	
 	it("should add and remove multiple relations with relation type *includes*", function() {
@@ -346,7 +346,7 @@ describe("Code Element Edit test", function() {
 	    mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/SISALTYY?isChild=false&relationsToRemove=sulkakyna").respond();
 	    scope.okcodeelement();
 	    mockBackend.flush();
-	    expect(scope.model.includesCodeElements.length === 2).toBeTruthy();
+	    expect(scope.model.includesCodeElements.length).toEqual(2);
 	});
 
 	it("should add and remove multiple relations with relation type *levelswith*", function() {
@@ -362,7 +362,7 @@ describe("Code Element Edit test", function() {
 	    mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/RINNASTEINEN?isChild=true&relationsToRemove=postiluukku").respond();
 	    scope.okcodeelement();
 	    mockBackend.flush();
-	    expect(scope.model.levelsWithCodeElements.length === 1).toBeTruthy();
+	    expect(scope.model.levelsWithCodeElements.length).toEqual(1);
 	});
 	
 	afterEach(function(){
