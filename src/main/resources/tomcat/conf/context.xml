@@ -25,7 +25,7 @@
               maxActive="{{ host_postgresql_koodisto_maxActive | default(250) }}" 
               maxIdle="{{ host_postgresql_koodisto_maxIdle | default(30) }}" 
               maxWait="{{ host_postgresql_koodisto_maxWait | default(10000) }}"
-              username="{{host_postgresql_koodisto_user}}" password="{{host_postgresql_koodisto_password}}" driverClassName="org.postgresql.Driver"
+              username="{{ host_postgresql_koodisto_user }}" password="{{ host_postgresql_koodisto_password }}" driverClassName="org.postgresql.Driver"
               url="jdbc:postgresql://{{host_postgresql_koodisto}}:{{port_postgresql}}/koodisto"/>
               
 </Context>
