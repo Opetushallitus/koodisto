@@ -275,6 +275,98 @@ describe("Code Element Edit test", function() {
 	
 	afterEach(function(){
 	    expect(scope.model.codeelementmodalInstance.close).toHaveBeenCalledWith();
-	})
+	});
+    });
+    
+    describe("Removing and adding multiple relations", function() {
+	
+	var codeWithSomeRelations = {
+		    "koodiUri" : "posti",
+		    "withinCodeElements" : [ {
+			"codeElementUri" : "postimerkki",
+			"codeElementVersion" : 1
+		    }, {
+			"codeElementUri" : "kirjekuori",
+			"codeElementVersion" : 2
+		    }],
+		    "includesCodeElements" : [ {
+			"codeElementUri" : "sulkakyna",
+			"codeElementVersion" : 1
+		    }, {
+			"codeElementUri" : "mustepullo",
+			"codeElementVersion" : 2
+		    }],
+		    "levelsWithCodeElements" : [ {
+			"codeElementUri" : "postiluukku",
+			"codeElementVersion" : 1
+		    }]
+		}; 
+	
+	beforeEach(function() {
+    	    mockBackend.expectGET(SERVICE_URL_BASE + "codes").respond([]);
+    	    mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(codeWithSomeRelations);
+    	    mockBackend.flush();
+    	    scope.model.codeelementmodalInstance = {
+    		    close : jasmine.createSpy('modalInstance.close')
+    	    }
+    	});
+	
+	it("should add and remove multiple relations with relation type *within*", function() {
+	    scope.model.shownCodeElements = [{
+		"uri" : "postimerkki",
+		"checked" : false
+	    }, {
+		"uri" : "kirjekuori",
+		"checked" : false
+	    }, {
+		"uri" : "osoitetarra",
+		"checked" : true
+	    }];
+	    scope.model.addToListName = "withincodes";
+	    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelation/osoitetarra/posti/SISALTYY").respond(200,"");
+	    mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/SISALTYY?isChild=true&relationsToRemove=postimerkki&relationsToRemove=kirjekuori").respond();
+	    scope.okcodeelement();
+	    mockBackend.flush();
+	    expect(scope.model.withinCodeElements.length === 1).toBeTruthy();
+	});
+	
+	it("should add and remove multiple relations with relation type *includes*", function() {
+	    scope.model.shownCodeElements = [{
+		"uri" : "sulkakyna",
+		"checked" : false
+	    }, {
+		"uri" : "mustepullo",
+		"checked" : true
+	    }, {
+		"uri" : "mustetahra",
+		"checked" : true
+	    }];
+	    scope.model.addToListName = "includescodes";
+	    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelation/posti/mustetahra/SISALTYY").respond(200,"");
+	    mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/SISALTYY?isChild=false&relationsToRemove=sulkakyna").respond();
+	    scope.okcodeelement();
+	    mockBackend.flush();
+	    expect(scope.model.includesCodeElements.length === 2).toBeTruthy();
+	});
+
+	it("should add and remove multiple relations with relation type *levelswith*", function() {
+	    scope.model.shownCodeElements = [{
+		"uri" : "postiluukku",
+		"checked" : false
+	    }, {
+		"uri" : "postiauto",
+		"checked" : true
+	    }];
+	    scope.model.addToListName = "levelswithcodes";
+	    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelation/postiauto/posti/RINNASTEINEN").respond(200,"");
+	    mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/RINNASTEINEN?isChild=true&relationsToRemove=postiluukku").respond();
+	    scope.okcodeelement();
+	    mockBackend.flush();
+	    expect(scope.model.levelsWithCodeElements.length === 1).toBeTruthy();
+	});
+	
+	afterEach(function(){
+	    expect(scope.model.codeelementmodalInstance.close).toHaveBeenCalledWith();
+	});
     });
 });
