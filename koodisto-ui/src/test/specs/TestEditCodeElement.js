@@ -31,37 +31,7 @@ describe("Code Element Edit test", function() {
     })
     
     describe("Relations", function() {
-	
-    	var codesResponse = {
-    		"koodistoUri" : "versiointitesti",
-    		"resourceUri" : "http://koodistopalvelu.opintopolku.fi/versiointitesti",
-    		"omistaja" : null,
-    		"organisaatioOid" : "1.2.246.562.10.00000000001",
-    		"lukittu" : null,
-    		"latestKoodistoVersio" : {
-    		    "versio" : 5,
-    		    "paivitysPvm" : 1398346711637,
-    		    "voimassaAlkuPvm" : "2014-04-24",
-    		    "voimassaLoppuPvm" : null,
-    		    "tila" : "HYVAKSYTTY",
-    		    "version" : 2,
-    		    "metadata" : [ {
-    			"kieli" : "FI",
-    			"nimi" : "Versiointitesti",
-    			"kuvaus" : "Testataan versiointia",
-    			"kayttoohje" : null,
-    			"kasite" : null,
-    			"kohdealue" : null,
-    			"sitovuustaso" : null,
-    			"kohdealueenOsaAlue" : null,
-    			"toimintaymparisto" : null,
-    			"tarkentaaKoodistoa" : null,
-    			"huomioitavaKoodisto" : null,
-    			"koodistonLahde" : null
-    		    } ]
-    		}
-    	};
-    	
+	    	    	
     	var codeElementWithRelation = {
     		"koodiUri" : "versiointitesti_uudi",
     		"resourceUri" : "http://koodistopalvelu.opintopolku.fi/versiointitesti/koodi/versiointitesti_uudi",
@@ -187,7 +157,6 @@ describe("Code Element Edit test", function() {
             
             mockBackend.expectGET(SERVICE_URL_BASE + "codes").respond([]);
             mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(codeElement1);
-//            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/latest/2organisaatiotesti_arvonen").respond(codeElement2);
             mockBackend.flush();
         });
 
@@ -215,5 +184,97 @@ describe("Code Element Edit test", function() {
             expect(scope.model.codeelementmodalInstance.close).toHaveBeenCalledWith();
         });
     
+    });
+    
+    describe("Removing relations", function() {
+
+	var codeWithLotsOfRelations = {
+	    "koodiUri" : "posti",
+	    "withinCodeElements" : [ {
+		"codeElementUri" : "postimerkki",
+		"codeElementVersion" : 1
+	    }, {
+		"codeElementUri" : "kirjekuori",
+		"codeElementVersion" : 2
+	    }, {
+		"codeElementUri" : "osoitetarra",
+		"codeElementVersion" : 3
+	    }],
+	    "includesCodeElements" : [ {
+		"codeElementUri" : "sulkakyna",
+		"codeElementVersion" : 1
+	    }, {
+		"codeElementUri" : "mustepullo",
+		"codeElementVersion" : 2
+	    }],
+	    "levelsWithCodeElements" : [ {
+		"codeElementUri" : "postiluukku",
+		"codeElementVersion" : 1
+	    }, {
+		"codeElementUri" : "postilaatikko",
+		"codeElementVersion" : 2
+	    }]
+	}; 
+	
+	beforeEach(function() {
+    	    mockBackend.expectGET(SERVICE_URL_BASE + "codes").respond([]);
+    	    mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(codeWithLotsOfRelations);
+    	    mockBackend.flush();
+    	    scope.model.codeelementmodalInstance = {
+    		    close : jasmine.createSpy('modalInstance.close')
+    	    }
+    	});
+	
+	it("should remove multiple relations with relation type *within*", function() {
+	    scope.model.shownCodeElements = [{
+		"uri" : "postimerkki",
+		"checked" : false
+	    }, {
+		"uri" : "kirjekuori",
+		"checked" : false
+	    }, {
+		"uri" : "osoitetarra",
+		"checked" : false
+	    }];
+	    scope.model.addToListName = "withincodes";
+	    mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/SISALTYY?isChild=true&relationsToRemove=postimerkki&relationsToRemove=kirjekuori&relationsToRemove=osoitetarra").respond();
+	    scope.okcodeelement();
+	    mockBackend.flush();
+	    expect(scope.model.withinCodeElements.length === 0).toBeTruthy();
+	});
+	
+	it("should remove multiple relations with relation type *includes*", function() {
+	    scope.model.shownCodeElements = [{
+		"uri" : "sulkakyna",
+		"checked" : false
+	    }, {
+		"uri" : "mustepullo",
+		"checked" : false
+	    }];
+	    scope.model.addToListName = "includescodes";
+	    mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/SISALTYY?isChild=false&relationsToRemove=sulkakyna&relationsToRemove=mustepullo").respond();
+	    scope.okcodeelement();
+	    mockBackend.flush();
+	    expect(scope.model.includesCodeElements.length === 0).toBeTruthy();
+	});
+	
+	it("should remove multiple relations with relation type *levelswith*", function() {
+	    scope.model.shownCodeElements = [{
+		"uri" : "postiluukku",
+		"checked" : false
+	    }, {
+		"uri" : "postilaatikko",
+		"checked" : false
+	    }];
+	    scope.model.addToListName = "levelswithcodes";
+	    mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/RINNASTEINEN?isChild=true&relationsToRemove=postiluukku&relationsToRemove=postilaatikko").respond();
+	    scope.okcodeelement();
+	    mockBackend.flush();
+	    expect(scope.model.levelsWithCodeElements.length === 0).toBeTruthy();
+	});
+	
+	afterEach(function(){
+	    expect(scope.model.codeelementmodalInstance.close).toHaveBeenCalledWith();
+	})
     });
 });

@@ -308,6 +308,17 @@ app.factory('RemoveRelationCodeElement', function($resource) {
     });
 });
 
+app.factory('MassRemoveRelationCodeElements', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codeelement/removerelations/:codeElementUri/:relationType", {
+        codeElementUri : "@codeElementUri",
+        relationType : "@relationType"
+    }, {
+        remove : {
+            method : "DELETE"
+        }
+    });
+});
+
 app.factory('AddRelationCodeElement', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/addrelation/:codeElementUri/:codeElementUriToAdd/:relationType", {
         codeElementUri : "@codeElementUri",
