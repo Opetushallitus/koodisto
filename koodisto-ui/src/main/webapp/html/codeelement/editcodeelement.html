@@ -80,10 +80,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="codeElement in model.shownCodeElements | filter:search | naturalSort:model.sortOrder:model.sortOrderReversed  |  startFrom:model.currentPage*model.pageSize  |  limitTo:model.pageSize">
+            <tr bindonce ng-repeat="codeElement in model.shownCodeElements | filter:search | naturalSort:model.sortOrder:model.sortOrderReversed  |  startFrom:model.currentPage*model.pageSize  |  limitTo:model.pageSize">
                 <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" value="{{codeElement.checked}}" ng-model="codeElement.checked"/></td>
-                <td class="align-center">{{codeElement.value}}</td>
-                <td class="align-center">{{codeElement.name}}</td>
+                <td class="align-center" bo-text="codeElement.value"></td>
+                <td class="align-center" bo-text="codeElement.name"></td>
             </tr>
         </tbody>
     </table>
