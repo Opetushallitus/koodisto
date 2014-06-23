@@ -594,6 +594,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     $scope.$watch('model.shownCodeElements', function() {
         if ($scope.model.shownCodeElements.length != cachedElementCount) {
             $scope.refreshNumberOfPages();
+            refreshPage = true;
             cachedElementCount = $scope.model.shownCodeElements.length;
         }
     });
@@ -639,6 +640,8 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         default:
             break;
         }
+        refreshPage = true;
+
     };
 
     // When user changes the search string the page count changes and the current page must be adjusted
@@ -661,6 +664,19 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         if (newPageNumber > -1 && newPageNumber < $scope.getNumberOfPages()) {
             $scope.model.currentPage = newPageNumber;
         }
+    };
+    
+    var refreshPage = true;
+    $scope.getPaginationPage = function(){
+        if(refreshPage){
+            // Only do sorting when the model has changed, heavy operation
+            refreshPage = false;
+            $scope.model.shownCodeElements = $filter("naturalSort")($scope.model.shownCodeElements, $scope.model.sortOrder, $scope.model.sortOrderReversed);
+        }
+        var results = $scope.model.shownCodeElements;
+        results = $filter("filter")(results, $scope.search);
+        results = results.splice($scope.model.currentPage*$scope.model.pageSize, $scope.model.pageSize);
+        return results;
     };
 
     // Pagination ends
