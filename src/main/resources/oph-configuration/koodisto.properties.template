@@ -48,6 +48,7 @@ cas.user-search-base=ou\=people
 cas.user-search-filter=(|(mail\={0})(uid\={0}))
 cas.service.koodisto-service=https://${host.virkailija}/koodisto-service
 cas.service.koodisto-ui=https://${host.virkailija}/koodisto-ui
+cas.service.organisaatio-service=https://${host.virkailija}/organisaatio-service
 customAttribute.webservice.url.backend=https://${host.virkailija}/authentication-service/services/customAttributeService
 flyway.initOnMigrate=true
 koodi.public.webservice.url.backend=https://${host.virkailija}/koodisto-service/services/koodiService
