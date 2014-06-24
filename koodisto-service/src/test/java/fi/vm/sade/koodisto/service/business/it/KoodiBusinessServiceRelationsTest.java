@@ -105,7 +105,7 @@ public class KoodiBusinessServiceRelationsTest {
         list.add("5");
         list.add("3");
 
-        koodiBusinessService.removeRelation(kv.getKoodiUri(), list, SuhteenTyyppi.RINNASTEINEN);
+        koodiBusinessService.removeRelation(kv.getKoodiUri(), list, SuhteenTyyppi.RINNASTEINEN, false);
         result = koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, true);
         Assert.assertEquals(0L, result.size());
     }

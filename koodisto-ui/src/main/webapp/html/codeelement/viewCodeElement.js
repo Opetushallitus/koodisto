@@ -64,34 +64,26 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
                     model.editState = inLatestCodes ? "" : "disabled";
                 });
 
-                model.codeElement.withinCodeElements.forEach(function(codelement) {
-                    model.getLatestCodeElementVersionsByCodeElementUri(codelement, model.withinCodeElements);
+                model.codeElement.withinCodeElements.forEach(function(codeElement) {
+                    model.extractAndPushCodeElementInformation(codeElement, model.withinCodeElements);
                 });
-                model.codeElement.includesCodeElements.forEach(function(codelement) {
-                    model.getLatestCodeElementVersionsByCodeElementUri(codelement, model.includesCodeElements);
+                model.codeElement.includesCodeElements.forEach(function(codeElement) {
+                    model.extractAndPushCodeElementInformation(codeElement, model.includesCodeElements);
                 });
-                model.codeElement.levelsWithCodeElements.forEach(function(codelement) {
-                    model.getLatestCodeElementVersionsByCodeElementUri(codelement, model.levelsWithCodeElements);
+                model.codeElement.levelsWithCodeElements.forEach(function(codeElement) {
+                    model.extractAndPushCodeElementInformation(codeElement, model.levelsWithCodeElements);
                 });
             });
         };
 
-        this.getLatestCodeElementVersionsByCodeElementUri = function(codeElement, list) {
-            LatestCodeElementVersionsByCodeElementUri.get({
-                codeElementUri : codeElement.codeElementUri
-            }, function(result) {
-                var ce = {};
-                ce.uri = codeElement.codeElementUri;
-                ce.name = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
-                ce.description = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
-                ce.versio = codeElement.codeElementVersion;
-                CodesByUri.get({
-                    codesUri : result.koodisto.koodistoUri
-                }, function(result2) {
-                    ce.codesname = model.languageSpecificValue(result2.latestKoodistoVersio.metadata, 'nimi', 'FI');
-                });
-                list.push(ce);
-            });
+        this.extractAndPushCodeElementInformation = function(codeElement, list) {
+            var ce = {};
+            ce.uri = codeElement.codeElementUri;
+            ce.name = model.languageSpecificValue(codeElement.relationMetadata, 'nimi', 'FI');
+            ce.description = model.languageSpecificValue(codeElement.relationMetadata, 'kuvaus', 'FI');
+            ce.versio = codeElement.codeElementVersion;
+            ce.codesname = model.languageSpecificValue(codeElement.parentMetadata, 'nimi', 'FI');
+            list.push(ce);
         };
 
         this.languageSpecificValue = function(fieldArray, fieldName, language) {
@@ -115,8 +107,9 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
     $scope.model = ViewCodeElementModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
     $scope.codeElementVersion = $routeParams.codeElementVersion;
+    $scope.model.forceRefresh = $routeParams.forceRefresh;
+    $scope.model.codeElementEdited = $routeParams.forceRefresh;
     ViewCodeElementModel.init($scope, $scope.codeElementUri, $scope.codeElementVersion);
-    $scope.sortBy = 'name';
 
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
@@ -124,11 +117,10 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
 
     $scope.cancel = function() {
         $location.path("/koodisto/" + $scope.model.codeElement.koodisto.koodistoUri + "/"
-                + $scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length - 1]);
+                + $scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length - 1]).search({forceRefresh: $scope.model.codeElementEdited});
     };
 
     $scope.editCodeElement = function() {
-        $scope.model.forceRefresh = true;
         $location.path("/muokkaaKoodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion);
     };
 
@@ -138,7 +130,7 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
             codeElementVersion : $scope.codeElementVersion
         }, function(success) {
             $location.path("/koodisto/" + $scope.model.codeElement.koodisto.koodistoUri + "/"
-                    + $scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length - 1]);
+                    + $scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length - 1]).search({forceRefresh: true});
         }, function(error) {
             var alert = {
                 type : 'danger',

@@ -131,9 +131,7 @@ public class CachingKoodistoClient implements KoodistoClient {
             for (Object o : (Collection) val) {
                 sb.append(param(name, o));
             }
-        }
-
-        else {
+        } else {
             String valString;
             if (val instanceof XMLGregorianCalendar) {
                 valString = new SimpleDateFormat("yyyy-MM-dd").format(((XMLGregorianCalendar) val).toGregorianCalendar().getTime());

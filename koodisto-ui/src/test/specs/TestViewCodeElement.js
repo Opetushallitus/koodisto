@@ -142,36 +142,49 @@ describe("Code Element View test", function() {
                     "kieli" : "FI"
                 } ],
                 "withinCodeElements" : [ {
-                    "codeElementUri" : "relaatiotesti",
-                    "codeElementVersion" : 2
-                } ],
+                    "codeElementUri" : "hep2_2",
+                    "codeElementVersion" : 2,
+                    "relationMetadata" : [ {
+                      "nimi" : "2",
+                      "kuvaus" : "2",
+                      "lyhytNimi" : "2",
+                      "kayttoohje" : null,
+                      "kasite" : null,
+                      "sisaltaaMerkityksen" : null,
+                      "eiSisallaMerkitysta" : null,
+                      "huomioitavaKoodi" : null,
+                      "sisaltaaKoodiston" : null,
+                      "kieli" : "FI"
+                    } ],
+                    "parentMetadata" : [ {
+                      "kieli" : "FI",
+                      "nimi" : "hep2",
+                      "kuvaus" : "hep2",
+                      "kayttoohje" : null,
+                      "kasite" : null,
+                      "kohdealue" : null,
+                      "sitovuustaso" : null,
+                      "kohdealueenOsaAlue" : null,
+                      "toimintaymparisto" : null,
+                      "tarkentaaKoodistoa" : null,
+                      "huomioitavaKoodisto" : null,
+                      "koodistonLahde" : null
+                    } ]
+                  } ],
                 "includesCodeElements" : [],
                 "levelsWithCodeElements" : []
             };
         };
 
-        var codeElementRelationReferences = {
-            "koodisto" : {
-                "koodistoUri" : "relaatiotestikoodisto"
-            },
-            "metadata" : [ {
-                "nimi" : "Referenssi",
-                "kieli" : "FI"
-            } ],
-            "versio" : 2
-        };
-
         beforeEach(function() {
             mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(givenResponseCodeElementWithRelation());
-            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/latest/relaatiotesti").respond(codeElementRelationReferences);
-            mockBackend.expectGET(SERVICE_URL_BASE + "codes/relaatiotestikoodisto").respond(codesResponse);
             mockBackend.flush();
         });
 
         it("Should contain version number of code element relation references", function() {
             expect(model.withinCodeElements.length).toEqual(1);
             expect(model.withinCodeElements[0].versio).toEqual(2);
-            expect(model.withinCodeElements[0].name).toEqual("Referenssi");
+            expect(model.withinCodeElements[0].name).toEqual("2");
         });
     });
 

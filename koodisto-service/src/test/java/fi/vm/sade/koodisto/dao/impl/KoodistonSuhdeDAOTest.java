@@ -35,62 +35,62 @@ import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 @DataSetLocation("classpath:test-data.xml")
 public class KoodistonSuhdeDAOTest {
 
-	@Autowired
+    @Autowired
     private KoodistonSuhdeDAO suhdeDAO;
-	
-	@Autowired
-	private KoodistoVersioDAO versionDAO;
-	
-	@Transactional
-	@Test
-	public void copiesRelationsFromOldKoodistonVersioToNewOne() {
-		KoodistoVersio original = versionDAO.read(new Long(1));
-		KoodistoVersio newVersion = givenNewKoodistoVersio(original);
-		suhdeDAO.copyRelations(original, newVersion);
-		assertRelations(original, newVersion);
-	}
-	
-	@Test
-	public void copiedRelationsAreActuallyStoredInDb() {
-		KoodistoVersio original = versionDAO.read(new Long(1));
-		KoodistoVersio newVersion = givenNewKoodistoVersio(original);
-		suhdeDAO.copyRelations(original, newVersion);
-		versionDAO.detach(newVersion);
-		newVersion = versionDAO.read(newVersion.getId());
-		assertRelations(original, newVersion);
-	}
-	
-	@Test
-	public void deleRelations() {
-		KoodistonSuhde toBeDeleted = suhdeDAO.read(new Long(5));
-		KoodistoUriAndVersioType yla = getKoodistoUriAndVersioType(versionDAO.read(toBeDeleted.getYlakoodistoVersio().getId()));
-		KoodistoUriAndVersioType ala = getKoodistoUriAndVersioType(versionDAO.read(toBeDeleted.getAlakoodistoVersio().getId()));
-		suhdeDAO.deleteRelations(yla, Arrays.asList(ala), toBeDeleted.getSuhteenTyyppi());
-		assertNull(suhdeDAO.read(toBeDeleted.getId()));
-	}
-	
-	private KoodistoUriAndVersioType getKoodistoUriAndVersioType(KoodistoVersio versio) {
-		KoodistoUriAndVersioType type = new KoodistoUriAndVersioType();
-		type.setKoodistoUri(versio.getKoodisto().getKoodistoUri());
-		type.setVersio(versio.getVersio());
-		return type;
-	}
 
-	private void assertRelations(KoodistoVersio original, KoodistoVersio newVersion) {
-		assertEquals(original.getYlakoodistos().size(), newVersion.getYlakoodistos().size());
-		assertEquals(original.getAlakoodistos().size(), newVersion.getAlakoodistos().size());
-	}
+    @Autowired
+    private KoodistoVersioDAO versionDAO;
 
-	private KoodistoVersio givenNewKoodistoVersio(KoodistoVersio original) {
-		KoodistoVersio newVersion = new KoodistoVersio();
-		newVersion.setKoodisto(original.getKoodisto());
-		newVersion.setTila(Tila.HYVAKSYTTY);
-		newVersion.setVoimassaAlkuPvm(original.getVoimassaAlkuPvm());
-		newVersion.setVersio(2);
-		for ( KoodistoMetadata data : original.getMetadatas()) {
-			newVersion.addMetadata(data);
-		}
-		return versionDAO.insert(newVersion);
-	}
-	
+    @Transactional
+    @Test
+    public void copiesRelationsFromOldKoodistonVersioToNewOne() {
+        KoodistoVersio original = versionDAO.read(Long.valueOf(1));
+        KoodistoVersio newVersion = givenNewKoodistoVersio(original);
+        suhdeDAO.copyRelations(original, newVersion);
+        assertRelations(original, newVersion);
+    }
+
+    @Test
+    public void copiedRelationsAreActuallyStoredInDb() {
+        KoodistoVersio original = versionDAO.read(Long.valueOf(1));
+        KoodistoVersio newVersion = givenNewKoodistoVersio(original);
+        suhdeDAO.copyRelations(original, newVersion);
+        versionDAO.detach(newVersion);
+        newVersion = versionDAO.read(newVersion.getId());
+        assertRelations(original, newVersion);
+    }
+
+    @Test
+    public void deleRelations() {
+        KoodistonSuhde toBeDeleted = suhdeDAO.read(Long.valueOf(5));
+        KoodistoUriAndVersioType yla = getKoodistoUriAndVersioType(versionDAO.read(toBeDeleted.getYlakoodistoVersio().getId()));
+        KoodistoUriAndVersioType ala = getKoodistoUriAndVersioType(versionDAO.read(toBeDeleted.getAlakoodistoVersio().getId()));
+        suhdeDAO.deleteRelations(yla, Arrays.asList(ala), toBeDeleted.getSuhteenTyyppi());
+        assertNull(suhdeDAO.read(toBeDeleted.getId()));
+    }
+
+    private KoodistoUriAndVersioType getKoodistoUriAndVersioType(KoodistoVersio versio) {
+        KoodistoUriAndVersioType type = new KoodistoUriAndVersioType();
+        type.setKoodistoUri(versio.getKoodisto().getKoodistoUri());
+        type.setVersio(versio.getVersio());
+        return type;
+    }
+
+    private void assertRelations(KoodistoVersio original, KoodistoVersio newVersion) {
+        assertEquals(original.getYlakoodistos().size(), newVersion.getYlakoodistos().size());
+        assertEquals(original.getAlakoodistos().size(), newVersion.getAlakoodistos().size());
+    }
+
+    private KoodistoVersio givenNewKoodistoVersio(KoodistoVersio original) {
+        KoodistoVersio newVersion = new KoodistoVersio();
+        newVersion.setKoodisto(original.getKoodisto());
+        newVersion.setTila(Tila.HYVAKSYTTY);
+        newVersion.setVoimassaAlkuPvm(original.getVoimassaAlkuPvm());
+        newVersion.setVersio(2);
+        for ( KoodistoMetadata data : original.getMetadatas()) {
+            newVersion.addMetadata(data);
+        }
+        return versionDAO.insert(newVersion);
+    }
+
 }

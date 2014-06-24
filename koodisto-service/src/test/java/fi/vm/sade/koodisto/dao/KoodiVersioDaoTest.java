@@ -15,6 +15,7 @@ import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
@@ -103,8 +105,7 @@ public class KoodiVersioDaoTest {
 
             @Override
             public int compare(KoodiVersioWithKoodistoItem o1, KoodiVersioWithKoodistoItem o2) {
-                return new Integer(o1.getKoodiVersio().getVersio()).compareTo(new Integer(o2.getKoodiVersio()
-                        .getVersio()));
+                return o1.getKoodiVersio().getVersio().compareTo(o2.getKoodiVersio().getVersio());
             }
 
         });
@@ -175,8 +176,7 @@ public class KoodiVersioDaoTest {
 
             @Override
             public int compare(KoodiVersioWithKoodistoItem o1, KoodiVersioWithKoodistoItem o2) {
-                return new Integer(o1.getKoodiVersio().getVersio()).compareTo(new Integer(o2.getKoodiVersio()
-                        .getVersio()));
+                return o1.getKoodiVersio().getVersio().compareTo(o2.getKoodiVersio().getVersio());
             }
         });
 
@@ -274,8 +274,7 @@ public class KoodiVersioDaoTest {
 
             @Override
             public int compare(KoodiVersioWithKoodistoItem o1, KoodiVersioWithKoodistoItem o2) {
-                return new Integer(o1.getKoodiVersio().getVersio()).compareTo(new Integer(o2.getKoodiVersio()
-                        .getVersio()));
+                return o1.getKoodiVersio().getVersio().compareTo(o2.getKoodiVersio().getVersio());
             }
 
         });
@@ -340,5 +339,15 @@ public class KoodiVersioDaoTest {
         assertEquals(previousVersio, previous.getVersio());
         assertEquals(koodiUri, previous.getKoodi().getKoodiUri());
 
+    }
+    
+    @Test
+    public void shouldNotBeLatestKoodiVersio() {
+        assertFalse(koodiVersioDAO.isLatestKoodiVersio("436", 3));
+    }
+    
+    @Test
+    public void shouldBeLatestKoodiVersio() {
+        assertTrue(koodiVersioDAO.isLatestKoodiVersio("436", 11));
     }
 }

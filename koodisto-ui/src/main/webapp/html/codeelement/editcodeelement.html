@@ -64,12 +64,10 @@
 			ng-change="sortOrderChanged()"
 			id="ordering_select"
 			style="width:auto;">
-			<option value="1">{{'codes.viewpage.codeelements.pagination.koodiarvo' | i18n}}</option>
-			<option value="2">{{'codes.viewpage.codeelements.pagination.koodiarvoRev' | i18n}}</option>
-			<option value="3">{{'codes.viewpage.codeelements.pagination.koodinimi' | i18n}}</option>
-			<option value="4">{{'codes.viewpage.codeelements.pagination.koodinimiRev' | i18n}}</option>
-			<option value="5">{{'codes.viewpage.codeelements.pagination.koodiversio' | i18n}}</option>
-			<option value="6">{{'codes.viewpage.codeelements.pagination.koodiversioRev' | i18n}}</option>
+			<option value="1">{{'codeelement.viewpage.pagination.koodiarvo' | i18n}}</option>
+			<option value="2">{{'codeelement.viewpage.pagination.koodiarvoRev' | i18n}}</option>
+			<option value="3">{{'codeelement.viewpage.pagination.koodinimi' | i18n}}</option>
+			<option value="4">{{'codeelement.viewpage.pagination.koodinimiRev' | i18n}}</option>
 		</select>
 	</div>
 
@@ -77,15 +75,15 @@
         <thead>
             <tr>
                 <th><input id="select_all_codeelements" type="checkbox" ng-model="selectallcodelements" ng-change="onMasterChange(selectallcodelements)"/></th>
-                <th ng:click="sortBy='value'" ng-class="{'sort-true': sortBy=='value'}">{{'codeelement.editpage.tableheader1' | i18n}}</th>
-                <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.editpage.tableheader2' | i18n}}</th>
+                <th ng:click="sortOrderChanged(1)" ng-class="{'sort-true': model.sortOrderSelection=='1'}">{{'codeelement.editpage.tableheader1' | i18n}}</th>
+                <th ng:click="sortOrderChanged(3)" ng-class="{'sort-true': model.sortOrderSelection=='3'}">{{'codeelement.editpage.tableheader2' | i18n}}</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="codeElement in model.shownCodeElements | filter:search | naturalSort:model.sortOrder:model.sortOrderReversed  |  startFrom:model.currentPage*model.pageSize  |  limitTo:model.pageSize">
+            <tr bindonce ng-repeat="codeElement in model.shownCodeElements | filter:search | naturalSort:model.sortOrder:model.sortOrderReversed  |  startFrom:model.currentPage*model.pageSize  |  limitTo:model.pageSize">
                 <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" value="{{codeElement.checked}}" ng-model="codeElement.checked"/></td>
-                <td class="align-center">{{codeElement.value}}</td>
-                <td class="align-center">{{codeElement.name}}</td>
+                <td class="align-center" bo-text="codeElement.value"></td>
+                <td class="align-center" bo-text="codeElement.name"></td>
             </tr>
         </tbody>
     </table>
@@ -237,7 +235,7 @@
             <label for="description_fi" class="control-label">{{'codeelement.editpage.description' | i18n}}</label>
             <div class="controls">
                 <textarea id="description_fi" maxlength="2048" class="width-30" ng-model="descriptionfi" name="descriptionfi"
-                          placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field required-field/>
+                          placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field required-field></textarea>
                 <span class="text-error" ng-show="form.descriptionfi.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
@@ -245,14 +243,14 @@
         <div class="control-group">
             <div class="controls">
                 <textarea id="description_sv" maxlength="2048" class="width-30" ng-model="descriptionsv"
-                          placeholder="{{'codes.swedish' | i18n}}" codeelement-combined-field/>
+                          placeholder="{{'codes.swedish' | i18n}}" codeelement-combined-field></textarea>
             </div>
         </div>
 
         <div class="control-group">
             <div class="controls">
                 <textarea id="description_en" maxlength="2048" class="width-30" ng-model="descriptionen"
-                      placeholder="{{'codes.english' | i18n}}" codeelement-combined-field/>
+                      placeholder="{{'codes.english' | i18n}}" codeelement-combined-field></textarea>
             </div>
         </div>
 
@@ -270,15 +268,15 @@
                     <table class="table">
                         <thead>
                         <tr>
-                            <th>{{'codeelement.editpage.codeelement' | i18n}}</th>
-                            <th>{{'codeelement.viewpage.version' | i18n}}</th>
+                            <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.editpage.codeelement' | i18n}}</th>
+                            <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
                             <th>{{'codes.delete' | i18n}}</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="codeElement in model.withinCodeElements | orderBy:'name'">
-                            <td class="align-center">{{codeElement.name}}</td>
-                            <td class="align-center">{{codeElement.versio}}</td>
+                        <tr bindonce ng-repeat="codeElement in model.withinCodeElements | orderBy:sortBy">
+                            <td class="align-center" bo-text="codeElement.name"></td>
+                            <td class="align-center"bo-text="codeElement.versio"></td>
                             <td class="align-center">
                                 <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromWithinCodeElements(codeElement)"></i>
                             </td>
@@ -289,7 +287,7 @@
                     </table>
                 </div>
             </div>
-
+            
         <div class="control-group">
             <label for="includescodes" class="control-label">{{'codeelement.editpage.includescodeelements' | i18n}}</label><br>
             <div class="controls">
@@ -302,15 +300,15 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>{{'codeelement.editpage.codeelement' | i18n}}</th>
-                        <th>{{'codeelement.viewpage.version' | i18n}}</th>
+                        <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.editpage.codeelement' | i18n}}</th>
+                        <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
                         <th>{{'codes.delete' | i18n}}</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="codeElement in model.includesCodeElements | orderBy:'name'">
-                        <td class="align-center">{{codeElement.name}}</td>
-                        <td class="align-center">{{codeElement.versio}}</td>
+                    <tr bindonce ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy">
+                        <td class="align-center" bo-text="codeElement.name"></td>
+                        <td class="align-center" bo-text="codeElement.versio"></td>
                         <td class="align-center">
                             <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromIncludesCodeElements(codeElement)"></i>
                         </td>
@@ -334,15 +332,15 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>{{'codeelement.editpage.codeelement' | i18n}}</th>
-                        <th>{{'codeelement.viewpage.version' | i18n}}</th>
+                        <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.editpage.codeelement' | i18n}}</th>
+                        <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
                         <th>{{'codes.delete' | i18n}}</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:'name'">
-                        <td class="align-center">{{codeElement.name}}</td>
-                        <td class="align-center">{{codeElement.versio}}</td>
+                    <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:sortBy">
+                        <td class="align-center" bo-text="codeElement.name"></td>
+                        <td class="align-center" bo-text="codeElement.versio"></td>
                         <td class="align-center">
                             <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromLevelsWithCodeElements(codeElement)"></i>
                         </td>
@@ -373,19 +371,19 @@
                             <label for="instructions_fi" class="control-label">{{'codeelement.createpage.instructions' | i18n}}</label>
                             <div class="controls">
                                 <textarea id="instructions_fi" maxlength="2048" class="width-30" ng-model="instructionsfi"
-                                      placeholder="{{'codes.finnish' | i18n}}"/>
+                                      placeholder="{{'codes.finnish' | i18n}}"></textarea>
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
                             <textarea id="instructions_sv" maxlength="2048" class="width-30" ng-model="instructionssv"
-                                      placeholder="{{'codes.swedish' | i18n}}"/>
+                                      placeholder="{{'codes.swedish' | i18n}}"></textarea>
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
                             <textarea id="instructions_en" maxlength="2048" class="width-30" ng-model="instructionsen"
-                                      placeholder="{{'codes.english' | i18n}}"/>
+                                      placeholder="{{'codes.english' | i18n}}"></textarea>
                             </div>
                         </div>
 
@@ -459,19 +457,19 @@
                             <div class="controls">
 
                             <textarea id="containssignificance_fi" maxlength="2048" class="width-30" ng-model="containssignificancefi"
-                                      placeholder="{{'codes.finnish' | i18n}}"/>
+                                      placeholder="{{'codes.finnish' | i18n}}"></textarea>
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
                             <textarea id="containssignificance_sv" maxlength="2048" class="width-30" ng-model="containssignificancesv"
-                                      placeholder="{{'codes.swedish' | i18n}}"/>
+                                      placeholder="{{'codes.swedish' | i18n}}"></textarea>
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
                             <textarea id="containssignificance_en" maxlength="2048" class="width-30" ng-model="containssignificanceen"
-                                      placeholder="{{'codes.english' | i18n}}"/>
+                                      placeholder="{{'codes.english' | i18n}}"></textarea>
                             </div>
                         </div>
 
@@ -487,19 +485,19 @@
                             <div class="controls">
 
                             <textarea id="doesnotcontainsignificance_fi" maxlength="2048" class="width-30" ng-model="doesnotcontainsignificancefi"
-                                      placeholder="{{'codes.finnish' | i18n}}"/>
+                                      placeholder="{{'codes.finnish' | i18n}}"></textarea>
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
                             <textarea id="doesnotcontainsignificance_sv" maxlength="2048" class="width-30" ng-model="doesnotcontainsignificancesv"
-                                      placeholder="{{'codes.swedish' | i18n}}"/>
+                                      placeholder="{{'codes.swedish' | i18n}}"></textarea>
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
                             <textarea id="doesnotcontainsignificance_en" maxlength="2048" class="width-30" ng-model="doesnotcontainsignificanceen"
-                                      placeholder="{{'codes.english' | i18n}}"/>
+                                      placeholder="{{'codes.english' | i18n}}"></textarea>
                             </div>
                         </div>
 
@@ -515,19 +513,19 @@
                             <label for="containscodes_fi" class="control-label">{{'codeelement.createpage.containscodes' | i18n}}</label>
                             <div class="controls">
                             <textarea id="containscodes_fi" maxlength="2048" class="width-30" ng-model="containscodesfi"
-                                      placeholder="{{'codes.finnish' | i18n}}"/>
+                                      placeholder="{{'codes.finnish' | i18n}}"></textarea>
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
                             <textarea id="containscodes_sv" maxlength="2048" class="width-30" ng-model="containscodessv"
-                                  placeholder="{{'codes.swedish' | i18n}}"/>
+                                  placeholder="{{'codes.swedish' | i18n}}"></textarea>
                             </div>
                         </div>
                         <div class="control-group">
                             <div class="controls">
                             <textarea id="containscodes_en" maxlength="2048" class="width-30" ng-model="containscodesen"
-                                      placeholder="{{'codes.english' | i18n}}"/>
+                                      placeholder="{{'codes.english' | i18n}}"></textarea>
                             </div>
                         </div>
 

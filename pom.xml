@@ -5,7 +5,7 @@
 
     <groupId>fi.vm.sade.koodisto</groupId>
     <artifactId>koodisto</artifactId>
-    <version>10.1-SNAPSHOT</version>
+    <version>10.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Koodisto :: Parent</name>
 
@@ -28,11 +28,6 @@
             <dependency>
                 <groupId>fi.vm.sade.organisaatio</groupId>
                 <artifactId>organisaatio-api</artifactId>
-                <version>${organisaatio.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>fi.vm.sade.organisaatio</groupId>
-                <artifactId>organisaatio-ui-widgets</artifactId>
                 <version>${organisaatio.version}</version>
             </dependency>
             <dependency>

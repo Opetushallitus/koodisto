@@ -177,16 +177,16 @@
                                 <tr>
                                     <th ng:click="sortBy='codesname'" ng-class="{'sort-true': sortBy=='codesname'}">{{'codeelement.viewpage.tableheader1' | i18n}}</th>
                                     <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.viewpage.tableheader2' | i18n}}</th>
-                                    <th>{{'codeelement.viewpage.version' | i18n}}</th>
-                                    <th>{{'codeelement.viewpage.tableheader3' | i18n}}</th>
+                                    <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
+                                    <th ng:click="sortBy='description'" ng-class="{'sort-true': sortBy=='description'}">{{'codeelement.viewpage.tableheader3' | i18n}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="codeElement in model.withinCodeElements | orderBy:sortBy">
-                                    <td>{{codeElement.codesname}}</td>
-                                    <td>{{codeElement.name}}</td>
-                                    <td>{{codeElement.versio}}</td>
-                                    <td>{{codeElement.description}}</td>
+                                <tr bindonce ng-repeat="codeElement in model.withinCodeElements | orderBy:sortBy">
+                                    <td bo-text="codeElement.codesname"></td>
+                                    <td bo-text="codeElement.name"></td>
+                                    <td bo-text="codeElement.versio"></td>
+                                    <td bo-text="codeElement.description"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -212,16 +212,16 @@
                                 <tr>
                                     <th ng:click="sortBy='codesname'" ng-class="{'sort-true': sortBy=='codesname'}">{{'codeelement.viewpage.tableheader1' | i18n}}</th>
                                     <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.viewpage.tableheader2' | i18n}}</th>
-                                    <th>{{'codeelement.viewpage.version' | i18n}}</th>
-                                    <th>{{'codeelement.viewpage.tableheader3' | i18n}}</th>
+                                    <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
+                                    <th ng:click="sortBy='description'" ng-class="{'sort-true': sortBy=='description'}">{{'codeelement.viewpage.tableheader3' | i18n}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy">
-                                    <td>{{codeElement.codesname}}</td>
-                                    <td>{{codeElement.name}}</td>
-                                    <td>{{codeElement.versio}}</td>
-                                    <td>{{codeElement.description}}</td>
+                                <tr bindonce ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy">
+                                    <td bo-text="codeElement.codesname"></td>
+                                    <td bo-text="codeElement.name"></td>
+                                    <td bo-text="codeElement.versio"></td>
+                                    <td bo-text="codeElement.description"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -248,16 +248,16 @@
                             <tr>
                                 <th ng:click="sortBy='codesname'" ng-class="{'sort-true': sortBy=='codesname'}">{{'codeelement.viewpage.tableheader1' | i18n}}</th>
                                 <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.viewpage.tableheader2' | i18n}}</th>
-                                <th>{{'codeelement.viewpage.version' | i18n}}</th>
-                                <th>{{'codeelement.viewpage.tableheader3' | i18n}}</th>
+                                <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
+                                <th ng:click="sortBy='description'" ng-class="{'sort-true': sortBy=='description'}">{{'codeelement.viewpage.tableheader3' | i18n}}</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:sortBy">
-                                <td>{{codeElement.codesname}}</td>
-                                <td>{{codeElement.name}}</td>
-                                <td>{{codeElement.versio}}</td>
-                                <td>{{codeElement.description}}</td>
+                            <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:sortBy">
+                                    <td bo-text="codeElement.codesname"></td>
+                                    <td bo-text="codeElement.name"></td>
+                                    <td bo-text="codeElement.versio"></td>
+                                    <td bo-text="codeElement.description"></td>
                             </tr>
                             </tbody>
                         </table>

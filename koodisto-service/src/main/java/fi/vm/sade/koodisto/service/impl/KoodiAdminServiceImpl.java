@@ -90,7 +90,7 @@ public class KoodiAdminServiceImpl implements KoodiAdminService {
                                          SuhteenTyyppiType suhteenTyyppi) throws GenericFault {
         fi.vm.sade.koodisto.model.SuhteenTyyppi st = fi.vm.sade.koodisto.model.SuhteenTyyppi.valueOf(suhteenTyyppi
                 .name());
-        koodiBusinessService.removeRelation(ylaKoodi, alaKoodis, st);
+        koodiBusinessService.removeRelation(ylaKoodi, alaKoodis, st, false);
     }
 
     @Override

@@ -5,12 +5,14 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -23,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -86,10 +89,11 @@ public class CodeElementResource {
     @Path("/{codeElementUri}/{codeElementVersion}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Extended.class })
+    @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa tietyn koodiversion",
-            notes = "",
+            notes = "sisältää koodiversion koodinsuhteet",
             response = ExtendedKoodiDto.class)
     public ExtendedKoodiDto getCodeElementByUriAndVersion(
             @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
@@ -217,8 +221,32 @@ public class CodeElementResource {
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType) {
 
         koodiBusinessService.removeRelation(codeElementUri, Arrays.asList(codeElementUriToRemove),
-                SuhteenTyyppi.valueOf(relationType));
+                SuhteenTyyppi.valueOf(relationType), false);
     }
+    
+    @DELETE
+    @Path("/removerelations/{codeElementUri}/{relationType}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @ApiOperation(value = "Poistaa koodien välisiä relaatioita, massatoiminto", notes = "")
+    public Response removeRelations(@ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri, 
+            @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType, 
+            @ApiParam(value = "Poistettavien koodien URIt") @QueryParam("relationsToRemove") List<String> relationsToRemove,
+            @ApiParam(value = "Sisältyysuhde relaatioiden kanssa") @QueryParam("isChild") boolean isChild) {
+        if (relationsToRemove == null || relationsToRemove.isEmpty()) {
+            logger.info("Called mass remove for relations without required query param (relationsToRemove)");
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+        try {
+            koodiBusinessService.removeRelation(codeElementUri, relationsToRemove, SuhteenTyyppi.valueOf(relationType), isChild);
+            return Response.status(Response.Status.OK).build();
+        } catch (Exception e) {
+            logger.warn("Exception caught while trying remove relations for codeelement " + codeElementUri, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
 
     @POST
     @Path("/delete/{codeElementUri}/{codeElementVersion}")
