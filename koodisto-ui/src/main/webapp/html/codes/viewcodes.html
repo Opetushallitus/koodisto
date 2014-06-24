@@ -405,7 +405,7 @@
 				</thead>
 				<tbody>
 					<tr
-						ng-repeat="codeElement in model.codeElements  |  filter:search  |  naturalSort:model.sortOrder:model.sortOrderReversed  |  startFrom:model.currentPage*model.pageSize  |  limitTo:model.pageSize">
+						ng-repeat="codeElement in getPaginationPage()">
 						<td>{{codeElement.koodiArvo}}</td>
 						<td><a
 							href="#/koodi/{{codeElement.koodiUri}}/{{codeElement.versio}}">{{codeElement.name}}</a>

@@ -365,6 +365,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     $scope.$watch('model.codeElements', function() {
         if ($scope.model.codeElements.length != cachedElementCount) {
             $scope.refreshNumberOfPages();
+            refreshPage = true;
             cachedElementCount = $scope.model.codeElements.length;
         }
     });
@@ -418,6 +419,8 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
         default:
             break;
         }
+        refreshPage = true;
+
     };
 
     // When user changes the search string the page count changes and the current page must be adjusted
@@ -441,6 +444,19 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
             $scope.model.currentPage = newPageNumber;
         }
     };
+    
 
+    var refreshPage = true;
+    $scope.getPaginationPage = function(){
+        if(refreshPage){
+            // Only do sorting when the model has changed, heavy operation
+            refreshPage = false;
+            $scope.model.codeElements = $filter("naturalSort")($scope.model.codeElements, $scope.model.sortOrder, $scope.model.sortOrderReversed);
+        }
+        var results = $scope.model.codeElements;
+        results = $filter("filter")(results, $scope.search);
+        results = results.splice($scope.model.currentPage*$scope.model.pageSize, $scope.model.pageSize);
+        return results;
+    };
     // Pagination ends
 }
