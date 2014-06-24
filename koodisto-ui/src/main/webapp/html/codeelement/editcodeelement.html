@@ -2,7 +2,7 @@
 <script type="text/ng-template" id="codeelement.html">
 	<div class="row-fluid">
 
-		{{(model.shownCodeElements  |  filter:search ).length }} {{'codes.viewpage.codeelements.pagination.hakutulosta' | i18n}}
+		<div ng-if="!model.loadingCodeElements">{{(model.shownCodeElements  |  filter:search ).length }} {{'codes.viewpage.codeelements.pagination.hakutulosta' | i18n}}</div>
 		<div class="pagination">
 			<ul>
 				<li ng-click="incrementPage(-1)"><span>&#8592;</span></li>
@@ -80,7 +80,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr bindonce ng-repeat="codeElement in getPaginationPage()">
+            <tr bindonce ng-repeat="codeElement in paginationPage">
                 <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" value="{{codeElement.checked}}" ng-model="codeElement.checked"/></td>
                 <td class="align-center" bo-text="codeElement.value"></td>
                 <td class="align-center" bo-text="codeElement.name"></td>
@@ -117,6 +117,9 @@
                        placeholder="{{'codes.viewpage.codeelements.search.placeholder' | i18n}}" ng-model="model.query" ng-change="filterChangedPageCount()"/>
              </div>
         </div>
+
+		<div ng-if="model.loadingCodeElements">{{'codes.viewpage.codeelements.search.loading' | i18n}}</div>
+
 
         <div class="codeSelector" ng-include="'codeelement.html'" />
     </div>

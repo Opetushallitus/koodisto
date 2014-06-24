@@ -30,6 +30,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             this.allIncludesCodeElements = [];
             this.allLevelsWithCodeElements = [];
             this.shownCodeElements = [];
+            this.loadingCodeElements = false;
 
             // Pagination
             this.currentPage = 0;
@@ -41,6 +42,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
 
             model.getAllCodes();
             model.getCodeElement(scope, codeElementUri, codeElementVersion);
+
         };
 
         this.getCodeElement = function(scope, codeElementUri, codeElementVersion) {
@@ -97,6 +99,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                 model.codeElement.levelsWithCodeElements.forEach(function(codeElement) {
                     model.extractAndPushCodeElementInformation(codeElement, model.levelsWithCodeElements);
                 });
+
             });
         };
 
@@ -119,7 +122,11 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             model.modalInstance = $modal.open({
                 templateUrl : 'confirmModalContent.html',
                 controller : CodeElementEditorController,
-                resolve : {}
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
+                }
             });
 
         };
@@ -129,7 +136,11 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             model.modalInstance = $modal.open({
                 templateUrl : 'confirmModalContent.html',
                 controller : CodeElementEditorController,
-                resolve : {}
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
+                }
             });
         };
 
@@ -138,7 +149,11 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             model.modalInstance = $modal.open({
                 templateUrl : 'confirmModalContent.html',
                 controller : CodeElementEditorController,
-                resolve : {}
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
+                }
             });
         };
 
@@ -196,14 +211,16 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
 });
 
 function CodeElementEditorController($scope, $location, $routeParams, $filter, CodeElementEditorModel, UpdateCodeElement, AddRelationCodeElement,
-        RemoveRelationCodeElement, MassRemoveRelationCodeElements, ValidateService, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion, $modal) {
+        RemoveRelationCodeElement, MassRemoveRelationCodeElements, ValidateService, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion, $modal, isModalController) {
 
     $scope.model = CodeElementEditorModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
     $scope.codeElementVersion = $routeParams.codeElementVersion;
     $scope.sortBy = 'name';
 
-    CodeElementEditorModel.init($scope, $scope.codeElementUri, $scope.codeElementVersion);
+    if (!isModalController) {
+        CodeElementEditorModel.init($scope, $scope.codeElementUri, $scope.codeElementVersion);
+    }
 
     $scope.selectallcodelements = false;
 
@@ -444,11 +461,13 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             });
 
             $scope.model.shownCodeElements = toBeShown;
-            $scope.refreshNumberOfPages();
+            $scope.updatePaginationPage(true);
+            $scope.model.loadingCodeElements = false;
         });
     };
 
     $scope.getCodeElements = function() {
+        $scope.model.loadingCodeElements = true;
         var name = $scope.model.addToListName;
         CodesByUriAndVersion.get({
             codesUri : $scope.model.codeElement.koodisto.koodistoUri,
@@ -457,7 +476,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
 
             function getCodesUris(relationArray) {
                 var codesUris = [];
-                angular.forEach(relationArray, function(value) {
+                relationArray.forEach(function(value) {
                     codesUris.push(value.codesUri);
                 });
                 return codesUris;
@@ -484,7 +503,9 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                 $scope.model.shownCodes = getCodesUris(result.levelsWithCodes);
                 $scope.model.shownCodeElements = $scope.model.allLevelsWithCodeElements;
             }
-
+            if(!$scope.model.showCode || $scope.model.showCode.length === 0){
+                $scope.model.loadingCodeElements = false;
+            }
         });
     };
 
@@ -493,13 +514,17 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         $scope.model.addToListName = name;
         if ($scope.model.allWithinCodeElements.length === 0 || $scope.model.allIncludesCodeElements.length === 0
                 || $scope.model.allLevelsWithCodeElements.length === 0) {
-
+            
             $scope.getCodeElements();
 
             $scope.model.codeelementmodalInstance = $modal.open({
                 templateUrl : 'codeElementModalContent.html',
                 controller : CodeElementEditorController,
-                resolve : {}
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
+                }
             });
         }
     };
@@ -583,27 +608,17 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     // Get the filtered page count
     var cachedPageCount = 0;
     $scope.getNumberOfPages = function() {
-        if (cachedPageCount == 0) {
-            $scope.refreshNumberOfPages();
-        }
         return cachedPageCount;
     };
-
+    
     // Refresh the page count when the model changes
     var cachedElementCount = 0;
     $scope.$watch('model.shownCodeElements', function() {
         if ($scope.model.shownCodeElements.length != cachedElementCount) {
-            $scope.refreshNumberOfPages();
-            refreshPage = true;
             cachedElementCount = $scope.model.shownCodeElements.length;
+            $scope.updatePaginationPage(true);
         }
     });
-
-    // Refresh the page count (less redundant filtering)
-    $scope.refreshNumberOfPages = function() {
-        cachedPageCount = Math.ceil(($filter("filter")($scope.model.shownCodeElements, $scope.search)).length / $scope.model.pageSize);
-        return cachedPageCount;
-    };
 
     // Change the currentPage when the pageSize is changed.
     var oldValueForPageSize = 10;
@@ -611,7 +626,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         var topmostCodeElement = $scope.model.currentPage * oldValueForPageSize;
         $scope.model.currentPage = Math.floor(topmostCodeElement / $scope.model.pageSize);
         oldValueForPageSize = $scope.model.pageSize;
-        $scope.refreshNumberOfPages();
+        $scope.updatePaginationPage();
     };
 
     $scope.sortOrderChanged = function(value) {
@@ -640,43 +655,50 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         default:
             break;
         }
-        refreshPage = true;
-
+        $scope.updatePaginationPage(true);
     };
 
     // When user changes the search string the page count changes and the current page must be adjusted
     $scope.filterChangedPageCount = function() {
-        currentNumberOfPages = $scope.refreshNumberOfPages();
-        if ($scope.model.currentPage >= currentNumberOfPages) {
-            $scope.model.currentPage = currentNumberOfPages - 1;
+        if ($scope.model.currentPage >= $scope.getNumberOfPages()) {
+            $scope.model.currentPage = $scope.getNumberOfPages() - 1;
         }
-        if (currentNumberOfPages != 0 && $scope.model.currentPage < 0) {
+        if ($scope.getNumberOfPages() != 0 && $scope.model.currentPage < 0) {
             $scope.model.currentPage = 0;
         }
+        $scope.updatePaginationPage();
     };
 
     $scope.changePage = function(i) {
         $scope.model.currentPage = i;
+        $scope.updatePaginationPage();
     };
 
     $scope.incrementPage = function(i) {
         var newPageNumber = $scope.model.currentPage + i;
         if (newPageNumber > -1 && newPageNumber < $scope.getNumberOfPages()) {
             $scope.model.currentPage = newPageNumber;
+            $scope.updatePaginationPage();
         }
     };
     
-    var refreshPage = true;
-    $scope.getPaginationPage = function(){
-        if(refreshPage){
+
+    
+
+
+        $scope.paginationPage = [];
+        $scope.updatePaginationPage = function(refreshPage) {
+        if (refreshPage) {
             // Only do sorting when the model has changed, heavy operation
             refreshPage = false;
             $scope.model.shownCodeElements = $filter("naturalSort")($scope.model.shownCodeElements, $scope.model.sortOrder, $scope.model.sortOrderReversed);
         }
         var results = $scope.model.shownCodeElements;
         results = $filter("filter")(results, $scope.search);
-        results = results.splice($scope.model.currentPage*$scope.model.pageSize, $scope.model.pageSize);
-        return results;
+        cachedPageCount = Math.ceil(results.length / $scope.model.pageSize);
+        results = results.splice($scope.model.currentPage * $scope.model.pageSize, $scope.model.pageSize);
+        cachedShownCodeElements = $scope.model.shownCodeElements;
+        $scope.paginationPage = results;
     };
 
     // Pagination ends
