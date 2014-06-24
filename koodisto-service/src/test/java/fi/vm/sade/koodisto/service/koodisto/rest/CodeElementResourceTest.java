@@ -40,12 +40,17 @@ public class CodeElementResourceTest {
     public void returns400IfQueryParamsAreMissing() {
         assertResponse(resource.removeRelations("codeelementuri", SuhteenTyyppi.SISALTYY.toString(), new ArrayList<String>(), false), 400);
         assertResponse(resource.removeRelations("codeelementuri", SuhteenTyyppi.SISALTYY.toString(), null, false), 400);
+
+        assertResponse(resource.addRelations("codeelementuri", SuhteenTyyppi.SISALTYY.toString(), new ArrayList<String>(), false), 400);
+        assertResponse(resource.addRelations("codeelementuri", SuhteenTyyppi.SISALTYY.toString(), null, false), 400);
     }
     
     
     @Test
     public void returns500IfErrorOccurs() {
         assertResponse(resource.removeRelations("codeelementuri", "SISALTYY", Arrays.asList("koodi"), false), 500);        
+
+        assertResponse(resource.addRelations("codeelementuri", "SISALTYY", Arrays.asList("koodi"), false), 500);        
     }
     
     @Test

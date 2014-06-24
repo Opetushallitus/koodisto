@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -205,6 +206,37 @@ public class CodeElementResource {
         koodiBusinessService.addRelation(codeElementUri, codeElementUriToAdd,
                 SuhteenTyyppi.valueOf(relationType));
     }
+    
+    
+    @POST
+    @Path("/addrelations/{codeElementUri}/{relationType}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({ JsonViews.Extended.class })
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @ApiOperation(
+            value = "Lisää koodien välisiä relaatioita, massatoiminto",
+            notes = "")
+    public Response addRelations(
+            @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
+            @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType,
+            @ApiParam(value = "Lisättävien koodien URIt") @QueryParam("relationsToAdd") List<String> relationsToAdd,
+            @ApiParam(value = "Sisältyysuhde relaatioiden kanssa") @QueryParam("isChild") boolean isChild
+            ) {
+        if (relationsToAdd == null || relationsToAdd.isEmpty()) {
+            logger.info("Called mass remove for relations without required query param (relationsToRemove)");
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+        try {
+//            koodiBusinessService.removeRelation(codeElementUri, relationsToRemove, SuhteenTyyppi.valueOf(relationType), isChild);
+//            return Response.status(Response.Status.OK).build();
+            throw new UnsupportedOperationException(); //TODO IMPL
+        } catch (Exception e) {
+            logger.warn("Exception caught while trying remove relations for codeelement " + codeElementUri, e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 
     @POST
     @Path("/removerelation/{codeElementUri}/{codeElementUriToRemove}/{relationType}")
@@ -230,7 +262,8 @@ public class CodeElementResource {
     @Produces(MediaType.APPLICATION_JSON)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(value = "Poistaa koodien välisiä relaatioita, massatoiminto", notes = "")
-    public Response removeRelations(@ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri, 
+    public Response removeRelations(
+            @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri, 
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType, 
             @ApiParam(value = "Poistettavien koodien URIt") @QueryParam("relationsToRemove") List<String> relationsToRemove,
             @ApiParam(value = "Sisältyysuhde relaatioiden kanssa") @QueryParam("isChild") boolean isChild) {
@@ -358,4 +391,5 @@ public class CodeElementResource {
 
         return createKoodiDataType;
     }
+
 }
