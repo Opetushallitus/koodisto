@@ -49,8 +49,10 @@ public class CodeElementResourceTest {
     @Test
     public void returns500IfErrorOccurs() {
         assertResponse(resource.removeRelations("codeelementuri", "SISALTYY", Arrays.asList("koodi"), false), 500);        
+        assertResponse(resource.removeRelations("codeelementuri", "asd", Arrays.asList("rinnastuu4kanssa1", "rinnastuu4kanssa2", "rinnastuu4kanssa3"), false), 500);        
 
         assertResponse(resource.addRelations("codeelementuri", "SISALTYY", Arrays.asList("koodi"), false), 500);        
+        assertResponse(resource.addRelations("codeelementuri", "asd", Arrays.asList("rinnastuu4kanssa1", "rinnastuu4kanssa2", "rinnastuu4kanssa3"), false), 500);        
     }
     
     @Test
@@ -60,7 +62,16 @@ public class CodeElementResourceTest {
                 false), 200);
         assertTrue(service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).isEmpty());
     }    
-       
+
+    @Test
+    public void addsMultipleCodeElementRelationsWithTypeRINNASTEINEN() {
+        String codeElementUri = "lisaarinnasteinen14";
+        assertResponse(resource.removeRelations(codeElementUri, "RINNASTEINEN", Arrays.asList("lisaarinnasteinen14kanssa1", "lisaarinnasteinen14kanssa2", "lisaarinnasteinen14kanssa3"), 
+                false), 200);
+        assertEquals(3, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
+    }    
+
+    
     @Test
     public void removesMultipleCodeElementRelationsWithTypeSISALTYY() {        
         String codeElementUri = "sisaltaakoodisto1koodit";

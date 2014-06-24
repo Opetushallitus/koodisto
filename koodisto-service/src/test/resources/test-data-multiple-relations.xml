@@ -8,6 +8,8 @@
   <koodisto id="6" koodistouri="sisaltyysuhde5kanssa1" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="7" koodistouri="sisaltyysuhde5kanssa2" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="8" koodistouri="sisaltyysuhde5kanssa3" version="0" organisaatioOid="1.2.2004.6" />
+  <koodisto id="9" koodistouri="lisaarinnasteinen1" version="0" organisaatioOid="1.2.2004.6" />
+  <koodisto id="10" koodistouri="lisaarinnasteinen2" version="0" organisaatioOid="1.2.2004.6" />
   
   <koodi id="1" koodisto_id="1" version="0" koodiuri="sisaltyysuhde4kanssa1"/>
   <koodi id="2" koodisto_id="1" version="0" koodiuri="sisaltyysuhde4kanssa2"/>
@@ -22,6 +24,10 @@
   <koodi id="11" koodisto_id="7" version="0" koodiuri="sisaltyysuhde9kanssa2" />
   <koodi id="12" koodisto_id="8" version="0" koodiuri="sisaltyysuhde9kanssa3" />
   <koodi id="13" koodisto_id="8" version="0" koodiuri="sisaltyysuhde9kanssa4" />
+  <koodi id="14" koodisto_id="9" version="0" koodiuri="lisaarinnasteinen14" />
+  <koodi id="15" koodisto_id="10" version="0" koodiuri="lisaarinnasteinen14kanssa1" />
+  <koodi id="16" koodisto_id="10" version="0" koodiuri="lisaarinnasteinen14kanssa2" />
+  <koodi id="17" koodisto_id="10" version="0" koodiuri="lisaarinnasteinen14kanssa3" />
   
   <koodiversio id="1" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="1" koodiarvo="ss4k1"/>
   <koodiversio id="2" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="ss4k2"/>
@@ -36,6 +42,10 @@
   <koodiversio id="11" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="11" koodiarvo="ss9k2"/>
   <koodiversio id="12" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="12" koodiarvo="ss9k3"/>
   <koodiversio id="13" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="13" koodiarvo="ss9k4"/>
+  <koodiversio id="14" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="14" koodiarvo="lr14"/>
+  <koodiversio id="15" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="15" koodiarvo="lr14k1"/>
+  <koodiversio id="16" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="16" koodiarvo="lr14k2"/>
+  <koodiversio id="17" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="17" koodiarvo="lr14k3"/>
   
   <koodimetadata id="1" kieli="FI" nimi="Alajärvi" version="0" koodiversio_id="1" lyhytnimi="Alajärvi" kuvaus="Alajärvi"/>
   <koodimetadata id="2" kieli="FI" nimi="Olajärvi" version="0" koodiversio_id="2" lyhytnimi="Olajärvi" kuvaus="Olajärvi"/>
@@ -50,6 +60,10 @@
   <koodimetadata id="11" kieli="FI" nimi="Ulko-ovi" version="0" koodiversio_id="11" lyhytnimi="Ovi" kuvaus="Ulko-ovi"/>
   <koodimetadata id="12" kieli="FI" nimi="Hissi" version="0" koodiversio_id="12" lyhytnimi="Hissi" kuvaus="Hissi"/>
   <koodimetadata id="13" kieli="FI" nimi="Portaat" version="0" koodiversio_id="13" lyhytnimi="Portaat" kuvaus="Portaat"/>
+  <koodimetadata id="14" kieli="FI" nimi="Miekka" version="0" koodiversio_id="14" lyhytnimi="Miekka" kuvaus="Miekka"/>
+  <koodimetadata id="15" kieli="FI" nimi="Kilpi" version="0" koodiversio_id="15" lyhytnimi="Kilpi" kuvaus="Kilpi"/>
+  <koodimetadata id="16" kieli="FI" nimi="Panssari" version="0" koodiversio_id="16" lyhytnimi="Panssari" kuvaus="Panssari"/>
+  <koodimetadata id="17" kieli="FI" nimi="Kypärä" version="0" koodiversio_id="17" lyhytnimi="Kypärä" kuvaus="Kypärä"/>
   
   <koodinsuhde id="1" alakoodiversio_id="1" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1"/>
   <koodinsuhde id="2" alakoodiversio_id="2" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1"/>
@@ -73,6 +87,8 @@
   <koodistoversio id="6" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="6" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="7" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="7" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="8" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="8" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="9" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="9" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="10" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="10" voimassaalkupvm="2012-11-20"/>
   
   <koodistometadata id="1" kieli="FI" nimi="Järvet" version="0" koodistoversio_id="1" kuvaus="Järvet"/>
   <koodistometadata id="2" kieli="FI" nimi="Joet" version="0" koodistoversio_id="2" kuvaus="Joet"/>
@@ -82,6 +98,8 @@
   <koodistometadata id="6" kieli="FI" nimi="Ikkunat" version="0" koodistoversio_id="6" kuvaus="Ikkunat"/>
   <koodistometadata id="7" kieli="FI" nimi="Ovet" version="0" koodistoversio_id="7" kuvaus="Ovet"/>
   <koodistometadata id="8" kieli="FI" nimi="Kerrokset" version="0" koodistoversio_id="8" kuvaus="kerrokset"/>
+  <koodistometadata id="9" kieli="FI" nimi="Aseet" version="0" koodistoversio_id="9" kuvaus="aseet"/>
+  <koodistometadata id="10" kieli="FI" nimi="Suojukset" version="0" koodistoversio_id="10" kuvaus="suojukset"/>
   
   <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="1" koodiversio_id="1"/>
   <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="1" koodiversio_id="2"/>
@@ -96,9 +114,14 @@
   <koodistoversio_koodiversio id="11" version="0" koodistoversio_id="7" koodiversio_id="11"/>
   <koodistoversio_koodiversio id="12" version="0" koodistoversio_id="8" koodiversio_id="12"/>
   <koodistoversio_koodiversio id="13" version="0" koodistoversio_id="8" koodiversio_id="13"/>
+  <koodistoversio_koodiversio id="14" version="0" koodistoversio_id="9" koodiversio_id="14"/>
+  <koodistoversio_koodiversio id="15" version="0" koodistoversio_id="10" koodiversio_id="15"/>
+  <koodistoversio_koodiversio id="16" version="0" koodistoversio_id="10" koodiversio_id="16"/>
+  <koodistoversio_koodiversio id="17" version="0" koodistoversio_id="10" koodiversio_id="17"/>
   
   <koodistoryhma id="1" koodistoryhmauri="maantieto" version="0"/>
   <koodistoryhma id="2" koodistoryhmauri="rakennukset" version="0"/>
+  <koodistoryhma id="3" koodistoryhmauri="varusteet" version="0"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="1"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="2"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="3"/>
@@ -107,8 +130,11 @@
   <koodistoryhma_koodisto koodistoryhma_id="2" koodisto_id="6"/>
   <koodistoryhma_koodisto koodistoryhma_id="2" koodisto_id="7"/>
   <koodistoryhma_koodisto koodistoryhma_id="2" koodisto_id="8"/>
+  <koodistoryhma_koodisto koodistoryhma_id="3" koodisto_id="9"/>
+  <koodistoryhma_koodisto koodistoryhma_id="3" koodisto_id="10"/>
   <koodistoryhmametadata id="1" koodistoryhma_id="1" kieli="FI" nimi="Maantieto" version="0"/>
   <koodistoryhmametadata id="2" koodistoryhma_id="2" kieli="FI" nimi="Rakennukset" version="0"/>
+  <koodistoryhmametadata id="3" koodistoryhma_id="3" kieli="FI" nimi="Varusteet" version="0"/>
   
   
   <koodistonsuhde id="1" alakoodistoversio_id="1" ylakoodistoversio_id="2" versio="1" suhteentyyppi="SISALTYY" version="0"/>
@@ -117,5 +143,6 @@
   <koodistonsuhde id="4" alakoodistoversio_id="6" ylakoodistoversio_id="5" versio="1" suhteentyyppi="SISALTYY" version="0"/>
   <koodistonsuhde id="5" alakoodistoversio_id="7" ylakoodistoversio_id="5" versio="1" suhteentyyppi="SISALTYY" version="0"/>
   <koodistonsuhde id="6" alakoodistoversio_id="8" ylakoodistoversio_id="5" versio="1" suhteentyyppi="SISALTYY" version="0"/>
+  <koodistonsuhde id="7" alakoodistoversio_id="9" ylakoodistoversio_id="10" versio="1" suhteentyyppi="RINNASTEINEN" version="0"/>
     
 </dataset>
