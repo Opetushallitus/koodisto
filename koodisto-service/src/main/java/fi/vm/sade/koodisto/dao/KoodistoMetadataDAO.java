@@ -12,9 +12,9 @@ import java.util.List;
  * @author tommiha
  */
 public interface KoodistoMetadataDAO extends JpaDAO<KoodistoMetadata, Integer> {
-    public List<KoodistoMetadata> listAllByKoodisto(String koodistoUri);
+    List<KoodistoMetadata> listAllByKoodisto(String koodistoUri);
 
-    public boolean nimiExistsForSomeOtherKoodisto(String koodistoUri, String nimi);
+    boolean nimiExistsForSomeOtherKoodisto(String koodistoUri, String nimi);
 
     boolean nimiExists(String nimi);
 }

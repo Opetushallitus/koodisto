@@ -26,9 +26,9 @@ import static org.junit.Assert.assertEquals;
  * User: kwuoti Date: 12.4.2013 Time: 14.04
  */
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = {JtaCleanInsertTestExecutionListener.class,
+@TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
-        TransactionalTestExecutionListener.class})
+        TransactionalTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
 @DataSetLocation("classpath:test-data.xml")
 public class KoodistoRESTServiceTest {
@@ -394,31 +394,10 @@ public class KoodistoRESTServiceTest {
     @Test
     public void testGetKoodistoXsdSkeema() {
         final String koodistoUri = "http://koodisto17";
-        String xsd = koodistoRESTService.getKoodistoXsdSkeema(koodistoUri, null);
-        Assert.assertEquals("<?xml version=\"1.0\"?>\n" +
-                "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"\n" +
-                "           targetNamespace=\"http://service.koodisto.sade.vm.fi/types/koodisto\"\n" +
-                "           xmlns=\"http://service.koodisto.sade.vm.fi/types/koodisto\"\n" +
-                "           elementFormDefault=\"qualified\">\n" +
-                "\n" +
-                "    <xs:simpleType name=\"httpkoodisto17\">\n" + // oikeasti tämä ei ole validi xsd type name, mutta koodistossa oikeasti urit ei sis http
-                "        <xs:restriction base=\"xs:string\">\n" +
-                "            <xs:enumeration value=\"29\">\n" +
-                "                <xs:annotation>\n" +
-                "                    <xs:documentation xml:lang=\"fi\">koodi31</xs:documentation>\n" +
-                "                </xs:annotation>\n" +
-                "            </xs:enumeration>\n" +
-                "\n" +
-                "            <xs:enumeration value=\"28\">\n" +
-                "                <xs:annotation>\n" +
-                "                    <xs:documentation xml:lang=\"fi\">koodi30</xs:documentation>\n" +
-                "                </xs:annotation>\n" +
-                "            </xs:enumeration>\n" +
-                "\n" +
-                "        </xs:restriction>\n" +
-                "    </xs:simpleType>\n" +
-                "\n" +
-                "</xs:schema>\n", xsd);
+        String xsd = koodistoRESTService.getKoodistoXsdSkeema(koodistoUri, null).replaceAll("\\s", "");
+        Assert.assertEquals(
+                "<?xmlversion=\"1.0\"?><xs:schemaxmlns:xs=\"http://www.w3.org/2001/XMLSchema\"targetNamespace=\"http://service.koodisto.sade.vm.fi/types/koodisto\"xmlns=\"http://service.koodisto.sade.vm.fi/types/koodisto\"elementFormDefault=\"qualified\"><xs:simpleTypename=\"httpkoodisto17\"><xs:restrictionbase=\"xs:string\"><xs:enumerationvalue=\"29\"><xs:annotation><xs:documentationxml:lang=\"fi\">koodi31</xs:documentation></xs:annotation></xs:enumeration><xs:enumerationvalue=\"28\"><xs:annotation><xs:documentationxml:lang=\"fi\">koodi30</xs:documentation></xs:annotation></xs:enumeration></xs:restriction></xs:simpleType></xs:schema>"
+                , xsd);
     }
 
 }

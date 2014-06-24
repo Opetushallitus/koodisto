@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.activation.DataHandler;
+import javax.annotation.Nonnull;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -690,7 +691,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         return Iterables.tryFind(relations, new Predicate<KoodistonSuhde>() {
 
             @Override
-            public boolean apply(KoodistonSuhde input) {
+            public boolean apply(@Nonnull KoodistonSuhde input) {
                 return input.getAlakoodistoVersio().equals(koodistoVersio2) || input.getYlakoodistoVersio().equals(koodistoVersio2);
             }
 

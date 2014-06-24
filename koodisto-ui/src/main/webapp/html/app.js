@@ -2,7 +2,7 @@
 
 var SERVICE_NAME = "APP_KOODISTO";
 
-var app = angular.module('koodisto', [ 'ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization', 'ui.bootstrap', 'ui.utils', 'ngIdle' ]);
+var app = angular.module('koodisto', [ 'ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization', 'ui.bootstrap', 'ui.utils', 'ngIdle', 'pasvaz.bindonce' ]);
 //
 // i18n toteutus kopioitu osittain http://jsfiddle.net/4tRBY/41/
 //
@@ -308,6 +308,17 @@ app.factory('RemoveRelationCodeElement', function($resource) {
     });
 });
 
+app.factory('MassRemoveRelationCodeElements', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codeelement/removerelations/:codeElementUri/:relationType", {
+        codeElementUri : "@codeElementUri",
+        relationType : "@relationType"
+    }, {
+        remove : {
+            method : "DELETE"
+        }
+    });
+});
+
 app.factory('AddRelationCodeElement', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/addrelation/:codeElementUri/:codeElementUriToAdd/:relationType", {
         codeElementUri : "@codeElementUri",
@@ -396,16 +407,14 @@ app.filter('naturalSort', function() {
 });
 
 function getLanguageSpecificValue(fieldArray, fieldName, language) {
-    var returnStr = "";
     if (fieldArray) {
         for (var i = 0; i < fieldArray.length; i++) {
             if (fieldArray[i].kieli === language) {
-                var fieldName = "fieldArray[i]." + fieldName;
-                return eval(fieldName);
+                return eval("fieldArray[i]." + fieldName);
             }
         }
     }
-    return returnStr;
+    return "";
 }
 
 // Pagination

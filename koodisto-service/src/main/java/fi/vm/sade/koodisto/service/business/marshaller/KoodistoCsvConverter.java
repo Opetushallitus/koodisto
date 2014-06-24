@@ -47,8 +47,6 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     private static final int UTF8_BYTE_ORDER_187 = 187;
     private static final int UTF8_BYTE_ORDER_191 = 191;
 
-    public static final SimpleDateFormat CSV_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-
     public static final List<String> HEADER_FIELDS;
 
     protected static final String VERSIO_COLUMN = "VERSIO";
@@ -70,10 +68,10 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     protected static final String SISALTAAKOODISTON_COLUMN = "SISALTAAKOODISTON";
 
     protected static final String[] basicFields = { VERSIO_COLUMN, KOODIURI_COLUMN, KOODIARVO_COLUMN, PAIVITYSPVM_COLUMN, VOIMASSAALKUPVM_COLUMN,
-            VOIMASSALOPPUPVM_COLUMN, TILA_COLUMN };
+        VOIMASSALOPPUPVM_COLUMN, TILA_COLUMN };
 
     protected static final String[] metadataFields = { NIMI_COLUMN, KUVAUS_COLUMN, LYHYTNIMI_COLUMN, KAYTTOOHJE_COLUMN, KASITE_COLUMN,
-            SISALTAAMERKITYKSEN_COLUMN, EISISALLAMERKITYSTA_COLUMN, HUOMIOITAVAKOODI_COLUMN, SISALTAAKOODISTON_COLUMN };
+        SISALTAAMERKITYKSEN_COLUMN, EISISALLAMERKITYSTA_COLUMN, HUOMIOITAVAKOODI_COLUMN, SISALTAAKOODISTON_COLUMN };
 
     protected static final KieliType[] kielet = { KieliType.FI, KieliType.SV, KieliType.EN };
 
@@ -114,9 +112,14 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         return map;
     }
 
+    private SimpleDateFormat getCSVDateFormat() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+    }
+
     private boolean checkFieldHeaderValid(String header) {
-        if (StringUtils.isBlank(header))
+        if (StringUtils.isBlank(header)) {
             return false;
+        }
         if (!Character.isLetter(header.charAt(0))) { // Removing BOM
             header = header.substring(1);
         }
@@ -188,7 +191,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
 
             bais.reset();
             reader = new BufferedReader(new InputStreamReader(bais, getCharset(encoding)));
-            
+
             csvReader = new CsvListReader(reader, pref);
             List<String> row = null;
 
@@ -225,18 +228,20 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         int commaCount = 0;
         int semicolonCount = 0;
         int c;
-        while((c = bais.read()) != -1){
-            if(c==comma)
+        while ((c = bais.read()) != -1) {
+            if (c==comma) {
                 commaCount++;
-            if(c==semicolon)
+            }
+            if (c==semicolon) {
                 semicolonCount++;
+            }
         }
         if(commaCount > semicolonCount){
             return CsvPreference.STANDARD_PREFERENCE;
         } else {
             return CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE;
         }
-    
+
     }
 
     protected KoodiType createKoodiFromCsvRow(List<String> row, Map<Integer, String> fieldNameToIndex) {
@@ -346,7 +351,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
             return null;
         }
         try {
-            date = DateHelper.DateToXmlCal(CSV_DATE_FORMAT.parse(paivamaaraString));
+            date = DateHelper.DateToXmlCal(getCSVDateFormat().parse(paivamaaraString));
         } catch (ParseException e) {
             return null;
         }
@@ -433,7 +438,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         if (date == null) {
             return "";
         } else {
-            String convertedString = new String(CSV_DATE_FORMAT.format(date).getBytes(), UTF8ENCODING);
+            String convertedString = new String(getCSVDateFormat().format(date).getBytes(), UTF8ENCODING);
             return new String(convertedString.getBytes(), encoding);
         }
     }

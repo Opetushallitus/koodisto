@@ -125,7 +125,7 @@ public class KoodiServiceTest {
 
             @Override
             public int compare(KoodiType o1, KoodiType o2) {
-                return new Integer(o1.getVersio()).compareTo(new Integer(o2.getVersio()));
+                return Integer.valueOf(o1.getVersio()).compareTo(o2.getVersio());
             }
 
         });
@@ -196,7 +196,7 @@ public class KoodiServiceTest {
 
             @Override
             public int compare(KoodiType o1, KoodiType o2) {
-                return new Integer(o1.getVersio()).compareTo(new Integer(o2.getVersio()));
+                return Integer.valueOf(o1.getVersio()).compareTo(o2.getVersio());
             }
         });
 
@@ -291,7 +291,7 @@ public class KoodiServiceTest {
 
             @Override
             public int compare(KoodiType o1, KoodiType o2) {
-                return new Integer(o1.getVersio()).compareTo(new Integer(o2.getVersio()));
+                return Integer.valueOf(o1.getVersio()).compareTo(o2.getVersio());
             }
 
         });

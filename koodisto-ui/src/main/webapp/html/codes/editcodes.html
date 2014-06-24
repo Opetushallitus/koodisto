@@ -34,7 +34,7 @@
 
 
 
-<div ng-include="'partials/organisaatioSelector.html'" />
+<div ng-include="'partials/organisaatioSelector.html'" ></div>
 
 
 <div class="container">
@@ -117,20 +117,20 @@
             <label for="description_fi" class="control-label">{{'codes.createpage.description' | i18n}}</label>
             <div class="controls">
                 <textarea id="description_fi" maxlength="2048" class="width-30" ng-model="descriptionfi"
-                          name="descriptionfi" placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codes-combined-field required-field/>
+                          name="descriptionfi" placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codes-combined-field required-field></textarea>
                 <span class="text-error" ng-show="form.descriptionfi.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
                 <textarea id="description_sv" maxlength="2048" class="width-30" ng-model="descriptionsv"
-                          placeholder="{{'codes.swedish' | i18n}}" codes-combined-field/>
+                          placeholder="{{'codes.swedish' | i18n}}" codes-combined-field></textarea>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
                 <textarea id="description_en" maxlength="2048" class="width-30" ng-model="descriptionen"
-                          placeholder="{{'codes.english' | i18n}}" codes-combined-field/>
+                          placeholder="{{'codes.english' | i18n}}" codes-combined-field></textarea>
             </div>
         </div>
 
@@ -183,13 +183,13 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>{{'codes.editpage.codes' | i18n}}</th>
-                        <th>{{'codes.editpage.codes.version' | i18n}}</th>
+                        <th ng:click="sortBy1='name'" ng-class="{'sort-true': sortBy1=='name'}">{{'codes.editpage.codes' | i18n}}</th>
+                        <th ng:click="sortBy1='versio'" ng-class="{'sort-true': sortBy1=='versio'}">{{'codes.editpage.codes.version' | i18n}}</th>
                         <th>{{'codes.delete' | i18n}}</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="codes in model.withinCodes | unique:'name' | orderBy:'name'">
+                    <tr ng-repeat="codes in model.withinCodes | unique:'name' | orderBy:sortBy1">
                         <td class="align-center">{{codes.name}}</td>
                         <td class="align-center">{{codes.versio}}</td>
                         <td class="align-center">
@@ -215,13 +215,13 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>{{'codes.editpage.codes' | i18n}}</th>
-                        <th>{{'codes.editpage.codes.version' | i18n}}</th>
+                        <th ng:click="sortBy2='name'" ng-class="{'sort-true': sortBy2=='name'}">{{'codes.editpage.codes' | i18n}}</th>
+                        <th ng:click="sortBy2='versio'" ng-class="{'sort-true': sortBy2=='versio'}">{{'codes.editpage.codes.version' | i18n}}</th>
                         <th>{{'codes.delete' | i18n}}</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="codes in model.includesCodes | unique:'name' | orderBy:'name'">
+                    <tr ng-repeat="codes in model.includesCodes | unique:'name' | orderBy:sortBy2">
                         <td class="align-center">{{codes.name}}</td>
                         <td class="align-center">{{codes.versio}}</td>
                         <td class="align-center">
@@ -247,13 +247,13 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th>{{'codes.editpage.codes' | i18n}}</th>
-                        <th>{{'codes.editpage.codes.version' | i18n}}</th>
+                        <th ng:click="sortBy3='name'" ng-class="{'sort-true': sortBy3=='name'}">{{'codes.editpage.codes' | i18n}}</th>
+                        <th ng:click="sortBy3='versio'" ng-class="{'sort-true': sortBy3=='versio'}">{{'codes.editpage.codes.version' | i18n}}</th>
                         <th>{{'codes.delete' | i18n}}</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr ng-repeat="codes in model.levelsWithCodes | unique:'name' | orderBy:'name'">
+                    <tr ng-repeat="codes in model.levelsWithCodes | unique:'name' | orderBy:sortBy3">
                         <td class="align-center">{{codes.name}}</td>
                         <td class="align-center">{{codes.versio}}</td>
                         <td class="align-center">
@@ -289,19 +289,19 @@
                     <label for="instructions_fi" class="control-label">{{'codes.createpage.instructions' | i18n}}</label>
                     <div class="controls">
                         <textarea id="instructions_fi" maxlength="2048" class="width-30" ng-model="instructionsfi"
-                                  placeholder="{{'codes.finnish' | i18n}}"/>
+                                  placeholder="{{'codes.finnish' | i18n}}"></textarea>
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
                         <textarea id="instructions_sv" maxlength="2048" class="width-30" ng-model="instructionssv"
-                                  placeholder="{{'codes.swedish' | i18n}}"/>
+                                  placeholder="{{'codes.swedish' | i18n}}"></textarea>
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
                         <textarea id="instructions_en" maxlength="2048" class="width-30" ng-model="instructionsen"
-                                  placeholder="{{'codes.english' | i18n}}"/>
+                                  placeholder="{{'codes.english' | i18n}}"></textarea>
                     </div>
                 </div>
 

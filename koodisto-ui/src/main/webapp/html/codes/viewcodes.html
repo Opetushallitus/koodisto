@@ -223,13 +223,13 @@
 					<table class="table">
 						<thead>
 							<tr>
-								<th>{{'codes.editpage.codes' | i18n}}</th>
-								<th>{{'codes.editpage.codes.version' | i18n}}</th>
+								<th ng:click="sortBy1='name'" ng-class="{'sort-true': sortBy1=='name'}">{{'codes.editpage.codes' | i18n}}</th>
+								<th ng:click="sortBy1='versio'" ng-class="{'sort-true': sortBy1=='versio'}">{{'codes.editpage.codes.version' | i18n}}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr
-								ng-repeat="codes in model.withinCodes | unique:'name' | orderBy:'name'">
+								ng-repeat="codes in model.withinCodes | unique:'name' | orderBy:sortBy1">
 								<td class="align-center">{{codes.name}}</td>
 								<td class="align-center">{{codes.versio}}</td>
 							</tr>
@@ -255,13 +255,13 @@
 					<table class="table">
 						<thead>
 							<tr>
-								<th>{{'codes.editpage.codes' | i18n}}</th>
-								<th>{{'codes.editpage.codes.version' | i18n}}</th>
+								<th ng:click="sortBy2='name'" ng-class="{'sort-true': sortBy2=='name'}">{{'codes.editpage.codes' | i18n}}</th>
+								<th ng:click="sortBy2='versio'" ng-class="{'sort-true': sortBy2=='versio'}">{{'codes.editpage.codes.version' | i18n}}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr
-								ng-repeat="codes in model.includesCodes | unique:'name' | orderBy:'name'">
+								ng-repeat="codes in model.includesCodes | unique:'name' | orderBy:sortBy2">
 								<td class="align-center">{{codes.name}}</td>
 								<td class="align-center">{{codes.versio}}</td>
 							</tr>
@@ -288,13 +288,13 @@
 					<table class="table">
 						<thead>
 							<tr>
-								<th>{{'codes.editpage.codes' | i18n}}</th>
-								<th>{{'codes.editpage.codes.version' | i18n}}</th>
+								<th ng:click="sortBy3='name'" ng-class="{'sort-true': sortBy3=='name'}">{{'codes.editpage.codes' | i18n}}</th>
+								<th ng:click="sortBy3='versio'" ng-class="{'sort-true': sortBy3=='versio'}">{{'codes.editpage.codes.version' | i18n}}</th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr
-								ng-repeat="codes in model.levelsWithCodes | unique:'name' | orderBy:'name'">
+								ng-repeat="codes in model.levelsWithCodes | unique:'name' | orderBy:sortBy3">
 								<td class="align-center">{{codes.name}}</td>
 								<td class="align-center">{{codes.versio}}</td>
 							</tr>
@@ -398,9 +398,9 @@
 			<table class="table">
 				<thead>
 					<tr>
-						<th>{{'codes.viewpage.codeelements.tableheader1' | i18n}}</th>
-						<th>{{'codes.viewpage.codeelements.tableheader2' | i18n}}</th>
-						<th>{{'codes.viewpage.codeelements.tableheader3' | i18n}}</th>
+						<th ng:click="sortOrderChanged(1)" ng-class="{'sort-true': model.sortOrderSelection=='1'}">{{'codes.viewpage.codeelements.tableheader1' | i18n}}</th>
+						<th ng:click="sortOrderChanged(3)" ng-class="{'sort-true': model.sortOrderSelection=='3'}">{{'codes.viewpage.codeelements.tableheader2' | i18n}}</th>
+						<th ng:click="sortOrderChanged(5)" ng-class="{'sort-true': model.sortOrderSelection=='5'}">{{'codes.viewpage.codeelements.tableheader3' | i18n}}</th>
 					</tr>
 				</thead>
 				<tbody>

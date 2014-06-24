@@ -236,15 +236,15 @@ public class KoodistoRESTService {
 
         // TODO: streamaus vois olla kohdillaan kun esim posti -koodistosta tulee 1,4 meganen xsd-dokkari
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format("<?xml version=\"1.0\"?>\n" + "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"\n"
-                + "           targetNamespace=\"http://service.koodisto.sade.vm.fi/types/koodisto\"\n"
-                + "           xmlns=\"http://service.koodisto.sade.vm.fi/types/koodisto\"\n" + "           elementFormDefault=\"qualified\">\n" + "\n"
-                + "    <xs:simpleType name=\"%s\">\n" + "        <xs:restriction base=\"xs:string\">\n", escapeXml(koodistoUri, true)));
+        sb.append(String.format("<?xml version=\"1.0\"?>%n" + "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"%n"
+                + "           targetNamespace=\"http://service.koodisto.sade.vm.fi/types/koodisto\"%n"
+                + "           xmlns=\"http://service.koodisto.sade.vm.fi/types/koodisto\"%n" + "           elementFormDefault=\"qualified\">%n" + "%n"
+                + "    <xs:simpleType name=\"%s\">%n" + "        <xs:restriction base=\"xs:string\">%n", escapeXml(koodistoUri, true)));
         for (KoodistoVersioKoodiVersio koodiVersio : koodisto.getKoodiVersios()) {
-            sb.append(String.format("            <xs:enumeration value=\"%s\">\n" + "                <xs:annotation>\n",
+            sb.append(String.format("            <xs:enumeration value=\"%s\">%n" + "                <xs:annotation>%n",
                     escapeXml(koodiVersio.getKoodiVersio().getKoodiarvo(), false)));
             for (KoodiMetadata metadata : koodiVersio.getKoodiVersio().getMetadatas()) {
-                sb.append(String.format("                    <xs:documentation xml:lang=\"%s\">%s</xs:documentation>\n", metadata.getKieli().toString()
+                sb.append(String.format("                    <xs:documentation xml:lang=\"%s\">%s</xs:documentation>%n", metadata.getKieli().toString()
                         .toLowerCase(), escapeXml(metadata.getNimi(), false)));
             } // for koodi metadatas
             sb.append("                </xs:annotation>\n" + "            </xs:enumeration>\n" + "\n");
@@ -252,7 +252,7 @@ public class KoodistoRESTService {
         sb.append("        </xs:restriction>\n" + "    </xs:simpleType>\n" + "\n" + "</xs:schema>\n");
         return sb.toString();
     }
-
+    
     private String escapeXml(Object o, boolean isTypeName) {
         if (o == null) {
             return "";

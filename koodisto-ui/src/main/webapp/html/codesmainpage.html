@@ -1,70 +1,71 @@
 <script type="text/ng-template" id="codesgroup_node.html">
-    <div class="state-disabled label">
-	<span class="disclose icon valintaryhma folder"
-          ng-class="{ collapse: domain.isCollapsed(data), open: domain.isExpanded(data)}"
-          ng-click="expandNode(data)"></span>
-          <a href="#/koodistoryhma/{{data.id}}">{{data.metadata[0].nimi}}</a>
-    </div>
-    <ol data-valintaryhmaoid="{{data.koodistoRyhmaUri}}">
-        <li ng-repeat="data in domain.getKoodistos(data) | orderBy:predicate" data-oid="{{data.koodistoUri}}"
-            class="{{addClass('uiExpanded',domain.isExpanded(data))}} {{addClass('uiCollapsed',domain.isCollapsed(data))}}"
-            ng-include="domain.getTemplate(data)"></li>
-    </ol>
+<div class="state-disabled label">
+	<span class="disclose icon valintaryhma folder" ng-class="{ collapse: domain.isCollapsed(data), open: domain.isExpanded(data)}" ng-click="expandNode(data)"></span>
+	<a href="#/koodistoryhma/{{data.id}}">{{data.metadata[0].nimi}}</a>
+</div>
+<ol data-valintaryhmaoid="{{data.koodistoRyhmaUri}}">
+	<li ng-repeat="koodisto in domain.getKoodistos(data) | filter:{isVisible:true} | orderBy:predicate" data-oid="{{koodisto.koodistoUri}}"
+		ng-include="domain.getTemplate(koodisto)"></li>
+
+</ol>
 </script>
 <script type="text/ng-template" id="codes_leaf.html">
-    <div ng-show="domain.isVisibleNode(data)">
-        <span class="icon hakukohde file">​</span>
-        <div class="label"><a href="#/koodisto/{{data.koodistoUri}}/{{data.latestKoodistoVersio.versio}}"> {{ domain.languageSpecificValue( data.latestKoodistoVersio.metadata , 'nimi', 'FI') }}  </a></div>
-    </div>
+<div>
+	<span class="icon hakukohde file">​</span>
+	<div class="label">
+		<a href="#/koodisto/{{koodisto.koodistoUri}}/{{koodisto.latestKoodistoVersio.versio}}"> {{
+			domain.languageSpecificValue(koodisto.latestKoodistoVersio.metadata , 'nimi', 'FI') }} </a>
+	</div>
+</div>
 </script>
 
 <div class="container">
-    <div class="row-fluid">
-        <div class="span12">
-            <h1>{{'codes.mainpage.header' | i18n}}</h1>
-        </div>
-    </div>
-    <div class="row-fluid">
-        <div class="span12">
-            <a href="#/lisaaKoodisto" auth="crudAny" auth-service="APP_KOODISTO" class="btn btn-primary">{{'codes.mainpage.createbutton'
-                | i18n}}&nbsp;<i class="icon-plus-sign"></i></a>
-            <a href="#/lisaaKoodistoryhma" auth="crudAny" auth-service="APP_KOODISTO" class="btn btn-primary">{{'codes.mainpage.creategroupbutton'
-                | i18n}}&nbsp;<i class="icon-plus-sign"></i></a>
-        </div>
-    </div>
-    <div class="row-fluid">
-        <div class="span12">
-            <label class="form-row-label">{{'codes.mainpage.search.info' | i18n}}</label>
-        </div>
-    </div>
-    <div class="row-fluid">
-        <div class="span3">
-            <input type="text" class="input-medium" maxlength="50" ng-change="domain.update()"
-                   placeholder="{{'codes.mainpage.search.placeholder' | i18n}}" ng-model="domain.filter.name"/>
-        </div>
-        <div class="span9 form-inline">
-            <input id="filter_own" type="checkbox" ng-model="domain.filter.own" ng-change="domain.update()"/>
-            <label for="filter_own">{{'codes.mainpage.search.own' | i18n}}</label>
-            <input id="filter_passivated" type="checkbox" ng-model="domain.filter.passivated"
-                   ng-change="domain.update()"/>
-            <label for="filter_passivated">{{'codes.mainpage.search.passivated' | i18n}}</label>
-            <input id="filter_planned" type="checkbox" ng-model="domain.filter.planned" ng-change="domain.update()"/>
-            <label for="filter_planned">{{'codes.mainpage.search.planned' | i18n}}</label>
-        </div>
-    </div>
+	<div class="row-fluid">
+		<div class="span12">
+			<h1>{{'codes.mainpage.header' | i18n}}</h1>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12">
+			<a href="#/lisaaKoodisto" auth="crudAny" auth-service="APP_KOODISTO" class="btn btn-primary">
+				{{'codes.mainpage.createbutton' | i18n}}&nbsp;<i class="icon-plus-sign"></i>
+			</a>
+			<a href="#/lisaaKoodistoryhma" auth="crudAny" auth-service="APP_KOODISTO" class="btn btn-primary">
+				{{'codes.mainpage.creategroupbutton' | i18n}}&nbsp;<i class="icon-plus-sign"></i>
+			</a>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span12">
+			<label class="form-row-label">{{'codes.mainpage.search.info' | i18n}}</label>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="span3">
+			<input type="text" class="input-medium" maxlength="50" ng-change="domain.update()" placeholder="{{'codes.mainpage.search.placeholder' | i18n}}"
+				ng-model="domain.filter.name" />
+		</div>
+		<div class="span9 form-inline">
+			<input id="filter_own" type="checkbox" ng-model="domain.filter.own" ng-change="domain.update()" />
+			<label for="filter_own">{{'codes.mainpage.search.own' | i18n}}</label>
+			<input id="filter_passivated" type="checkbox" ng-model="domain.filter.passivated" ng-change="domain.update()" />
+			<label for="filter_passivated">{{'codes.mainpage.search.passivated' | i18n}}</label>
+			<input id="filter_planned" type="checkbox" ng-model="domain.filter.planned" ng-change="domain.update()" />
+			<label for="filter_planned">{{'codes.mainpage.search.planned' | i18n}}</label>
+		</div>
+	</div>
 
-    <div class="row-fluid">
-        <div class="span12">
-            Haku palautti {{domain.search.codesfound}} koodistoa
-        </div>
-    </div>
+	<div ng-if="domain.getRootNode()" class="row-fluid">
+		<div class="span12">Haku palautti {{domain.search.codesfound}} koodistoa</div>
+	</div>
+	<div ng-if="domain.search.codesfound==-1" class="row-fluid">
+		<div class="span12">Ladataan koodistoja...</div>
+	</div>
 
-    <div class="form-row">
-        <ol class="sortable treelist collapsible multiselect">
-            <li ng-repeat="data in domain.getRootNode()" data-oid="{{data.koodistoRyhmaUri}}" ng-model="data"
-                class="{{addClass('uiExpanded',domain.isExpanded(data))}} {{addClass('uiCollapsed',domain.isCollapsed(data))}}"
-                ng-include="domain.getTemplate(data)"></li>
-
-        </ol>
-    </div>
+	<div class="form-row">
+		<ol class="sortable treelist collapsible multiselect">
+			<li ng-repeat="data in domain.getRootNode()" data-oid="{{data.koodistoRyhmaUri}}" ng-model="data"
+				class="{{addClass('uiExpanded',domain.isExpanded(data))}} {{addClass('uiCollapsed',domain.isCollapsed(data))}}" ng-include="domain.getTemplate(data)"></li>
+		</ol>
+	</div>
 </div>

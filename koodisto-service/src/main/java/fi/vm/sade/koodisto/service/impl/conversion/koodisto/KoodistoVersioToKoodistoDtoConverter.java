@@ -28,30 +28,30 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         converted.setKoodistoUri(source.getKoodisto().getKoodistoUri());
 
         for(KoodistonSuhde koodistonSuhde : source.getYlakoodistos()) {
-        	if (koodistonSuhde.getYlakoodistoVersio() != null) {
-        		KoodistoVersio relatedKoodisto = koodistonSuhde.getYlakoodistoVersio();
-        		switch (koodistonSuhde.getSuhteenTyyppi()) {
-        		case RINNASTEINEN:
-        			converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
-        			break;
-        		case SISALTYY: 
-        			converted.getWithinCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
-        			break;
-        		}
-        	}
+            if (koodistonSuhde.getYlakoodistoVersio() != null) {
+                KoodistoVersio relatedKoodisto = koodistonSuhde.getYlakoodistoVersio();
+                switch (koodistonSuhde.getSuhteenTyyppi()) {
+                case RINNASTEINEN:
+                    converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
+                    break;
+                case SISALTYY: 
+                    converted.getWithinCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
+                    break;
+                }
+            }
         }
         for(KoodistonSuhde koodistonSuhde : source.getAlakoodistos()) {
-        	if (koodistonSuhde.getAlakoodistoVersio() != null) {
-        		KoodistoVersio relatedKoodisto = koodistonSuhde.getAlakoodistoVersio();
-        		switch (koodistonSuhde.getSuhteenTyyppi()) {
-        		case RINNASTEINEN:
-        			converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
-        			break;
-        		case SISALTYY: 
-        			converted.getIncludesCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
-        			break;
-        		}
-        	}
+            if (koodistonSuhde.getAlakoodistoVersio() != null) {
+                KoodistoVersio relatedKoodisto = koodistonSuhde.getAlakoodistoVersio();
+                switch (koodistonSuhde.getSuhteenTyyppi()) {
+                case RINNASTEINEN:
+                    converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
+                    break;
+                case SISALTYY: 
+                    converted.getIncludesCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
+                    break;
+                }
+            }
         }
 
 
@@ -80,8 +80,9 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         List<Integer> codesVersions = new ArrayList<Integer>();
         if (source.getKoodisto().getKoodistoVersios() != null) {
             for (KoodistoVersio koodistoVersio : source.getKoodisto().getKoodistoVersios()) {
-                if (source.getVersio() != koodistoVersio.getVersio())
+                if (!source.getVersio().equals(koodistoVersio.getVersio())) {
                     codesVersions.add(koodistoVersio.getVersio());
+                }
             }
         }
         converted.setCodesVersions(codesVersions);

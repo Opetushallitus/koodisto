@@ -1,14 +1,14 @@
 package fi.vm.sade.koodisto.dto;
 
-import fi.vm.sade.koodisto.model.JsonViews;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
-import fi.vm.sade.koodisto.model.Tila;
-
-import org.codehaus.jackson.map.annotate.JsonView;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.codehaus.jackson.map.annotate.JsonView;
+
+import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.model.KoodiMetadata;
+import fi.vm.sade.koodisto.model.Tila;
 
 /**
  * User: wuoti
@@ -177,10 +177,19 @@ public class ExtendedKoodiDto {
     	public final String codeElementUri;
     	@JsonView({JsonViews.Extended.class})
     	public final Integer codeElementVersion;
+    	@JsonView({JsonViews.Extended.class})
+    	public final String codeElementValue;
+    	@JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+        public final List<SimpleMetadataDto> relationMetadata;
+    	@JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+        public final List<SimpleMetadataDto> parentMetadata;
     	
-    	public RelationCodeElement(String codeElementUri, Integer codeElementVersion) {
+    	public RelationCodeElement(String codeElementUri, Integer codeElementVersion, String codeElementValue, List<SimpleMetadataDto> relationMetadata, List<SimpleMetadataDto> parentMetadata) {
 			this.codeElementUri = codeElementUri;
 			this.codeElementVersion = codeElementVersion;
+			this.relationMetadata = relationMetadata;
+			this.parentMetadata = parentMetadata;
+			this.codeElementValue = codeElementValue;
 		}
     }
 }

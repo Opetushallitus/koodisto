@@ -73,7 +73,7 @@ import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 @PreAuthorize("isAuthenticated()")
 @Api(value = "/rest/codes", description = "Koodistot")
 public class CodesResource {
-    protected final static Logger logger = LoggerFactory.getLogger(CodesResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CodesResource.class);
 
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;
@@ -136,7 +136,7 @@ public class CodesResource {
             KoodistoVersio koodistoVersio = koodistoBusinessService.updateKoodisto(convertFromDTOToUpdateKoodistoDataType(codesDTO));
             return Response.status(Response.Status.CREATED).entity(koodistoVersio.getVersio()).build();
         } catch (Exception e) {
-            logger.warn("Koodistoa ei saatu päivitettyä. ", e);
+            LOGGER.warn("Koodistoa ei saatu päivitettyä. ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
@@ -154,7 +154,7 @@ public class CodesResource {
                 endDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
             }
         } catch (DatatypeConfigurationException e) {
-            logger.warn("Date couldn't be parsed: ", e);
+            LOGGER.warn("Date couldn't be parsed: ", e);
         }
         updateKoodistoDataType.setCodesGroupUri(koodistoDto.getCodesGroupUri());
         updateKoodistoDataType.setVoimassaAlkuPvm(startDate);
@@ -183,13 +183,13 @@ public class CodesResource {
             response = Response.class)
     public Response insert(
             @ApiParam(value = "Koodisto") KoodistoDto codesDTO) {
-        List<String> codesGroupUris = new ArrayList();
+        List<String> codesGroupUris = new ArrayList<String>();
         codesGroupUris.add(codesDTO.getCodesGroupUri());
         try {
             KoodistoVersio koodistoVersio = koodistoBusinessService.createKoodisto(codesGroupUris, convertFromDTOToCreateKoodistoDataType(codesDTO));
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoVersio, KoodistoDto.class)).build();
         } catch (Exception e) {
-            logger.warn("Koodistoa ei saatu lisättyä. ", e);
+            LOGGER.warn("Koodistoa ei saatu lisättyä. ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
@@ -207,7 +207,7 @@ public class CodesResource {
                 endDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
             }
         } catch (DatatypeConfigurationException e) {
-            logger.warn("Date couldn't be parsed: ", e);
+            LOGGER.warn("Date couldn't be parsed: ", e);
         }
         createKoodistoDataType.setVoimassaAlkuPvm(startDate);
         createKoodistoDataType.setVoimassaLoppuPvm(endDate);
@@ -301,8 +301,6 @@ public class CodesResource {
             @ApiParam(value = "Tiedoston koodaus") @FormDataParam("fileEncoding") String fileEncoding,
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri) {
 
-        String filePath = contentDispositionHeader.getFileName();
-
         try {
             String mime = "";
             ExportImportFormatType formatStr = null;
@@ -327,7 +325,7 @@ public class CodesResource {
             uploadService.upload(codesUri, formatStr, encoding, handler);
             return Response.status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            logger.warn("Koodistoa ei saatu vietyä. ", e);
+            LOGGER.warn("Koodistoa ei saatu vietyä. ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
@@ -389,7 +387,7 @@ public class CodesResource {
             koodistoBusinessService.delete(codesUri, codesVersion);
             return Response.status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            logger.warn("Koodistoa ei saatu poistettua. ", e);
+            LOGGER.warn("Koodistoa ei saatu poistettua. ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -438,7 +436,7 @@ public class CodesResource {
             fileDto.setData(theString);
             return fileDto;
         } catch (Exception e) {
-            logger.warn("Koodistoa ei saatu tuotua. ", e);
+            LOGGER.warn("Koodistoa ei saatu tuotua. ", e);
             return null;
         }
     }
