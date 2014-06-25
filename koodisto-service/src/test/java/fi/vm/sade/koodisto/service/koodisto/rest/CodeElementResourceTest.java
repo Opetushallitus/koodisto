@@ -66,7 +66,8 @@ public class CodeElementResourceTest {
     @Test
     public void addsMultipleCodeElementRelationsWithTypeRINNASTEINEN() {
         String codeElementUri = "lisaarinnasteinen14";
-        assertResponse(resource.removeRelations(codeElementUri, "RINNASTEINEN", Arrays.asList("lisaarinnasteinen14kanssa1", "lisaarinnasteinen14kanssa2", "lisaarinnasteinen14kanssa3"), 
+        assertEquals(0, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
+        assertResponse(resource.addRelations(codeElementUri, "RINNASTEINEN", Arrays.asList("lisaarinnasteinen14kanssa1", "lisaarinnasteinen14kanssa2", "lisaarinnasteinen14kanssa3"), 
                 false), 200);
         assertEquals(3, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
     }    
@@ -77,6 +78,14 @@ public class CodeElementResourceTest {
         String codeElementUri = "sisaltaakoodisto1koodit";
         assertResponse(resource.removeRelations(codeElementUri, "SISALTYY", Arrays.asList("sisaltyysuhde4kanssa1", "sisaltyysuhde4kanssa2"), false), 200);
         assertEquals(1, service.listByRelation(codeElementUri, 2, false, SuhteenTyyppi.SISALTYY).size());
+    }
+    
+    @Test
+    public void addsMultipleCodeElementRelationsWithTypeSISALTYY() {
+        String codeElementUri = "lisaasisaltyy18";
+        assertEquals(0, service.listByRelation(codeElementUri, 2, false, SuhteenTyyppi.SISALTYY).size());
+        assertResponse(resource.addRelations(codeElementUri, "SISALTYY", Arrays.asList("lisaasisaltyy18kanssa1", "lisaasisaltyy18kanssa2"), false), 200);
+        assertEquals(2, service.listByRelation(codeElementUri, 2, false, SuhteenTyyppi.SISALTYY).size());
     }
     
     @Test
