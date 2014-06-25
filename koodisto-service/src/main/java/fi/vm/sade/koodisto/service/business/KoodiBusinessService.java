@@ -53,18 +53,9 @@ public interface KoodiBusinessService {
      * @param version
      * @param alaKoodiIds
      * @param suhteenTyyppi
+     * @param isChild 
      */
-    void addRelation(String ylaKoodi, List<String> alaKoodis,
-            fi.vm.sade.koodisto.model.SuhteenTyyppi st);
-
-    /**
-     * Adds a relation between provided ylaKoodi with its version and alaKoodi
-     * with given type.
-     * 
-     * @return
-     */
-    void addRelation(String ylaKoodi, String alaKoodi,
-                     SuhteenTyyppi st);
+    void addRelation(String ylaKoodi, List<String> alaKoodis, SuhteenTyyppi st, boolean isChild);
 
     /**
      * Removes relation between provided codeElement and relations with given type.

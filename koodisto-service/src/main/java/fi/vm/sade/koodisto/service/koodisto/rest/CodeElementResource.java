@@ -203,8 +203,7 @@ public class CodeElementResource {
             @ApiParam(value = "Linkitettävän koodin URI") @PathParam("codeElementUriToAdd") String codeElementUriToAdd,
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType) {
 
-        koodiBusinessService.addRelation(codeElementUri, codeElementUriToAdd,
-                SuhteenTyyppi.valueOf(relationType));
+        koodiBusinessService.addRelation(codeElementUri, Arrays.asList(codeElementUriToAdd), SuhteenTyyppi.valueOf(relationType), false);
     }
     
     
@@ -228,9 +227,8 @@ public class CodeElementResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         try {
-//            koodiBusinessService.removeRelation(codeElementUri, relationsToRemove, SuhteenTyyppi.valueOf(relationType), isChild);
-//            return Response.status(Response.Status.OK).build();
-            throw new UnsupportedOperationException(); //TODO IMPL
+            koodiBusinessService.addRelation(codeElementUri, relationsToAdd, SuhteenTyyppi.valueOf(relationType), isChild);
+            return Response.status(Response.Status.OK).build();
         } catch (Exception e) {
             logger.warn("Exception caught while trying remove relations for codeelement " + codeElementUri, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

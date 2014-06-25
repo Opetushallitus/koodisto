@@ -323,30 +323,24 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return new ArrayList<KoodiVersioWithKoodistoItem>(koodis);
     }
 
-    @Override
-    public void addRelation(String ylaKoodi, String alaKoodi, SuhteenTyyppi suhteenTyyppi) {
-        KoodiVersio yla = getLatestKoodiVersio(ylaKoodi);
-        KoodiVersioWithKoodistoItem ala = getLatestKoodiVersioWithKoodistoVersioItems(alaKoodi);
-
-        addRelation(yla, suhteenTyyppi, ala);
-    }
-
-    private void addRelation(KoodiVersio ylakoodi, SuhteenTyyppi suhteenTyyppi, KoodiVersioWithKoodistoItem... alakoodis) {
-        if (suhteenTyyppi == SuhteenTyyppi.SISALTYY && !userIsRootUser() && koodisHaveSameOrganisaatio(ylakoodi, alakoodis)) {
+    private void addRelation(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st) {
+        if (alakoodiUris == null || alakoodiUris.isEmpty()) {
+            return;
+        }
+        if (st == SuhteenTyyppi.SISALTYY && !userIsRootUser() && koodisHaveSameOrganisaatio(ylakoodiUri, alakoodiUris)) {
             throw new KoodisHaveDifferentOrganizationsException("codeelements.have.different.organizations");
         }
+        KoodiVersio latestYlakoodi = getLatestKoodiVersio(ylakoodiUri);
 
-        KoodiVersio latestYlakoodi = ylakoodi;
-
-        if (SuhteenTyyppi.SISALTYY.equals(suhteenTyyppi)) {
-            koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri());
-
-            latestYlakoodi = createNewVersion(getLatestKoodiVersio(ylakoodi.getKoodi().getKoodiUri()));
+        if (SuhteenTyyppi.SISALTYY.equals(st)) {
+            koodistoBusinessService.createNewVersion(latestYlakoodi.getKoodi().getKoodisto().getKoodistoUri());
+            latestYlakoodi = createNewVersion(getLatestKoodiVersio(latestYlakoodi.getKoodi().getKoodiUri()));
         }
 
-        for (KoodiVersioWithKoodistoItem alakoodi : alakoodis) {
+        List<KoodiVersioWithKoodistoItem> alakoodiVersios = getLatestKoodiVersios(alakoodiUris.toArray(new String[alakoodiUris.size()]));
+        for (KoodiVersioWithKoodistoItem alakoodi : alakoodiVersios) {
             KoodinSuhde koodinSuhde = new KoodinSuhde();
-            koodinSuhde.setSuhteenTyyppi(suhteenTyyppi);
+            koodinSuhde.setSuhteenTyyppi(st);
             koodinSuhde.setYlakoodiVersio(latestYlakoodi);
             koodinSuhde.setAlakoodiVersio(alakoodi.getKoodiVersio());
             koodinSuhde.setVersio(1);
@@ -355,16 +349,16 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     @Override
-    public void addRelation(String ylaKoodi, List<String> alaKoodis, SuhteenTyyppi suhteenTyyppi) {
-        if (alaKoodis == null || alaKoodis.isEmpty()) {
-            return;
+    public void addRelation(String codeElementUri, List<String> relatedCodeElements, SuhteenTyyppi st, boolean isChild) {
+        if (isChild && st != SuhteenTyyppi.RINNASTEINEN) {
+            for (String relationToAdd: relatedCodeElements) {
+                addRelation(relationToAdd, Arrays.asList(codeElementUri), st);
+            }
+        } else {
+            addRelation(codeElementUri, relatedCodeElements, st);
         }
-
-        KoodiVersio ylakoodiVersio = getLatestKoodiVersio(ylaKoodi);
-        List<KoodiVersioWithKoodistoItem> alakoodiVersios = getLatestKoodiVersios(alaKoodis.toArray(new String[alaKoodis.size()]));
-
-        addRelation(ylakoodiVersio, suhteenTyyppi, alakoodiVersios.toArray(new KoodiVersioWithKoodistoItem[alakoodiVersios.size()]));
     }
+    
 
     private List<KoodinSuhde> getRelations(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st) {
         KoodiVersio ylakoodi = getLatestKoodiVersio(ylakoodiUri);
@@ -386,16 +380,15 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     
     @Override
     public void removeRelation(String codeElementUri, List<String> relatedCodeElements, SuhteenTyyppi st, boolean isChild) {
-        if (isChild && SuhteenTyyppi.RINNASTEINEN != st) {
+        if (isChild && st != SuhteenTyyppi.RINNASTEINEN) {
             for (String relationToRemove : relatedCodeElements) {
-                removeRelation(relationToRemove, Arrays.asList(codeElementUri), st);                    
+                removeRelation(relationToRemove, Arrays.asList(codeElementUri), st);
             }
         } else {
             removeRelation(codeElementUri, relatedCodeElements, st);
-        }        
+        }
     }
 
-    
     private void removeRelation(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st) {
         if (alakoodiUris == null || alakoodiUris.isEmpty() || getRelations(ylakoodiUri, alakoodiUris, st).size() == 0) {
             return;
@@ -864,14 +857,17 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }).isPresent();
     }
 
-    private boolean koodisHaveSameOrganisaatio(KoodiVersio ylakoodi, KoodiVersioWithKoodistoItem[] alakoodis) {
-        if (alakoodis.length == 0) {
-            return true;
+    private boolean koodisHaveSameOrganisaatio(String ylakoodiUri, List<String> alakoodiUris) {
+        boolean result = true;
+        KoodiVersio ylakoodi = getLatestKoodiVersio(ylakoodiUri);
+        for (String alakoodiUri : alakoodiUris) {
+            KoodiVersio alakoodi = getLatestKoodiVersio(alakoodiUri);
+            String organisaatio1 = ylakoodi.getKoodi().getKoodisto().getOrganisaatioOid();
+            String organisaatio2 = alakoodi.getKoodi().getKoodisto().getOrganisaatioOid();
+            authorizer.checkOrganisationAccess(organisaatio1, KoodistoRole.CRUD);
+            result = result && StringUtils.equals(organisaatio1, organisaatio2); // false if any organisation mismatches
         }
-        String organisaatio1 = ylakoodi.getKoodi().getKoodisto().getOrganisaatioOid();
-        String organisaatio2 = alakoodis[0].getKoodiVersio().getKoodi().getKoodisto().getOrganisaatioOid();
-        authorizer.checkOrganisationAccess(organisaatio1, KoodistoRole.CRUD);
-        return StringUtils.equals(organisaatio1, organisaatio2);
+        return result;
     }
 
     private boolean userIsRootUser() {

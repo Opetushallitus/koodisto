@@ -83,7 +83,7 @@ public class CodeElementResourceTest {
     @Test
     public void addsMultipleCodeElementRelationsWithTypeSISALTYY() {
         String codeElementUri = "lisaasisaltyy18";
-        assertEquals(0, service.listByRelation(codeElementUri, 2, false, SuhteenTyyppi.SISALTYY).size());
+        assertEquals(0, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.SISALTYY).size());
         assertResponse(resource.addRelations(codeElementUri, "SISALTYY", Arrays.asList("lisaasisaltyy18kanssa1", "lisaasisaltyy18kanssa2"), false), 200);
         assertEquals(2, service.listByRelation(codeElementUri, 2, false, SuhteenTyyppi.SISALTYY).size());
     }
@@ -101,11 +101,29 @@ public class CodeElementResourceTest {
     }
     
     @Test
+    public void addsMultipleCodeElementRelationsWithTypeSISALTYYAndCodeElementBeingLower() {
+        assertResponse(resource.addRelations("lisaasisaltyy18", "SISALTYY", Arrays.asList("lisaasisaltyy18kanssa1", "lisaasisaltyy18kanssa2"), 
+                true), 200);        
+        assertEquals(1, service.listByRelation("lisaasisaltyy18kanssa1", 2, false, SuhteenTyyppi.SISALTYY).size());
+        assertEquals(0, service.listByRelation("lisaasisaltyy18kanssa1", 1, false, SuhteenTyyppi.SISALTYY).size());
+        assertEquals(1, service.listByRelation("lisaasisaltyy18kanssa2", 2, false, SuhteenTyyppi.SISALTYY).size());
+        assertEquals(0, service.listByRelation("lisaasisaltyy18kanssa2", 1, false, SuhteenTyyppi.SISALTYY).size());
+    }
+    
+    @Test
     public void removesMultipleCodeElementRelationsThatBelongToDifferentCodes() {
         String codeElementUri = "sisaltaakoodisto6ja7ja8koodit";
         assertResponse(resource.removeRelations(codeElementUri, "SISALTYY", Arrays.asList("sisaltyysuhde9kanssa1", "sisaltyysuhde9kanssa2", "sisaltyysuhde9kanssa3"), false), 200);
         assertEquals(1, service.listByRelation(codeElementUri, 2, false, SuhteenTyyppi.SISALTYY).size());
     }
+
+    @Test
+    public void addsMultipleCodeElementRelationsThatBelongToDifferentCodes() {
+        String codeElementUri = "sisaltaakoodisto6ja7ja8koodit";
+        assertResponse(resource.removeRelations(codeElementUri, "SISALTYY", Arrays.asList("sisaltyysuhde9kanssa1", "sisaltyysuhde9kanssa2", "sisaltyysuhde9kanssa3"), false), 200);
+        assertEquals(1, service.listByRelation(codeElementUri, 2, false, SuhteenTyyppi.SISALTYY).size());
+    }
+
     
     private void assertResponse(Response response, int expectedStatus) {
         assertEquals(expectedStatus, response.getStatus());

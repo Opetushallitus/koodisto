@@ -12,6 +12,7 @@
   <koodisto id="10" koodistouri="lisaarinnasteinen2" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="11" koodistouri="lisaasisaltyy1" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="12" koodistouri="lisaasisaltyy2" version="0" organisaatioOid="1.2.2004.6" />
+  <koodisto id="13" koodistouri="lisaasisaltyy3" version="0" organisaatioOid="1.2.2004.6" />
   
   <koodi id="1" koodisto_id="1" version="0" koodiuri="sisaltyysuhde4kanssa1"/>
   <koodi id="2" koodisto_id="1" version="0" koodiuri="sisaltyysuhde4kanssa2"/>
@@ -33,6 +34,8 @@
   <koodi id="18" koodisto_id="11" version="0" koodiuri="lisaasisaltyy18" />
   <koodi id="19" koodisto_id="12" version="0" koodiuri="lisaasisaltyy18kanssa1" />
   <koodi id="20" koodisto_id="12" version="0" koodiuri="lisaasisaltyy18kanssa2" />
+  <koodi id="21" koodisto_id="13" version="0" koodiuri="lisaasisaltyy18kanssa3" />
+  <koodi id="22" koodisto_id="13" version="0" koodiuri="lisaasisaltyy18kanssa4" />
   
   <koodiversio id="1" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="1" koodiarvo="ss4k1"/>
   <koodiversio id="2" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="ss4k2"/>
@@ -54,6 +57,8 @@
   <koodiversio id="18" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="18" koodiarvo="ls18"/>
   <koodiversio id="19" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="19" koodiarvo="ls18k1"/>
   <koodiversio id="20" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="20" koodiarvo="ls18k2"/>
+  <koodiversio id="21" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="21" koodiarvo="ls18k3"/>
+  <koodiversio id="22" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="22" koodiarvo="ls18k4"/>
   
   <koodimetadata id="1" kieli="FI" nimi="Alajärvi" version="0" koodiversio_id="1" lyhytnimi="Alajärvi" kuvaus="Alajärvi"/>
   <koodimetadata id="2" kieli="FI" nimi="Olajärvi" version="0" koodiversio_id="2" lyhytnimi="Olajärvi" kuvaus="Olajärvi"/>
@@ -75,6 +80,8 @@
   <koodimetadata id="18" kieli="FI" nimi="Polkypyörä" version="0" koodiversio_id="18" lyhytnimi="Polkypyörä" kuvaus="Polkypyörä"/>
   <koodimetadata id="19" kieli="FI" nimi="Eturengas" version="0" koodiversio_id="19" lyhytnimi="Eturengas" kuvaus="Eturengas"/>
   <koodimetadata id="20" kieli="FI" nimi="Takarengas" version="0" koodiversio_id="20" lyhytnimi="Takarengas" kuvaus="Takarengas"/>
+  <koodimetadata id="21" kieli="FI" nimi="Satula" version="0" koodiversio_id="21" lyhytnimi="Satula" kuvaus="Satula"/>
+  <koodimetadata id="22" kieli="FI" nimi="Tanko" version="0" koodiversio_id="22" lyhytnimi="Tanko" kuvaus="Tanko"/>
   
   <koodinsuhde id="1" alakoodiversio_id="1" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1"/>
   <koodinsuhde id="2" alakoodiversio_id="2" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1"/>
@@ -102,6 +109,7 @@
   <koodistoversio id="10" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="10" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="11" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="11" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="12" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="12" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="13" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="13" voimassaalkupvm="2012-11-20"/>
   
   <koodistometadata id="1" kieli="FI" nimi="Järvet" version="0" koodistoversio_id="1" kuvaus="Järvet"/>
   <koodistometadata id="2" kieli="FI" nimi="Joet" version="0" koodistoversio_id="2" kuvaus="Joet"/>
@@ -115,6 +123,7 @@
   <koodistometadata id="10" kieli="FI" nimi="Suojukset" version="0" koodistoversio_id="10" kuvaus="suojukset"/>
   <koodistometadata id="11" kieli="FI" nimi="Kulkuvälineet" version="0" koodistoversio_id="11" kuvaus="kulkuvälineet"/>
   <koodistometadata id="12" kieli="FI" nimi="Renkaat" version="0" koodistoversio_id="12" kuvaus="renkaat"/>
+  <koodistometadata id="13" kieli="FI" nimi="Muut pyörän osat" version="0" koodistoversio_id="13" kuvaus="Muut pyörän osat"/>
   
   <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="1" koodiversio_id="1"/>
   <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="1" koodiversio_id="2"/>
@@ -136,6 +145,8 @@
   <koodistoversio_koodiversio id="18" version="0" koodistoversio_id="11" koodiversio_id="18"/>
   <koodistoversio_koodiversio id="19" version="0" koodistoversio_id="12" koodiversio_id="19"/>
   <koodistoversio_koodiversio id="20" version="0" koodistoversio_id="12" koodiversio_id="20"/>
+  <koodistoversio_koodiversio id="21" version="0" koodistoversio_id="13" koodiversio_id="21"/>
+  <koodistoversio_koodiversio id="22" version="0" koodistoversio_id="13" koodiversio_id="22"/>
   
   <koodistoryhma id="1" koodistoryhmauri="maantieto" version="0"/>
   <koodistoryhma id="2" koodistoryhmauri="rakennukset" version="0"/>
@@ -153,6 +164,7 @@
   <koodistoryhma_koodisto koodistoryhma_id="3" koodisto_id="10"/>
   <koodistoryhma_koodisto koodistoryhma_id="4" koodisto_id="11"/>
   <koodistoryhma_koodisto koodistoryhma_id="4" koodisto_id="12"/>
+  <koodistoryhma_koodisto koodistoryhma_id="4" koodisto_id="13"/>
   <koodistoryhmametadata id="1" koodistoryhma_id="1" kieli="FI" nimi="Maantieto" version="0"/>
   <koodistoryhmametadata id="2" koodistoryhma_id="2" kieli="FI" nimi="Rakennukset" version="0"/>
   <koodistoryhmametadata id="3" koodistoryhma_id="3" kieli="FI" nimi="Varusteet" version="0"/>
@@ -167,5 +179,6 @@
   <koodistonsuhde id="6" alakoodistoversio_id="8" ylakoodistoversio_id="5" versio="1" suhteentyyppi="SISALTYY" version="0"/>
   <koodistonsuhde id="7" alakoodistoversio_id="9" ylakoodistoversio_id="10" versio="1" suhteentyyppi="RINNASTEINEN" version="0"/>
   <koodistonsuhde id="8" alakoodistoversio_id="12" ylakoodistoversio_id="11" versio="1" suhteentyyppi="SISALTYY" version="0"/>
+  <koodistonsuhde id="9" alakoodistoversio_id="13" ylakoodistoversio_id="11" versio="1" suhteentyyppi="SISALTYY" version="0"/>
     
 </dataset>
