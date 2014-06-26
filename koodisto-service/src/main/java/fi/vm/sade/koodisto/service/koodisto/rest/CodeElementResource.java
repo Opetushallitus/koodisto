@@ -36,6 +36,7 @@ import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
+import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.dto.SimpleKoodiDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
@@ -219,9 +220,10 @@ public class CodeElementResource {
     public Response addRelations(
             @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType,
-            @ApiParam(value = "Lisättävien koodien URIt") @QueryParam("relationsToAdd") List<String> relationsToAdd,
-            @ApiParam(value = "Sisältyysuhde relaatioiden kanssa") @QueryParam("isChild") boolean isChild
+            @ApiParam(value = "Relaation tiedot JSON muodossa") KoodiRelaatioListaDto koodiRelaatioDto
             ) {
+        List<String> relationsToAdd = koodiRelaatioDto.getRelations();
+        boolean isChild = koodiRelaatioDto.isChild();
         if (relationsToAdd == null || relationsToAdd.isEmpty()) {
             logger.info("Called mass remove for relations without required query param (relationsToRemove)");
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -254,17 +256,21 @@ public class CodeElementResource {
                 SuhteenTyyppi.valueOf(relationType), false);
     }
     
-    @DELETE
+    @POST
     @Path("/removerelations/{codeElementUri}/{relationType}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({ JsonViews.Extended.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(value = "Poistaa koodien välisiä relaatioita, massatoiminto", notes = "")
     public Response removeRelations(
-            @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri, 
-            @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType, 
-            @ApiParam(value = "Poistettavien koodien URIt") @QueryParam("relationsToRemove") List<String> relationsToRemove,
-            @ApiParam(value = "Sisältyysuhde relaatioiden kanssa") @QueryParam("isChild") boolean isChild) {
+            @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
+            @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType,
+            @ApiParam(value = "Relaation tiedot JSON muodossa") KoodiRelaatioListaDto koodiRelaatioDto
+            ) {
+        
+        List<String> relationsToRemove = koodiRelaatioDto.getRelations();
+        boolean isChild = koodiRelaatioDto.isChild();
         if (relationsToRemove == null || relationsToRemove.isEmpty()) {
             logger.info("Called mass remove for relations without required query param (relationsToRemove)");
             return Response.status(Response.Status.BAD_REQUEST).build();

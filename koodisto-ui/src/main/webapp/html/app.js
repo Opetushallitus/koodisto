@@ -316,10 +316,12 @@ app.factory('RemoveRelationCodeElement', function($resource) {
 app.factory('MassRemoveRelationCodeElements', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/removerelations/:codeElementUri/:relationType", {
         codeElementUri : "@codeElementUri",
-        relationType : "@relationType"
+        relationType : "@relationType",
+        isChild : "@isChild",
+        relations : "@relations"
     }, {
         remove : {
-            method : "DELETE"
+            method : "POST"
         }
     });
 });
@@ -339,7 +341,9 @@ app.factory('AddRelationCodeElement', function($resource) {
 app.factory('MassAddRelationCodeElements', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/addrelations/:codeElementUri/:relationType", {
         codeElementUri : "@codeElementUri",
-        relationType : "@relationType"
+        relationType : "@relationType",
+        isChild : "@isChild",
+        relations : "@relations"
     }, {
         put : {
             method : "POST"

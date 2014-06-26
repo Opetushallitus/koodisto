@@ -379,6 +379,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     
     $scope.addRelationsCodeElement = function(selectedItems, collectionToAddTo, relationTypeString, modelCodeElementIsHost) {
         var elementUrisToAdd = [];
+        var addedElements = [];
 
         selectedItems.forEach(function(codeElement) {
             var found = false;
@@ -389,6 +390,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             });
             if(!found){
                 elementUrisToAdd.push(codeElement.uri);
+                addedElements.push(codeElement);
             }
         });
         
@@ -400,9 +402,9 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             codeElementUri : $scope.model.codeElement.koodiUri,
             relationType : relationTypeString,
             isChild : !modelCodeElementIsHost,
-            relationsToAdd: elementUrisToAdd
+            relations: elementUrisToAdd
         }, function(result) {
-            elementUrisToAdd.forEach(function(item) {
+            addedElements.forEach(function(item) {
                 collectionToAddTo.push(item);
             });
         }, function(error) {
@@ -428,12 +430,14 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         if (elementUrisToRemove.length < 1) {
             return;
         }
-
+        
+        
+        
         MassRemoveRelationCodeElements.remove({
             codeElementUri : $scope.model.codeElement.koodiUri,
             relationType : relationTypeString,
             isChild : !modelCodeElementIsHost,
-            relationsToRemove : elementUrisToRemove
+            relations : elementUrisToRemove
         }, function(result) {
             elementUrisToRemove.forEach(function(item) {
                 collectionToRemoveFrom.splice(jQuery.grep(collectionToRemoveFrom, function(from) {
