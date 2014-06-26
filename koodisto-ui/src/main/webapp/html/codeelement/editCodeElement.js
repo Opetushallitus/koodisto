@@ -211,7 +211,8 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
 });
 
 function CodeElementEditorController($scope, $location, $routeParams, $filter, CodeElementEditorModel, UpdateCodeElement, AddRelationCodeElement,
-        RemoveRelationCodeElement, MassRemoveRelationCodeElements, ValidateService, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion, $modal, isModalController) {
+        MassAddRelationCodeElements, RemoveRelationCodeElement, MassRemoveRelationCodeElements, ValidateService, CodesByUriAndVersion,
+        CodeElementsByCodesUriAndVersion, $modal, isModalController) {
 
     $scope.model = CodeElementEditorModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
@@ -375,18 +376,56 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             });
         }
     };
+    
+    $scope.addRelationsCodeElement = function(selectedItems, collectionToAddTo, relationTypeString, modelCodeElementIsHost) {
+        var elementUrisToAdd = [];
 
+        selectedItems.forEach(function(codeElement) {
+            var found = false;
+            collectionToAddTo.forEach(function(innerCodeElement) {
+                if (codeElement.uri == innerCodeElement.uri) {
+                    found = true;
+                }
+            });
+            if(!found){
+                elementUrisToAdd.push(codeElement.uri);
+            }
+        });
+        
+        if (elementUrisToAdd.length < 1) {
+            return;
+        }
+
+        MassAddRelationCodeElements.put({
+            codeElementUri : $scope.model.codeElement.koodiUri,
+            relationType : relationTypeString,
+            isChild : !modelCodeElementIsHost,
+            relationsToAdd: elementUrisToAdd
+        }, function(result) {
+            elementUrisToAdd.forEach(function(item) {
+                collectionToAddTo.push(item);
+            });
+        }, function(error) {
+            var alert = {
+                type : 'danger',
+                msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
+            };
+            $scope.model.alerts.push(alert);
+        });
+    };
+
+    
     $scope.removeRelationsCodeElement = function(unselectedItems, collectionToRemoveFrom, relationTypeString, modelCodeElementIsHost) {
-        var itemsToRemove = [];
+        var elementUrisToRemove = [];
         unselectedItems.forEach(function(codeElement) {
             collectionToRemoveFrom.forEach(function(innerCodeElement) {
                 if (codeElement.uri == innerCodeElement.uri) {
-                    itemsToRemove.push(innerCodeElement.uri);
+                    elementUrisToRemove.push(innerCodeElement.uri);
                 }
             });
         });
         
-        if (itemsToRemove.length < 1) {
+        if (elementUrisToRemove.length < 1) {
             return;
         }
 
@@ -394,21 +433,20 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             codeElementUri : $scope.model.codeElement.koodiUri,
             relationType : relationTypeString,
             isChild : !modelCodeElementIsHost,
-            relationsToRemove : itemsToRemove
+            relationsToRemove : elementUrisToRemove
         }, function(result) {
-            itemsToRemove.forEach(function(item) {
-        	collectionToRemoveFrom.splice(jQuery.grep(collectionToRemoveFrom, function(from) {
-        	    return from.uri = item;
-        	}), 1);
+            elementUrisToRemove.forEach(function(item) {
+                collectionToRemoveFrom.splice(jQuery.grep(collectionToRemoveFrom, function(from) {
+                    return from.uri = item;
+                }), 1);
             });
         }, function(error) {
             var alert = {
-        	    type : 'danger',
-        	    msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
+                type : 'danger',
+                msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
             };
             $scope.model.alerts.push(alert);
         });
-        
     };
 
     $scope.cancelcodeelement = function() {
@@ -423,21 +461,15 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             checked : false
         });
         if ($scope.model.addToListName === 'withincodes') {
-            selectedItems.forEach(function(codeElement) {
-                $scope.addRelationCodeElement(codeElement, $scope.model.withinCodeElements, "SISALTYY");
-            });
+            $scope.addRelationsCodeElement(selectedItems, $scope.model.withinCodeElements, "SISALTYY");
             $scope.removeRelationsCodeElement(unselectedItems, $scope.model.withinCodeElements, "SISALTYY");
 
         } else if ($scope.model.addToListName === 'includescodes') {
-            selectedItems.forEach(function(codeElement) {
-                $scope.addRelationCodeElement(codeElement, $scope.model.includesCodeElements, "SISALTYY", true);
-            });
+            $scope.addRelationsCodeElement(selectedItems, $scope.model.includesCodeElements, "SISALTYY", true);
             $scope.removeRelationsCodeElement(unselectedItems, $scope.model.includesCodeElements, "SISALTYY", true);
 
         } else if ($scope.model.addToListName === 'levelswithcodes') {
-            selectedItems.forEach(function(codeElement) {
-                $scope.addRelationCodeElement(codeElement, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
-            });
+            $scope.addRelationsCodeElement(selectedItems, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
             $scope.removeRelationsCodeElement(unselectedItems, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
         }
         $scope.model.codeelementmodalInstance.close();

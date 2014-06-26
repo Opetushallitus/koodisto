@@ -336,6 +336,17 @@ app.factory('AddRelationCodeElement', function($resource) {
     });
 });
 
+app.factory('MassAddRelationCodeElements', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codeelement/addrelations/:codeElementUri/:relationType", {
+        codeElementUri : "@codeElementUri",
+        relationType : "@relationType"
+    }, {
+        put : {
+            method : "POST"
+        }
+    });
+});
+
 app.factory('AddRelationCodes', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes/addrelation/:codesUri/:codesUriToAdd/:relationType", {
         codesUri : "@codesUri",

@@ -27,7 +27,7 @@ describe(
                     CodeElementEditorModel : model,
                     isModalController : false
                 });
-                angular.mock.inject(function($injector) {
+                angular.mock.inject(function() {
                     mockBackend = $injector.get('$httpBackend');
                 });
             }));
@@ -115,7 +115,7 @@ describe(
             });
 
             describe("Adding relations", function() {
-                var addToListName, shownCodeElements, withinCodeElements, codeElement1, codeElement2;
+                var addToListName, shownCodeElements, withinCodeElements, codeElement1;
 
                 beforeEach(function() {
                     addToListName = "withincodes";
@@ -171,7 +171,7 @@ describe(
                     expect(scope.model.withinCodeElements.length).toEqual(1);
 
                     scope.okcodeelement();
-                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelation/2organisaatiotesti_kakkonen/1organisaatiotesti_ykkonen/SISALTYY")
+                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelations/1organisaatiotesti_ykkonen/SISALTYY")
                             .respond(200, "");
                     mockBackend.flush();
                     expect(scope.model.alerts.length).toEqual(0);
@@ -182,7 +182,7 @@ describe(
                 it("should add alert if backend fails", function() {
                     expect(scope.model.withinCodeElements.length).toEqual(1);
                     scope.okcodeelement();
-                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelation/2organisaatiotesti_kakkonen/1organisaatiotesti_ykkonen/SISALTYY")
+                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelations/1organisaatiotesti_ykkonen/SISALTYY")
                             .respond(500, "");
                     mockBackend.flush();
                     expect(scope.model.withinCodeElements.length).toEqual(1); // alert
@@ -230,7 +230,7 @@ describe(
                             mockBackend.flush();
                             scope.model.codeelementmodalInstance = {
                                 close : jasmine.createSpy('modalInstance.close')
-                            }
+                            };
                         });
 
                         it(
@@ -349,7 +349,7 @@ describe(
                         "checked" : true
                     } ];
                     scope.model.addToListName = "withincodes";
-                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelation/osoitetarra/posti/SISALTYY").respond(200, "");
+                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelations/posti/SISALTYY").respond(200, "");
                     mockBackend.expectDELETE(
                             SERVICE_URL_BASE
                                     + "codeelement/removerelations/posti/SISALTYY?isChild=true&relationsToRemove=postimerkki&relationsToRemove=kirjekuori")
@@ -371,7 +371,7 @@ describe(
                         "checked" : true
                     } ];
                     scope.model.addToListName = "includescodes";
-                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelation/posti/mustetahra/SISALTYY").respond(200, "");
+                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelations/posti/SISALTYY").respond(200, "");
                     mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/SISALTYY?isChild=false&relationsToRemove=sulkakyna")
                             .respond();
                     scope.okcodeelement();
@@ -388,7 +388,7 @@ describe(
                         "checked" : true
                     } ];
                     scope.model.addToListName = "levelswithcodes";
-                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelation/postiauto/posti/RINNASTEINEN").respond(200, "");
+                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelations/posti/RINNASTEINEN").respond(200, "");
                     mockBackend.expectDELETE(SERVICE_URL_BASE + "codeelement/removerelations/posti/RINNASTEINEN?isChild=true&relationsToRemove=postiluukku")
                             .respond();
                     scope.okcodeelement();
