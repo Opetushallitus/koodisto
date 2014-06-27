@@ -24,6 +24,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder.In;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -216,18 +217,16 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
 
         if (searchCriteria != null) {
             if (searchCriteria.getKoodiUris() != null && !searchCriteria.getKoodiUris().isEmpty()) {
-                List<Predicate> uriRestrictions = new ArrayList<Predicate>();
+
+                In<String> in = cb.in(koodi.<String> get(KOODI_URI));
 
                 for (String koodiUri : searchCriteria.getKoodiUris()) {
                     if (StringUtils.isNotBlank(koodiUri)) {
-                        uriRestrictions.add(cb.equal(koodi.<String> get(KOODI_URI), koodiUri));
+                        in.value(koodiUri);
                     }
                 }
+                restrictions.add(in);
 
-                if (!uriRestrictions.isEmpty()) {
-                    restrictions.add(uriRestrictions.size() == 1 ? uriRestrictions.get(0)
-                            : cb.or(uriRestrictions.toArray(new Predicate[uriRestrictions.size()])));
-                }
             }
 
             restrictions.addAll(createSecondaryRestrictionsForKoodiSearchCriteria(cb, searchCriteria, koodiVersio));

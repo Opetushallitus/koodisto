@@ -134,4 +134,18 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
 
         return em.createQuery(cquery).getResultList();
     }
+    
+    
+    public KoodinSuhde insertNonFlush(KoodinSuhde entity) {
+        validate(entity);
+        EntityManager entityManager = getEntityManager();
+        entityManager.persist(entity);
+        // Database must be synchronized at after this by flushing!
+        return entity;
+    }
+    
+    public void flush() {
+        EntityManager entityManager = getEntityManager();
+        entityManager.flush();
+    }
 }

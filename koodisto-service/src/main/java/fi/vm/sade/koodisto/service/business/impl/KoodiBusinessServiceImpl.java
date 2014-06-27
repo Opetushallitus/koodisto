@@ -344,8 +344,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             koodinSuhde.setYlakoodiVersio(latestYlakoodi);
             koodinSuhde.setAlakoodiVersio(alakoodi.getKoodiVersio());
             koodinSuhde.setVersio(1);
-            koodinSuhdeDAO.insert(koodinSuhde);
+            koodinSuhdeDAO.insertNonFlush(koodinSuhde);
         }
+        koodinSuhdeDAO.flush();
     }
 
     @Override
