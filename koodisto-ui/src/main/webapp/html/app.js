@@ -316,9 +316,7 @@ app.factory('RemoveRelationCodeElement', function($resource) {
 app.factory('MassRemoveRelationCodeElements', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/removerelations/:codeElementUri/:relationType", {
         codeElementUri : "@codeElementUri",
-        relationType : "@relationType",
-        isChild : "@isChild",
-        relations : "@relations"
+        relationType : "@relationType"
     }, {
         remove : {
             method : "POST"
@@ -342,8 +340,6 @@ app.factory('MassAddRelationCodeElements', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/addrelations/:codeElementUri/:relationType", {
         codeElementUri : "@codeElementUri",
         relationType : "@relationType",
-        isChild : "@isChild",
-        relations : "@relations"
     }, {
         put : {
             method : "POST"
