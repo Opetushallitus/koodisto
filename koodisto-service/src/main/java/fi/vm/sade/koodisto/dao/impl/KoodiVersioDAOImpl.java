@@ -217,18 +217,21 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
 
         if (searchCriteria != null) {
             if (searchCriteria.getKoodiUris() != null && !searchCriteria.getKoodiUris().isEmpty()) {
-
-                In<String> in = cb.in(koodi.<String> get(KOODI_URI));
-
+                ArrayList<String> koodiUris = new ArrayList<String>();
                 for (String koodiUri : searchCriteria.getKoodiUris()) {
                     if (StringUtils.isNotBlank(koodiUri)) {
-                        in.value(koodiUri);
+                        koodiUris.add(koodiUri);
                     }
                 }
-                restrictions.add(in);
 
+                if (!koodiUris.isEmpty()) {
+                    In<String> in = cb.in(koodi.<String> get(KOODI_URI));
+                    for (String uri : koodiUris) {
+                        in.value(uri);
+                    }
+                    restrictions.add(in);
+                }
             }
-
             restrictions.addAll(createSecondaryRestrictionsForKoodiSearchCriteria(cb, searchCriteria, koodiVersio));
         }
 
