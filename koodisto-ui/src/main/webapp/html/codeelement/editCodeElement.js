@@ -19,6 +19,10 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
         this.allIncludesCodeElements = [];
         this.allLevelsWithCodeElements = [];
         this.showCode = '';
+        this.withinListLengthLimit=100;
+        this.includesListLengthLimit=100;
+        this.levelsWithListLengthLimit=100;
+        this.listIncrement=100;
 
         this.init = function(scope, codeElementUri, codeElementVersion) {
             this.allCodes = [];
@@ -203,6 +207,18 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                     });
                 }
                 iter(data.children);
+            }
+        };
+        
+        this.incrementListLimit = function(listName) {
+            if(listName === "within"){
+                this.withinListLengthLimit += this.listIncrement;
+            }
+            if(listName === "includes"){
+                this.includesListLengthLimit += this.listIncrement;
+            }
+            if(listName === "levelsWith"){
+                this.levelsWithListLengthLimit += this.listIncrement;
             }
         };
     };
@@ -407,12 +423,14 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             addedElements.forEach(function(item) {
                 collectionToAddTo.push(item);
             });
+            $scope.model.codeelementmodalInstance.close();
         }, function(error) {
             var alert = {
                 type : 'danger',
                 msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
             };
             $scope.model.alerts.push(alert);
+            $scope.model.codeelementmodalInstance.close();
         });
     };
 
@@ -431,8 +449,6 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             return;
         }
         
-        
-        
         MassRemoveRelationCodeElements.remove({
             codeElementUri : $scope.model.codeElement.koodiUri,
             relationType : relationTypeString,
@@ -444,12 +460,14 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                     return from.uri = item;
                 }), 1);
             });
+            $scope.model.codeelementmodalInstance.close();
         }, function(error) {
             var alert = {
                 type : 'danger',
                 msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
             };
             $scope.model.alerts.push(alert);
+            $scope.model.codeelementmodalInstance.close();
         });
     };
 
@@ -476,7 +494,6 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             $scope.addRelationsCodeElement(selectedItems, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
             $scope.removeRelationsCodeElement(unselectedItems, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
         }
-        $scope.model.codeelementmodalInstance.close();
     };
 
     showCodeElementsInCodeSet = function(toBeShown, existingSelections) {
@@ -485,6 +502,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             codesUri : $scope.model.showCode,
             codesVersion : 0
         }, function(result2) {
+            $scope.selectallcodelements = true;
             result2.forEach(function(codeElement) {
                 var ce = {};
                 ce.uri = codeElement.koodiUri;
@@ -493,6 +511,9 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                 }).length > 0;
                 ce.value = codeElement.koodiArvo;
                 ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'nimi', 'FI');
+                if($scope.selectallcodelements && !ce.checked){
+                    $scope.selectallcodelements = false;
+                }
                 toBeShown.push(ce);
             });
 
@@ -638,6 +659,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         $scope.model.withinRelationToRemove = null;
         $scope.model.modalInstance.dismiss('cancel');
     };
+
 
     // Pagination
 
