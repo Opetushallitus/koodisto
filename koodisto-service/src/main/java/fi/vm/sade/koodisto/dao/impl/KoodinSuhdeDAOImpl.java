@@ -4,6 +4,7 @@
 package fi.vm.sade.koodisto.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -63,6 +64,9 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
         for (KoodiUriAndVersioType ak : alaKoodis) {
             concatenatedAlaList.add(ak.getKoodiUri() + SEPARATOR + ak.getVersio());
         }
+        if (concatenatedAlaList.isEmpty()) {
+            throw new IllegalArgumentException("Alakoodi list was empty");
+        }
         Predicate concatenatedAlakoodiUriAndVersioRestriction =
                 cb.concat(alakoodiJoin.<String> get(KOODI_URI), cb.concat(SEPARATOR, alakoodiVersioJoin.<String> get(VERSIO)))
                         .in(concatenatedAlaList);
@@ -92,15 +96,15 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
                     cb.equal(alakoodiVersioJoin.get(VERSIO), ylaKoodi.getVersio()));
 
             Predicate alaAndYla = cb.and(
-                    alakoodiRestriction, 
+                    alakoodiRestriction,
                     concatenatedYlakoodiUriAndVersioRestriction);
 
             Predicate or = cb.or(ylaAndAla, alaAndYla);
             return cb.and(suhteenTyyppiRestriction, or);
 
         } else {
-            return cb.and(suhteenTyyppiRestriction, 
-                    concatenatedAlakoodiUriAndVersioRestriction, 
+            return cb.and(suhteenTyyppiRestriction,
+                    concatenatedAlakoodiUriAndVersioRestriction,
                     ylakoodiRestriction);
         }
     }
@@ -130,6 +134,17 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
 
         // FIXME: This is kinda ugly but it works
         em.createQuery("delete from KoodinSuhde k where k.id = :id").setParameter("id", entity.getId()).executeUpdate();
+    }
+
+    public void massRemove(List<KoodinSuhde> entityList) {
+        if (entityList.isEmpty())
+            throw new IllegalArgumentException("EntityList was empty.");
+        ArrayList<Long> idList = new ArrayList<Long>();
+        for (KoodinSuhde entity : entityList) {
+            idList.add(entity.getId());
+        }
+        EntityManager em = getEntityManager();
+        em.createQuery("delete from KoodinSuhde k where k.id in (:idList)").setParameter("idList", idList).executeUpdate();
     }
 
     @Override

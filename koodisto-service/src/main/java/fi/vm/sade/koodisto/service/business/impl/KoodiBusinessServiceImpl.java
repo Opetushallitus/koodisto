@@ -390,6 +390,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
     }
 
+    @Transactional(readOnly = true)
     private void removeRelation(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st) {
         if (alakoodiUris == null || alakoodiUris.isEmpty() || getRelations(ylakoodiUri, alakoodiUris, st).size() == 0) {
             return;
@@ -402,9 +403,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         List<KoodinSuhde> relations = getRelations(ylakoodiUri, alakoodiUris, st);
 
-        for (KoodinSuhde k : relations) {
-            koodinSuhdeDAO.remove(k);
-        }
+        koodinSuhdeDAO.massRemove(relations);
     }
 
     private KoodiVersio createNewVersionIfNeeded(KoodiVersio latest, UpdateKoodiDataType updateKoodiData) {
