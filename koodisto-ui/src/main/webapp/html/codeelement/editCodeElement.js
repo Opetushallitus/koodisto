@@ -455,11 +455,12 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             isChild : !modelCodeElementIsHost,
             relations : elementUrisToRemove
         }, function(result) {
-            elementUrisToRemove.forEach(function(item) {
-                collectionToRemoveFrom.splice(jQuery.grep(collectionToRemoveFrom, function(from) {
-                    return from.uri = item;
-                }), 1);
+            remainingElements = $.grep(collectionToRemoveFrom, function(element){
+                return elementUrisToRemove.indexOf(element.uri) == -1;
             });
+            collectionToRemoveFrom.length = 0;
+            Array.prototype.push.apply(collectionToRemoveFrom, remainingElements);
+            
             $scope.model.codeelementmodalInstance.close();
         }, function(error) {
             var alert = {
