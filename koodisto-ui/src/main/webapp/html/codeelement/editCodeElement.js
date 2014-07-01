@@ -515,10 +515,10 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                     $scope.selectallcodelements = false;
                 }
                 toBeShown.push(ce);
+                $scope.updatePaginationPage(true);
             });
 
             $scope.model.shownCodeElements = toBeShown;
-            $scope.updatePaginationPage(true);
             $scope.model.loadingCodeElements = false;
         });
     };

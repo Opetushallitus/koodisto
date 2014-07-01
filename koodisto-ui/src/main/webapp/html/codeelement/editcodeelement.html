@@ -98,8 +98,8 @@
         Olet poistamassa koodin {{ namefi }} ja {{ model.withinRelationToRemove.name || model.includesRelationToRemove.name || model.levelsRelationToRemove.name }} v&auml;list&auml; yhteytt&auml;
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="okconfirm()">OK</button>
-        <button class="btn btn-warning" ng-click="cancelconfirm()">Cancel</button>
+        <button ng-disabled="clickedSubmit" class="btn btn-primary" ng-click="okconfirm()">OK</button>
+        <button ng-disabled="clickedSubmit" class="btn btn-warning" ng-click="cancelconfirm()">Cancel</button>
     </div>
 </script>
 
@@ -124,8 +124,9 @@
         <div class="codeSelector" ng-include="'codeelement.html'" />
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="okcodeelement()">{{'codes.save' | i18n}}</button>
-        <button class="btn btn-warning" ng-click="cancelcodeelement()">{{'codes.cancel' | i18n}}</button>
+        <span ng-if="clickedSubmit">{{'codes.viewpage.codeelements.saving' | i18n}}</span>
+        <button ng-disabled="clickedSubmit" class="btn btn-primary" ng-click="okcodeelement(); clickedSubmit=true">{{'codes.save' | i18n}}</button>
+        <button ng-disabled="clickedSubmit" class="btn btn-warning" ng-click="cancelcodeelement()">{{'codes.cancel' | i18n}}</button>
     </div>
 </script>
 
