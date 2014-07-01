@@ -323,7 +323,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return new ArrayList<KoodiVersioWithKoodistoItem>(koodis);
     }
 
-    private void addRelation(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st) {
+    private void privateAddRelation(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st, boolean doFlush) {
         if (alakoodiUris == null || alakoodiUris.isEmpty()) {
             return;
         }
@@ -346,17 +346,22 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             koodinSuhde.setVersio(1);
             koodinSuhdeDAO.insertNonFlush(koodinSuhde);
         }
-        koodinSuhdeDAO.flush();
+        if(doFlush){
+            koodinSuhdeDAO.flush();
+        } else {
+            // Call koodinSuhdeDAO.flush() outside this method!
+        }
     }
 
     @Override
     public void addRelation(String codeElementUri, List<String> relatedCodeElements, SuhteenTyyppi st, boolean isChild) {
         if (isChild && st != SuhteenTyyppi.RINNASTEINEN) {
             for (String relationToAdd: relatedCodeElements) {
-                addRelation(relationToAdd, Arrays.asList(codeElementUri), st);
+                privateAddRelation(relationToAdd, Arrays.asList(codeElementUri), st, false);
             }
+            koodinSuhdeDAO.flush();
         } else {
-            addRelation(codeElementUri, relatedCodeElements, st);
+            privateAddRelation(codeElementUri, relatedCodeElements, st, true);
         }
     }
     
