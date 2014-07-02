@@ -49,7 +49,7 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
 
     var anyUpdateAccess = function(service,model) {
         var found = false;
-        model.myroles.forEach(function(role) {
+        model.myroles.forEach(function(role) {
             if( role.indexOf(service + UPDATE) > -1 ||
                 role.indexOf(service + CRUD) > -1) {
                 found = true;
@@ -60,7 +60,7 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
 
     var anyCrudAccess = function(service,model) {
         var found = false;
-        model.myroles.forEach(function(role) {
+        model.myroles.forEach(function(role) {
             if( role.indexOf(service + CRUD) > -1) {
                 found = true;
             }

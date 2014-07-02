@@ -135,7 +135,7 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
             var alert = {
                 type : 'danger',
                 msg : 'Koodin poisto ep\u00E4onnistui.'
-            }
+            };
             $scope.model.alerts.push(alert);
         });
 

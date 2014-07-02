@@ -12,7 +12,7 @@ app.factory('ViewCodesGroupModel', function($location, $modal, CodesGroupByUri) 
             CodesGroupByUri.get({id: id}, function (result) {
                 model.codesgroup = result;
                 if (result.koodistos.length === 0) {
-                    model.deleteState = ""
+                    model.deleteState = "";
                 }
             });
         };
@@ -50,7 +50,7 @@ function ViewCodesGroupController($scope, $location, $routeParams, ViewCodesGrou
             Treemodel.refresh();
             $location.path("/");
         }, function(error) {
-            var alert = { type: 'danger', msg: 'Koodiryhm\u00E4n poisto ep\u00E4onnistui.' }
+            var alert = { type: 'danger', msg: 'Koodiryhm\u00E4n poisto ep\u00E4onnistui.' };
             $scope.model.alerts.push(alert);
         });
 

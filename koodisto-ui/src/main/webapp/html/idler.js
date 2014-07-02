@@ -31,23 +31,23 @@ app.directive('idle', ['$idle', '$timeout', '$interval', function($idle, $timeou
 		} 
 	    }, 5000, false);
 	}
-    }
-}])
+    };
+}]);
 
 app.controller('SessionExpiresCtrl', ['$idle', '$scope', '$modalInstance', '$window', function( $idle, $scope, $modalInstance, $window) {
     $scope.timeoutMessage = function() {
 	var duration = Math.floor(MAX_SESSION_IDLE_TIME_IN_SECONDS / 60);
 	return jQuery.i18n.prop('session.expired.text1.part1') + " " + duration +  " " + jQuery.i18n.prop('session.expired.text1.part2');
-    }
+    };
     
     $scope.okConfirm = function() {
 	$idle.watch();
 	$modalInstance.close();
-    }
+    };
     $scope.redirectToLogin = function() {
 	$window.location.reload();
-    }
-}])
+    };
+}]);
 
 app.controller('EventsCtrl', ['$scope','$idle', '$modal', '$http', function($scope, $idle, $modal, $http) {
     openModal = function(template) {
@@ -58,7 +58,7 @@ app.controller('EventsCtrl', ['$scope','$idle', '$modal', '$http', function($sco
 		backdrop: 'static',
 		windowClass: 'modal-warning'
 	    });
-    }
+    };
 
     $scope.$on('$idleWarn', function(e, countdown) {
 	if (!$scope.sessionWarning || angular.element('#sessionWarning').length < 1) {
@@ -70,7 +70,7 @@ app.controller('EventsCtrl', ['$scope','$idle', '$modal', '$http', function($sco
 	$scope.sessionWarning.close();
 	$scope.sessionWarning = openModal('sessionExpired.html');
 	$idle.unwatch();
-    })
+    });
 
 }])
 .config(['$idleProvider', '$keepaliveProvider', function($idleProvider, $keepaliveProvider) {    

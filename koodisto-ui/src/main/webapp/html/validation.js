@@ -1,7 +1,7 @@
 app.factory('ValidateService', function() {
     return {
         validateCodes: function(scope,error,isupdate) {
-            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) }
+            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
 
             if (scope.namefi && !scope.descriptionfi ||
                 scope.descriptionfi && !scope.namefi ||
@@ -17,7 +17,7 @@ app.factory('ValidateService', function() {
         },
         validateCodeElement: function(scope,error,isupdate) {
 
-            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) }
+            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
 
             if (scope.namefi && !scope.descriptionfi ||
                 scope.descriptionfi && !scope.namefi ||

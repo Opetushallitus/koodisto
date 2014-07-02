@@ -12,12 +12,12 @@ app.factory("ChildOpener", function() {
 			iter(child.children);
 		    });
 		}
-	    }
+	    };
 
 	    iter(data.children);
 	}
-    }
-})
+    };
+});
 
 app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOpener) {
     return (function() {
@@ -46,7 +46,7 @@ app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOp
         	    });
         	});
             }
-        }
+        };
         
         function calculateMatchingOrgs(organizations) {
             var amount = organizations.length;
@@ -67,8 +67,8 @@ app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOp
             var matchingOrgs = new Array();
             
             function matchesSearch(organization) {
-        	function matchesTranslation(organization, language) {
-        	    return organization.nimi[language] && organization.nimi[language].toLowerCase().indexOf(searchStr) > -1;
+        	function matchesTranslation(organization2, language) {
+        	    return organization2.nimi[language] && organization2.nimi[language].toLowerCase().indexOf(searchStr) > -1;
         	}
         	return matchesTranslation(organization, 'fi');
             }
@@ -101,11 +101,11 @@ app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOp
         	    instance.openChildren(data);
         	});
             }
-        }
+        };
 
         instance.openChildren = function(data) {
             ChildOpener(data);
-        }
+        };
 
         return instance;
     })();
@@ -128,7 +128,7 @@ app.factory('OrganisaatioOPHTreeModel', function(Organizations, OrganizationByOi
         	instance.model.organisaatiot = [result];
         	instance.model.numHits = 1;
             });
-        }
+        };
 
         instance.search = function(searchStr) {            
             Organizations.get({"searchStr": searchStr, "skipparents": true}, function(result) {
@@ -139,7 +139,7 @@ app.factory('OrganisaatioOPHTreeModel', function(Organizations, OrganizationByOi
         	    });
         	}
             });            
-        }
+        };
 
         instance.openChildren = function(data) {
                ChildOpener(data);
@@ -184,12 +184,12 @@ function OrganisaatioTreeController($scope, AuthService, OrganisaatioTreeModel, 
 
     $scope.openChildren = function(data) {
 	$scope.orgTree.openChildren(data);
-    }
+    };
 
     $scope.clear = function(){
 	$scope.orgTree.searchStr = '';
 	$scope.orgTree.resetSearch();
-    }
+    };
 
 }
 
