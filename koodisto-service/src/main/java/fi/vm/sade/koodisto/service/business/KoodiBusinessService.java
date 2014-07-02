@@ -5,6 +5,7 @@ package fi.vm.sade.koodisto.service.business;
 
 import java.util.List;
 
+import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
@@ -57,6 +58,8 @@ public interface KoodiBusinessService {
      */
     void addRelation(String ylaKoodi, List<String> alaKoodis, SuhteenTyyppi st, boolean isChild);
 
+    void addRelation(KoodiRelaatioListaDto koodiRelaatioDto);
+
     /**
      * Removes relation between provided codeElement and relations with given type.
      * @param st type of relation
@@ -65,6 +68,8 @@ public interface KoodiBusinessService {
      * @param relatedCodeElements
      */
     void removeRelation(String codeElementUri, List<String> relatedCodeElements, SuhteenTyyppi st, boolean isChild);
+
+    void removeRelation(KoodiRelaatioListaDto koodiRelaatioDto);
 
     List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisByKoodistoCriteriaType searchCriteria);
 
@@ -102,4 +107,5 @@ public interface KoodiBusinessService {
 	boolean hasRelationBetweenCodeElements(KoodiVersio ylaKoodiVersio, final KoodiVersio alaKoodiVersio);
 	
 	boolean isLatestKoodiVersio(String koodiUri, Integer versio);
+
 }

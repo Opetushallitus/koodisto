@@ -34,6 +34,7 @@ import fi.vm.sade.koodisto.dao.KoodinSuhdeDAO;
 import fi.vm.sade.koodisto.dao.KoodistoDAO;
 import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
 import fi.vm.sade.koodisto.dao.KoodistoVersioKoodiVersioDAO;
+import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
@@ -365,6 +366,14 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
     }
     
+    @Override
+    public void addRelation(KoodiRelaatioListaDto krl){
+        String codeElementUri = krl.getCodeElementUri();
+        List<String> relatedCodeElements = krl.getRelations();
+        SuhteenTyyppi st = SuhteenTyyppi.valueOf(krl.getRelationType());
+        boolean isChild = krl.isChild();
+        addRelation(codeElementUri, relatedCodeElements, st, isChild);
+    }
 
     private List<KoodinSuhde> getRelations(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st) {
         KoodiVersio ylakoodi = getLatestKoodiVersio(ylakoodiUri);
@@ -388,15 +397,26 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public void removeRelation(String codeElementUri, List<String> relatedCodeElements, SuhteenTyyppi st, boolean isChild) {
         if (isChild && st != SuhteenTyyppi.RINNASTEINEN) {
             for (String relationToRemove : relatedCodeElements) {
-                removeRelation(relationToRemove, Arrays.asList(codeElementUri), st);
+                privateRemoveRelation(relationToRemove, Arrays.asList(codeElementUri), st);
             }
         } else {
-            removeRelation(codeElementUri, relatedCodeElements, st);
+            privateRemoveRelation(codeElementUri, relatedCodeElements, st);
         }
     }
 
+    @Override
+    public void removeRelation(KoodiRelaatioListaDto krl){
+        String codeElementUri = krl.getCodeElementUri();
+        List<String> relatedCodeElements = krl.getRelations();
+        SuhteenTyyppi st = SuhteenTyyppi.valueOf(krl.getRelationType());
+        boolean isChild = krl.isChild();
+        removeRelation(codeElementUri, relatedCodeElements, st, isChild);
+    }
+
+
+    
     @Transactional(readOnly = true)
-    private void removeRelation(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st) {
+    private void privateRemoveRelation(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st) {
         if (alakoodiUris == null || alakoodiUris.isEmpty() || getRelations(ylakoodiUri, alakoodiUris, st).size() == 0) {
             return;
         }

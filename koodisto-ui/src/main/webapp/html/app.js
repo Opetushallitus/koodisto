@@ -202,7 +202,7 @@ app.factory('AllCodes', function($resource) {
 
 app.factory('DownloadCodes', function() {
     return function(codesUri, codesVersion, format, encoding) {
-        var urlArray = [];
+        urlArray = [];
         urlArray.push(
                 SERVICE_URL_BASE + "codes/download",
                 codesUri,
@@ -314,9 +314,7 @@ app.factory('RemoveRelationCodeElement', function($resource) {
 });
 
 app.factory('MassRemoveRelationCodeElements', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/removerelations/:codeElementUri/:relationType", {
-        codeElementUri : "@codeElementUri",
-        relationType : "@relationType"
+    return $resource(SERVICE_URL_BASE + "codeelement/removerelations", {
     }, {
         remove : {
             method : "POST"
@@ -337,9 +335,8 @@ app.factory('AddRelationCodeElement', function($resource) {
 });
 
 app.factory('MassAddRelationCodeElements', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/addrelations/:codeElementUri/:relationType", {
-        codeElementUri : "@codeElementUri",
-        relationType : "@relationType",
+    return $resource(SERVICE_URL_BASE + "codeelement/addrelations", {
+
     }, {
         put : {
             method : "POST"
