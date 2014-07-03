@@ -885,12 +885,16 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     private boolean koodisHaveSameOrganisaatio(String ylakoodiUri, List<String> alakoodiUris) {
         boolean result = true;
         KoodiVersio ylakoodi = getLatestKoodiVersio(ylakoodiUri);
+        String organisaatio1 = ylakoodi.getKoodi().getKoodisto().getOrganisaatioOid();
+        ArrayList<String> alreadyChecked = new ArrayList<String>();
         for (String alakoodiUri : alakoodiUris) {
             KoodiVersio alakoodi = getLatestKoodiVersio(alakoodiUri);
-            String organisaatio1 = ylakoodi.getKoodi().getKoodisto().getOrganisaatioOid();
             String organisaatio2 = alakoodi.getKoodi().getKoodisto().getOrganisaatioOid();
-            authorizer.checkOrganisationAccess(organisaatio1, KoodistoRole.CRUD);
-            result = result && StringUtils.equals(organisaatio1, organisaatio2); // false if any organisation mismatches
+            if (!alreadyChecked.contains(organisaatio2)) {
+                authorizer.checkOrganisationAccess(organisaatio1, KoodistoRole.CRUD);
+                result = result && StringUtils.equals(organisaatio1, organisaatio2); // false if any organisation mismatches
+                alreadyChecked.add(organisaatio2);
+            }
         }
         return result;
     }
