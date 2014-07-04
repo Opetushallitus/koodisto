@@ -22,6 +22,8 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
         this.withinListLengthLimit=10;
         this.includesListLengthLimit=10;
         this.levelsWithListLengthLimit=10;
+        this.isAddingRelationsComplete = false;
+        this.isRemovingRelationsComplete = false;
 
         this.init = function(scope, codeElementUri, codeElementVersion) {
             this.allCodes = [];
@@ -35,6 +37,14 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             this.shownCodeElements = [];
             this.loadingCodeElements = false;
 
+            this.withinListLengthLimit=10;
+            this.includesListLengthLimit=10;
+            this.levelsWithListLengthLimit=10;
+            
+            this.isAddingRelationsComplete = false;
+            this.isRemovingRelationsComplete = false;
+
+            
             // Pagination
             this.currentPage = 0;
             this.pageSize = 10;
@@ -410,6 +420,10 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         });
         
         if (elementUrisToAdd.length < 1) {
+            if($scope.model.isRemovingRelationsComplete){
+                $scope.model.codeelementmodalInstance.close();
+            }
+            $scope.model.isAddingRelationsComplete = true;
             return;
         }
 
@@ -445,6 +459,10 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         });
         
         if (elementUrisToRemove.length < 1) {
+            if($scope.model.isAddingRelationsComplete){
+                $scope.model.codeelementmodalInstance.close();
+            }
+            $scope.model.isRemovingRelationsComplete = true;
             return;
         }
         
