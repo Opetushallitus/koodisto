@@ -324,45 +324,64 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return new ArrayList<KoodiVersioWithKoodistoItem>(koodis);
     }
 
-    private void privateAddRelation(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st, boolean doFlush) {
-        if (alakoodiUris == null || alakoodiUris.isEmpty()) {
-            return;
-        }
-        if (st == SuhteenTyyppi.SISALTYY && !userIsRootUser() && koodisHaveSameOrganisaatio(ylakoodiUri, alakoodiUris)) {
-            throw new KoodisHaveDifferentOrganizationsException("codeelements.have.different.organizations");
-        }
-        KoodiVersio latestYlakoodi = getLatestKoodiVersio(ylakoodiUri);
-
-        if (SuhteenTyyppi.SISALTYY.equals(st)) {
-            koodistoBusinessService.createNewVersion(latestYlakoodi.getKoodi().getKoodisto().getKoodistoUri());
-            latestYlakoodi = createNewVersion(getLatestKoodiVersio(latestYlakoodi.getKoodi().getKoodiUri()));
-        }
-
-        List<KoodiVersioWithKoodistoItem> alakoodiVersios = getLatestKoodiVersios(alakoodiUris.toArray(new String[alakoodiUris.size()]));
-        for (KoodiVersioWithKoodistoItem alakoodi : alakoodiVersios) {
-            KoodinSuhde koodinSuhde = new KoodinSuhde();
-            koodinSuhde.setSuhteenTyyppi(st);
-            koodinSuhde.setYlakoodiVersio(latestYlakoodi);
-            koodinSuhde.setAlakoodiVersio(alakoodi.getKoodiVersio());
-            koodinSuhde.setVersio(1);
-            koodinSuhdeDAO.insertNonFlush(koodinSuhde);
-        }
-        if(doFlush){
-            koodinSuhdeDAO.flush();
-        } else {
-            // Call koodinSuhdeDAO.flush() outside this method!
-        }
-    }
-
     @Override
     public void addRelation(String codeElementUri, List<String> relatedCodeElements, SuhteenTyyppi st, boolean isChild) {
-        if (isChild && st != SuhteenTyyppi.RINNASTEINEN) {
-            for (String relationToAdd: relatedCodeElements) {
-                privateAddRelation(relationToAdd, Arrays.asList(codeElementUri), st, false);
+        if (relatedCodeElements == null || relatedCodeElements.isEmpty()) {
+            return;
+        }
+        if (st == SuhteenTyyppi.SISALTYY && !userIsRootUser() && koodisHaveSameOrganisaatio(codeElementUri, relatedCodeElements)) {
+            throw new KoodisHaveDifferentOrganizationsException("codeelements.have.different.organizations");
+        }
+
+        if (!isChild || st.equals(SuhteenTyyppi.RINNASTEINEN)) { // SISALTAA OR RINNASTUU
+            KoodiVersio latestYlakoodi = getLatestKoodiVersio(codeElementUri);
+            if (SuhteenTyyppi.SISALTYY.equals(st)) {
+                koodistoBusinessService.createNewVersion(latestYlakoodi.getKoodi().getKoodisto().getKoodistoUri());
+                latestYlakoodi = createNewVersion(getLatestKoodiVersio(latestYlakoodi.getKoodi().getKoodiUri()));
+            }
+
+            List<KoodiVersioWithKoodistoItem> alakoodiVersios = getLatestKoodiVersios(relatedCodeElements.toArray(new String[relatedCodeElements.size()]));
+            for (KoodiVersioWithKoodistoItem alakoodi : alakoodiVersios) {
+                KoodinSuhde koodinSuhde = new KoodinSuhde();
+                koodinSuhde.setSuhteenTyyppi(st);
+                koodinSuhde.setYlakoodiVersio(latestYlakoodi);
+                koodinSuhde.setAlakoodiVersio(alakoodi.getKoodiVersio());
+                koodinSuhde.setVersio(1);
+                koodinSuhdeDAO.insertNonFlush(koodinSuhde);
             }
             koodinSuhdeDAO.flush();
-        } else {
-            privateAddRelation(codeElementUri, relatedCodeElements, st, true);
+        } else { // SISALTYY
+            List<String> ylakoodiUris = relatedCodeElements;
+            String alakoodiUri = codeElementUri;
+            List<KoodiVersioWithKoodistoItem> ylakoodiVersios = getLatestKoodiVersios(ylakoodiUris.toArray(new String[ylakoodiUris.size()]));
+
+            ArrayList<String> koodistos = new ArrayList<String>();
+            for (KoodiVersioWithKoodistoItem latestYlakoodi : ylakoodiVersios) {
+                String latestYlakoodiKoodisto = latestYlakoodi.getKoodistoItem().getKoodistoUri();
+                if (!koodistos.contains(latestYlakoodiKoodisto)) {
+                    koodistos.add(latestYlakoodiKoodisto);
+                }
+            }
+            for (String koodistoUri : koodistos) {
+                koodistoBusinessService.createNewVersion(koodistoUri);
+            }
+
+            ylakoodiVersios = getLatestKoodiVersios(ylakoodiUris.toArray(new String[ylakoodiUris.size()]));
+            for (KoodiVersioWithKoodistoItem latestYlakoodi : ylakoodiVersios) {
+                createNewVersion(latestYlakoodi.getKoodiVersio());
+            }
+            
+            ylakoodiVersios = getLatestKoodiVersios(ylakoodiUris.toArray(new String[ylakoodiUris.size()]));
+            KoodiVersio latestAlakoodi = getLatestKoodiVersio(alakoodiUri);
+            for (KoodiVersioWithKoodistoItem latestYlakoodi : ylakoodiVersios) {
+                KoodinSuhde koodinSuhde = new KoodinSuhde();
+                koodinSuhde.setSuhteenTyyppi(st);
+                koodinSuhde.setYlakoodiVersio(latestYlakoodi.getKoodiVersio());
+                koodinSuhde.setAlakoodiVersio(latestAlakoodi);
+                koodinSuhde.setVersio(1);
+                koodinSuhdeDAO.insertNonFlush(koodinSuhde);
+            }
+            koodinSuhdeDAO.flush();
         }
     }
     
@@ -375,7 +394,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         addRelation(codeElementUri, relatedCodeElements, st, isChild);
     }
 
-    private List<KoodinSuhde> getRelations(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st) {
+    private List<KoodinSuhde> getRelations(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st, boolean isChild) {
         KoodiVersio ylakoodi = getLatestKoodiVersio(ylakoodiUri);
         KoodiUriAndVersioType yk = new KoodiUriAndVersioType();
         yk.setKoodiUri(ylakoodi.getKoodi().getKoodiUri());
@@ -390,18 +409,16 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             aks.add(a);
         }
 
-        return koodinSuhdeDAO.getRelations(yk, aks, st);
+        if (isChild) {
+            return koodinSuhdeDAO.getWithinRelations(yk, aks, st);
+        } else {
+            return koodinSuhdeDAO.getRelations(yk, aks, st);
+        }
     }
     
     @Override
     public void removeRelation(String codeElementUri, List<String> relatedCodeElements, SuhteenTyyppi st, boolean isChild) {
-        if (isChild && st != SuhteenTyyppi.RINNASTEINEN) {
-            for (String relationToRemove : relatedCodeElements) {
-                privateRemoveRelation(relationToRemove, Arrays.asList(codeElementUri), st);
-            }
-        } else {
-            privateRemoveRelation(codeElementUri, relatedCodeElements, st);
-        }
+        privateRemoveRelation(codeElementUri, relatedCodeElements, st, isChild);
     }
 
     @Override
@@ -414,20 +431,36 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
 
-    
     @Transactional(readOnly = true)
-    private void privateRemoveRelation(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st) {
-        if (alakoodiUris == null || alakoodiUris.isEmpty() || getRelations(ylakoodiUri, alakoodiUris, st).size() == 0) {
+    private void privateRemoveRelation(String ylakoodiUri, List<String> alakoodiUris, SuhteenTyyppi st, boolean isChild) {
+        if (alakoodiUris == null || alakoodiUris.isEmpty()) {
             return;
         }
 
-        KoodiVersio ylakoodi = getLatestKoodiVersio(ylakoodiUri);
-        if (SuhteenTyyppi.SISALTYY.equals(st)) {
-            koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri());
+        List<KoodinSuhde> relations = null;
+        if (!isChild || st.equals(SuhteenTyyppi.RINNASTEINEN)) { // SISALTAA OR RINNASTUU
+            KoodiVersio ylakoodi = getLatestKoodiVersio(ylakoodiUri);
+            if (SuhteenTyyppi.SISALTYY.equals(st)) {
+                koodistoBusinessService.createNewVersion(ylakoodi.getKoodi().getKoodisto().getKoodistoUri());
+            }
+
+            relations = getRelations(ylakoodiUri, alakoodiUris, st, false);
+
+        } else { // SISALTYY
+            List<KoodiVersioWithKoodistoItem> ylakoodiVersios = getLatestKoodiVersios(alakoodiUris.toArray(new String[alakoodiUris.size()]));
+            ArrayList<String> koodistos = new ArrayList<String>();
+            for (KoodiVersioWithKoodistoItem string : ylakoodiVersios) {
+                String latestYlakoodiKoodisto = string.getKoodistoItem().getKoodistoUri();
+                if (!koodistos.contains(latestYlakoodiKoodisto)) {
+                    koodistos.add(latestYlakoodiKoodisto);
+                }
+            }
+            for (String string : koodistos) {
+                koodistoBusinessService.createNewVersion(string);
+            }
+            relations = new ArrayList<KoodinSuhde>();
+            relations.addAll(getRelations(ylakoodiUri, alakoodiUris, st, true));
         }
-
-        List<KoodinSuhde> relations = getRelations(ylakoodiUri, alakoodiUris, st);
-
         koodinSuhdeDAO.massRemove(relations);
     }
 
@@ -887,9 +920,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         KoodiVersio ylakoodi = getLatestKoodiVersio(ylakoodiUri);
         String organisaatio1 = ylakoodi.getKoodi().getKoodisto().getOrganisaatioOid();
         ArrayList<String> alreadyChecked = new ArrayList<String>();
-        for (String alakoodiUri : alakoodiUris) {
-            KoodiVersio alakoodi = getLatestKoodiVersio(alakoodiUri);
-            String organisaatio2 = alakoodi.getKoodi().getKoodisto().getOrganisaatioOid();
+        List<KoodiVersioWithKoodistoItem> alakoodiVersios = getLatestKoodiVersios(alakoodiUris.toArray(new String[alakoodiUris.size()]));
+        for (KoodiVersioWithKoodistoItem ak : alakoodiVersios) {
+            String organisaatio2 = ak.getKoodistoItem().getOrganisaatioOid();
             if (!alreadyChecked.contains(organisaatio2)) {
                 authorizer.checkOrganisationAccess(organisaatio1, KoodistoRole.CRUD);
                 result = result && StringUtils.equals(organisaatio1, organisaatio2); // false if any organisation mismatches

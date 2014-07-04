@@ -4,7 +4,6 @@
 package fi.vm.sade.koodisto.dao.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -108,10 +107,54 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
                     ylakoodiRestriction);
         }
     }
+    
+    private static Predicate addWithinRestrictions(CriteriaQuery<?> cquery, CriteriaBuilder cb, Root<KoodinSuhde> root, KoodiUriAndVersioType alaKoodi,
+            List<KoodiUriAndVersioType> ylaKoodis, SuhteenTyyppi st) {
+
+        Join<KoodinSuhde, KoodiVersio> ylakoodiVersioJoin = root.join("ylakoodiVersio");
+        Join<KoodinSuhde, KoodiVersio> alakoodiVersioJoin = root.join("alakoodiVersio");
+        Join<KoodiVersio, Koodi> alakoodiJoin = alakoodiVersioJoin.join("koodi");
+        Join<KoodiVersio, Koodi> ylakoodiJoin = ylakoodiVersioJoin.join("koodi");
+
+        Predicate suhteenTyyppiRestriction = cb.equal(root.get("suhteenTyyppi"), st);
+
+        ArrayList<String> concatenatedYlaList = new ArrayList<String>();
+        for (KoodiUriAndVersioType ak : ylaKoodis) {
+            concatenatedYlaList.add(ak.getKoodiUri() + SEPARATOR + ak.getVersio());
+        }
+        if (concatenatedYlaList.isEmpty()) {
+            throw new IllegalArgumentException("Ylakoodi list was empty");
+        }
+        Predicate concatenatedAlakoodiUriAndVersioRestriction =
+                cb.concat(ylakoodiJoin.<String> get(KOODI_URI), cb.concat(SEPARATOR, ylakoodiVersioJoin.<String> get(VERSIO)))
+                        .in(concatenatedYlaList);
+
+        Predicate ylakoodiRestriction = cb.and(
+                cb.equal(alakoodiJoin.get(KOODI_URI), alaKoodi.getKoodiUri()),
+                cb.equal(alakoodiVersioJoin.get(VERSIO), alaKoodi.getVersio()));
+
+        cquery.distinct(true);
+
+        return cb.and(suhteenTyyppiRestriction,
+                concatenatedAlakoodiUriAndVersioRestriction,
+                ylakoodiRestriction);
+
+    }
 
     @Override
     public List<KoodinSuhde> getRelations(KoodiUriAndVersioType ylaKoodi, List<KoodiUriAndVersioType> alaKoodis,
             SuhteenTyyppi st) {
+        return privateGetRelations(ylaKoodi, alaKoodis, st, false);
+    }
+    
+    @Override
+    public List<KoodinSuhde> getWithinRelations(KoodiUriAndVersioType ylaKoodi, List<KoodiUriAndVersioType> alaKoodis,
+            SuhteenTyyppi st) {
+        return privateGetRelations(ylaKoodi, alaKoodis, st, true);
+    }
+
+    private List<KoodinSuhde> privateGetRelations(KoodiUriAndVersioType singleKoodi, List<KoodiUriAndVersioType> multipleKoodis, SuhteenTyyppi st, boolean isChild) {
+
         EntityManager em = getEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
@@ -121,13 +164,19 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
         root.fetch("ylakoodiVersio");
         root.fetch("alakoodiVersio");
 
-        Predicate restrictions = addRestrictions(cquery, cb, root, ylaKoodi, alaKoodis, st);
+        Predicate restrictions = null;
+        if(!isChild){
+            restrictions = addRestrictions(cquery, cb, root, singleKoodi, multipleKoodis, st);
+        } else {
+            restrictions = addWithinRestrictions(cquery, cb, root, singleKoodi, multipleKoodis, st);
+        }
         cquery.select(root).where(restrictions);
 
         List<KoodinSuhde> results = em.createQuery(cquery).getResultList();
+
         return results;
     }
-
+    
     @Override
     public void remove(KoodinSuhde entity) {
         EntityManager em = getEntityManager();
