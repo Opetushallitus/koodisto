@@ -19,10 +19,9 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
         this.allIncludesCodeElements = [];
         this.allLevelsWithCodeElements = [];
         this.showCode = '';
-        this.withinListLengthLimit=100;
-        this.includesListLengthLimit=100;
-        this.levelsWithListLengthLimit=100;
-        this.listIncrement=100;
+        this.withinListLengthLimit=10;
+        this.includesListLengthLimit=10;
+        this.levelsWithListLengthLimit=10;
 
         this.init = function(scope, codeElementUri, codeElementVersion) {
             this.allCodes = [];
@@ -212,13 +211,13 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
         
         this.incrementListLimit = function(listName) {
             if(listName === "within"){
-                this.withinListLengthLimit += this.listIncrement;
+                this.withinListLengthLimit = this.withinCodeElements.length;
             }
             if(listName === "includes"){
-                this.includesListLengthLimit += this.listIncrement;
+                this.includesListLengthLimit = this.includesCodeElements.length;
             }
             if(listName === "levelsWith"){
-                this.levelsWithListLengthLimit += this.listIncrement;
+                this.levelsWithListLengthLimit = this.levelsWithCodeElements.length;
             }
         };
     };
