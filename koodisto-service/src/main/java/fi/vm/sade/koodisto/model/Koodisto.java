@@ -5,10 +5,12 @@ package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
+
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -93,7 +95,7 @@ public class Koodisto extends BaseEntity {
     public Set<KoodistoVersio> getKoodistoVersios() {
         return Collections.unmodifiableSet(koodistoVersios);
     }
-    
+
     public int getLatestKoodistoVersioNumber() {
         int latestVersio = 1;
         for (KoodistoVersio kv : koodistoVersios) {
@@ -124,6 +126,16 @@ public class Koodisto extends BaseEntity {
 
     public void setOrganisaatioOid(String organisaatioOid) {
         this.organisaatioOid = organisaatioOid;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
 }

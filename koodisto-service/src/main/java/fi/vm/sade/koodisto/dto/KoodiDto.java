@@ -3,6 +3,8 @@ package fi.vm.sade.koodisto.dto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.util.DateCloner;
+
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;
@@ -91,27 +93,27 @@ public class KoodiDto {
     }
 
     public Date getPaivitysPvm() {
-        return paivitysPvm;
+        return DateCloner.clone(paivitysPvm);
     }
 
     public void setPaivitysPvm(Date paivitysPvm) {
-        this.paivitysPvm = paivitysPvm;
+        this.paivitysPvm = DateCloner.clone(paivitysPvm);
     }
 
     public Date getVoimassaAlkuPvm() {
-        return voimassaAlkuPvm;
+        return DateCloner.clone(voimassaAlkuPvm);
     }
 
     public void setVoimassaAlkuPvm(Date voimassaAlkuPvm) {
-        this.voimassaAlkuPvm = voimassaAlkuPvm;
+        this.voimassaAlkuPvm = DateCloner.clone(voimassaAlkuPvm);
     }
 
     public Date getVoimassaLoppuPvm() {
-        return voimassaLoppuPvm;
+        return DateCloner.clone(voimassaLoppuPvm);
     }
 
     public void setVoimassaLoppuPvm(Date voimassaLoppuPvm) {
-        this.voimassaLoppuPvm = voimassaLoppuPvm;
+        this.voimassaLoppuPvm = DateCloner.clone(voimassaLoppuPvm);
     }
 
     public Tila getTila() {

@@ -36,7 +36,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
             KoodistoCsvConverter.VOIMASSALOPPUPVM_COLUMN };
 
     private static final List<String> blankDocumentHeaderFields;
-    protected static final String[] metadataFields = { KoodistoCsvConverter.NIMI_COLUMN, KoodistoCsvConverter.KUVAUS_COLUMN,
+    static final String[] metadataFields = { KoodistoCsvConverter.NIMI_COLUMN, KoodistoCsvConverter.KUVAUS_COLUMN,
             KoodistoCsvConverter.LYHYTNIMI_COLUMN };
 
     static {

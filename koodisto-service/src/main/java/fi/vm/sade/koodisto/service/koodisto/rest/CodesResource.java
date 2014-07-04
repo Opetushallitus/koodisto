@@ -430,7 +430,7 @@ public class CodesResource {
                 theString = IOUtils.toString(inputStream, encoding);
             } else { // Binääridataa
                 byte[] val = IOUtils.toByteArray(inputStream);
-                theString = new String(Base64.encodeBase64(val, false));
+                theString = new String(Base64.encodeBase64(val, false), Charset.forName(encoding));
             }
             FileDto fileDto = new FileDto();
             fileDto.setData(theString);

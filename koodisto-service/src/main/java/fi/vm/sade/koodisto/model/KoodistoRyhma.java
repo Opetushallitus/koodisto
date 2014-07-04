@@ -5,6 +5,7 @@ package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotBlank;
@@ -12,6 +13,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -82,4 +84,14 @@ public class KoodistoRyhma extends BaseEntity {
     public void removeKoodisto(Koodisto koodisto) {
         this.koodistos.remove(koodisto);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
 }

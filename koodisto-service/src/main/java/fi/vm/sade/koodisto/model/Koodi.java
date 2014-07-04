@@ -4,10 +4,12 @@
 package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.generic.model.BaseEntity;
+
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -62,4 +64,17 @@ public class Koodi extends BaseEntity {
     public void setKoodiUri(String koodiUri) {
         this.koodiUri = koodiUri;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+    
+    
+    
 }

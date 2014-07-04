@@ -5,9 +5,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TemporaryFileInputStream extends FileInputStream {
 
     private File file;
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     public TemporaryFileInputStream(File file) throws FileNotFoundException {
         super(file);
@@ -23,7 +27,11 @@ public class TemporaryFileInputStream extends FileInputStream {
             super.close();
         } finally {
             if (file != null) {
-                file.delete();
+                if(file.delete()){
+                    logger.debug("Deleted temporary file " + file.getAbsolutePath());
+                } else {
+                    logger.error("Failed to delete temporary file " + file.getAbsolutePath());
+                }
                 file = null;
             }
         }

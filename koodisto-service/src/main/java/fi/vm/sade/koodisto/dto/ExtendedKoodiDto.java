@@ -9,6 +9,7 @@ import org.codehaus.jackson.map.annotate.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.util.DateCloner;
 
 /**
  * User: wuoti
@@ -101,27 +102,27 @@ public class ExtendedKoodiDto {
     }
 
     public Date getPaivitysPvm() {
-        return paivitysPvm;
+        return DateCloner.clone(paivitysPvm);
     }
 
     public void setPaivitysPvm(Date paivitysPvm) {
-        this.paivitysPvm = paivitysPvm;
+        this.paivitysPvm = DateCloner.clone(paivitysPvm);
     }
 
     public Date getVoimassaAlkuPvm() {
-        return voimassaAlkuPvm;
+        return DateCloner.clone(voimassaAlkuPvm);
     }
 
     public void setVoimassaAlkuPvm(Date voimassaAlkuPvm) {
-        this.voimassaAlkuPvm = voimassaAlkuPvm;
+        this.voimassaAlkuPvm = DateCloner.clone(voimassaAlkuPvm);
     }
 
     public Date getVoimassaLoppuPvm() {
-        return voimassaLoppuPvm;
+        return DateCloner.clone(voimassaLoppuPvm);
     }
 
     public void setVoimassaLoppuPvm(Date voimassaLoppuPvm) {
-        this.voimassaLoppuPvm = voimassaLoppuPvm;
+        this.voimassaLoppuPvm = DateCloner.clone(voimassaLoppuPvm);
     }
 
     public Tila getTila() {
@@ -173,23 +174,24 @@ public class ExtendedKoodiDto {
     }
     
     public static class RelationCodeElement {
-    	@JsonView({JsonViews.Extended.class})
-    	public final String codeElementUri;
-    	@JsonView({JsonViews.Extended.class})
-    	public final Integer codeElementVersion;
-    	@JsonView({JsonViews.Extended.class})
-    	public final String codeElementValue;
-    	@JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+        @JsonView({JsonViews.Extended.class})
+        public final String codeElementUri;
+        @JsonView({JsonViews.Extended.class})
+        public final Integer codeElementVersion;
+        @JsonView({JsonViews.Extended.class})
+        public final String codeElementValue;
+        @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
         public final List<SimpleMetadataDto> relationMetadata;
-    	@JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+        @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
         public final List<SimpleMetadataDto> parentMetadata;
-    	
-    	public RelationCodeElement(String codeElementUri, Integer codeElementVersion, String codeElementValue, List<SimpleMetadataDto> relationMetadata, List<SimpleMetadataDto> parentMetadata) {
-			this.codeElementUri = codeElementUri;
-			this.codeElementVersion = codeElementVersion;
-			this.relationMetadata = relationMetadata;
-			this.parentMetadata = parentMetadata;
-			this.codeElementValue = codeElementValue;
-		}
+        
+        public RelationCodeElement(String codeElementUri, Integer codeElementVersion, String codeElementValue, List<SimpleMetadataDto> relationMetadata, List<SimpleMetadataDto> parentMetadata) {
+            this.codeElementUri = codeElementUri;
+            this.codeElementVersion = codeElementVersion;
+            this.relationMetadata = relationMetadata;
+            this.parentMetadata = parentMetadata;
+            this.codeElementValue = codeElementValue;
+        }
     }
+
 }

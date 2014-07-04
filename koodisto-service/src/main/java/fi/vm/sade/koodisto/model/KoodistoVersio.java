@@ -4,6 +4,8 @@ import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAnotherDateAsserter;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
+import fi.vm.sade.koodisto.util.DateCloner;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -13,6 +15,7 @@ import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
 import java.util.*;
 
 @FieldAssert(field1 = "voimassaAlkuPvm", field2 = "voimassaLoppuPvm", asserter = DateIsNullOrNotBeforeAnotherDateAsserter.class, message = "{voimassaLoppuPvm.invalid}")
@@ -100,27 +103,27 @@ public class KoodistoVersio extends BaseEntity {
     }
 
     public Date getPaivitysPvm() {
-        return paivitysPvm;
+        return DateCloner.clone(paivitysPvm);
     }
 
     public void setPaivitysPvm(Date paivitysPvm) {
-        this.paivitysPvm = paivitysPvm;
+        this.paivitysPvm = DateCloner.clone(paivitysPvm);
     }
 
     public Date getVoimassaAlkuPvm() {
-        return voimassaAlkuPvm;
+        return DateCloner.clone(voimassaAlkuPvm);
     }
 
     public void setVoimassaAlkuPvm(Date voimassaAlkuPvm) {
-        this.voimassaAlkuPvm = voimassaAlkuPvm;
+        this.voimassaAlkuPvm = DateCloner.clone(voimassaAlkuPvm);
     }
 
     public Date getVoimassaLoppuPvm() {
-        return voimassaLoppuPvm;
+        return DateCloner.clone(voimassaLoppuPvm);
     }
 
     public void setVoimassaLoppuPvm(Date voimassaLoppuPvm) {
-        this.voimassaLoppuPvm = voimassaLoppuPvm;
+        this.voimassaLoppuPvm = DateCloner.clone(voimassaLoppuPvm);
     }
 
     public Tila getTila() {
@@ -194,4 +197,14 @@ public class KoodistoVersio extends BaseEntity {
     private boolean getValidateDates() {
         return voimassaAlkuPvm != null && (voimassaLoppuPvm == null || !voimassaLoppuPvm.before(voimassaAlkuPvm));
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
 }
