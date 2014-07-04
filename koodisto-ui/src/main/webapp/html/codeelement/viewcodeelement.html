@@ -279,7 +279,7 @@
             <button type="button" class="btn pull-right" ng-click="cancel()">{{'codes.back' | i18n}}
             </button>
             <button type="button" class="btn btn-primary pull-right" ng-click="model.removeCodeElement()" auth="crud" auth-service="APP_KOODISTO" auth-org="{{model.codeElement.koodisto.organisaatioOid}}" ng-disabled="model.deleteState">
-            	{{'codeelement.viewpage.deletebutton' | i18n}}&nbsp;<i class="icon-minus-sign"></i>
+                {{'codeelement.viewpage.deletebutton' | i18n}}&nbsp;<i class="icon-minus-sign"></i>
             </button>
             <button type="button" ng-click="editCodeElement()" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codeElement.koodisto.organisaatioOid}}" class="btn btn-primary pull-right" ng-disabled="model.editState">
                 {{'codeelement.viewpage.editbutton' | i18n}}</button>

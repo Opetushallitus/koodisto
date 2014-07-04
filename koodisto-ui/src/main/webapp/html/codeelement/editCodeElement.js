@@ -63,7 +63,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                 codeElementUri : codeElementUri,
                 codeElementVersion : codeElementVersion
             }, function(result) {
-        	
+            
                 model.codeElement = result;
                 scope.codeValue = result.koodiArvo;
 

@@ -216,7 +216,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     };
 
     $scope.search = function (item){
-	
+    
         if (!$scope.model.query || CodesMatcher.nameOrTunnusMatchesSearch(item, $scope.model.query)) {
             item.open = true;
             return true;

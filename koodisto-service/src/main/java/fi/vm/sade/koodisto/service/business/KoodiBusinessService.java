@@ -104,8 +104,8 @@ public interface KoodiBusinessService {
 
     KoodiVersio getLatestKoodiVersio(String koodiUri);
 
-	boolean hasRelationBetweenCodeElements(KoodiVersio ylaKoodiVersio, final KoodiVersio alaKoodiVersio);
-	
-	boolean isLatestKoodiVersio(String koodiUri, Integer versio);
+    boolean hasRelationBetweenCodeElements(KoodiVersio ylaKoodiVersio, final KoodiVersio alaKoodiVersio);
+    
+    boolean isLatestKoodiVersio(String koodiUri, Integer versio);
 
 }

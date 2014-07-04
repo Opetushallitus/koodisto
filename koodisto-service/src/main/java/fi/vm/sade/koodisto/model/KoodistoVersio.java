@@ -178,11 +178,11 @@ public class KoodistoVersio extends BaseEntity {
     }
     
     public void removeYlaKoodistonSuhde(KoodistonSuhde ks) {
-    	ylakoodistos.remove(ks);
+        ylakoodistos.remove(ks);
     }
     
     public void removeAlaKoodistonSuhde(KoodistonSuhde ks) {
-    	alakoodistos.remove(ks);
+        alakoodistos.remove(ks);
     }
 
     @Override

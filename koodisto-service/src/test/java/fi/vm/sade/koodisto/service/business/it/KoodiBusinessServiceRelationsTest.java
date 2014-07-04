@@ -113,18 +113,18 @@ public class KoodiBusinessServiceRelationsTest {
     
     @Test
     public void updatingKoodiVersioDoesNotRemoveOldRelations() {
-    	KoodiUriAndVersioType kv = givenKoodiUriAndVersioType("7", 1);
-    	koodiBusinessService.createNewVersion(kv.getKoodiUri());
-     	List<KoodiVersioWithKoodistoItem> newItems = koodiBusinessService.listByRelation(givenKoodiUriAndVersioType("7", 2), SuhteenTyyppi.RINNASTEINEN, true);
-    	assertEquals(2, newItems.size());
-    	assertEquals(2, koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, true).size());
+        KoodiUriAndVersioType kv = givenKoodiUriAndVersioType("7", 1);
+        koodiBusinessService.createNewVersion(kv.getKoodiUri());
+         List<KoodiVersioWithKoodistoItem> newItems = koodiBusinessService.listByRelation(givenKoodiUriAndVersioType("7", 2), SuhteenTyyppi.RINNASTEINEN, true);
+        assertEquals(2, newItems.size());
+        assertEquals(2, koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, true).size());
     }
 
-	private KoodiUriAndVersioType givenKoodiUriAndVersioType(String koodiUri, int versio) {
-		KoodiUriAndVersioType kv = new KoodiUriAndVersioType();
-    	kv.setKoodiUri(koodiUri);
-    	kv.setVersio(versio);
-		return kv;
-	}
+    private KoodiUriAndVersioType givenKoodiUriAndVersioType(String koodiUri, int versio) {
+        KoodiUriAndVersioType kv = new KoodiUriAndVersioType();
+        kv.setKoodiUri(koodiUri);
+        kv.setVersio(versio);
+        return kv;
+    }
 
 }
