@@ -56,6 +56,8 @@ koodi.public.webservice.url.backend=https://${host.virkailija}/koodisto-service/
 koodisto.public.webservice.url.backend=https://${host.virkailija}/koodisto-service/services/koodistoService
 jpa.schemaUpdate=validate
 jpa.showSql=false
+koodisto-ui.koodisto-service-url.rest=https://${host.virkailija}/koodisto-service/rest/
+koodisto-ui.organisaatio-service-url=https://${host.virkailija}/organisaatio-service/
 ldap.cache.size=10000
 ldap.data.dir=${user.home}/data
 ldap.filter.people=uid\=%u
