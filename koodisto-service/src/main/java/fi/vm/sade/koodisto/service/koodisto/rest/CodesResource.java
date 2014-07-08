@@ -139,7 +139,7 @@ public class CodesResource {
             response = Response.class)
     public Response update(
             @ApiParam(value = "Koodisto") KoodistoDto codesDTO) {
-        if(codesDTO == null){
+        if (codesDTO == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         try {
@@ -193,7 +193,7 @@ public class CodesResource {
             response = Response.class)
     public Response insert(
             @ApiParam(value = "Koodisto") KoodistoDto codesDTO) {
-        if(codesDTO == null){
+        if (codesDTO == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         List<String> codesGroupUris = new ArrayList<String>();
@@ -272,7 +272,7 @@ public class CodesResource {
             response = KoodistoListDto.class)
     public KoodistoListDto getCodesByCodesUri(
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri) {
-        if(StringUtils.isBlank(codesUri)) {
+        if (StringUtils.isBlank(codesUri)) {
             return null;
         }
         Koodisto koodisto = koodistoBusinessService.getKoodistoByKoodistoUri(codesUri);
@@ -292,7 +292,7 @@ public class CodesResource {
     public KoodistoDto getCodesByCodesUriAndVersion(
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
             @ApiParam(value = "Koodiston vesio") @PathParam("codesVersion") int codesVersion) {
-        if(StringUtils.isBlank(codesUri)) {
+        if (StringUtils.isBlank(codesUri)) {
             return null;
         }
         KoodistoVersio koodistoVersio = null;
@@ -335,16 +335,21 @@ public class CodesResource {
                     encoding = "UTF-8";
                 }
 
-                if (Format.valueOf(fileFormat) == Format.CSV) {
-                    mime = "application/octet-stream; charset=" + encoding;
-                    formatStr = ExportImportFormatType.CSV;
-                } else if (Format.valueOf(fileFormat) == Format.JHS_XML) {
+                switch (Format.valueOf(fileFormat)) {
+                case JHS_XML:
                     formatStr = ExportImportFormatType.JHS_XML;
                     mime = "application/xml";
-                } else if (Format.valueOf(fileFormat) == Format.XLS) {
+                    break;
+                case CSV:
+                    mime = "application/octet-stream; charset=" + encoding;
+                    formatStr = ExportImportFormatType.CSV;
+                    break;
+                case XLS:
                     formatStr = ExportImportFormatType.XLS;
                     mime = "application/vnd.ms-excel";
+                    break;
                 }
+
                 DataSource ds = new InputStreamDataSource(fileInputStream, mime);
                 DataHandler handler = new DataHandler(ds);
                 uploadService.upload(codesUri, formatStr, encoding, handler);
@@ -446,13 +451,18 @@ public class CodesResource {
 
             Format format = Format.valueOf(fileFormatDto.getFormat());
 
-            if (format == Format.CSV) {
+            switch (format) {
+            case CSV:
                 formatStr = ExportImportFormatType.CSV;
-            } else if (format == Format.JHS_XML) {
+                break;
+            case JHS_XML:
                 formatStr = ExportImportFormatType.JHS_XML;
-            } else if (format == Format.XLS) {
+                break;
+            case XLS:
                 formatStr = ExportImportFormatType.XLS;
+                break;
             }
+
             String encoding = fileFormatDto.getEncoding();
             if (StringUtils.isBlank(encoding) || !Charset.isSupported(encoding)) {
                 encoding = "UTF-8";

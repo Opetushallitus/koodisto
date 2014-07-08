@@ -26,13 +26,10 @@ public class TemporaryFileInputStream extends FileInputStream {
         try {
             super.close();
         } finally {
-            if (file != null) {
-                if(file.delete()){
-                    logger.debug("Deleted temporary file " + file.getAbsolutePath());
-                } else {
-                    logger.error("Failed to delete temporary file " + file.getAbsolutePath());
-                }
-                file = null;
+            if (file != null && file.delete()) {
+                logger.debug("Deleted temporary file " + file.getAbsolutePath());
+            } else {
+                logger.error("Failed to delete temporary file " + file.getAbsolutePath());
             }
         }
     }
