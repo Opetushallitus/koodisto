@@ -745,12 +745,18 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     private File createTemporaryFile(String codesUri, String extension, DataHandler handler) throws IOException, FileNotFoundException {
-        File file = File.createTempFile(codesUri, extension);
-        logger.debug("Created temporary file " + file.getAbsolutePath());
-        FileOutputStream fos = new FileOutputStream(file);
-        IOUtils.copy(handler.getInputStream(), fos);
-        fos.close();
-        file.deleteOnExit(); // Delete file when VM is closed
-        return file;
+        FileOutputStream fos = null;
+        try {
+            File file = File.createTempFile(codesUri, extension);
+            logger.debug("Created temporary file " + file.getAbsolutePath());
+            fos = new FileOutputStream(file);
+            IOUtils.copy(handler.getInputStream(), fos);
+            fos.close();
+            file.deleteOnExit(); // Delete file when VM is closed
+            return file;
+        } finally {
+            if (fos != null)
+                fos.close();
+        }
     }
 }
