@@ -30,7 +30,7 @@ import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
     
-    @Autowired()
+    @Autowired
     private SadeConversionService conversionService;
     
     private Integer koodiVersio = 1;
