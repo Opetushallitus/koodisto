@@ -27,6 +27,8 @@
   <koodisto id="12" koodistouri="updatekoodisto" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="13" koodistouri="filedownloaduri" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="14" koodistouri="deletethisuri" version="0" organisaatioOid="1.2.2004.6" />
+  <koodisto id="15" koodistouri="koodistoryhmatestikoodisto" version="0" organisaatioOid="1.2.2004.6" />
+  <koodisto id="16" koodistouri="newkoodistoforgrouptesting" version="0" organisaatioOid="1.2.2004.6" />
   
   <koodistoversio id="1" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="1" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="2" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="2" voimassaalkupvm="2012-11-20"/>
@@ -44,6 +46,8 @@
   <koodistoversio id="14" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="12" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="15" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="13" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="16" version="0" paivityspvm="2012-03-22" tila="PASSIIVINEN" versio="1" koodisto_id="14" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="17" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="15" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="18" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="16" voimassaalkupvm="2012-11-20"/>
   
   <koodistometadata id="1" kieli="FI" nimi="1 sisältää 2 -testi" version="0" koodistoversio_id="1" kuvaus="1 sisältää 2 -testi"/>
   <koodistometadata id="2" kieli="FI" nimi="2 sisältyy 1 -testi" version="0" koodistoversio_id="2" kuvaus="2 sisältyy 1 -testi"/>
@@ -61,6 +65,8 @@
   <koodistometadata id="14" kieli="FI" nimi="Update testi" version="0" koodistoversio_id="14" kuvaus="Tämä päivitetään uudella nimellä"/>
   <koodistometadata id="15" kieli="FI" nimi="CSV download testi" version="0" koodistoversio_id="15" kuvaus="Tämä ladataan csv-download testissä."/>
   <koodistometadata id="16" kieli="FI" nimi="Delete testi" version="0" koodistoversio_id="16" kuvaus="Tämä tuhotaan."/>
+  <koodistometadata id="17" kieli="FI" nimi="Update koodistoryhmä testi" version="0" koodistoversio_id="17" kuvaus="Tämä testaa täyden koodistoryhmän päivittämistä"/>
+  <koodistometadata id="18" kieli="FI" nimi="Koodistoryhmään lisättävä koodi" version="0" koodistoversio_id="18" kuvaus="Lisätään koodiryhmään urin ja organisaation perusteella"/>
   
   <koodistonsuhde id="1" alakoodistoversio_id="6" ylakoodistoversio_id="5" versio="1" suhteentyyppi="SISALTYY" version="0"/>
   
@@ -72,6 +78,17 @@
   <koodistoryhmametadata id="1" koodistoryhma_id="1" kieli="FI" nimi="Relaatioiden lisääminen" version="0"/>
   <koodistoryhma id="2" koodistoryhmauri="koodistojenlisaaminenkoodistoryhmaan" version="0"/>
   <koodistoryhmametadata id="2" koodistoryhma_id="2" kieli="FI" nimi="Koodistojen lisääminen koodistoryhmään" version="0"/>
+  <koodistoryhma id="3" koodistoryhmauri="koodistoryhmantuhoaminen" version="0"/>
+  <koodistoryhmametadata id="3" koodistoryhma_id="3" kieli="FI" nimi="Tyhjän koodistoryhmän tuhoaminen" version="0"/>
+  <koodistoryhma id="4" koodistoryhmauri="koodistoryhmanpaivittaminen" version="0"/>
+  <koodistoryhmametadata id="4" koodistoryhma_id="4" kieli="FI" nimi="Tyhjän koodistoryhmän päivittäminen" version="0"/>
+  <koodistoryhma id="5" koodistoryhmauri="koodistoryhmanpaivittaminen2" version="0"/>
+  <koodistoryhma_koodisto koodistoryhma_id="5" koodisto_id="15"/>
+  <koodistoryhmametadata id="5" koodistoryhma_id="5" kieli="FI" nimi="Koodistoryhmän päivittäminen" version="0"/>
+  <koodistoryhma id="6" koodistoryhmauri="montametadataa" version="0"/>
+  <koodistoryhmametadata id="6" koodistoryhma_id="6" kieli="FI" nimi="Koodistoryhmä jolla monta metadataa" version="0"/>
+  <koodistoryhmametadata id="7" koodistoryhma_id="6" kieli="SV" nimi="Koodistoryhmä jolla monta metadataa" version="0"/>
+  <koodistoryhmametadata id="8" koodistoryhma_id="6" kieli="EN" nimi="Koodistoryhmä jolla monta metadataa" version="0"/>
   
   <koodi id="1" koodisto_id="13" version="0" koodiuri="downloadtestikoodi"/>
   <koodiversio id="1" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="1" koodiarvo="csvtestikoodi"/>
