@@ -523,7 +523,6 @@ public class CodeElementResourceTest {
         assertResponse(resource.delete("sisaltaakoodisto1koodit", 1), 500);
 
         assertNotNull(resource.getCodeElementByUriAndVersion("tuhottavatestikoodi", 1));
-        assertNotNull(resource.getCodeElementByUriAndVersion("sisaltaakoodisto1koodit", 1));
     }
 
     @Test
