@@ -22,6 +22,7 @@ import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 
 /**
@@ -64,7 +65,7 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
             concatenatedAlaList.add(ak.getKoodiUri() + SEPARATOR + ak.getVersio());
         }
         if (concatenatedAlaList.isEmpty()) {
-            throw new IllegalArgumentException("Alakoodi list was empty");
+            throw new KoodiNotFoundException("Alakoodi list was empty");
         }
         Predicate concatenatedAlakoodiUriAndVersioRestriction =
                 cb.concat(alakoodiJoin.<String> get(KOODI_URI), cb.concat(SEPARATOR, alakoodiVersioJoin.<String> get(VERSIO)))

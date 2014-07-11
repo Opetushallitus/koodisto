@@ -341,6 +341,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             }
 
             List<KoodiVersioWithKoodistoItem> alakoodiVersios = getLatestKoodiVersios(relatedCodeElements.toArray(new String[relatedCodeElements.size()]));
+            if(alakoodiVersios.size() == 0){
+                throw new KoodiNotFoundException("Child code uris did not match any code elements");
+            }
             for (KoodiVersioWithKoodistoItem alakoodi : alakoodiVersios) {
                 KoodinSuhde koodinSuhde = new KoodinSuhde();
                 koodinSuhde.setSuhteenTyyppi(st);
