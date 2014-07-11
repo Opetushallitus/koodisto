@@ -1,25 +1,23 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,6 +101,9 @@ public class CodeElementResource {
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(codeElementUri, codeElementVersion);
         List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
 
+        if (codeElements.size() == 0) {
+            return null;
+        }
         return conversionService.convert(codeElements.get(0), ExtendedKoodiDto.class);
     }
 
@@ -138,6 +139,7 @@ public class CodeElementResource {
             @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") int codesVersion) {
         List<KoodiVersioWithKoodistoItem> codeElements = null;
         if (codesVersion == 0) {
+            // FIXME: Why return anything when version is invalid?
             codeElements = koodiBusinessService.getKoodisByKoodisto(codesUri, false);
         } else {
             codeElements = koodiBusinessService.getKoodisByKoodistoVersio(codesUri, codesVersion, false);
@@ -156,8 +158,14 @@ public class CodeElementResource {
             response = KoodiDto.class)
     public KoodiDto getLatestCodeElementVersionsByCodeElementUri(
             @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri) {
+        if (StringUtils.isBlank(codeElementUri)) {
+            return null;
+        }
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(codeElementUri);
         List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
+        if (codeElements.size() < 1) {
+            return null;
+        }
         return conversionService.convert(codeElements.get(0), KoodiDto.class);
     }
 
@@ -177,6 +185,9 @@ public class CodeElementResource {
     public Response insert(
             @ApiParam(value = "Koodin URI") @PathParam("codesUri") String codesUri,
             @ApiParam(value = "Koodi") KoodiDto codeelementDTO) {
+        if (StringUtils.isBlank(codesUri) || codeelementDTO == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         try {
             KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem = koodiBusinessService.createKoodi(codesUri,
                     convertFromDTOToCreateKoodiDataType(codeelementDTO));
@@ -203,11 +214,14 @@ public class CodeElementResource {
             @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
             @ApiParam(value = "Linkitettävän koodin URI") @PathParam("codeElementUriToAdd") String codeElementUriToAdd,
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType) {
-
-        koodiBusinessService.addRelation(codeElementUri, Arrays.asList(codeElementUriToAdd), SuhteenTyyppi.valueOf(relationType), false);
+        if (StringUtils.isNotBlank(codeElementUri)
+                && StringUtils.isNotBlank(codeElementUriToAdd)
+                && StringUtils.isNotBlank(relationType)
+                && isValidEnum(relationType)) {
+            koodiBusinessService.addRelation(codeElementUri, Arrays.asList(codeElementUriToAdd), SuhteenTyyppi.valueOf(relationType), false);
+        }
     }
-    
-    
+
     @POST
     @Path("/addrelations")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -234,7 +248,6 @@ public class CodeElementResource {
         }
     }
 
-
     @POST
     @Path("/removerelation/{codeElementUri}/{codeElementUriToRemove}/{relationType}")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -249,10 +262,15 @@ public class CodeElementResource {
             @ApiParam(value = "Irroitettavan koodin URI") @PathParam("codeElementUriToRemove") String codeElementUriToRemove,
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType) {
 
-        koodiBusinessService.removeRelation(codeElementUri, Arrays.asList(codeElementUriToRemove),
-                SuhteenTyyppi.valueOf(relationType), false);
+        if (StringUtils.isNotBlank(codeElementUri)
+                && StringUtils.isNotBlank(codeElementUriToRemove)
+                && StringUtils.isNotBlank(relationType)
+                && isValidEnum(relationType)) {
+            koodiBusinessService.removeRelation(codeElementUri, Arrays.asList(codeElementUriToRemove),
+                    SuhteenTyyppi.valueOf(relationType), false);
+        }
     }
-    
+
     @POST
     @Path("/removerelations")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -263,7 +281,7 @@ public class CodeElementResource {
     public Response removeRelations(
             @ApiParam(value = "Relaation tiedot JSON muodossa") KoodiRelaatioListaDto koodiRelaatioDto
             ) {
-        
+
         List<String> relationsToRemove = koodiRelaatioDto.getRelations();
         if (relationsToRemove == null || relationsToRemove.isEmpty()) {
             logger.info("Called mass remove for relations without required query param (relationsToRemove)");
@@ -277,7 +295,6 @@ public class CodeElementResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
-    
 
     @POST
     @Path("/delete/{codeElementUri}/{codeElementVersion}")
@@ -292,6 +309,10 @@ public class CodeElementResource {
     public Response delete(
             @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
             @ApiParam(value = "Koodin versio") @PathParam("codeElementVersion") int codeElementVersion) {
+        if (StringUtils.isBlank(codeElementUri) || codeElementVersion < 1) {
+            logger.debug("invalid parameters for code element deletion.");
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         try {
             koodiBusinessService.delete(codeElementUri, codeElementVersion);
             return Response.status(Response.Status.ACCEPTED).build();
@@ -315,6 +336,10 @@ public class CodeElementResource {
             response = Response.class)
     public Response update(
             @ApiParam(value = "Koodi") KoodiDto codeElementDTO) {
+        if (codeElementDTO == null) {
+            logger.debug("Null code element DTO.");
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         try {
 
             KoodiVersioWithKoodistoItem koodiVersio =
@@ -390,4 +415,12 @@ public class CodeElementResource {
         return createKoodiDataType;
     }
 
+    private boolean isValidEnum(String relationType) {
+        try {
+            SuhteenTyyppi.valueOf(relationType);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
 }
