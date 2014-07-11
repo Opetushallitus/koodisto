@@ -13,6 +13,8 @@
   <koodisto id="11" koodistouri="lisaasisaltyy1" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="12" koodistouri="lisaasisaltyy2" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="13" koodistouri="lisaasisaltyy3" version="0" organisaatioOid="1.2.2004.6" />
+  <koodisto id="14" koodistouri="inserttestkoodisto" version="0" organisaatioOid="1.2.2004.6" />
+  <koodisto id="15" koodistouri="updatetestkoodisto" version="0" organisaatioOid="1.2.2004.6" />
   
   <koodi id="1" koodisto_id="1" version="0" koodiuri="sisaltyysuhde4kanssa1"/>
   <koodi id="2" koodisto_id="1" version="0" koodiuri="sisaltyysuhde4kanssa2"/>
@@ -36,6 +38,9 @@
   <koodi id="20" koodisto_id="12" version="0" koodiuri="lisaasisaltyy18kanssa2" />
   <koodi id="21" koodisto_id="13" version="0" koodiuri="lisaasisaltyy18kanssa3" />
   <koodi id="22" koodisto_id="13" version="0" koodiuri="lisaasisaltyy18kanssa4" />
+  <koodi id="23" koodisto_id="13" version="0" koodiuri="montaversiota"/>
+  <koodi id="24" koodisto_id="13" version="0" koodiuri="tuhottavatestikoodi"/>
+  <koodi id="25" koodisto_id="15" version="0" koodiuri="paivitettavatestikoodi"/>
   
   <koodiversio id="1" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="1" koodiarvo="ss4k1"/>
   <koodiversio id="2" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="ss4k2"/>
@@ -59,6 +64,11 @@
   <koodiversio id="20" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="20" koodiarvo="ls18k2"/>
   <koodiversio id="21" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="21" koodiarvo="ls18k3"/>
   <koodiversio id="22" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="22" koodiarvo="ls18k4"/>
+  <koodiversio id="23" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv1"/>
+  <koodiversio id="24" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv2"/>
+  <koodiversio id="25" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="3" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv3"/>
+  <koodiversio id="26" version="0" paivityspvm="2012-03-22" tila="PASSIIVINEN" versio="1" voimassaalkupvm="1990-01-01" koodi_id="24" koodiarvo="delme"/>
+  <koodiversio id="27" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="25" koodiarvo="tobeupdated"/>
   
   <koodimetadata id="1" kieli="FI" nimi="Alajärvi" version="0" koodiversio_id="1" lyhytnimi="Alajärvi" kuvaus="Alajärvi"/>
   <koodimetadata id="2" kieli="FI" nimi="Olajärvi" version="0" koodiversio_id="2" lyhytnimi="Olajärvi" kuvaus="Olajärvi"/>
@@ -82,6 +92,11 @@
   <koodimetadata id="20" kieli="FI" nimi="Takarengas" version="0" koodiversio_id="20" lyhytnimi="Takarengas" kuvaus="Takarengas"/>
   <koodimetadata id="21" kieli="FI" nimi="Satula" version="0" koodiversio_id="21" lyhytnimi="Satula" kuvaus="Satula"/>
   <koodimetadata id="22" kieli="FI" nimi="Tanko" version="0" koodiversio_id="22" lyhytnimi="Tanko" kuvaus="Tanko"/>
+  <koodimetadata id="23" kieli="FI" nimi="Monta versiota 1" version="0" koodiversio_id="23" lyhytnimi="1" kuvaus="Yhteensä kolme veriota"/>
+  <koodimetadata id="24" kieli="FI" nimi="Monta versiota 2" version="0" koodiversio_id="24" lyhytnimi="2" kuvaus="Yhteensä kolme veriota"/>
+  <koodimetadata id="25" kieli="FI" nimi="Monta versiota 3" version="0" koodiversio_id="25" lyhytnimi="3" kuvaus="Yhteensä kolme veriota"/>
+  <koodimetadata id="26" kieli="FI" nimi="Tuhottava testikoodi" version="0" koodiversio_id="26" lyhytnimi="delme" kuvaus="Tuhotaan testissä"/>
+  <koodimetadata id="27" kieli="FI" nimi="Päivitettävä testikoodi" version="0" koodiversio_id="27" lyhytnimi="updateme" kuvaus="päivitetään testissä"/>
   
   <koodinsuhde id="1" alakoodiversio_id="1" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1"/>
   <koodinsuhde id="2" alakoodiversio_id="2" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1"/>
@@ -110,6 +125,8 @@
   <koodistoversio id="11" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="11" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="12" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="12" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="13" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="13" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="14" version="0" paivityspvm="2012-03-22" tila="LUONNOS" versio="1" koodisto_id="14" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="15" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="15" voimassaalkupvm="2012-11-20"/>
   
   <koodistometadata id="1" kieli="FI" nimi="Järvet" version="0" koodistoversio_id="1" kuvaus="Järvet"/>
   <koodistometadata id="2" kieli="FI" nimi="Joet" version="0" koodistoversio_id="2" kuvaus="Joet"/>
@@ -124,6 +141,8 @@
   <koodistometadata id="11" kieli="FI" nimi="Kulkuvälineet" version="0" koodistoversio_id="11" kuvaus="kulkuvälineet"/>
   <koodistometadata id="12" kieli="FI" nimi="Renkaat" version="0" koodistoversio_id="12" kuvaus="renkaat"/>
   <koodistometadata id="13" kieli="FI" nimi="Muut pyörän osat" version="0" koodistoversio_id="13" kuvaus="Muut pyörän osat"/>
+  <koodistometadata id="14" kieli="FI" nimi="Testi koodien insertointia varten" version="0" koodistoversio_id="14" kuvaus="Kuvaus"/>
+  <koodistometadata id="15" kieli="FI" nimi="Testi koodien päivitystä varten" version="0" koodistoversio_id="15" kuvaus="Kuvaus"/>
   
   <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="1" koodiversio_id="1"/>
   <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="1" koodiversio_id="2"/>
@@ -147,6 +166,7 @@
   <koodistoversio_koodiversio id="20" version="0" koodistoversio_id="12" koodiversio_id="20"/>
   <koodistoversio_koodiversio id="21" version="0" koodistoversio_id="13" koodiversio_id="21"/>
   <koodistoversio_koodiversio id="22" version="0" koodistoversio_id="13" koodiversio_id="22"/>
+  <koodistoversio_koodiversio id="23" version="0" koodistoversio_id="15" koodiversio_id="27"/>
   
   <koodistoryhma id="1" koodistoryhmauri="maantieto" version="0"/>
   <koodistoryhma id="2" koodistoryhmauri="rakennukset" version="0"/>
