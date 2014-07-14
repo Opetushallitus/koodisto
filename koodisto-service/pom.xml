@@ -156,10 +156,24 @@
             <scope>test</scope>
             <version>${spring.version}</version>
         </dependency>
+        
+        <dependency>
+          <groupId>org.dbunit</groupId>
+          <artifactId>dbunit</artifactId>
+          <scope>test</scope>
+          <version>2.5.0</version>
+        </dependency>      
+        
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>dbunit-support</artifactId>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.dbunit</groupId>
+                    <artifactId>dbunit</artifactId>
+                </exclusion>
+            </exclusions>
             <version>${generic.version}</version>
         </dependency>
         <dependency>
