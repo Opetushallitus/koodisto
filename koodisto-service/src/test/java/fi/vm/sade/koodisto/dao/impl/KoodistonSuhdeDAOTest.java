@@ -41,7 +41,6 @@ public class KoodistonSuhdeDAOTest {
     @Autowired
     private KoodistoVersioDAO versionDAO;
 
-    @Transactional
     @Test
     public void copiesRelationsFromOldKoodistonVersioToNewOne() {
         KoodistoVersio original = versionDAO.read(Long.valueOf(1));
