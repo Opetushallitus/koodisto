@@ -1,16 +1,17 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Calendar;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kubek2k.springockito.annotations.ReplaceWithMock;
+import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
+import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
@@ -23,27 +24,41 @@ import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
+import fi.vm.sade.koodisto.test.support.DtoFactory;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-@ContextConfiguration(locations = "classpath:spring/test-context.xml")
+import static org.mockito.Mockito.when;
+
+@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "classpath:spring/test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
+
+    @ReplaceWithMock
+    @Autowired
+    private KoodistoConfiguration koodistoConfiguration;
+
+    @ReplaceWithMock
+    @Autowired
+    private KoodiBusinessService koodiBusinessService;
     
     @Autowired
     private SadeConversionService conversionService;
-    
+
     private Integer koodiVersio = 1;
-    
+
     @Test
     public void convertsKoodinSuhdeToRelationCodeElement() {
         KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
         ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
         assertEquals(1, dto.getIncludesCodeElements().size());
         assertEquals(1, dto.getLevelsWithCodeElements().size());
-        assertEquals(1, dto.getWithinCodeElements().size());        
+        assertEquals(1, dto.getWithinCodeElements().size());
     }
-    
+
     @Test
     public void storesCodeElementNameLanguageDescriptionAndValueToRelationCodeElement() {
         KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
@@ -56,12 +71,32 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
         assertEquals(givenKoodiMetadata.getKuvaus(), data.kuvaus);
         assertEquals(givenKoodiVersio().getKoodiarvo(), rel.codeElementValue);
     }
-    
+
     @Test
     public void storesParentCodesMetadataToRelationCodeElement() {
         KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
         ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
         assertEquals(Kieli.EN, dto.getIncludesCodeElements().get(0).parentMetadata.get(0).kieli);
+    }
+
+    @Test
+    public void converterDoesNotProvideRelationCodeElementForLatestCodeVersionWhenRelationDoesNotRelateToLatestCodeVersion() {
+        KoodiVersio parent = DtoFactory.createKoodiVersioWithUriAndVersio("penaali", 1).build();
+        KoodiVersio child = DtoFactory.createKoodiVersioWithUriAndVersioAndRelation("kynä", 1, parent, SuhteenTyyppi.SISALTYY);
+        when(koodiBusinessService.isLatestKoodiVersio("penaali", 1)).thenReturn(false);
+        when(koodiBusinessService.isLatestKoodiVersio("kynä", 1)).thenReturn(true);
+        ExtendedKoodiDto dto = conversionService.convert(new KoodiVersioWithKoodistoItem(child, new KoodistoItem()), ExtendedKoodiDto.class);
+        assertTrue(dto.getWithinCodeElements().isEmpty());
+    }
+
+    @Test
+    public void converterProvidesRelationCodeElementForLatestCodeVersionWhenRelationRelatesToLatestCodeVersion() {
+        KoodiVersio parent = DtoFactory.createKoodiVersioWithUriAndVersio("penaali", 1).build();
+        KoodiVersio child = DtoFactory.createKoodiVersioWithUriAndVersioAndRelation("kynä", 1, parent, SuhteenTyyppi.SISALTYY);
+        when(koodiBusinessService.isLatestKoodiVersio("penaali", 1)).thenReturn(true);
+        when(koodiBusinessService.isLatestKoodiVersio("kynä", 1)).thenReturn(true);
+        ExtendedKoodiDto dto = conversionService.convert(new KoodiVersioWithKoodistoItem(child, new KoodistoItem()), ExtendedKoodiDto.class);
+        assertEquals(1, dto.getWithinCodeElements().size());
     }
 
     private KoodiVersioWithKoodistoItem givenKoodiVersioWithKoodistoItem() {
@@ -72,10 +107,9 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
         kv.addAlakoodi(givenKoodinSuhde(kv, givenKoodiVersio(), SuhteenTyyppi.RINNASTEINEN));
         kv.addYlakoodi(givenKoodinSuhde(givenKoodiVersio(), kv, SuhteenTyyppi.SISALTYY));
         kv.addYlakoodi(givenKoodinSuhde(givenKoodiVersio(), kv, SuhteenTyyppi.RINNASTEINEN));
-        item.setKoodiVersio(kv);    
+        item.setKoodiVersio(kv);
         return item;
     }
-
 
     private KoodinSuhde givenKoodinSuhde(KoodiVersio ylaKoodiVersio, KoodiVersio alaKoodiVersio, SuhteenTyyppi tyyppi) {
         KoodinSuhde suhde = new KoodinSuhde();
@@ -101,7 +135,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
         item.setOrganisaatioOid("1.9.2.3.405");
         return item;
     }
-    
+
     private KoodistoVersioKoodiVersio givenKoodistoVersio(KoodiVersio koodiv) {
         KoodistoVersio kv = new KoodistoVersio();
         KoodistoMetadata data = new KoodistoMetadata();
@@ -119,11 +153,11 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
         KoodiVersio kv = new KoodiVersio();
         kv.setKoodi(koodi);
         kv.setKoodiarvo("koodi elementin arvo");
-        kv.setVoimassaAlkuPvm(Calendar.getInstance().getTime());    
+        kv.setVoimassaAlkuPvm(Calendar.getInstance().getTime());
         kv.addMetadata(givenKoodiMetadata());
         kv.addKoodistoVersio(givenKoodistoVersio(kv));
         kv.setVersio(koodiVersio++);
         return kv;
     }
-    
+
 }

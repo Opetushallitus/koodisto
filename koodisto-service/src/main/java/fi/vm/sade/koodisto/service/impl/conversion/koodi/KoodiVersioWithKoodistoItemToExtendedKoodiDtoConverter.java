@@ -3,6 +3,8 @@ package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
@@ -22,59 +24,63 @@ import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
+import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.impl.conversion.MetadataToSimpleMetadataConverter;
 
-
 @Component("koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter")
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
-Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
+        Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
+    
+    private KoodiBusinessService koodiBusinessService;
 
     @Autowired
     private KoodistoConfiguration koodistoConfiguration;
 
-    public void setKoodistoConfiguration(KoodistoConfiguration koodistoConfiguration) {
-        this.koodistoConfiguration = koodistoConfiguration;
+    public void setKoodiBusinessService(KoodiBusinessService koodiBusinessService) {
+        this.koodiBusinessService = koodiBusinessService;
     }
-
+    
     @Override
     public ExtendedKoodiDto convert(KoodiVersioWithKoodistoItem source) {
         ExtendedKoodiDto converted = new ExtendedKoodiDto();
 
-        converted.setKoodiArvo(source.getKoodiVersio().getKoodiarvo());
-        converted.setKoodiUri(source.getKoodiVersio().getKoodi().getKoodiUri());
-        for(KoodinSuhde koodinSuhde : source.getKoodiVersio().getYlakoodis()) {
+        KoodiVersio sourceKoodiVersio = source.getKoodiVersio();
+        final boolean isLatest = koodiBusinessService.isLatestKoodiVersio(sourceKoodiVersio.getKoodi().getKoodiUri(), sourceKoodiVersio.getVersio());
+        converted.setKoodiArvo(sourceKoodiVersio.getKoodiarvo());
+        converted.setKoodiUri(sourceKoodiVersio.getKoodi().getKoodiUri());
+        for (KoodinSuhde koodinSuhde : sourceKoodiVersio.getYlakoodis()) {
             KoodiVersio koodiVersio = koodinSuhde.getYlakoodiVersio();
             String koodiUri = koodiVersio.getKoodi().getKoodiUri();
             switch (koodinSuhde.getSuhteenTyyppi()) {
             case RINNASTEINEN:
-                addOrUpdate(converted.getLevelsWithCodeElements(), koodiUri, koodiVersio);
+                addOrUpdate(converted.getLevelsWithCodeElements(), koodiUri, koodiVersio, isLatest);
                 break;
             case SISALTYY:
-                addOrUpdate(converted.getWithinCodeElements(), koodiUri, koodiVersio);
+                addOrUpdate(converted.getWithinCodeElements(), koodiUri, koodiVersio, isLatest);
                 break;
             }
         }
-        for(KoodinSuhde koodinSuhde : source.getKoodiVersio().getAlakoodis()) {
+        for (KoodinSuhde koodinSuhde : sourceKoodiVersio.getAlakoodis()) {
             KoodiVersio koodiVersio = koodinSuhde.getAlakoodiVersio();
             String koodiUri = koodiVersio.getKoodi().getKoodiUri();
             switch (koodinSuhde.getSuhteenTyyppi()) {
             case RINNASTEINEN:
-                addOrUpdate(converted.getLevelsWithCodeElements(), koodiUri, koodiVersio);
+                addOrUpdate(converted.getLevelsWithCodeElements(), koodiUri, koodiVersio, isLatest);
                 break;
             case SISALTYY:
-                addOrUpdate(converted.getIncludesCodeElements(), koodiUri, koodiVersio);
+                addOrUpdate(converted.getIncludesCodeElements(), koodiUri, koodiVersio, isLatest);
                 break;
             }
         }
 
-        converted.getMetadata().addAll(source.getKoodiVersio().getMetadatas());
-        converted.setPaivitysPvm(source.getKoodiVersio().getPaivitysPvm());
-        converted.setTila(source.getKoodiVersio().getTila());
-        converted.setVersio(source.getKoodiVersio().getVersio());
-        converted.setVersion(source.getKoodiVersio().getVersion());
-        converted.setVoimassaAlkuPvm(source.getKoodiVersio().getVoimassaAlkuPvm());
-        converted.setVoimassaLoppuPvm(source.getKoodiVersio().getVoimassaLoppuPvm());
+        converted.getMetadata().addAll(sourceKoodiVersio.getMetadatas());
+        converted.setPaivitysPvm(sourceKoodiVersio.getPaivitysPvm());
+        converted.setTila(sourceKoodiVersio.getTila());
+        converted.setVersio(sourceKoodiVersio.getVersio());
+        converted.setVersion(sourceKoodiVersio.getVersion());
+        converted.setVoimassaAlkuPvm(sourceKoodiVersio.getVoimassaAlkuPvm());
+        converted.setVoimassaLoppuPvm(sourceKoodiVersio.getVoimassaLoppuPvm());
 
         if (source.getKoodistoItem() != null) {
             KoodistoItemDto item = new KoodistoItemDto();
@@ -103,17 +109,21 @@ Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
      * @param koodiUri
      * @param versio
      */
-    private void addOrUpdate(List<RelationCodeElement> list, String koodiUri, KoodiVersio koodiVersio) {
+    private void addOrUpdate(List<RelationCodeElement> list, String koodiUri, KoodiVersio koodiVersio, boolean isSourceLatest) {
         final Integer versio = koodiVersio.getVersio();
         final String koodiArvo = koodiVersio.getKoodiarvo();
-        List<SimpleMetadataDto> metadatas = new ArrayList<SimpleMetadataDto>(Collections2.transform(koodiVersio.getMetadatas(), new Function<KoodiMetadata, SimpleMetadataDto>() {
+        if(isSourceLatest && !koodiBusinessService.isLatestKoodiVersio(koodiVersio.getKoodi().getKoodiUri(), versio) ){
+            return;
+        }
+        List<SimpleMetadataDto> metadatas = new ArrayList<SimpleMetadataDto>(Collections2.transform(koodiVersio.getMetadatas(),
+                new Function<KoodiMetadata, SimpleMetadataDto>() {
 
-            @Override
-            public SimpleMetadataDto apply(KoodiMetadata input) {
-                return MetadataToSimpleMetadataConverter.convert(input);
-            }
-            
-        }));
+                    @Override
+                    public SimpleMetadataDto apply(KoodiMetadata input) {
+                        return MetadataToSimpleMetadataConverter.convert(input);
+                    }
+
+                }));
         boolean duplicate = false;
         for (int i = 0; i < list.size(); i++) {
             RelationCodeElement relationCodeElement = list.get(i);
@@ -129,12 +139,12 @@ Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
             list.add(new RelationCodeElement(koodiUri, versio, koodiArvo, metadatas, getKoodistoMetadatas(koodiVersio)));
         }
     }
-    
+
     private List<SimpleMetadataDto> getKoodistoMetadatas(KoodiVersio kv) {
         KoodistoVersio latest = null;
-        for (KoodistoVersioKoodiVersio kvkv: kv.getKoodistoVersios()) {
+        for (KoodistoVersioKoodiVersio kvkv : kv.getKoodistoVersios()) {
             KoodistoVersio koodistoVersio = kvkv.getKoodistoVersio();
-            latest = (latest == null || koodistoVersio.getVersio() > latest.getVersio()) ? koodistoVersio : latest;     
+            latest = (latest == null || koodistoVersio.getVersio() > latest.getVersio()) ? koodistoVersio : latest;
         }
         return new ArrayList<SimpleMetadataDto>(Collections2.transform(latest.getMetadatas(), new Function<KoodistoMetadata, SimpleMetadataDto>() {
 
@@ -144,6 +154,5 @@ Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
             }
         }));
     }
-
 
 }
