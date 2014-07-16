@@ -354,7 +354,7 @@ public class KoodiVersioDaoTest {
     
     @Test
     public void fetchesLatestKoodiVersios() {
-        Map<String, Integer> map = koodiVersioDAO.getLatestKoodiVersios("436", "455");
+        Map<String, Integer> map = koodiVersioDAO.getLatestVersionNumbersForUris("436", "455");
         assertEquals(2, map.size());
         assertEquals(Integer.valueOf(11), map.get("436"));
         assertEquals(Integer.valueOf(4), map.get("455"));

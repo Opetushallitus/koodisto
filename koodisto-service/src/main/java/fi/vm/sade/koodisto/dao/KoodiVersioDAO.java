@@ -31,5 +31,5 @@ public interface KoodiVersioDAO extends JpaDAO<KoodiVersio, Long> {
     
     boolean isLatestKoodiVersio(String koodiUri, Integer versio);
 
-    Map<String, Integer> getLatestKoodiVersios(String... koodiUris);
+    Map<String, Integer> getLatestVersionNumbersForUris(String... koodiUris);
 }

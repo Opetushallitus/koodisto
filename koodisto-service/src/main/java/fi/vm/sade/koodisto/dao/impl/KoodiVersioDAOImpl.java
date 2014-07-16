@@ -538,6 +538,23 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
     @Override
     public boolean isLatestKoodiVersio(String koodiUri, Integer versio) {
         SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(koodiUri);
+        TypedQuery<KoodiVersio> query = createKoodiVersioQueryFromSearchCriteria(searchCriteria);
+        return query.getSingleResult().getVersio().equals(versio);
+    }
+
+    @Override
+    public Map<String, Integer> getLatestVersionNumbersForUris(String... koodiUris) {
+        SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(koodiUris);
+        TypedQuery<KoodiVersio> query = createKoodiVersioQueryFromSearchCriteria(searchCriteria);
+
+        HashMap<String, Integer> returnMap = new HashMap<String, Integer>();
+        for (KoodiVersio result : query.getResultList()) {
+            returnMap.put(result.getKoodi().getKoodiUri(), result.getVersio());
+        }
+        return returnMap;
+    }
+    
+    private TypedQuery<KoodiVersio> createKoodiVersioQueryFromSearchCriteria(SearchKoodisCriteriaType searchCriteria) {
         EntityManager em = getEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<KoodiVersio> criteriaQuery = cb.createQuery(KoodiVersio.class);
@@ -548,32 +565,6 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
         criteriaQuery.select(root).where(cb.and(restrictions.toArray(new Predicate[restrictions.size()])));
         criteriaQuery.distinct(true);
         TypedQuery<KoodiVersio> query = em.createQuery(criteriaQuery);
-        return query.getSingleResult().getVersio().equals(versio);
-    }
-
-    @Override
-    public Map<String, Integer> getLatestKoodiVersios(String... koodiUris) {
-        SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(koodiUris);
-        EntityManager em = getEntityManager();
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<String> criteriaQuery = cb.createQuery(String.class);
-        Root<KoodiVersio> root = criteriaQuery.from(KoodiVersio.class);
-        final Join<KoodiVersio, Koodi> koodi = root.join(KOODI);
-        root.fetch(KOODI);
-        List<Predicate> restrictions = createRestrictionsForKoodiCriteria(cb, criteriaQuery, searchCriteria, koodi, root);
-        
-        CompoundSelection<String> projection = cb.construct(String.class, koodi.get("koodiUri"));
-        
-        
-        criteriaQuery.where(cb.and(restrictions.toArray(new Predicate[restrictions.size()]))).multiselect(projection);
-        criteriaQuery.distinct(true);
-        
-        TypedQuery<String> query = em.createQuery(criteriaQuery);
-
-        HashMap<String, Integer> returnMap = new HashMap<String, Integer>();
-        for (String result : query.getResultList()) {
-            returnMap.put(result, 2);
-        }
-        return returnMap;
+        return query;
     }
 }

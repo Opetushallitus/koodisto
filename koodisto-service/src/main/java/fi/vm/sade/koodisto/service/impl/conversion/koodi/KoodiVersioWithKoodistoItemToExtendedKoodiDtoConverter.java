@@ -73,9 +73,9 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
             }
         }
 
-        Map<String, Integer> includesMap = koodiVersioDAO.getLatestKoodiVersios(includesCodeElements.toArray(new String[includesCodeElements.size()]));
-        Map<String, Integer> withinMap = koodiVersioDAO.getLatestKoodiVersios(withinCodeElements.toArray(new String[withinCodeElements.size()]));
-        Map<String, Integer> levelsWithMap = koodiVersioDAO.getLatestKoodiVersios(levelsWithCodeElements.toArray(new String[levelsWithCodeElements.size()]));
+        Map<String, Integer> includesMap = koodiVersioDAO.getLatestVersionNumbersForUris(includesCodeElements.toArray(new String[includesCodeElements.size()]));
+        Map<String, Integer> withinMap = koodiVersioDAO.getLatestVersionNumbersForUris(withinCodeElements.toArray(new String[withinCodeElements.size()]));
+        Map<String, Integer> levelsWithMap = koodiVersioDAO.getLatestVersionNumbersForUris(levelsWithCodeElements.toArray(new String[levelsWithCodeElements.size()]));
 
         //
         for (KoodinSuhde koodinSuhde : sourceKoodiVersio.getYlakoodis()) {
