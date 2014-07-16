@@ -3,8 +3,6 @@ package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
@@ -14,6 +12,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
 import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
+import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
@@ -24,7 +23,6 @@ import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
-import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.impl.conversion.MetadataToSimpleMetadataConverter;
 
@@ -32,21 +30,18 @@ import fi.vm.sade.koodisto.service.impl.conversion.MetadataToSimpleMetadataConve
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
         Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
     
-    private KoodiBusinessService koodiBusinessService;
+    @Autowired
+    private KoodiVersioDAO koodiVersioDAO;
 
     @Autowired
     private KoodistoConfiguration koodistoConfiguration;
-
-    public void setKoodiBusinessService(KoodiBusinessService koodiBusinessService) {
-        this.koodiBusinessService = koodiBusinessService;
-    }
     
     @Override
     public ExtendedKoodiDto convert(KoodiVersioWithKoodistoItem source) {
         ExtendedKoodiDto converted = new ExtendedKoodiDto();
 
         KoodiVersio sourceKoodiVersio = source.getKoodiVersio();
-        final boolean isLatest = koodiBusinessService.isLatestKoodiVersio(sourceKoodiVersio.getKoodi().getKoodiUri(), sourceKoodiVersio.getVersio());
+        final boolean isLatest = koodiVersioDAO.isLatestKoodiVersio(sourceKoodiVersio.getKoodi().getKoodiUri(), sourceKoodiVersio.getVersio());
         converted.setKoodiArvo(sourceKoodiVersio.getKoodiarvo());
         converted.setKoodiUri(sourceKoodiVersio.getKoodi().getKoodiUri());
         for (KoodinSuhde koodinSuhde : sourceKoodiVersio.getYlakoodis()) {
@@ -112,7 +107,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
     private void addOrUpdate(List<RelationCodeElement> list, String koodiUri, KoodiVersio koodiVersio, boolean isSourceLatest) {
         final Integer versio = koodiVersio.getVersio();
         final String koodiArvo = koodiVersio.getKoodiarvo();
-        if(isSourceLatest && !koodiBusinessService.isLatestKoodiVersio(koodiVersio.getKoodi().getKoodiUri(), versio) ){
+        if(isSourceLatest && !koodiVersioDAO.isLatestKoodiVersio(koodiVersio.getKoodi().getKoodiUri(), versio) ){
             return;
         }
         List<SimpleMetadataDto> metadatas = new ArrayList<SimpleMetadataDto>(Collections2.transform(koodiVersio.getMetadatas(),

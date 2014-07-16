@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
+import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
@@ -24,7 +25,6 @@ import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
-import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
@@ -43,7 +43,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
 
     @ReplaceWithMock
     @Autowired
-    private KoodiBusinessService koodiBusinessService;
+    private KoodiVersioDAO koodiVersioDao;
     
     @Autowired
     private SadeConversionService conversionService;
@@ -83,8 +83,8 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
     public void converterDoesNotProvideRelationCodeElementForLatestCodeVersionWhenRelationDoesNotRelateToLatestCodeVersion() {
         KoodiVersio parent = DtoFactory.createKoodiVersioWithUriAndVersio("penaali", 1).build();
         KoodiVersio child = DtoFactory.createKoodiVersioWithUriAndVersioAndRelation("kynä", 1, parent, SuhteenTyyppi.SISALTYY);
-        when(koodiBusinessService.isLatestKoodiVersio("penaali", 1)).thenReturn(false);
-        when(koodiBusinessService.isLatestKoodiVersio("kynä", 1)).thenReturn(true);
+        when(koodiVersioDao.isLatestKoodiVersio("penaali", 1)).thenReturn(false);
+        when(koodiVersioDao.isLatestKoodiVersio("kynä", 1)).thenReturn(true);
         ExtendedKoodiDto dto = conversionService.convert(new KoodiVersioWithKoodistoItem(child, new KoodistoItem()), ExtendedKoodiDto.class);
         assertTrue(dto.getWithinCodeElements().isEmpty());
     }
@@ -93,8 +93,8 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
     public void converterProvidesRelationCodeElementForLatestCodeVersionWhenRelationRelatesToLatestCodeVersion() {
         KoodiVersio parent = DtoFactory.createKoodiVersioWithUriAndVersio("penaali", 1).build();
         KoodiVersio child = DtoFactory.createKoodiVersioWithUriAndVersioAndRelation("kynä", 1, parent, SuhteenTyyppi.SISALTYY);
-        when(koodiBusinessService.isLatestKoodiVersio("penaali", 1)).thenReturn(true);
-        when(koodiBusinessService.isLatestKoodiVersio("kynä", 1)).thenReturn(true);
+        when(koodiVersioDao.isLatestKoodiVersio("penaali", 1)).thenReturn(true);
+        when(koodiVersioDao.isLatestKoodiVersio("kynä", 1)).thenReturn(true);
         ExtendedKoodiDto dto = conversionService.convert(new KoodiVersioWithKoodistoItem(child, new KoodistoItem()), ExtendedKoodiDto.class);
         assertEquals(1, dto.getWithinCodeElements().size());
     }
