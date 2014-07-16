@@ -46,9 +46,9 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
         converted.setKoodiArvo(sourceKoodiVersio.getKoodiarvo());
         converted.setKoodiUri(sourceKoodiVersio.getKoodi().getKoodiUri());
 
-        ArrayList<String> withinCodeElements = new ArrayList<String>();
-        ArrayList<String> includesCodeElements = new ArrayList<String>();
-        ArrayList<String> levelsWithCodeElements = new ArrayList<String>();
+        List<String> withinCodeElements = new ArrayList<String>();
+        List<String> includesCodeElements = new ArrayList<String>();
+        List<String> levelsWithCodeElements = new ArrayList<String>();
 
         for (KoodinSuhde koodinSuhde : sourceKoodiVersio.getYlakoodis()) {
             String koodiUri = koodinSuhde.getYlakoodiVersio().getKoodi().getKoodiUri();
@@ -144,7 +144,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
             boolean isSourceLatest) {
         final Integer versio = koodiVersio.getVersio();
         final String koodiArvo = koodiVersio.getKoodiarvo();
-        if (isSourceLatest && latestCodeVersionsMap.get(koodiVersio.getKoodi().getKoodiUri()).intValue() != versio.intValue()) {
+        if (isSourceLatest && latestCodeVersionsMap.get(koodiVersio.getKoodi().getKoodiUri()).intValue() != versio) {
             return;
         }
         List<SimpleMetadataDto> metadatas = new ArrayList<SimpleMetadataDto>(Collections2.transform(koodiVersio.getMetadatas(),
