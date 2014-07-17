@@ -411,7 +411,7 @@
                             ng-repeat="codeElement in getPaginationPage()">
                             <td>{{codeElement.koodiArvo}}</td>
                             <td><a
-                                href="#/koodi/{{codeElement.koodiUri}}/{{codeElement.versio}}">{{codeElement.name}}</a>
+                                href="#/koodi/{{codeElement.koodiUri}}/{{codeElement.versio}}{{model.forceRefreshCodeElements}}">{{codeElement.name}}</a>
                             </td>
                             <td>{{codeElement.versio}}</td>
                         </tr>

@@ -10,7 +10,12 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.deleteState = "disabled";
 
         this.init = function(codesUri, codesVersion) {
-            // Samaa koodistoa on turha päivittää
+            if(model.forceRefresh){
+                model.forceRefreshCodeElements = "?forceRefresh";
+            } else {
+                model.forceRefreshCodeElements = "";
+            }
+            // Samaa koodistoa on turha ladata uudelleen modelliin
             if (model.forceRefresh || !(model.codes && model.codes.koodistoUri == codesUri && model.codes.versio == codesVersion)) {
                 model.forceRefresh = false;
                 model.codes = null;
@@ -208,7 +213,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     $scope.model = ViewCodesModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
-    $scope.model.forceRefresh=$routeParams.forceRefresh;
+    $scope.model.forceRefresh=$routeParams.forceRefresh == true;
     $scope.identity = angular.identity;
     ViewCodesModel.init($scope.codesUri, $scope.codesVersion);
     $scope.sortBy1 = 'name';

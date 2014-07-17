@@ -264,7 +264,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     };
 
     $scope.cancel = function() {
-        $location.path("/koodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion).search({forceRefresh: true});
+        $location.path("/koodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion).search({edited: true});
     };
 
     $scope.submit = function() {
@@ -331,7 +331,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             });
         }
         UpdateCodeElement.put({}, codeelement, function(result) {
-            $location.path("/koodi/" + result.koodiUri + "/" + result.versio).search({forceRefresh: true});
+            $location.path("/koodi/" + result.koodiUri + "/" + result.versio).search({edited: true});
         }, function(error) {
             ValidateService.validateCodeElement($scope, error, true);
         });

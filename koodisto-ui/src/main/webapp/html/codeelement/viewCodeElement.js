@@ -107,8 +107,8 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
     $scope.model = ViewCodeElementModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
     $scope.codeElementVersion = $routeParams.codeElementVersion;
-    $scope.model.forceRefresh = $routeParams.forceRefresh;
-    $scope.model.codeElementEdited = $routeParams.forceRefresh;
+    $scope.model.forceRefresh = $routeParams.forceRefresh || $routeParams.edited;
+    $scope.model.codeElementEdited = $routeParams.edited == true;
     ViewCodeElementModel.init($scope, $scope.codeElementUri, $scope.codeElementVersion);
 
     $scope.closeAlert = function(index) {

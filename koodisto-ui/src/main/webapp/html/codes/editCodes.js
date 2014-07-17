@@ -208,6 +208,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     };
 
     $scope.cancel = function() {
+        //must force refresh since relation changes don't require saving
         $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.codesVersion).search({forceRefresh: true});
     };
 
