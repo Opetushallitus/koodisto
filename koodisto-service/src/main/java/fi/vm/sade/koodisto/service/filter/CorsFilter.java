@@ -18,6 +18,9 @@ public class CorsFilter implements ContainerResponseFilter {
     static final String DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN = "https://virkailija.opintopolku.fi";
     
     private Mode mode;
+    
+    @Value("${common.corsfilter.allowed-domains:}")
+    private String allowedDomains;
 
     @Value(CORSFILTER_MODE_PARAM)
     void setMode(String mode) {
@@ -45,7 +48,7 @@ public class CorsFilter implements ContainerResponseFilter {
         if (Mode.DEVELOPMENT.equals(mode)) {
             containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", "*");           
         } else {
-            containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
+            containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", StringUtils.isNotBlank(allowedDomains) ? allowedDomains : DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
         }
     }
 }

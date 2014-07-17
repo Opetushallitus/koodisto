@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.service.filter;
 
-
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.junit.Before;
@@ -19,9 +18,9 @@ import fi.vm.sade.koodisto.service.filter.CorsFilter.Mode;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@ContextConfiguration(locations = "classpath:spring/test-cors-context.xml")
+@ContextConfiguration(locations = "classpath:spring/test-cors-default-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-public class CorsFilterTest {
+public class CorsFilterDefaultTest {
     
     @Autowired
     private CorsFilter filter;
@@ -41,23 +40,16 @@ public class CorsFilterTest {
     }
     
     @Test
-    public void allowsAccessFromAnywhereInDevelopmentMode() {
+    public void allowsAccessFromAnywhereWithDefaultMode() {
         filter.filter(request, response);
         verify(responseMap).add("Access-Control-Allow-Origin", "*");
     }
     
     @Test
-    public void allowsAccessFromAnywhereWhenModeIsNotSet() {
-        filter.setMode(null);
-        filter.filter(request, response);
-        verify(responseMap).add("Access-Control-Allow-Origin", "*");
-    }
-    
-    @Test
-    public void allowsAccessFromAllowedDomainsOnlyInProductionMode() {
+    public void allowsAccessFromDefaultDomainOnlyInProductionModeWhenNoAllowedDomainsAreProvided() {
         filter.setMode(Mode.PRODUCTION.name());
         filter.filter(request, response);
-        verify(responseMap).add("Access-Control-Allow-Origin", "https://test.site.something http://ruhtinas.nukettaja.com");
+        verify(responseMap).add("Access-Control-Allow-Origin", CorsFilter.DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
     }
-    
 }
+
