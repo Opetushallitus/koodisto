@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -78,28 +79,30 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
         Map<String, Integer> levelsWithMap = koodiVersioDAO.getLatestVersionNumbersForUris(levelsWithCodeElements.toArray(new String[levelsWithCodeElements.size()]));
 
         //
+        HashSet<String> addedUris = new HashSet<String>();
         for (KoodinSuhde koodinSuhde : sourceKoodiVersio.getYlakoodis()) {
             KoodiVersio koodiVersio = koodinSuhde.getYlakoodiVersio();
             String koodiUri = koodiVersio.getKoodi().getKoodiUri();
             switch (koodinSuhde.getSuhteenTyyppi()) {
             case RINNASTEINEN:
-                addOrUpdate(converted.getLevelsWithCodeElements(), levelsWithMap, koodiUri, koodiVersio, isLatest);
+                addOrUpdate(converted.getLevelsWithCodeElements(), levelsWithMap, koodiUri, koodiVersio, isLatest, addedUris);
                 break;
             case SISALTYY:
-                addOrUpdate(converted.getWithinCodeElements(), withinMap, koodiUri, koodiVersio, isLatest);
+                addOrUpdate(converted.getWithinCodeElements(), withinMap, koodiUri, koodiVersio, isLatest, addedUris);
                 break;
             }
         }
 
+        addedUris = new HashSet<String>();
         for (KoodinSuhde koodinSuhde : sourceKoodiVersio.getAlakoodis()) {
             KoodiVersio koodiVersio = koodinSuhde.getAlakoodiVersio();
             String koodiUri = koodiVersio.getKoodi().getKoodiUri();
             switch (koodinSuhde.getSuhteenTyyppi()) {
             case RINNASTEINEN:
-                addOrUpdate(converted.getLevelsWithCodeElements(), levelsWithMap, koodiUri, koodiVersio, isLatest);
+                addOrUpdate(converted.getLevelsWithCodeElements(), levelsWithMap, koodiUri, koodiVersio, isLatest, addedUris);
                 break;
             case SISALTYY:
-                addOrUpdate(converted.getIncludesCodeElements(), includesMap, koodiUri, koodiVersio, isLatest);
+                addOrUpdate(converted.getIncludesCodeElements(), includesMap, koodiUri, koodiVersio, isLatest, addedUris);
                 break;
             }
         }
@@ -141,7 +144,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
      * @param versio
      */
     private void addOrUpdate(List<RelationCodeElement> list, Map<String, Integer> latestCodeVersionsMap, String koodiUri, KoodiVersio koodiVersio,
-            boolean isSourceLatest) {
+            boolean isSourceLatest, HashSet<String> addedUris) {
         final Integer versio = koodiVersio.getVersio();
         final String koodiArvo = koodiVersio.getKoodiarvo();
         if (isSourceLatest && latestCodeVersionsMap.get(koodiVersio.getKoodi().getKoodiUri()).intValue() != versio) {
@@ -157,9 +160,9 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
 
                 }));
         boolean duplicate = false;
-        for (int i = 0; i < list.size(); i++) {
-            RelationCodeElement relationCodeElement = list.get(i);
-            if (relationCodeElement.codeElementUri.equals(koodiUri)) {
+        if (addedUris.contains(koodiUri)) {
+            for (int i = 0; i < list.size(); i++) {
+                RelationCodeElement relationCodeElement = list.get(i);
                 duplicate = true;
                 // Jos koodien versiot ovat listassa väärässä versiojärjestyksessä (uudempi tulee myöhemmin)
                 if (versio > relationCodeElement.codeElementVersion) {
@@ -168,6 +171,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
             }
         }
         if (!duplicate) {
+            addedUris.add(koodiUri);
             list.add(new RelationCodeElement(koodiUri, versio, koodiArvo, metadatas, getKoodistoMetadatas(koodiVersio)));
         }
     }

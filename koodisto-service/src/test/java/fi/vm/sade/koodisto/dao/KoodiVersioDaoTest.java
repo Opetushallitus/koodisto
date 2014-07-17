@@ -359,5 +359,11 @@ public class KoodiVersioDaoTest {
         assertEquals(Integer.valueOf(11), map.get("436"));
         assertEquals(Integer.valueOf(4), map.get("455"));
     }    
-    
+
+    @Test
+    public void fetchesNothingForEmptyUriList() {
+        Map<String, Integer> map = koodiVersioDAO.getLatestVersionNumbersForUris();
+        assertEquals(0, map.size());
+    }    
+
 }

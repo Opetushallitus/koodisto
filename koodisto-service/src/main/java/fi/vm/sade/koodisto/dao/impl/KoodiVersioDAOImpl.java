@@ -544,6 +544,9 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
 
     @Override
     public Map<String, Integer> getLatestVersionNumbersForUris(String... koodiUris) {
+        if(koodiUris == null || koodiUris.length == 0){
+            return new HashMap<String, Integer>();
+        }
         SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(koodiUris);
         TypedQuery<KoodiVersio> query = createKoodiVersioQueryFromSearchCriteria(searchCriteria);
 
