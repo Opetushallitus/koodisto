@@ -11,7 +11,7 @@ import com.sun.jersey.spi.container.ContainerResponseFilter;
 @Component
 public class CorsFilter implements ContainerResponseFilter {
     
-    private static final String CORSFILTER_MODE_PARAM = "${common.corsfilter.mode}";
+    private static final String CORSFILTER_MODE_PARAM = "${common.corsfilter.mode:DEVELOPMENT}";
 
     enum Mode { PRODUCTION, DEVELOPMENT};
     
@@ -42,7 +42,7 @@ public class CorsFilter implements ContainerResponseFilter {
     }
 
     private void setAllowOrigin(ContainerResponse containerResponse) {
-        if (mode.equals(Mode.DEVELOPMENT)) {
+        if (Mode.DEVELOPMENT.equals(mode)) {
             containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", "*");           
         } else {
             containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
