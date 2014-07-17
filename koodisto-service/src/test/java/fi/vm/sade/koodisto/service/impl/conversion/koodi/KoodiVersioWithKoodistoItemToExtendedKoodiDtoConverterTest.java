@@ -81,7 +81,6 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
         assertEquals(Kieli.EN, dto.getIncludesCodeElements().get(0).parentMetadata.get(0).kieli);
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void converterDoesNotProvideRelationCodeElementForLatestCodeVersionWhenRelationDoesNotRelateToLatestCodeVersion() {
         KoodiVersio parent = DtoFactory.createKoodiVersioWithUriAndVersio("penaali", 1).build();
