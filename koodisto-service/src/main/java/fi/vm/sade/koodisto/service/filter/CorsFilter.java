@@ -1,15 +1,31 @@
 package fi.vm.sade.koodisto.service.filter;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerResponse;
 import com.sun.jersey.spi.container.ContainerResponseFilter;
 
-/**
- * User: kwuoti Date: 15.4.2013 Time: 8.46
- */
+@Component
 public class CorsFilter implements ContainerResponseFilter {
+    
+    private static final String CORSFILTER_MODE_PARAM = "${common.corsfilter.mode}";
+
+    enum Mode { PRODUCTION, DEVELOPMENT};
+    
+    static final String DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN = "https://virkailija.opintopolku.fi";
+    
+    private Mode mode;
+
+    @Value(CORSFILTER_MODE_PARAM)
+    void setMode(String mode) {
+        this.mode = StringUtils.isNotBlank(mode) && !mode.equalsIgnoreCase(CORSFILTER_MODE_PARAM) ? Mode.valueOf(mode) : Mode.DEVELOPMENT;
+    }
+    
     @Override
-    public ContainerResponse filter(ContainerRequest containerRequest, ContainerResponse containerResponse) {
+    public ContainerResponse filter(ContainerRequest containerRequest, ContainerResponse containerResponse) {        
         if (containerRequest.getRequestHeaders().containsKey("access-control-request-method")) {
             for (String value : containerRequest.getRequestHeaders().get("access-control-request-method")) {
                 containerResponse.getHttpHeaders().add("Access-Control-Allow-Methods", value);
@@ -20,7 +36,16 @@ public class CorsFilter implements ContainerResponseFilter {
                 containerResponse.getHttpHeaders().add("Access-Control-Allow-Headers", value);
             }
         }
-        containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", "*");
+        
+        setAllowOrigin(containerResponse);
         return containerResponse;
+    }
+
+    private void setAllowOrigin(ContainerResponse containerResponse) {
+        if (mode.equals(Mode.DEVELOPMENT)) {
+            containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", "*");           
+        } else {
+            containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
+        }
     }
 }
