@@ -202,7 +202,7 @@ app.factory('AllCodes', function($resource) {
 
 app.factory('DownloadCodes', function() {
     return function(codesUri, codesVersion, format, encoding) {
-        urlArray = [];
+        var urlArray = [];
         urlArray.push(
                 SERVICE_URL_BASE + "codes/download",
                 codesUri,
