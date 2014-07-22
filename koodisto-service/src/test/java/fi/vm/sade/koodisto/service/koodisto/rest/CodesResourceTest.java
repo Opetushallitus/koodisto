@@ -211,11 +211,12 @@ public class CodesResourceTest {
             FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.csv").build();
             assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
         } finally {
-            if (is != null)
+            if (is != null) {
                 try {
                     is.close();
                 } catch (IOException ignore) {
                 }
+            }
         }
         KoodistoDto codes = resource.getCodesByCodesUriAndVersion(codesUri, 0);
         assertNotNull(codes);
@@ -234,11 +235,12 @@ public class CodesResourceTest {
             FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.xml").build();
             assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
         } finally {
-            if (is != null)
+            if (is != null) {
                 try {
                     is.close();
                 } catch (IOException ignore) {
                 }
+            }
         }
         KoodistoDto codes = resource.getCodesByCodesUriAndVersion(codesUri, 0);
         assertNotNull(codes);
@@ -257,16 +259,54 @@ public class CodesResourceTest {
             FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.xml").build();
             assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
         } finally {
-            if (is != null)
+            if (is != null) {
                 try {
                     is.close();
                 } catch (IOException ignore) {
                 }
+            }
         }
         KoodistoDto codes = resource.getCodesByCodesUriAndVersion(codesUri, 0);
         assertNotNull(codes);
         List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
         assertEquals("xlsfileuploaduri_arvo", koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
+    }
+
+    @Test
+    public void uploadsSameFileTwice() {
+        InputStream is = null;
+        String fileFormat = "CSV";
+        String fileEncoding = "UTF-8";
+        String codesUri = "csvfileuploaduri";
+        try {
+            is = getClass().getClassLoader().getResourceAsStream("csv_example.csv");
+            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.csv").build();
+            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ignore) {
+                }
+            }
+        }
+        KoodistoDto codes = resource.getCodesByCodesUriAndVersion(codesUri, 0);
+        assertNotNull(codes);
+        List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
+        assertEquals("csvfileuploaduri_arvo", koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
+
+        try {
+            is = getClass().getClassLoader().getResourceAsStream("csv_example.csv");
+            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.csv").build();
+            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException ignore) {
+                }
+            }
+        }
     }
 
     @Test

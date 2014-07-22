@@ -603,10 +603,17 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         if (!Tila.HYVAKSYTTY.equals(latest.getTila()) && updateKoodistoData.getTila().equals(TilaType.HYVAKSYTTY)) {
             List<KoodiVersio> koodis = koodiVersioDAO.getKoodiVersiosByKoodistoAndKoodiTila(latest.getId(), Tila.LUONNOS);
 
-            for (KoodiVersio k : koodis) {
-                koodiBusinessService.setKoodiTila(k.getKoodi().getKoodiUri(), TilaType.HYVAKSYTTY);
+            ArrayList<String> koodiUris = new ArrayList<String>();
+            for (KoodiVersio koodiVersio : koodis) {
+                koodiUris.add(koodiVersio.getKoodi().getKoodiUri());
             }
+            
+            List<KoodiVersio> latestKoodis = koodiDAO.getLatestCodeElementVersiosByUrisAndTila(koodiUris, Tila.HYVAKSYTTY);
 
+            for (KoodiVersio latestVersio : latestKoodis) {
+                koodiBusinessService.setKoodiTila(latestVersio, TilaType.HYVAKSYTTY);
+            }
+            
             KoodistoVersio previousVersion = koodistoVersioDAO.getPreviousKoodistoVersio(latest.getKoodisto().getKoodistoUri(), latest.getVersio());
             if (previousVersion != null) {
                 previousVersion.setVoimassaLoppuPvm(new Date());

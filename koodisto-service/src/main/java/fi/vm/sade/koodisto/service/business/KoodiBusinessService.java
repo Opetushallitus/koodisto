@@ -85,6 +85,8 @@ public interface KoodiBusinessService {
 
     void setKoodiTila(String koodiUri, TilaType tila);
 
+    void setKoodiTila(KoodiVersio latest, TilaType tila);
+
     List<KoodiVersioWithKoodistoItem> getKoodisByKoodistoVersio(String koodistoUri, Integer koodistoVersio, boolean onlyValidKoodis);
 
     List<KoodiVersioWithKoodistoItem> getKoodisByKoodisto(String koodistoUri, boolean onlyValidKoodis);
