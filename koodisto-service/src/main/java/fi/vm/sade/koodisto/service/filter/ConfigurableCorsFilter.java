@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.service.filter;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -40,15 +42,28 @@ public class ConfigurableCorsFilter implements ContainerResponseFilter {
             }
         }
         
-        setAllowOrigin(containerResponse);
+        setAllowOrigin(containerResponse, containerRequest);
         return containerResponse;
     }
 
-    private void setAllowOrigin(ContainerResponse containerResponse) {
+    private void setAllowOrigin(ContainerResponse response, ContainerRequest request) {
         if (Mode.DEVELOPMENT.equals(mode)) {
-            containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", "*");           
+            response.getHttpHeaders().add("Access-Control-Allow-Origin", "*");           
         } else {
-            containerResponse.getHttpHeaders().add("Access-Control-Allow-Origin", StringUtils.isNotBlank(allowedDomains) ? allowedDomains : DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
+            response.getHttpHeaders().add("Access-Control-Allow-Origin", getMatchingDomain(request));
         }
+    }
+
+    private String getMatchingDomain(ContainerRequest request) {
+        List<String> headers = request.getRequestHeader("origin");
+        headers = headers != null ? headers : request.getRequestHeader("host");
+        for (String origin : headers) {
+            for(String allowedDomain : allowedDomains.split(" ")) {
+                if (allowedDomain.equals(origin)) {
+                    return allowedDomain;
+                }
+            }
+        }
+        return DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN;
     }
 }

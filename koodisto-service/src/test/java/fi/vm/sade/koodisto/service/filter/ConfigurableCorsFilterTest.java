@@ -1,6 +1,8 @@
 package fi.vm.sade.koodisto.service.filter;
 
 
+import java.util.Arrays;
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.junit.Before;
@@ -23,6 +25,10 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ConfigurableCorsFilterTest {
     
+    private static final String DOMAIN1 = "https://test.site.something";
+
+    private static final String DOMAIN2 = "http://ruhtinas.nukettaja.com";
+
     @Autowired
     private ConfigurableCorsFilter filter;
     
@@ -54,10 +60,30 @@ public class ConfigurableCorsFilterTest {
     }
     
     @Test
+    public void doesNotAllowAccessInProductionModeWhenRequestIsNotInDomainsAllowed() {
+        assertDomain("http://something.net", ConfigurableCorsFilter.DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
+    }
+    
+    @Test
     public void allowsAccessFromAllowedDomainsOnlyInProductionMode() {
+        assertDomain(DOMAIN1, DOMAIN1);
+        assertDomain(DOMAIN2, DOMAIN2);
+    }
+    
+    @Test
+    public void attempsToDetermineRemoteDomainFromIEsHostHeaderWhenOriginIsNull() {
+        filter.setMode(Mode.PRODUCTION.name());
+        when(request.getRequestHeader("origin")).thenReturn(null);
+        when(request.getRequestHeader("host")).thenReturn(Arrays.asList(DOMAIN2));
+        filter.filter(request, response);
+        verify(responseMap).add("Access-Control-Allow-Origin", DOMAIN2);
+    }
+
+    private void assertDomain(String domain, String expected) {
+        when(request.getRequestHeader("origin")).thenReturn(Arrays.asList(domain));
         filter.setMode(Mode.PRODUCTION.name());
         filter.filter(request, response);
-        verify(responseMap).add("Access-Control-Allow-Origin", "https://test.site.something http://ruhtinas.nukettaja.com");
+        verify(responseMap).add("Access-Control-Allow-Origin", expected);
     }
     
 }

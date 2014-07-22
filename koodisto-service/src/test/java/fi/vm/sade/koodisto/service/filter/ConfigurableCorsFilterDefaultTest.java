@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.service.filter;
 
+import java.util.Arrays;
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.junit.Before;
@@ -47,6 +49,7 @@ public class ConfigurableCorsFilterDefaultTest {
     
     @Test
     public void allowsAccessFromDefaultDomainOnlyInProductionModeWhenNoAllowedDomainsAreProvided() {
+        when(request.getRequestHeader("origin")).thenReturn(Arrays.asList("http://hack.domain.org"));
         filter.setMode(Mode.PRODUCTION.name());
         filter.filter(request, response);
         verify(responseMap).add("Access-Control-Allow-Origin", ConfigurableCorsFilter.DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
