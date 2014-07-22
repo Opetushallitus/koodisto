@@ -32,4 +32,8 @@ public interface KoodiVersioDAO extends JpaDAO<KoodiVersio, Long> {
     boolean isLatestKoodiVersio(String koodiUri, Integer versio);
 
     Map<String, Integer> getLatestVersionNumbersForUris(String... koodiUris);
+
+    KoodiVersio insertNonFlush(KoodiVersio koodiVersio);
+
+    void flush();
 }

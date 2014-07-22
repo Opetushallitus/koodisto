@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CompoundSelection;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaBuilder.In;
 import javax.persistence.criteria.CriteriaQuery;
@@ -24,8 +23,6 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -569,5 +566,19 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
         criteriaQuery.distinct(true);
         TypedQuery<KoodiVersio> query = em.createQuery(criteriaQuery);
         return query;
+    }
+    
+    @Override
+    public KoodiVersio insertNonFlush(KoodiVersio entity) {
+        validate(entity);
+        EntityManager em = getEntityManager();
+        em.persist(entity);
+        // Database must be synchronized after this by flushing
+        return entity;
+    }
+
+    @Override
+    public void flush() {
+        getEntityManager().flush();
     }
 }
