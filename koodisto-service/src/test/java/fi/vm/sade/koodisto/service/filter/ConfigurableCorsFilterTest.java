@@ -48,6 +48,7 @@ public class ConfigurableCorsFilterTest {
     
     @Test
     public void allowsAccessFromAnywhereInDevelopmentMode() {
+        filter.setMode(Mode.DEVELOPMENT.name());
         filter.filter(request, response);
         verify(responseMap).add("Access-Control-Allow-Origin", "*");
     }
@@ -77,6 +78,16 @@ public class ConfigurableCorsFilterTest {
         when(request.getRequestHeader("host")).thenReturn(Arrays.asList(DOMAIN2));
         filter.filter(request, response);
         verify(responseMap).add("Access-Control-Allow-Origin", DOMAIN2);
+    }
+    
+    @Test
+    public void copiesHeadersFromRequestToResponse()  {
+        String headerValue = "value", headerValue2 = "va";
+        when(request.getRequestHeader("access-control-request-method")).thenReturn(Arrays.asList(headerValue));
+        when(request.getRequestHeader("access-control-request-headers")).thenReturn(Arrays.asList(headerValue2));
+        filter.filter(request, response);
+        verify(responseMap).add("Access-Control-Allow-Methods", headerValue);
+        verify(responseMap).add("Access-Control-Allow-Headers", headerValue2);
     }
 
     private void assertDomain(String domain, String expected) {
