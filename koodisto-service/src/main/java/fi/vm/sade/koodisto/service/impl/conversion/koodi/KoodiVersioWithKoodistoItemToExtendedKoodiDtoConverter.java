@@ -79,30 +79,32 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
         Map<String, Integer> levelsWithMap = koodiVersioDAO.getLatestVersionNumbersForUris(levelsWithCodeElements.toArray(new String[levelsWithCodeElements.size()]));
 
         //
-        HashSet<String> addedUris = new HashSet<String>();
+        HashSet<String> includesAddedUris = new HashSet<String>();
+        HashSet<String> withinAddedUris = new HashSet<String>();
+        HashSet<String> levelsWithAddedUris = new HashSet<String>();
+
         for (KoodinSuhde koodinSuhde : sourceKoodiVersio.getYlakoodis()) {
             KoodiVersio koodiVersio = koodinSuhde.getYlakoodiVersio();
             String koodiUri = koodiVersio.getKoodi().getKoodiUri();
             switch (koodinSuhde.getSuhteenTyyppi()) {
             case RINNASTEINEN:
-                addOrUpdate(converted.getLevelsWithCodeElements(), levelsWithMap, koodiUri, koodiVersio, isLatest, addedUris);
+                addOrUpdate(converted.getLevelsWithCodeElements(), levelsWithMap, koodiUri, koodiVersio, isLatest, levelsWithAddedUris);
                 break;
             case SISALTYY:
-                addOrUpdate(converted.getWithinCodeElements(), withinMap, koodiUri, koodiVersio, isLatest, addedUris);
+                addOrUpdate(converted.getWithinCodeElements(), withinMap, koodiUri, koodiVersio, isLatest, includesAddedUris);
                 break;
             }
         }
 
-        addedUris = new HashSet<String>();
         for (KoodinSuhde koodinSuhde : sourceKoodiVersio.getAlakoodis()) {
             KoodiVersio koodiVersio = koodinSuhde.getAlakoodiVersio();
             String koodiUri = koodiVersio.getKoodi().getKoodiUri();
             switch (koodinSuhde.getSuhteenTyyppi()) {
             case RINNASTEINEN:
-                addOrUpdate(converted.getLevelsWithCodeElements(), levelsWithMap, koodiUri, koodiVersio, isLatest, addedUris);
+                addOrUpdate(converted.getLevelsWithCodeElements(), levelsWithMap, koodiUri, koodiVersio, isLatest, levelsWithAddedUris);
                 break;
             case SISALTYY:
-                addOrUpdate(converted.getIncludesCodeElements(), includesMap, koodiUri, koodiVersio, isLatest, addedUris);
+                addOrUpdate(converted.getIncludesCodeElements(), includesMap, koodiUri, koodiVersio, isLatest, withinAddedUris);
                 break;
             }
         }
@@ -159,18 +161,15 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
                     }
 
                 }));
-        boolean duplicate = false;
         if (addedUris.contains(koodiUri)) {
             for (int i = 0; i < list.size(); i++) {
                 RelationCodeElement relationCodeElement = list.get(i);
-                duplicate = true;
                 // Jos koodien versiot ovat listassa väärässä versiojärjestyksessä (uudempi tulee myöhemmin)
                 if (versio > relationCodeElement.codeElementVersion) {
                     list.set(i, new RelationCodeElement(koodiUri, versio, koodiArvo, metadatas, getKoodistoMetadatas(koodiVersio)));
                 }
             }
-        }
-        if (!duplicate) {
+        } else {
             addedUris.add(koodiUri);
             list.add(new RelationCodeElement(koodiUri, versio, koodiArvo, metadatas, getKoodistoMetadatas(koodiVersio)));
         }
