@@ -16,8 +16,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerResponse;
 
-import fi.vm.sade.koodisto.service.filter.ConfigurableCorsFilter.Mode;
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -30,7 +28,7 @@ public class ConfigurableCorsFilterTest {
     private static final String DOMAIN2 = "http://ruhtinas.nukettaja.com";
 
     @Autowired
-    private ConfigurableCorsFilter filter;
+    private ConfigurableJerseyCorsFilter filter;
     
     private ContainerResponse response;
     private ContainerRequest request;
@@ -48,7 +46,7 @@ public class ConfigurableCorsFilterTest {
     
     @Test
     public void allowsAccessFromAnywhereInDevelopmentMode() {
-        filter.setMode(Mode.DEVELOPMENT.name());
+        filter.setMode(CorsFilterMode.DEVELOPMENT.name());
         filter.filter(request, response);
         verify(responseMap).add("Access-Control-Allow-Origin", "*");
     }
@@ -73,7 +71,7 @@ public class ConfigurableCorsFilterTest {
     
     @Test
     public void attempsToDetermineRemoteDomainFromIEsHostHeaderWhenOriginIsNull() {
-        filter.setMode(Mode.PRODUCTION.name());
+        filter.setMode(CorsFilterMode.PRODUCTION.name());
         when(request.getRequestHeader("origin")).thenReturn(null);
         when(request.getRequestHeader("host")).thenReturn(Arrays.asList(DOMAIN2));
         filter.filter(request, response);
@@ -92,7 +90,7 @@ public class ConfigurableCorsFilterTest {
 
     private void assertDomain(String domain, String expected) {
         when(request.getRequestHeader("origin")).thenReturn(Arrays.asList(domain));
-        filter.setMode(Mode.PRODUCTION.name());
+        filter.setMode(CorsFilterMode.PRODUCTION.name());
         filter.filter(request, response);
         verify(responseMap).add("Access-Control-Allow-Origin", expected);
     }

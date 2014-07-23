@@ -16,8 +16,6 @@ import org.springframework.security.web.savedrequest.Enumerator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fi.vm.sade.koodisto.service.filter.ConfigurableCorsFilter.Mode;
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,7 +43,7 @@ public class ConfigurableCorsFilterServletResponseTest {
     
     @Test
     public void allowsAccessFromAnywhereInDevelopmentMode() throws Exception {
-        filter.setMode(Mode.DEVELOPMENT.name());
+        filter.setMode(CorsFilterMode.DEVELOPMENT.name());
         filter.doFilter(request, response, chain);
         verify(response).addHeader("Access-Control-Allow-Origin", "*");
     }
@@ -80,7 +78,7 @@ public class ConfigurableCorsFilterServletResponseTest {
 
     private void assertDomain(String domain, String expected) throws Exception {
         when(request.getHeaders("origin")).thenReturn(new Enumerator<String>(Arrays.asList(domain)));
-        filter.setMode(Mode.PRODUCTION.name());
+        filter.setMode(CorsFilterMode.PRODUCTION.name());
         filter.doFilter(request, response, chain);
         verify(response).addHeader("Access-Control-Allow-Origin", expected);
     }

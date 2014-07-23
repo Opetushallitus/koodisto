@@ -15,8 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerResponse;
 
-import fi.vm.sade.koodisto.service.filter.ConfigurableCorsFilter.Mode;
-
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +23,7 @@ import static org.mockito.Mockito.when;
 public class ConfigurableCorsFilterDefaultTest {
     
     @Autowired
-    private ConfigurableCorsFilter filter;
+    private ConfigurableJerseyCorsFilter filter;
     
     private ContainerResponse response;
     private ContainerRequest request;
@@ -50,7 +48,7 @@ public class ConfigurableCorsFilterDefaultTest {
     @Test
     public void allowsAccessFromDefaultDomainOnlyInProductionModeWhenNoAllowedDomainsAreProvided() {
         when(request.getRequestHeader("origin")).thenReturn(Arrays.asList("http://hack.domain.org"));
-        filter.setMode(Mode.PRODUCTION.name());
+        filter.setMode(CorsFilterMode.PRODUCTION.name());
         filter.filter(request, response);
         verify(responseMap).add("Access-Control-Allow-Origin", ConfigurableCorsFilter.DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
     }
