@@ -33,13 +33,14 @@ abstract class CorsFiller<R, Q> {
         }
     }
 
-    protected void copyHeadersToResponse(Q request, R response) {
+    protected void setHeadersToResponse(Q request, R response) {
         for (String value : getHeaders("access-control-request-method", request)) {
             setHeader("Access-Control-Allow-Methods", value, response);
         }
         for (String value : getHeaders("access-control-request-headers", request)) {
             setHeader("Access-Control-Allow-Headers", value, response);
         }
+        setHeader("Access-Control-Allow-Credentials", "true", response);
     }
 
     private String getMatchingDomain(Q request) {

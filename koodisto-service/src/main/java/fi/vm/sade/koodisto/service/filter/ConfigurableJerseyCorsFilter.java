@@ -29,7 +29,7 @@ public class ConfigurableJerseyCorsFilter implements ContainerResponseFilter {
     @Override
     public ContainerResponse filter(ContainerRequest containerRequest, ContainerResponse containerResponse) {
         CorsFiller<ContainerResponse, ContainerRequest> filler = new JerseyCorsFiller(mode, allowedDomains);
-        filler.copyHeadersToResponse(containerRequest, containerResponse);
+        filler.setHeadersToResponse(containerRequest, containerResponse);
         filler.setAllowOrigin(containerResponse, containerRequest);
         return containerResponse;
     }

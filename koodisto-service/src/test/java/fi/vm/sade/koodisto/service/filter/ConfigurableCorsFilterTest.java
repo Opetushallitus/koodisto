@@ -87,6 +87,12 @@ public class ConfigurableCorsFilterTest {
         verify(responseMap).add("Access-Control-Allow-Methods", headerValue);
         verify(responseMap).add("Access-Control-Allow-Headers", headerValue2);
     }
+    
+    @Test
+    public void setsAllowCredentialsToResponseHeader() {
+        filter.filter(request, response);
+        verify(responseMap).add("Access-Control-Allow-Credentials", "true");
+    }
 
     private void assertDomain(String domain, String expected) {
         when(request.getRequestHeader("origin")).thenReturn(Arrays.asList(domain));

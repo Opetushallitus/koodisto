@@ -41,7 +41,7 @@ public class ConfigurableCorsFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         CorsFiller<HttpServletResponse, HttpServletRequest> filler = new HttpServletCorsFiller(mode, allowedDomains);
-        filler.copyHeadersToResponse(req, res);
+        filler.setHeadersToResponse(req, res);
         filler.setAllowOrigin(res, req);
         chain.doFilter(request, res);
     }
