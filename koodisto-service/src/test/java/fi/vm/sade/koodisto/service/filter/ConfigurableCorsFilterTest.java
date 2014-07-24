@@ -28,7 +28,7 @@ public class ConfigurableCorsFilterTest {
     private static final String DOMAIN2 = "http://ruhtinas.nukettaja.com";
 
     @Autowired
-    private ConfigurableJerseyCorsFilter filter;
+    private ConfigurableCorsFilter filter;
     
     private ContainerResponse response;
     private ContainerRequest request;
@@ -60,7 +60,7 @@ public class ConfigurableCorsFilterTest {
     
     @Test
     public void doesNotAllowAccessInProductionModeWhenRequestIsNotInDomainsAllowed() {
-        assertDomain("http://something.net", ConfigurableCorsFilter.DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
+        assertDomain("http://something.net", ConfigurableCorsServletFilter.DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
     }
     
     @Test

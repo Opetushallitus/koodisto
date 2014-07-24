@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 public class ConfigurableCorsFilterDefaultTest {
     
     @Autowired
-    private ConfigurableJerseyCorsFilter filter;
+    private ConfigurableCorsFilter filter;
     
     private ContainerResponse response;
     private ContainerRequest request;
@@ -50,7 +50,7 @@ public class ConfigurableCorsFilterDefaultTest {
         when(request.getRequestHeader("origin")).thenReturn(Arrays.asList("http://hack.domain.org"));
         filter.setMode(CorsFilterMode.PRODUCTION.name());
         filter.filter(request, response);
-        verify(responseMap).add("Access-Control-Allow-Origin", ConfigurableCorsFilter.DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
+        verify(responseMap).add("Access-Control-Allow-Origin", ConfigurableCorsServletFilter.DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
     }
 }
 
