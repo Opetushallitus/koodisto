@@ -14,27 +14,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ConfigurableCorsServletFilter implements Filter {
-    
-    private static final String CORSFILTER_MODE_PARAM = "${common.corsfilter.mode:DEVELOPMENT}";
-
-    static final String DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN = "https://virkailija.opintopolku.fi";
-    
-    private CorsFilterMode mode;
-    
-    @Value("${common.corsfilter.allowed-domains:}")
-    private String allowedDomains;
-
-    @Value(CORSFILTER_MODE_PARAM)
-    void setMode(String mode) {
-        this.mode = StringUtils.isNotBlank(mode) && !mode.equalsIgnoreCase(CORSFILTER_MODE_PARAM) ? CorsFilterMode.valueOf(mode) : CorsFilterMode.DEVELOPMENT;
-    }
-    
+public class ConfigurableCorsServletFilter extends CorsFilter implements Filter {
     
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {

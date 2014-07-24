@@ -3,8 +3,6 @@ package fi.vm.sade.koodisto.service.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.sun.jersey.spi.container.ContainerRequest;
@@ -12,19 +10,7 @@ import com.sun.jersey.spi.container.ContainerResponse;
 import com.sun.jersey.spi.container.ContainerResponseFilter;
 
 @Component
-public class ConfigurableCorsFilter implements ContainerResponseFilter {
-
-    private static final String CORSFILTER_MODE_PARAM = "${common.corsfilter.mode:DEVELOPMENT}";
- 
-    private CorsFilterMode mode;
-
-    @Value("${common.corsfilter.allowed-domains:}")
-    private String allowedDomains;
-
-    @Value(CORSFILTER_MODE_PARAM)
-    void setMode(String mode) {
-        this.mode = StringUtils.isNotBlank(mode) && !mode.equalsIgnoreCase(CORSFILTER_MODE_PARAM) ? CorsFilterMode.valueOf(mode) : CorsFilterMode.DEVELOPMENT;
-    }
+public class ConfigurableCorsFilter extends CorsFilter implements ContainerResponseFilter {
 
     @Override
     public ContainerResponse filter(ContainerRequest containerRequest, ContainerResponse containerResponse) {

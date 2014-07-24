@@ -46,7 +46,7 @@ abstract class CorsFiller<R, Q> {
 
     protected void setAllowOrigin(R response, Q request) {
         if (CorsFilterMode.DEVELOPMENT.equals(mode)) {
-            setHeader("Access-Control-Allow-Origin", "*", response);           
+            setHeader("Access-Control-Allow-Origin", getRemoteDomain(request), response);           
         } else {
             setHeader("Access-Control-Allow-Origin", getMatchingDomain(request), response);
         }

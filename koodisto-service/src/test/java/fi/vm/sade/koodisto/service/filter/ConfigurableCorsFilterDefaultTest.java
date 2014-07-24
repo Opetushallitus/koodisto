@@ -5,6 +5,7 @@ import java.util.Arrays;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -39,6 +40,7 @@ public class ConfigurableCorsFilterDefaultTest {
         when(response.getHttpHeaders()).thenReturn(responseMap);
     }
     
+    @Ignore
     @Test
     public void allowsAccessFromAnywhereWithDefaultMode() {
         filter.filter(request, response);
