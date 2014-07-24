@@ -1,12 +1,19 @@
 package fi.vm.sade.koodisto.service.filter;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 abstract class CorsFiller<R, Q> {
     
     private final CorsFilterMode mode;
     
     private final String allowedDomains;
+    
+    private final Logger logger = LoggerFactory.getLogger(getClass());;
     
     protected static final String DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN = "https://virkailija.opintopolku.fi";
     
@@ -21,8 +28,20 @@ abstract class CorsFiller<R, Q> {
 
     private String getRemoteDomain(Q request) {
         List<String> headers = getHeaders("origin", request);
-        headers = !headers.isEmpty() ? headers : getHeaders("host", request);
-        return !headers.isEmpty() ? headers.get(0) : DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN;
+        return !headers.isEmpty() ? headers.get(0) : getDomainFromReferer(request);
+    }
+
+    private String getDomainFromReferer(Q request) {
+        List<String> headers = getHeaders("referer", request);
+        try {
+            if (!headers.isEmpty()) {
+                URL url = new URL(headers.get(0));                
+                return new StringBuilder(url.getProtocol()).append("://").append(url.getHost()).toString();
+            }
+        } catch (MalformedURLException e) {
+            logger.warn("Could not determine domain from request while forming CORS response", e);
+        } 
+        return DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN;
     }
 
     protected void setAllowOrigin(R response, Q request) {

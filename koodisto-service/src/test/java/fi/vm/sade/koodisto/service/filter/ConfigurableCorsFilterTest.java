@@ -73,7 +73,7 @@ public class ConfigurableCorsFilterTest {
     public void attempsToDetermineRemoteDomainFromIEsHostHeaderWhenOriginIsNull() {
         filter.setMode(CorsFilterMode.PRODUCTION.name());
         when(request.getRequestHeader("origin")).thenReturn(null);
-        when(request.getRequestHeader("host")).thenReturn(Arrays.asList(DOMAIN2));
+        when(request.getRequestHeader("referer")).thenReturn(Arrays.asList(DOMAIN2));
         filter.filter(request, response);
         verify(responseMap).add("Access-Control-Allow-Origin", DOMAIN2);
     }
