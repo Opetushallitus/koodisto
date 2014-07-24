@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -16,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.savedrequest.Enumerator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.junit.Assert.assertEquals;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -51,12 +52,10 @@ public class ConfigurableCorsServletFilterTest {
         verify(response).addHeader("Access-Control-Allow-Origin", customDomain);
     }
     
-    @Ignore
     @Test
-    public void allowsAccessFromAnywhereWhenModeIsNotSet() throws Exception {
+    public void defaultModeIsProduction() {
         filter.setMode(null);
-        filter.doFilter(request, response, chain);
-        verify(response).addHeader("Access-Control-Allow-Origin", "*");
+        assertEquals(CorsFilterMode.PRODUCTION, filter.mode);
     }
     
     @Test

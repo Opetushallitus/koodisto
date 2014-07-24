@@ -5,7 +5,6 @@ import java.util.Arrays;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -15,6 +14,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerResponse;
+
+import static org.junit.Assert.assertEquals;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,11 +41,9 @@ public class ConfigurableCorsFilterDefaultTest {
         when(response.getHttpHeaders()).thenReturn(responseMap);
     }
     
-    @Ignore
     @Test
-    public void allowsAccessFromAnywhereWithDefaultMode() {
-        filter.filter(request, response);
-        verify(responseMap).add("Access-Control-Allow-Origin", "*");
+    public void defaultModeIsProduction() {
+        assertEquals(CorsFilterMode.PRODUCTION, filter.mode);
     }
     
     @Test

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public abstract class CorsFilter {
     
-    private static final String CORSFILTER_MODE_PARAM = "${common.corsfilter.mode:DEVELOPMENT}";
+    private static final String CORSFILTER_MODE_PARAM = "${common.corsfilter.mode:PRODUCTION}";
 
     static final String DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN = "https://virkailija.opintopolku.fi";
     
@@ -18,7 +18,7 @@ public abstract class CorsFilter {
 
     @Value(CORSFILTER_MODE_PARAM)
     void setMode(String mode) {
-        this.mode = StringUtils.isNotBlank(mode) && !mode.equalsIgnoreCase(CORSFILTER_MODE_PARAM) ? CorsFilterMode.valueOf(mode) : CorsFilterMode.DEVELOPMENT;
+        this.mode = StringUtils.isNotBlank(mode) && !mode.equalsIgnoreCase(CORSFILTER_MODE_PARAM) ? CorsFilterMode.valueOf(mode) : CorsFilterMode.PRODUCTION;
     }
     
 }
