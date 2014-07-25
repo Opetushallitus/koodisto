@@ -9,6 +9,25 @@ import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerResponse;
 import com.sun.jersey.spi.container.ContainerResponseFilter;
 
+/**
+ * com.sun.jersey.spi.container.ContainerResponseFilter implementation of CorsFilter
+ * 
+ * Simply add this filter into your web.xml Jersey configuration:
+ * 
+ * <init-param>
+ *     <param-name>com.sun.jersey.spi.container.ContainerResponseFilters</param-name>
+ *     <param-value>fi.vm.sade.koodisto.service.filter.ConfigurableCorsFilter, {other filters]</param-value>
+ * </init-param>
+ *  
+ * Calling JavaScript should set withCredentials flag to true when calling REST-methods with @PreAuthorize annotation.
+ * Otherwise requests from Chrome (36.0.1985.125) and Mozilla Firefox (31.0) will fail with status 401.
+ * 
+ * @see fi.vm.sade.koodisto.service.filter.CorsFilter for configuration parameters
+ * 
+ * @author Risto Salama
+ *
+ */
+
 @Component
 public class ConfigurableCorsFilter extends CorsFilter implements ContainerResponseFilter {
 
