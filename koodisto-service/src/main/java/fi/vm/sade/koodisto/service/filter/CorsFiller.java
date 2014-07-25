@@ -64,6 +64,7 @@ abstract class CorsFiller<R, Q> {
             setHeader("Access-Control-Allow-Headers", value, response);
         }
         setHeader("Access-Control-Allow-Credentials", "true", response);
+        setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD", response);
     }
 
     private String getMatchingDomain(Q request) {

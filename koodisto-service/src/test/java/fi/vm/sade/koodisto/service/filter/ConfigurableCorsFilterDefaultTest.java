@@ -57,5 +57,11 @@ public class ConfigurableCorsFilterDefaultTest {
         verify(responseMap, never()).add(eq("Access-Control-Allow-Origin"), anyString());
     }
     
+    @Test
+    public void setsAllowMethodsToHeader() {
+        filter.filter(request, response);
+        verify(responseMap).add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
+    }
+    
 }
 
