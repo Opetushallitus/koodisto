@@ -10,8 +10,6 @@ public abstract class CorsFilter {
     //Default mode is PRODUCTION
     private static final String CORSFILTER_MODE_PARAM = "${common.corsfilter.mode:PRODUCTION}";
 
-    static final String DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN = "https://virkailija.opintopolku.fi";
-    
     protected CorsFilterMode mode;
     
     //Multiple values can be provided by using space as a separator, this will be used only in PRODUCTION mode

@@ -17,7 +17,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -60,7 +63,7 @@ public class ConfigurableCorsServletFilterTest {
     
     @Test
     public void doesNotAllowAccessInProductionModeWhenRequestIsNotInDomainsAllowed() throws Exception {
-        assertDomain("http://something.net", ConfigurableCorsServletFilter.DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
+        assertDomain("http://something.net", null);
     }
     
     @Test
@@ -83,7 +86,11 @@ public class ConfigurableCorsServletFilterTest {
         when(request.getHeaders("origin")).thenReturn(new Enumerator<String>(Arrays.asList(domain)));
         filter.setMode(CorsFilterMode.PRODUCTION.name());
         filter.doFilter(request, response, chain);
-        verify(response).addHeader("Access-Control-Allow-Origin", expected);
+        if (expected == null) {
+            verify(response, never()).addHeader(eq("Access-Control-Allow-Origin"), anyString());
+        } else {
+            verify(response).addHeader("Access-Control-Allow-Origin", expected);
+        }
     }
     
 }

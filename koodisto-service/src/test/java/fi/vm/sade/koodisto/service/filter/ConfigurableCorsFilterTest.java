@@ -17,7 +17,10 @@ import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerResponse;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -63,7 +66,7 @@ public class ConfigurableCorsFilterTest {
     
     @Test
     public void doesNotAllowAccessInProductionModeWhenRequestIsNotInDomainsAllowed() {
-        assertDomain("http://something.net", ConfigurableCorsServletFilter.DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
+        assertDomain("http://something.net", null);
     }
     
     @Test
@@ -101,7 +104,11 @@ public class ConfigurableCorsFilterTest {
         when(request.getRequestHeader("origin")).thenReturn(Arrays.asList(domain));
         filter.setMode(CorsFilterMode.PRODUCTION.name());
         filter.filter(request, response);
-        verify(responseMap).add("Access-Control-Allow-Origin", expected);
+        if (expected == null) {
+            verify(responseMap, never()).add(eq("Access-Control-Allow-Origin"), anyString());
+        } else {
+            verify(responseMap).add("Access-Control-Allow-Origin", expected);
+        }
     }
     
 }

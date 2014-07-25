@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +48,11 @@ abstract class CorsFiller<R, Q> {
     protected void setAllowOrigin(R response, Q request) {
         if (CorsFilterMode.DEVELOPMENT.equals(mode)) {
             setHeader("Access-Control-Allow-Origin", getRemoteDomain(request), response);           
-        } else {
-            setHeader("Access-Control-Allow-Origin", getMatchingDomain(request), response);
+        } else if(StringUtils.isNotBlank(allowedDomains)){
+            String matchingDomain = getMatchingDomain(request);
+            if (StringUtils.isNotBlank(matchingDomain)) {
+                setHeader("Access-Control-Allow-Origin", matchingDomain, response);
+            }
         }
     }
 
@@ -69,6 +73,6 @@ abstract class CorsFiller<R, Q> {
                 return allowedDomain;
             }
         }
-        return DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN;
+        return null;
     }
 }

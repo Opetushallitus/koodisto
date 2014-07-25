@@ -16,7 +16,10 @@ import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerResponse;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,11 +50,12 @@ public class ConfigurableCorsFilterDefaultTest {
     }
     
     @Test
-    public void allowsAccessFromDefaultDomainOnlyInProductionModeWhenNoAllowedDomainsAreProvided() {
+    public void doesNotSetValueToAccessControlAllowOriginWhenNoDomainIsSet() {
         when(request.getRequestHeader("origin")).thenReturn(Arrays.asList("http://hack.domain.org"));
         filter.setMode(CorsFilterMode.PRODUCTION.name());
         filter.filter(request, response);
-        verify(responseMap).add("Access-Control-Allow-Origin", ConfigurableCorsServletFilter.DEFAULT_DOMAIN_FOR_ALLOW_ORIGIN);
+        verify(responseMap, never()).add(eq("Access-Control-Allow-Origin"), anyString());
     }
+    
 }
 
