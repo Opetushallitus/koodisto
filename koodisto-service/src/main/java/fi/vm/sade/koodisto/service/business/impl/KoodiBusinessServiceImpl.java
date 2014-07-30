@@ -322,6 +322,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                     }
                 } else if (!koodiArvosInThisKoodisto.contains(updateData.getKoodiArvo())) {
                     koodisToBeCreated.add(updateData);
+                    koodiArvosInThisKoodisto.add(updateData.getKoodiArvo());
                 }
             }
         }
