@@ -58,15 +58,21 @@ public class CodesGroupResource {
             notes = "",
             response = Response.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 500, message = "Koodistoryhmää ei saatu haettua")
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 400, message = "Id on virheellinen"),
+            @ApiResponse(code = 500, message = "Koodistoryhmää ei löydy kyseisellä id:llä")
     })
     public Response getCodesByCodesUri(
-            @ApiParam(value = "Koodistoryhmän URI") @PathParam("id") Long id) {
+            @ApiParam(value = "Koodistoryhmän id") @PathParam("id") Long id) {
+        if (id == null || id < 1) {
+            logger.warn("Invalid parameter for rest call. id: " + id);
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         try {
             KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.getKoodistoRyhmaById(id);
             return Response.status(Response.Status.OK).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
         } catch (Exception e) {
-            logger.warn("Koodistoryhmää ei saatu haettua. ", e);
+            logger.warn("Error finding CodesGroup. id: " + id, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -81,15 +87,21 @@ public class CodesGroupResource {
             notes = "",
             response = Response.class)
     @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "OK"),
+            @ApiResponse(code = 400, message = "Parametri on tyhjä"),
             @ApiResponse(code = 500, message = "Koodistoryhmää ei saatu päivitettyä")
     })
     public Response update(
             @ApiParam(value = "Koodistoryhmä") KoodistoRyhmaDto codesGroupDTO) {
+        if (codesGroupDTO == null) {
+            logger.warn("Invalid parameter for rest call. codesGroupDTO: " + codesGroupDTO);
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         try {
             KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.updateKoodistoRyhma(codesGroupDTO);
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
         } catch (Exception e) {
-            logger.warn("Koodistoryhmää ei saatu päivitettyä. ", e);
+            logger.warn("Error while updating codesGroup. ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
@@ -104,16 +116,22 @@ public class CodesGroupResource {
             notes = "",
             response = Response.class)
     @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "OK"),
+            @ApiResponse(code = 400, message = "Parametri on tyhjä"),
             @ApiResponse(code = 500, message = "Koodistoryhmää ei saatu lisättyä")
     })
     public Response insert(
             @ApiParam(value = "Koodistoryhmä") KoodistoRyhmaDto codesGroupDTO) {
+        if (codesGroupDTO == null) {
+            logger.warn("Invalid parameter for rest call. codesGroupDTO: " + codesGroupDTO);
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         try {
             codesGroupDTO.setKoodistoRyhmaUri(uriTransliterator.generateKoodistoGroupUriByMetadata((Collection) codesGroupDTO.getKoodistoRyhmaMetadatas()));
             KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.createKoodistoRyhma(codesGroupDTO);
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
         } catch (Exception e) {
-            logger.warn("Koodistoryhmää ei saatu lisättyä. ", e);
+            logger.warn("Error while inserting codesGroup.", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
@@ -129,15 +147,21 @@ public class CodesGroupResource {
             notes = "",
             response = Response.class)
     @ApiResponses(value = {
+            @ApiResponse(code = 202, message = "OK"),
+            @ApiResponse(code = 400, message = "Id on virheellinen."),
             @ApiResponse(code = 500, message = "Koodiryhmää ei saatu poistettua")
     })
     public Response delete(
             @ApiParam(value = "Koodistoryhmän URI") @PathParam("id") Long id) {
+        if (id == null || id < 1) {
+            logger.warn("Invalid parameter for rest call. id: " + id);
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         try {
             koodistoRyhmaBusinessService.delete(id);
             return Response.status(Response.Status.ACCEPTED).build();
         } catch (Exception e) {
-            logger.warn("Koodiryhmää ei saatu poistettua. ", e);
+            logger.warn("Error while removing codesGroup. id: " + id, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }

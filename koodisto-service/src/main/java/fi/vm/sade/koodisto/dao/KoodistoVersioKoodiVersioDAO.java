@@ -13,4 +13,8 @@ public interface KoodistoVersioKoodiVersioDAO extends JpaDAO<KoodistoVersioKoodi
     List<KoodistoVersioKoodiVersio> getByKoodiVersio(Long koodiVersioId);
 
     List<KoodistoVersioKoodiVersio> getByKoodistoVersio(Long koodistoVersioId);
+
+    KoodistoVersioKoodiVersio insertNonFlush(KoodistoVersioKoodiVersio koodistoVersioRelation);
+
+    void flush();
 }

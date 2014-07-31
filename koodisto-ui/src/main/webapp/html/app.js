@@ -72,7 +72,12 @@ app.config([ '$routeProvider', '$httpProvider', function($routeProvider, $httpPr
         templateUrl : TEMPLATE_URL_BASE + 'codeelement/createcodeelement.html'
     }).when('/muokkaaKoodi/:codeElementUri/:codeElementVersion', {
         controller : CodeElementEditorController,
-        templateUrl : TEMPLATE_URL_BASE + 'codeelement/editcodeelement.html'
+        templateUrl : TEMPLATE_URL_BASE + 'codeelement/editcodeelement.html',
+        resolve : {
+            isModalController : function() {
+                return false;
+            }
+        }
     }).when('/lisaaKoodistoryhma', {
         controller : CodesGroupCreatorController,
         templateUrl : TEMPLATE_URL_BASE + 'codesgroup/createcodesgroup.html'
@@ -309,12 +314,10 @@ app.factory('RemoveRelationCodeElement', function($resource) {
 });
 
 app.factory('MassRemoveRelationCodeElements', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/removerelations/:codeElementUri/:relationType", {
-        codeElementUri : "@codeElementUri",
-        relationType : "@relationType"
+    return $resource(SERVICE_URL_BASE + "codeelement/removerelations", {
     }, {
         remove : {
-            method : "DELETE"
+            method : "POST"
         }
     });
 });
@@ -324,6 +327,16 @@ app.factory('AddRelationCodeElement', function($resource) {
         codeElementUri : "@codeElementUri",
         codeElementUriToAdd : "@codeElementUriToAdd",
         relationType : "@relationType"
+    }, {
+        put : {
+            method : "POST"
+        }
+    });
+});
+
+app.factory('MassAddRelationCodeElements', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codeelement/addrelations", {
+
     }, {
         put : {
             method : "POST"

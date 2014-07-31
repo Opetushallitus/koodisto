@@ -43,4 +43,14 @@ public class KoodistoVersioKoodiVersio extends BaseEntity {
     public void setKoodiVersio(KoodiVersio koodiVersio) {
         this.koodiVersio = koodiVersio;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
 }

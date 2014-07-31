@@ -9,14 +9,14 @@ app.directive('auth', function($animate, $timeout, AuthService) {
                 if(additionalCheck()) {
                     element.removeClass('ng-hide');
                 }
-            }
+            };
             var additionalCheck = function() {
                 if(attrs.authAdditionalCheck) {
                     var temp = $scope.$eval(attrs.authAdditionalCheck);
                     return temp;
                 }
                 return true;
-            }
+            };
             $timeout(function() {
                 switch(attrs.auth) {
 

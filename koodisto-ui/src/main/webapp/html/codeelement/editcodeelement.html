@@ -1,75 +1,75 @@
 
 <script type="text/ng-template" id="codeelement.html">
-	<div class="row-fluid">
+    <div class="row-fluid">
 
-		{{(model.shownCodeElements  |  filter:search ).length }} {{'codes.viewpage.codeelements.pagination.hakutulosta' | i18n}}
-		<div class="pagination">
-			<ul>
-				<li ng-click="incrementPage(-1)"><span>&#8592;</span></li>
-				<li ng-if="getNumberOfPages() == 0" class="disabled"><a>0</a></li>
-				<li ng-if="getNumberOfPages() <= 9"
-					ng-repeat="i in [] | forLoop:0:getNumberOfPages()"
-					ng-class="{disabled: (i==model.currentPage)}"><a
-					ng-click="changePage(i)">{{i+1}}</a>
-				</li>
-				<li ng-if="getNumberOfPages() > 9 && model.currentPage < 5"
-					ng-repeat="i in [] | forLoop:0:6"
-					ng-class="{disabled: (i==model.currentPage)}"><a
-					ng-click="changePage(i)">{{i+1}}</a>
-				</li>
-				<li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5"
-					ng-repeat="i in [] | forLoop:0:3"
-					ng-class="{disabled: (i==model.currentPage)}"><a
-					ng-click="changePage(i)">{{i+1}}</a>
-				</li>
-				<li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5">
-					<span>...</span>
-				</li>
-				<li
-					ng-if="getNumberOfPages() > 9 && model.currentPage >= 5 && model.currentPage < getNumberOfPages()-5"
-					ng-repeat="i in [] | forLoop:model.currentPage-1:model.currentPage+2"
-					ng-class="{disabled: (i==model.currentPage)}">
-					<a ng-click="changePage(i)">{{i+1}}</a>
-				</li>
-				<li
-					ng-if="getNumberOfPages() > 9 && model.currentPage < getNumberOfPages()-5">
-					<span>...</span>
-				</li>
-				<li
-					ng-if="getNumberOfPages() > 9 && model.currentPage > getNumberOfPages()-6"
-					ng-repeat="i in [] | forLoop:getNumberOfPages()-6:getNumberOfPages()"
-					ng-class="{disabled: (i==model.currentPage)}">
-					<a ng-click="changePage(i)">{{i+1}}</a>
-				</li>
-				<li
-					ng-if="getNumberOfPages() > 9 && model.currentPage <= getNumberOfPages()-6"
-					ng-repeat="i in [] | forLoop:getNumberOfPages()-3:getNumberOfPages()"
-					ng-class="{disabled: (i==model.currentPage)}">
-					<a ng-click="changePage(i)">{{i+1}}</a>
-				</li>
-				<li ng-click="incrementPage(1)"><span>&#8594;</span>
-				</li>
-			</ul>
-		</div>
-		<label for="page_size_select">{{'codes.viewpage.codeelements.pagination.nayta'
-		| i18n}}</label>
-		<select ng-model="model.pageSize"
-			ng-options="n for n in model.pageSizeOptions"
-			ng-change="pageSizeChanged()"
-			id="page_size_select"
-			style="width:auto;">
-		</select>
-		<select
-			ng-model="model.sortOrderSelection"
-			ng-change="sortOrderChanged()"
-			id="ordering_select"
-			style="width:auto;">
-			<option value="1">{{'codeelement.viewpage.pagination.koodiarvo' | i18n}}</option>
-			<option value="2">{{'codeelement.viewpage.pagination.koodiarvoRev' | i18n}}</option>
-			<option value="3">{{'codeelement.viewpage.pagination.koodinimi' | i18n}}</option>
-			<option value="4">{{'codeelement.viewpage.pagination.koodinimiRev' | i18n}}</option>
-		</select>
-	</div>
+        <div ng-if="!model.loadingCodeElements">{{(model.shownCodeElements  |  filter:search ).length }} {{'codes.viewpage.codeelements.pagination.hakutulosta' | i18n}}</div>
+        <div class="pagination">
+            <ul>
+                <li ng-click="incrementPage(-1)"><span>&#8592;</span></li>
+                <li ng-if="getNumberOfPages() == 0" class="disabled"><a>0</a></li>
+                <li ng-if="getNumberOfPages() <= 9"
+                    ng-repeat="i in [] | forLoop:0:getNumberOfPages()"
+                    ng-class="{disabled: (i==model.currentPage)}"><a
+                    ng-click="changePage(i)">{{i+1}}</a>
+                </li>
+                <li ng-if="getNumberOfPages() > 9 && model.currentPage < 5"
+                    ng-repeat="i in [] | forLoop:0:6"
+                    ng-class="{disabled: (i==model.currentPage)}"><a
+                    ng-click="changePage(i)">{{i+1}}</a>
+                </li>
+                <li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5"
+                    ng-repeat="i in [] | forLoop:0:3"
+                    ng-class="{disabled: (i==model.currentPage)}"><a
+                    ng-click="changePage(i)">{{i+1}}</a>
+                </li>
+                <li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5">
+                    <span>...</span>
+                </li>
+                <li
+                    ng-if="getNumberOfPages() > 9 && model.currentPage >= 5 && model.currentPage < getNumberOfPages()-5"
+                    ng-repeat="i in [] | forLoop:model.currentPage-1:model.currentPage+2"
+                    ng-class="{disabled: (i==model.currentPage)}">
+                    <a ng-click="changePage(i)">{{i+1}}</a>
+                </li>
+                <li
+                    ng-if="getNumberOfPages() > 9 && model.currentPage < getNumberOfPages()-5">
+                    <span>...</span>
+                </li>
+                <li
+                    ng-if="getNumberOfPages() > 9 && model.currentPage > getNumberOfPages()-6"
+                    ng-repeat="i in [] | forLoop:getNumberOfPages()-6:getNumberOfPages()"
+                    ng-class="{disabled: (i==model.currentPage)}">
+                    <a ng-click="changePage(i)">{{i+1}}</a>
+                </li>
+                <li
+                    ng-if="getNumberOfPages() > 9 && model.currentPage <= getNumberOfPages()-6"
+                    ng-repeat="i in [] | forLoop:getNumberOfPages()-3:getNumberOfPages()"
+                    ng-class="{disabled: (i==model.currentPage)}">
+                    <a ng-click="changePage(i)">{{i+1}}</a>
+                </li>
+                <li ng-click="incrementPage(1)"><span>&#8594;</span>
+                </li>
+            </ul>
+        </div>
+        <label for="page_size_select">{{'codes.viewpage.codeelements.pagination.nayta'
+        | i18n}}</label>
+        <select ng-model="model.pageSize"
+            ng-options="n for n in model.pageSizeOptions"
+            ng-change="pageSizeChanged()"
+            id="page_size_select"
+            style="width:auto;">
+        </select>
+        <select
+            ng-model="model.sortOrderSelection"
+            ng-change="sortOrderChanged()"
+            id="ordering_select"
+            style="width:auto;">
+            <option value="1">{{'codeelement.viewpage.pagination.koodiarvo' | i18n}}</option>
+            <option value="2">{{'codeelement.viewpage.pagination.koodiarvoRev' | i18n}}</option>
+            <option value="3">{{'codeelement.viewpage.pagination.koodinimi' | i18n}}</option>
+            <option value="4">{{'codeelement.viewpage.pagination.koodinimiRev' | i18n}}</option>
+        </select>
+    </div>
 
     <table class="table">
         <thead>
@@ -80,7 +80,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr bindonce ng-repeat="codeElement in model.shownCodeElements | filter:search | naturalSort:model.sortOrder:model.sortOrderReversed  |  startFrom:model.currentPage*model.pageSize  |  limitTo:model.pageSize">
+            <tr bindonce ng-repeat="codeElement in paginationPage">
                 <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" value="{{codeElement.checked}}" ng-model="codeElement.checked"/></td>
                 <td class="align-center" bo-text="codeElement.value"></td>
                 <td class="align-center" bo-text="codeElement.name"></td>
@@ -98,8 +98,8 @@
         Olet poistamassa koodin {{ namefi }} ja {{ model.withinRelationToRemove.name || model.includesRelationToRemove.name || model.levelsRelationToRemove.name }} v&auml;list&auml; yhteytt&auml;
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="okconfirm()">OK</button>
-        <button class="btn btn-warning" ng-click="cancelconfirm()">Cancel</button>
+        <button ng-disabled="clickedSubmit" class="btn btn-primary" ng-click="okconfirm()">OK</button>
+        <button ng-disabled="clickedSubmit" class="btn btn-warning" ng-click="cancelconfirm()">Cancel</button>
     </div>
 </script>
 
@@ -118,11 +118,15 @@
              </div>
         </div>
 
+        <div ng-if="model.loadingCodeElements">{{'codes.viewpage.codeelements.search.loading' | i18n}}</div>
+
+
         <div class="codeSelector" ng-include="'codeelement.html'" />
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="okcodeelement()">{{'codes.save' | i18n}}</button>
-        <button class="btn btn-warning" ng-click="cancelcodeelement()">{{'codes.cancel' | i18n}}</button>
+        <span ng-if="clickedSubmit">{{'codes.viewpage.codeelements.saving' | i18n}}</span>
+        <button ng-disabled="clickedSubmit" class="btn btn-primary" ng-click="okcodeelement(); clickedSubmit=true">{{'codes.save' | i18n}}</button>
+        <button ng-disabled="clickedSubmit" class="btn btn-warning" ng-click="cancelcodeelement()">{{'codes.cancel' | i18n}}</button>
     </div>
 </script>
 
@@ -259,39 +263,45 @@
         <div class="control-group">
             <label for="withincodes" class="control-label">{{'codeelement.editpage.withincodeelements' | i18n}}</label><br>
             <div class="controls">
-                <button id="withincodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-click="show('withincodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
+                <button id="withincodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector"
+                    ng-click="show('withincodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
             </div>
         </div>
 
         <div class="row-fluid" ng-show="model.withinCodeElements.length">
             <div class="span6">
-                    <table class="table">
-                        <thead>
+                <table class="table">
+                    <thead>
                         <tr>
                             <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.editpage.codeelement' | i18n}}</th>
                             <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
                             <th>{{'codes.delete' | i18n}}</th>
                         </tr>
-                        </thead>
-                        <tbody>
-                        <tr bindonce ng-repeat="codeElement in model.withinCodeElements | orderBy:sortBy">
+                    </thead>
+                    <tbody>
+                        <tr bindonce ng-repeat="codeElement in model.withinCodeElements | orderBy:sortBy | limitTo:model.withinListLengthLimit">
                             <td class="align-center" bo-text="codeElement.name"></td>
-                            <td class="align-center"bo-text="codeElement.versio"></td>
+                            <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center">
                                 <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromWithinCodeElements(codeElement)"></i>
                             </td>
                         </tr>
 
-                        </tbody>
+                    </tbody>
 
-                    </table>
+                </table>
+                <div ng-if="model.withinListLengthLimit < model.withinCodeElements.length")>
+                    <button type="button" class="btn pull-right" ng-click="model.incrementListLimit('within')">{{'codeelement.editpage.relationlist.loadmore' | i18n}}</button>
+                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.withinListLengthLimit}} / {{model.withinCodeElements.length}} {{'codeelement.editpage.relationlist.label.end' | i18n}}
                 </div>
             </div>
-            
+        </div>
+
         <div class="control-group">
             <label for="includescodes" class="control-label">{{'codeelement.editpage.includescodeelements' | i18n}}</label><br>
             <div class="controls">
-                <button id="includescodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-click="show('includescodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
+                <button id="includescodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector"
+                    ng-click="show('includescodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
             </div>
         </div>
 
@@ -299,31 +309,34 @@
             <div class="span6">
                 <table class="table">
                     <thead>
-                    <tr>
-                        <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.editpage.codeelement' | i18n}}</th>
-                        <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
-                        <th>{{'codes.delete' | i18n}}</th>
-                    </tr>
+                        <tr>
+                            <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.editpage.codeelement' | i18n}}</th>
+                            <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
+                            <th>{{'codes.delete' | i18n}}</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr bindonce ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy">
-                        <td class="align-center" bo-text="codeElement.name"></td>
-                        <td class="align-center" bo-text="codeElement.versio"></td>
-                        <td class="align-center">
-                            <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromIncludesCodeElements(codeElement)"></i>
-                        </td>
-                    </tr>
-
+                        <tr bindonce ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy | limitTo:model.includesListLengthLimit">
+                            <td class="align-center" bo-text="codeElement.name"></td>
+                            <td class="align-center" bo-text="codeElement.versio"></td>
+                            <td class="align-center">
+                                <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromIncludesCodeElements(codeElement)"></i>
+                            </td>
+                        </tr>
                     </tbody>
-
                 </table>
+                <div ng-if="model.includesListLengthLimit < model.includesCodeElements.length")>
+                    <button type="button" class="btn pull-right" ng-click="model.incrementListLimit('includes')">{{'codeelement.editpage.relationlist.loadmore' | i18n}}</button>
+                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.includesListLengthLimit}} / {{model.includesCodeElements.length}} {{'codeelement.editpage.relationlist.label.end' | i18n}}
+                </div>
             </div>
         </div>
 
         <div class="control-group">
             <label for="levelswithcodes" class="control-label">{{'codeelement.editpage.levelswithcodeelements' | i18n}}</label><br>
             <div class="controls">
-                <button id="levelswithcodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector" ng-click="show('levelswithcodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
+                <button id="levelswithcodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector"
+                    ng-click="show('levelswithcodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
             </div>
         </div>
 
@@ -331,24 +344,26 @@
             <div class="span6">
                 <table class="table">
                     <thead>
-                    <tr>
-                        <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.editpage.codeelement' | i18n}}</th>
-                        <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
-                        <th>{{'codes.delete' | i18n}}</th>
-                    </tr>
+                        <tr>
+                            <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.editpage.codeelement' | i18n}}</th>
+                            <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
+                            <th>{{'codes.delete' | i18n}}</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:sortBy">
-                        <td class="align-center" bo-text="codeElement.name"></td>
-                        <td class="align-center" bo-text="codeElement.versio"></td>
-                        <td class="align-center">
-                            <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromLevelsWithCodeElements(codeElement)"></i>
-                        </td>
-                    </tr>
-
+                        <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:sortBy | limitTo:model.levelsWithListLengthLimit">
+                            <td class="align-center" bo-text="codeElement.name"></td>
+                            <td class="align-center" bo-text="codeElement.versio"></td>
+                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
+                                ng-click="model.removeFromLevelsWithCodeElements(codeElement)"></i></td>
+                        </tr>
                     </tbody>
-
                 </table>
+                <div ng-if="model.levelsWithListLengthLimit < model.levelsWithCodeElements.length")>
+
+                    <button type="button" class="btn pull-right" ng-click="model.incrementListLimit('levelsWith')">{{'codeelement.editpage.relationlist.loadmore' | i18n}}</button>
+                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.levelsWithListLengthLimit}} / {{model.levelsWithCodeElements.length}} {{'codeelement.editpage.relationlist.label.end' | i18n}}
+                </div>
             </div>
         </div>
 

@@ -952,20 +952,20 @@
   <koodistometadata id="517" kieli="FI" nimi="koodistoo21" version="0" koodistoversio_id="514" kuvaus="koodistoo21kuvaus"/>
   <koodistometadata id="518" kieli="FI" nimi="koodistoo22" version="0" koodistoversio_id="515" kuvaus="koodistoo22kuvaus"/>
   <koodistometadata id="519" kieli="FI" nimi="koodisiirtyy" version="0" koodistoversio_id="600" kuvaus="koodi siirtyy"/>
-  <koodistometadata id="520" kieli="FI" nimi="koodinsuhde" version="0" koodistoversio_id="601" kuvaus="koodin suhde"/>	
-  <koodistometadata id="521" kieli="FI" nimi="koodinsuhde2" version="0" koodistoversio_id="602" kuvaus="koodin suhde"/>	
+  <koodistometadata id="520" kieli="FI" nimi="koodinsuhde" version="0" koodistoversio_id="601" kuvaus="koodin suhde"/>    
+  <koodistometadata id="521" kieli="FI" nimi="koodinsuhde2" version="0" koodistoversio_id="602" kuvaus="koodin suhde"/>    
   
-  <koodistometadata id="522" kieli="FI" nimi="tarkasteltava" version="0" koodistoversio_id="700" kuvaus="tarkasteltava"/>	
-  <koodistometadata id="523" kieli="FI" nimi="tuoreimmassaeisuhdetta" version="0" koodistoversio_id="701" kuvaus="tuoreimmassa ei suhdetta"/>	
-  <koodistometadata id="524" kieli="FI" nimi="tuoreimmassaeisuhdetta" version="0" koodistoversio_id="702" kuvaus="tuoreimmassa ei suhdetta"/>	
-  <koodistometadata id="525" kieli="FI" nimi="suhdetuoreimmassa" version="0" koodistoversio_id="703" kuvaus="suhdetuoreimmassa"/>	
+  <koodistometadata id="522" kieli="FI" nimi="tarkasteltava" version="0" koodistoversio_id="700" kuvaus="tarkasteltava"/>    
+  <koodistometadata id="523" kieli="FI" nimi="tuoreimmassaeisuhdetta" version="0" koodistoversio_id="701" kuvaus="tuoreimmassa ei suhdetta"/>    
+  <koodistometadata id="524" kieli="FI" nimi="tuoreimmassaeisuhdetta" version="0" koodistoversio_id="702" kuvaus="tuoreimmassa ei suhdetta"/>    
+  <koodistometadata id="525" kieli="FI" nimi="suhdetuoreimmassa" version="0" koodistoversio_id="703" kuvaus="suhdetuoreimmassa"/>    
   <koodistometadata id="526" kieli="FI" nimi="tarkasteltava" version="0" koodistoversio_id="704" kuvaus="tarkasteltava"/>
-  <koodistometadata id="527" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="800" kuvaus="Wanha suhde ei siirry"/>	
-  <koodistometadata id="528" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="801" kuvaus="Wanha suhde ei siirry"/>	
+  <koodistometadata id="527" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="800" kuvaus="Wanha suhde ei siirry"/>    
+  <koodistometadata id="528" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="801" kuvaus="Wanha suhde ei siirry"/>    
   <koodistometadata id="529" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="802" kuvaus="Wanha suhde ei siirry"/>
-  <koodistometadata id="530" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="803" kuvaus="Wanha suhde ei siirry2"/>	
-  <koodistometadata id="531" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="804" kuvaus="Wanha suhde ei siirry2"/>	
-  <koodistometadata id="532" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="805" kuvaus="Wanha suhde ei siirry2"/>	
+  <koodistometadata id="530" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="803" kuvaus="Wanha suhde ei siirry2"/>    
+  <koodistometadata id="531" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="804" kuvaus="Wanha suhde ei siirry2"/>    
+  <koodistometadata id="532" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="805" kuvaus="Wanha suhde ei siirry2"/>    
   
   <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="1" koodiversio_id="3"/>
   <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="1" koodiversio_id="5"/>

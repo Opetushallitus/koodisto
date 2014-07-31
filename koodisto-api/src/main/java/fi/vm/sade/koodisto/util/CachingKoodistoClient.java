@@ -46,13 +46,14 @@ public class CachingKoodistoClient implements KoodistoClient {
             props.load(fis);
             this.koodistoServiceWebappUrl = props.getProperty("cas.service.koodisto-service");
         } catch (IOException e) {
-            if (fis != null) {
+            throw new RuntimeException("failed to read common.properties", e);
+        } finally {
+            if(fis != null){
                 try {
                     fis.close();
-                } catch (IOException ioe) {
+                } catch (IOException ignore) {
                 }
             }
-            throw new RuntimeException("failed to read common.properties", e);
         }
 
     }

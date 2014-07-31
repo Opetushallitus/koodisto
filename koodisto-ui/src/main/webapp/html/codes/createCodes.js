@@ -66,7 +66,7 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
     };
 
     $scope.cancel = function() {
-        $location.path("/");
+        $location.path("/").search({forceRefresh: false});
     };
 
     $scope.submit = function() {
@@ -129,7 +129,7 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
         }
         NewCodes.post({}, codes, function(result) {
             Treemodel.refresh();
-            $location.path("/koodisto/"+result.koodistoUri+"/"+result.versio);
+            $location.path("/koodisto/"+result.koodistoUri+"/"+result.versio).search({forceRefresh: true});
         }, function(error) {
             ValidateService.validateCodes($scope,error,false);
         });

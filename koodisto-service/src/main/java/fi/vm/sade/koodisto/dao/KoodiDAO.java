@@ -3,8 +3,12 @@
  */
 package fi.vm.sade.koodisto.dao;
 
+import java.util.List;
+
 import fi.vm.sade.generic.dao.JpaDAO;
 import fi.vm.sade.koodisto.model.Koodi;
+import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.Tila;
 
 /**
  * @author tommiha
@@ -21,4 +25,10 @@ public interface KoodiDAO extends JpaDAO<Koodi, Long> {
     void delete(String koodiUri);
 
     boolean koodiUriExists(String koodiUri);
+
+    List<KoodiVersio> getLatestCodeElementVersiosByUrisAndTila(List<String> koodiUris, Tila tila);
+
+    Koodi insertNonFlush(Koodi koodi);
+    
+    void flush();
 }

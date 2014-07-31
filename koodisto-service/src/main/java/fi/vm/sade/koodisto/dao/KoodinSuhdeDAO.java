@@ -21,4 +21,11 @@ public interface KoodinSuhdeDAO extends JpaDAO<KoodinSuhde, Long> {
                            SuhteenTyyppi st);
 
     List<KoodinSuhde> getRelations(String ylakoodiUri);
+    
+    void massRemove(List<KoodinSuhde> entityList);
+
+    KoodinSuhde insertNonFlush(KoodinSuhde koodinSuhde);
+    void flush();
+
+    List<KoodinSuhde> getWithinRelations(KoodiUriAndVersioType ylaKoodi, List<KoodiUriAndVersioType> alaKoodis, SuhteenTyyppi st);
 }

@@ -100,8 +100,11 @@ public class CodesResource {
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
             @ApiParam(value = "Linkitettävän koodiston URI") @PathParam("codesUriToAdd") String codesUriToAdd,
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType) {
-
-        koodistoBusinessService.addRelation(codesUri, codesUriToAdd, SuhteenTyyppi.valueOf(relationType));
+        if (StringUtils.isBlank(codesUri) || StringUtils.isBlank(codesUriToAdd) || StringUtils.isBlank(relationType)) {
+            return;
+        } else {
+            koodistoBusinessService.addRelation(codesUri, codesUriToAdd, SuhteenTyyppi.valueOf(relationType));
+        }
     }
 
     @POST
@@ -118,7 +121,11 @@ public class CodesResource {
             @ApiParam(value = "Irrotettavan koodiston URI") @PathParam("codesUriToRemove") String codesUriToRemove,
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType) {
 
-        koodistoBusinessService.removeRelation(codesUri, Arrays.asList(codesUriToRemove), SuhteenTyyppi.valueOf(relationType));
+        if (StringUtils.isBlank(codesUri) || StringUtils.isBlank(codesUriToRemove) || StringUtils.isBlank(relationType)) {
+            return;
+        } else {
+            koodistoBusinessService.removeRelation(codesUri, Arrays.asList(codesUriToRemove), SuhteenTyyppi.valueOf(relationType));
+        }
     }
 
     @PUT
@@ -132,6 +139,9 @@ public class CodesResource {
             response = Response.class)
     public Response update(
             @ApiParam(value = "Koodisto") KoodistoDto codesDTO) {
+        if (codesDTO == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         try {
             KoodistoVersio koodistoVersio = koodistoBusinessService.updateKoodisto(convertFromDTOToUpdateKoodistoDataType(codesDTO));
             return Response.status(Response.Status.CREATED).entity(koodistoVersio.getVersio()).build();
@@ -183,6 +193,9 @@ public class CodesResource {
             response = Response.class)
     public Response insert(
             @ApiParam(value = "Koodisto") KoodistoDto codesDTO) {
+        if (codesDTO == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         List<String> codesGroupUris = new ArrayList<String>();
         codesGroupUris.add(codesDTO.getCodesGroupUri());
         try {
@@ -259,6 +272,9 @@ public class CodesResource {
             response = KoodistoListDto.class)
     public KoodistoListDto getCodesByCodesUri(
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri) {
+        if (StringUtils.isBlank(codesUri)) {
+            return null;
+        }
         Koodisto koodisto = koodistoBusinessService.getKoodistoByKoodistoUri(codesUri);
 
         return conversionService.convert(koodisto, KoodistoListDto.class);
@@ -276,6 +292,9 @@ public class CodesResource {
     public KoodistoDto getCodesByCodesUriAndVersion(
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
             @ApiParam(value = "Koodiston vesio") @PathParam("codesVersion") int codesVersion) {
+        if (StringUtils.isBlank(codesUri)) {
+            return null;
+        }
         KoodistoVersio koodistoVersio = null;
         if (codesVersion == 0) {
             koodistoVersio = koodistoBusinessService.getLatestKoodistoVersio(codesUri);
@@ -300,35 +319,46 @@ public class CodesResource {
             @ApiParam(value = "Tiedostotyyppi") @FormDataParam("fileFormat") String fileFormat,
             @ApiParam(value = "Tiedoston koodaus") @FormDataParam("fileEncoding") String fileEncoding,
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri) {
+        if (fileInputStream == null
+                || contentDispositionHeader == null
+                || StringUtils.isBlank(fileFormat)
+                || StringUtils.isBlank(fileEncoding)
+                || StringUtils.isBlank(codesUri)) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } else {
+            try {
+                String mime = "";
+                ExportImportFormatType formatStr = null;
 
-        try {
-            String mime = "";
-            ExportImportFormatType formatStr = null;
+                String encoding = fileEncoding;
+                if (StringUtils.isBlank(encoding) || !Charset.isSupported(encoding)) {
+                    encoding = "UTF-8";
+                }
 
-            String encoding = fileEncoding;
-            if (StringUtils.isBlank(encoding) || !Charset.isSupported(encoding)) {
-                encoding = "UTF-8";
+                switch (Format.valueOf(fileFormat)) {
+                case JHS_XML:
+                    formatStr = ExportImportFormatType.JHS_XML;
+                    mime = "application/xml";
+                    break;
+                case CSV:
+                    mime = "application/octet-stream; charset=" + encoding;
+                    formatStr = ExportImportFormatType.CSV;
+                    break;
+                case XLS:
+                    formatStr = ExportImportFormatType.XLS;
+                    mime = "application/vnd.ms-excel";
+                    break;
+                }
+
+                DataSource ds = new InputStreamDataSource(fileInputStream, mime);
+                DataHandler handler = new DataHandler(ds);
+                uploadService.upload(codesUri, formatStr, encoding, handler);
+                return Response.status(Response.Status.ACCEPTED).build();
+            } catch (Exception e) {
+                LOGGER.warn("Koodistoa ei saatu vietyä. ", e);
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
-
-            if (Format.valueOf(fileFormat) == Format.CSV) {
-                mime = "application/octet-stream; charset=" + encoding;
-                formatStr = ExportImportFormatType.CSV;
-            } else if (Format.valueOf(fileFormat) == Format.JHS_XML) {
-                formatStr = ExportImportFormatType.JHS_XML;
-                mime = "application/xml";
-            } else if (Format.valueOf(fileFormat) == Format.XLS) {
-                formatStr = ExportImportFormatType.XLS;
-                mime = "application/vnd.ms-excel";
-            }
-            DataSource ds = new InputStreamDataSource(fileInputStream, mime);
-            DataHandler handler = new DataHandler(ds);
-            uploadService.upload(codesUri, formatStr, encoding, handler);
-            return Response.status(Response.Status.ACCEPTED).build();
-        } catch (Exception e) {
-            LOGGER.warn("Koodistoa ei saatu vietyä. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-
     }
 
     @GET
@@ -345,29 +375,36 @@ public class CodesResource {
             @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") int codesVersion,
             @ApiParam(value = "Tiedostotyyppi (JHS_XML, CSV, XLS)") @PathParam("fileFormat") Format fileFormat,
             @ApiParam(value = "Tiedoston merkistö (UTF-8, ISO-88519-1, ISO-88519-15)") @DefaultValue("UTF-8") @QueryParam("encoding") String encoding) {
-        File file = koodistoBusinessService.downloadFile(codesUri, codesVersion, fileFormat, encoding);
-        TemporaryFileInputStream is = null;
-        try {
-            is = new TemporaryFileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if (StringUtils.isBlank(codesUri)
+                || fileFormat == null
+                || StringUtils.isBlank(encoding)) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        } else {
+            File file = koodistoBusinessService.downloadFile(codesUri, codesVersion, fileFormat, encoding);
+            TemporaryFileInputStream is = null;
+            try {
+                is = new TemporaryFileInputStream(file); // Response will close input stream:
+                                                         // https://jersey.java.net/apidocs/2.10/jersey/javax/ws/rs/core/Response.html
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            String extension = "";
+            switch (fileFormat) {
+            case JHS_XML:
+                extension = ".xml";
+                break;
+            case CSV:
+                extension = ".csv";
+                break;
+            case XLS:
+                extension = ".xls";
+                break;
+            }
+            ResponseBuilder responseBuilder = Response.ok((Object) is);
+            responseBuilder.header("Content-Disposition", "inline; filename=\"" + codesUri + extension + "\"");
+            Response response = responseBuilder.build();
+            return response;
         }
-        String extension = "";
-        switch (fileFormat) {
-        case JHS_XML:
-            extension = ".xml";
-            break;
-        case CSV:
-            extension = ".csv";
-            break;
-        case XLS:
-            extension = ".xls";
-            break;
-        }
-        ResponseBuilder responseBuilder = Response.ok((Object) is);
-        responseBuilder.header("Content-Disposition", "inline; filename=\"" + codesUri + extension + "\"");
-        Response response = responseBuilder.build();
-        return response;
     }
 
     @POST
@@ -383,6 +420,9 @@ public class CodesResource {
     public Response delete(
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
             @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") int codesVersion) {
+        if (StringUtils.isBlank(codesUri)) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         try {
             koodistoBusinessService.delete(codesUri, codesVersion);
             return Response.status(Response.Status.ACCEPTED).build();
@@ -391,7 +431,7 @@ public class CodesResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
-    
+
     // TODO: LEGACY rajapintametodi, korvattu uudella download-metodilla 3.6.2014. Poistetaan, kun muut palvelut eivät varmasti käytä tätä.
     @POST
     @Path("/download/{codesUri}/{codesVersion}")
@@ -411,13 +451,18 @@ public class CodesResource {
 
             Format format = Format.valueOf(fileFormatDto.getFormat());
 
-            if (format == Format.CSV) {
+            switch (format) {
+            case CSV:
                 formatStr = ExportImportFormatType.CSV;
-            } else if (format == Format.JHS_XML) {
+                break;
+            case JHS_XML:
                 formatStr = ExportImportFormatType.JHS_XML;
-            } else if (format == Format.XLS) {
+                break;
+            case XLS:
                 formatStr = ExportImportFormatType.XLS;
+                break;
             }
+
             String encoding = fileFormatDto.getEncoding();
             if (StringUtils.isBlank(encoding) || !Charset.isSupported(encoding)) {
                 encoding = "UTF-8";
@@ -430,7 +475,7 @@ public class CodesResource {
                 theString = IOUtils.toString(inputStream, encoding);
             } else { // Binääridataa
                 byte[] val = IOUtils.toByteArray(inputStream);
-                theString = new String(Base64.encodeBase64(val, false));
+                theString = new String(Base64.encodeBase64(val, false), Charset.forName(encoding));
             }
             FileDto fileDto = new FileDto();
             fileDto.setData(theString);

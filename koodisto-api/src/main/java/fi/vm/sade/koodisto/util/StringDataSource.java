@@ -1,10 +1,12 @@
 package fi.vm.sade.koodisto.util;
 
 import javax.activation.DataSource;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 public class StringDataSource implements DataSource {
     protected String content;
@@ -44,7 +46,7 @@ public class StringDataSource implements DataSource {
     }
 
     public InputStream getInputStream() throws IOException {
-        return new ByteArrayInputStream(content.getBytes());
+        return new ByteArrayInputStream(content.getBytes(Charset.defaultCharset()));
     }
 
     public OutputStream getOutputStream() {

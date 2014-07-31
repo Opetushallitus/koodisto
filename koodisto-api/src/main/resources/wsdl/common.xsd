@@ -213,7 +213,7 @@
             <xs:element maxOccurs="unbounded" minOccurs="0"
                 name="metadataList" nillable="true" type="tns:KoodistoMetadataType" />
             <xs:element name="koodisto" minOccurs="1" maxOccurs="1"
-            	type="tns:KoodistoListType" />
+                type="tns:KoodistoListType" />
         </xs:sequence>
     </xs:complexType>
 

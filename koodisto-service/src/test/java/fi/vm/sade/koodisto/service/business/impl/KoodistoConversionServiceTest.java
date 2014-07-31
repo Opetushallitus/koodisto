@@ -101,21 +101,21 @@ public class KoodistoConversionServiceTest {
     
     @Test
     public void testKoodistoVersioToKoodistoDtoConverter() {
-    	KoodistoVersio versio = createKoodistoVersio(createKoodisto());
-    	KoodistoDto dto = conversionService.convert(versio, KoodistoDto.class);
-    	assertNotNull(dto);
-    	checkConvertedFields(dto, KoodistoDto.class);
+        KoodistoVersio versio = createKoodistoVersio(createKoodisto());
+        KoodistoDto dto = conversionService.convert(versio, KoodistoDto.class);
+        assertNotNull(dto);
+        checkConvertedFields(dto, KoodistoDto.class);
     }
     
     @Test
     public void testKoodistoVersioToKoodistoDtoConverterWithRelations() {
-    	KoodistoVersio versio = createKoodistoVersioWithKoodinSuhdes(createKoodisto());
-    	KoodistoDto dto = conversionService.convert(versio, KoodistoDto.class);
-    	assertNotNull(dto);
-    	assertEquals(1, dto.getIncludesCodes().size());
-    	assertEquals(2, dto.getLevelsWithCodes().size());
-    	assertEquals(1, dto.getWithinCodes().size());
-    	checkConvertedFields(dto, KoodistoDto.class);
+        KoodistoVersio versio = createKoodistoVersioWithKoodinSuhdes(createKoodisto());
+        KoodistoDto dto = conversionService.convert(versio, KoodistoDto.class);
+        assertNotNull(dto);
+        assertEquals(1, dto.getIncludesCodes().size());
+        assertEquals(2, dto.getLevelsWithCodes().size());
+        assertEquals(1, dto.getWithinCodes().size());
+        checkConvertedFields(dto, KoodistoDto.class);
     }
 
     private <T> void checkConvertedFields(T instance, Class<T> clazz, String... ignoredFields) {
@@ -237,26 +237,26 @@ public class KoodistoConversionServiceTest {
         return versio;
     }
     
-    private KoodistoVersio createKoodistoVersioWithKoodinSuhdes(Koodisto koodisto) {    	
-    	KoodistoVersio versio = createKoodistoVersio(koodisto);
-    	//Note that relations created here are very atypical and actually invalid, but useful for quick conversion testing purposes. 
-    	Set<KoodistonSuhde> alaKoodistos = new HashSet<KoodistonSuhde>();
-    	alaKoodistos.add(createKoodistonSuhde(versio, versio, SuhteenTyyppi.SISALTYY));
-    	alaKoodistos.add(createKoodistonSuhde(versio, versio, SuhteenTyyppi.RINNASTEINEN));
-    	versio.setAlakoodistos(alaKoodistos);
-    	Set<KoodistonSuhde> ylaKoodistos = new HashSet<KoodistonSuhde>();
-    	ylaKoodistos.add(createKoodistonSuhde(versio, versio, SuhteenTyyppi.SISALTYY));
-    	ylaKoodistos.add(createKoodistonSuhde(versio, versio, SuhteenTyyppi.RINNASTEINEN));
-    	versio.setYlakoodistos(ylaKoodistos);
-    	return versio;
+    private KoodistoVersio createKoodistoVersioWithKoodinSuhdes(Koodisto koodisto) {        
+        KoodistoVersio versio = createKoodistoVersio(koodisto);
+        //Note that relations created here are very atypical and actually invalid, but useful for quick conversion testing purposes. 
+        Set<KoodistonSuhde> alaKoodistos = new HashSet<KoodistonSuhde>();
+        alaKoodistos.add(createKoodistonSuhde(versio, versio, SuhteenTyyppi.SISALTYY));
+        alaKoodistos.add(createKoodistonSuhde(versio, versio, SuhteenTyyppi.RINNASTEINEN));
+        versio.setAlakoodistos(alaKoodistos);
+        Set<KoodistonSuhde> ylaKoodistos = new HashSet<KoodistonSuhde>();
+        ylaKoodistos.add(createKoodistonSuhde(versio, versio, SuhteenTyyppi.SISALTYY));
+        ylaKoodistos.add(createKoodistonSuhde(versio, versio, SuhteenTyyppi.RINNASTEINEN));
+        versio.setYlakoodistos(ylaKoodistos);
+        return versio;
     }
     
     private KoodistonSuhde createKoodistonSuhde(KoodistoVersio yla, KoodistoVersio ala, SuhteenTyyppi tyyppi) {
-    	KoodistonSuhde suhde = new KoodistonSuhde();
-    	suhde.setAlakoodistoVersio(ala);
-    	suhde.setSuhteenTyyppi(tyyppi);
-    	suhde.setYlakoodistoVersio(yla);    	
-    	return suhde;
+        KoodistonSuhde suhde = new KoodistonSuhde();
+        suhde.setAlakoodistoVersio(ala);
+        suhde.setSuhteenTyyppi(tyyppi);
+        suhde.setYlakoodistoVersio(yla);        
+        return suhde;
     }
 
     private KoodistoMetadataType createKoodistoMetadataType() {

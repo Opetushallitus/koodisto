@@ -1,10 +1,44 @@
 package fi.vm.sade.koodisto.dao.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.In;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.generic.dao.AbstractJpaDAOImpl;
 import fi.vm.sade.koodisto.dao.KoodiDAO;
 import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
-import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.model.Koodi;
+import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.KoodinSuhde;
+import fi.vm.sade.koodisto.model.Koodisto;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
 import fi.vm.sade.koodisto.service.types.KoodiBaseSearchCriteriaType;
@@ -14,19 +48,6 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
-
-import java.util.*;
-import java.util.Map.Entry;
 
 @Repository
 public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> implements KoodiVersioDAO {
@@ -216,20 +237,21 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
 
         if (searchCriteria != null) {
             if (searchCriteria.getKoodiUris() != null && !searchCriteria.getKoodiUris().isEmpty()) {
-                List<Predicate> uriRestrictions = new ArrayList<Predicate>();
-
+                ArrayList<String> koodiUris = new ArrayList<String>();
                 for (String koodiUri : searchCriteria.getKoodiUris()) {
                     if (StringUtils.isNotBlank(koodiUri)) {
-                        uriRestrictions.add(cb.equal(koodi.<String> get(KOODI_URI), koodiUri));
+                        koodiUris.add(koodiUri);
                     }
                 }
 
-                if (!uriRestrictions.isEmpty()) {
-                    restrictions.add(uriRestrictions.size() == 1 ? uriRestrictions.get(0)
-                            : cb.or(uriRestrictions.toArray(new Predicate[uriRestrictions.size()])));
+                if (!koodiUris.isEmpty()) {
+                    In<String> in = cb.in(koodi.<String> get(KOODI_URI));
+                    for (String uri : koodiUris) {
+                        in.value(uri);
+                    }
+                    restrictions.add(in);
                 }
             }
-
             restrictions.addAll(createSecondaryRestrictionsForKoodiSearchCriteria(cb, searchCriteria, koodiVersio));
         }
 
@@ -374,7 +396,7 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
     @Override
     @Transactional
     public List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisCriteriaType searchCriteria) {
-        if(searchCriteriaIsBlank(searchCriteria)){
+        if (searchCriteriaIsBlank(searchCriteria)) {
             return new ArrayList<KoodiVersioWithKoodistoItem>();
         }
         EntityManager em = getEntityManager();
@@ -400,10 +422,9 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
         List<Tuple> result = query.getResultList();
         return convertSearchResultSet(result);
     }
-    
 
     private static boolean searchCriteriaIsBlank(SearchKoodisCriteriaType searchCriteria) {
-        if(!StringUtils.isBlank(searchCriteria.getKoodiArvo()) || searchCriteria.getValidAt() != null) {
+        if (!StringUtils.isBlank(searchCriteria.getKoodiArvo()) || searchCriteria.getValidAt() != null) {
             return false;
         }
         boolean isBlank = true;
@@ -412,7 +433,6 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
         }
         return isBlank;
     }
-
 
     private static Subquery<Integer> selectMaxVersionSubQuery(CriteriaBuilder cb, CriteriaQuery<?> criteriaQuery, SearchKoodisCriteriaType searchCriteria,
             Path<Koodi> koodiPath) {
@@ -513,18 +533,52 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
     }
 
     @Override
-    public boolean isLatestKoodiVersio(String koodiUri, Integer versio) {        
+    public boolean isLatestKoodiVersio(String koodiUri, Integer versio) {
         SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(koodiUri);
+        TypedQuery<KoodiVersio> query = createKoodiVersioQueryFromSearchCriteria(searchCriteria);
+        return query.getSingleResult().getVersio().equals(versio);
+    }
+
+    @Override
+    public Map<String, Integer> getLatestVersionNumbersForUris(String... koodiUris) {
+        if(koodiUris == null || koodiUris.length == 0){
+            return new HashMap<String, Integer>();
+        }
+        SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(koodiUris);
+        TypedQuery<KoodiVersio> query = createKoodiVersioQueryFromSearchCriteria(searchCriteria);
+
+        HashMap<String, Integer> returnMap = new HashMap<String, Integer>();
+        for (KoodiVersio result : query.getResultList()) {
+            returnMap.put(result.getKoodi().getKoodiUri(), result.getVersio());
+        }
+        return returnMap;
+    }
+    
+    private TypedQuery<KoodiVersio> createKoodiVersioQueryFromSearchCriteria(SearchKoodisCriteriaType searchCriteria) {
         EntityManager em = getEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<KoodiVersio> criteriaQuery = cb.createQuery(KoodiVersio.class);
         Root<KoodiVersio> root = criteriaQuery.from(KoodiVersio.class);
         final Join<KoodiVersio, Koodi> koodi = root.join(KOODI);
-        root.fetch(KOODI);                
+        root.fetch(KOODI);
         List<Predicate> restrictions = createRestrictionsForKoodiCriteria(cb, criteriaQuery, searchCriteria, koodi, root);
         criteriaQuery.select(root).where(cb.and(restrictions.toArray(new Predicate[restrictions.size()])));
         criteriaQuery.distinct(true);
         TypedQuery<KoodiVersio> query = em.createQuery(criteriaQuery);
-        return query.getSingleResult().getVersio().equals(versio);
+        return query;
+    }
+    
+    @Override
+    public KoodiVersio insertNonFlush(KoodiVersio entity) {
+        validate(entity);
+        EntityManager em = getEntityManager();
+        em.persist(entity);
+        // Database must be synchronized after this by flushing
+        return entity;
+    }
+
+    @Override
+    public void flush() {
+        getEntityManager().flush();
     }
 }

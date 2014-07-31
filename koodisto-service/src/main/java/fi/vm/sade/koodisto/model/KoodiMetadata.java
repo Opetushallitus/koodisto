@@ -5,6 +5,7 @@ package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
+
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -175,6 +176,16 @@ public class KoodiMetadata extends BaseEntity {
 
     public void setKoodiVersio(KoodiVersio koodiVersio) {
         this.koodiVersio = koodiVersio;
+    }
+    
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
 }
