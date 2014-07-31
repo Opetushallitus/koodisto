@@ -5,7 +5,7 @@
     <parent>
         <artifactId>koodisto</artifactId>
         <groupId>fi.vm.sade.koodisto</groupId>
-        <version>9.7</version>
+        <version>10.0</version>
     </parent>
     <artifactId>koodisto-ui</artifactId>
     <packaging>war</packaging>
@@ -15,7 +15,7 @@
         <finalName>${project.artifactId}</finalName>
 
         <plugins>
-         
+           
             <plugin>
                 <groupId>com.github.klieber</groupId>
                 <artifactId>phantomjs-maven-plugin</artifactId>
@@ -92,12 +92,7 @@
             <artifactId>spring-aspects</artifactId>
                <version>${spring-aspects.version}</version>
         </dependency>
-        <dependency>
-            <groupId>fi.vm.sade.koodisto</groupId>
-            <artifactId>koodisto-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
+        
         <!-- CAS ticket cache replication-->
         <dependency>
             <groupId>net.sf.ehcache</groupId>
@@ -156,14 +151,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>fi.vm.sade.organisaatio</groupId>
-            <artifactId>organisaatio-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>fi.vm.sade.organisaatio</groupId>
-            <artifactId>organisaatio-ui-widgets</artifactId>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
@@ -197,7 +184,7 @@
             <artifactId>spring-webmvc-portlet</artifactId>
             <version>${spring-webmvc-portlet.version}</version>
         </dependency>
-       
+        
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -262,7 +249,6 @@
             <artifactId>spring-security-ldap</artifactId>
             <version>${spring-security-ldap.version}</version>
         </dependency>
-
     </dependencies>
 
 
