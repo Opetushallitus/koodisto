@@ -22,6 +22,8 @@ ldap.manager-password={{ldap_manager_password}}
 ldap.manager.userdn={{ldap_manager_userdn}}
 port.postgresql={{port_postgresql}}
 server.name={{ansible_hostname}}
+common.corsfilter.mode={{corsfilter_mode | default('PRODUCTION')}}
+common.corsfilter.allowed-domains={{corsfilter_allowed_domains | default('')}}
 
 # Oletusarvoja
 accessRight.webservice.url.backend=https\://${host.virkailija}/authentication-service/services/accessRightService
