@@ -9,75 +9,75 @@
 
     // $keepalive service and provider
     function $KeepaliveProvider() {
-    	var options = {
-    		http: null,
-    		interval: 10*60
-    	};
+        var options = {
+            http: null,
+            interval: 10*60
+        };
 
-    	this.http = function (value) {
+        this.http = function (value) {
             if (!value) throw new Error('Argument must be a string containing a URL, or an object containing the HTTP request configuration.');
-    		if (angular.isString(value)) {
-    			value = {url: value, method: 'GET'};
-    		}
+            if (angular.isString(value)) {
+                value = {url: value, method: 'GET'};
+            }
 
-    		value['cache'] = false;
+            value['cache'] = false;
 
-    		options.http = value;
-    	}
+            options.http = value;
+        }
 
-    	this.interval = function (seconds) {
-    		seconds = parseInt(seconds);
+        this.interval = function (seconds) {
+            seconds = parseInt(seconds);
 
-    		if (isNaN(seconds) || seconds <= 0) throw new Error('Interval must be expressed in seconds and be greater than 0.');
-    		options.interval = seconds;
-    	}
+            if (isNaN(seconds) || seconds <= 0) throw new Error('Interval must be expressed in seconds and be greater than 0.');
+            options.interval = seconds;
+        }
 
-    	this.$get = function ($rootScope, $log, $timeout, $http) {
-    		
-    		var state = {ping: null};
+        this.$get = function ($rootScope, $log, $timeout, $http) {
+            
+            var state = {ping: null};
 
 
-    		function handleResponse(data, status, onetimeonly) {
-    			$rootScope.$broadcast('$keepaliveResponse', data, status);
+            function handleResponse(data, status, onetimeonly) {
+                $rootScope.$broadcast('$keepaliveResponse', data, status);
 
-    			if (!onetimeonly) schedulePing();
-    		}
+                if (!onetimeonly) schedulePing();
+            }
 
-    		function schedulePing() {
-    			state.ping = $timeout(ping, options.interval * 1000);
-    		}
+            function schedulePing() {
+                state.ping = $timeout(ping, options.interval * 1000);
+            }
 
-    		function ping(onetimeonly) {
-    			$rootScope.$broadcast('$keepalive');
+            function ping(onetimeonly) {
+                $rootScope.$broadcast('$keepalive');
 
-    			if (angular.isObject(options.http)) {
-    			 	$http(options.http)
-    			 		.success(function(data, status) {
-    			 			handleResponse(data, status, onetimeonly);
-    			 		})
-    			 		.error(function(data, status) {
-    			 			handleResponse(data, status, onetimeonly);
-    			 		});
-    			} else if (!onetimeonly) schedulePing();
-    		};
+                if (angular.isObject(options.http)) {
+                     $http(options.http)
+                         .success(function(data, status) {
+                             handleResponse(data, status, onetimeonly);
+                         })
+                         .error(function(data, status) {
+                             handleResponse(data, status, onetimeonly);
+                         });
+                } else if (!onetimeonly) schedulePing();
+            };
 
-    		return {
-    			_options: function() {
-    				return options;
-    			},
-    			start: function() {
-    				$timeout.cancel(state.ping);
+            return {
+                _options: function() {
+                    return options;
+                },
+                start: function() {
+                    $timeout.cancel(state.ping);
 
-    				schedulePing();
-    			},
-    			stop: function() {
-    				$timeout.cancel(state.ping);
-    			},
-    			ping: function() {
-    				ping(true);
-    			}
-    		};
-    	};
+                    schedulePing();
+                },
+                stop: function() {
+                    $timeout.cancel(state.ping);
+                },
+                ping: function() {
+                    ping(true);
+                }
+            };
+        };
         this.$get.$inject = ['$rootScope', '$log', '$timeout', '$http'];
     }
 
@@ -100,101 +100,101 @@
         };
 
         this.idleDuration = function (seconds) {
-        	if (seconds <= 0) throw new Error("idleDuration must be a value in seconds, greater than 0.");
+            if (seconds <= 0) throw new Error("idleDuration must be a value in seconds, greater than 0.");
 
-        	options.idleDuration = seconds;
+            options.idleDuration = seconds;
         };
 
         this.warningDuration = function (seconds) {
-        	if (seconds < 0) throw new Error("warning must be a value in seconds, greatner than 0.");
+            if (seconds < 0) throw new Error("warning must be a value in seconds, greatner than 0.");
 
-        	options.warningDuration = seconds;
+            options.warningDuration = seconds;
         };
 
         this.autoResume = function (value) {
-        	options.autoResume = value === true;
+            options.autoResume = value === true;
         };
 
         this.keepalive = function (enabled) {
-        	options.keepalive = enabled === true;
+            options.keepalive = enabled === true;
         };
 
         this.$get = function ($timeout, $log, $rootScope, $document, $keepalive) {
-        	var state = {idle: null, warning: null, idling: false, running: false, countdown: null};
+            var state = {idle: null, warning: null, idling: false, running: false, countdown: null};
 
-        	function startKeepalive() {
-        		if (!options.keepalive) return;
+            function startKeepalive() {
+                if (!options.keepalive) return;
 
-        		if (state.running) $keepalive.ping();
+                if (state.running) $keepalive.ping();
 
-        		$keepalive.start();
-        	}
+                $keepalive.start();
+            }
 
-        	function stopKeepalive() {
-        		if (!options.keepalive) return;
+            function stopKeepalive() {
+                if (!options.keepalive) return;
 
-        		$keepalive.stop();
-        	}
+                $keepalive.stop();
+            }
 
-        	function toggleState() {
-        		state.idling = !state.idling;
-        		var name = state.idling ? 'Start' : 'End';
+            function toggleState() {
+                state.idling = !state.idling;
+                var name = state.idling ? 'Start' : 'End';
 
-        		$rootScope.$broadcast('$idle' + name);
+                $rootScope.$broadcast('$idle' + name);
 
-        		if (state.idling) {
-        			stopKeepalive();
-        			state.countdown = options.warningDuration;
-        			countdown();
-        		} else {
-        			startKeepalive();
-        		}
-        	}
+                if (state.idling) {
+                    stopKeepalive();
+                    state.countdown = options.warningDuration;
+                    countdown();
+                } else {
+                    startKeepalive();
+                }
+            }
 
-        	function countdown() {
-        		if (state.countdown <= 0) {
-        			$rootScope.$broadcast('$idleTimeout');
-        		} else {
-        			$rootScope.$broadcast('$idleWarn', state.countdown);
+            function countdown() {
+                if (state.countdown <= 0) {
+                    $rootScope.$broadcast('$idleTimeout');
+                } else {
+                    $rootScope.$broadcast('$idleWarn', state.countdown);
 
-        			state.warning = $timeout(countdown, 1000);
-        		}
+                    state.warning = $timeout(countdown, 1000);
+                }
 
-        		state.countdown--;
-        	}
+                state.countdown--;
+            }
 
             var svc = {
                 _options: function() {
                     return options;
                 },
                 running: function() {
-                	return state.running;
+                    return state.running;
                 },
                 idling: function() {
-                	return state.idling;
+                    return state.idling;
                 },
                 watch: function() {
-                	$timeout.cancel(state.idle);
-                	$timeout.cancel(state.warning);
+                    $timeout.cancel(state.idle);
+                    $timeout.cancel(state.warning);
 
-					if (state.idling) toggleState();
-					else if (!state.running) startKeepalive();
+                    if (state.idling) toggleState();
+                    else if (!state.running) startKeepalive();
 
-                	state.running = true;
+                    state.running = true;
 
-                	state.idle = $timeout(toggleState, options.idleDuration * 1000);
+                    state.idle = $timeout(toggleState, options.idleDuration * 1000);
                 },
                 unwatch: function() {
-                	$timeout.cancel(state.idle);
-                	$timeout.cancel(state.warning);
+                    $timeout.cancel(state.idle);
+                    $timeout.cancel(state.warning);
 
-                	state.idling = false;
-                	state.running = false;
+                    state.idling = false;
+                    state.running = false;
                 }
             };
            
             var interrupt = function () {
-            	if (state.running && options.autoResume) svc.watch();
+                if (state.running && options.autoResume) svc.watch();
             };
 
             $document.find('body').on(options.events, interrupt);

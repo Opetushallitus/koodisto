@@ -6,6 +6,7 @@ import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
+
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -13,6 +14,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
+
 import java.util.List;
 
 @Repository
@@ -84,4 +86,18 @@ public class KoodistoVersioKoodiVersioDAOImpl extends AbstractJpaDAOImpl<Koodist
         return em.createQuery(query).getResultList();
     }
 
+    @Override
+    public KoodistoVersioKoodiVersio insertNonFlush(KoodistoVersioKoodiVersio entity) {
+        validate(entity);
+        EntityManager em = getEntityManager();
+        em.persist(entity);
+        // Database must be synchronized after this by flushing
+        return entity;
+    }
+
+    @Override
+    public void flush() {
+        getEntityManager().flush();
+    }
+    
 }

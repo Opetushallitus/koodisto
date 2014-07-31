@@ -83,11 +83,20 @@ public class KoodistonSuhde extends BaseEntity {
     
     @Override
     public String toString() {
-    	StringBuilder sb = new StringBuilder(super.toString()).append(": ");
-    	sb.append(KoodistonSuhde.YLAKOODISTO_COLUMN_NAME).append('=').append(ylakoodistoVersio.getId()).append(',');
-    	sb.append(KoodistonSuhde.ALAKOODISTO_COLUMN_NAME).append('=').append(alakoodistoVersio.getId()).append(',');
-    	sb.append(KoodistonSuhde.SUHTEEN_TYYPPI_COLUMN_NAME).append('=').append(suhteenTyyppi);
-    	return sb.toString();
+        StringBuilder sb = new StringBuilder(super.toString()).append(": ");
+        sb.append(KoodistonSuhde.YLAKOODISTO_COLUMN_NAME).append('=').append(ylakoodistoVersio.getId()).append(',');
+        sb.append(KoodistonSuhde.ALAKOODISTO_COLUMN_NAME).append('=').append(alakoodistoVersio.getId()).append(',');
+        sb.append(KoodistonSuhde.SUHTEEN_TYYPPI_COLUMN_NAME).append('=').append(suhteenTyyppi);
+        return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 
 }

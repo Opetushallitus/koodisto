@@ -67,13 +67,13 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     protected static final String HUOMIOITAVAKOODI_COLUMN = "HUOMIOITAVAKOODI";
     protected static final String SISALTAAKOODISTON_COLUMN = "SISALTAAKOODISTON";
 
-    protected static final String[] basicFields = { VERSIO_COLUMN, KOODIURI_COLUMN, KOODIARVO_COLUMN, PAIVITYSPVM_COLUMN, VOIMASSAALKUPVM_COLUMN,
+    static final String[] basicFields = { VERSIO_COLUMN, KOODIURI_COLUMN, KOODIARVO_COLUMN, PAIVITYSPVM_COLUMN, VOIMASSAALKUPVM_COLUMN,
         VOIMASSALOPPUPVM_COLUMN, TILA_COLUMN };
 
-    protected static final String[] metadataFields = { NIMI_COLUMN, KUVAUS_COLUMN, LYHYTNIMI_COLUMN, KAYTTOOHJE_COLUMN, KASITE_COLUMN,
+    static final String[] metadataFields = { NIMI_COLUMN, KUVAUS_COLUMN, LYHYTNIMI_COLUMN, KAYTTOOHJE_COLUMN, KASITE_COLUMN,
         SISALTAAMERKITYKSEN_COLUMN, EISISALLAMERKITYSTA_COLUMN, HUOMIOITAVAKOODI_COLUMN, SISALTAAKOODISTON_COLUMN };
 
-    protected static final KieliType[] kielet = { KieliType.FI, KieliType.SV, KieliType.EN };
+    static final KieliType[] kielet = { KieliType.FI, KieliType.SV, KieliType.EN };
 
     static {
 
@@ -420,8 +420,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         if (str == null) {
             return "";
         } else {
-            String convertedString = new String(str.getBytes(), UTF8ENCODING);
-            return new String(convertedString.getBytes(), encoding);
+            return new String(str.getBytes(Charset.defaultCharset()), UTF8ENCODING);
         }
     }
 
@@ -429,8 +428,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         if (integer == null) {
             return "";
         } else {
-            String convertedString = new String(String.valueOf(integer).getBytes(), UTF8ENCODING);
-            return new String(convertedString.getBytes(), encoding);
+            return new String(String.valueOf(integer).getBytes(Charset.defaultCharset()), UTF8ENCODING);
         }
     }
 
@@ -438,8 +436,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         if (date == null) {
             return "";
         } else {
-            String convertedString = new String(getCSVDateFormat().format(date).getBytes(), UTF8ENCODING);
-            return new String(convertedString.getBytes(), encoding);
+            return new String(getCSVDateFormat().format(date).getBytes(Charset.defaultCharset()), UTF8ENCODING);
         }
     }
 }

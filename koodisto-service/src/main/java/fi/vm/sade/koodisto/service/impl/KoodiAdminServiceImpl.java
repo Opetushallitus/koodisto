@@ -12,10 +12,12 @@ import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.SuhteenTyyppiType;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -71,7 +73,7 @@ public class KoodiAdminServiceImpl implements KoodiAdminService {
                             SuhteenTyyppiType suhteenTyyppi) throws GenericFault {
         fi.vm.sade.koodisto.model.SuhteenTyyppi st = fi.vm.sade.koodisto.model.SuhteenTyyppi.valueOf(suhteenTyyppi
                 .name());
-        koodiBusinessService.addRelation(ylaKoodi, alaKoodi, st);
+        koodiBusinessService.addRelation(ylaKoodi, Arrays.asList(alaKoodi), st, false);
     }
 
     @Override
@@ -80,7 +82,7 @@ public class KoodiAdminServiceImpl implements KoodiAdminService {
                                       SuhteenTyyppiType suhteenTyyppi) throws GenericFault {
         fi.vm.sade.koodisto.model.SuhteenTyyppi st = fi.vm.sade.koodisto.model.SuhteenTyyppi.valueOf(suhteenTyyppi
                 .name());
-        koodiBusinessService.addRelation(ylaKoodi, alaKoodis, st);
+        koodiBusinessService.addRelation(ylaKoodi, alaKoodis, st, false);
 
     }
 

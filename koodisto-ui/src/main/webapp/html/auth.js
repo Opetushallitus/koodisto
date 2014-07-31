@@ -49,7 +49,7 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
 
     var anyUpdateAccess = function(service,model) {
         var found = false;
-        model.myroles.forEach(function(role) {
+        model.myroles.forEach(function(role) {
             if( role.indexOf(service + UPDATE) > -1 ||
                 role.indexOf(service + CRUD) > -1) {
                 found = true;
@@ -60,7 +60,7 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
 
     var anyCrudAccess = function(service,model) {
         var found = false;
-        model.myroles.forEach(function(role) {
+        model.myroles.forEach(function(role) {
             if( role.indexOf(service + CRUD) > -1) {
                 found = true;
             }
@@ -89,7 +89,7 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
         });
 
         return deferred.promise;
-    }
+    };
 
     // OPH check -- voidaan ohittaa organisaatioiden haku
     var ophRead = function(service,model) {
@@ -97,16 +97,16 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
             || model.myroles.indexOf(service + UPDATE + "_" + OPH_ORG) > -1
             || model.myroles.indexOf(service + CRUD + "_" + OPH_ORG) > -1);
 
-    }
+    };
 
     var ophUpdate = function(service,model) {
         return (model.myroles.indexOf(service + UPDATE + "_" + OPH_ORG) > -1
             || model.myroles.indexOf(service + CRUD + "_" + OPH_ORG) > -1);
-    }
+    };
 
     var ophCrud = function(service,model) {
         return (model.myroles.indexOf(service + CRUD + "_" + OPH_ORG) > -1);
-    }
+    };
 
     var ophAccessCheck = function(service, accessFunction) {
         var deferred = $q.defer();
@@ -120,7 +120,7 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
         });
 
         return deferred.promise;
-    }
+    };
 
     return {
         readOrg : function(service, orgOid) {
@@ -159,9 +159,9 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
             var deferred = $q.defer();
 
             MyRolesModel.then(function(model){
-                var organizations = [];
+                organizations = [];
 
-                model.myroles.forEach(function(role) {
+                model.myroles.forEach(function(role) {
                     // TODO: refaktor
                     var org;
                     if(role.indexOf(service + "_CRUD_") > -1) {

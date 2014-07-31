@@ -112,51 +112,51 @@ public class KoodiBusinessServiceTest {
 
     @Test
     public void changeTilaFromHyvaksyttyToLuonnos() throws Exception {
-    	
-    	final String koodistoUri = "http://koodisto19";
-    	final Integer koodistoVersioBeforeTilaChange = 1;
-    	final Integer koodistoVersioAfterTilaChange = 2;
-    	
-    	
-    	KoodistoVersio beforeUpdate = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
-    	assertEquals(koodistoVersioBeforeTilaChange, beforeUpdate.getVersio());
-    	assertEquals(Tila.HYVAKSYTTY, beforeUpdate.getTila());
-    	
-    	List<KoodiVersioWithKoodistoItem> koodiVersioWithKoodistoItems =  koodiBusinessService.getKoodisByKoodisto("http://koodisto19", true);
-    	for(KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem : koodiVersioWithKoodistoItems) {
-    		if(Tila.HYVAKSYTTY.equals(koodiVersioWithKoodistoItem.getKoodiVersio().getTila())) {
-    			UpdateKoodiDataType updateKoodiDataType = convert(koodiVersioWithKoodistoItem.getKoodiVersio());;
-    			updateKoodiDataType.setTila(UpdateKoodiTilaType.LUONNOS);
-    			koodiBusinessService.updateKoodi(updateKoodiDataType);
-    		}
-    	}
-    	
-    	KoodistoVersio afterUpdate = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
-    	assertEquals(Tila.LUONNOS, afterUpdate.getTila());
-    	assertEquals(koodistoVersioAfterTilaChange, afterUpdate.getVersio());
+        
+        final String koodistoUri = "http://koodisto19";
+        final Integer koodistoVersioBeforeTilaChange = 1;
+        final Integer koodistoVersioAfterTilaChange = 2;
+        
+        
+        KoodistoVersio beforeUpdate = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+        assertEquals(koodistoVersioBeforeTilaChange, beforeUpdate.getVersio());
+        assertEquals(Tila.HYVAKSYTTY, beforeUpdate.getTila());
+        
+        List<KoodiVersioWithKoodistoItem> koodiVersioWithKoodistoItems =  koodiBusinessService.getKoodisByKoodisto("http://koodisto19", true);
+        for(KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem : koodiVersioWithKoodistoItems) {
+            if(Tila.HYVAKSYTTY.equals(koodiVersioWithKoodistoItem.getKoodiVersio().getTila())) {
+                UpdateKoodiDataType updateKoodiDataType = convert(koodiVersioWithKoodistoItem.getKoodiVersio());;
+                updateKoodiDataType.setTila(UpdateKoodiTilaType.LUONNOS);
+                koodiBusinessService.updateKoodi(updateKoodiDataType);
+            }
+        }
+        
+        KoodistoVersio afterUpdate = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+        assertEquals(Tila.LUONNOS, afterUpdate.getTila());
+        assertEquals(koodistoVersioAfterTilaChange, afterUpdate.getVersio());
     }
     
     @Test
     public void setsEndDatePreviousVersionWhenNewVersionIsSetToHyvaksytty() {
-    	KoodiVersio latest = koodiBusinessService.getLatestKoodiVersio("436");
-    	KoodiVersio updated = koodiBusinessService.createNewVersion(latest.getKoodi().getKoodiUri());
-    	assertEquals(Tila.HYVAKSYTTY, latest.getTila());
-    	assertNull(latest.getVoimassaLoppuPvm());
-    	assertEquals(Tila.LUONNOS, updated.getTila());
-    	koodiBusinessService.setKoodiTila(updated.getKoodi().getKoodiUri(), TilaType.HYVAKSYTTY);
-    	latest = koodiVersioDAO.read(latest.getId());
-    	assertNotNull(latest.getVoimassaLoppuPvm());
+        KoodiVersio latest = koodiBusinessService.getLatestKoodiVersio("436");
+        KoodiVersio updated = koodiBusinessService.createNewVersion(latest.getKoodi().getKoodiUri());
+        assertEquals(Tila.HYVAKSYTTY, latest.getTila());
+        assertNull(latest.getVoimassaLoppuPvm());
+        assertEquals(Tila.LUONNOS, updated.getTila());
+        koodiBusinessService.setKoodiTila(updated.getKoodi().getKoodiUri(), TilaType.HYVAKSYTTY);
+        latest = koodiVersioDAO.read(latest.getId());
+        assertNotNull(latest.getVoimassaLoppuPvm());
     }
     
     @Test
     public void koodiIsCopiedIntoNewVersionOfKoodistoWhenNewKoodiIsAdded() {
-    	CreateKoodiDataType createKoodiData = fi.vm.sade.koodisto.service.it.DataUtils.createCreateKoodiDataType("new",
+        CreateKoodiDataType createKoodiData = fi.vm.sade.koodisto.service.it.DataUtils.createCreateKoodiDataType("new",
                 new Date(), null, "uusi");
-    	koodiBusinessService.createKoodi("koodisiirtyykoodisto", createKoodiData);
-    	List<KoodiVersioWithKoodistoItem> items = koodiBusinessService.getKoodisByKoodistoVersio("koodisiirtyykoodisto", 2, true);
-    	assertEquals(2, items.size());
-    	assertNotNull(koodiBusinessService.getKoodiByKoodistoVersio("koodisiirtyykoodisto", 2, "koodisiirtyy"));
-    	assertNotNull(koodiBusinessService.getKoodiByKoodistoVersio("koodisiirtyykoodisto", 2, "koodisiirtyykoodisto_new"));
+        koodiBusinessService.createKoodi("koodisiirtyykoodisto", createKoodiData);
+        List<KoodiVersioWithKoodistoItem> items = koodiBusinessService.getKoodisByKoodistoVersio("koodisiirtyykoodisto", 2, true);
+        assertEquals(2, items.size());
+        assertNotNull(koodiBusinessService.getKoodiByKoodistoVersio("koodisiirtyykoodisto", 2, "koodisiirtyy"));
+        assertNotNull(koodiBusinessService.getKoodiByKoodistoVersio("koodisiirtyykoodisto", 2, "koodisiirtyykoodisto_new"));
     }
     
     @Test
@@ -192,8 +192,8 @@ public class KoodiBusinessServiceTest {
     }
     
     private List<KoodiVersioWithKoodistoItem> listByUri(String koodiUri) {
-    	SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(koodiUri);
-    	return koodiBusinessService.searchKoodis(searchType);
+        SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(koodiUri);
+        return koodiBusinessService.searchKoodis(searchType);
     }
     
     private KoodiVersioWithKoodistoItem createKoodi(KoodistoVersio koodisto, String koodiArvo, String nimi) {

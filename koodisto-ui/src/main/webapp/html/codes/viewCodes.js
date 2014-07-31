@@ -10,7 +10,12 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.deleteState = "disabled";
 
         this.init = function(codesUri, codesVersion) {
-            // Samaa koodistoa on turha päivittää
+            if(model.forceRefresh){
+                model.forceRefreshCodeElements = "?forceRefresh";
+            } else {
+                model.forceRefreshCodeElements = "";
+            }
+            // Samaa koodistoa on turha ladata uudelleen modelliin
             if (model.forceRefresh || !(model.codes && model.codes.koodistoUri == codesUri && model.codes.versio == codesVersion)) {
                 model.forceRefresh = false;
                 model.codes = null;
@@ -33,6 +38,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 this.sortOrder = "koodiArvo";
                 this.sortOrderSelection = 1;
                 this.sortOrderReversed = false;
+                this.searchResultsLength = 0;
 
                 model.getCodes(codesUri, codesVersion);
             }
@@ -133,6 +139,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 codesVersion : codesVersion
             }, function(result) {
                 model.codeElements = result;
+                model.searchResultsLength = model.codeElements.length;
                 for (var i = 0; i < model.codeElements.length; i++) {
                     model.codeElements[i].name = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'FI');
                     model.codeElements[i].namesv = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'SV');
@@ -141,26 +148,35 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             });
 
         };
+        updatedCodeElementsCount = 0;
         this.getCodeElementVersions = function() {
             if (!model.showversion) {
                 var elements = model.codeElements;
                 model.codeElements = [];
+                var newElementsList = [];
                 if (elements) {
+                    updatedCodeElementsCount = 0;
+                    model.searchResultsLength = 0;
                     for (var i = 0; i < elements.length; i++) {
-                        model.getCodeElementVersionsByCodeElementUri(elements[i].koodiUri);
+                        model.getCodeElementVersionsByCodeElementUri(elements[i].koodiUri, elements.length, newElementsList);
                     }
                 }
             } else {
                 model.getCodes(model.codesUri, model.codesVersion);
             }
         };
-        this.getCodeElementVersionsByCodeElementUri = function(codeElementUri) {
+        this.getCodeElementVersionsByCodeElementUri = function(codeElementUri, elementCount, list) {
             CodeElementVersionsByCodeElementUri.get({
                 codeElementUri : codeElementUri
             }, function(result) {
                 for (var i = 0; i < result.length; i++) {
                     result[i].name = getLanguageSpecificValue(result[i].metadata, 'nimi', 'FI');
-                    model.codeElements.push(result[i]);
+                    list.push(result[i]);
+                    model.searchResultsLength++;
+                }
+                updatedCodeElementsCount++;
+                if(updatedCodeElementsCount == elementCount){
+                    model.codeElements = list;
                 }
             });
         };
@@ -171,7 +187,6 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 controller : ViewCodesController,
                 resolve : {}
             });
-
         };
 
         this.upload = function() {
@@ -198,7 +213,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     $scope.model = ViewCodesModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
-    $scope.model.forceRefresh=$routeParams.forceRefresh;
+    $scope.model.forceRefresh=$routeParams.forceRefresh == true;
     $scope.identity = angular.identity;
     ViewCodesModel.init($scope.codesUri, $scope.codesVersion);
     $scope.sortBy1 = 'name';
@@ -352,27 +367,29 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     // Pagination
 
     // Get the filtered page count
-    var cachedPageCount = 0;
+    $scope.cachedPageCount = 0;
     $scope.getNumberOfPages = function() {
-        if (cachedPageCount == 0) {
+        if ($scope.cachedPageCount == 0 && $scope.model.codeElements.length > 0) {
             $scope.refreshNumberOfPages();
         }
-        return cachedPageCount;
+        return $scope.cachedPageCount;
     };
 
     // Refresh the page count when the model changes
-    var cachedElementCount = 0;
+    $scope.cachedElementCount = 0;
     $scope.$watch('model.codeElements', function() {
-        if ($scope.model.codeElements.length != cachedElementCount) {
+        if ($scope.model.codeElements.length != $scope.cachedElementCount) {
             $scope.refreshNumberOfPages();
-            cachedElementCount = $scope.model.codeElements.length;
+            refreshPage = true;
+            $scope.cachedElementCount = $scope.model.codeElements.length;
         }
     });
 
     // Refresh the page count (less redundant filtering)
     $scope.refreshNumberOfPages = function() {
-        cachedPageCount = Math.ceil(($filter("filter")($scope.model.codeElements, $scope.search)).length / $scope.model.pageSize);
-        return cachedPageCount;
+        $scope.model.searchResultsLength = ($filter("filter")($scope.model.codeElements, $scope.search)).length;
+        $scope.cachedPageCount = Math.ceil( $scope.model.searchResultsLength / $scope.model.pageSize);
+        return $scope.cachedPageCount;
     };
 
     // Change the currentPage when the pageSize is changed.
@@ -418,6 +435,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
         default:
             break;
         }
+        refreshPage = true;
     };
 
     // When user changes the search string the page count changes and the current page must be adjusted
@@ -441,6 +459,19 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
             $scope.model.currentPage = newPageNumber;
         }
     };
+    
 
+    var refreshPage = true;
+    $scope.getPaginationPage = function(){
+        if(refreshPage){
+            // Only do sorting when the model has changed, heavy operation
+            refreshPage = false;
+            $scope.model.codeElements = $filter("naturalSort")($scope.model.codeElements, $scope.model.sortOrder, $scope.model.sortOrderReversed);
+        }
+        var results = $scope.model.codeElements;
+        results = $filter("filter")(results, $scope.search);
+        results = results.splice($scope.model.currentPage*$scope.model.pageSize, $scope.model.pageSize);
+        return results;
+    };
     // Pagination ends
 }

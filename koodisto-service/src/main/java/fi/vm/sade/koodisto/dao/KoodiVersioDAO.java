@@ -10,6 +10,7 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 
 import java.util.List;
+import java.util.Map;
 
 public interface KoodiVersioDAO extends JpaDAO<KoodiVersio, Long> {
     List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisByKoodistoCriteriaType searchCriteria);
@@ -29,4 +30,10 @@ public interface KoodiVersioDAO extends JpaDAO<KoodiVersio, Long> {
     KoodiVersio getPreviousKoodiVersio(String koodiUri, Integer koodiVersio);
     
     boolean isLatestKoodiVersio(String koodiUri, Integer versio);
+
+    Map<String, Integer> getLatestVersionNumbersForUris(String... koodiUris);
+
+    KoodiVersio insertNonFlush(KoodiVersio koodiVersio);
+
+    void flush();
 }

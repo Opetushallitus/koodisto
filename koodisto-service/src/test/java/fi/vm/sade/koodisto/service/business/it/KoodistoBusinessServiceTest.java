@@ -156,41 +156,41 @@ public class KoodistoBusinessServiceTest {
     
     @Test(expected = KoodistonSuhdeContainsKoodinSuhdeException.class)
     public void existingCodeElementRelationsPreventDeletingKoodisto() {
-    	koodistoBusinessService.removeRelation("koodisiirtyykoodisto", Arrays.asList("http://koodisto18"), SuhteenTyyppi.SISALTYY);
+        koodistoBusinessService.removeRelation("koodisiirtyykoodisto", Arrays.asList("http://koodisto18"), SuhteenTyyppi.SISALTYY);
     }
 
     @Test
     public void removeRelation() {
-    	assertNotNull(suhdeDAO.read(KOODISTON_SUHDE));
-    	koodistoBusinessService.removeRelation("suhde502kanssa", Arrays.asList("suhde501kanssa"), SuhteenTyyppi.SISALTYY);
-    	assertNull(suhdeDAO.read(KOODISTON_SUHDE));   	
+        assertNotNull(suhdeDAO.read(KOODISTON_SUHDE));
+        koodistoBusinessService.removeRelation("suhde502kanssa", Arrays.asList("suhde501kanssa"), SuhteenTyyppi.SISALTYY);
+        assertNull(suhdeDAO.read(KOODISTON_SUHDE));       
     }
     
     @Test
     public void addsRelation() {
-    	koodistoBusinessService.addRelation("http://koodisto20", "http://koodisto21", SuhteenTyyppi.RINNASTEINEN);
-    	assertTrue(koodistoBusinessService.hasAnyRelation("http://koodisto20", "http://koodisto21"));
+        koodistoBusinessService.addRelation("http://koodisto20", "http://koodisto21", SuhteenTyyppi.RINNASTEINEN);
+        assertTrue(koodistoBusinessService.hasAnyRelation("http://koodisto20", "http://koodisto21"));
     }
     
     @Test(expected = KoodistosAlreadyHaveSuhdeException.class)
     public void preventsAddingSameRelationMoreThanOnce() {
-    	koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.SISALTYY);
-    	koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.SISALTYY);
+        koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.SISALTYY);
+        koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.SISALTYY);
     }
     
     @Test(expected = KoodistosAlreadyHaveSuhdeException.class)
     public void preventsAddingSameRelationMoreThanOnceDespiteRelationType() {
-    	koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.RINNASTEINEN);
-    	koodistoBusinessService.addRelation("suhde501kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY);
+        koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.RINNASTEINEN);
+        koodistoBusinessService.addRelation("suhde501kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY);
     }
     
     @Test
     public void onlyFetchesRelationsThatArePartOfTheLatestVersion() {
-    	assertEquals(1, koodistoBusinessService.getLatestKoodistoVersio("vaintuoreimmatrelaatiot").getAlakoodistos().size());
+        assertEquals(1, koodistoBusinessService.getLatestKoodistoVersio("vaintuoreimmatrelaatiot").getAlakoodistos().size());
     }
     
     @Test
     public void willFetchRelationsForOlderVersions() {
-    	assertEquals(2, koodistoBusinessService.getKoodistoVersio("vaintuoreimmatrelaatiot", 1).getAlakoodistos().size());
+        assertEquals(2, koodistoBusinessService.getKoodistoVersio("vaintuoreimmatrelaatiot", 1).getAlakoodistos().size());
     }      
 }

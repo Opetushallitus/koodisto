@@ -83,8 +83,8 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                     model.getLatestCodesVersionsByCodesUri(codes,model.levelsWithCodes);
                 });
 
-                OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result) {
-                    model.codes.organizationName = result.nimi['fi'] || result.nimi['sv'] || result.nimi['en'];
+                OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result2) {
+                    model.codes.organizationName = result2.nimi['fi'] || result2.nimi['sv'] || result2.nimi['en'];
                 });
             });
         };
@@ -185,7 +185,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
 
                         });
                     }
-                }
+                };
                 iter(data.children);
             }
         };
@@ -208,6 +208,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     };
 
     $scope.cancel = function() {
+        //must force refresh since relation changes don't require saving
         $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.codesVersion).search({forceRefresh: true});
     };
 
@@ -216,7 +217,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     };
 
     $scope.search = function (item){
-	
+    
         if (!$scope.model.query || CodesMatcher.nameOrTunnusMatchesSearch(item, $scope.model.query)) {
             item.open = true;
             return true;
@@ -350,7 +351,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 codesUriToAdd: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
                     $scope.model.withinCodes.push(ce);
                 }, function(error) {
-                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' }
+                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' };
                     $scope.model.alerts.push(alert);
                 });
         }
@@ -371,7 +372,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 codesUriToAdd: data.koodistoUri,relationType: "SISALTYY"},function(result) {
                     $scope.model.includesCodes.push(ce);
                 }, function(error) {
-                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' }
+                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' };
                     $scope.model.alerts.push(alert);
                 });
         }
@@ -391,7 +392,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 codesUriToAdd: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
                     $scope.model.levelsWithCodes.push(ce);
                 }, function(error) {
-                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' }
+                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' };
                     $scope.model.alerts.push(alert);
                 });
         }
@@ -399,7 +400,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
 
     $scope.openChildren = function(data) {
         CodesEditorModel.openChildren(data);
-    }
+    };
 
     $scope.close = function(selectedCodes){
         $scope.codesSelector = false;
@@ -412,12 +413,12 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 $scope.addToLevelsWithCodes(selectedCodes);
             }
         }
-    }
+    };
 
     $scope.show = function(name){
         $scope.addToListName = name;
         $scope.codesSelector = true;
-    }
+    };
 
     $scope.open = function () {
 
@@ -449,7 +450,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
 
             }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
                 $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
@@ -462,7 +463,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 codesUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
 
             }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
                 $scope.model.alerts.push(alert);
             });
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
@@ -474,7 +475,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
             RemoveRelationCodes.put({codesUri: $scope.model.levelsRelationToRemove.uri,
                 codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
             }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' }
+                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
                 $scope.model.alerts.push(alert);
             });
         }

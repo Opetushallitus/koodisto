@@ -15,7 +15,7 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-api</artifactId>
             <scope>provided</scope>
-            <version>${cxf.version}</version>
+            <version>${cxf-api.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -25,30 +25,30 @@
         <dependency>
             <groupId>org.jvnet.jaxb2_commons</groupId>
             <artifactId>jaxb2-basics-runtime</artifactId>
-            <version>0.6.4</version>
+            <version>${jaxb2-basics-runtime.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
-            <version>${spring.version}</version>
+            <version>${spring-test.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <scope>test</scope>
-            <version>${spring.version}</version>
+            <version>${spring-beans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <scope>test</scope>
-            <version>${spring.version}</version>
+            <version>${spring-context.version}</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>generic-common</artifactId>
-            <version>${generic.version}</version>
+            <version>${generic-common.version}</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
@@ -81,12 +81,12 @@
             <plugin>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-codegen-plugin</artifactId>
-                <version>${cxf.version}</version>
+                <version>${cxf-codegen-plugin.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.jvnet.jaxb2_commons</groupId>
                         <artifactId>jaxb2-basics</artifactId>
-                        <version>0.6.4</version>
+                        <version>${jaxb2-basics.version}</version>
                     </dependency>
                 </dependencies>
                 <executions>
@@ -173,7 +173,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.4</version>
+                <version>${build-helper-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>add-wsdl-source</id>

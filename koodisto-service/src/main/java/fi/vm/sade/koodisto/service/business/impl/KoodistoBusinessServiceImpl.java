@@ -603,10 +603,17 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         if (!Tila.HYVAKSYTTY.equals(latest.getTila()) && updateKoodistoData.getTila().equals(TilaType.HYVAKSYTTY)) {
             List<KoodiVersio> koodis = koodiVersioDAO.getKoodiVersiosByKoodistoAndKoodiTila(latest.getId(), Tila.LUONNOS);
 
-            for (KoodiVersio k : koodis) {
-                koodiBusinessService.setKoodiTila(k.getKoodi().getKoodiUri(), TilaType.HYVAKSYTTY);
+            ArrayList<String> koodiUris = new ArrayList<String>();
+            for (KoodiVersio koodiVersio : koodis) {
+                koodiUris.add(koodiVersio.getKoodi().getKoodiUri());
             }
+            
+            List<KoodiVersio> latestKoodis = koodiDAO.getLatestCodeElementVersiosByUrisAndTila(koodiUris, Tila.HYVAKSYTTY);
 
+            for (KoodiVersio latestVersio : latestKoodis) {
+                koodiBusinessService.setKoodiTila(latestVersio, TilaType.HYVAKSYTTY);
+            }
+            
             KoodistoVersio previousVersion = koodistoVersioDAO.getPreviousKoodistoVersio(latest.getKoodisto().getKoodistoUri(), latest.getVersio());
             if (previousVersion != null) {
                 previousVersion.setVoimassaLoppuPvm(new Date());
@@ -745,12 +752,18 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     private File createTemporaryFile(String codesUri, String extension, DataHandler handler) throws IOException, FileNotFoundException {
-        File file = File.createTempFile(codesUri, extension);
-        logger.debug("Created temporary file " + file.getAbsolutePath());
-        FileOutputStream fos = new FileOutputStream(file);
-        IOUtils.copy(handler.getInputStream(), fos);
-        fos.close();
-        file.deleteOnExit(); // Delete file when VM is closed
-        return file;
+        FileOutputStream fos = null;
+        try {
+            File file = File.createTempFile(codesUri, extension);
+            logger.debug("Created temporary file " + file.getAbsolutePath());
+            fos = new FileOutputStream(file);
+            IOUtils.copy(handler.getInputStream(), fos);
+            fos.close();
+            file.deleteOnExit(); // Delete file when VM is closed
+            return file;
+        } finally {
+            if (fos != null)
+                fos.close();
+        }
     }
 }

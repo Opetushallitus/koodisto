@@ -74,11 +74,20 @@ public class KoodinSuhde extends BaseEntity {
     }
     
     public Integer getVersio() {
-		return versio;
-	}
+        return versio;
+    }
     
     public void setVersio(Integer versio) {
-		this.versio = versio;
-	}
+        this.versio = versio;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
 }

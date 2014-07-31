@@ -29,7 +29,7 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
         if (koodistoRyhmaDto == null || StringUtils.isBlank(koodistoRyhmaDto.getKoodistoRyhmaUri())) {
             throw new KoodistoRyhmaUriEmptyException("codesgroup.uri.is.empty");
         }
-        List<KoodistoRyhmaMetadata> metadatas = new ArrayList();
+        List<KoodistoRyhmaMetadata> metadatas = new ArrayList<KoodistoRyhmaMetadata>();
         metadatas.addAll(koodistoRyhmaDto.getKoodistoRyhmaMetadatas());
         checkMetadatas(metadatas);
 
@@ -64,14 +64,14 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
         if (koodistoRyhmaDto == null || StringUtils.isBlank(koodistoRyhmaDto.getKoodistoRyhmaUri())) {
             throw new KoodistoRyhmaUriEmptyException("codesgroup.uri.is.empty");
         }
-        List<KoodistoRyhmaMetadata> metadatas = new ArrayList();
+        List<KoodistoRyhmaMetadata> metadatas = new ArrayList<KoodistoRyhmaMetadata>();
         metadatas.addAll(koodistoRyhmaDto.getKoodistoRyhmaMetadatas());
 
 
         KoodistoRyhma koodistoRyhma = getKoodistoRyhmaById(koodistoRyhmaDto.getId());
         Set<KoodistoRyhmaMetadata> koodistoRyhmaDtoMetadatas = koodistoRyhmaDto.getKoodistoRyhmaMetadatas();
         Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = koodistoRyhma.getKoodistoJoukkoMetadatas();
-        Set<KoodistoRyhmaMetadata> removeKoodistoRyhmaMetadatas = new HashSet();
+        Set<KoodistoRyhmaMetadata> removeKoodistoRyhmaMetadatas = new HashSet<KoodistoRyhmaMetadata>();
         koodistoRyhma.setKoodistoRyhmaUri(koodistoRyhmaDto.getKoodistoRyhmaUri());
         for (KoodistoRyhmaMetadata metadata : koodistoRyhmaDtoMetadatas) {
             boolean found = false;

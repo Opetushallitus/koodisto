@@ -136,7 +136,7 @@ public class UriTransliteratorImpl implements UriTransliterator {
 
         int i = 1;
         while (koodistoRyhmaDAO.koodistoRyhmaUriExists(koodistoRyhmaUri)) {
-            koodistoRyhmaUri = koodistoRyhmaUri + "-" + i;
+            koodistoRyhmaUri = baseKoodistoRyhmaUri + "-" + i;
             ++i;
         }
 

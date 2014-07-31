@@ -23,25 +23,33 @@
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>generic-test-support</artifactId>
             <scope>test</scope>
-            <version>${generic.version}</version>
+            <version>${generic-test-support.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.kubek2k</groupId>
+            <artifactId>springockito</artifactId>
+            <scope>test</scope>
+            <version>${springockito.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kubek2k</groupId>
+            <artifactId>springockito-annotations</artifactId>
+            <scope>test</scope>
+            <version>${springockito.version}</version>
+        </dependency>
+            
 
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>generic-common</artifactId>
-            <version>${generic.version}</version>
+            <version>${generic-common.version}</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>dependencies-service</artifactId>
             <type>pom</type>
-            <exclusions>
-            <exclusion>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-            </exclusion>
-            </exclusions>
-            <version>${generic.version}</version>
+            <version>${dependencies-service.version}</version>
         </dependency>
 
         <dependency>
@@ -53,44 +61,20 @@
                     <groupId>org.slf4j</groupId>
                 </exclusion>
             </exclusions>
-            <version>${generic.version}</version>
+            <version>${log-client.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
-        </dependency>
+        
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <scope>test</scope>
             <version>${hsqldb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
+        </dependency>       
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-oxm</artifactId>
-            <version>${spring.version}</version>
+            <version>${spring-oxm.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.transaction</groupId>
@@ -109,22 +93,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-api</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxws</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
             <version>${cxf.version}</version>
         </dependency>
         <dependency>
@@ -135,19 +104,19 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-io</artifactId>
-            <version>1.3.2</version>
+            <version>${commons-io.version}</version>
         </dependency>
 
         <!-- ActiveMQ -->
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-core</artifactId>
-            <version>${activemq.version}</version>
+            <version>${activemq-core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-pool</artifactId>
-            <version>${activemq.version}</version>
+            <version>${activemq-pool.version}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
@@ -199,13 +168,27 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
-            <version>${spring.version}</version>
+            <version>${spring-test.version}</version>
         </dependency>
+        
+        <dependency>
+          <groupId>org.dbunit</groupId>
+          <artifactId>dbunit</artifactId>
+          <scope>test</scope>
+          <version>${dbunit.version}</version>
+        </dependency>      
+        
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>dbunit-support</artifactId>
             <scope>test</scope>
-            <version>${generic.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.dbunit</groupId>
+                    <artifactId>dbunit</artifactId>
+                </exclusion>
+            </exclusions>
+            <version>${dbunit-support.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -216,14 +199,14 @@
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
-            <version>3.1</version>
+            <version>${commons-httpclient.version}</version>
         </dependency>
 
         <!-- Castor XML marshaller -->
         <dependency>
             <groupId>org.codehaus.castor</groupId>
             <artifactId>castor-xml</artifactId>
-            <version>1.3.2</version>
+            <version>${castor-xml.version}</version>
         </dependency>
 
         <!-- Jersey -->
@@ -231,22 +214,22 @@
         <dependency>
             <groupId>com.sun.jersey.contribs</groupId>
             <artifactId>jersey-multipart</artifactId>
-            <version>1.9.1</version>
+            <version>${jersey-multipart.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-core</artifactId>
-            <version>1.9.1</version>
+            <version>${jersey-core.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
-            <version>1.9.1</version>
+            <version>${jersey-server.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-json</artifactId>
-            <version>1.9.1</version>
+            <version>${jersey-json.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.codehaus.jackson</groupId>
@@ -269,7 +252,7 @@
         <dependency>
             <groupId>com.sun.jersey.contribs</groupId>
             <artifactId>jersey-spring</artifactId>
-            <version>1.9.1</version>
+            <version>${jersey-spring.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>
@@ -302,44 +285,61 @@
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-core-asl</artifactId>
-            <version>1.9.11</version>
+            <version>${jackson-core-asl.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-jaxrs</artifactId>
-            <version>1.9.11</version>
+            <version>${jackson-jaxrs.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.9.11</version>
+            <version>${jackson-mapper-asl.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-xc</artifactId>
-            <version>1.9.11</version>
+            <version>${jackson-xc.version}</version>
         </dependency>
 
         <!-- CSV marshaller -->
         <dependency>
             <groupId>net.sf.supercsv</groupId>
             <artifactId>super-csv</artifactId>
-            <version>2.0.1</version>
+            <version>${super-csv.version}</version>
         </dependency>
         
         <!-- Apache POI XLS marshaller -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.9</version>
+            <version>${poi.version}</version>
         </dependency>
 
-		<!-- Swagger -->
+        <!-- Swagger -->
 
+        <dependency>
+            <groupId>com.wordnik</groupId>
+            <artifactId>swagger-jaxrs_2.10</artifactId>
+            <version>${swagger-jaxrs_2.10.version}</version>
+        </dependency>
+
+		<!-- JPAAnnotationProcessor -->
 		<dependency>
-			<groupId>com.wordnik</groupId>
-			<artifactId>swagger-jaxrs_2.10</artifactId>
-			<version>1.3.0</version>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-apt</artifactId>
+			<version>${querydsl-apt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>${cglib.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.mysema.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+			<version>${querydsl-jpa.version}</version>
 		</dependency>
 		
     </dependencies>
@@ -350,7 +350,7 @@
             <plugin>
                 <groupId>de.smartics.maven.plugin</groupId>
                 <artifactId>hibernate4-maven-plugin</artifactId>
-                <version>0.1.1</version>
+                <version>${hibernate4-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>export</id>
@@ -369,19 +369,19 @@
                     <dependency>
                         <groupId>org.hibernate</groupId>
                         <artifactId>hibernate-core</artifactId>
-                        <version>${hibernate.version}</version>
+                        <version>${hibernate-core.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>org.hibernate</groupId>
                         <artifactId>hibernate-ehcache</artifactId>
-                        <version>${hibernate.version}</version>
+                        <version>${hibernate-ehcache.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
             <plugin>
                 <groupId>com.mysema.maven</groupId>
                 <artifactId>maven-apt-plugin</artifactId>
-                <version>1.0</version>
+                <version>${maven-apt-plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -397,7 +397,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.4</version>
+                <version>${build-helper-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>add-querydsl-source</id>
@@ -431,7 +431,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>sql-maven-plugin</artifactId>
-                        <version>1.5</version>
+                        <version>${sql-maven-plugin.version}</version>
 
                         <dependencies>
                             <dependency>

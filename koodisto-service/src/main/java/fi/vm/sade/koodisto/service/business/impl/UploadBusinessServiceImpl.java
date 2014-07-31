@@ -65,9 +65,12 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
                 koodis = koodistoXlsConverter.unmarshal(file, encoding);
                 break;
             default:
-                throw new KoodistoExportException("Unknown koodisto import format!");
+                throw new KoodistoExportException("Unknown koodisto import format.");
             }
 
+            if(koodis == null || koodis.size() == 0){
+                throw new KoodistoExportException("File contained no valid codeElements.");
+            }
             List<UpdateKoodiDataType> updateDatas = new ArrayList<UpdateKoodiDataType>();
             for (KoodiType k : koodis) {
                 checkIfKoodiHasAllFields(k, koodistoUri);

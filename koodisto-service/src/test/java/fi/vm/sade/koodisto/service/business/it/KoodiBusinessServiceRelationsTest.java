@@ -3,6 +3,7 @@ package fi.vm.sade.koodisto.service.business.it;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -69,7 +70,7 @@ public class KoodiBusinessServiceRelationsTest {
                 SuhteenTyyppi.RINNASTEINEN, false);
         assertEquals(2, rinnastuvat.size());
 
-        koodiBusinessService.addRelation(ylakoodi.getKoodiUri(), alakoodi.getKoodiUri(), SuhteenTyyppi.RINNASTEINEN);
+        koodiBusinessService.addRelation(ylakoodi.getKoodiUri(), Arrays.asList(alakoodi.getKoodiUri()), SuhteenTyyppi.RINNASTEINEN, false);
 
         rinnastuvat = koodiBusinessService.listByRelation(ylakoodi, SuhteenTyyppi.RINNASTEINEN, false);
         assertEquals(3, rinnastuvat.size());
@@ -88,7 +89,7 @@ public class KoodiBusinessServiceRelationsTest {
         list.add("373");
         list.add("375");
 
-        koodiBusinessService.addRelation(kv.getKoodiUri(), list, SuhteenTyyppi.RINNASTEINEN);
+        koodiBusinessService.addRelation(kv.getKoodiUri(), list, SuhteenTyyppi.RINNASTEINEN, false);
         result = koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, false);
         Assert.assertEquals(3L, result.size());
     }
@@ -112,18 +113,18 @@ public class KoodiBusinessServiceRelationsTest {
     
     @Test
     public void updatingKoodiVersioDoesNotRemoveOldRelations() {
-    	KoodiUriAndVersioType kv = givenKoodiUriAndVersioType("7", 1);
-    	koodiBusinessService.createNewVersion(kv.getKoodiUri());
-     	List<KoodiVersioWithKoodistoItem> newItems = koodiBusinessService.listByRelation(givenKoodiUriAndVersioType("7", 2), SuhteenTyyppi.RINNASTEINEN, true);
-    	assertEquals(2, newItems.size());
-    	assertEquals(2, koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, true).size());
+        KoodiUriAndVersioType kv = givenKoodiUriAndVersioType("7", 1);
+        koodiBusinessService.createNewVersion(kv.getKoodiUri());
+         List<KoodiVersioWithKoodistoItem> newItems = koodiBusinessService.listByRelation(givenKoodiUriAndVersioType("7", 2), SuhteenTyyppi.RINNASTEINEN, true);
+        assertEquals(2, newItems.size());
+        assertEquals(2, koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, true).size());
     }
 
-	private KoodiUriAndVersioType givenKoodiUriAndVersioType(String koodiUri, int versio) {
-		KoodiUriAndVersioType kv = new KoodiUriAndVersioType();
-    	kv.setKoodiUri(koodiUri);
-    	kv.setVersio(versio);
-		return kv;
-	}
+    private KoodiUriAndVersioType givenKoodiUriAndVersioType(String koodiUri, int versio) {
+        KoodiUriAndVersioType kv = new KoodiUriAndVersioType();
+        kv.setKoodiUri(koodiUri);
+        kv.setVersio(versio);
+        return kv;
+    }
 
 }

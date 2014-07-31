@@ -73,4 +73,76 @@ public class KoodinSuhdeDAOTest {
         assertEquals(1, l.size());
         assertEquals(l.get(0).getSuhteenTyyppi(), SuhteenTyyppi.SISALTYY);
     }
+
+    @Test
+    public void testGetAndDeleteMultipleRelationsIncludes() {
+
+        KoodiUriAndVersioType koodi1 = new KoodiUriAndVersioType();
+        koodi1.setKoodiUri("463");
+        koodi1.setVersio(1);
+        KoodiUriAndVersioType koodi2 = new KoodiUriAndVersioType();
+        koodi2.setKoodiUri("464");
+        koodi2.setVersio(1);
+        KoodiUriAndVersioType koodi3 = new KoodiUriAndVersioType();
+        koodi3.setKoodiUri("465");
+        koodi3.setVersio(1);
+
+        List<KoodiUriAndVersioType> alakoodis = new ArrayList<KoodiUriAndVersioType>();
+        alakoodis.add(koodi2);
+        alakoodis.add(koodi3);
+
+        SuhteenTyyppi st = SuhteenTyyppi.SISALTYY;
+
+        List<KoodinSuhde> relations = koodinSuhdeDAO.getRelations(koodi1, alakoodis, st);
+        assertEquals(2, relations.size());
+
+        koodinSuhdeDAO.massRemove(relations);
+
+        List<KoodinSuhde> relationsAfter = koodinSuhdeDAO.getRelations(koodi1, alakoodis, st);
+        assertEquals(0, relationsAfter.size());
+    }
+    
+    @Test
+    public void testGetAndDeleteMultipleRelationsLevelsWith() {
+
+        KoodiUriAndVersioType koodi1 = new KoodiUriAndVersioType();
+        koodi1.setKoodiUri("3");
+        koodi1.setVersio(1);
+        KoodiUriAndVersioType koodi2 = new KoodiUriAndVersioType();
+        koodi2.setKoodiUri("5");
+        koodi2.setVersio(1);
+        KoodiUriAndVersioType koodi3 = new KoodiUriAndVersioType();
+        koodi3.setKoodiUri("7");
+        koodi3.setVersio(1);
+
+        List<KoodiUriAndVersioType> alakoodis1 = new ArrayList<KoodiUriAndVersioType>();
+        alakoodis1.add(koodi2);
+        alakoodis1.add(koodi3);
+        List<KoodiUriAndVersioType> alakoodis2 = new ArrayList<KoodiUriAndVersioType>();
+        alakoodis2.add(koodi1);
+        alakoodis2.add(koodi3);
+        List<KoodiUriAndVersioType> alakoodis3 = new ArrayList<KoodiUriAndVersioType>();
+        alakoodis3.add(koodi1);
+        alakoodis3.add(koodi2);
+
+        
+        SuhteenTyyppi st = SuhteenTyyppi.RINNASTEINEN;
+
+        List<KoodinSuhde> relations1 = koodinSuhdeDAO.getRelations(koodi1, alakoodis1, st);
+        List<KoodinSuhde> relations2 = koodinSuhdeDAO.getRelations(koodi2, alakoodis2, st);
+        List<KoodinSuhde> relations3 = koodinSuhdeDAO.getRelations(koodi3, alakoodis3, st);
+        assertEquals(2, relations1.size());
+        assertEquals(2, relations2.size());
+        assertEquals(2, relations3.size());
+
+        koodinSuhdeDAO.massRemove(relations1);
+        
+        List<KoodinSuhde> relationsAfter1 = koodinSuhdeDAO.getRelations(koodi1, alakoodis1, st);
+        List<KoodinSuhde> relationsAfter2 = koodinSuhdeDAO.getRelations(koodi2, alakoodis2, st);
+        List<KoodinSuhde> relationsAfter3 = koodinSuhdeDAO.getRelations(koodi3, alakoodis3, st);
+        assertEquals(0, relationsAfter1.size());
+        assertEquals(1, relationsAfter2.size());
+        assertEquals(1, relationsAfter3.size());
+    }
+
 }

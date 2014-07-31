@@ -5,6 +5,7 @@ package fi.vm.sade.koodisto.service.business;
 
 import java.util.List;
 
+import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
@@ -53,18 +54,11 @@ public interface KoodiBusinessService {
      * @param version
      * @param alaKoodiIds
      * @param suhteenTyyppi
+     * @param isChild 
      */
-    void addRelation(String ylaKoodi, List<String> alaKoodis,
-            fi.vm.sade.koodisto.model.SuhteenTyyppi st);
+    void addRelation(String ylaKoodi, List<String> alaKoodis, SuhteenTyyppi st, boolean isChild);
 
-    /**
-     * Adds a relation between provided ylaKoodi with its version and alaKoodi
-     * with given type.
-     * 
-     * @return
-     */
-    void addRelation(String ylaKoodi, String alaKoodi,
-                     SuhteenTyyppi st);
+    void addRelation(KoodiRelaatioListaDto koodiRelaatioDto);
 
     /**
      * Removes relation between provided codeElement and relations with given type.
@@ -74,6 +68,8 @@ public interface KoodiBusinessService {
      * @param relatedCodeElements
      */
     void removeRelation(String codeElementUri, List<String> relatedCodeElements, SuhteenTyyppi st, boolean isChild);
+
+    void removeRelation(KoodiRelaatioListaDto koodiRelaatioDto);
 
     List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisByKoodistoCriteriaType searchCriteria);
 
@@ -88,6 +84,8 @@ public interface KoodiBusinessService {
     KoodiVersio createNewVersion(String koodiUri);
 
     void setKoodiTila(String koodiUri, TilaType tila);
+
+    void setKoodiTila(KoodiVersio latest, TilaType tila);
 
     List<KoodiVersioWithKoodistoItem> getKoodisByKoodistoVersio(String koodistoUri, Integer koodistoVersio, boolean onlyValidKoodis);
 
@@ -108,7 +106,8 @@ public interface KoodiBusinessService {
 
     KoodiVersio getLatestKoodiVersio(String koodiUri);
 
-	boolean hasRelationBetweenCodeElements(KoodiVersio ylaKoodiVersio, final KoodiVersio alaKoodiVersio);
-	
-	boolean isLatestKoodiVersio(String koodiUri, Integer versio);
+    boolean hasRelationBetweenCodeElements(KoodiVersio ylaKoodiVersio, final KoodiVersio alaKoodiVersio);
+    
+    boolean isLatestKoodiVersio(String koodiUri, Integer versio);
+
 }
