@@ -51,7 +51,6 @@ import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 
 @Component
 @Path("/codeelement")
-@PreAuthorize("isAuthenticated()")
 @Api(value = "/rest/codeelement", description = "Koodit")
 public class CodeElementResource {
     private final static Logger logger = LoggerFactory.getLogger(CodeElementResource.class);
@@ -65,14 +64,10 @@ public class CodeElementResource {
     @Autowired
     private KoodistoConfiguration koodistoConfiguration;
 
-    // ////
-    // GET
-
     @GET
     @Path("/{codeElementUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Simple.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa koodiversiot tietystä koodista",
             notes = "",
@@ -90,7 +85,6 @@ public class CodeElementResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Extended.class })
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa tietyn koodiversion",
             notes = "sisältää koodiversion koodinsuhteet",
@@ -111,7 +105,6 @@ public class CodeElementResource {
     @Path("/{codesUri}/{codesVersion}/{codeElementUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa koodin tietystä koodistoversiosta",
             notes = "",
@@ -128,7 +121,6 @@ public class CodeElementResource {
     @Path("/codes/{codesUri}/{codesVersion}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Simple.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa koodin tietystä koodistoversiosta",
             notes = "",
@@ -151,7 +143,6 @@ public class CodeElementResource {
     @Path("/latest/{codeElementUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa uusimman koodiversion",
             notes = "",
@@ -168,9 +159,6 @@ public class CodeElementResource {
         }
         return conversionService.convert(codeElements.get(0), KoodiDto.class);
     }
-
-    // /////
-    // POST
 
     @POST
     @Path("/{codesUri}")
@@ -322,9 +310,6 @@ public class CodeElementResource {
         }
     }
 
-    // ////
-    // PUT
-
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -351,9 +336,6 @@ public class CodeElementResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
-
-    // ////////
-    // METHODS
 
     private UpdateKoodiDataType convertFromDTOToUpdateKoodiDataType(KoodiDto koodiDto) {
         UpdateKoodiDataType updateKoodiDataType = new UpdateKoodiDataType();

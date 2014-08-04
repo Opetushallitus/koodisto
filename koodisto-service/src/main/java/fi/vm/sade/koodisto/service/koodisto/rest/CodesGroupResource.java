@@ -34,7 +34,6 @@ import fi.vm.sade.koodisto.service.business.UriTransliterator;
 
 @Component
 @Path("/codesgroup")
-@PreAuthorize("isAuthenticated()")
 @Api(value = "/rest/codesgroup", description = "Koodistoryhmät")
 public class CodesGroupResource {
     protected final static Logger logger = LoggerFactory.getLogger(CodesGroupResource.class);
@@ -52,7 +51,6 @@ public class CodesGroupResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa koodistoryhmän",
             notes = "",
