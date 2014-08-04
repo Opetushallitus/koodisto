@@ -104,6 +104,11 @@ public class CachingKoodistoClient implements KoodistoClient {
     public List<KoodiType> getYlakoodis(String koodiUri) {
         return Arrays.asList(get("/relaatio/sisaltyy-ylakoodit/" + koodiUri, KoodiType[].class));
     }
+    
+    @Override
+    public List<KoodiType> getRinnasteiset(String koodiUri) {
+        return Arrays.asList(get("/relaatio/rinnasteinen/" + koodiUri, KoodiType[].class));
+    }
 
     @Override
     public List<KoodiType> searchKoodis(SearchKoodisCriteriaType sc) {

@@ -40,6 +40,8 @@ public interface KoodistoClient {
 
     List<KoodiType> getYlakoodis(String koodiUri);
 
+    List<KoodiType> getRinnasteiset(String koodiUri);
+
     List<KoodiType> searchKoodis(SearchKoodisCriteriaType sc);
 
     String buildSearchKoodisUri(SearchKoodisCriteriaType sc);
