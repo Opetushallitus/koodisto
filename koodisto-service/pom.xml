@@ -38,7 +38,17 @@
             <scope>test</scope>
             <version>${springockito.version}</version>
         </dependency>
-            
+
+		<dependency>
+			<artifactId>aspectjrt</artifactId>
+			<groupId>org.aspectj</groupId>
+			<version>${aspectjrt.version}</version>
+		</dependency>
+		<dependency>
+			<artifactId>aspectjweaver</artifactId>
+			<groupId>org.aspectj</groupId>
+			<version>${aspectjweaver.version}</version>
+		</dependency>
 
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
