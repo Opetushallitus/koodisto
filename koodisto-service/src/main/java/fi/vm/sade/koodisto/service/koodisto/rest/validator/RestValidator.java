@@ -8,6 +8,6 @@ public interface RestValidator<T> {
     
     void validateDelete(T validatable) throws IllegalArgumentException;
     
-    void validateGet(T validatable0) throws IllegalArgumentException;
+    void validateGet(T validatable) throws IllegalArgumentException;
 
 }
