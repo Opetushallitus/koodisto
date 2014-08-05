@@ -26,8 +26,11 @@ import fi.vm.sade.koodisto.service.business.exception.KoodiVersioHasRelationsExc
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistonSuhdeContainsKoodinSuhdeException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistosAlreadyHaveSuhdeException;
+import fi.vm.sade.koodisto.service.it.DataUtils;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import static org.junit.Assert.assertEquals;
@@ -205,4 +208,14 @@ public class KoodistoBusinessServiceTest {
     public void willFetchRelationsForOlderVersions() {
         assertEquals(2, koodistoBusinessService.getKoodistoVersio("vaintuoreimmatrelaatiot", 1).getAlakoodistos().size());
     }      
+    
+    @Test
+    public void doesNotSetStartDateToNewDateWhenUpdatingKoodistoVersioThatIsInLuonnosTila() {
+        KoodistoVersio kv = koodistoBusinessService.getLatestKoodistoVersio("http://koodisto15");
+        Date startDate = kv.getVoimassaAlkuPvm();
+        UpdateKoodistoDataType type = DataUtils.createUpdateKoodistoDataType(kv.getKoodisto().getKoodistoUri(), kv.getKoodisto().getOmistaja(), TilaType.LUONNOS,
+                kv.getKoodisto().getOrganisaatioOid(), startDate, kv.getVoimassaLoppuPvm(), "NewName", kv.getVersio(), kv.getVersion());        
+        koodistoBusinessService.updateKoodisto(type);
+        assertEquals(startDate, koodistoBusinessService.getLatestKoodistoVersio("http://koodisto15").getVoimassaAlkuPvm());
+    }
 }

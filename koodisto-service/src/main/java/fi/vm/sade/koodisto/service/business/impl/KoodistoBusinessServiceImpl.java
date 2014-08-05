@@ -623,8 +623,10 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         // Update the version itself
         EntityUtils.copyFields(updateKoodistoData, latest);
 
-        // Set start date to current date
-        latest.setVoimassaAlkuPvm(new Date());
+        if(latest.getVoimassaAlkuPvm() == null) {
+            // Set start date to current date
+            latest.setVoimassaAlkuPvm(new Date());
+        }
 
         // Set update date
         latest.setPaivitysPvm(new Date());
