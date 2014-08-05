@@ -73,10 +73,7 @@ public class KoodistoBusinessServiceTest {
     private KoodistoVersio getKoodistoByUri(String koodistoUri) {
         SearchKoodistosCriteriaType searchType = KoodistoServiceSearchCriteriaBuilder.latestKoodistoByUri(koodistoUri);
         List<KoodistoVersio> koodistos = koodistoBusinessService.searchKoodistos(searchType);
-        if (koodistos.size() != 1) {
-            throw new RuntimeException("Failing");
-        }
-
+        assertEquals(1, koodistos.size());
         return koodistos.get(0);
     }
 
