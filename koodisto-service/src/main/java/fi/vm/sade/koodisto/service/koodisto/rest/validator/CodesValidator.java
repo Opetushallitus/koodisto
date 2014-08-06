@@ -24,13 +24,13 @@ public class CodesValidator implements RestValidator<KoodistoDto> {
 
     @Override
     public void validateUpdate(KoodistoDto validatable) {
-        // TODO Auto-generated method stub
+        ValidatorUtil.checkForNull(validatable, "Codes given was null");
         
     }
 
     @Override
     public void validateDelete(KoodistoDto validatable) {
-        // TODO Auto-generated method stub
+        ValidatorUtil.checkForNull(validatable, "Codes given was null");
         
     }
 

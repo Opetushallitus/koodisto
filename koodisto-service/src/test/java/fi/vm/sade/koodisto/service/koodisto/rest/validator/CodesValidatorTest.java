@@ -3,8 +3,6 @@ package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 import java.util.Arrays;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
 
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.Kieli;
@@ -18,7 +16,6 @@ public class CodesValidatorTest {
     
     private static CodesValidator validator = new CodesValidator();
     
-    @RunWith(BlockJUnit4ClassRunner.class)
     public static class ValidatingInsert {
         
         @Test(expected = IllegalArgumentException.class)
@@ -75,6 +72,20 @@ public class CodesValidatorTest {
             validator.validateCreateNew(dto); 
         }
 
+    }
+    
+    public static class ValidatingUpdate {
+        @Test(expected = IllegalArgumentException.class)
+        public void doesNotAllowNullKoodistoDtoWhenUpdating() {
+            validator.validateCreateNew(null);
+        }
+    }
+    
+    public static class ValidatingDelete {
+        @Test(expected = IllegalArgumentException.class)
+        public void doesNotAllowNullKoodistoDtoWhenDeleting() {
+            validator.validateCreateNew(null);
+        }
     }
    
     private static KoodistoDto givenKoodistoDtoWithBasicFields() {
