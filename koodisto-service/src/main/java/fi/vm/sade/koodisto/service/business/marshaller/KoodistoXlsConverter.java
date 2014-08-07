@@ -187,7 +187,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
         case Cell.CELL_TYPE_STRING:
             return cell.getStringCellValue();
         case Cell.CELL_TYPE_NUMERIC:
-            return (String.valueOf(cell.getNumericCellValue()));
+            return (String.valueOf((int) cell.getNumericCellValue()));
         default:
             return null;
         }
