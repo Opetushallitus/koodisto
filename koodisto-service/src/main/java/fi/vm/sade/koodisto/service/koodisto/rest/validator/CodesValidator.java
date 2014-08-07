@@ -8,12 +8,13 @@ import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoKuvausEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoUriEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoVersionNumberEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 
 public class CodesValidator implements RestValidator<KoodistoDto> {
 
     @Override
-    public void validateCreateNew(KoodistoDto validatable) {
+    public void validateInsert(KoodistoDto validatable) {
         ValidatorUtil.checkForNull(validatable, "Codes given was null");
         ValidatorUtil.checkForBlank(validatable.getCodesGroupUri(), "No codes group given");
         ValidatorUtil.checkForNull(validatable.getTila(), "No Tila is given");
@@ -29,15 +30,14 @@ public class CodesValidator implements RestValidator<KoodistoDto> {
     }
 
     @Override
-    public void validateDelete(KoodistoDto validatable) {
-        ValidatorUtil.checkForNull(validatable, "Codes given was null");
-        
+    public void validateDelete(String uri, Integer version) {
+        ValidatorUtil.checkForBlank(uri, new KoodistoUriEmptyException("codes.uri.is.empty"));
+        ValidatorUtil.checkForNull(version, new KoodistoVersionNumberEmptyException("Koodisto version number is empty"));
     }
 
     @Override
-    public void validateGet(KoodistoDto validatable) {
-        // TODO Auto-generated method stub
-        
+    public void validateGet(String uri) {
+        ValidatorUtil.checkForBlank(uri, new KoodistoUriEmptyException("codes.uri.is.empty"));
     }
     
     private void checkRequiredMetadataFields(Collection<KoodistoMetadata> metadatas) {

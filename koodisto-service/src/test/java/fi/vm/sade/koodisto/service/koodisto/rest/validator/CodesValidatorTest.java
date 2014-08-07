@@ -12,6 +12,7 @@ import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoKuvausEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoUriEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoVersionNumberEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 
 public class CodesValidatorTest {
@@ -22,14 +23,14 @@ public class CodesValidatorTest {
         
         @Test(expected = IllegalArgumentException.class)
         public void doesNotAllowNullKoodistoDtoWhenCreatingCodes() {
-            validator.validateCreateNew(null);
+            validator.validateInsert(null);
         }
         
         @Test(expected = IllegalArgumentException.class)
         public void doesNotAllowCreatingCodesWithoutCodesGroupUri() {
             KoodistoDto dto = new KoodistoDto();
             dto.setCodesGroupUri("");
-            validator.validateCreateNew(dto); 
+            validator.validateInsert(dto); 
         }
         
         @Test(expected = IllegalArgumentException.class)
@@ -37,7 +38,7 @@ public class CodesValidatorTest {
             KoodistoDto dto = new KoodistoDto();
             dto.setCodesGroupUri("group");
             dto.setKoodistoUri("koodistoUri");
-            validator.validateCreateNew(dto); 
+            validator.validateInsert(dto); 
         }
         
         @Test(expected = IllegalArgumentException.class)
@@ -47,13 +48,13 @@ public class CodesValidatorTest {
             dto.setKoodistoUri("koodistoUri");
             dto.setTila(Tila.LUONNOS);
             dto.setOrganisaatioOid("");
-            validator.validateCreateNew(dto);
+            validator.validateInsert(dto);
         }
         
         @Test(expected = MetadataEmptyException.class)
         public void doesNotAllowCreatingCodesWithoutMetadata() {
             KoodistoDto dto = givenKoodistoDtoWithBasicFields();
-            validator.validateCreateNew(dto); 
+            validator.validateInsert(dto); 
         }
         
         @Test(expected = IllegalArgumentException.class)
@@ -61,7 +62,7 @@ public class CodesValidatorTest {
             KoodistoDto dto = givenKoodistoDtoWithBasicFields();
             KoodistoMetadata data = new KoodistoMetadata();
             dto.setMetadata(Arrays.asList(data));
-            validator.validateCreateNew(dto); 
+            validator.validateInsert(dto); 
         }
         
         @Test(expected = KoodistoNimiEmptyException.class)
@@ -71,7 +72,7 @@ public class CodesValidatorTest {
             data.setNimi("    ");
             data.setKieli(Kieli.FI);
             dto.setMetadata(Arrays.asList(data));
-            validator.validateCreateNew(dto); 
+            validator.validateInsert(dto); 
         }
         
         @Test(expected = KoodistoKuvausEmptyException.class)
@@ -82,14 +83,14 @@ public class CodesValidatorTest {
             data.setKuvaus(" ");
             data.setKieli(Kieli.FI);
             dto.setMetadata(Arrays.asList(data));
-            validator.validateCreateNew(dto); 
+            validator.validateInsert(dto); 
         }
         
         @Test
         public void passessWithAllDataGiven() {
             KoodistoDto dto = givenKoodistoDtoWithBasicFields();
             dto.setMetadata(givenCorrectMetaData());
-            validator.validateCreateNew(dto); 
+            validator.validateInsert(dto); 
         }
 
         
@@ -148,15 +149,38 @@ public class CodesValidatorTest {
         public void passessWithAllDataGiven() {
             KoodistoDto dto = givenKoodistoDtoWithBasicFields();
             dto.setMetadata(givenCorrectMetaData());
-            validator.validateUpdate(dto); 
+            validator.validateUpdate(dto);
         }
     }
     
     public static class ValidatingDelete {
         
-        @Test(expected = IllegalArgumentException.class)
-        public void doesNotAllowNullKoodistoDtoWhenDeleting() {
-            validator.validateDelete(null);
+        @Test(expected = KoodistoUriEmptyException.class)
+        public void doesNotAllowEmptyCodesUriWhenDeleting() {
+            validator.validateDelete("", 1);
+        }
+        
+        @Test(expected = KoodistoVersionNumberEmptyException.class)
+        public void doesNotAllowNullVersionWhenDeleting() {
+            validator.validateDelete("uri", null);
+        }
+        
+        @Test
+        public void passesWithAllDataGiven() {
+            validator.validateDelete("uri", 1);
+        }
+    }
+    
+    public static class ValidatingGet {
+        
+        @Test(expected = KoodistoUriEmptyException.class)
+        public void doesNotAllowEmptyCodesUriWhenFetching() {
+            validator.validateGet("");
+        }
+        
+        @Test
+        public void passesWithAllDataGiven() {
+            validator.validateGet("uri");
         }
     }
    
