@@ -9,7 +9,6 @@ import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.model.Tila;
-import fi.vm.sade.koodisto.util.DateCloner;
 
 public class KoodiVersioBuilder implements Builder<KoodiVersio>{
     
@@ -44,12 +43,12 @@ public class KoodiVersioBuilder implements Builder<KoodiVersio>{
     }
 
     public KoodiVersioBuilder setStartDate(Date startDate) {
-        koodiVersio.setVoimassaAlkuPvm(DateCloner.clone(startDate));
+        koodiVersio.setVoimassaAlkuPvm(startDate);
         return this;
     }
     
     public KoodiVersioBuilder setEndDate(Date endDate) {
-        koodiVersio.setVoimassaLoppuPvm(DateCloner.clone(endDate));
+        koodiVersio.setVoimassaLoppuPvm(endDate);
         return this;
     }
 

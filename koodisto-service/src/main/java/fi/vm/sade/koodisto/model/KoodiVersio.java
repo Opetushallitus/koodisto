@@ -4,7 +4,6 @@ import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAnotherDateAsserter;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
-import fi.vm.sade.koodisto.util.DateCloner;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -133,27 +132,27 @@ public class KoodiVersio extends BaseEntity {
     }
 
     public Date getPaivitysPvm() {
-        return DateCloner.clone(paivitysPvm);
+        return paivitysPvm;
     }
 
     public void setPaivitysPvm(Date paivitysPvm) {
-        this.paivitysPvm = DateCloner.clone(paivitysPvm);
+        this.paivitysPvm = paivitysPvm;
     }
 
     public Date getVoimassaAlkuPvm() {
-        return DateCloner.clone(voimassaAlkuPvm);
+        return voimassaAlkuPvm;
     }
 
     public void setVoimassaAlkuPvm(Date voimassaAlkuPvm) {
-        this.voimassaAlkuPvm = DateCloner.clone(voimassaAlkuPvm);
+        this.voimassaAlkuPvm = voimassaAlkuPvm;
     }
 
     public Date getVoimassaLoppuPvm() {
-        return DateCloner.clone(voimassaLoppuPvm);
+        return voimassaLoppuPvm;
     }
 
     public void setVoimassaLoppuPvm(Date voimassaLoppuPvm) {
-        this.voimassaLoppuPvm = DateCloner.clone(voimassaLoppuPvm);
+        this.voimassaLoppuPvm = voimassaLoppuPvm;
     }
 
     public Tila getTila() {
