@@ -17,14 +17,15 @@ public class CodesValidator implements RestValidator<KoodistoDto> {
     public void validateCreateNew(KoodistoDto validatable) {
         ValidatorUtil.checkForNull(validatable, "Codes given was null");
         ValidatorUtil.checkForNullOrEmpty(validatable.getCodesGroupUri(), "No codes group given");
-        ValidatorUtil.checkForNullOrEmpty(validatable.getKoodistoUri(), "No codes uri is given");
         ValidatorUtil.checkForNull(validatable.getTila(), "No Tila is given");
+        ValidatorUtil.checkForNullOrEmpty(validatable.getOrganisaatioOid(), "No organization provided for codes");
         checkMetadatas(validatable.getMetadata());
     }
 
     @Override
     public void validateUpdate(KoodistoDto validatable) {
         ValidatorUtil.checkForNull(validatable, "Codes given was null");
+        ValidatorUtil.checkForNullOrEmpty(validatable.getKoodistoUri(), "No codes uri is given");
         
     }
 

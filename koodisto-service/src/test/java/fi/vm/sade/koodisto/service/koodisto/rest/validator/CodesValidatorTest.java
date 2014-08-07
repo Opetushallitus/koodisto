@@ -31,18 +31,21 @@ public class CodesValidatorTest {
         }
         
         @Test(expected = IllegalArgumentException.class)
-        public void doesNotAllowCreatingCodesWithoutCodesUri() {
-            KoodistoDto dto = new KoodistoDto();
-            dto.setCodesGroupUri("group");
-            validator.validateCreateNew(dto); 
-        }
-        
-        @Test(expected = IllegalArgumentException.class)
         public void doesNotAllowCreatingCodesWithoutTila() {
             KoodistoDto dto = new KoodistoDto();
             dto.setCodesGroupUri("group");
             dto.setKoodistoUri("koodistoUri");
             validator.validateCreateNew(dto); 
+        }
+        
+        @Test(expected = IllegalArgumentException.class)
+        public void doesNotAllowCreatingCodesWithoutOrganization() {
+            KoodistoDto dto = new KoodistoDto();
+            dto.setCodesGroupUri("group");
+            dto.setKoodistoUri("koodistoUri");
+            dto.setTila(Tila.LUONNOS);
+            dto.setOrganisaatioOid("");
+            validator.validateCreateNew(dto);
         }
         
         @Test(expected = MetadataEmptyException.class)
@@ -75,13 +78,22 @@ public class CodesValidatorTest {
     }
     
     public static class ValidatingUpdate {
+        
         @Test(expected = IllegalArgumentException.class)
         public void doesNotAllowNullKoodistoDtoWhenUpdating() {
             validator.validateCreateNew(null);
         }
+        
+        @Test(expected = IllegalArgumentException.class)
+        public void doesNotAllowUpdatingCodesWithoutCodesUri() {
+            KoodistoDto dto = new KoodistoDto();
+            dto.setCodesGroupUri("group");
+            validator.validateCreateNew(dto); 
+        }
     }
     
     public static class ValidatingDelete {
+        
         @Test(expected = IllegalArgumentException.class)
         public void doesNotAllowNullKoodistoDtoWhenDeleting() {
             validator.validateCreateNew(null);
@@ -93,6 +105,7 @@ public class CodesValidatorTest {
         dto.setCodesGroupUri("group");
         dto.setKoodistoUri("koodistoUri");
         dto.setTila(Tila.LUONNOS);
+        dto.setOrganisaatioOid("1.2.3413");
         return dto;
     }
     
