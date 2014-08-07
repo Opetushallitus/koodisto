@@ -11,6 +11,7 @@ import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.service.business.exception.KoodiKuvausEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiLyhytNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNimiEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 
 
@@ -21,7 +22,7 @@ public class CodeElementValidatorTest {
     public static class ValidatingInsert {
 
         @Test(expected = IllegalArgumentException.class)
-        public void doesNotAllowNullKoodiDtoWhenCreatingCodes() {
+        public void doesNotAllowNullKoodiDtoWhenCreatingCodeElement() {
             validator.validateInsert(null);
         }
 
@@ -73,11 +74,78 @@ public class CodeElementValidatorTest {
 
         @Test
         public void passessWithAllDataGiven() {
-            KoodiDto dto = new KoodiDto();
-            dto.setMetadata(givenCorrectMetaData());
-            validator.validateInsert(dto); 
+            validator.validateInsert(givenCorrectKoodiDto()); 
         }
 
+    }
+    
+    public static class ValidatingUpdate {
+
+        @Test(expected = IllegalArgumentException.class)
+        public void doesNotAllowNullKoodiDtoWhenUpdatingCodeElement() {
+            validator.validateUpdate(null);
+        }
+        
+        @Test(expected = KoodiUriEmptyException.class)
+        public void doesNotAllowUpdatingCodeElementWithoutUri() {
+            validator.validateUpdate(new KoodiDto());
+        }
+        
+        @Test(expected = IllegalArgumentException.class)
+        public void doesNotAllowUpdatingCodeElementWithoutLanguageDefinedForMetadata() {
+            KoodiDto dto = new KoodiDto();
+            dto.setKoodiUri("uri");
+            KoodiMetadata data = new KoodiMetadata();
+            dto.setMetadata(Arrays.asList(data));
+            validator.validateUpdate(dto); 
+        }
+
+        @Test(expected = KoodiNimiEmptyException.class)
+        public void doesNotAllowUpdatingCodeElementWithoutName() {
+            KoodiDto dto = new KoodiDto();
+            dto.setKoodiUri("uri");
+            KoodiMetadata data = new KoodiMetadata();
+            data.setNimi("    ");
+            data.setKieli(Kieli.FI);
+            dto.setMetadata(Arrays.asList(data));
+            validator.validateUpdate(dto); 
+        }
+
+        @Test(expected = KoodiKuvausEmptyException.class)
+        public void doesNotAllowUpdatingCodeElementWithoutDescription() {
+            KoodiDto dto = new KoodiDto();
+            dto.setKoodiUri("uri");
+            KoodiMetadata data = new KoodiMetadata();
+            data.setNimi("name");
+            data.setKuvaus(" ");
+            data.setKieli(Kieli.FI);
+            dto.setMetadata(Arrays.asList(data));
+            validator.validateUpdate(dto); 
+        }
+        
+        @Test(expected = KoodiLyhytNimiEmptyException.class)
+        public void doesNotAllowUpdatingCodeElementWithoutShortName() {
+            KoodiDto dto = new KoodiDto();
+            dto.setKoodiUri("uri");
+            KoodiMetadata data = new KoodiMetadata();
+            data.setNimi("name");
+            data.setKuvaus("description");
+            data.setKieli(Kieli.FI);
+            dto.setMetadata(Arrays.asList(data));
+            validator.validateUpdate(dto); 
+        }
+        
+        @Test
+        public void passessWithAllDataGiven() {
+            validator.validateUpdate(givenCorrectKoodiDto());
+        }
+    }
+    
+    private static KoodiDto givenCorrectKoodiDto() {
+        KoodiDto dto = new KoodiDto();
+        dto.setMetadata(givenCorrectMetaData());
+        dto.setKoodiUri("uri");
+        return dto;
     }
 
     private static List<KoodiMetadata> givenCorrectMetaData() {

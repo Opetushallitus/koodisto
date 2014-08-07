@@ -7,6 +7,7 @@ import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.service.business.exception.KoodiKuvausEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiLyhytNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNimiEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 
 public class CodeElementValidator implements RestValidator<KoodiDto> {
@@ -19,8 +20,9 @@ public class CodeElementValidator implements RestValidator<KoodiDto> {
 
     @Override
     public void validateUpdate(KoodiDto validatable) {
-        // TODO Auto-generated method stub
-        
+        ValidatorUtil.checkForNull(validatable, "Code element given was null");
+        ValidatorUtil.checkForBlank(validatable.getKoodiUri(), new KoodiUriEmptyException("codeelement.uri.is.empty"));
+        checkMetadatas(validatable.getMetadata());
     }
 
     @Override
