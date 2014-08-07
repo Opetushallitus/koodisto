@@ -141,6 +141,37 @@ public class CodeElementValidatorTest {
         }
     }
     
+    public static class ValidatingDelete {
+        
+        @Test(expected = KoodiUriEmptyException.class)
+        public void doesNotAllowEmptyUri() {
+            validator.validateDelete("", 1);
+        }
+        
+        @Test(expected = IllegalArgumentException.class)
+        public void doesNotAllowVersionZero() {
+            validator.validateDelete("uri", 0);
+        }
+        
+        @Test
+        public void passesWithAllDataGiven() {
+            validator.validateDelete("uri", 1);
+        }
+    }
+    
+    public static class ValidatingGet {
+        
+        @Test(expected = KoodiUriEmptyException.class)
+        public void doesNotAllowEmptyUri() {
+            validator.validateGet("");
+        }
+        
+        @Test
+        public void passesWithAllDataGiven() {
+            validator.validateGet("uri");
+        }
+    }
+    
     private static KoodiDto givenCorrectKoodiDto() {
         KoodiDto dto = new KoodiDto();
         dto.setMetadata(givenCorrectMetaData());

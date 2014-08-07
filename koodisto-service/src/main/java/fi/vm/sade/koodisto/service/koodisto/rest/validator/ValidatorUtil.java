@@ -35,5 +35,11 @@ public class ValidatorUtil {
             throw toThrow;
         }
     }
+    
+    public static void checkForGreaterThan(Integer toCheck, int greaterThanThis, RuntimeException toThrow) {
+        if (toCheck == null || !(toCheck > greaterThanThis)) {
+            throw toThrow;
+        }
+    }
 
 }

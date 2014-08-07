@@ -75,4 +75,14 @@ public class ValidatorUtilTest {
     public void throwsExceptionWithEmptyCollection() {
         ValidatorUtil.checkCollectionIsNotNullOrEmpty(new ArrayList<String>(), new MetadataEmptyException(ERROR_MESSAGE));
     }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsExceptionWithNullInteger() {
+        ValidatorUtil.checkForGreaterThan((Integer) null, 1, new IllegalArgumentException());
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void throwsExceptionWithIntegerThatIsNotGreaterThanTheValueGiven() {
+        ValidatorUtil.checkForGreaterThan(1, 1, new IllegalArgumentException());
+    }
 }

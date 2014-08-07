@@ -27,14 +27,13 @@ public class CodeElementValidator implements RestValidator<KoodiDto> {
 
     @Override
     public void validateDelete(String uri, Integer version) {
-        // TODO Auto-generated method stub
-        
+        ValidatorUtil.checkForBlank(uri, new KoodiUriEmptyException("codeelement.uri.is.empty"));
+        ValidatorUtil.checkForGreaterThan(version, 0, new IllegalArgumentException("Incorrect version: " + version));
     }
 
     @Override
     public void validateGet(String uri) {
-        // TODO Auto-generated method stub
-        
+        ValidatorUtil.checkForBlank(uri, new KoodiUriEmptyException("codeelement.uri.is.empty"));
     }
     
     private void checkRequiredMetadataFields(Collection<KoodiMetadata> metadatas) {
