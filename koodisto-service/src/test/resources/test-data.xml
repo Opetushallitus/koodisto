@@ -40,6 +40,14 @@
   <koodisto id="701" koodistouri="vanhasuhdeeiversioiduB" version="0" organisaatioOid="1.2.2004.6"/>
   <koodisto id="702" koodistouri="vanhasuhdeeiversioiduATake2" version="0" organisaatioOid="1.2.2004.6"/>
   <koodisto id="703" koodistouri="vanhasuhdeeiversioiduBTake2" version="0" organisaatioOid="1.2.2004.6"/>
+  <koodisto id="800" koodistouri="koodistonSaveTestiKoodisto0" version="0" organisaatioOid="1.2.2004.6"/>
+  <koodisto id="801" koodistouri="koodistonSaveTestiKoodisto1" version="0" organisaatioOid="1.2.2004.6"/>
+  <koodisto id="802" koodistouri="koodistonSaveTestiKoodisto2" version="0" organisaatioOid="1.2.2004.6"/>
+  <koodisto id="803" koodistouri="koodistonSaveTestiKoodisto3" version="0" organisaatioOid="1.2.2004.6"/>
+  <koodisto id="804" koodistouri="koodistonSaveTestiKoodisto4" version="0" organisaatioOid="1.2.2004.6"/>
+  <koodisto id="805" koodistouri="koodistonSaveTestiKoodisto5" version="0" organisaatioOid="1.2.2004.6"/>
+  <koodisto id="806" koodistouri="koodistonSaveTestiKoodisto6" version="0" organisaatioOid="1.2.2004.6"/>
+  <koodisto id="807" koodistouri="koodistonSaveTestiKoodisto7" version="0" organisaatioOid="1.2.2004.6"/>
   
   <koodi id="3" koodisto_id="1" version="0" koodiuri="3"/>
   <koodi id="5" koodisto_id="1" version="0" koodiuri="5"/>
@@ -893,6 +901,16 @@
   <koodistoversio id="803" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="702"/>
   <koodistoversio id="804" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="LUONNOS" versio="2" koodisto_id="702"/>
   <koodistoversio id="805" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="703"/>
+
+  <koodistoversio id="900" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="800"/>
+  <koodistoversio id="901" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="801"/>
+  <koodistoversio id="902" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="802"/>
+  <koodistoversio id="903" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="803"/>
+  <koodistoversio id="904" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="804"/>
+  <koodistoversio id="905" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="805"/>
+  <koodistoversio id="906" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="806"/>
+  <koodistoversio id="907" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="807"/>
+
   
   <koodistometadata id="2" kieli="FI" nimi="Kunnat" version="0" koodistoversio_id="1" kuvaus="Kunnat"/>
   <koodistometadata id="304" kieli="FI" nimi="Maakunnat" version="0" koodistoversio_id="303" kuvaus="Maakunnat"/>
@@ -966,6 +984,15 @@
   <koodistometadata id="530" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="803" kuvaus="Wanha suhde ei siirry2"/>    
   <koodistometadata id="531" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="804" kuvaus="Wanha suhde ei siirry2"/>    
   <koodistometadata id="532" kieli="FI" nimi="wanhakoodinsuhdeeisiirry" version="0" koodistoversio_id="805" kuvaus="Wanha suhde ei siirry2"/>    
+
+  <koodistometadata id="800" kieli="FI" nimi="koodistonSaveTestiKoodisto0" version="0" koodistoversio_id="900" kuvaus="Luodaan tälle relaatio 1:een, 2:een ja 3:een ja poistetaan olemassaolevat relaatiot 4,5,6 ja 7"/>    
+  <koodistometadata id="801" kieli="FI" nimi="koodistonSaveTestiKoodisto1" version="0" koodistoversio_id="901" kuvaus="Luodaan tälle sisältyy relaatio 0:aan"/>    
+  <koodistometadata id="802" kieli="FI" nimi="koodistonSaveTestiKoodisto2" version="0" koodistoversio_id="902" kuvaus="Luodaan tälle sisältää relaatio 0:aan"/>    
+  <koodistometadata id="803" kieli="FI" nimi="koodistonSaveTestiKoodisto3" version="0" koodistoversio_id="903" kuvaus="Luodaan tälle rinnastuu relaatio 0:aan"/>    
+  <koodistometadata id="804" kieli="FI" nimi="koodistonSaveTestiKoodisto4" version="0" koodistoversio_id="904" kuvaus="Poistetaan tältä relaatio 0:aan"/>    
+  <koodistometadata id="805" kieli="FI" nimi="koodistonSaveTestiKoodisto5" version="0" koodistoversio_id="905" kuvaus="Poistetaan tältä relaatio 0:aan"/>    
+  <koodistometadata id="806" kieli="FI" nimi="koodistonSaveTestiKoodisto6" version="0" koodistoversio_id="906" kuvaus="Poistetaan tältä relaatio 0:aan"/>    
+  <koodistometadata id="807" kieli="FI" nimi="koodistonSaveTestiKoodisto7" version="0" koodistoversio_id="907" kuvaus="Poistetaan tältä relaatio 0:aan"/>    
   
   <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="1" koodiversio_id="3"/>
   <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="1" koodiversio_id="5"/>
@@ -1217,4 +1244,10 @@
   <koodistonsuhde id="12" alakoodistoversio_id="800" ylakoodistoversio_id="802" versio="1" suhteentyyppi="SISALTYY" version="0"/>
   <koodistonsuhde id="13" alakoodistoversio_id="803" ylakoodistoversio_id="805" versio="1" suhteentyyppi="SISALTYY" version="0"/>
   <koodistonsuhde id="14" alakoodistoversio_id="804" ylakoodistoversio_id="805" versio="1" suhteentyyppi="SISALTYY" version="0"/>
+
+  <koodistonsuhde id="800" alakoodistoversio_id="900" ylakoodistoversio_id="904" versio="1" suhteentyyppi="SISALTYY" version="0"/>
+  <koodistonsuhde id="801" alakoodistoversio_id="905" ylakoodistoversio_id="900" versio="1" suhteentyyppi="SISALTYY" version="0"/>
+  <koodistonsuhde id="802" alakoodistoversio_id="900" ylakoodistoversio_id="906" versio="1" suhteentyyppi="RINNASTEINEN" version="0"/>
+  <koodistonsuhde id="803" alakoodistoversio_id="907" ylakoodistoversio_id="900" versio="1" suhteentyyppi="RINNASTEINEN" version="0"/>
+
 </dataset>
