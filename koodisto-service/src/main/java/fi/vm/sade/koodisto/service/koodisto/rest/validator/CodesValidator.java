@@ -52,5 +52,6 @@ public class CodesValidator implements RestValidator<KoodistoDto> {
         ValidatorUtil.checkCollectionIsNotNullOrEmpty(metadatas, new MetadataEmptyException("codes.metadata.is.empty"));
         checkRequiredMetadataFields(metadatas);
     }
+    
 
 }
