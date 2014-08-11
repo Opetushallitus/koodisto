@@ -209,7 +209,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
     return model;
 });
 
-function ViewCodesController($scope, $location, $filter, $routeParams, $window, ViewCodesModel, DownloadCodes, RemoveRelationCodes, DeleteCodes) {
+function ViewCodesController($scope, $location, $filter, $routeParams, $window, ViewCodesModel, DownloadCodes, RemoveRelationCodes, DeleteCodes, loadingService) {
     $scope.model = ViewCodesModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
@@ -304,13 +304,24 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
         xhr.addEventListener("load", uploadComplete, false);
         xhr.addEventListener("error", uploadFailed, false);
         xhr.addEventListener("abort", uploadCanceled, false);
+        xhr.upload.addEventListener("loadstart", loadStartFunction, false); 
+        xhr.upload.addEventListener("load", transferCompleteFunction, false); 
         xhr.open("POST", SERVICE_URL_BASE + "codes" + "/upload/" + $scope.codesUri);
+        xhr.timeout = 0;;
         xhr.send(fd);
 
         $scope.model.forceRefresh = true;
-        
+                
         $scope.model.uploadModalInstance.close();
     };
+
+    function loadStartFunction(evt) {
+        loadingService.requestCount++;
+    }
+    function transferCompleteFunction(evt) {
+        loadingService.requestCount--;
+
+    }
 
     $scope.cancelupload = function() {
         $scope.model.uploadModalInstance.dismiss('cancel');

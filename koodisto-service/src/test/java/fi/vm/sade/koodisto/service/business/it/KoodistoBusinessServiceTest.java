@@ -1,21 +1,9 @@
 package fi.vm.sade.koodisto.service.business.it;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
-import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
-import fi.vm.sade.koodisto.model.KoodistoRyhma;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.KoodistonSuhde;
-import fi.vm.sade.koodisto.model.SuhteenTyyppi;
-import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
-import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
-import fi.vm.sade.koodisto.service.business.exception.KoodiVersioHasRelationsException;
-import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistonSuhdeContainsKoodinSuhdeException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistosAlreadyHaveSuhdeException;
-import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
-import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
-import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,12 +15,30 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import static org.junit.Assert.*;
+import fi.vm.sade.dbunit.annotation.DataSetLocation;
+import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
+import fi.vm.sade.koodisto.model.KoodistoRyhma;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
+import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.business.exception.KoodiVersioHasRelationsException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistonSuhdeContainsKoodinSuhdeException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistosAlreadyHaveSuhdeException;
+import fi.vm.sade.koodisto.service.it.DataUtils;
+import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
+import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = {JtaCleanInsertTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
@@ -70,10 +76,7 @@ public class KoodistoBusinessServiceTest {
     private KoodistoVersio getKoodistoByUri(String koodistoUri) {
         SearchKoodistosCriteriaType searchType = KoodistoServiceSearchCriteriaBuilder.latestKoodistoByUri(koodistoUri);
         List<KoodistoVersio> koodistos = koodistoBusinessService.searchKoodistos(searchType);
-        if (koodistos.size() != 1) {
-            throw new RuntimeException("Failing");
-        }
-
+        assertEquals(1, koodistos.size());
         return koodistos.get(0);
     }
 
@@ -175,14 +178,26 @@ public class KoodistoBusinessServiceTest {
     @Test(expected = KoodistosAlreadyHaveSuhdeException.class)
     public void preventsAddingSameRelationMoreThanOnce() {
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.SISALTYY);
-        koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.SISALTYY);
     }
     
     @Test(expected = KoodistosAlreadyHaveSuhdeException.class)
     public void preventsAddingSameRelationMoreThanOnceDespiteRelationType() {
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.RINNASTEINEN);
-        koodistoBusinessService.addRelation("suhde501kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY);
     }
+    
+    @Test
+    public void addsRelationThatReferencesKoodistoItself() {
+        koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY);
+        assertTrue(koodistoBusinessService.hasAnyRelation("suhde502kanssa", "suhde502kanssa"));
+    }
+    
+    @Test(expected = KoodistosAlreadyHaveSuhdeException.class)
+    public void preventsAddingRelationThatReferencesKoodistoItselfMoreThanOnce() {
+        koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.RINNASTEINEN);
+        assertTrue(koodistoBusinessService.hasAnyRelation("suhde502kanssa", "suhde502kanssa"));
+        koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY);
+    }
+    
     
     @Test
     public void onlyFetchesRelationsThatArePartOfTheLatestVersion() {
@@ -193,4 +208,14 @@ public class KoodistoBusinessServiceTest {
     public void willFetchRelationsForOlderVersions() {
         assertEquals(2, koodistoBusinessService.getKoodistoVersio("vaintuoreimmatrelaatiot", 1).getAlakoodistos().size());
     }      
+    
+    @Test
+    public void doesNotSetStartDateToNewDateWhenUpdatingKoodistoVersioThatIsInLuonnosTila() {
+        KoodistoVersio kv = koodistoBusinessService.getLatestKoodistoVersio("http://koodisto15");
+        Date startDate = kv.getVoimassaAlkuPvm();
+        UpdateKoodistoDataType type = DataUtils.createUpdateKoodistoDataType(kv.getKoodisto().getKoodistoUri(), kv.getKoodisto().getOmistaja(), TilaType.LUONNOS,
+                kv.getKoodisto().getOrganisaatioOid(), startDate, kv.getVoimassaLoppuPvm(), "NewName", kv.getVersio(), kv.getVersion());        
+        koodistoBusinessService.updateKoodisto(type);
+        assertEquals(startDate, koodistoBusinessService.getLatestKoodistoVersio("http://koodisto15").getVoimassaAlkuPvm());
+    }
 }
