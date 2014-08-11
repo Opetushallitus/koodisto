@@ -148,7 +148,10 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             model.modalInstance = $modal.open({
                 templateUrl: 'confirmModalContent.html',
                 controller: CodesEditorController,
-                resolve: {
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
                 }
             });
 
@@ -159,7 +162,10 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             model.modalInstance = $modal.open({
                 templateUrl: 'confirmModalContent.html',
                 controller: CodesEditorController,
-                resolve: {
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
                 }
             });
         };
@@ -169,7 +175,10 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             model.modalInstance = $modal.open({
                 templateUrl: 'confirmModalContent.html',
                 controller: CodesEditorController,
-                resolve: {
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
                 }
             });
         };
@@ -196,13 +205,16 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
     return model;
 });
 
-function CodesEditorController($scope, $location, $modal, $log, $routeParams, CodesEditorModel, UpdateCodes, Treemodel,
-                               ValidateService, AddRelationCodes, RemoveRelationCodes, CodesMatcher) {
+function CodesEditorController($scope, $location, $modal, $log, $routeParams, CodesEditorModel, Treemodel,
+                               ValidateService, CodesMatcher, SaveCodes, isModalController) {
     $scope.model = CodesEditorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
-    CodesEditorModel.init($scope,$routeParams.codesUri, $scope.codesVersion);
-
+    
+    if (!isModalController) {
+        CodesEditorModel.init($scope,$routeParams.codesUri, $scope.codesVersion);
+    }
+    
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
     };
@@ -250,7 +262,10 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 tarkentaaKoodistoa: $scope.specifiescodesfi,
                 huomioitavaKoodisto: $scope.totakenoticeoffi,
                 sitovuustaso: $scope.validitylevelfi
-            }]
+            }],
+            withinCodes : $scope.changeToRelationCodes($scope.model.withinCodes),
+            includesCodes : $scope.changeToRelationCodes($scope.model.includesCodes),
+            levelsWithCodes : $scope.changeToRelationCodes($scope.model.levelsWithCodes)
         };
         if ($scope.namesv) {
             codes.metadata.push({
@@ -284,7 +299,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 sitovuustaso: $scope.validitylevelen
             });
         }
-        UpdateCodes.put({}, codes, function(result) {
+        SaveCodes.put({}, codes, function(result) {
             Treemodel.refresh();
             $location.path("/koodisto/"+$scope.codesUri+"/"+result[0]).search({forceRefresh: true});
         }, function(error) {
@@ -292,6 +307,17 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         });
     };
 
+    $scope.changeToRelationCodes = function(listToBeChanged){
+        result = [];
+        listToBeChanged.forEach(function(ce){
+            dt = {};
+            dt.codesUri = ce.uri;
+            dt.codesVersion = 1;
+            result.push(dt);
+        });
+        return result;
+    };
+    
     $scope.setSameValue = function(name) {
         if (name === 'name' && !$scope.samename) {
             $scope.namesv = $scope.namefi;
@@ -347,13 +373,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         });
 
         if (found === false) {
-            AddRelationCodes.put({codesUri: data.koodistoUri,
-                codesUriToAdd: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
-                    $scope.model.withinCodes.push(ce);
-                }, function(error) {
-                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' };
-                    $scope.model.alerts.push(alert);
-                });
+            $scope.model.withinCodes.push(ce);
         }
     };
 
@@ -368,13 +388,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         });
 
         if (found === false) {
-            AddRelationCodes.put({codesUri: $scope.model.codes.koodistoUri,
-                codesUriToAdd: data.koodistoUri,relationType: "SISALTYY"},function(result) {
-                    $scope.model.includesCodes.push(ce);
-                }, function(error) {
-                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' };
-                    $scope.model.alerts.push(alert);
-                });
+            $scope.model.includesCodes.push(ce);
         }
     };
     $scope.addToLevelsWithCodes = function(data) {
@@ -388,13 +402,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         });
 
         if (found === false) {
-            AddRelationCodes.put({codesUri: data.koodistoUri,
-                codesUriToAdd: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
-                    $scope.model.levelsWithCodes.push(ce);
-                }, function(error) {
-                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' };
-                    $scope.model.alerts.push(alert);
-                });
+            $scope.model.levelsWithCodes.push(ce);
         }
     };
 
@@ -425,7 +433,10 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         var modalInstance = $modal.open({
             templateUrl: 'organizationModalContent.html',
             controller: ModalInstanceCtrl,
-            resolve: {
+            resolve : {
+                isModalController : function() {
+                    return true;
+                }
             }
         });
 
@@ -446,38 +457,20 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 }
             });
 
-            RemoveRelationCodes.put({codesUri: $scope.model.withinRelationToRemove.uri,
-                codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
-
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
-                $scope.model.alerts.push(alert);
-            });
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
             $scope.model.includesCodes.forEach(function(codes, index){
                 if (codes.uri.indexOf($scope.model.includesRelationToRemove.uri) !== -1) {
                     $scope.model.includesCodes.splice(index,1);
                 }
             });
-            RemoveRelationCodes.put({codesUri: $scope.model.codes.koodistoUri,
-                codesUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
 
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
-                $scope.model.alerts.push(alert);
-            });
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
             $scope.model.levelsWithCodes.forEach(function(codes, index){
                 if (codes.uri.indexOf($scope.model.levelsRelationToRemove.uri) !== -1) {
                     $scope.model.levelsWithCodes.splice(index,1);
                 }
             });
-            RemoveRelationCodes.put({codesUri: $scope.model.levelsRelationToRemove.uri,
-                codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
-                $scope.model.alerts.push(alert);
-            });
+
         }
         $scope.model.levelsRelationToRemove = null;
         $scope.model.includesRelationToRemove = null;

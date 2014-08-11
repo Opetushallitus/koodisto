@@ -786,11 +786,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public KoodistoVersio saveKoodisto(KoodistoDto codesDTO) {
 
-        updateKoodisto(converter.convertFromDTOToUpdateKoodistoDataType(codesDTO));
-        
         KoodistoVersio latest = getLatestKoodistoVersio(codesDTO.getKoodistoUri());
+        UpdateKoodistoDataType codesDTOAsDataType = converter.convertFromDTOToUpdateKoodistoDataType(codesDTO);
+        updateKoodisto(codesDTOAsDataType);
+        latest = getLatestKoodistoVersio(codesDTO.getKoodistoUri());
         
         Set<KoodistonSuhde> alaKoodistos = latest.getAlakoodistos();
         Set<KoodistonSuhde> ylaKoodistos = latest.getYlakoodistos();
@@ -823,21 +825,21 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             if (!updatedIncludesUris.contains(relationCodes.codesUri)) {
                  addRelation(latest, SuhteenTyyppi.SISALTYY, getLatestKoodistoVersio(relationCodes.codesUri));
             } else {
-                updatedIncludesUris.remove(relationCodes);
+                updatedIncludesUris.remove(relationCodes.codesUri);
             }
         }
         for (RelationCodes relationCodes : within) {
             if (!updatedWithinUris.contains(relationCodes.codesUri)) {
-                 addRelation(latest, SuhteenTyyppi.SISALTYY, getLatestKoodistoVersio(relationCodes.codesUri));
+                 addRelation(getLatestKoodistoVersio(relationCodes.codesUri), SuhteenTyyppi.SISALTYY, latest);
             } else {
-                updatedWithinUris.remove(relationCodes);
+                updatedWithinUris.remove(relationCodes.codesUri);
             }
         }
         for (RelationCodes relationCodes : levelsWith) {
             if (!updatedLevelsWithUris.contains(relationCodes.codesUri)) {
-                 addRelation(getLatestKoodistoVersio(relationCodes.codesUri), SuhteenTyyppi.SISALTYY, latest);
+                 addRelation(latest, SuhteenTyyppi.RINNASTEINEN, getLatestKoodistoVersio(relationCodes.codesUri));
             } else {
-                updatedLevelsWithUris.remove(relationCodes);
+                updatedLevelsWithUris.remove(relationCodes.codesUri);
             }
         }
 
