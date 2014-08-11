@@ -1,8 +1,20 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
+import java.util.Date;
+
 import fi.vm.sade.generic.common.DateHelper;
-import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.service.types.*;
+import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.KoodiMetadata;
+import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.Koodisto;
+import fi.vm.sade.koodisto.model.KoodistoMetadata;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
+import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodiTilaType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
@@ -101,7 +113,7 @@ public final class EntityUtils {
     public static void copyFields(UpdateKoodistoDataType from, KoodistoVersio to) {
         to.setTila(Tila.valueOf(from.getTila().name()));
         to.setVoimassaAlkuPvm(from.getVoimassaAlkuPvm() != null ? DateHelper.xmlCalToDate(from.getVoimassaAlkuPvm())
-                : null);
+                : new Date());
         to.setVoimassaLoppuPvm(from.getVoimassaLoppuPvm() != null ? DateHelper.xmlCalToDate(from.getVoimassaLoppuPvm())
                 : null);
     }

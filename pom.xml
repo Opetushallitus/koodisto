@@ -5,7 +5,7 @@
 
     <groupId>fi.vm.sade.koodisto</groupId>
     <artifactId>koodisto</artifactId>
-    <version>10.0</version>
+    <version>10.1</version>
     <packaging>pom</packaging>
     <name>Koodisto :: Parent</name>
 
@@ -22,6 +22,39 @@
         <module>koodisto-ui</module>
     </modules>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<debug>${compiler.debug}</debug>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>1.3.1</version>
+				<executions>
+					<execution>
+						<id>enforce-versions</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireJavaVersion>
+									<version>${java.version}</version>
+								</requireJavaVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
     <dependencyManagement>
         <dependencies>
@@ -115,12 +148,13 @@
 
 
         <!-- Versions -->
+		<java.version>1.7</java.version>
 
         <activemq-core.version>${activemq.version}</activemq-core.version>
         <activemq-pool.version>${activemq.version}</activemq-pool.version>
         <activemq.version>5.5.1</activemq.version>
         
-        <aspectj.version>1.6.3</aspectj.version>
+		<aspectj.version>1.8.1</aspectj.version>
         
         <aspectjrt.version>${aspectj.version}</aspectjrt.version>
         <aspectjweaver.version>${aspectj.version}</aspectjweaver.version>
