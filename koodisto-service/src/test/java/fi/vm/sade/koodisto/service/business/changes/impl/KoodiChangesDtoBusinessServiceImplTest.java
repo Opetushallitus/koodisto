@@ -24,6 +24,8 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class KoodiChangesDtoBusinessServiceImplTest {
     
+    private static final String KOODI_URI = "uri";
+
     @ReplaceWithMock
     @Autowired
     private KoodiBusinessService koodiService;
@@ -39,21 +41,39 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     @Test
     public void returnsNoChangesIfNothingHasChanged() {
         int versio = 1;
-        String koodiUri = "uri";
-        when(koodiService.getKoodiVersio(koodiUri, versio)).thenReturn(givenKoodiVersio(koodiUri, versio));
-        when(koodiService.getLatestKoodiVersio(koodiUri)).thenReturn(givenKoodiVersio(koodiUri, versio));
-        KoodiChangesDto result = service.getChangesDto(koodiUri, versio);
-        assertResultIsNoChanges(result, versio);
+        assertResultIsNoChanges(givenNoChangesResult(givenKoodiVersio(versio), givenKoodiVersio(versio)), versio);
     }
+
 
     @Test
     public void returnsNoChangesIfOnlyVersionHasChanged() {
         int versio = 1;
-        String koodiUri = "uri";
-        when(koodiService.getKoodiVersio(koodiUri, versio)).thenReturn(givenKoodiVersio(koodiUri, versio));
-        when(koodiService.getLatestKoodiVersio(koodiUri)).thenReturn(givenKoodiVersio(koodiUri, versio + 1));
-        KoodiChangesDto result = service.getChangesDto(koodiUri, versio);
-        assertResultIsNoChanges(result, versio + 1);
+        assertResultIsNoChanges(givenNoChangesResult(givenKoodiVersio(versio), givenKoodiVersio(versio + 1)), versio + 1);
+    }
+    
+    @Test
+    public void returnsNoChangesIfVersionHasNotChangedButThereAreOtherChanges() {
+        
+    }
+    
+    @Test
+    public void returnsHasChangedIfNameHasChanged() {
+        
+    }
+    
+    @Test
+    public void returnsHasChangedIfShortNameHasChanged() {
+        
+    }
+    
+    @Test
+    public void returnsHasChangedIfDescriptionHasChanged() {
+        
+    }
+    
+    @Test
+    public void returnsHasChangedIfMultipleMetadataHasChanged() {
+        
     }
     
     private void assertResultIsNoChanges(KoodiChangesDto result, int versio) {
@@ -68,8 +88,15 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         assertNull(result.tila);
     }
     
-    private KoodiVersio givenKoodiVersio(String uri, Integer versio) {
-        return DtoFactory.createKoodiVersioWithUriAndVersio(uri, versio).build();        
+    private KoodiChangesDto givenNoChangesResult(KoodiVersio koodiVersio, KoodiVersio latest) {
+        Integer versio = koodiVersio.getVersio();
+        when(koodiService.getKoodiVersio(KOODI_URI, versio)).thenReturn(koodiVersio);
+        when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
+        return service.getChangesDto(KOODI_URI, versio);
+    }
+    
+    private KoodiVersio givenKoodiVersio(Integer versio) {
+        return DtoFactory.createKoodiVersioWithUriAndVersio(KOODI_URI, versio).build();        
     }
     
 }
