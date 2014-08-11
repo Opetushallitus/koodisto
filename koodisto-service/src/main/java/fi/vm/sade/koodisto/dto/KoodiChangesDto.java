@@ -11,8 +11,23 @@ import fi.vm.sade.koodisto.model.Tila;
 
 public class KoodiChangesDto {
     
+    public enum MuutosTila {
+        EI_MUUTOKSIA("Ei muutoksia"), MUUTOKSIA("Muutoksia on tapahtunut");
+        
+        private String value;
+        
+        private MuutosTila(String value) {
+            this.value = value;
+        }
+        
+        @Override
+        public String toString() {
+            return this.value;
+        }
+    }
+    
     @JsonView(JsonViews.Basic.class)
-    public final String muutosTila;
+    public final MuutosTila muutosTila;
     
     @JsonView(JsonViews.Basic.class)
     public final Integer viimeisinVersio;
@@ -38,7 +53,7 @@ public class KoodiChangesDto {
     @JsonView(JsonViews.Basic.class)
     public final Tila tila;
     
-    public KoodiChangesDto(String muutosTila, Integer viimeisinVersio, List<SimpleKoodiMetadataDto> muuttuneetTiedot,
+    public KoodiChangesDto(MuutosTila muutosTila, Integer viimeisinVersio, List<SimpleKoodiMetadataDto> muuttuneetTiedot,
             List<SimpleCodeElementRelation> lisatytKoodinSuhteet, List<SimpleCodeElementRelation> poistetutKoodinSuhteet, Date viimeksiPaivitetty,
             Date voimassaAlkuPvm, Date voimassaLoppuPvm, Tila tila) {
         this.muutosTila = muutosTila;
