@@ -105,6 +105,8 @@ public interface KoodiBusinessService {
     List<KoodiVersioWithKoodistoItem> listByRelation(String koodiUri, Integer koodiVersio, boolean child, SuhteenTyyppi suhteenTyyppi);
 
     KoodiVersio getLatestKoodiVersio(String koodiUri);
+    
+    KoodiVersio getKoodiVersio(String koodiUri, Integer versio);
 
     boolean hasRelationBetweenCodeElements(KoodiVersio ylaKoodiVersio, final KoodiVersio alaKoodiVersio);
     

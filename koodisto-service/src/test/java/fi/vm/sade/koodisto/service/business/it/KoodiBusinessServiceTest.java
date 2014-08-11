@@ -3,12 +3,6 @@
  */
 package fi.vm.sade.koodisto.service.business.it;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -51,6 +45,11 @@ import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author tommiha
@@ -167,6 +166,11 @@ public class KoodiBusinessServiceTest {
     @Test
     public void koodiVersioShouldBeLatest() {
         assertTrue(koodiBusinessService.isLatestKoodiVersio("455", 4));
+    }
+    
+    @Test
+    public void shouldFetchExactKoodiVersio() {
+        assertEquals(2, koodiBusinessService.getKoodiVersio("455", 2).getVersio().intValue());
     }
     
     @Test

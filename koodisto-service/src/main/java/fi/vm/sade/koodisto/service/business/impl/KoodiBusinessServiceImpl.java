@@ -228,7 +228,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return result.get(0);
     }
 
-    private KoodiVersio getKoodiVersio(String koodiUri, Integer koodiVersio) {
+    public KoodiVersio getKoodiVersio(String koodiUri, Integer koodiVersio) {
         return getKoodiVersioWithKoodistoVersioItems(koodiUri, koodiVersio).getKoodiVersio();
     }
 
