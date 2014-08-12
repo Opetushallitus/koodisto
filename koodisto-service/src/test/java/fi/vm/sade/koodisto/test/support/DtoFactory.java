@@ -36,5 +36,9 @@ public class DtoFactory {
     public static KoodistoVersio createKoodistoVersio() {
         return new KoodistoVersioBuilder().addMetadata(Kieli.FI, "koodisto", "kuvaus").setVersio(1).build();
     }
+    
+    public static KoodiMetadata createKoodiMetadata(String name, String shortName, String description, Kieli language) {
+        return new KoodiMetadataBuilder().setKieli(language).setNimi(name).setLyhytNimi(shortName).setKuvaus(description).build();
+    }
 
 }

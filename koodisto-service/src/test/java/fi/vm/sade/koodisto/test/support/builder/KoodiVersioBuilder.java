@@ -23,12 +23,14 @@ public class KoodiVersioBuilder implements Builder<KoodiVersio>{
         return this;      
     }
     
-    public KoodiVersioBuilder addMetadata(KoodiMetadata data) {
-        koodiVersio.addMetadata(data);
-        data.setKoodiVersio(koodiVersio);
+    public KoodiVersioBuilder addMetadata(KoodiMetadata ... datas) {
+        for (KoodiMetadata data : datas) {
+            koodiVersio.addMetadata(data);
+            data.setKoodiVersio(koodiVersio);
+        }
         return this;
     }
-    
+        
     public KoodiVersioBuilder addKoodistoVersio(KoodistoVersio koodisto) {
         KoodistoVersioKoodiVersio kvkv = new KoodistoVersioKoodiVersio();
         kvkv.setKoodistoVersio(koodisto);

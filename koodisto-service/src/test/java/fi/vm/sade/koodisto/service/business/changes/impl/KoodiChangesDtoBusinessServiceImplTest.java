@@ -11,6 +11,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fi.vm.sade.koodisto.dto.KoodiChangesDto;
+import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessService;
@@ -53,7 +55,9 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     
     @Test
     public void returnsNoChangesIfVersionHasNotChangedButThereAreOtherChanges() {
-        
+        int versio = 5;
+        KoodiVersio withChanges = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, "hippopotamus", "hippo", "large water-dwelling mammal", Kieli.EN);
+        assertResultIsNoChanges(givenNoChangesResult(withChanges, givenKoodiVersio(versio)), versio);
     }
     
     @Test
@@ -97,6 +101,18 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     
     private KoodiVersio givenKoodiVersio(Integer versio) {
         return DtoFactory.createKoodiVersioWithUriAndVersio(KOODI_URI, versio).build();        
+    }
+    
+    private KoodiVersio givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(Integer versio, String name, String shortName, String description, Kieli language) {
+        return givenKoodiVersioWithMetadata(versio, givenKoodiMetadata(name, shortName, description, language));
+    }
+    
+    private KoodiVersio givenKoodiVersioWithMetadata(Integer versio, KoodiMetadata ... datas) {
+        return DtoFactory.createKoodiVersioWithUriAndVersio(KOODI_URI, versio).addMetadata(datas).build();
+    }
+    
+    private KoodiMetadata givenKoodiMetadata(String name, String shortName, String description, Kieli language) {
+        return DtoFactory.createKoodiMetadata(name, shortName, description, language);
     }
     
 }
