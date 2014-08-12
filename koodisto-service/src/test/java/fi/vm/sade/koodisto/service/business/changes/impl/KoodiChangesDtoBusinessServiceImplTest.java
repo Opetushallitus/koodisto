@@ -19,6 +19,7 @@ import fi.vm.sade.koodisto.dto.SimpleKoodiMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessService;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
@@ -180,6 +181,16 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
         assertNull(result.voimassaLoppuPvm);
         assertTrue(result.poistettuVoimassaLoppuPvm);
+    }
+    
+    @Test
+    public void returnsHasChangedIfTilaHasChanged() {
+        int versio = 1;
+        KoodiVersio latest = givenKoodiVersio(versio + 1);
+        latest.setTila(Tila.PASSIIVINEN);
+        KoodiChangesDto result = givenResult(givenKoodiVersio(versio), latest);
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertEquals(Tila.PASSIIVINEN, result.tila);
     }
         
     private void assertResultIsNoChanges(KoodiChangesDto result, int versio) {

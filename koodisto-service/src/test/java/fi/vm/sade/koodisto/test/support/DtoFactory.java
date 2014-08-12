@@ -10,6 +10,7 @@ import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.test.support.builder.KoodiBuilder;
 import fi.vm.sade.koodisto.test.support.builder.KoodiMetadataBuilder;
 import fi.vm.sade.koodisto.test.support.builder.KoodiVersioBuilder;
@@ -29,7 +30,7 @@ public class DtoFactory {
         Koodisto koodisto = new Koodisto();
         Koodi koodi = new KoodiBuilder().setKoodiUri(uri).setKoodisto(koodisto).build();
         KoodistoVersio kv = createKoodistoVersio();
-        return new KoodiVersioBuilder().setKoodiVersio(versio).addKoodistoVersio(kv).setKoodi(koodi).setStartDate(new Date()).setKoodiValue("value");
+        return new KoodiVersioBuilder().setKoodiVersio(versio).addKoodistoVersio(kv).setKoodi(koodi).setStartDate(new Date()).setKoodiValue("value").setTila(Tila.HYVAKSYTTY);
     }
     
     public static KoodiVersioBuilder createKoodiVersioWithoutMetadatasWithStartAndEndDates(String uri, Integer versio, Date startDate, Date endDate) {
