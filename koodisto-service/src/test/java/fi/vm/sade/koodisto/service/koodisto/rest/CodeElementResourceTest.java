@@ -1,11 +1,5 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -26,6 +20,8 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
+import fi.vm.sade.koodisto.dto.KoodiChangesDto;
+import fi.vm.sade.koodisto.dto.KoodiChangesDto.MuutosTila;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.dto.SimpleKoodiDto;
@@ -37,6 +33,11 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
@@ -551,6 +552,24 @@ public class CodeElementResourceTest {
         assertResponse(resource.update(null), 400);
         // TODO Make better test
     }
+    
+    @Test
+    public void returnsChangesForCodeElement() {
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("montaversiota", 1).getEntity();
+        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
+        assertEquals("Monta versiota 3", dto.muuttuneetTiedot.get(0).nimi);
+        assertNull(dto.voimassaAlkuPvm);
+        assertEquals(3, dto.viimeisinVersio.intValue());
+    }
+    
+    @Test
+    public void returnsNoChangesForCodeElement() {
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("montaversiota", 3).getEntity();
+        assertEquals(MuutosTila.EI_MUUTOKSIA, dto.muutosTila);
+        assertTrue(dto.muuttuneetTiedot.isEmpty());
+        assertEquals(3, dto.viimeisinVersio.intValue());
+    }
+    
 
     // UTILITIES
     // /////////

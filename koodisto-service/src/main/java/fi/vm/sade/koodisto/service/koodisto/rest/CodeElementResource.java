@@ -33,6 +33,7 @@ import com.wordnik.swagger.annotations.ApiParam;
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
+import fi.vm.sade.koodisto.dto.KoodiChangesDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.dto.SimpleKoodiDto;
@@ -40,6 +41,7 @@ import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.impl.conversion.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
@@ -64,7 +66,10 @@ public class CodeElementResource {
 
     @Autowired
     private KoodistoConfiguration koodistoConfiguration;
-
+    
+    @Autowired
+    private KoodiChangesDtoBusinessService changesService;
+    
     // ////
     // GET
 
@@ -167,6 +172,22 @@ public class CodeElementResource {
             return null;
         }
         return conversionService.convert(codeElements.get(0), KoodiDto.class);
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({ JsonViews.Basic.class })
+    @Path("changes/{codeElementUri}/{codeElementVersion}")
+    @ApiOperation(
+            value = "Palauttaa muutokset uusimpaan koodiversioon",
+            notes = "Toimii vain, jos koodi on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
+            response = KoodiChangesDto.class)
+    public Response getChangesToCodeElement(@ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
+            @ApiParam(value = "Koodin versio") @PathParam("codeElementVersion") Integer codeElementVersion) {
+        //TODO: use validators when OVT-7653 is merged
+        KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, codeElementVersion);
+        return Response.status(Response.Status.ACCEPTED).entity(dto).build();
+        
     }
 
     // /////
