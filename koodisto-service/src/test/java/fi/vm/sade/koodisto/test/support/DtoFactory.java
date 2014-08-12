@@ -31,6 +31,10 @@ public class DtoFactory {
         KoodistoVersio kv = createKoodistoVersio();
         return new KoodiVersioBuilder().setKoodiVersio(versio).addKoodistoVersio(kv).setKoodi(koodi).setStartDate(new Date()).setKoodiValue("value");
     }
+    
+    public static KoodiVersioBuilder createKoodiVersioWithoutMetadatasWithStartAndEndDates(String uri, Integer versio, Date startDate, Date endDate) {
+        return createKoodiVersioWithUriAndVersioWithoutMetadatas(uri, versio).setStartDate(startDate).setEndDate(endDate);
+    }
 
     public static KoodiVersio createKoodiVersioWithUriAndVersioAndRelation(String uri, Integer versio, KoodiVersio koodiVersio, SuhteenTyyppi tyyppi) {
         KoodinSuhde relation = new KoodinSuhdeBuilder().setParentVersio(koodiVersio).setSuhteenTyyppi(tyyppi).build();

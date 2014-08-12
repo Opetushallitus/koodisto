@@ -54,11 +54,15 @@ public class KoodiChangesDto {
     public final Date voimassaLoppuPvm;
     
     @JsonView(JsonViews.Basic.class)
+    public final Boolean poistettuVoimassaLoppuPvm;
+    
+    @JsonView(JsonViews.Basic.class)
     public final Tila tila;
 
     public KoodiChangesDto(MuutosTila muutosTila, Integer viimeisinVersio, List<SimpleKoodiMetadataDto> muuttuneetTiedot,
             List<SimpleKoodiMetadataDto> poistuneetTiedot, List<SimpleCodeElementRelation> lisatytKoodinSuhteet,
-            List<SimpleCodeElementRelation> poistetutKoodinSuhteet, Date viimeksiPaivitetty, Date voimassaAlkuPvm, Date voimassaLoppuPvm, Tila tila) {
+            List<SimpleCodeElementRelation> poistetutKoodinSuhteet, Date viimeksiPaivitetty, Date voimassaAlkuPvm, Date voimassaLoppuPvm,
+            Boolean poistettuVoimassaLoppuPvm, Tila tila) {
         this.muutosTila = muutosTila;
         this.viimeisinVersio = viimeisinVersio;
         this.muuttuneetTiedot = muuttuneetTiedot;
@@ -68,10 +72,9 @@ public class KoodiChangesDto {
         this.viimeksiPaivitetty = viimeksiPaivitetty;
         this.voimassaAlkuPvm = voimassaAlkuPvm;
         this.voimassaLoppuPvm = voimassaLoppuPvm;
+        this.poistettuVoimassaLoppuPvm = poistettuVoimassaLoppuPvm;
         this.tila = tila;
     }
-
-
 
     public static class SimpleCodeElementRelation {
         

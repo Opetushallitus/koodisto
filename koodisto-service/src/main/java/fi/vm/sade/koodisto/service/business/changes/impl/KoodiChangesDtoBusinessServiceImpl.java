@@ -2,6 +2,7 @@ package fi.vm.sade.koodisto.service.business.changes.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -33,8 +34,10 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         KoodiVersio latestKoodiVersio = service.getLatestKoodiVersio(uri);
         List<SimpleKoodiMetadataDto> changedMetas = changedMetadatas(koodiVersio.getMetadatas(), latestKoodiVersio.getMetadatas());
         List<SimpleKoodiMetadataDto> removedMetas = removedMetadatas(koodiVersio.getMetadatas(), latestKoodiVersio.getMetadatas());
-        MuutosTila muutosTila = anyChanges(versio, latestKoodiVersio.getVersio(), changedMetas, removedMetas);
-        return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, null, null, latestKoodiVersio.getPaivitysPvm(), null, null, null);
+        DatesChangedHandler dateHandler = DatesChangedHandler.setDatesHaveChanged(koodiVersio.getVoimassaAlkuPvm(), koodiVersio.getVoimassaLoppuPvm(),
+                latestKoodiVersio.getVoimassaAlkuPvm(), latestKoodiVersio.getVoimassaLoppuPvm());
+        MuutosTila muutosTila = anyChanges(versio, latestKoodiVersio.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges());
+        return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, null, null, latestKoodiVersio.getPaivitysPvm(), dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, null);
     }
 
     private List<SimpleKoodiMetadataDto> removedMetadatas(Set<KoodiMetadata> compareToMetas, final Set<KoodiMetadata> latestMetas) {
@@ -56,11 +59,14 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         return new ArrayList<>(removedMetas);
     }
 
-    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleKoodiMetadataDto> changedMetas, List<SimpleKoodiMetadataDto> removedMetas) {
+    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleKoodiMetadataDto> changedMetas, List<SimpleKoodiMetadataDto> removedMetas, boolean anyChangesInValidThruDates) {
         if (versio.equals(latestVersio)) {
             return MuutosTila.EI_MUUTOKSIA;
         }
         if (removedMetas.size() > 0) {
+            return MuutosTila.MUUTOKSIA;
+        }
+        if(anyChangesInValidThruDates) {
             return MuutosTila.MUUTOKSIA;
         }
         return changedMetas.size() > 0 ? MuutosTila.MUUTOKSIA : MuutosTila.EI_MUUTOKSIA;
@@ -95,6 +101,33 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
             }
         }
         return null;
+    }
+    
+    private static class DatesChangedHandler {
+        
+        private final Date startDateChanged;
+        
+        private final Date endDateChanged;
+        
+        private final Boolean endDateRemoved;
+        
+        public DatesChangedHandler(Date startDateChanged, Date endDateChanged, Boolean endDateRemoved) {
+            this.startDateChanged = startDateChanged;
+            this.endDateChanged = endDateChanged;
+            this.endDateRemoved = endDateRemoved;
+        }
+        
+        private static DatesChangedHandler setDatesHaveChanged(Date relateToStartDate, Date relateToEndDate, Date latestStartDate, Date latestEndDate) {
+            Date startDateChanged = relateToStartDate.equals(latestStartDate) ? null : latestStartDate;
+            Date endDateChanged = latestEndDate == null || latestEndDate.equals(relateToEndDate) ? null : latestEndDate;
+            Boolean endDateRemoved = relateToEndDate != null && latestEndDate == null ? true : null;
+            return new DatesChangedHandler(startDateChanged, endDateChanged, endDateRemoved);
+        }
+        
+        private boolean anyChanges() {
+            return startDateChanged != null || endDateChanged != null || endDateRemoved != null;
+        }
+        
     }
 
 }

@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.business.changes.impl;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +33,8 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class KoodiChangesDtoBusinessServiceImplTest {
     
+    private static final Date CURRENT_DATE = new Date();
+
     private static final String KOODI_URI = "uri";
     
     private static final String NAME = "elefantti", SHORT_NAME = "fantti", DESCRIPTION = "kärsäeläin";
@@ -147,6 +150,38 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         assertNotNull(givenResult(original, latest).viimeksiPaivitetty);
     }
     
+    @Test
+    public void returnsHasChangedIfStartDateHasChanged() {
+        int versio = 4;
+        KoodiVersio original = givenKoodiVersio(versio);
+        KoodiVersio latest = givenKoodiVersioWithCustomDatesItIsInEffect(versio + 1, CURRENT_DATE, null);
+        KoodiChangesDto result = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertEquals(CURRENT_DATE, result.voimassaAlkuPvm);
+    }
+
+    @Test
+    public void returnsHasChangedIfEndDateHasChanged() {
+        int versio = 5;
+        KoodiVersio original = givenKoodiVersio(versio);
+        KoodiVersio latest = givenKoodiVersioWithCustomDatesItIsInEffect(versio + 1, original.getVoimassaAlkuPvm(), CURRENT_DATE);
+        KoodiChangesDto result = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertEquals(CURRENT_DATE, result.voimassaLoppuPvm);
+        assertNull(result.poistettuVoimassaLoppuPvm);
+    }
+    
+    @Test
+    public void returnsHasChangedIfEndDateHasBeenRemoved() {
+        int versio = 5;
+        KoodiVersio latest = givenKoodiVersio(versio);
+        KoodiVersio original = givenKoodiVersioWithCustomDatesItIsInEffect(versio + 1, CURRENT_DATE, CURRENT_DATE);
+        KoodiChangesDto result = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertNull(result.voimassaLoppuPvm);
+        assertTrue(result.poistettuVoimassaLoppuPvm);
+    }
+        
     private void assertResultIsNoChanges(KoodiChangesDto result, int versio) {
         assertEquals(KoodiChangesDto.MuutosTila.EI_MUUTOKSIA, result.muutosTila);
         assertEquals(versio, result.viimeisinVersio.intValue());
@@ -188,4 +223,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         return DtoFactory.createKoodiMetadata(name, shortName, description, language);
     }
     
+    private KoodiVersio givenKoodiVersioWithCustomDatesItIsInEffect(int versio, Date startDate, Date endDate) {
+        return DtoFactory.createKoodiVersioWithoutMetadatasWithStartAndEndDates(KOODI_URI, versio, startDate, endDate).build();
+    }
 }
