@@ -1,11 +1,16 @@
 package fi.vm.sade.koodisto.service.business.changes.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 import fi.vm.sade.koodisto.dto.KoodiChangesDto;
 import fi.vm.sade.koodisto.dto.KoodiChangesDto.MuutosTila;
@@ -27,13 +32,36 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         KoodiVersio koodiVersio = service.getKoodiVersio(uri, versio);
         KoodiVersio latestKoodiVersio = service.getLatestKoodiVersio(uri);
         List<SimpleKoodiMetadataDto> changedMetas = changedMetadatas(koodiVersio.getMetadatas(), latestKoodiVersio.getMetadatas());
-        MuutosTila muutosTila = anyChanges(versio, latestKoodiVersio.getVersio(), changedMetas);
-        return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, null, null, null, null, null, null);
+        List<SimpleKoodiMetadataDto> removedMetas = removedMetadatas(koodiVersio.getMetadatas(), latestKoodiVersio.getMetadatas());
+        MuutosTila muutosTila = anyChanges(versio, latestKoodiVersio.getVersio(), changedMetas, removedMetas);
+        return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, null, null, null, null, null, null);
     }
 
-    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleKoodiMetadataDto> changedMetas) {
+    private List<SimpleKoodiMetadataDto> removedMetadatas(Set<KoodiMetadata> compareToMetas, final Set<KoodiMetadata> latestMetas) {
+        Collection<SimpleKoodiMetadataDto> removedMetas = Collections2.transform(Collections2.filter(compareToMetas, new Predicate<KoodiMetadata>() {
+
+            @Override
+            public boolean apply(KoodiMetadata input) {
+                return !latestMetas.contains(input);
+            }
+            
+        }), new Function<KoodiMetadata, SimpleKoodiMetadataDto>() {
+
+            @Override
+            public SimpleKoodiMetadataDto apply(KoodiMetadata input) {
+                return new SimpleKoodiMetadataDto(input.getNimi(), input.getKieli(), input.getKuvaus(), input.getLyhytNimi());
+            }
+        });
+        
+        return new ArrayList<>(removedMetas);
+    }
+
+    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleKoodiMetadataDto> changedMetas, List<SimpleKoodiMetadataDto> removedMetas) {
         if (versio.equals(latestVersio)) {
             return MuutosTila.EI_MUUTOKSIA;
+        }
+        if (removedMetas.size() > 0) {
+            return MuutosTila.MUUTOKSIA;
         }
         return changedMetas.size() > 0 ? MuutosTila.MUUTOKSIA : MuutosTila.EI_MUUTOKSIA;
     }

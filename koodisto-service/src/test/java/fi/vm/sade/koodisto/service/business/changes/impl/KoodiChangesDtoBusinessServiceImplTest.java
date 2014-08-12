@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fi.vm.sade.koodisto.dto.KoodiChangesDto;
+import fi.vm.sade.koodisto.dto.KoodiChangesDto.MuutosTila;
 import fi.vm.sade.koodisto.dto.SimpleKoodiMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
@@ -111,6 +112,24 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         KoodiVersio latest = givenKoodiVersioWithMetadata(versio + 1, latestFi, latestEn, latestSv);
         assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, newDesc, null), 
                 new SimpleKoodiMetadataDto(newNameEn, Kieli.EN, null, null), new SimpleKoodiMetadataDto(null, Kieli.SV, newDescSv, null));
+    }
+    
+    @Test
+    public void returnsHasChangedIfMetadataHasBeenRemoved() {
+        int versio = 10;
+        KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
+        KoodiVersio latest = givenKoodiVersio(versio +1);
+        KoodiChangesDto result = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertTrue(result.poistuneetTiedot.contains(new SimpleKoodiMetadataDto(NAME, Kieli.FI, DESCRIPTION, SHORT_NAME)));
+    }
+    
+    @Test
+    public void returnsHasChangedIfMetadataHasBeenAdded() {
+        int versio = 1;
+        KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio + 1, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
+        KoodiVersio original = givenKoodiVersio(versio);
+        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(NAME, Kieli.FI, DESCRIPTION, SHORT_NAME));
     }
     
     private void assertResultIsNoChanges(KoodiChangesDto result, int versio) {
