@@ -3,12 +3,14 @@ package fi.vm.sade.koodisto.dto;
 import java.util.Date;
 import java.util.List;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
 public class KoodiChangesDto {
     
     public enum MuutosTila {
