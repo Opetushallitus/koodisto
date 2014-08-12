@@ -77,6 +77,7 @@ public class KoodiVersioBuilder implements Builder<KoodiVersio>{
     }
 
     public KoodiVersio build() {
+        koodiVersio.setPaivitysPvm(new Date());
         return this.koodiVersio;
     }
 

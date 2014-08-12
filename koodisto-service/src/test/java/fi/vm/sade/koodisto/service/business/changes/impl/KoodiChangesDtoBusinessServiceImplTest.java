@@ -22,6 +22,7 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessService;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -132,13 +133,27 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(NAME, Kieli.FI, DESCRIPTION, SHORT_NAME));
     }
     
+    @Test
+    public void returnsUpdateDateEvenWithNoChanges() {
+        int versio = 2;
+        assertNotNull(givenResult(givenKoodiVersio(versio), givenKoodiVersio(versio)).viimeksiPaivitetty);
+    }
+    
+    @Test
+    public void returnsUpdateDateEvenWithChanges() {
+        int versio = 3;
+        KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
+        KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio +1, "norsu", SHORT_NAME, DESCRIPTION, Kieli.FI);
+        assertNotNull(givenResult(original, latest).viimeksiPaivitetty);
+    }
+    
     private void assertResultIsNoChanges(KoodiChangesDto result, int versio) {
         assertEquals(KoodiChangesDto.MuutosTila.EI_MUUTOKSIA, result.muutosTila);
         assertEquals(versio, result.viimeisinVersio.intValue());
         assertNull(result.lisatytKoodinSuhteet);
         assertNull(result.poistetutKoodinSuhteet);
         assertTrue(result.muuttuneetTiedot.isEmpty());
-        assertNull(result.viimeksiPaivitetty);
+        assertNotNull(result.viimeksiPaivitetty);
         assertNull(result.voimassaAlkuPvm);
         assertNull(result.voimassaLoppuPvm);
         assertNull(result.tila);
