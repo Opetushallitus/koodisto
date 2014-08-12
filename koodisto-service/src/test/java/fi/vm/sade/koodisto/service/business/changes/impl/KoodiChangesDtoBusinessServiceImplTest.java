@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.service.business.changes.impl;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fi.vm.sade.koodisto.dto.KoodiChangesDto;
+import fi.vm.sade.koodisto.dto.SimpleKoodiMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
@@ -19,6 +22,7 @@ import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessServi
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import static org.mockito.Mockito.when;
 
@@ -27,6 +31,10 @@ import static org.mockito.Mockito.when;
 public class KoodiChangesDtoBusinessServiceImplTest {
     
     private static final String KOODI_URI = "uri";
+    
+    private static final String NAME = "elefantti", SHORT_NAME = "fantti", DESCRIPTION = "kärsäeläin";
+    private static final String NAME_EN = "African elephant", SHORT_NAME_EN = "elephant", DESCRIPTION_EN = "trunkard";
+    private static final String NAME_SV = "elefant", SHORT_NAME_SV = "kort", DESCRIPTION_SV = "stora flockdjur";
 
     @ReplaceWithMock
     @Autowired
@@ -43,41 +51,66 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     @Test
     public void returnsNoChangesIfNothingHasChanged() {
         int versio = 1;
-        assertResultIsNoChanges(givenNoChangesResult(givenKoodiVersio(versio), givenKoodiVersio(versio)), versio);
+        assertResultIsNoChanges(givenResult(givenKoodiVersio(versio), givenKoodiVersio(versio)), versio);
     }
 
 
     @Test
     public void returnsNoChangesIfOnlyVersionHasChanged() {
         int versio = 1;
-        assertResultIsNoChanges(givenNoChangesResult(givenKoodiVersio(versio), givenKoodiVersio(versio + 1)), versio + 1);
+        assertResultIsNoChanges(givenResult(givenKoodiVersio(versio), givenKoodiVersio(versio + 1)), versio + 1);
     }
     
     @Test
     public void returnsNoChangesIfVersionHasNotChangedButThereAreOtherChanges() {
         int versio = 5;
         KoodiVersio withChanges = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, "hippopotamus", "hippo", "large water-dwelling mammal", Kieli.EN);
-        assertResultIsNoChanges(givenNoChangesResult(withChanges, givenKoodiVersio(versio)), versio);
+        assertResultIsNoChanges(givenResult(withChanges, givenKoodiVersio(versio)), versio);
     }
     
     @Test
     public void returnsHasChangedIfNameHasChanged() {
-        
+        int versio = 3;
+        String newName = "norsu";
+        KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
+        KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio +1, newName, SHORT_NAME, DESCRIPTION, Kieli.FI);
+        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(newName, Kieli.FI, null, null));
     }
     
     @Test
     public void returnsHasChangedIfShortNameHasChanged() {
-        
+        int versio = 10;
+        String newShort = "norsu";
+        KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
+        KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio +1, NAME, newShort, DESCRIPTION, Kieli.FI);
+        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, null, newShort));
     }
     
     @Test
     public void returnsHasChangedIfDescriptionHasChanged() {
-        
+        int versio = 6;
+        String newDesc = "isoin maalla liikkuva vegetaristi";
+        KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
+        KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio +1, NAME, SHORT_NAME, newDesc, Kieli.FI);
+        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, newDesc, null));
     }
     
     @Test
     public void returnsHasChangedIfMultipleMetadataHasChanged() {
-        
+        int versio = 6;
+        String newDesc = "isoin maalla liikkuva vegetaristi";
+        String newNameEn = "Asian elephant";
+        String newDescSv = "storste flockdjur";
+        KoodiMetadata originalFi = givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
+        KoodiMetadata originalEn = givenKoodiMetadata(NAME_EN, SHORT_NAME_EN, DESCRIPTION_EN, Kieli.EN);
+        KoodiMetadata originalSv = givenKoodiMetadata(NAME_SV, SHORT_NAME_SV, DESCRIPTION_SV, Kieli.SV);
+        KoodiMetadata latestFi = givenKoodiMetadata(NAME, SHORT_NAME, newDesc, Kieli.FI);
+        KoodiMetadata latestEn = givenKoodiMetadata(newNameEn, SHORT_NAME_EN, DESCRIPTION_EN, Kieli.EN);
+        KoodiMetadata latestSv = givenKoodiMetadata(NAME_SV, SHORT_NAME_SV, newDescSv, Kieli.SV);
+        KoodiVersio original = givenKoodiVersioWithMetadata(versio, originalFi, originalEn, originalSv);        
+        KoodiVersio latest = givenKoodiVersioWithMetadata(versio + 1, latestFi, latestEn, latestSv);
+        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, newDesc, null), 
+                new SimpleKoodiMetadataDto(newNameEn, Kieli.EN, null, null), new SimpleKoodiMetadataDto(null, Kieli.SV, newDescSv, null));
     }
     
     private void assertResultIsNoChanges(KoodiChangesDto result, int versio) {
@@ -85,14 +118,20 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         assertEquals(versio, result.viimeisinVersio.intValue());
         assertNull(result.lisatytKoodinSuhteet);
         assertNull(result.poistetutKoodinSuhteet);
-        assertNull(result.muuttuneetTiedot);
+        assertTrue(result.muuttuneetTiedot.isEmpty());
         assertNull(result.viimeksiPaivitetty);
         assertNull(result.voimassaAlkuPvm);
         assertNull(result.voimassaLoppuPvm);
         assertNull(result.tila);
     }
     
-    private KoodiChangesDto givenNoChangesResult(KoodiVersio koodiVersio, KoodiVersio latest) {
+    private void assertResultHasMetadataChanges(KoodiChangesDto result, int versio, SimpleKoodiMetadataDto ... expecteds) {
+        assertEquals(KoodiChangesDto.MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertTrue(result.muuttuneetTiedot.containsAll(Arrays.asList(expecteds)));
+        assertEquals(versio, result.viimeisinVersio.intValue());
+    }
+    
+    private KoodiChangesDto givenResult(KoodiVersio koodiVersio, KoodiVersio latest) {
         Integer versio = koodiVersio.getVersio();
         when(koodiService.getKoodiVersio(KOODI_URI, versio)).thenReturn(koodiVersio);
         when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
@@ -100,7 +139,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     }
     
     private KoodiVersio givenKoodiVersio(Integer versio) {
-        return DtoFactory.createKoodiVersioWithUriAndVersio(KOODI_URI, versio).build();        
+        return DtoFactory.createKoodiVersioWithUriAndVersioWithoutMetadatas(KOODI_URI, versio).build();        
     }
     
     private KoodiVersio givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(Integer versio, String name, String shortName, String description, Kieli language) {
@@ -108,7 +147,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     }
     
     private KoodiVersio givenKoodiVersioWithMetadata(Integer versio, KoodiMetadata ... datas) {
-        return DtoFactory.createKoodiVersioWithUriAndVersio(KOODI_URI, versio).addMetadata(datas).build();
+        return DtoFactory.createKoodiVersioWithUriAndVersioWithoutMetadatas(KOODI_URI, versio).addMetadata(datas).build();
     }
     
     private KoodiMetadata givenKoodiMetadata(String name, String shortName, String description, Kieli language) {

@@ -22,10 +22,14 @@ public class DtoFactory {
             .setKuvaus("Description").build();
 
     public static KoodiVersioBuilder createKoodiVersioWithUriAndVersio(String uri, Integer versio) {
+        return createKoodiVersioWithUriAndVersioWithoutMetadatas(uri, versio).addMetadata(KOODI_METADATA);
+    }
+    
+    public static KoodiVersioBuilder createKoodiVersioWithUriAndVersioWithoutMetadatas(String uri, Integer versio) {
         Koodisto koodisto = new Koodisto();
         Koodi koodi = new KoodiBuilder().setKoodiUri(uri).setKoodisto(koodisto).build();
         KoodistoVersio kv = createKoodistoVersio();
-        return new KoodiVersioBuilder().setKoodiVersio(versio).addKoodistoVersio(kv).setKoodi(koodi).addMetadata(KOODI_METADATA).setStartDate(new Date()).setKoodiValue("value");
+        return new KoodiVersioBuilder().setKoodiVersio(versio).addKoodistoVersio(kv).setKoodi(koodi).setStartDate(new Date()).setKoodiValue("value");
     }
 
     public static KoodiVersio createKoodiVersioWithUriAndVersioAndRelation(String uri, Integer versio, KoodiVersio koodiVersio, SuhteenTyyppi tyyppi) {
