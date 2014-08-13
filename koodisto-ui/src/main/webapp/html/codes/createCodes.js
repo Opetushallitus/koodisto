@@ -57,7 +57,7 @@ app.factory('CodesCreatorModel', function($location, RootCodes, $modal) {
     return model;
 });
 
-function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorModel, NewCodes, Treemodel, ValidateService) {
+function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorModel, NewCodes, Treemodel) {
     $scope.model = CodesCreatorModel;
     CodesCreatorModel.init();
 
@@ -131,7 +131,8 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
             Treemodel.refresh();
             $location.path("/koodisto/"+result.koodistoUri+"/"+result.versio).search({forceRefresh: true});
         }, function(error) {
-            ValidateService.validateCodes($scope,error,false);
+            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
+            $scope.model.alerts.push(alert);
         });
     };
 

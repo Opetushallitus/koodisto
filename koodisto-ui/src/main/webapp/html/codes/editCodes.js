@@ -206,7 +206,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
 });
 
 function CodesEditorController($scope, $location, $modal, $log, $routeParams, CodesEditorModel, Treemodel,
-                               ValidateService, CodesMatcher, SaveCodes, isModalController) {
+                               CodesMatcher, SaveCodes, isModalController) {
     $scope.model = CodesEditorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
@@ -303,7 +303,8 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
             Treemodel.refresh();
             $location.path("/koodisto/"+$scope.codesUri+"/"+result[0]).search({forceRefresh: true});
         }, function(error) {
-            ValidateService.validateCodes($scope,error,true);
+            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
+            $scope.model.alerts.push(alert);
         });
     };
 

@@ -20,7 +20,7 @@ app.factory('CodeElementCreatorModel', function($location) {
     return model;
 });
 
-function CodeElementCreatorController($scope, $location, $routeParams, CodeElementCreatorModel, NewCodeElement, ValidateService) {
+function CodeElementCreatorController($scope, $location, $routeParams, CodeElementCreatorModel, NewCodeElement) {
     $scope.model = CodeElementCreatorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
@@ -87,7 +87,8 @@ function CodeElementCreatorController($scope, $location, $routeParams, CodeEleme
         NewCodeElement.post({codesUri: $scope.codesUri}, codeelement, function(result) {
             $location.path("/koodi/"+result.koodiUri+"/"+result.versio).search({edited: true});
         }, function(error) {
-            ValidateService.validateCodeElement($scope,error,false);
+            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
+            $scope.model.alerts.push(alert);
         });
     };
 
