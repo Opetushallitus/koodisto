@@ -20,10 +20,11 @@ app.factory('CodeElementCreatorModel', function($location) {
     return model;
 });
 
-function CodeElementCreatorController($scope, $location, $routeParams, CodeElementCreatorModel, NewCodeElement) {
+function CodeElementCreatorController($scope, $location, $routeParams, $filter,  CodeElementCreatorModel, NewCodeElement) {
     $scope.model = CodeElementCreatorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
+    $scope.errorMessage = $filter('i18n')('field.required');
     CodeElementCreatorModel.init();
 
     $scope.closeAlert = function(index) {

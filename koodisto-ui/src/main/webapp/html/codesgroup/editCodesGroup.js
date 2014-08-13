@@ -20,8 +20,9 @@ app.factory('CodesGroupEditorModel', function($location, CodesGroupByUri) {
     return model;
 });
 
-function CodesGroupEditorController($scope, $location, $routeParams, CodesGroupEditorModel, UpdateCodesGroup, Treemodel) {
+function CodesGroupEditorController($scope, $location, $routeParams, $filter, CodesGroupEditorModel, UpdateCodesGroup, Treemodel) {
     $scope.model = CodesGroupEditorModel;
+    $scope.errorMessage = $filter('i18n')('field.required');
     CodesGroupEditorModel.init($scope, $routeParams.id);
 
     $scope.closeAlert = function(index) {

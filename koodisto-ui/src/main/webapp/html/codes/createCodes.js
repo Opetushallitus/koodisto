@@ -57,8 +57,10 @@ app.factory('CodesCreatorModel', function($location, RootCodes, $modal) {
     return model;
 });
 
-function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorModel, NewCodes, Treemodel) {
+function CodesCreatorController($scope, $location, $modal, $log, $filter, CodesCreatorModel, NewCodes, Treemodel) {
     $scope.model = CodesCreatorModel;
+    $scope.errorMessage = $filter('i18n')('field.required');
+
     CodesCreatorModel.init();
 
     $scope.closeAlert = function(index) {

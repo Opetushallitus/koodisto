@@ -242,6 +242,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     $scope.model = CodeElementEditorModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
     $scope.codeElementVersion = $routeParams.codeElementVersion;
+    $scope.errorMessage = $filter('i18n')('field.required');
     $scope.sortBy = 'name';
 
     if (!isModalController) {

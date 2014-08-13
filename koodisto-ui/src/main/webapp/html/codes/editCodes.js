@@ -205,11 +205,12 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
     return model;
 });
 
-function CodesEditorController($scope, $location, $modal, $log, $routeParams, CodesEditorModel, Treemodel,
+function CodesEditorController($scope, $location, $modal, $log, $routeParams, $filter, CodesEditorModel, Treemodel,
                                CodesMatcher, SaveCodes, isModalController) {
     $scope.model = CodesEditorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
+    $scope.errorMessage = $filter('i18n')('field.required');
     
     if (!isModalController) {
         CodesEditorModel.init($scope,$routeParams.codesUri, $scope.codesVersion);
