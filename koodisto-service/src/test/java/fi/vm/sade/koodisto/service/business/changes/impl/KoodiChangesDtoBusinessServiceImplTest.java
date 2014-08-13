@@ -138,6 +138,18 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     }
     
     @Test
+    public void metadataWithSameLanguageCannotBeBothInRemovedMetadatasAndInChangedMetadatas() {
+        int versio = 1;
+        String newName = "norsu";
+        KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio + 1, newName, SHORT_NAME, DESCRIPTION, Kieli.FI);
+        KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
+        KoodiChangesDto dto = givenResult(original, latest);
+        assertTrue(dto.poistuneetTiedot.isEmpty());
+        assertEquals(1, dto.muuttuneetTiedot.size());
+        assertEquals(new SimpleKoodiMetadataDto(newName, Kieli.FI, null, null), dto.muuttuneetTiedot.get(0));
+    }
+    
+    @Test
     public void returnsUpdateDateEvenWithNoChanges() {
         int versio = 2;
         assertNotNull(givenResult(givenKoodiVersio(versio), givenKoodiVersio(versio)).viimeksiPaivitetty);
@@ -192,7 +204,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
         assertEquals(Tila.PASSIIVINEN, result.tila);
     }
-        
+    
     private void assertResultIsNoChanges(KoodiChangesDto result, int versio) {
         assertEquals(KoodiChangesDto.MuutosTila.EI_MUUTOKSIA, result.muutosTila);
         assertEquals(versio, result.viimeisinVersio.intValue());

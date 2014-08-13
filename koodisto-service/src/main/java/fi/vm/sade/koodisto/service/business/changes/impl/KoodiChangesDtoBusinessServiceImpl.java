@@ -64,7 +64,12 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
 
             @Override
             public boolean apply(KoodiMetadata input) {
-                return !latestMetas.contains(input);
+                for (KoodiMetadata data : latestMetas) {
+                    if(data.getKieli().equals(input.getKieli())) {
+                        return false;
+                    }
+                }
+                return true;
             }
             
         }), new Function<KoodiMetadata, SimpleKoodiMetadataDto>() {
