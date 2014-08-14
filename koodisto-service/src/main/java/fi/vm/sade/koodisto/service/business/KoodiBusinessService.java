@@ -6,6 +6,7 @@ package fi.vm.sade.koodisto.service.business;
 import java.util.List;
 
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
+import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
@@ -107,6 +108,8 @@ public interface KoodiBusinessService {
     KoodiVersio getLatestKoodiVersio(String koodiUri);
     
     KoodiVersio getKoodiVersio(String koodiUri, Integer versio);
+    
+    Koodi getKoodi(String koodiUri);
 
     boolean hasRelationBetweenCodeElements(KoodiVersio ylaKoodiVersio, final KoodiVersio alaKoodiVersio);
     

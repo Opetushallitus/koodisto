@@ -1005,4 +1005,17 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public boolean isLatestKoodiVersio(String koodiUri, Integer versio) {
         return koodiVersioDAO.isLatestKoodiVersio(koodiUri, versio);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Koodi getKoodi(String koodiUri) {
+        Koodi koodi = koodiDAO.readByUri(koodiUri);
+        Hibernate.initialize(koodi.getKoodiVersios());
+        for (KoodiVersio kv : koodi.getKoodiVersios()) {
+            Hibernate.initialize(kv.getMetadatas());
+            initializeRelations(kv.getAlakoodis(), false);
+            initializeRelations(kv.getYlakoodis(), true);
+        }
+        return koodi;
+    }
 }

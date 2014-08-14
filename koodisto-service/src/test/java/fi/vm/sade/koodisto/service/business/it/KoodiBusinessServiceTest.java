@@ -13,6 +13,7 @@ import java.util.Set;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
+import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
@@ -193,6 +195,19 @@ public class KoodiBusinessServiceTest {
         KoodiVersio kv = items.get(0).getKoodiVersio();
         assertEquals(Integer.valueOf(2), kv.getVersio());
         assertEquals("vanhasuhdeeiversioiduATake2", kv.getKoodi().getKoodiUri());
+    }
+    
+    @Test
+    public void fetchesKoodiAndInitializesKoodiVersions() {
+        Koodi koodi = koodiBusinessService.getKoodi("435");
+        assertNotNull(koodi);
+        assertTrue(Hibernate.isInitialized(koodi.getKoodiVersios()));
+        for (KoodiVersio kv : koodi.getKoodiVersios()) {
+            assertTrue(Hibernate.isInitialized(kv));
+            assertTrue(Hibernate.isInitialized(kv.getMetadatas()));
+            assertTrue(Hibernate.isInitialized(kv.getAlakoodis()));
+            assertTrue(Hibernate.isInitialized(kv.getYlakoodis()));
+        }
     }
     
     private List<KoodiVersioWithKoodistoItem> listByUri(String koodiUri) {
