@@ -205,6 +205,26 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         assertEquals(Tila.PASSIIVINEN, result.tila);
     }
     
+    @Test
+    public void usesLatestHyvaksyttyVersionForComparison() {
+        
+    }
+    
+    @Test
+    public void doesNotUseLatestAcceptedVersionForComparison() {
+        
+    }
+    
+    @Test
+    public void returnsHasChangedIfRelationHasBeenAdded() {
+        
+    }
+    
+    @Test
+    public void returnsHasChangedIfRelationsHasBeenRemoved() {
+        
+    }
+    
     private void assertResultIsNoChanges(KoodiChangesDto result, int versio) {
         assertEquals(KoodiChangesDto.MuutosTila.EI_MUUTOKSIA, result.muutosTila);
         assertEquals(versio, result.viimeisinVersio.intValue());
@@ -227,7 +247,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         Integer versio = koodiVersio.getVersio();
         when(koodiService.getKoodiVersio(KOODI_URI, versio)).thenReturn(koodiVersio);
         when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
-        return service.getChangesDto(KOODI_URI, versio);
+        return service.getChangesDto(KOODI_URI, versio, false);
     }
     
     private KoodiVersio givenKoodiVersio(Integer versio) {

@@ -30,7 +30,7 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
     private KoodiBusinessService service;
 
     @Override
-    public KoodiChangesDto getChangesDto(String uri, Integer versio) {
+    public KoodiChangesDto getChangesDto(String uri, Integer versio, boolean compareToLatestAccepted) {
         KoodiVersio koodiVersio = service.getKoodiVersio(uri, versio);
         KoodiVersio latestKoodiVersio = service.getLatestKoodiVersio(uri);
         List<SimpleKoodiMetadataDto> changedMetas = changedMetadatas(koodiVersio.getMetadatas(), latestKoodiVersio.getMetadatas());

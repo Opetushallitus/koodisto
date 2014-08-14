@@ -185,7 +185,7 @@ public class CodeElementResource {
     public Response getChangesToCodeElement(@ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
             @ApiParam(value = "Koodin versio") @PathParam("codeElementVersion") Integer codeElementVersion) {
         //TODO: use validators when OVT-7653 is merged
-        KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, codeElementVersion);
+        KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, codeElementVersion, false);
         return Response.status(Response.Status.OK).entity(dto).build();
     }
 
