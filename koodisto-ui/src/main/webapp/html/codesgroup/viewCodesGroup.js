@@ -6,7 +6,7 @@ app.factory('ViewCodesGroupModel', function($location, $modal, CodesGroupByUri) 
         this.codesgroup = {};
         this.deleteState = "disabled";
 
-        this.init = function(id) {
+        this.init = function(scope, id) {
             this.alerts = [];
             this.deleteState = "disabled";
             CodesGroupByUri.get({id: id}, function (result) {
@@ -36,7 +36,7 @@ app.factory('ViewCodesGroupModel', function($location, $modal, CodesGroupByUri) 
 
 function ViewCodesGroupController($scope, $location, $routeParams, ViewCodesGroupModel, DeleteCodesGroup, Treemodel) {
     $scope.model = ViewCodesGroupModel;
-    ViewCodesGroupModel.init($routeParams.id);
+    ViewCodesGroupModel.init($scope, $routeParams.id);
 
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
