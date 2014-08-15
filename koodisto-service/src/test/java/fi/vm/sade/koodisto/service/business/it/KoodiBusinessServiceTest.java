@@ -207,6 +207,7 @@ public class KoodiBusinessServiceTest {
             assertTrue(Hibernate.isInitialized(kv.getMetadatas()));
             assertTrue(Hibernate.isInitialized(kv.getAlakoodis()));
             assertTrue(Hibernate.isInitialized(kv.getYlakoodis()));
+            assertFalse(kv.getMetadatas().isEmpty());
         }
     }
     

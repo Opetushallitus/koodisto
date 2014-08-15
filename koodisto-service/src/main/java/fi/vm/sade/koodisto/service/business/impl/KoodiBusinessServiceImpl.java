@@ -1010,9 +1010,12 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     @Override
     public Koodi getKoodi(String koodiUri) {
         Koodi koodi = koodiDAO.readByUri(koodiUri);
-        Hibernate.initialize(koodi.getKoodiVersios());
+        Hibernate.initialize(koodi);
         for (KoodiVersio kv : koodi.getKoodiVersios()) {
             Hibernate.initialize(kv.getMetadatas());
+            for (KoodiMetadata data : kv.getMetadatas()) {
+                Hibernate.initialize(data);
+            }
             initializeRelations(kv.getAlakoodis(), false);
             initializeRelations(kv.getYlakoodis(), true);
         }

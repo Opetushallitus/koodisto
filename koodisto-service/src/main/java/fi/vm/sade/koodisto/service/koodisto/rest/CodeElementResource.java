@@ -5,12 +5,14 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -183,9 +185,10 @@ public class CodeElementResource {
             notes = "Toimii vain, jos koodi on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
             response = KoodiChangesDto.class)
     public Response getChangesToCodeElement(@ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
-            @ApiParam(value = "Koodin versio") @PathParam("codeElementVersion") Integer codeElementVersion) {
+            @ApiParam(value = "Koodin versio") @PathParam("codeElementVersion") Integer codeElementVersion, 
+            @ApiParam(value = "Verrataanko viimeiseen hyväksyttyyn versioon") @DefaultValue("false") @QueryParam("compareToLatestAccepted") boolean compareToLatestAccepted) {
         //TODO: use validators when OVT-7653 is merged
-        KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, codeElementVersion, false);
+        KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, codeElementVersion, compareToLatestAccepted);
         return Response.status(Response.Status.OK).entity(dto).build();
     }
 

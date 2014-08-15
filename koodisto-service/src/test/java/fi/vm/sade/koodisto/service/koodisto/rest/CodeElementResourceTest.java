@@ -555,7 +555,7 @@ public class CodeElementResourceTest {
     
     @Test
     public void returnsChangesForCodeElement() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("montaversiota", 1).getEntity();
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("montaversiota", 1, false).getEntity();
         assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
         assertEquals("Monta versiota 3", dto.muuttuneetTiedot.get(0).nimi);
         assertNull(dto.voimassaAlkuPvm);
@@ -564,10 +564,24 @@ public class CodeElementResourceTest {
     
     @Test
     public void returnsNoChangesForCodeElement() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("montaversiota", 3).getEntity();
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("montaversiota", 3, false).getEntity();
         assertEquals(MuutosTila.EI_MUUTOKSIA, dto.muutosTila);
         assertTrue(dto.muuttuneetTiedot.isEmpty());
         assertEquals(3, dto.viimeisinVersio.intValue());
+    }
+    
+    @Test
+    public void comparesAgainstLatestAcceptedCodeElementVersion() {
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("viimeinenonluonnos", 1, true).getEntity();
+        assertEquals(2, dto.viimeisinVersio.intValue());
+        assertNull(dto.tila);
+    }
+    
+    @Test
+    public void comparesAgainstLatestCodeElementVersion() {
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("viimeinenonluonnos", 1, false).getEntity();
+        assertEquals(3, dto.viimeisinVersio.intValue());
+        assertEquals(Tila.LUONNOS, dto.tila);
     }
     
 
