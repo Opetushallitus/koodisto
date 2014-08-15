@@ -9,7 +9,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.levelsWithCodes = [];
         this.deleteState = "disabled";
 
-        this.init = function(codesUri, codesVersion) {
+        this.init = function(scope, codesUri, codesVersion) {
             if(model.forceRefresh){
                 model.forceRefreshCodeElements = "?forceRefresh";
             } else {
@@ -40,11 +40,11 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 this.sortOrderReversed = false;
                 this.searchResultsLength = 0;
 
-                model.getCodes(codesUri, codesVersion);
+                model.getCodes(scope, codesUri, codesVersion);
             }
         };
 
-        this.getCodes = function(codesUri, codesVersion) {
+        this.getCodes = function(scope, codesUri, codesVersion) {
             CodesByUriAndVersion.get({
                 codesUri : codesUri,
                 codesVersion : codesVersion
@@ -120,6 +120,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                     model.codes.organizationName = result2.nimi['fi'] || result2.nimi['sv'] || result2.nimi['en'];
                 });
                 model.getCodeElements(codesUri, codesVersion);
+                scope.loadingReady = true;
             });
         };
 
@@ -217,7 +218,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     $scope.codesVersion = $routeParams.codesVersion;
     $scope.model.forceRefresh=$routeParams.forceRefresh == true;
     $scope.identity = angular.identity;
-    ViewCodesModel.init($scope.codesUri, $scope.codesVersion);
+    ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
     $scope.sortBy1 = 'name';
     $scope.sortBy2 = 'name';
     $scope.sortBy3 = 'name';

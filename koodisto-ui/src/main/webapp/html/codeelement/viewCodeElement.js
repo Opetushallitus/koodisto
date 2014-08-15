@@ -86,6 +86,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
                 model.codeElement.levelsWithCodeElements.forEach(function(codeElement) {
                     model.extractAndPushCodeElementInformation(codeElement, model.levelsWithCodeElements);
                 });
+                scope.loadingReady = true;
             });
         };
 

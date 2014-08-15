@@ -86,6 +86,8 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result2) {
                     model.codes.organizationName = result2.nimi['fi'] || result2.nimi['sv'] || result2.nimi['en'];
                 });
+                
+                scope.loadingReady = true;
             });
         };
 

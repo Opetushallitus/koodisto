@@ -112,6 +112,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                     model.extractAndPushCodeElementInformation(codeElement, model.levelsWithCodeElements);
                 });
 
+                scope.loadingReady = true;
             });
         };
 

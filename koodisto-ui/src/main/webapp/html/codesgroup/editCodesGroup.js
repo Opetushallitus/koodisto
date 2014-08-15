@@ -12,6 +12,7 @@ app.factory('CodesGroupEditorModel', function($location, CodesGroupByUri) {
                 scope.namesv = getLanguageSpecificValue(result.koodistoRyhmaMetadatas, 'nimi', 'SV');
                 scope.nameen = getLanguageSpecificValue(result.koodistoRyhmaMetadatas, 'nimi', 'EN');
             });
+            scope.loadingReady = true;
         };
 
     };

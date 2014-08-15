@@ -16,6 +16,7 @@ app.factory('ViewCodesGroupModel', function($location, $modal, CodesGroupByUri) 
                 }
                 model.name = getLanguageSpecificValueOrValidValue( model.codesgroup.koodistoRyhmaMetadatas , 'nimi', 'FI');
             });
+            scope.loadingReady = true;
         };
 
         this.removeCodesGroup = function() {
