@@ -19,9 +19,9 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
         this.allIncludesCodeElements = [];
         this.allLevelsWithCodeElements = [];
         this.showCode = '';
-        this.withinListLengthLimit=10;
-        this.includesListLengthLimit=10;
-        this.levelsWithListLengthLimit=10;
+        this.withinListLengthLimit = 10;
+        this.includesListLengthLimit = 10;
+        this.levelsWithListLengthLimit = 10;
         this.isAddingRelationsComplete = false;
         this.isRemovingRelationsComplete = false;
 
@@ -37,14 +37,13 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             this.shownCodeElements = [];
             this.loadingCodeElements = false;
 
-            this.withinListLengthLimit=10;
-            this.includesListLengthLimit=10;
-            this.levelsWithListLengthLimit=10;
-            
+            this.withinListLengthLimit = 10;
+            this.includesListLengthLimit = 10;
+            this.levelsWithListLengthLimit = 10;
+
             this.isAddingRelationsComplete = false;
             this.isRemovingRelationsComplete = false;
 
-            
             // Pagination
             this.currentPage = 0;
             this.pageSize = 10;
@@ -63,7 +62,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                 codeElementUri : codeElementUri,
                 codeElementVersion : codeElementVersion
             }, function(result) {
-            
+
                 model.codeElement = result;
                 scope.codeValue = result.koodiArvo;
 
@@ -218,15 +217,15 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                 iter(data.children);
             }
         };
-        
+
         this.incrementListLimit = function(listName) {
-            if(listName === "within"){
+            if (listName === "within") {
                 this.withinListLengthLimit = this.withinCodeElements.length;
             }
-            if(listName === "includes"){
+            if (listName === "includes") {
                 this.includesListLengthLimit = this.includesCodeElements.length;
             }
-            if(listName === "levelsWith"){
+            if (listName === "levelsWith") {
                 this.levelsWithListLengthLimit = this.levelsWithCodeElements.length;
             }
         };
@@ -236,13 +235,14 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
 });
 
 function CodeElementEditorController($scope, $location, $routeParams, $filter, CodeElementEditorModel, UpdateCodeElement, AddRelationCodeElement,
-        MassAddRelationCodeElements, RemoveRelationCodeElement, MassRemoveRelationCodeElements, CodesByUriAndVersion,
-        CodeElementsByCodesUriAndVersion, $modal, isModalController) {
+        MassAddRelationCodeElements, RemoveRelationCodeElement, MassRemoveRelationCodeElements, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion, $modal,
+        isModalController) {
 
     $scope.model = CodeElementEditorModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
     $scope.codeElementVersion = $routeParams.codeElementVersion;
     $scope.errorMessage = $filter('i18n')('field.required');
+    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.atLeastOneName');
     $scope.sortBy = 'name';
 
     if (!isModalController) {
@@ -265,7 +265,9 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     };
 
     $scope.cancel = function() {
-        $location.path("/koodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion).search({edited: true});
+        $location.path("/koodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion).search({
+            edited : true
+        });
     };
 
     $scope.submit = function() {
@@ -290,7 +292,10 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             tila : $scope.model.codeElement.tila,
             version : $scope.model.codeElement.version,
 
-            metadata : [ {
+            metadata : []
+        };
+        if ($scope.namefi) {
+            codeelement.metadata.push({
                 kieli : 'FI',
                 nimi : $scope.namefi,
                 kuvaus : $scope.descriptionfi,
@@ -301,8 +306,8 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                 sisaltaaMerkityksen : $scope.containssignificancefi,
                 eiSisallaMerkitysta : $scope.doesnotcontainsignificancefi,
                 sisaltaaKoodiston : $scope.containscodesfi
-            } ]
-        };
+            });
+        }
         if ($scope.namesv) {
             codeelement.metadata.push({
                 kieli : 'SV',
@@ -332,9 +337,14 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             });
         }
         UpdateCodeElement.put({}, codeelement, function(result) {
-            $location.path("/koodi/" + result.koodiUri + "/" + result.versio).search({edited: true});
+            $location.path("/koodi/" + result.koodiUri + "/" + result.versio).search({
+                edited : true
+            });
         }, function(error) {
-            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
+            var alert = {
+                type : 'danger',
+                msg : jQuery.i18n.prop(error.data)
+            };
             scope.model.alerts.push(alert);
         });
     };
@@ -403,7 +413,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             });
         }
     };
-    
+
     $scope.addRelationsCodeElement = function(selectedItems, collectionToAddTo, relationTypeString, modelCodeElementIsHost) {
         var elementUrisToAdd = [];
         var addedElements = [];
@@ -415,14 +425,14 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                     found = true;
                 }
             });
-            if(!found){
+            if (!found) {
                 elementUrisToAdd.push(codeElement.uri);
                 addedElements.push(codeElement);
             }
         });
-        
+
         if (elementUrisToAdd.length < 1) {
-            if($scope.model.isRemovingRelationsComplete){
+            if ($scope.model.isRemovingRelationsComplete) {
                 $scope.model.codeelementmodalInstance.close();
             }
             $scope.model.isAddingRelationsComplete = true;
@@ -433,7 +443,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             codeElementUri : $scope.model.codeElement.koodiUri,
             relationType : relationTypeString,
             isChild : !modelCodeElementIsHost,
-            relations: elementUrisToAdd
+            relations : elementUrisToAdd
         }, function(result) {
             addedElements.forEach(function(item) {
                 collectionToAddTo.push(item);
@@ -449,7 +459,6 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         });
     };
 
-    
     $scope.removeRelationsCodeElement = function(unselectedItems, collectionToRemoveFrom, relationTypeString, modelCodeElementIsHost) {
         var elementUrisToRemove = [];
         unselectedItems.forEach(function(codeElement) {
@@ -459,27 +468,27 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                 }
             });
         });
-        
+
         if (elementUrisToRemove.length < 1) {
-            if($scope.model.isAddingRelationsComplete){
+            if ($scope.model.isAddingRelationsComplete) {
                 $scope.model.codeelementmodalInstance.close();
             }
             $scope.model.isRemovingRelationsComplete = true;
             return;
         }
-        
+
         MassRemoveRelationCodeElements.remove({
             codeElementUri : $scope.model.codeElement.koodiUri,
             relationType : relationTypeString,
             isChild : !modelCodeElementIsHost,
             relations : elementUrisToRemove
         }, function(result) {
-            remainingElements = $.grep(collectionToRemoveFrom, function(element){
+            remainingElements = $.grep(collectionToRemoveFrom, function(element) {
                 return elementUrisToRemove.indexOf(element.uri) == -1;
             });
             collectionToRemoveFrom.length = 0;
             Array.prototype.push.apply(collectionToRemoveFrom, remainingElements);
-            
+
             $scope.model.codeelementmodalInstance.close();
         }, function(error) {
             var alert = {
@@ -531,7 +540,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                 }).length > 0;
                 ce.value = codeElement.koodiArvo;
                 ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'nimi', 'FI');
-                if($scope.selectallcodelements && !ce.checked){
+                if ($scope.selectallcodelements && !ce.checked) {
                     $scope.selectallcodelements = false;
                 }
                 toBeShown.push(ce);
@@ -580,7 +589,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                 $scope.model.shownCodes = getCodesUris(result.levelsWithCodes);
                 $scope.model.shownCodeElements = $scope.model.allLevelsWithCodeElements;
             }
-            if(!$scope.model.showCode || $scope.model.showCode.length === 0){
+            if (!$scope.model.showCode || $scope.model.showCode.length === 0) {
                 $scope.model.loadingCodeElements = false;
             }
         });
@@ -591,7 +600,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         $scope.model.addToListName = name;
         if ($scope.model.allWithinCodeElements.length === 0 || $scope.model.allIncludesCodeElements.length === 0
                 || $scope.model.allLevelsWithCodeElements.length === 0) {
-            
+
             $scope.getCodeElements();
 
             $scope.model.codeelementmodalInstance = $modal.open({
@@ -680,7 +689,6 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         $scope.model.modalInstance.dismiss('cancel');
     };
 
-
     // Pagination
 
     // Get the filtered page count
@@ -688,7 +696,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     $scope.getNumberOfPages = function() {
         return cachedPageCount;
     };
-    
+
     // Refresh the page count when the model changes
     var cachedElementCount = 0;
     $scope.$watch('model.shownCodeElements', function() {
@@ -759,13 +767,9 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             $scope.updatePaginationPage();
         }
     };
-    
 
-    
-
-
-        $scope.paginationPage = [];
-        $scope.updatePaginationPage = function(refreshPage) {
+    $scope.paginationPage = [];
+    $scope.updatePaginationPage = function(refreshPage) {
         if (refreshPage) {
             // Only do sorting when the model has changed, heavy operation
             refreshPage = false;

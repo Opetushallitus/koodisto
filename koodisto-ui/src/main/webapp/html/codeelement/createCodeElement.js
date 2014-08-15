@@ -25,6 +25,8 @@ function CodeElementCreatorController($scope, $location, $routeParams, $filter, 
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
     $scope.errorMessage = $filter('i18n')('field.required');
+    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.atLeastOneName');
+    
     CodeElementCreatorModel.init();
 
     $scope.closeAlert = function(index) {
@@ -44,7 +46,10 @@ function CodeElementCreatorController($scope, $location, $routeParams, $filter, 
             voimassaAlkuPvm: $scope.dActiveStart,
             voimassaLoppuPvm: $scope.dActiveEnd,
             koodiArvo: $scope.codeValue,
-            metadata : [{
+            metadata : []
+        };
+        if ($scope.namefi){
+            codelement.metadata.push({
                 kieli: 'FI',
                 nimi: $scope.namefi,
                 kuvaus: $scope.descriptionfi,
@@ -55,8 +60,8 @@ function CodeElementCreatorController($scope, $location, $routeParams, $filter, 
                 sisaltaaMerkityksen: $scope.containssignificancefi,
                 eiSisallaMerkitysta: $scope.doesnotcontainsignificancefi,
                 sisaltaaKoodiston: $scope.containscodesfi
-            }]
-        };
+            });
+        }
         if ($scope.namesv) {
             codeelement.metadata.push({
                 kieli: 'SV',

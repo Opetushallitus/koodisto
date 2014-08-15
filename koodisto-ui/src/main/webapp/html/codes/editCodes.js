@@ -211,6 +211,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
     $scope.errorMessage = $filter('i18n')('field.required');
+    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.atLeastOneName');
     
     if (!isModalController) {
         CodesEditorModel.init($scope,$routeParams.codesUri, $scope.codesVersion);
@@ -250,7 +251,13 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
             tila: $scope.model.codes.tila,
             version: $scope.model.codes.version,
             codesGroupUri: $scope.model.codes.codesGroupUri,
-            metadata : [{
+            metadata : [],
+            withinCodes : $scope.changeToRelationCodes($scope.model.withinCodes),
+            includesCodes : $scope.changeToRelationCodes($scope.model.includesCodes),
+            levelsWithCodes : $scope.changeToRelationCodes($scope.model.levelsWithCodes)
+        };
+        if ($scope.namefi) {
+            codes.metadata.push({
                 kieli: 'FI',
                 nimi: $scope.namefi,
                 kuvaus: $scope.descriptionfi,
@@ -263,13 +270,10 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
                 tarkentaaKoodistoa: $scope.specifiescodesfi,
                 huomioitavaKoodisto: $scope.totakenoticeoffi,
                 sitovuustaso: $scope.validitylevelfi
-            }],
-            withinCodes : $scope.changeToRelationCodes($scope.model.withinCodes),
-            includesCodes : $scope.changeToRelationCodes($scope.model.includesCodes),
-            levelsWithCodes : $scope.changeToRelationCodes($scope.model.levelsWithCodes)
-        };
+            });
+        }
         if ($scope.namesv) {
-            codes.metadata.push({
+                codes.metadata.push({
                 kieli: 'SV',
                 nimi: $scope.namesv,
                 kuvaus: $scope.descriptionsv,
