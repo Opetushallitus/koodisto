@@ -236,7 +236,7 @@ public class CodeElementResource {
             ) {
         List<String> relationsToAdd = koodiRelaatioDto.getRelations();
         if (relationsToAdd == null || relationsToAdd.isEmpty()) {
-            logger.info("Called mass remove for relations without required query param (relationsToRemove)");
+            logger.info("Called mass add for relations without required query param (relationsToAdd)");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         try {
