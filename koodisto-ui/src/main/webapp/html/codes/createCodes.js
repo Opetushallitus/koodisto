@@ -43,10 +43,6 @@ app.factory('CodesCreatorModel', function($location, RootCodes, $modal) {
             return false;
         };
 
-        this.languageSpecificValue = function(fieldArray, fieldName, language) {
-            return getLanguageSpecificValue(fieldArray, fieldName, language);
-        };
-
     };
 
     return model;

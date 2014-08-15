@@ -14,6 +14,7 @@ app.factory('ViewCodesGroupModel', function($location, $modal, CodesGroupByUri) 
                 if (result.koodistos.length === 0) {
                     model.deleteState = "";
                 }
+                model.name = getLanguageSpecificValueOrValidValue( model.codesgroup.koodistoRyhmaMetadatas , 'nimi', 'FI');
             });
         };
 
@@ -59,9 +60,5 @@ function ViewCodesGroupController($scope, $location, $routeParams, ViewCodesGrou
 
     $scope.cancelconfirmdeletecodesgroup = function() {
         $scope.model.deleteCodesGroupModalInstance.dismiss('cancel');
-    };
-
-    $scope.getLanguageSpecificValue = function(fieldArray,fieldName,language) {
-        return getLanguageSpecificValue(fieldArray,fieldName,language);
     };
 }

@@ -53,10 +53,12 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 model.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
                 model.namesv = getLanguageSpecificValue(result.metadata, 'nimi', 'SV');
                 model.nameen = getLanguageSpecificValue(result.metadata, 'nimi', 'EN');
+                model.name = getLanguageSpecificValueOrValidValue(result.metadata, 'nimi', 'FI');
 
                 model.descriptionfi = getLanguageSpecificValue(result.metadata, 'kuvaus', 'FI');
                 model.descriptionsv = getLanguageSpecificValue(result.metadata, 'kuvaus', 'SV');
                 model.descriptionen = getLanguageSpecificValue(result.metadata, 'kuvaus', 'EN');
+                model.description = getLanguageSpecificValueOrValidValue(result.metadata, 'kuvaus', 'FI');
 
                 model.instructionsfi = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'FI');
                 model.instructionssv = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'SV');
@@ -127,7 +129,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             }, function(result) {
                 var ce = {};
                 ce.uri = codes.codesUri;
-                ce.name = getLanguageSpecificValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
+                ce.name = getLanguageSpecificValueOrValidValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
                 ce.versio = codes.codesVersion;
                 list.push(ce);
             });
@@ -170,7 +172,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 codeElementUri : codeElementUri
             }, function(result) {
                 for (var i = 0; i < result.length; i++) {
-                    result[i].name = getLanguageSpecificValue(result[i].metadata, 'nimi', 'FI');
+                    result[i].name = getLanguageSpecificValueOrValidValue(result[i].metadata, 'nimi', 'FI');
                     list.push(result[i]);
                     model.searchResultsLength++;
                 }
@@ -370,10 +372,6 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
         $scope.model.alerts.push(alert);
 
     }
-
-    $scope.getLanguageSpecificValue = function(fieldArray, fieldName, language) {
-        return getLanguageSpecificValue(fieldArray, fieldName, language);
-    };
 
     // Pagination
 

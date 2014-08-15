@@ -82,7 +82,7 @@ app.factory('Treemodel', function($resource, RootCodes, MyRoles, CodesMatcher) {
             }
         },
         languageSpecificValue : function(fieldArray, fieldName, language) {
-            return getLanguageSpecificValue(fieldArray, fieldName, language);
+            return getLanguageSpecificValueOrValidValue(fieldArray, fieldName, language);
         }
     };
     modelInterface.refresh();

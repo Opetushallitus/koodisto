@@ -7,16 +7,7 @@ app.factory('CodeElementCreatorModel', function($location) {
         this.init = function() {
             this.alerts = [];
         };
-
-
-        this.languageSpecificValue = function(fieldArray,fieldName,language) {
-            return getLanguageSpecificValue(fieldArray,fieldName,language);
-        };
-
-
     };
-
-
     return model;
 });
 

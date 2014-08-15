@@ -161,7 +161,7 @@
                     ng-required="!namesv && !nameen || shortnamefi || descriptionfi" />
                 <span class="text-error" ng-if="form.namefi.$error.required"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
                     <span ng-if="!namesv && !nameen">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namesv && !nameen">{{errorMessage}}</span>
+                    <span ng-if="!(!namesv && !nameen)">{{errorMessage}}</span>
                 </span>
             </div>
         </div>
@@ -171,7 +171,7 @@
                     ng-required="!namefi && !nameen || shortnamesv || descriptionsv" />
                 <span class="text-error" ng-if="form.namesv.$error.required"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
                     <span ng-if="!namefi && !nameen">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namefi && !nameen">{{errorMessage}}</span>
+                    <span ng-if="!(!namefi && !nameen)">{{errorMessage}}</span>
                 </span>
             </div>
         </div>

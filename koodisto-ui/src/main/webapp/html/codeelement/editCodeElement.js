@@ -66,41 +66,41 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                 model.codeElement = result;
                 scope.codeValue = result.koodiArvo;
 
-                scope.namefi = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
-                scope.namesv = model.languageSpecificValue(result.metadata, 'nimi', 'SV');
-                scope.nameen = model.languageSpecificValue(result.metadata, 'nimi', 'EN');
+                scope.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
+                scope.namesv = getLanguageSpecificValue(result.metadata, 'nimi', 'SV');
+                scope.nameen = getLanguageSpecificValue(result.metadata, 'nimi', 'EN');
 
-                scope.shortnamefi = model.languageSpecificValue(result.metadata, 'lyhytNimi', 'FI');
-                scope.shortnamesv = model.languageSpecificValue(result.metadata, 'lyhytNimi', 'SV');
-                scope.shortnameen = model.languageSpecificValue(result.metadata, 'lyhytNimi', 'EN');
+                scope.shortnamefi = getLanguageSpecificValue(result.metadata, 'lyhytNimi', 'FI');
+                scope.shortnamesv = getLanguageSpecificValue(result.metadata, 'lyhytNimi', 'SV');
+                scope.shortnameen = getLanguageSpecificValue(result.metadata, 'lyhytNimi', 'EN');
 
-                scope.descriptionfi = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
-                scope.descriptionsv = model.languageSpecificValue(result.metadata, 'kuvaus', 'SV');
-                scope.descriptionen = model.languageSpecificValue(result.metadata, 'kuvaus', 'EN');
+                scope.descriptionfi = getLanguageSpecificValue(result.metadata, 'kuvaus', 'FI');
+                scope.descriptionsv = getLanguageSpecificValue(result.metadata, 'kuvaus', 'SV');
+                scope.descriptionen = getLanguageSpecificValue(result.metadata, 'kuvaus', 'EN');
 
-                scope.instructionsfi = model.languageSpecificValue(result.metadata, 'kayttoohje', 'FI');
-                scope.instructionssv = model.languageSpecificValue(result.metadata, 'kayttoohje', 'SV');
-                scope.instructionsen = model.languageSpecificValue(result.metadata, 'kayttoohje', 'EN');
+                scope.instructionsfi = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'FI');
+                scope.instructionssv = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'SV');
+                scope.instructionsen = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'EN');
 
-                scope.conceptfi = model.languageSpecificValue(result.metadata, 'kasite', 'FI');
-                scope.conceptsv = model.languageSpecificValue(result.metadata, 'kasite', 'SV');
-                scope.concepten = model.languageSpecificValue(result.metadata, 'kasite', 'EN');
+                scope.conceptfi = getLanguageSpecificValue(result.metadata, 'kasite', 'FI');
+                scope.conceptsv = getLanguageSpecificValue(result.metadata, 'kasite', 'SV');
+                scope.concepten = getLanguageSpecificValue(result.metadata, 'kasite', 'EN');
 
-                scope.totakenoticeoffi = model.languageSpecificValue(result.metadata, 'huomioitavaKoodi', 'FI');
-                scope.totakenoticeofsv = model.languageSpecificValue(result.metadata, 'huomioitavaKoodi', 'SV');
-                scope.totakenoticeofen = model.languageSpecificValue(result.metadata, 'huomioitavaKoodi', 'EN');
+                scope.totakenoticeoffi = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodi', 'FI');
+                scope.totakenoticeofsv = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodi', 'SV');
+                scope.totakenoticeofen = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodi', 'EN');
 
-                scope.containssignificancefi = model.languageSpecificValue(result.metadata, 'sisaltaaMerkityksen', 'FI');
-                scope.containssignificancesv = model.languageSpecificValue(result.metadata, 'sisaltaaMerkityksen', 'SV');
-                scope.containssignificanceen = model.languageSpecificValue(result.metadata, 'sisaltaaMerkityksen', 'EN');
+                scope.containssignificancefi = getLanguageSpecificValue(result.metadata, 'sisaltaaMerkityksen', 'FI');
+                scope.containssignificancesv = getLanguageSpecificValue(result.metadata, 'sisaltaaMerkityksen', 'SV');
+                scope.containssignificanceen = getLanguageSpecificValue(result.metadata, 'sisaltaaMerkityksen', 'EN');
 
-                scope.doesnotcontainsignificancefi = model.languageSpecificValue(result.metadata, 'eiSisallaMerkitysta', 'FI');
-                scope.doesnotcontainsignificancesv = model.languageSpecificValue(result.metadata, 'eiSisallaMerkitysta', 'SV');
-                scope.doesnotcontainsignificanceen = model.languageSpecificValue(result.metadata, 'eiSisallaMerkitysta', 'EN');
+                scope.doesnotcontainsignificancefi = getLanguageSpecificValue(result.metadata, 'eiSisallaMerkitysta', 'FI');
+                scope.doesnotcontainsignificancesv = getLanguageSpecificValue(result.metadata, 'eiSisallaMerkitysta', 'SV');
+                scope.doesnotcontainsignificanceen = getLanguageSpecificValue(result.metadata, 'eiSisallaMerkitysta', 'EN');
 
-                scope.containscodesfi = model.languageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'FI');
-                scope.containscodessv = model.languageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'SV');
-                scope.containscodesen = model.languageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'EN');
+                scope.containscodesfi = getLanguageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'FI');
+                scope.containscodessv = getLanguageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'SV');
+                scope.containscodesen = getLanguageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'EN');
 
                 model.codeElement.withinCodeElements.forEach(function(codeElement) {
                     model.extractAndPushCodeElementInformation(codeElement, model.withinCodeElements);
@@ -118,16 +118,13 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
         this.extractAndPushCodeElementInformation = function(codeElement, list) {
             var ce = {};
             ce.uri = codeElement.codeElementUri;
-            ce.name = model.languageSpecificValue(codeElement.relationMetadata, 'nimi', 'FI');
+            ce.name = getLanguageSpecificValueOrValidValue(codeElement.relationMetadata, 'nimi', 'FI');
             ce.value = codeElement.codeElementValue;
             ce.versio = codeElement.codeElementVersion;
-            ce.codesname = model.languageSpecificValue(codeElement.parentMetadata, 'nimi', 'FI');
+            ce.codesname = getLanguageSpecificValueOrValidValue(codeElement.parentMetadata, 'nimi', 'FI');
             list.push(ce);
         };
 
-        this.languageSpecificValue = function(fieldArray, fieldName, language) {
-            return getLanguageSpecificValue(fieldArray, fieldName, language);
-        };
         this.removeFromWithinCodeElements = function(codeelement) {
             model.withinRelationToRemove = codeelement;
 
@@ -539,7 +536,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                     return codeElement.koodiUri == element.uri;
                 }).length > 0;
                 ce.value = codeElement.koodiArvo;
-                ce.name = $scope.model.languageSpecificValue(codeElement.metadata, 'nimi', 'FI');
+                ce.name = getLanguageSpecificValueOrValidValue(codeElement.metadata, 'nimi', 'FI');
                 if ($scope.selectallcodelements && !ce.checked) {
                     $scope.selectallcodelements = false;
                 }

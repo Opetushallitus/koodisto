@@ -3,7 +3,7 @@
         <h3>{{'codeelement.editpage.modal.header' | i18n}}</h3>
     </div>
     <div class="modal-body">
-        Olet poistamassa koodia {{ model.languageSpecificValue( model.codeElement.metadata , 'nimi', 'FI') }}, haluatko jatkaa?
+        Olet poistamassa koodia {{ model.name }}, haluatko jatkaa?
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="okconfirmdeletecodeelement()">OK</button>
@@ -20,7 +20,7 @@
 
     <div class="row-fluid">
         <div class="offset2 span10 pull-left">
-            <h3>{{ model.languageSpecificValue( model.codeElement.metadata , 'nimi', 'FI') }}&nbsp;({{ model.codeElement.koodiArvo }})</h3>
+            <h3>{{ model.name }}&nbsp;({{ model.codeElement.koodiArvo }})</h3>
         </div>
     </div>
 
@@ -37,8 +37,9 @@
             {{'codeelement.viewpage.name' | i18n}}
         </div>
         <div class="span10 pull-left bold">
-            {{ model.languageSpecificValue( model.codeElement.metadata , 'nimi', 'FI') }}<br>
-            {{ model.languageSpecificValue( model.codeElement.metadata , 'nimi', 'SV') }}
+            <span ng-if="model.namefi != ''">{{ model.namefi }}</span><br>
+            <span ng-if="model.namesv != ''">{{ model.namesv }}</span><br>
+            <span ng-if="model.nameen != ''">{{ model.nameen }}</span>
         </div>
     </div>
     <div class="row-fluid">
@@ -79,7 +80,9 @@
             {{'codeelement.viewpage.shortname' | i18n}}
         </div>
         <div class="span10 pull-left bold">
-            {{ model.languageSpecificValue( model.codeElement.metadata , 'lyhytNimi', 'FI') }}
+            <span ng-if="model.shortnamefi != ''">{{ model.shortnamefi }}</span><br>
+            <span ng-if="model.shortnamesv != ''">{{ model.shortnamesv }}</span><br>
+            <span ng-if="model.shortnameen != ''">{{ model.shortnameen }}</span>
         </div>
     </div>
     <div class="row-fluid">
@@ -87,8 +90,9 @@
             {{'codeelement.viewpage.description' | i18n}}
         </div>
         <div class="span10 pull-left bold">
-            {{ model.languageSpecificValue( model.codeElement.metadata , 'kuvaus', 'FI') }}<br>
-            {{ model.languageSpecificValue( model.codeElement.metadata , 'kuvaus', 'SV') }}
+            <span ng-if="model.descriptionfi != ''">{{ model.descriptionfi }}</span><br>
+            <span ng-if="model.descriptionsv != ''">{{ model.descriptionsv }}</span><br>
+            <span ng-if="model.descriptionen != ''">{{ model.descriptionen }}</span>
         </div>
     </div>
     <div class="row-fluid">

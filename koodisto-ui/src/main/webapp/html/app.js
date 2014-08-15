@@ -443,6 +443,21 @@ function getLanguageSpecificValue(fieldArray, fieldName, language) {
     return "";
 }
 
+function getLanguageSpecificValueOrValidValue(fieldArray, fieldName, language) {
+    var specificValue = getLanguageSpecificValue(fieldArray, fieldName, language);
+
+    if (specificValue == "" && language != "FI"){
+        specificValue = getLanguageSpecificValue(fieldArray, fieldName, "FI");
+    }
+    if (specificValue == "" && language != "SV"){
+        specificValue = getLanguageSpecificValue(fieldArray, fieldName, "SV");
+    }
+    if (specificValue == "" && language != "EN"){
+        specificValue = getLanguageSpecificValue(fieldArray, fieldName, "EN");
+    }
+    return specificValue;
+}
+
 // Pagination
 
 // Filter used to slice array to start pagination from correct location
