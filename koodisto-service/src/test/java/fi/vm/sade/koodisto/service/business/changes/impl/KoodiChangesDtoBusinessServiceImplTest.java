@@ -2,12 +2,14 @@ package fi.vm.sade.koodisto.service.business.changes.impl;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kubek2k.springockito.annotations.ReplaceWithMock;
 import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -17,6 +19,7 @@ import fi.vm.sade.koodisto.dto.KoodiChangesDto;
 import fi.vm.sade.koodisto.dto.KoodiChangesDto.MuutosTila;
 import fi.vm.sade.koodisto.dto.SimpleKoodiMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.Tila;
@@ -207,12 +210,22 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     
     @Test
     public void usesLatestHyvaksyttyVersionForComparison() {
-        
+        int versio = 1;
+        String changedSecondDescription = "jumbo";
+        KoodiVersio first = givenKoodiVersioWithMetadata(versio, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
+        KoodiVersio second = givenKoodiVersioWithMetadata(versio + 1, givenKoodiMetadata(NAME, SHORT_NAME, changedSecondDescription, Kieli.FI));
+        KoodiVersio third = givenKoodiVersioWithTilaAndMetadata(versio + 2 , Tila.LUONNOS, givenKoodiMetadata(NAME, SHORT_NAME, "huono kuvaus", Kieli.FI));
+        assertResultWithTila(versio + 1, changedSecondDescription, null, givenResultWithMultipleKoodiVersios(versio, true, first, second, third));
     }
-    
+
     @Test
     public void doesNotUseLatestAcceptedVersionForComparison() {
-        
+        int versio = 1;
+        String changedThirdDescription = "huono kuvaus";
+        KoodiVersio first = givenKoodiVersioWithMetadata(versio, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
+        KoodiVersio second = givenKoodiVersioWithMetadata(versio + 1, givenKoodiMetadata(NAME, SHORT_NAME, "jumbo", Kieli.FI));
+        KoodiVersio third = givenKoodiVersioWithTilaAndMetadata(versio + 2 , Tila.LUONNOS, givenKoodiMetadata(NAME, SHORT_NAME, changedThirdDescription, Kieli.FI));
+        assertResultWithTila(versio + 2, changedThirdDescription, Tila.LUONNOS, givenResultWithMultipleKoodiVersios(versio, false, first, second, third));
     }
     
     @Test
@@ -223,6 +236,13 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     @Test
     public void returnsHasChangedIfRelationsHasBeenRemoved() {
         
+    }
+    
+    private void assertResultWithTila(int expectedVersion, String expectedDescription, Tila expectedTila, KoodiChangesDto result) {
+        assertEquals(expectedTila, result.tila);
+        assertEquals(expectedVersion, result.viimeisinVersio.intValue());
+        assertEquals(1, result.muuttuneetTiedot.size());
+        assertEquals(expectedDescription, result.muuttuneetTiedot.get(0).kuvaus);
     }
     
     private void assertResultIsNoChanges(KoodiChangesDto result, int versio) {
@@ -250,6 +270,21 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         return service.getChangesDto(KOODI_URI, versio, false);
     }
     
+    private KoodiChangesDto givenResultWithMultipleKoodiVersios(Integer versio, boolean compareToLatestAccepted, KoodiVersio ... versios) {
+        if (compareToLatestAccepted) {
+            Koodi koodi = Mockito.mock(Koodi.class);
+            when(koodi.getKoodiVersios()).thenReturn(new HashSet<KoodiVersio>(Arrays.asList(versios)));
+            when(koodiService.getKoodi(KOODI_URI)).thenReturn(koodi);
+        } else {
+            KoodiVersio latest = null;
+            for(KoodiVersio kv : versios) {
+                latest = latest == null || kv.getVersio() > latest.getVersio() ? kv : latest;
+            }
+            when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
+        }
+        return service.getChangesDto(KOODI_URI, versio, compareToLatestAccepted);
+    }
+    
     private KoodiVersio givenKoodiVersio(Integer versio) {
         return DtoFactory.createKoodiVersioWithUriAndVersioWithoutMetadatas(KOODI_URI, versio).build();        
     }
@@ -260,6 +295,12 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     
     private KoodiVersio givenKoodiVersioWithMetadata(Integer versio, KoodiMetadata ... datas) {
         return DtoFactory.createKoodiVersioWithUriAndVersioWithoutMetadatas(KOODI_URI, versio).addMetadata(datas).build();
+    }
+    
+    private KoodiVersio givenKoodiVersioWithTilaAndMetadata(Integer versio, Tila tila, KoodiMetadata ... datas) {
+        KoodiVersio kv = givenKoodiVersioWithMetadata(versio, datas);
+        kv.setTila(tila);
+        return kv;
     }
     
     private KoodiMetadata givenKoodiMetadata(String name, String shortName, String description, Kieli language) {

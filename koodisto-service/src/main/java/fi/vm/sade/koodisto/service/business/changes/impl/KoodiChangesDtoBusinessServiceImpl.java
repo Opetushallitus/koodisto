@@ -17,6 +17,7 @@ import fi.vm.sade.koodisto.dto.KoodiChangesDto;
 import fi.vm.sade.koodisto.dto.KoodiChangesDto.MuutosTila;
 import fi.vm.sade.koodisto.dto.SimpleKoodiMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.Tila;
@@ -32,13 +33,31 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
     @Override
     public KoodiChangesDto getChangesDto(String uri, Integer versio, boolean compareToLatestAccepted) {
         KoodiVersio koodiVersio = service.getKoodiVersio(uri, versio);
-        KoodiVersio latestKoodiVersio = service.getLatestKoodiVersio(uri);
+        KoodiVersio latestKoodiVersio = fetchLatestDesiredCodeVersion(uri, compareToLatestAccepted);
+        return constructChangesDto(koodiVersio, latestKoodiVersio);
+    }
+
+    private KoodiVersio fetchLatestDesiredCodeVersion(String uri, boolean compareToLatestAccepted) {
+        if (compareToLatestAccepted) {
+            Koodi koodi = service.getKoodi(uri);
+            KoodiVersio latestAccepted = null;
+            for (KoodiVersio kv : koodi.getKoodiVersios()) {
+                if ((latestAccepted == null || latestAccepted.getVersio() < kv.getVersio()) && Tila.HYVAKSYTTY.equals(kv.getTila())) {
+                    latestAccepted = kv;
+                }
+            }
+            return latestAccepted;
+        }
+        return service.getLatestKoodiVersio(uri);
+    }
+
+    private KoodiChangesDto constructChangesDto(KoodiVersio koodiVersio, KoodiVersio latestKoodiVersio) {
         List<SimpleKoodiMetadataDto> changedMetas = changedMetadatas(koodiVersio.getMetadatas(), latestKoodiVersio.getMetadatas());
         List<SimpleKoodiMetadataDto> removedMetas = removedMetadatas(koodiVersio.getMetadatas(), latestKoodiVersio.getMetadatas());
         DatesChangedHandler dateHandler = DatesChangedHandler.setDatesHaveChanged(koodiVersio.getVoimassaAlkuPvm(), koodiVersio.getVoimassaLoppuPvm(),
                 latestKoodiVersio.getVoimassaAlkuPvm(), latestKoodiVersio.getVoimassaLoppuPvm());
         Tila tilaHasChanged = latestKoodiVersio.getTila().equals(koodiVersio.getTila()) ? null : latestKoodiVersio.getTila();
-        MuutosTila muutosTila = anyChanges(versio, latestKoodiVersio.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), tilaHasChanged);
+        MuutosTila muutosTila = anyChanges(koodiVersio.getVersio(), latestKoodiVersio.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), tilaHasChanged);
         return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, null, null, latestKoodiVersio.getPaivitysPvm(), 
                 dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, tilaHasChanged);
     }
