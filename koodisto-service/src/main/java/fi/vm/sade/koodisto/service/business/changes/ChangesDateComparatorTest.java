@@ -39,6 +39,11 @@ public class ChangesDateComparatorTest {
         assertEquals(3, comparator.getClosestMatchingEntity(new Date(DATE_AFTER_THIRD), givenEntities()).version);
     }
     
+    @Test
+    public void returnsSecondVersionWhenDateMatchesItExactly() {
+        assertEquals(2, comparator.getClosestMatchingEntity(new Date(DATE_13_10_2013), givenEntities()).version);
+    }
+    
     
     private List<TestEntity> givenEntities() {
         return Arrays.asList(new TestEntity(1, new Date(DATE_23_9_2013)),

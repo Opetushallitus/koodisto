@@ -24,7 +24,8 @@ public abstract class ChangesDateComparator<C> {
         DateTime closestMatchingDate = getDateFromEntity(closestMatching);
         if (toCompare.isBefore(entityDate) && entityDate.isBefore(closestMatchingDate)
                 || toCompare.isAfter(entityDate) && toCompare.isBefore(closestMatchingDate)
-                || toCompare.isAfter(entityDate) && entityDate.isAfter(closestMatchingDate)) {
+                || toCompare.isAfter(entityDate) && entityDate.isAfter(closestMatchingDate)
+                || toCompare.isEqual(entityDate)) {
             return entity;
         }
         
