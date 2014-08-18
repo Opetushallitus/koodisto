@@ -130,7 +130,7 @@
     </div>
 </script>
 
-<div class="container" ng-if="loadingReady">
+<div class="container">
     <div class="row-fluid">
         <div class="span12">
             <h1>{{'codeelement.editpage.header' | i18n}}</h1>
@@ -159,7 +159,7 @@
             <div class="controls">
                 <input id="name_fi" type="text" maxlength="256" class="width-30" ng-model="namefi" name="namefi" placeholder="{{'codes.finnish' | i18n}}"
                     ng-required="!namesv && !nameen || shortnamefi || descriptionfi" />
-                <span class="text-error" ng-if="form.namefi.$error.required"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
+                <span class="text-error" ng-if="form.namefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
                     <span ng-if="!namesv && !nameen">{{errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!namesv && !nameen)">{{errorMessage}}</span>
                 </span>
@@ -169,7 +169,7 @@
             <div class="controls">
                 <input id="name_sv" type="text" maxlength="256" class="width-30" ng-model="namesv" name="namesv" placeholder="{{'codes.swedish' | i18n}}"
                     ng-required="!namefi && !nameen || shortnamesv || descriptionsv" />
-                <span class="text-error" ng-if="form.namesv.$error.required"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
+                <span class="text-error" ng-if="form.namesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
                     <span ng-if="!namefi && !nameen">{{errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!namefi && !nameen)">{{errorMessage}}</span>
                 </span>
@@ -180,7 +180,7 @@
             <div class="controls">
                 <input id="name_en" type="text" maxlength="256" class="width-30" ng-model="nameen" name="nameen" placeholder="{{'codes.english' | i18n}}"
                     ng-required="!namefi && !namesv || shortnameen || descriptionen" />
-                <span class="text-error" ng-if="form.nameen.$error.required"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
+                <span class="text-error" ng-if="form.nameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
                     <span ng-if="!namefi && !namesv">{{errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!namefi && !namesv)">{{errorMessage}}</span>
                 </span>
@@ -191,7 +191,7 @@
             <label for="code" class="control-label">{{'codeelement.editpage.codevalue' | i18n}}</label>
             <div class="controls">
                 <input id="code" type="text" maxlength="256" class="width-30" ng-model="codeValue" name="codeValue" required />
-                <span class="text-error" ng-if="form.codeValue.$error.required"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.codeValue.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -205,7 +205,7 @@
                 <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codeElement.voimassaLoppuPvm"
                     min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" />
                 <i class="icon-calendar"></i>
-                <span class="text-error" ng-if="form.voimassaAlkuPvm.$error.required"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.voimassaAlkuPvm.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -221,21 +221,21 @@
             <div class="controls">
                 <input id="shortname_fi" type="text" maxlength="256" class="width-30" ng-model="shortnamefi" name="shortnamefi"
                     placeholder="{{'codes.finnish' | i18n}}" ng-required="namefi" />
-                <span class="text-error" ng-if="form.shortnamefi.$error.required"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.shortnamefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
                 <input id="shortname_sv" type="text" maxlength="256" class="width-30" ng-model="shortnamesv" name="shortnamesv"
                     placeholder="{{'codes.swedish' | i18n}}" ng-required="namesv" />
-                <span class="text-error" ng-if="form.shortnamesv.$error.required"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.shortnamesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
                 <input id="shortname_en" type="text" maxlength="256" class="width-30" ng-model="shortnameen" name="shortnameen"
                     placeholder="{{'codes.english' | i18n}}" ng-required="nameen" />
-                <span class="text-error" ng-if="form.shortnameen.$error.required"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.shortnameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -251,7 +251,7 @@
             <div class="controls">
                 <textarea id="description_fi" maxlength="2048" class="width-30" ng-model="descriptionfi" name="descriptionfi"
                     placeholder="{{'codes.finnish' | i18n}}" ng-required="namefi"></textarea>
-                <span class="text-error" ng-if="form.descriptionfi.$error.required"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.descriptionfi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -259,7 +259,7 @@
             <div class="controls">
                 <textarea id="description_sv" maxlength="2048" class="width-30" ng-model="descriptionsv" name="descriptionsv"
                     placeholder="{{'codes.swedish' | i18n}}" ng-required="namesv"></textarea>
-                <span class="text-error" ng-if="form.descriptionsv.$error.required"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.descriptionsv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -267,7 +267,7 @@
             <div class="controls">
                 <textarea id="description_en" maxlength="2048" class="width-30" ng-model="descriptionen" name="descriptionen"
                     placeholder="{{'codes.english' | i18n}}" ng-required="nameen"></textarea>
-                <span class="text-error" ng-if="form.descriptionen.$error.required"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.descriptionen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
