@@ -35,6 +35,8 @@ import fi.vm.sade.koodisto.dao.KoodinSuhdeDAO;
 import fi.vm.sade.koodisto.dao.KoodistoDAO;
 import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
 import fi.vm.sade.koodisto.dao.KoodistoVersioKoodiVersioDAO;
+import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
+import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
@@ -67,6 +69,7 @@ import fi.vm.sade.koodisto.service.business.exception.SearchCriteriaEmptyExcepti
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
 import fi.vm.sade.koodisto.service.impl.KoodistoRole;
+import fi.vm.sade.koodisto.service.koodisto.rest.CodeElementResourceConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoVersioSelectionType;
@@ -118,7 +121,10 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     @Autowired
     private UriTransliterator uriTransliterator;
-
+    
+    @Autowired
+    private CodeElementResourceConverter converter;
+    
     @Override
     public KoodiVersioWithKoodistoItem createKoodi(String koodistoUri, CreateKoodiDataType createKoodiData) {
         KoodiVersioWithKoodistoItem createKoodiNonFlush = createKoodiNonFlush(koodistoUri, createKoodiData);
@@ -1004,5 +1010,90 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     @Override
     public boolean isLatestKoodiVersio(String koodiUri, Integer versio) {
         return koodiVersioDAO.isLatestKoodiVersio(koodiUri, versio);
+    }
+
+    @Override
+    public KoodiVersio saveKoodi(ExtendedKoodiDto koodiDTO) {
+        
+        UpdateKoodiDataType updateKoodiData = converter.convertFromDTOToUpdateKoodiDataType(koodiDTO);
+        updateKoodi(updateKoodiData, true);
+        KoodiVersio latest = getLatestKoodiVersio(koodiDTO.getKoodiUri());
+        
+        Set<KoodinSuhde> existingAlaKoodis = latest.getAlakoodis();
+        Set<KoodinSuhde> existingYlaKoodis = latest.getYlakoodis();
+
+        HashSet<String> existingIncludesUris = new HashSet<String>();
+        HashSet<String> existingWithinUris = new HashSet<String>();
+        HashSet<String> existingLevelsWithUris = new HashSet<String>();
+        
+        for (KoodinSuhde koodinSuhde : existingAlaKoodis) {
+            if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY)) {
+                existingIncludesUris.add(koodinSuhde.getAlakoodiVersio().getKoodi().getKoodiUri());
+            } else if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)) {
+                existingLevelsWithUris.add(koodinSuhde.getAlakoodiVersio().getKoodi().getKoodiUri());
+            }
+        }
+        for (KoodinSuhde koodinSuhde : existingYlaKoodis) {
+            if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY)) {
+                existingWithinUris.add(koodinSuhde.getYlakoodiVersio().getKoodi().getKoodiUri());
+            } else if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)) {
+                existingLevelsWithUris.add(koodinSuhde.getYlakoodiVersio().getKoodi().getKoodiUri());
+            }
+        }
+        
+        List<String> removedIncludesUris = filterRemovedRelationUrisToSet(koodiDTO.getIncludesCodeElements(), existingIncludesUris);
+        List<String> removedWithinUris = filterRemovedRelationUrisToSet(koodiDTO.getWithinCodeElements(), existingWithinUris);
+        List<String> removedLevelsWithUris = filterRemovedRelationUrisToSet(koodiDTO.getLevelsWithCodeElements(), existingLevelsWithUris);
+
+        if(removedWithinUris.size() > 0){
+            removeRelation(koodiDTO.getKoodiUri(), removedWithinUris, SuhteenTyyppi.SISALTYY, true);
+        }
+        if(removedLevelsWithUris.size() > 0){
+            removeRelation(koodiDTO.getKoodiUri(), removedLevelsWithUris, SuhteenTyyppi.RINNASTEINEN, false);
+        }
+        if(removedIncludesUris.size() > 0){
+            removeRelation(koodiDTO.getKoodiUri(), removedIncludesUris, SuhteenTyyppi.SISALTYY, false);
+        }
+
+        
+        List<String> addedIncludesUris = filterNewRelationUrisToSet(koodiDTO.getIncludesCodeElements(), existingIncludesUris);
+        List<String> addedWithinUris = filterNewRelationUrisToSet(koodiDTO.getWithinCodeElements(), existingWithinUris);
+        List<String> addedLevelsWithUris = filterNewRelationUrisToSet(koodiDTO.getLevelsWithCodeElements(), existingLevelsWithUris);
+        
+        if(addedWithinUris.size() > 0){
+            addRelation(koodiDTO.getKoodiUri(), addedWithinUris, SuhteenTyyppi.SISALTYY, true);
+        }
+        if(addedLevelsWithUris.size() > 0){
+            addRelation(koodiDTO.getKoodiUri(), addedLevelsWithUris, SuhteenTyyppi.RINNASTEINEN, false);
+        }
+        if(addedIncludesUris.size() > 0){
+            addRelation(koodiDTO.getKoodiUri(), addedIncludesUris, SuhteenTyyppi.SISALTYY, false);
+        }
+        return getLatestKoodiVersio(koodiDTO.getKoodiUri());
+    
+    }
+
+    private List<String> filterRemovedRelationUrisToSet(List<RelationCodeElement> newRelations, HashSet<String> existingUris) {
+        ArrayList<String> toBeRemoved = new ArrayList<String>();
+        for (String existingUri : existingUris) {
+            boolean found = false;
+            for (RelationCodeElement koodinSuhde : newRelations) {
+                found = found || koodinSuhde.codeElementUri.equals(existingUri);
+            }
+            if(!found){
+                toBeRemoved.add(existingUri);
+            }
+        }
+        return toBeRemoved;
+    }
+
+    private List<String> filterNewRelationUrisToSet(List<RelationCodeElement> newRelations, HashSet<String> existingUris) {
+        ArrayList<String> toBeAdded = new ArrayList<String>();
+        for (RelationCodeElement koodinSuhde : newRelations) {
+            if(!existingUris.contains(koodinSuhde.codeElementUri)){
+                toBeAdded.add(koodinSuhde.codeElementUri);
+            }
+        }
+        return toBeAdded;
     }
 }

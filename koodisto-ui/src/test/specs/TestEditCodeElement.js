@@ -172,14 +172,11 @@ describe(
 
                     scope.okcodeelement();
                     var data = {"codeElementUri":"1organisaatiotesti_ykkonen","relationType":"SISALTYY","isChild":true,"relations":["2organisaatiotesti_kakkonen"]};
-                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelations", data)
-                            .respond(200, "");
-                    mockBackend.flush();
-                    expect(scope.model.alerts.length).toEqual(0);
                     expect(scope.model.withinCodeElements.length).toEqual(2); // added to list
                     expect(scope.model.codeelementmodalInstance.close).toHaveBeenCalledWith();
                 });
 
+                /* Replaced by /save
                 it("should add alert if backend fails", function() {
                     expect(scope.model.withinCodeElements.length).toEqual(1);
                     scope.okcodeelement();
@@ -191,6 +188,7 @@ describe(
                     expect(scope.model.alerts.length).toEqual(1); // no change to list
                     expect(scope.model.codeelementmodalInstance.close).toHaveBeenCalledWith();
                 });
+                */
 
             });
 
@@ -248,11 +246,8 @@ describe(
                                         "uri" : "osoitetarra",
                                         "checked" : false
                                     } ];
-                                    var request = {"codeElementUri":"posti","relationType":"SISALTYY","isChild":true,"relations":["postimerkki","kirjekuori","osoitetarra"]};
                                     scope.model.addToListName = "withincodes";
-                                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/removerelations", request).respond();
                                     scope.okcodeelement();
-                                    mockBackend.flush();
                                     expect(scope.model.withinCodeElements.length).toEqual(0);
                                 });
 
@@ -266,11 +261,8 @@ describe(
                                         "uri" : "mustepullo",
                                         "checked" : false
                                     } ];
-                                    var request = {"codeElementUri":"posti","relationType":"SISALTYY","isChild":false,"relations":["sulkakyna","mustepullo"]};
                                     scope.model.addToListName = "includescodes";
-                                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/removerelations", request).respond();
                                     scope.okcodeelement();
-                                    mockBackend.flush();
                                     expect(scope.model.includesCodeElements.length).toEqual(0);
                                 });
 
@@ -284,16 +276,8 @@ describe(
                                         "uri" : "postilaatikko",
                                         "checked" : false
                                     } ];
-                                    var request = {"codeElementUri":"posti","relationType":"RINNASTEINEN","isChild":true,"relations":["postiluukku","postilaatikko"]};
-
                                     scope.model.addToListName = "levelswithcodes";
-                                    mockBackend
-                                            .expectPOST(
-                                                    SERVICE_URL_BASE
-                                                            + "codeelement/removerelations", request)
-                                            .respond();
                                     scope.okcodeelement();
-                                    mockBackend.flush();
                                     expect(scope.model.levelsWithCodeElements.length).toEqual(0);
                                 });
 
@@ -332,7 +316,7 @@ describe(
                     mockBackend.flush();
                     scope.model.codeelementmodalInstance = {
                         close : jasmine.createSpy('modalInstance.close')
-                    }
+                    };
                 });
 
                 it("should add and remove multiple relations with relation type *within*", function() {
@@ -346,13 +330,8 @@ describe(
                         "uri" : "osoitetarra",
                         "checked" : true
                     } ];
-                    var addRequest = {"codeElementUri":"posti","relationType":"SISALTYY","isChild":true,"relations":["osoitetarra"]};
-                    var removeRequest = {"codeElementUri":"posti","relationType":"SISALTYY","isChild":true,"relations":["postimerkki","kirjekuori"]};
                     scope.model.addToListName = "withincodes";
-                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelations", addRequest).respond(200, "");
-                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/removerelations", removeRequest).respond();
                     scope.okcodeelement();
-                    mockBackend.flush();
                     expect(scope.model.withinCodeElements.length).toEqual(1);
                 });
 
@@ -368,12 +347,7 @@ describe(
                         "checked" : true
                     } ];
                     scope.model.addToListName = "includescodes";
-                    var addRequest = {"codeElementUri":"posti","relationType":"SISALTYY","isChild":false,"relations":["mustetahra"]};
-                    var removeRequest = {"codeElementUri":"posti","relationType":"SISALTYY","isChild":false,"relations":["sulkakyna"]};
-                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelations", addRequest).respond(200, "");
-                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/removerelations", removeRequest).respond();
                     scope.okcodeelement();
-                    mockBackend.flush();
                     expect(scope.model.includesCodeElements.length).toEqual(2);
                 });
 
@@ -386,17 +360,88 @@ describe(
                         "checked" : true
                     } ];
                     scope.model.addToListName = "levelswithcodes";
-                    var addRequest = {"codeElementUri":"posti","relationType":"RINNASTEINEN","isChild":true,"relations":["postiauto"]};
-                    var removeRequest = {"codeElementUri":"posti","relationType":"RINNASTEINEN","isChild":true,"relations":["postiluukku"]};
-                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/addrelations", addRequest).respond(200, "");
-                    mockBackend.expectPOST(SERVICE_URL_BASE + "codeelement/removerelations", removeRequest).respond();
                     scope.okcodeelement();
-                    mockBackend.flush();
                     expect(scope.model.levelsWithCodeElements.length).toEqual(1);
                 });
 
                 afterEach(function() {
                     expect(scope.model.codeelementmodalInstance.close).toHaveBeenCalledWith();
+                });
+            });
+            
+            describe("Saving code element", function() {
+
+                var codeWithSomeRelations = {
+                    "koodiUri" : "posti",
+                    "withinCodeElements" : [ {
+                        "codeElementUri" : "postimerkki",
+                        "codeElementVersion" : 1
+                    }, {
+                        "codeElementUri" : "kirjekuori",
+                        "codeElementVersion" : 2
+                    } ],
+                    "includesCodeElements" : [ {
+                        "codeElementUri" : "sulkakyna",
+                        "codeElementVersion" : 1
+                    }, {
+                        "codeElementUri" : "mustepullo",
+                        "codeElementVersion" : 2
+                    } ],
+                    "levelsWithCodeElements" : [ {
+                        "codeElementUri" : "postiluukku",
+                        "codeElementVersion" : 1
+                    } ]
+                };
+
+                beforeEach(function() {
+                    mockBackend.expectGET(SERVICE_URL_BASE + "codes").respond([]);
+                    mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(codeWithSomeRelations);
+                    mockBackend.flush();
+                    scope.model.codeelementmodalInstance = {
+                        close : jasmine.createSpy('modalInstance.close')
+                    };
+                });
+
+                it("should save valid codeelement.", function() {
+                    scope.model.shownCodeElements = [ {
+                        "uri" : "postimerkki",
+                        "checked" : false
+                    }, {
+                        "uri" : "kirjekuori",
+                        "checked" : false
+                    }, {
+                        "uri" : "osoitetarra",
+                        "checked" : true
+                    } ];
+                    expect(scope.model.alerts.length).toEqual(0);
+                    scope.model.addToListName = "withincodes";
+                    scope.okcodeelement();
+                    expect(scope.model.withinCodeElements.length).toEqual(1);
+                    mockBackend.expectPUT(SERVICE_URL_BASE + "codeelement/save").respond("4");
+                    scope.submit();
+                    mockBackend.flush();
+                    expect(scope.model.alerts.length).toEqual(0); // no change to list
+                });
+                
+                it("should show alert if save dows not succeed.", function() {
+                    scope.model.shownCodeElements = [ {
+                        "uri" : "postimerkki",
+                        "checked" : false
+                    }, {
+                        "uri" : "kirjekuori",
+                        "checked" : false
+                    }, {
+                        "uri" : "osoitetarra",
+                        "checked" : true
+                    } ];
+                    expect(scope.model.alerts.length).toEqual(0);
+                    scope.model.addToListName = "withincodes";
+                    scope.okcodeelement();
+                    expect(scope.model.withinCodeElements.length).toEqual(1);
+                    mockBackend.expectPUT(SERVICE_URL_BASE + "codeelement/save").respond(500);
+                    scope.submit();
+                    mockBackend.flush();
+                    expect(scope.model.alerts.length).toEqual(1);
                 });
             });
         });

@@ -789,10 +789,9 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Transactional(readOnly = true)
     public KoodistoVersio saveKoodisto(KoodistoDto codesDTO) {
 
-        KoodistoVersio latest = getLatestKoodistoVersio(codesDTO.getKoodistoUri());
         UpdateKoodistoDataType codesDTOAsDataType = converter.convertFromDTOToUpdateKoodistoDataType(codesDTO);
         updateKoodisto(codesDTOAsDataType);
-        latest = getLatestKoodistoVersio(codesDTO.getKoodistoUri());
+        KoodistoVersio latest = getLatestKoodistoVersio(codesDTO.getKoodistoUri());
         
         Set<KoodistonSuhde> alaKoodistos = latest.getAlakoodistos();
         Set<KoodistonSuhde> ylaKoodistos = latest.getYlakoodistos();

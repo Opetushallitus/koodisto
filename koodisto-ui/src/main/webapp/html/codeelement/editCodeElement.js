@@ -1,5 +1,5 @@
 app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, CodeElementByUriAndVersion, AllCodes, CodeElementsByCodesUriAndVersion,
-        RemoveRelationCodeElement, LatestCodeElementVersionsByCodeElementUri, AuthService) {
+        LatestCodeElementVersionsByCodeElementUri, AuthService) {
     var model;
     model = new function() {
         this.states = [ {
@@ -232,8 +232,8 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
     return model;
 });
 
-function CodeElementEditorController($scope, $location, $routeParams, $filter, CodeElementEditorModel, UpdateCodeElement, AddRelationCodeElement,
-        MassAddRelationCodeElements, RemoveRelationCodeElement, MassRemoveRelationCodeElements, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion, $modal,
+function CodeElementEditorController($scope, $location, $routeParams, $filter, CodeElementEditorModel,
+        CodesByUriAndVersion, SaveCodeElement, CodeElementsByCodesUriAndVersion, $modal,
         isModalController) {
 
     $scope.model = CodeElementEditorModel;
@@ -289,7 +289,11 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             koodiArvo : $scope.codeValue,
             tila : $scope.model.codeElement.tila,
             version : $scope.model.codeElement.version,
-
+            
+            withinCodeElements : $scope.changeToRelationCodeElements($scope.model.withinCodeElements),
+            includesCodeElements : $scope.changeToRelationCodeElements($scope.model.includesCodeElements),
+            levelsWithCodeElements : $scope.changeToRelationCodeElements($scope.model.levelsWithCodeElements),
+            
             metadata : []
         };
         if ($scope.namefi) {
@@ -334,8 +338,8 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                 sisaltaaKoodiston : $scope.containscodesen
             });
         }
-        UpdateCodeElement.put({}, codeelement, function(result) {
-            $location.path("/koodi/" + result.koodiUri + "/" + result.versio).search({
+        SaveCodeElement.put({}, codeelement, function(result) {
+            $location.path("/koodi/" + $scope.codeElementUri + "/" + result[0]).search({
                 edited : true
             });
         }, function(error) {
@@ -343,8 +347,19 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                 type : 'danger',
                 msg : jQuery.i18n.prop(error.data)
             };
-            scope.model.alerts.push(alert);
+            $scope.model.alerts.push(alert);
         });
+    };
+    
+    $scope.changeToRelationCodeElements = function(listToBeChanged){
+        result = [];
+        listToBeChanged.forEach(function(ce){
+            dt = {};
+            dt.codeElementUri = ce.uri;
+            dt.codeElementVersion = 1;
+            result.push(dt);
+        });
+        return result;
     };
 
     $scope.setSameValue = function(name) {
@@ -394,22 +409,8 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             }
         });
         if (found === false) {
-            var uriToBeAddedTo = modelCodeElementIsHost ? $scope.model.codeElement.koodiUri : codeElementToAdd.uri;
-            var uriToBeAdded = modelCodeElementIsHost ? codeElementToAdd.uri : $scope.model.codeElement.koodiUri;
-            AddRelationCodeElement.put({
-                codeElementUri : uriToBeAddedTo,
-                codeElementUriToAdd : uriToBeAdded,
-                relationType : relationTypeString
-            }, function(result) {
-                collectionToAddTo.push($scope.createCodes(codeElementToAdd));
-            }, function(result) {
-                var alert = {
-                    type : 'danger',
-                    msg : 'Koodien v\u00E4lisen suhteen luominen ep\u00E4onnistui'
-                };
-                $scope.model.alerts.push(alert);
-            });
-        }
+            collectionToAddTo.push($scope.createCodes(codeElementToAdd));
+         }
     };
 
     $scope.addRelationsCodeElement = function(selectedItems, collectionToAddTo, relationTypeString, modelCodeElementIsHost) {
@@ -437,24 +438,10 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             return;
         }
 
-        MassAddRelationCodeElements.put({
-            codeElementUri : $scope.model.codeElement.koodiUri,
-            relationType : relationTypeString,
-            isChild : !modelCodeElementIsHost,
-            relations : elementUrisToAdd
-        }, function(result) {
-            addedElements.forEach(function(item) {
-                collectionToAddTo.push(item);
-            });
-            $scope.model.codeelementmodalInstance.close();
-        }, function(error) {
-            var alert = {
-                type : 'danger',
-                msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
-            };
-            $scope.model.alerts.push(alert);
-            $scope.model.codeelementmodalInstance.close();
+        addedElements.forEach(function(item) {
+            collectionToAddTo.push(item);
         });
+        $scope.model.codeelementmodalInstance.close();
     };
 
     $scope.removeRelationsCodeElement = function(unselectedItems, collectionToRemoveFrom, relationTypeString, modelCodeElementIsHost) {
@@ -475,27 +462,13 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             return;
         }
 
-        MassRemoveRelationCodeElements.remove({
-            codeElementUri : $scope.model.codeElement.koodiUri,
-            relationType : relationTypeString,
-            isChild : !modelCodeElementIsHost,
-            relations : elementUrisToRemove
-        }, function(result) {
-            remainingElements = $.grep(collectionToRemoveFrom, function(element) {
-                return elementUrisToRemove.indexOf(element.uri) == -1;
-            });
-            collectionToRemoveFrom.length = 0;
-            Array.prototype.push.apply(collectionToRemoveFrom, remainingElements);
-
-            $scope.model.codeelementmodalInstance.close();
-        }, function(error) {
-            var alert = {
-                type : 'danger',
-                msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
-            };
-            $scope.model.alerts.push(alert);
-            $scope.model.codeelementmodalInstance.close();
+        remainingElements = $.grep(collectionToRemoveFrom, function(element) {
+            return elementUrisToRemove.indexOf(element.uri) == -1;
         });
+        collectionToRemoveFrom.length = 0;
+        Array.prototype.push.apply(collectionToRemoveFrom, remainingElements);
+
+        $scope.model.codeelementmodalInstance.close();
     };
 
     $scope.cancelcodeelement = function() {
@@ -616,62 +589,22 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     $scope.okconfirm = function() {
         if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
             $scope.model.withinCodeElements.forEach(function(codeElement, index) {
-                if (codeElement.uri.indexOf($scope.model.withinRelationToRemove.uri) !== -1) {
+                if (codeElement.uri === $scope.model.withinRelationToRemove.uri) {
                     $scope.model.withinCodeElements.splice(index, 1);
                 }
             });
 
-            RemoveRelationCodeElement.put({
-                codeElementUri : $scope.model.withinRelationToRemove.uri,
-                codeElementUriToRemove : $scope.model.codeElement.koodiUri,
-                relationType : "SISALTYY"
-            }, function(result) {
-
-            }, function(error) {
-                var alert = {
-                    type : 'danger',
-                    msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
-                };
-                $scope.model.alerts.push(alert);
-            });
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
             $scope.model.includesCodeElements.forEach(function(codeElement, index) {
-                if (codeElement.uri.indexOf($scope.model.includesRelationToRemove.uri) !== -1) {
+                if (codeElement.uri === $scope.model.includesRelationToRemove.uri) {
                     $scope.model.includesCodeElements.splice(index, 1);
                 }
             });
-
-            RemoveRelationCodeElement.put({
-                codeElementUri : $scope.model.codeElement.koodiUri,
-                codeElementUriToRemove : $scope.model.includesRelationToRemove.uri,
-                relationType : "SISALTYY"
-            }, function(result) {
-
-            }, function(error) {
-                var alert = {
-                    type : 'danger',
-                    msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
-                };
-                $scope.model.alerts.push(alert);
-            });
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
             $scope.model.levelsWithCodeElements.forEach(function(codeElement, index) {
-                if (codeElement.uri.indexOf($scope.model.levelsRelationToRemove.uri) !== -1) {
+                if (codeElement.uri === $scope.model.levelsRelationToRemove.uri) {
                     $scope.model.levelsWithCodeElements.splice(index, 1);
                 }
-            });
-
-            RemoveRelationCodeElement.put({
-                codeElementUri : $scope.model.levelsRelationToRemove.uri,
-                codeElementUriToRemove : $scope.model.codeElement.koodiUri,
-                relationType : "RINNASTEINEN"
-            }, function(result) {
-            }, function(error) {
-                var alert = {
-                    type : 'danger',
-                    msg : 'Koodien v\u00E4lisen suhteen poistaminen ep\u00E4onnistui'
-                };
-                $scope.model.alerts.push(alert);
             });
         }
         $scope.model.levelsRelationToRemove = null;

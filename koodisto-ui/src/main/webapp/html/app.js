@@ -381,6 +381,14 @@ app.factory('RemoveRelationCodes', function($resource) {
     });
 });
 
+app.factory('SaveCodeElement', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codeelement/save", {}, {
+        put : {
+            method : "PUT"
+        }
+    });
+});
+
 app.factory('UpdateCodeElement', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement", {}, {
         put : {
