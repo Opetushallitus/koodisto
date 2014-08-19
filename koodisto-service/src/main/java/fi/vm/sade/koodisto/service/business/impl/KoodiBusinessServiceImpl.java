@@ -1022,7 +1022,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         HashSet<String> existingWithinUris = new HashSet<String>();
         HashSet<String> existingLevelsWithChildUris = new HashSet<String>();
         HashSet<String> existingLevelsWithParentUris = new HashSet<String>();
-
         separateKoodiRelationsToUriLists(existingAlaKoodis, existingIncludesUris, existingLevelsWithChildUris, true);
         separateKoodiRelationsToUriLists(existingYlaKoodis, existingWithinUris, existingLevelsWithParentUris, false);
 
@@ -1030,8 +1029,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         List<String> removedWithinUris = filterRemovedRelationUrisToSet(koodiDTO.getWithinCodeElements(), existingWithinUris);
         List<String> removedLevelsWithChildUris = filterRemovedRelationUrisToSet(koodiDTO.getLevelsWithCodeElements(), existingLevelsWithChildUris);
         List<String> removedLevelsWithParentUris = filterRemovedRelationUrisToSet(koodiDTO.getLevelsWithCodeElements(), existingLevelsWithParentUris);
-
-        removeRelations(koodiUri, removedIncludesUris, removedWithinUris, removedLevelsWithChildUris, removedLevelsWithParentUris);
+        removeRelationsFromLists(koodiUri, removedIncludesUris, removedWithinUris, removedLevelsWithChildUris, removedLevelsWithParentUris);
 
         latest = getLatestKoodiVersio(koodiUri);
 
@@ -1041,8 +1039,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         List<String> addedIncludesUris = filterNewRelationUrisToSet(koodiDTO.getIncludesCodeElements(), existingIncludesUris);
         List<String> addedWithinUris = filterNewRelationUrisToSet(koodiDTO.getWithinCodeElements(), existingWithinUris);
         List<String> addedLevelsWithUris = filterNewRelationUrisToSet(koodiDTO.getLevelsWithCodeElements(), existingLevelsWithUris);
-
         addRelationsFromLists(koodiUri, addedIncludesUris, addedWithinUris, addedLevelsWithUris);
+
         return getLatestKoodiVersio(koodiUri);
 
     }
@@ -1071,7 +1069,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
     }
 
-    private void removeRelations(String koodiUri, List<String> removedIncludesUris, List<String> removedWithinUris, List<String> removedLevelsWithChildUris,
+    private void removeRelationsFromLists(String koodiUri, List<String> removedIncludesUris, List<String> removedWithinUris, List<String> removedLevelsWithChildUris,
             List<String> removedLevelsWithParentUris) {
         if (removedWithinUris.size() > 0) {
             removeRelation(koodiUri, removedWithinUris, SuhteenTyyppi.SISALTYY, true);
