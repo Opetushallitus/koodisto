@@ -40,7 +40,7 @@ function CodeElementCreatorController($scope, $location, $routeParams, $filter, 
             metadata : []
         };
         if ($scope.namefi){
-            codelement.metadata.push({
+            codeelement.metadata.push({
                 kieli: 'FI',
                 nimi: $scope.namefi,
                 kuvaus: $scope.descriptionfi,
