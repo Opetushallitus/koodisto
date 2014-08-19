@@ -126,47 +126,6 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             list.push(ce);
         };
 
-        this.removeFromWithinCodeElements = function(codeelement) {
-            model.withinRelationToRemove = codeelement;
-
-            model.modalInstance = $modal.open({
-                templateUrl : 'confirmModalContent.html',
-                controller : CodeElementEditorController,
-                resolve : {
-                    isModalController : function() {
-                        return true;
-                    }
-                }
-            });
-
-        };
-
-        this.removeFromIncludesCodeElements = function(codeelement) {
-            model.includesRelationToRemove = codeelement;
-            model.modalInstance = $modal.open({
-                templateUrl : 'confirmModalContent.html',
-                controller : CodeElementEditorController,
-                resolve : {
-                    isModalController : function() {
-                        return true;
-                    }
-                }
-            });
-        };
-
-        this.removeFromLevelsWithCodeElements = function(codeelement) {
-            model.levelsRelationToRemove = codeelement;
-            model.modalInstance = $modal.open({
-                templateUrl : 'confirmModalContent.html',
-                controller : CodeElementEditorController,
-                resolve : {
-                    isModalController : function() {
-                        return true;
-                    }
-                }
-            });
-        };
-
         this.filterCodes = function() {
             for (var i = 0; i < model.allCodes.length; i++) {
                 var koodistos = model.allCodes[i].koodistos;
@@ -521,6 +480,21 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             $scope.model.shownCodeElements = toBeShown;
             $scope.model.loadingCodeElements = false;
         });
+    };
+    
+    $scope.removeFromWithinCodeElements = function(codeelement) {
+        $scope.model.withinRelationToRemove = codeelement;
+        $scope.okconfirm();
+    };
+
+    $scope.removeFromIncludesCodeElements = function(codeelement) {
+        $scope.model.includesRelationToRemove = codeelement;
+        $scope.okconfirm();
+    };
+
+    $scope.removeFromLevelsWithCodeElements = function(codeelement) {
+        $scope.model.levelsRelationToRemove = codeelement;
+        $scope.okconfirm();
     };
 
     $scope.getCodeElements = function() {

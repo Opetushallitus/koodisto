@@ -18,22 +18,6 @@
 
 </script>
 
-
-<script type="text/ng-template" id="confirmModalContent.html">
-    <div class="modal-header">
-        <h3>{{'codes.createpage.modal.header' | i18n}}</h3>
-    </div>
-    <div class="modal-body">
-        Olet poistamassa koodistojen {{ namefi }} ja {{ model.withinRelationToRemove.name || model.includesRelationToRemove.name || model.levelsRelationToRemove.name }} v&auml;list&auml; yhteytt&auml;
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="okconfirm()">OK</button>
-        <button class="btn btn-warning" ng-click="cancelconfirm()">Cancel</button>
-    </div>
-</script>
-
-
-
 <div ng-include="'partials/organisaatioSelector.html'"></div>
 
 
@@ -200,7 +184,7 @@
                         <tr ng-repeat="codes in model.withinCodes | unique:'name' | orderBy:sortBy1">
                             <td class="align-center">{{codes.name}}</td>
                             <td class="align-center">{{codes.versio}}</td>
-                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromWithinCodes(codes)"></i></td>
+                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromWithinCodes(codes)"></i></td>
                         </tr>
 
                     </tbody>
@@ -231,7 +215,7 @@
                         <tr ng-repeat="codes in model.includesCodes | unique:'name' | orderBy:sortBy2">
                             <td class="align-center">{{codes.name}}</td>
                             <td class="align-center">{{codes.versio}}</td>
-                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromIncludesCodes(codes)"></i></td>
+                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromIncludesCodes(codes)"></i></td>
                         </tr>
 
                     </tbody>
@@ -262,7 +246,7 @@
                         <tr ng-repeat="codes in model.levelsWithCodes | unique:'name' | orderBy:sortBy3">
                             <td class="align-center">{{codes.name}}</td>
                             <td class="align-center">{{codes.versio}}</td>
-                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromLevelsWithCodes(codes)"></i></td>
+                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromLevelsWithCodes(codes)"></i></td>
                         </tr>
 
                     </tbody>

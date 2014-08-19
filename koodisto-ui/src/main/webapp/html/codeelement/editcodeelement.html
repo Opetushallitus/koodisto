@@ -90,19 +90,6 @@
 
 </script>
 
-<script type="text/ng-template" id="confirmModalContent.html">
-    <div class="modal-header">
-        <h3>{{'codeelement.editpage.modal.header' | i18n}}</h3>
-    </div>
-    <div class="modal-body">
-        Olet poistamassa koodin {{ namefi }} ja {{ model.withinRelationToRemove.name || model.includesRelationToRemove.name || model.levelsRelationToRemove.name }} v&auml;list&auml; yhteytt&auml;
-    </div>
-    <div class="modal-footer">
-        <button ng-disabled="clickedSubmit" class="btn btn-primary" ng-click="okconfirm()">OK</button>
-        <button ng-disabled="clickedSubmit" class="btn btn-warning" ng-click="cancelconfirm()">Cancel</button>
-    </div>
-</script>
-
 <script type="text/ng-template" id="codeElementModalContent.html">
     <div class="modal-header">
         <h3>{{'codeelement.editpage.choosecodeelements' | i18n}}</h3>
@@ -296,7 +283,7 @@
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
-                                    ng-click="model.removeFromWithinCodeElements(codeElement)"></i></td>
+                                    ng-click="removeFromWithinCodeElements(codeElement)"></i></td>
                         </tr>
 
                     </tbody>
@@ -334,7 +321,7 @@
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
-                                    ng-click="model.removeFromIncludesCodeElements(codeElement)"></i></td>
+                                    ng-click="removeFromIncludesCodeElements(codeElement)"></i></td>
                         </tr>
                     </tbody>
                 </table>
@@ -370,7 +357,7 @@
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
-                                    ng-click="model.removeFromLevelsWithCodeElements(codeElement)"></i></td>
+                                    ng-click="removeFromLevelsWithCodeElements(codeElement)"></i></td>
                         </tr>
                     </tbody>
                 </table>

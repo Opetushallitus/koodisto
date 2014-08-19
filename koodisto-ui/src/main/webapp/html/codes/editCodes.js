@@ -139,47 +139,6 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             return false;
         };
 
-        this.removeFromWithinCodes = function(codes) {
-            model.withinRelationToRemove = codes;
-
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: CodesEditorController,
-                resolve : {
-                    isModalController : function() {
-                        return true;
-                    }
-                }
-            });
-
-        };
-
-        this.removeFromIncludesCodes = function(codes) {
-            model.includesRelationToRemove = codes;
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: CodesEditorController,
-                resolve : {
-                    isModalController : function() {
-                        return true;
-                    }
-                }
-            });
-        };
-
-        this.removeFromLevelsWithCodes = function(codes) {
-            model.levelsRelationToRemove = codes;
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: CodesEditorController,
-                resolve : {
-                    isModalController : function() {
-                        return true;
-                    }
-                }
-            });
-        };
-
         this.openChildren = function(data) {
             data.open = !data.open;
             if(data.open) {
@@ -479,6 +438,21 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         $scope.model.includesRelationToRemove = null;
         $scope.model.withinRelationToRemove = null;
         $scope.model.modalInstance.close();
+    };
+    
+    $scope.removeFromWithinCodes = function(codes) {
+        $scope.model.withinRelationToRemove = codes;
+        $scope.okconfirm();
+    };
+
+    $scope.removeFromIncludesCodes = function(codes) {
+        $scope.model.includesRelationToRemove = codes;
+        $scope.okconfirm();
+    };
+
+    $scope.removeFromLevelsWithCodes = function(codes) {
+        $scope.model.levelsRelationToRemove = codes;
+        $scope.okconfirm();
     };
 
     $scope.cancelconfirm = function() {
