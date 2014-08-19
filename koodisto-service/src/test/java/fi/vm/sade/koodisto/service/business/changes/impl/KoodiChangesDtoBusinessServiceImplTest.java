@@ -38,7 +38,9 @@ import static org.mockito.Mockito.when;
 public class KoodiChangesDtoBusinessServiceImplTest {
     
     private static final Date CURRENT_DATE = new Date();
-
+    
+    private static final Date FIRST_DATE = new Date(1000), SECOND_DATE = new Date(20000000), THIRD_DATE = new Date(30000000);
+    
     private static final String KOODI_URI = "uri";
     
     private static final String NAME = "elefantti", SHORT_NAME = "fantti", DESCRIPTION = "kärsäeläin";
@@ -229,6 +231,22 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     }
     
     @Test
+    public void usesCodesVersionThatIsClosestToGivenDateForComparison() {
+        int versio = 1;
+        String descriptionChangedForSecond = "kuvausta norsusta";
+        String nameChangedForThird = "Otus";
+        KoodiVersio first = givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(versio, FIRST_DATE, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
+        KoodiVersio second = givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(versio + 1, SECOND_DATE, givenKoodiMetadata(NAME, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
+        KoodiVersio third = givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(versio + 2, THIRD_DATE, givenKoodiMetadata(nameChangedForThird, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
+        KoodiChangesDto dto = givenResultWithMultipleKoodiVersiosForDateQuery(SECOND_DATE, false, first, second, third);
+        assertEquals(3, dto.viimeisinVersio.intValue());
+        assertEquals(THIRD_DATE, dto.viimeksiPaivitetty);
+        SimpleKoodiMetadataDto data = dto.muuttuneetTiedot.get(0);
+        assertEquals(nameChangedForThird, data.nimi);
+        assertNull(data.kuvaus);
+    }
+    
+    @Test
     public void returnsHasChangedIfRelationHasBeenAdded() {
         
     }
@@ -272,17 +290,33 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     
     private KoodiChangesDto givenResultWithMultipleKoodiVersios(Integer versio, boolean compareToLatestAccepted, KoodiVersio ... versios) {
         if (compareToLatestAccepted) {
-            Koodi koodi = Mockito.mock(Koodi.class);
-            when(koodi.getKoodiVersios()).thenReturn(new HashSet<KoodiVersio>(Arrays.asList(versios)));
-            when(koodiService.getKoodi(KOODI_URI)).thenReturn(koodi);
+            returnGivenKoodiVersiosWithKoodiFromMockedKoodiService(versios);
         } else {
-            KoodiVersio latest = null;
-            for(KoodiVersio kv : versios) {
-                latest = latest == null || kv.getVersio() > latest.getVersio() ? kv : latest;
-            }
-            when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
+            returnLatestKoodiVersioFromMockedKoodiService(versios);
         }
         return service.getChangesDto(KOODI_URI, versio, compareToLatestAccepted);
+    }
+
+    private KoodiChangesDto givenResultWithMultipleKoodiVersiosForDateQuery(Date date, boolean compareToLatestAccepted, KoodiVersio ... versios) {
+        if (!compareToLatestAccepted) {
+            returnLatestKoodiVersioFromMockedKoodiService(versios);
+        }
+        returnGivenKoodiVersiosWithKoodiFromMockedKoodiService(versios);
+        return service.getChangesDto(KOODI_URI, date, compareToLatestAccepted);
+    }
+
+    void returnGivenKoodiVersiosWithKoodiFromMockedKoodiService(KoodiVersio... versios) {
+        Koodi koodi = Mockito.mock(Koodi.class);
+        when(koodi.getKoodiVersios()).thenReturn(new HashSet<KoodiVersio>(Arrays.asList(versios)));
+        when(koodiService.getKoodi(KOODI_URI)).thenReturn(koodi);
+    }
+    
+    private void returnLatestKoodiVersioFromMockedKoodiService(KoodiVersio... versios) {
+        KoodiVersio latest = null;
+        for(KoodiVersio kv : versios) {
+            latest = latest == null || kv.getVersio() > latest.getVersio() ? kv : latest;
+        }
+        when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
     }
     
     private KoodiVersio givenKoodiVersio(Integer versio) {
@@ -309,5 +343,9 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     
     private KoodiVersio givenKoodiVersioWithCustomDatesItIsInEffect(int versio, Date startDate, Date endDate) {
         return DtoFactory.createKoodiVersioWithoutMetadatasWithStartAndEndDates(KOODI_URI, versio, startDate, endDate).build();
+    }
+    
+    private KoodiVersio givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(int versio, Date lastUpdated, KoodiMetadata ... datas) {
+        return DtoFactory.createKoodiVersioWithUriAndVersioWithoutMetadatas(KOODI_URI, versio).addMetadata(datas).setLastUpdateDate(lastUpdated).build();
     }
 }

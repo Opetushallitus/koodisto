@@ -58,6 +58,11 @@ public class KoodiVersioBuilder implements Builder<KoodiVersio>{
         koodiVersio.setTila(tila);
         return this;
     }
+    
+    public KoodiVersioBuilder setLastUpdateDate(Date date) {
+        koodiVersio.setPaivitysPvm(date);
+        return this;
+    }
 
     public KoodiVersioBuilder setKoodiValue(String koodiValue) {
         koodiVersio.setKoodiarvo(koodiValue);
@@ -77,7 +82,9 @@ public class KoodiVersioBuilder implements Builder<KoodiVersio>{
     }
 
     public KoodiVersio build() {
-        koodiVersio.setPaivitysPvm(new Date());
+        if (koodiVersio.getPaivitysPvm() == null ) {
+            koodiVersio.setPaivitysPvm(new Date());
+        }
         return this.koodiVersio;
     }
 

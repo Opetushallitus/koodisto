@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.ChangesDateComparator;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessService;
 
 @Service
@@ -35,6 +37,17 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         KoodiVersio koodiVersio = service.getKoodiVersio(uri, versio);
         KoodiVersio latestKoodiVersio = fetchLatestDesiredCodeVersion(uri, compareToLatestAccepted);
         return constructChangesDto(koodiVersio, latestKoodiVersio);
+    }
+    
+    @Override
+    public KoodiChangesDto getChangesDto(String uri, Date date, boolean compareToLatestAccepted) {
+        KoodiVersio koodiVersio = determineCodeVersionThatMatchesDate(uri, date);
+        KoodiVersio latestKoodiVersio = fetchLatestDesiredCodeVersion(uri, compareToLatestAccepted);
+        return constructChangesDto(koodiVersio, latestKoodiVersio);
+    }
+
+    private KoodiVersio determineCodeVersionThatMatchesDate(String uri, Date date) {
+        return new KoodiChangesDateComparator().getClosestMatchingEntity(date, service.getKoodi(uri).getKoodiVersios());
     }
 
     private KoodiVersio fetchLatestDesiredCodeVersion(String uri, boolean compareToLatestAccepted) {
@@ -156,6 +169,15 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         
         private boolean anyChanges() {
             return startDateChanged != null || endDateChanged != null || endDateRemoved != null;
+        }
+        
+    }
+    
+    private class KoodiChangesDateComparator extends ChangesDateComparator<KoodiVersio> {
+
+        @Override
+        protected DateTime getDateFromEntity(KoodiVersio entity) {
+            return new DateTime(entity.getPaivitysPvm());
         }
         
     }
