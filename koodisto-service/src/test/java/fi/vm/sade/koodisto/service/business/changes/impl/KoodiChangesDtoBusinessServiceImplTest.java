@@ -232,20 +232,14 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     
     @Test
     public void usesCodesVersionThatIsClosestToGivenDateForComparison() {
-        int versio = 1;
-        String descriptionChangedForSecond = "kuvausta norsusta";
-        String nameChangedForThird = "Otus";
-        KoodiVersio first = givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(versio, FIRST_DATE, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
-        KoodiVersio second = givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(versio + 1, SECOND_DATE, givenKoodiMetadata(NAME, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
-        KoodiVersio third = givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(versio + 2, THIRD_DATE, givenKoodiMetadata(nameChangedForThird, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
-        KoodiChangesDto dto = givenResultWithMultipleKoodiVersiosForDateQuery(SECOND_DATE, false, first, second, third);
-        assertEquals(3, dto.viimeisinVersio.intValue());
-        assertEquals(THIRD_DATE, dto.viimeksiPaivitetty);
-        SimpleKoodiMetadataDto data = dto.muuttuneetTiedot.get(0);
-        assertEquals(nameChangedForThird, data.nimi);
-        assertNull(data.kuvaus);
+        assertGivenResultWithDateQuery(SECOND_DATE, false);
     }
     
+    @Test
+    public void usesFirstVersionForComparisonWhenDateUsedForQueryIsBeforeAnyVersion() {
+        assertGivenResultWithDateQuery(new Date(0), true);
+    }
+
     @Test
     public void returnsHasChangedIfRelationHasBeenAdded() {
         
@@ -254,6 +248,25 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     @Test
     public void returnsHasChangedIfRelationsHasBeenRemoved() {
         
+    }
+    
+    private void assertGivenResultWithDateQuery(Date query, boolean shouldUseFirst) {
+        int versio = 1;
+        String descriptionChangedForSecond = "kuvausta norsusta";
+        String nameChangedForThird = "Otus";
+        KoodiVersio first = givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(versio, FIRST_DATE, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
+        KoodiVersio second = givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(versio + 1, SECOND_DATE, givenKoodiMetadata(NAME, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
+        KoodiVersio third = givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(versio + 2, THIRD_DATE, givenKoodiMetadata(nameChangedForThird, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
+        KoodiChangesDto dto = givenResultWithMultipleKoodiVersiosForDateQuery(query, false, first, second, third);
+        assertEquals(3, dto.viimeisinVersio.intValue());
+        assertEquals(THIRD_DATE, dto.viimeksiPaivitetty);
+        SimpleKoodiMetadataDto data = dto.muuttuneetTiedot.get(0);
+        assertEquals(nameChangedForThird, data.nimi);
+        if (shouldUseFirst) {
+            assertEquals(descriptionChangedForSecond, data.kuvaus);
+        } else {
+            assertNull(data.kuvaus);
+        }
     }
     
     private void assertResultWithTila(int expectedVersion, String expectedDescription, Tila expectedTila, KoodiChangesDto result) {
