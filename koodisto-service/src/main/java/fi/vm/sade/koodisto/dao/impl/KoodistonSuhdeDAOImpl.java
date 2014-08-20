@@ -25,7 +25,6 @@ import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
 
-
 /**
  * @author
  */
@@ -49,7 +48,7 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
 
         List<Predicate> alakoodistoRestrictions = new ArrayList<Predicate>();
         for (KoodistoUriAndVersioType ak : alaKoodistos) {
-            alakoodistoRestrictions.add(cb.and(cb.equal(alakoodistoJoin.<String>get(KOODISTO_URI), ak.getKoodistoUri()),
+            alakoodistoRestrictions.add(cb.and(cb.equal(alakoodistoJoin.<String> get(KOODISTO_URI), ak.getKoodistoUri()),
                     cb.equal(alakoodistoVersioJoin.get(VERSIO), ak.getVersio())));
         }
 
@@ -66,11 +65,11 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
 
             List<Predicate> ylakoodiRestrictions = new ArrayList<Predicate>();
             for (KoodistoUriAndVersioType ak : alaKoodistos) {
-                ylakoodiRestrictions.add(cb.and(cb.equal(ylakoodistoJoin.<String>get(KOODISTO_URI),
+                ylakoodiRestrictions.add(cb.and(cb.equal(ylakoodistoJoin.<String> get(KOODISTO_URI),
                         ak.getKoodistoUri()), cb.equal(ylakoodistoVersioJoin.get(VERSIO), ak.getVersio())));
             }
 
-            Predicate alakoodistoRestriction = cb.and(cb.equal(alakoodistoJoin.<String>get(KOODISTO_URI),
+            Predicate alakoodistoRestriction = cb.and(cb.equal(alakoodistoJoin.<String> get(KOODISTO_URI),
                     ylaKoodisto.getKoodistoUri()), cb.equal(alakoodistoVersioJoin.get(VERSIO), ylaKoodisto.getVersio()));
 
             Predicate alaAndYla = cb.and(alakoodistoRestriction,
@@ -87,8 +86,6 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
 
         return and;
     }
-
-
 
     @Override
     public List<KoodistonSuhde> getRelations(KoodistoUriAndVersioType ylaKoodisto, List<KoodistoUriAndVersioType> alaKoodistos,
@@ -108,26 +105,26 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
         return em.createQuery(cquery).getResultList();
     }
 
-
-
     @Override
     public void copyRelations(KoodistoVersio old, KoodistoVersio fresh) {
         copyRelations(old.getYlakoodistos(), fresh, true);
         copyRelations(old.getAlakoodistos(), fresh, false);
     }
 
-
-
     private void copyRelations(Set<KoodistonSuhde> relations, KoodistoVersio fresh, boolean ylaKoodistos) {
         Set<KoodistonSuhde> copiedRelations = new HashSet<KoodistonSuhde>();
         for (KoodistonSuhde relation : relations) {
-            KoodistonSuhde newRelation = new KoodistonSuhde();
-            newRelation.setAlakoodistoVersio(ylaKoodistos ? fresh : relation.getAlakoodistoVersio());
-            newRelation.setYlakoodistoVersio(ylaKoodistos ? relation.getYlakoodistoVersio() : fresh);
-            newRelation.setVersio(relation.getVersio() + 1);
-            newRelation.setSuhteenTyyppi(relation.getSuhteenTyyppi());
-            insert(newRelation);
-            copiedRelations.add(newRelation);
+            String alaKoodistoUri = relation.getAlakoodistoVersio().getKoodisto().getKoodistoUri();
+            String ylaKoodistoUri = relation.getYlakoodistoVersio().getKoodisto().getKoodistoUri();
+            if (alaKoodistoUri.equals(ylaKoodistoUri)) {
+                if (ylaKoodistos) { // Relation to self
+                    copiedRelations.add(insertNewRelation(fresh, fresh, relation));
+                }
+            } else {
+                KoodistoVersio child = ylaKoodistos ? fresh: relation.getAlakoodistoVersio();
+                KoodistoVersio parent = ylaKoodistos ? relation.getYlakoodistoVersio() : fresh;
+                copiedRelations.add(insertNewRelation(parent, child, relation));
+            }
         }
         if (ylaKoodistos) {
             fresh.setYlakoodistos(copiedRelations);
@@ -136,12 +133,21 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
         }
     }
 
+    private KoodistonSuhde insertNewRelation(KoodistoVersio parent ,KoodistoVersio child, KoodistonSuhde relation) {
+        KoodistonSuhde newRelation = new KoodistonSuhde();
+        newRelation.setAlakoodistoVersio(child);
+        newRelation.setYlakoodistoVersio(parent);
+        newRelation.setVersio(relation.getVersio() + 1);
+        newRelation.setSuhteenTyyppi(relation.getSuhteenTyyppi());
+        insert(newRelation);
+        return newRelation;
+    }
 
     @Override
     public void deleteRelations(KoodistoUriAndVersioType ylaKoodisto, List<KoodistoUriAndVersioType> alaKoodistos,
             SuhteenTyyppi st) {
         EntityManager em = getEntityManager();
-        for(KoodistonSuhde suhde : getRelations(ylaKoodisto, alaKoodistos, st)) {
+        for (KoodistonSuhde suhde : getRelations(ylaKoodisto, alaKoodistos, st)) {
             KoodistoVersio ala = suhde.getAlakoodistoVersio();
             KoodistoVersio yla = suhde.getYlakoodistoVersio();
             ala.removeYlaKoodistonSuhde(suhde);
