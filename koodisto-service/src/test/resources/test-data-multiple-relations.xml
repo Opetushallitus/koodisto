@@ -54,41 +54,41 @@
   <koodi id="32" koodisto_id="18" version="0" koodiuri="uusisavekoodinsuhde2"/>
   <koodi id="33" koodisto_id="19" version="0" koodiuri="uusisavekoodinsuhde3"/>
   
-  <koodiversio id="1" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="1" koodiarvo="ss4k1"/>
-  <koodiversio id="2" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="ss4k2"/>
-  <koodiversio id="3" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="3" koodiarvo="ss4k3"/>
-  <koodiversio id="4" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="4" koodiarvo="skk"/>
-  <koodiversio id="5" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="5" koodiarvo="r4k1"/>
-  <koodiversio id="6" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="6" koodiarvo="r4k2"/>
-  <koodiversio id="7" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="7" koodiarvo="r4k3"/>
-  <koodiversio id="8" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="8" koodiarvo="sk1kk"/>
-  <koodiversio id="9" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="9" koodiarvo="sk678k"/>
-  <koodiversio id="10" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="10" koodiarvo="ss9k1"/>
-  <koodiversio id="11" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="11" koodiarvo="ss9k2"/>
-  <koodiversio id="12" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="12" koodiarvo="ss9k3"/>
-  <koodiversio id="13" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="13" koodiarvo="ss9k4"/>
-  <koodiversio id="14" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="14" koodiarvo="lr14"/>
-  <koodiversio id="15" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="15" koodiarvo="lr14k1"/>
-  <koodiversio id="16" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="16" koodiarvo="lr14k2"/>
-  <koodiversio id="17" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="17" koodiarvo="lr14k3"/>
-  <koodiversio id="18" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="18" koodiarvo="ls18"/>
-  <koodiversio id="19" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="19" koodiarvo="ls18k1"/>
-  <koodiversio id="20" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="20" koodiarvo="ls18k2"/>
-  <koodiversio id="21" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="21" koodiarvo="ls18k3"/>
-  <koodiversio id="22" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="22" koodiarvo="ls18k4"/>
-  <koodiversio id="23" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv1"/>
-  <koodiversio id="24" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv2"/>
-  <koodiversio id="25" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="3" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv3"/>
-  <koodiversio id="26" version="0" paivityspvm="2012-03-22" tila="PASSIIVINEN" versio="1" voimassaalkupvm="1990-01-01" koodi_id="24" koodiarvo="delme"/>
-  <koodiversio id="27" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="25" koodiarvo="tobeupdated"/>
-  <koodiversio id="28" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="26" koodiarvo="tobesaved1"/>
-  <koodiversio id="29" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="27" koodiarvo="tobesaved2"/>
-  <koodiversio id="30" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="28" koodiarvo="tobesaved3"/>
-  <koodiversio id="31" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="29" koodiarvo="tobesaved4"/>
-  <koodiversio id="32" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="30" koodiarvo="tobesaved5"/>
-  <koodiversio id="33" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="31" koodiarvo="tobesaved6"/>
-  <koodiversio id="34" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="32" koodiarvo="tobesaved7"/>
-  <koodiversio id="35" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="33" koodiarvo="tobesaved8"/>
+  <koodiversio id="1" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="1" koodiarvo="ss4k1"/>
+  <koodiversio id="2" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="ss4k2"/>
+  <koodiversio id="3" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="3" koodiarvo="ss4k3"/>
+  <koodiversio id="4" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="4" koodiarvo="skk"/>
+  <koodiversio id="5" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="5" koodiarvo="r4k1"/>
+  <koodiversio id="6" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="6" koodiarvo="r4k2"/>
+  <koodiversio id="7" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="7" koodiarvo="r4k3"/>
+  <koodiversio id="8" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="8" koodiarvo="sk1kk"/>
+  <koodiversio id="9" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="9" koodiarvo="sk678k"/>
+  <koodiversio id="10" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="10" koodiarvo="ss9k1"/>
+  <koodiversio id="11" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="11" koodiarvo="ss9k2"/>
+  <koodiversio id="12" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="12" koodiarvo="ss9k3"/>
+  <koodiversio id="13" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="13" koodiarvo="ss9k4"/>
+  <koodiversio id="14" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="14" koodiarvo="lr14"/>
+  <koodiversio id="15" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="15" koodiarvo="lr14k1"/>
+  <koodiversio id="16" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="16" koodiarvo="lr14k2"/>
+  <koodiversio id="17" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="17" koodiarvo="lr14k3"/>
+  <koodiversio id="18" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="18" koodiarvo="ls18"/>
+  <koodiversio id="19" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="19" koodiarvo="ls18k1"/>
+  <koodiversio id="20" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="20" koodiarvo="ls18k2"/>
+  <koodiversio id="21" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="21" koodiarvo="ls18k3"/>
+  <koodiversio id="22" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="22" koodiarvo="ls18k4"/>
+  <koodiversio id="23" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv1"/>
+  <koodiversio id="24" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv2"/>
+  <koodiversio id="25" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="3" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv3"/>
+  <koodiversio id="26" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="PASSIIVINEN" versio="1" voimassaalkupvm="1990-01-01" koodi_id="24" koodiarvo="delme"/>
+  <koodiversio id="27" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="25" koodiarvo="tobeupdated"/>
+  <koodiversio id="28" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="26" koodiarvo="tobesaved1"/>
+  <koodiversio id="29" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="27" koodiarvo="tobesaved2"/>
+  <koodiversio id="30" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="28" koodiarvo="tobesaved3"/>
+  <koodiversio id="31" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="29" koodiarvo="tobesaved4"/>
+  <koodiversio id="32" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="30" koodiarvo="tobesaved5"/>
+  <koodiversio id="33" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="31" koodiarvo="tobesaved6"/>
+  <koodiversio id="34" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="32" koodiarvo="tobesaved7"/>
+  <koodiversio id="35" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="33" koodiarvo="tobesaved8"/>
   
   <koodimetadata id="1" kieli="FI" nimi="Alajärvi" version="0" koodiversio_id="1" lyhytnimi="Alajärvi" kuvaus="Alajärvi"/>
   <koodimetadata id="2" kieli="FI" nimi="Olajärvi" version="0" koodiversio_id="2" lyhytnimi="Olajärvi" kuvaus="Olajärvi"/>
@@ -144,25 +144,25 @@
   <koodinsuhde id="16" alakoodiversio_id="31" ylakoodiversio_id="28" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
   <koodinsuhde id="17" alakoodiversio_id="32" ylakoodiversio_id="28" suhteentyyppi="SISALTYY" version="0" versio="1"/>
   
-  <koodistoversio id="1" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="1" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="2" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="2" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="3" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="3" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="4" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="4" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="5" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="5" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="6" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="6" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="7" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="7" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="8" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="8" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="9" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="9" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="10" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="10" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="11" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="11" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="12" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="12" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="13" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="13" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="14" version="0" paivityspvm="2012-03-22" tila="LUONNOS" versio="1" koodisto_id="14" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="15" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="15" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="16" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="16" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="17" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="17" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="18" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="18" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="19" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" koodisto_id="19" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="1" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="1" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="2" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="2" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="3" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="3" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="4" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="4" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="5" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="5" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="6" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="6" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="7" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="7" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="8" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="8" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="9" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="9" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="10" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="10" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="11" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="11" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="12" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="12" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="13" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="13" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="14" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="LUONNOS" versio="1" koodisto_id="14" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="15" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="15" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="16" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="16" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="17" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="17" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="18" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="18" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="19" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="19" voimassaalkupvm="2012-11-20"/>
   
   <koodistometadata id="1" kieli="FI" nimi="Järvet" version="0" koodistoversio_id="1" kuvaus="Järvet"/>
   <koodistometadata id="2" kieli="FI" nimi="Joet" version="0" koodistoversio_id="2" kuvaus="Joet"/>
