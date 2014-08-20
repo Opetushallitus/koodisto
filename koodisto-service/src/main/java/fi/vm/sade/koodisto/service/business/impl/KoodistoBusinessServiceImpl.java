@@ -791,7 +791,8 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         UpdateKoodistoDataType codesDTOAsDataType = converter.convertFromDTOToUpdateKoodistoDataType(codesDTO);
         updateKoodisto(codesDTOAsDataType);
-        KoodistoVersio latest = getLatestKoodistoVersio(codesDTO.getKoodistoUri());
+        String koodistoUri = codesDTO.getKoodistoUri();
+        KoodistoVersio latest = getLatestKoodistoVersio(koodistoUri);
         
         Set<KoodistonSuhde> alaKoodistos = latest.getAlakoodistos();
         Set<KoodistonSuhde> ylaKoodistos = latest.getYlakoodistos();
@@ -800,45 +801,47 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         HashSet<String> updatedWithinUris = new HashSet<String>();
         HashSet<String> updatedLevelsWithUris = new HashSet<String>();
         for (KoodistonSuhde koodistonSuhde : alaKoodistos) {
+            String uri = koodistonSuhde.getAlakoodistoVersio().getKoodisto().getKoodistoUri();
             if (koodistonSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY)) {
-                updatedIncludesUris.add(koodistonSuhde.getAlakoodistoVersio().getKoodisto().getKoodistoUri());
+                updatedIncludesUris.add(uri);
             } else if (koodistonSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)) {
-                updatedLevelsWithUris.add(koodistonSuhde.getAlakoodistoVersio().getKoodisto().getKoodistoUri());
+                updatedLevelsWithUris.add(uri);
             }
         }
         for (KoodistonSuhde koodistonSuhde : ylaKoodistos) {
+            String uri = koodistonSuhde.getYlakoodistoVersio().getKoodisto().getKoodistoUri();
             if (koodistonSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY)) {
-                updatedWithinUris.add(koodistonSuhde.getYlakoodistoVersio().getKoodisto().getKoodistoUri());
+                updatedWithinUris.add(uri);
             } else if (koodistonSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)) {
-                updatedLevelsWithUris.add(koodistonSuhde.getYlakoodistoVersio().getKoodisto().getKoodistoUri());
+                updatedLevelsWithUris.add(uri);
             }
         }
 
         
         // Add relations
-        List<RelationCodes> includes = codesDTO.getIncludesCodes();
-        List<RelationCodes> within = codesDTO.getWithinCodes();
-        List<RelationCodes> levelsWith = codesDTO.getLevelsWithCodes();
+        Set<String> includesUris = urisAsSet(codesDTO.getIncludesCodes());
+        Set<String> withinUris = urisAsSet(codesDTO.getWithinCodes());
+        Set<String> levelsWithUris = urisAsSet(codesDTO.getLevelsWithCodes());
 
-        for (RelationCodes relationCodes : includes) {
-            if (!updatedIncludesUris.contains(relationCodes.codesUri)) {
-                 addRelation(latest, SuhteenTyyppi.SISALTYY, getLatestKoodistoVersio(relationCodes.codesUri));
+        for (String relationCodes : includesUris) {
+            if (!updatedIncludesUris.contains(relationCodes)) {
+                 addRelation(latest, SuhteenTyyppi.SISALTYY, getLatestKoodistoVersio(relationCodes));
             } else {
-                updatedIncludesUris.remove(relationCodes.codesUri);
+                updatedIncludesUris.remove(relationCodes);
             }
         }
-        for (RelationCodes relationCodes : within) {
-            if (!updatedWithinUris.contains(relationCodes.codesUri)) {
-                 addRelation(getLatestKoodistoVersio(relationCodes.codesUri), SuhteenTyyppi.SISALTYY, latest);
+        for (String relationCodes : withinUris) {
+            if (!updatedWithinUris.contains(relationCodes) && relationCodes.equals(koodistoUri)) { // Duplicate if includes self
+                 addRelation(getLatestKoodistoVersio(relationCodes), SuhteenTyyppi.SISALTYY, latest);
             } else {
-                updatedWithinUris.remove(relationCodes.codesUri);
+                updatedWithinUris.remove(relationCodes);
             }
         }
-        for (RelationCodes relationCodes : levelsWith) {
-            if (!updatedLevelsWithUris.contains(relationCodes.codesUri)) {
-                 addRelation(latest, SuhteenTyyppi.RINNASTEINEN, getLatestKoodistoVersio(relationCodes.codesUri));
+        for (String relationCodes : levelsWithUris) {
+            if (!updatedLevelsWithUris.contains(relationCodes)) {
+                 addRelation(latest, SuhteenTyyppi.RINNASTEINEN, getLatestKoodistoVersio(relationCodes));
             } else {
-                updatedLevelsWithUris.remove(relationCodes.codesUri);
+                updatedLevelsWithUris.remove(relationCodes);
             }
         }
 
@@ -855,4 +858,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         return latest;
     }
+
+    private Set<String> urisAsSet(List<RelationCodes> relations) {
+        HashSet<String> result = new  HashSet<String>();
+        for (RelationCodes r : relations) {
+            result.add(r.codesUri);
+        }
+        return result;
+    }
+
 }

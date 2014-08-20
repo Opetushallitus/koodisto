@@ -109,6 +109,17 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
     public void copyRelations(KoodistoVersio old, KoodistoVersio fresh) {
         copyRelations(old.getYlakoodistos(), fresh, true);
         copyRelations(old.getAlakoodistos(), fresh, false);
+        copyRelationsToSelfFromParentRelationListToChildRelationList(fresh.getKoodisto().getKoodistoUri(), fresh.getYlakoodistos(), fresh.getAlakoodistos());
+    }
+
+    private void copyRelationsToSelfFromParentRelationListToChildRelationList(String codesUri, Set<KoodistonSuhde> parentRelations,
+            Set<KoodistonSuhde> childRelations) {
+        for (KoodistonSuhde koodistonSuhde : parentRelations) {
+            String alaKoodistoUri = koodistonSuhde.getAlakoodistoVersio().getKoodisto().getKoodistoUri();
+            if (alaKoodistoUri.equals(codesUri)) {
+                childRelations.add(koodistonSuhde);
+            }
+        }
     }
 
     private void copyRelations(Set<KoodistonSuhde> relations, KoodistoVersio fresh, boolean ylaKoodistos) {
@@ -121,7 +132,7 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
                     copiedRelations.add(insertNewRelation(fresh, fresh, relation));
                 }
             } else {
-                KoodistoVersio child = ylaKoodistos ? fresh: relation.getAlakoodistoVersio();
+                KoodistoVersio child = ylaKoodistos ? fresh : relation.getAlakoodistoVersio();
                 KoodistoVersio parent = ylaKoodistos ? relation.getYlakoodistoVersio() : fresh;
                 copiedRelations.add(insertNewRelation(parent, child, relation));
             }
@@ -133,13 +144,16 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
         }
     }
 
-    private KoodistonSuhde insertNewRelation(KoodistoVersio parent ,KoodistoVersio child, KoodistonSuhde relation) {
+    private KoodistonSuhde insertNewRelation(KoodistoVersio parent, KoodistoVersio child, KoodistonSuhde relation) {
+        return insert(createNewRelation(parent, child, relation));
+    }
+
+    private KoodistonSuhde createNewRelation(KoodistoVersio parent, KoodistoVersio child, KoodistonSuhde relation) {
         KoodistonSuhde newRelation = new KoodistonSuhde();
         newRelation.setAlakoodistoVersio(child);
         newRelation.setYlakoodistoVersio(parent);
         newRelation.setVersio(relation.getVersio() + 1);
         newRelation.setSuhteenTyyppi(relation.getSuhteenTyyppi());
-        insert(newRelation);
         return newRelation;
     }
 
