@@ -115,8 +115,8 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
     private void copyRelationsToSelfFromParentRelationListToChildRelationList(String codesUri, Set<KoodistonSuhde> parentRelations,
             Set<KoodistonSuhde> childRelations) {
         for (KoodistonSuhde koodistonSuhde : parentRelations) {
-            String alaKoodistoUri = koodistonSuhde.getAlakoodistoVersio().getKoodisto().getKoodistoUri();
-            if (alaKoodistoUri.equals(codesUri)) {
+            String ylaKoodistoUri = koodistonSuhde.getYlakoodistoVersio().getKoodisto().getKoodistoUri();
+            if (ylaKoodistoUri.equals(codesUri)) {
                 childRelations.add(koodistonSuhde);
             }
         }

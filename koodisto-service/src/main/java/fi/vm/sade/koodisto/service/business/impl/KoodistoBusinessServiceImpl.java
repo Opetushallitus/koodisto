@@ -831,7 +831,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             }
         }
         for (String relationCodes : withinUris) {
-            if (!updatedWithinUris.contains(relationCodes) && relationCodes.equals(koodistoUri)) { // Duplicate if includes self
+            if (!updatedWithinUris.contains(relationCodes) && !relationCodes.equals(koodistoUri)) { // Duplicate if includes self
                  addRelation(getLatestKoodistoVersio(relationCodes), SuhteenTyyppi.SISALTYY, latest);
             } else {
                 updatedWithinUris.remove(relationCodes);
@@ -856,7 +856,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             removeRelation(yk, latestUriAsList, SuhteenTyyppi.SISALTYY);
         }
 
-        return latest;
+        return getLatestKoodistoVersio(koodistoUri);
     }
 
     private Set<String> urisAsSet(List<RelationCodes> relations) {
