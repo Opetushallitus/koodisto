@@ -1,11 +1,12 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import fi.vm.sade.generic.common.DateHelper;
-import fi.vm.sade.generic.model.BaseEntity;
-import fi.vm.sade.generic.service.conversion.SadeConversionService;
-import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.service.types.common.*;
+import java.lang.reflect.Method;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -15,13 +16,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.lang.reflect.Method;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
+import fi.vm.sade.generic.common.DateHelper;
+import fi.vm.sade.generic.model.BaseEntity;
+import fi.vm.sade.generic.service.conversion.SadeConversionService;
+import fi.vm.sade.koodisto.dto.KoodistoDto;
+import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.KoodiMetadata;
+import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.Koodisto;
+import fi.vm.sade.koodisto.model.KoodistoMetadata;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistonSuhde;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.service.types.common.KieliType;
+import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
+import fi.vm.sade.koodisto.service.types.common.KoodiType;
+import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
+import fi.vm.sade.koodisto.service.types.common.KoodistoType;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -48,7 +61,7 @@ public class KoodistoConversionServiceTest {
         KoodiType dto = createKoodiType();
         KoodiVersio versio = conversionService.convert(dto, KoodiVersio.class);
         assertNotNull(versio);
-        checkConvertedFields(versio, KoodiVersio.class, "id", "version");
+        checkConvertedFields(versio, KoodiVersio.class, "id", "version", "luotu");
     }
 
     @Test
@@ -72,7 +85,7 @@ public class KoodistoConversionServiceTest {
         KoodistoType dto = createKoodistoType();
         KoodistoVersio versio = conversionService.convert(dto, KoodistoVersio.class);
         assertNotNull(versio);
-        checkConvertedFields(versio, KoodistoVersio.class, "id", "version");
+        checkConvertedFields(versio, KoodistoVersio.class, "id", "version", "luotu");
     }
 
     @Test
