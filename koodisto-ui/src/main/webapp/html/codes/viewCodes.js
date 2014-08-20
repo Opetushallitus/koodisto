@@ -144,9 +144,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 model.codeElements = result;
                 model.searchResultsLength = model.codeElements.length;
                 for (var i = 0; i < model.codeElements.length; i++) {
-                    model.codeElements[i].name = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'FI');
-                    model.codeElements[i].namesv = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'SV');
-                    model.codeElements[i].nameen = getLanguageSpecificValue(model.codeElements[i].metadata, 'nimi', 'EN');
+                    model.codeElements[i].name = getLanguageSpecificValueOrValidValue(model.codeElements[i].metadata, 'nimi', 'FI');
                 }
             });
 
