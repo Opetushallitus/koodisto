@@ -60,7 +60,7 @@ public class KoodistonSuhdeDAOTest {
     }
     
     @Test
-    public void copiesRelationsToPointLatestCodesVersionIfTheRelationPointsToSelf() {
+    public void copiesRelationsToPointLatestCodesVersionIfTheIncludesRelationPointsToSelf() {
         KoodistoVersio original = versionDAO.read(Long.valueOf(910));
         KoodistoVersio newVersion = givenNewKoodistoVersioAndTila(original, Tila.LUONNOS);
         suhdeDAO.copyRelations(original, newVersion);
@@ -74,6 +74,22 @@ public class KoodistonSuhdeDAOTest {
         assertEquals(new Integer(2), newVersion.getYlakoodistos().iterator().next().getAlakoodistoVersio().getVersio());
     }
 
+    @Test
+    public void copiesRelationsToPointLatestCodesVersionIfTheLevelsWithRelationPointsToSelf() {
+        KoodistoVersio original = versionDAO.read(Long.valueOf(911));
+        KoodistoVersio newVersion = givenNewKoodistoVersioAndTila(original, Tila.LUONNOS);
+        suhdeDAO.copyRelations(original, newVersion);
+        versionDAO.detach(newVersion);
+        newVersion = versionDAO.read(newVersion.getId());
+        assertEquals(1, newVersion.getYlakoodistos().size());
+        assertEquals(1, newVersion.getAlakoodistos().size());
+        assertEquals(new Integer(2), newVersion.getAlakoodistos().iterator().next().getYlakoodistoVersio().getVersio());
+        assertEquals(new Integer(2), newVersion.getAlakoodistos().iterator().next().getAlakoodistoVersio().getVersio());
+        assertEquals(new Integer(2), newVersion.getYlakoodistos().iterator().next().getYlakoodistoVersio().getVersio());
+        assertEquals(new Integer(2), newVersion.getYlakoodistos().iterator().next().getAlakoodistoVersio().getVersio());
+    }
+
+    
     @Test
     public void deleRelations() {
         KoodistonSuhde toBeDeleted = suhdeDAO.read(Long.valueOf(5));

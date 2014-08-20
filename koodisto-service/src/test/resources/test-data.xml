@@ -49,6 +49,7 @@
   <koodisto id="806" koodistouri="koodistonSaveTestiKoodisto6" version="0" organisaatioOid="1.2.2004.6"/>
   <koodisto id="807" koodistouri="koodistonSaveTestiKoodisto7" version="0" organisaatioOid="1.2.2004.6"/>
   <koodisto id="808" koodistouri="koodistonsuhdeitsensakanssa" version="0" organisaatioOid="1.2.2004.6"/>
+  <koodisto id="809" koodistouri="koodistonsuhdeitsensakanssa2" version="0" organisaatioOid="1.2.2004.6"/>
   
   <koodi id="3" koodisto_id="1" version="0" koodiuri="3"/>
   <koodi id="5" koodisto_id="1" version="0" koodiuri="5"/>
@@ -913,6 +914,7 @@
   <koodistoversio id="907" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="807"/>
   
   <koodistoversio id="910" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="808"/>
+  <koodistoversio id="911" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" tila="HYVAKSYTTY" versio="1" koodisto_id="809"/>
 
   
   <koodistometadata id="2" kieli="FI" nimi="Kunnat" version="0" koodistoversio_id="1" kuvaus="Kunnat"/>
@@ -998,6 +1000,7 @@
   <koodistometadata id="807" kieli="FI" nimi="koodistonSaveTestiKoodisto7" version="0" koodistoversio_id="907" kuvaus="Poistetaan tältä relaatio 0:aan"/>    
 
   <koodistometadata id="910" kieli="FI" nimi="RelaatioItseensä" version="0" koodistoversio_id="910" kuvaus="Tällä on Hyväksytty relaatio itseensä"/>    
+  <koodistometadata id="911" kieli="FI" nimi="RelaatioItseensäRinnasteinen" version="0" koodistoversio_id="911" kuvaus="Tällä on Hyväksytty relaatio itseensä"/>    
   
   <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="1" koodiversio_id="3"/>
   <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="1" koodiversio_id="5"/>
@@ -1256,5 +1259,6 @@
   <koodistonsuhde id="803" alakoodistoversio_id="907" ylakoodistoversio_id="900" versio="1" suhteentyyppi="RINNASTEINEN" version="0"/>
 
   <koodistonsuhde id="910" alakoodistoversio_id="910" ylakoodistoversio_id="910" versio="1" suhteentyyppi="SISALTYY" version="0"/>
+  <koodistonsuhde id="911" alakoodistoversio_id="911" ylakoodistoversio_id="911" versio="1" suhteentyyppi="RINNASTEINEN" version="0"/>
 
 </dataset>
