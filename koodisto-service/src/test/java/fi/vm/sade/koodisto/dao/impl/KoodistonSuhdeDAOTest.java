@@ -58,6 +58,21 @@ public class KoodistonSuhdeDAOTest {
         newVersion = versionDAO.read(newVersion.getId());
         assertRelations(original, newVersion);
     }
+    
+    @Test
+    public void copiesRelationsToPointLatestCodesVersionIfTheRelationPointsToSelf() {
+        KoodistoVersio original = versionDAO.read(Long.valueOf(910));
+        KoodistoVersio newVersion = givenNewKoodistoVersioAndTila(original, Tila.LUONNOS);
+        suhdeDAO.copyRelations(original, newVersion);
+        versionDAO.detach(newVersion);
+        newVersion = versionDAO.read(newVersion.getId());
+        assertEquals(1, newVersion.getYlakoodistos().size());
+        assertEquals(1, newVersion.getAlakoodistos().size());
+        assertEquals(new Integer(2), newVersion.getAlakoodistos().iterator().next().getYlakoodistoVersio().getVersio());
+        assertEquals(new Integer(2), newVersion.getAlakoodistos().iterator().next().getAlakoodistoVersio().getVersio());
+        assertEquals(new Integer(2), newVersion.getYlakoodistos().iterator().next().getYlakoodistoVersio().getVersio());
+        assertEquals(new Integer(2), newVersion.getYlakoodistos().iterator().next().getAlakoodistoVersio().getVersio());
+    }
 
     @Test
     public void deleRelations() {
@@ -84,6 +99,18 @@ public class KoodistonSuhdeDAOTest {
         KoodistoVersio newVersion = new KoodistoVersio();
         newVersion.setKoodisto(original.getKoodisto());
         newVersion.setTila(Tila.HYVAKSYTTY);
+        newVersion.setVoimassaAlkuPvm(original.getVoimassaAlkuPvm());
+        newVersion.setVersio(2);
+        for ( KoodistoMetadata data : original.getMetadatas()) {
+            newVersion.addMetadata(data);
+        }
+        return versionDAO.insert(newVersion);
+    }
+    
+    private KoodistoVersio givenNewKoodistoVersioAndTila(KoodistoVersio original, Tila tila) {
+        KoodistoVersio newVersion = new KoodistoVersio();
+        newVersion.setKoodisto(original.getKoodisto());
+        newVersion.setTila(tila);
         newVersion.setVoimassaAlkuPvm(original.getVoimassaAlkuPvm());
         newVersion.setVersio(2);
         for ( KoodistoMetadata data : original.getMetadatas()) {

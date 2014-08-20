@@ -235,9 +235,15 @@ public class KoodistoBusinessServiceTest {
         List<RelationCodes> withinCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto2", 1));
         List<RelationCodes> levelsWithCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto3", 1));
         KoodistoDto codesDTO = createKoodistoDto(koodistoUri, versio, tila, kieli, kuvaus, nimi, includesCodes, withinCodes, levelsWithCodes);
+
+        KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+        
+        assertEquals(2, result.getAlakoodistos().size());
+        assertEquals(2, result.getYlakoodistos().size());
+        
         koodistoBusinessService.saveKoodisto(codesDTO);
         
-        KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+        result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
         
         assertEquals(2, result.getAlakoodistos().size());
         assertEquals(1, result.getYlakoodistos().size());

@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.sun.jersey.multipart.FormDataParam;
 import com.wordnik.swagger.annotations.Api;
@@ -62,7 +61,6 @@ import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 
 @Component
 @Path("/codes")
-@PreAuthorize("isAuthenticated()")
 @Api(value = "/rest/codes", description = "Koodistot")
 public class CodesResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(CodesResource.class);
@@ -151,7 +149,6 @@ public class CodesResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @Transactional(readOnly = true)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Päivittää koodiston kokonaisuutena",
@@ -203,7 +200,6 @@ public class CodesResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView(JsonViews.Simple.class)
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa kaikki koodistoryhmät",
             notes = "",
@@ -217,7 +213,6 @@ public class CodesResource {
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa kaikki koodistoryhmät ja niiden sisältämät koodistot",
             notes = "",
@@ -232,7 +227,6 @@ public class CodesResource {
     @Path("/{codesUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa koodiston",
             notes = "",
@@ -251,7 +245,6 @@ public class CodesResource {
     @Path("/{codesUri}/{codesVersion}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Extended.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa tietyn koodistoversion",
             notes = "",

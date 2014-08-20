@@ -154,6 +154,11 @@ public class KoodistoDto extends AbstractKoodistoDto {
         @JsonView({JsonViews.Extended.class})
         public final Integer codesVersion;
         
+        public RelationCodes() {
+            this.codesUri = null;
+            this.codesVersion = -1;
+        }
+
         public RelationCodes(String codesUri, Integer codesVersion) {
             this.codesUri = codesUri;
             this.codesVersion = codesVersion;

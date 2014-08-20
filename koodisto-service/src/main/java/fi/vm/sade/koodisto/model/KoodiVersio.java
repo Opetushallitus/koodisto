@@ -1,25 +1,40 @@
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.generic.model.BaseEntity;
-import fi.vm.sade.koodisto.common.util.FieldLengths;
-import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAnotherDateAsserter;
-import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.*;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import fi.vm.sade.generic.model.BaseEntity;
+import fi.vm.sade.koodisto.common.util.FieldLengths;
+import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAnotherDateAsserter;
+import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
 
 @FieldAssert(field1 = "voimassaAlkuPvm", field2 = "voimassaLoppuPvm", asserter = DateIsNullOrNotBeforeAnotherDateAsserter.class, message = "{voimassaLoppuPvm.invalid}")
 @Entity
@@ -54,6 +69,11 @@ public class KoodiVersio extends BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "paivitysPvm")
     private Date paivitysPvm;
+    
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "luotu", nullable = false)
+    private Date luotu;
 
     @NotNull
     @Temporal(TemporalType.DATE)
@@ -85,9 +105,10 @@ public class KoodiVersio extends BaseEntity {
 
     @PrePersist
     protected void onCreate() {
+        luotu = luotu == null ? new Date() : luotu;
         onUpdate();
     }
-
+    
     @PreUpdate
     protected void onUpdate() {
         this.paivitysPvm = new Date();
@@ -137,6 +158,14 @@ public class KoodiVersio extends BaseEntity {
 
     public void setPaivitysPvm(Date paivitysPvm) {
         this.paivitysPvm = paivitysPvm;
+    }
+    
+    public Date getLuotu() {
+        return luotu;
+    }
+    
+    public void setLuotu(Date luotu) {
+        this.luotu = luotu;
     }
 
     public Date getVoimassaAlkuPvm() {

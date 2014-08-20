@@ -19,7 +19,7 @@ describe("Edit codes test", function() {
     q = $q;
     $routeParams.codesUri = "espoonoikeudet";
     $routeParams.codesVersion = 1;
-    $controller("CodesEditorController", {$scope: scope, CodesEditorModel : model});
+    $controller("CodesEditorController", {$scope: scope, CodesEditorModel : model, isModalController : false});
     angular.mock.inject(function ($injector) {
         mockBackend = $injector.get('$httpBackend');
     });     
@@ -99,11 +99,12 @@ describe("Edit codes test", function() {
     it("should show error message when removerelation is rejected", function() {
         scope.model.modalInstance = {
             close: jasmine.createSpy('modalInstance.close')
-        }
+        };
         var relationCount = scope.model.withinCodes.length;
         scope.model.withinRelationToRemove = relationCodes;
         scope.okconfirm();
-        mockBackend.expectPOST(SERVICE_URL_BASE + "codes/removerelation/espoonoikeudet/espoonoikeudet/SISALTYY").respond(500, "");
+        scope.submit();
+        mockBackend.expectPUT(SERVICE_URL_BASE + "codes/save").respond(500, "");
         mockBackend.flush();        
         expect(scope.model.alerts.length).toEqual(1);
         expect(scope.model.withinCodes.length).toEqual(relationCount);
@@ -113,9 +114,10 @@ describe("Edit codes test", function() {
     it("should show error message when addrelation is rejected", function() {
         var relationCount = scope.model.withinCodes.length;
         scope.addToWithinCodes(relationCodes);
-        mockBackend.expectPOST(SERVICE_URL_BASE + "codes/addrelation/espoonoikeudet/espoonoikeudet/SISALTYY").respond(500, "");
+        scope.submit();
+        mockBackend.expectPUT(SERVICE_URL_BASE + "codes/save").respond(500, "");
         mockBackend.flush();
-        expect(scope.model.withinCodes.length).toEqual(relationCount);
+        expect(scope.model.withinCodes.length).toEqual(relationCount+1); // The changes are not reverted when failing update.
         expect(scope.model.alerts.length).toEqual(1);
     });
     

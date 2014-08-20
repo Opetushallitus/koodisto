@@ -5,6 +5,7 @@ package fi.vm.sade.koodisto.service.business;
 
 import java.util.List;
 
+import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiVersio;
@@ -114,5 +115,7 @@ public interface KoodiBusinessService {
     boolean hasRelationBetweenCodeElements(KoodiVersio ylaKoodiVersio, final KoodiVersio alaKoodiVersio);
     
     boolean isLatestKoodiVersio(String koodiUri, Integer versio);
+
+    KoodiVersio saveKoodi(ExtendedKoodiDto koodiDTO);
 
 }

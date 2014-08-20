@@ -1,4 +1,3 @@
-
 app.factory('CodesCreatorModel', function($location, RootCodes, $modal) {
     var model;
     model = new function() {
@@ -20,12 +19,12 @@ app.factory('CodesCreatorModel', function($location, RootCodes, $modal) {
         };
 
         this.getCodes = function() {
-            RootCodes.get({}, function (result) {
+            RootCodes.get({}, function(result) {
                 model.allCodes = result;
-                for(var i=0; i < model.allCodes.length; i++) {
+                for (var i = 0; i < model.allCodes.length; i++) {
                     if (model.allCodes[i].koodistos) {
-                        for(var j=0; j < model.allCodes[i].koodistos.length; j++) {
-                            if (!model.inCodesList(model.onlyCodes,model.allCodes[i].koodistos[j])) {
+                        for (var j = 0; j < model.allCodes[i].koodistos.length; j++) {
+                            if (!model.inCodesList(model.onlyCodes, model.allCodes[i].koodistos[j])) {
                                 model.onlyCodes.push(model.allCodes[i].koodistos[j]);
                             }
                         }
@@ -35,9 +34,8 @@ app.factory('CodesCreatorModel', function($location, RootCodes, $modal) {
             });
         };
 
-
-        this.inCodesList = function(codesList,codesToFind) {
-            for(var i=0; i < codesList.length; i++) {
+        this.inCodesList = function(codesList, codesToFind) {
+            for (var i = 0; i < codesList.length; i++) {
                 if (codesList[i].koodistoUri === codesToFind.koodistoUri) {
                     return true;
                 }
@@ -45,20 +43,16 @@ app.factory('CodesCreatorModel', function($location, RootCodes, $modal) {
             return false;
         };
 
-
-        this.languageSpecificValue = function(fieldArray,fieldName,language) {
-            return getLanguageSpecificValue(fieldArray,fieldName,language);
-        };
-
-
     };
-
 
     return model;
 });
 
-function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorModel, NewCodes, Treemodel, ValidateService) {
+function CodesCreatorController($scope, $location, $modal, $log, $filter, CodesCreatorModel, NewCodes, Treemodel) {
     $scope.model = CodesCreatorModel;
+    $scope.errorMessage = $filter('i18n')('field.required');
+    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.atLeastOneName');
+
     CodesCreatorModel.init();
 
     $scope.closeAlert = function(index) {
@@ -66,7 +60,9 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
     };
 
     $scope.cancel = function() {
-        $location.path("/").search({forceRefresh: false});
+        $location.path("/").search({
+            forceRefresh : false
+        });
     };
 
     $scope.submit = function() {
@@ -75,63 +71,72 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
 
     $scope.persistCodes = function() {
         var codes = {
-            codesGroupUri: $scope.selectedCGoup,
-            voimassaAlkuPvm: $scope.dActiveStart,
-            voimassaLoppuPvm: $scope.dActiveEnd,
-            omistaja: $scope.ownerName,
-            organisaatioOid: $scope.organizationOid,
-            metadata : [{
-                kieli: 'FI',
-                nimi: $scope.namefi,
-                kuvaus: $scope.descriptionfi,
-                kayttoohje: $scope.instructionsfi,
-                kohdealue: $scope.targetareafi,
-                kohdealueenOsaAlue: $scope.targetareapartfi,
-                kasite: $scope.conceptfi,
-                toimintaymparisto: $scope.operationalenvironmentfi,
-                koodistonLahde: $scope.codessourcefi,
-                tarkentaaKoodistoa: $scope.specifiescodesfi,
-                huomioitavaKoodisto: $scope.totakenoticeoffi,
-                sitovuustaso: $scope.validitylevelfi
-            }]
+            codesGroupUri : $scope.selectedCGoup,
+            voimassaAlkuPvm : $scope.dActiveStart,
+            voimassaLoppuPvm : $scope.dActiveEnd,
+            omistaja : $scope.ownerName,
+            organisaatioOid : $scope.organizationOid,
+            metadata : []
         };
+        if ($scope.namefi) {
+            codes.metadata.push({
+                kieli : 'FI',
+                nimi : $scope.namefi,
+                kuvaus : $scope.descriptionfi,
+                kayttoohje : $scope.instructionsfi,
+                kohdealue : $scope.targetareafi,
+                kohdealueenOsaAlue : $scope.targetareapartfi,
+                kasite : $scope.conceptfi,
+                toimintaymparisto : $scope.operationalenvironmentfi,
+                koodistonLahde : $scope.codessourcefi,
+                tarkentaaKoodistoa : $scope.specifiescodesfi,
+                huomioitavaKoodisto : $scope.totakenoticeoffi,
+                sitovuustaso : $scope.validitylevelfi
+            });
+        }
         if ($scope.namesv) {
             codes.metadata.push({
-            kieli: 'SV',
-                nimi: $scope.namesv,
-                kuvaus: $scope.descriptionsv,
-                kayttoohje: $scope.instructionssv,
-                kohdealue: $scope.targetareasv,
-                kohdealueenOsaAlue: $scope.targetareapartsv,
-                kasite: $scope.conceptsv,
-                toimintaymparisto: $scope.operationalenvironmentsv,
-                koodistonLahde: $scope.codessourcesv,
-                tarkentaaKoodistoa: $scope.specifiescodessv,
-                huomioitavaKoodisto: $scope.totakenoticeofsv,
-                sitovuustaso: $scope.validitylevelsv
+                kieli : 'SV',
+                nimi : $scope.namesv,
+                kuvaus : $scope.descriptionsv,
+                kayttoohje : $scope.instructionssv,
+                kohdealue : $scope.targetareasv,
+                kohdealueenOsaAlue : $scope.targetareapartsv,
+                kasite : $scope.conceptsv,
+                toimintaymparisto : $scope.operationalenvironmentsv,
+                koodistonLahde : $scope.codessourcesv,
+                tarkentaaKoodistoa : $scope.specifiescodessv,
+                huomioitavaKoodisto : $scope.totakenoticeofsv,
+                sitovuustaso : $scope.validitylevelsv
             });
         }
         if ($scope.nameen) {
             codes.metadata.push({
-            kieli: 'EN',
-                nimi: $scope.nameen,
-                kuvaus: $scope.descriptionen,
-                kayttoohje: $scope.instructionsen,
-                kohdealue: $scope.targetareaen,
-                kohdealueenOsaAlue: $scope.targetareaparten,
-                kasite: $scope.concepten,
-                toimintaymparisto: $scope.operationalenvironmenten,
-                koodistonLahde: $scope.codessourceen,
-                tarkentaaKoodistoa: $scope.specifiescodesen,
-                huomioitavaKoodisto: $scope.totakenoticeofen,
-                sitovuustaso: $scope.validitylevelen
+                kieli : 'EN',
+                nimi : $scope.nameen,
+                kuvaus : $scope.descriptionen,
+                kayttoohje : $scope.instructionsen,
+                kohdealue : $scope.targetareaen,
+                kohdealueenOsaAlue : $scope.targetareaparten,
+                kasite : $scope.concepten,
+                toimintaymparisto : $scope.operationalenvironmenten,
+                koodistonLahde : $scope.codessourceen,
+                tarkentaaKoodistoa : $scope.specifiescodesen,
+                huomioitavaKoodisto : $scope.totakenoticeofen,
+                sitovuustaso : $scope.validitylevelen
             });
         }
         NewCodes.post({}, codes, function(result) {
             Treemodel.refresh();
-            $location.path("/koodisto/"+result.koodistoUri+"/"+result.versio).search({forceRefresh: true});
+            $location.path("/koodisto/" + result.koodistoUri + "/" + result.versio).search({
+                forceRefresh : true
+            });
         }, function(error) {
-            ValidateService.validateCodes($scope,error,false);
+            var alert = {
+                type : 'danger',
+                msg : jQuery.i18n.prop(error.data)
+            };
+            $scope.model.alerts.push(alert);
         });
     };
 
@@ -172,19 +177,18 @@ function CodesCreatorController($scope, $location, $modal, $log, CodesCreatorMod
         }
     };
 
-    $scope.open = function () {
+    $scope.open = function() {
 
         var modalInstance = $modal.open({
-            templateUrl: 'organizationModalContent.html',
-            controller: ModalInstanceCtrl,
-            resolve: {
-            }
+            templateUrl : 'organizationModalContent.html',
+            controller : ModalInstanceCtrl,
+            resolve : {}
         });
 
-        modalInstance.result.then(function (selectedItem) {
+        modalInstance.result.then(function(selectedItem) {
             $scope.organizationOid = selectedItem.oid;
             $scope.organizationName = selectedItem.nimi['fi'] || selectedItem.nimi['sv'] || selectedItem.nimi['en'];
-        }, function () {
+        }, function() {
             $log.info('Modal dismissed at: ' + new Date());
         });
     };

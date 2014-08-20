@@ -20,6 +20,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
+import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.KoodiChangesDto;
 import fi.vm.sade.koodisto.dto.KoodiChangesDto.MuutosTila;
 import fi.vm.sade.koodisto.dto.KoodiDto;
@@ -34,6 +35,7 @@ import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -615,6 +617,126 @@ public class CodeElementResourceTest {
         assertEquals(3, dto.viimeisinVersio.intValue());
     }
 
+    
+    @Test
+    public void savesCodesWithNewName() {
+        String koodiUri = "sisaltyysuhde4kanssa1";
+        String nimi = "uusinimi";
+        int versio = 1;
+
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        assertEquals(Tila.HYVAKSYTTY, codeElementToBeSaved.getTila());
+        assertFalse(nimi.equals(codeElementToBeSaved.getMetadata().get(0).getNimi()));
+
+        codeElementToBeSaved.getMetadata().get(0).setNimi(nimi);
+        assertResponse(resource.save(codeElementToBeSaved), 200);
+
+        ExtendedKoodiDto codes = resource.getCodeElementByUriAndVersion(koodiUri, versio+1);
+        assertEquals(Tila.LUONNOS, codes.getTila());
+        assertEquals(nimi, codes.getMetadata().get(0).getNimi());
+    }
+    
+    @Test
+    public void savesCodesWithNewNameAndRelations() {
+        String koodiUri = "lisaarinnasteinen14";
+        String nimi = "uusinimi";
+        int versio = 1;
+
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        assertEquals(0, codeElementToBeSaved.getIncludesCodeElements().size());
+        assertEquals(0, codeElementToBeSaved.getWithinCodeElements().size());
+        assertEquals(0, codeElementToBeSaved.getLevelsWithCodeElements().size());
+
+        codeElementToBeSaved.getMetadata().get(0).setNimi(nimi);
+        codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa1", 1));
+        codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa2", 1));
+        codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa3", 1));
+        assertResponse(resource.save(codeElementToBeSaved), 200);
+
+        ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio+1);
+        assertEquals(1, codeElement.getIncludesCodeElements().size());
+        assertEquals(1, codeElement.getWithinCodeElements().size());
+        assertEquals(1, codeElement.getLevelsWithCodeElements().size());
+    }
+    
+    @Test
+    public void savesCodesRelationIncludes() {
+        String koodiUri = "lisaarinnasteinen14";
+        int versio = 1;
+
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+
+        codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa1", 1));
+        assertResponse(resource.save(codeElementToBeSaved), 200);
+
+        ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio+1);
+        assertEquals(1, codeElement.getIncludesCodeElements().size());
+        assertEquals(0, codeElement.getWithinCodeElements().size());
+        assertEquals(0, codeElement.getLevelsWithCodeElements().size());
+    }
+
+    @Test
+    public void savesCodesRelationWithin() {
+        String koodiUri = "lisaarinnasteinen14";
+        int versio = 1;
+
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+
+        codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa2", 1));
+        assertResponse(resource.save(codeElementToBeSaved), 200);
+
+        ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        assertEquals(0, codeElement.getIncludesCodeElements().size());
+        assertEquals(1, codeElement.getWithinCodeElements().size());
+        assertEquals(0, codeElement.getLevelsWithCodeElements().size());
+    }
+
+    @Test
+    public void savesCodesRelationLevelsWith() {
+        String koodiUri = "lisaarinnasteinen14";
+        int versio = 1;
+
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+
+        codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa3", 1));
+        assertResponse(resource.save(codeElementToBeSaved), 200);
+
+        ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        assertEquals(0, codeElement.getIncludesCodeElements().size());
+        assertEquals(0, codeElement.getWithinCodeElements().size());
+        assertEquals(1, codeElement.getLevelsWithCodeElements().size());
+    }
+
+    
+    @Test
+    public void savesCodesWithAllRelationChanges() {
+        String koodiUri = "savekoodineljallasuhteella";
+        int versio = 1;
+
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        assertEquals(1, codeElementToBeSaved.getIncludesCodeElements().size());
+        assertEquals(1, codeElementToBeSaved.getWithinCodeElements().size());
+        assertEquals(2, codeElementToBeSaved.getLevelsWithCodeElements().size());
+
+        codeElementToBeSaved.getIncludesCodeElements().clear();
+        codeElementToBeSaved.getWithinCodeElements().clear();
+        codeElementToBeSaved.getLevelsWithCodeElements().clear();
+        codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde1", 1));
+        codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde2", 1));
+        codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde3", 1));
+        assertResponse(resource.save(codeElementToBeSaved), 200);
+
+        ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio+1);
+        assertEquals(1, codeElement.getIncludesCodeElements().size());
+        assertEquals(1, codeElement.getWithinCodeElements().size());
+        assertEquals(1, codeElement.getLevelsWithCodeElements().size());
+
+        assertEquals("uusisavekoodinsuhde1", codeElement.getIncludesCodeElements().get(0).codeElementUri);
+        assertEquals("uusisavekoodinsuhde2", codeElement.getWithinCodeElements().get(0).codeElementUri);
+        assertEquals("uusisavekoodinsuhde3", codeElement.getLevelsWithCodeElements().get(0).codeElementUri);
+
+    }
+    
     // UTILITIES
     // /////////
 

@@ -60,7 +60,12 @@ app.config([ '$routeProvider', '$httpProvider', function($routeProvider, $httpPr
         templateUrl : TEMPLATE_URL_BASE + 'codes/createcodes.html'
     }).when('/muokkaaKoodisto/:codesUri/:codesVersion', {
         controller : CodesEditorController,
-        templateUrl : TEMPLATE_URL_BASE + 'codes/editcodes.html'
+        templateUrl : TEMPLATE_URL_BASE + 'codes/editcodes.html',
+        resolve : {
+            isModalController : function() {
+                return false;
+            }
+        }
     }).when('/koodisto/:codesUri/:codesVersion', {
         controller : ViewCodesController,
         templateUrl : TEMPLATE_URL_BASE + 'codes/viewcodes.html'
@@ -154,6 +159,14 @@ app.factory('UpdateCodesGroup', function($resource) {
 
 app.factory('UpdateCodes', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes", {}, {
+        put : {
+            method : "PUT"
+        }
+    });
+});
+
+app.factory('SaveCodes', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codes/save", {}, {
         put : {
             method : "PUT"
         }
@@ -368,6 +381,14 @@ app.factory('RemoveRelationCodes', function($resource) {
     });
 });
 
+app.factory('SaveCodeElement', function($resource) {
+    return $resource(SERVICE_URL_BASE + "codeelement/save", {}, {
+        put : {
+            method : "PUT"
+        }
+    });
+});
+
 app.factory('UpdateCodeElement', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement", {}, {
         put : {
@@ -428,6 +449,21 @@ function getLanguageSpecificValue(fieldArray, fieldName, language) {
         }
     }
     return "";
+}
+
+function getLanguageSpecificValueOrValidValue(fieldArray, fieldName, language) {
+    var specificValue = getLanguageSpecificValue(fieldArray, fieldName, language);
+
+    if (specificValue == "" && language != "FI"){
+        specificValue = getLanguageSpecificValue(fieldArray, fieldName, "FI");
+    }
+    if (specificValue == "" && language != "SV"){
+        specificValue = getLanguageSpecificValue(fieldArray, fieldName, "SV");
+    }
+    if (specificValue == "" && language != "EN"){
+        specificValue = getLanguageSpecificValue(fieldArray, fieldName, "EN");
+    }
+    return specificValue;
 }
 
 // Pagination
