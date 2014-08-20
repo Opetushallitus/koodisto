@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -189,6 +190,28 @@ public class CodeElementResource {
             @ApiParam(value = "Verrataanko viimeiseen hyväksyttyyn versioon") @DefaultValue("false") @QueryParam("compareToLatestAccepted") boolean compareToLatestAccepted) {
         //TODO: use validators when OVT-7653 is merged
         KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, codeElementVersion, compareToLatestAccepted);
+        return Response.status(Response.Status.OK).entity(dto).build();
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({ JsonViews.Basic.class })
+    @Path("changes/withdate/{codeElementUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}")
+    @ApiOperation(
+            value = "Palauttaa tehdyt muutokset uusimpaan koodiversioon käyttäen lähintä päivämäärään osuvaa koodiversiota vertailussa",
+            notes = "Toimii vain, jos koodi on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
+            response = KoodiChangesDto.class)
+    public Response getChangesToCodeElementWithDate(@ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
+            @ApiParam(value = "Kuukauden päivä") @PathParam("dayofmonth") Integer dayOfMonth,
+            @ApiParam(value = "Kuukausi") @PathParam("month") Integer month,
+            @ApiParam(value = "Vuosi") @PathParam("year") Integer year,
+            @ApiParam(value = "Tunti") @PathParam("hour") Integer hourOfDay,
+            @ApiParam(value = "Minuutti") @PathParam("minute") Integer minute,
+            @ApiParam(value = "Sekunti") @PathParam("second") Integer second,
+            @ApiParam(value = "Verrataanko viimeiseen hyväksyttyyn versioon") @DefaultValue("false") @QueryParam("compareToLatestAccepted") boolean compareToLatestAccepted) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, month, dayOfMonth, hourOfDay, minute, second);
+        KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, cal.getTime(), compareToLatestAccepted);
         return Response.status(Response.Status.OK).entity(dto).build();
     }
 

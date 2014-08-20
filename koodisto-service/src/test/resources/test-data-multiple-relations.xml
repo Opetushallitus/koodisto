@@ -67,13 +67,13 @@
   <koodiversio id="21" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="21" koodiarvo="ls18k3"/>
   <koodiversio id="22" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="22" koodiarvo="ls18k4"/>
   <koodiversio id="23" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv1"/>
-  <koodiversio id="24" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv2"/>
-  <koodiversio id="25" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="3" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv3"/>
+  <koodiversio id="24" version="0" paivityspvm="2012-03-23" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv2"/>
+  <koodiversio id="25" version="0" paivityspvm="2012-03-24" tila="HYVAKSYTTY" versio="3" voimassaalkupvm="1990-01-01" koodi_id="23" koodiarvo="mv3"/>
   <koodiversio id="26" version="0" paivityspvm="2012-03-22" tila="PASSIIVINEN" versio="1" voimassaalkupvm="1990-01-01" koodi_id="24" koodiarvo="delme"/>
   <koodiversio id="27" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="25" koodiarvo="tobeupdated"/>
-  <koodiversio id="28" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="26" koodiarvo="viimeinenonluonnos"/>
-  <koodiversio id="29" version="0" paivityspvm="2012-03-22" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="1990-01-01" koodi_id="26" koodiarvo="viimeinenonluonnos"/>
-  <koodiversio id="30" version="0" paivityspvm="2012-03-22" tila="LUONNOS" versio="3" voimassaalkupvm="1990-01-01" koodi_id="26" koodiarvo="viimeinenonluonnos"/>
+  <koodiversio id="28" version="0" paivityspvm="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="26" koodiarvo="viimeinenonluonnos"/>
+  <koodiversio id="29" version="0" paivityspvm="2013-04-20" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="1990-01-01" koodi_id="26" koodiarvo="viimeinenonluonnos"/>
+  <koodiversio id="30" version="0" paivityspvm="2013-06-15" tila="LUONNOS" versio="3" voimassaalkupvm="1990-01-01" koodi_id="26" koodiarvo="viimeinenonluonnos"/>
   
   <koodimetadata id="1" kieli="FI" nimi="Alajärvi" version="0" koodiversio_id="1" lyhytnimi="Alajärvi" kuvaus="Alajärvi"/>
   <koodimetadata id="2" kieli="FI" nimi="Olajärvi" version="0" koodiversio_id="2" lyhytnimi="Olajärvi" kuvaus="Olajärvi"/>

@@ -584,6 +584,36 @@ public class CodeElementResourceTest {
         assertEquals(Tila.LUONNOS, dto.tila);
     }
     
+    @Test
+    public void comparesAgainstLatestAcceptedCodeElementVersionUsingDate() {
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("viimeinenonluonnos", 12, 1, 2000, 0,0,0, true).getEntity();
+        assertEquals(2, dto.viimeisinVersio.intValue());
+        assertNull(dto.tila);
+    }
+    
+    @Test
+    public void comparesAgainstLatestCodeElementVersionUsingDate() {
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("viimeinenonluonnos", 12, 12, 2000, 0,0,0, false).getEntity();
+        assertEquals(3, dto.viimeisinVersio.intValue());
+        assertEquals(Tila.LUONNOS, dto.tila);
+    }
+    
+    @Test
+    public void returnsChangesForCodeElementUsingDateFromPast() {
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 2000, 0,0,0, false).getEntity();
+        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
+        assertEquals("Monta versiota 3", dto.muuttuneetTiedot.get(0).nimi);
+        assertNull(dto.voimassaAlkuPvm);
+        assertEquals(3, dto.viimeisinVersio.intValue());
+    }
+    
+    @Test
+    public void returnsNoChangesForCodeElementUsingDateFromFuture() {
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 0,0,0, false).getEntity();
+        assertEquals(MuutosTila.EI_MUUTOKSIA, dto.muutosTila);
+        assertTrue(dto.muuttuneetTiedot.isEmpty());
+        assertEquals(3, dto.viimeisinVersio.intValue());
+    }
 
     // UTILITIES
     // /////////
