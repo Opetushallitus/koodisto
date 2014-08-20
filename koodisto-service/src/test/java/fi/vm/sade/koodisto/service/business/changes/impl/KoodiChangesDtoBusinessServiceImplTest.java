@@ -254,12 +254,11 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         int versio = 1;
         String descriptionChangedForSecond = "kuvausta norsusta";
         String nameChangedForThird = "Otus";
-        KoodiVersio first = givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(versio, FIRST_DATE, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
-        KoodiVersio second = givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(versio + 1, SECOND_DATE, givenKoodiMetadata(NAME, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
-        KoodiVersio third = givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(versio + 2, THIRD_DATE, givenKoodiMetadata(nameChangedForThird, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
+        KoodiVersio first = givenKoodiVersioWithMetaDataAndCustomDateItWasCreated(versio, FIRST_DATE, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
+        KoodiVersio second = givenKoodiVersioWithMetaDataAndCustomDateItWasCreated(versio + 1, SECOND_DATE, givenKoodiMetadata(NAME, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
+        KoodiVersio third = givenKoodiVersioWithMetaDataAndCustomDateItWasCreated(versio + 2, THIRD_DATE, givenKoodiMetadata(nameChangedForThird, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
         KoodiChangesDto dto = givenResultWithMultipleKoodiVersiosForDateQuery(query, false, first, second, third);
         assertEquals(3, dto.viimeisinVersio.intValue());
-        assertEquals(THIRD_DATE, dto.viimeksiPaivitetty);
         SimpleKoodiMetadataDto data = dto.muuttuneetTiedot.get(0);
         assertEquals(nameChangedForThird, data.nimi);
         if (shouldUseFirst) {
@@ -358,7 +357,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         return DtoFactory.createKoodiVersioWithoutMetadatasWithStartAndEndDates(KOODI_URI, versio, startDate, endDate).build();
     }
     
-    private KoodiVersio givenKoodiVersioWithMetaDataAndCustomDateItWasLastUpdated(int versio, Date lastUpdated, KoodiMetadata ... datas) {
-        return DtoFactory.createKoodiVersioWithUriAndVersioWithoutMetadatas(KOODI_URI, versio).addMetadata(datas).setLastUpdateDate(lastUpdated).build();
+    private KoodiVersio givenKoodiVersioWithMetaDataAndCustomDateItWasCreated(int versio, Date created, KoodiMetadata ... datas) {
+        return DtoFactory.createKoodiVersioWithUriAndVersioWithoutMetadatas(KOODI_URI, versio).addMetadata(datas).setCreated(created).build();
     }
 }

@@ -80,6 +80,11 @@ public class KoodiVersioBuilder implements Builder<KoodiVersio>{
         relation.setAlakoodiVersio(koodiVersio);
         return this;
     }
+    
+    public KoodiVersioBuilder setCreated(Date created) {
+        koodiVersio.setLuotu(created);
+        return this;
+    }
 
     public KoodiVersio build() {
         if (koodiVersio.getPaivitysPvm() == null ) {

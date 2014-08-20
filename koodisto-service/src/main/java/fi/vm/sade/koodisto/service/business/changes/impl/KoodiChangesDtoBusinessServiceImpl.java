@@ -177,7 +177,7 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
 
         @Override
         protected DateTime getDateFromEntity(KoodiVersio entity) {
-            return new DateTime(entity.getPaivitysPvm());
+            return new DateTime(entity.getLuotu());
         }
         
     }
