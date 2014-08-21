@@ -242,10 +242,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         for (KoodiMetadataType md : metadatas) {
             if (StringUtils.isBlank(md.getNimi())) {
                 throw new KoodiNimiEmptyException("No koodi nimi defined for language " + md.getKieli().name());
-            } else if (StringUtils.isBlank(md.getKuvaus())) {
-                throw new KoodiKuvausEmptyException("No koodi kuvaus defined for language " + md.getKieli().name());
-            } else if (StringUtils.isBlank(md.getLyhytNimi())) {
-                throw new KoodiLyhytNimiEmptyException("No koodi lyhyt nimi defined for language " + md.getKieli().name());
             }
         }
     }

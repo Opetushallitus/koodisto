@@ -163,7 +163,7 @@ public class KoodiAdminServiceTest {
         assertEquals(100, listKoodisByKoodisto(koodistoUri2, 2).size());
     }
 
-    @Test(expected = GenericFault.class)
+    @Test
     public void testUpdateWithInsufficientMetadataFields() {
         final String koodiUri = "435";
         KoodiType koodiToUpdate = getKoodiByUri(koodiUri);
@@ -188,30 +188,6 @@ public class KoodiAdminServiceTest {
 
         assertTrue(caughtOne);
 
-        enMeta.setNimi("non empty");
-        enMeta.setKuvaus("");
-        caughtOne = false;
-
-        try {
-            koodiAdminService.updateKoodi(updateData);
-        } catch (GenericFault e) {
-            caughtOne = true;
-            assertEquals(KoodiKuvausEmptyException.class.getCanonicalName(), e.getFaultInfo().getErrorCode());
-        } catch (Exception e) {
-            fail();
-        }
-
-        assertTrue(caughtOne);
-
-        enMeta.setKuvaus("non empty");
-        enMeta.setLyhytNimi("");
-
-        try {
-            koodiAdminService.updateKoodi(updateData);
-        } catch (GenericFault e) {
-            assertEquals(KoodiLyhytNimiEmptyException.class.getCanonicalName(), e.getFaultInfo().getErrorCode());
-            throw e;
-        }
     }
 
     @Test(expected = GenericFault.class)

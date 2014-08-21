@@ -59,6 +59,7 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoHasNoKoodisWhenAcceptedExcetion;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoKuvausEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiNotUniqueException;
@@ -265,8 +266,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         for (KoodistoMetadataType md : metadatas) {
             if (StringUtils.isBlank(md.getNimi())) {
                 throw new KoodistoNimiEmptyException("No koodisto nimi defined for language " + md.getKieli().name());
-            } else if (StringUtils.isBlank(md.getKuvaus())) {
-                throw new KoodistoKuvausEmptyException("No koodisto kuvaus defined for language " + md.getKieli().name());
             }
         }
     }
@@ -611,6 +610,10 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         if (!Tila.HYVAKSYTTY.equals(latest.getTila()) && updateKoodistoData.getTila().equals(TilaType.HYVAKSYTTY)) {
             List<KoodiVersio> koodis = koodiVersioDAO.getKoodiVersiosByKoodistoAndKoodiTila(latest.getId(), Tila.LUONNOS);
 
+            if(koodis.size() == 0){
+                throw new KoodistoHasNoKoodisWhenAcceptedExcetion("Hyväksyttävällä koodistolla ei ole koodeja.");
+            }
+            
             ArrayList<String> koodiUris = new ArrayList<String>();
             for (KoodiVersio koodiVersio : koodis) {
                 koodiUris.add(koodiVersio.getKoodi().getKoodiUri());
