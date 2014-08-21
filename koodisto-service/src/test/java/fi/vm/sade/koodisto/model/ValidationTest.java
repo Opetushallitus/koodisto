@@ -128,7 +128,7 @@ public class ValidationTest {
         try {
             genericDAO.insert(new KoodistoMetadata());
         } catch (ConstraintViolationException e) {
-            assertEquals(4, e.getConstraintViolations().size());
+            assertEquals(3, e.getConstraintViolations().size());
             throw e;
         }
     }
@@ -261,7 +261,7 @@ public class ValidationTest {
         try {
             genericDAO.insert(new KoodiMetadata());
         } catch (ConstraintViolationException e) {
-            assertEquals(5, e.getConstraintViolations().size());
+            assertEquals(3, e.getConstraintViolations().size());
             throw e;
         }
     }
