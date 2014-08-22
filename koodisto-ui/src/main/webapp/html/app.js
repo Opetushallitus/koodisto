@@ -444,7 +444,8 @@ function getLanguageSpecificValue(fieldArray, fieldName, language) {
     if (fieldArray) {
         for (var i = 0; i < fieldArray.length; i++) {
             if (fieldArray[i].kieli === language) {
-                return eval("fieldArray[i]." + fieldName);
+                var result = eval("fieldArray[i]." + fieldName);
+                return result == null ? "" : result;
             }
         }
     }
