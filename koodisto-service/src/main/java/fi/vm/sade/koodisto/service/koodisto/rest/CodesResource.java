@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.activation.DataHandler;
@@ -23,9 +22,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -53,24 +49,18 @@ import fi.vm.sade.koodisto.dto.KoodistoVersioListDto;
 import fi.vm.sade.koodisto.model.Format;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Koodisto;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.DownloadService;
 import fi.vm.sade.koodisto.service.UploadService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.impl.stream.TemporaryFileInputStream;
-import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
-import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 
 @Component
 @Path("/codes")
-@PreAuthorize("isAuthenticated()")
 @Api(value = "/rest/codes", description = "Koodistot")
 public class CodesResource {
     private static final Logger LOGGER = LoggerFactory.getLogger(CodesResource.class);
@@ -79,13 +69,16 @@ public class CodesResource {
     private KoodistoBusinessService koodistoBusinessService;
 
     @Autowired
-    private SadeConversionService conversionService;
-
-    @Autowired
     private UploadService uploadService;
 
     @Autowired
+    private SadeConversionService conversionService;
+    
+    @Autowired
     private DownloadService downloadService;
+    
+    @Autowired
+    private CodesResourceConverter converter;
 
     @POST
     @Path("/addrelation/{codesUri}/{codesUriToAdd}/{relationType}")
@@ -143,44 +136,39 @@ public class CodesResource {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         try {
-            KoodistoVersio koodistoVersio = koodistoBusinessService.updateKoodisto(convertFromDTOToUpdateKoodistoDataType(codesDTO));
+            KoodistoVersio koodistoVersio = koodistoBusinessService.updateKoodisto(converter.convertFromDTOToUpdateKoodistoDataType(codesDTO));
             return Response.status(Response.Status.CREATED).entity(koodistoVersio.getVersio()).build();
         } catch (Exception e) {
             LOGGER.warn("Koodistoa ei saatu päivitettyä. ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
-
-    private UpdateKoodistoDataType convertFromDTOToUpdateKoodistoDataType(KoodistoDto koodistoDto) {
-        UpdateKoodistoDataType updateKoodistoDataType = new UpdateKoodistoDataType();
-        GregorianCalendar c = new GregorianCalendar();
-        c.setTime(koodistoDto.getVoimassaAlkuPvm());
-        XMLGregorianCalendar startDate = null;
-        XMLGregorianCalendar endDate = null;
+    
+    @PUT
+    @Path("/save")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({ JsonViews.Basic.class })
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @ApiOperation(
+            value = "Päivittää koodiston kokonaisuutena",
+            notes = "Lisää ja poistaa koodistonsuhteita",
+            response = Response.class)
+    public Response save(
+            @ApiParam(value = "Koodisto") KoodistoDto codesDTO) {
+        if (codesDTO == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
         try {
-            startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            if (koodistoDto.getVoimassaLoppuPvm() != null) {
-                c.setTime(koodistoDto.getVoimassaLoppuPvm());
-                endDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            }
-        } catch (DatatypeConfigurationException e) {
-            LOGGER.warn("Date couldn't be parsed: ", e);
+            KoodistoVersio koodistoVersio = koodistoBusinessService.saveKoodisto(codesDTO);
+            return Response.status(Response.Status.OK).entity(koodistoVersio.getVersio()).build();
+        } catch (Exception e) {
+            LOGGER.warn("Koodistoa ei saatu päivitettyä. ", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
-        updateKoodistoDataType.setCodesGroupUri(koodistoDto.getCodesGroupUri());
-        updateKoodistoDataType.setVoimassaAlkuPvm(startDate);
-        updateKoodistoDataType.setVoimassaLoppuPvm(endDate);
-        updateKoodistoDataType.setKoodistoUri(koodistoDto.getKoodistoUri());
-        updateKoodistoDataType.setOmistaja(koodistoDto.getOmistaja());
-        updateKoodistoDataType.setOrganisaatioOid(koodistoDto.getOrganisaatioOid());
-        updateKoodistoDataType.setVersio(koodistoDto.getVersio());
-        updateKoodistoDataType.setTila(TilaType.fromValue(koodistoDto.getTila().toString()));
-        updateKoodistoDataType.setLockingVersion(koodistoDto.getVersion());
-        for (KoodistoMetadata koodistoMetadata : koodistoDto.getMetadata()) {
-            updateKoodistoDataType.getMetadataList().add(conversionService.convert(koodistoMetadata, KoodistoMetadataType.class));
-        }
-
-        return updateKoodistoDataType;
     }
+
+    
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -199,7 +187,7 @@ public class CodesResource {
         List<String> codesGroupUris = new ArrayList<String>();
         codesGroupUris.add(codesDTO.getCodesGroupUri());
         try {
-            KoodistoVersio koodistoVersio = koodistoBusinessService.createKoodisto(codesGroupUris, convertFromDTOToCreateKoodistoDataType(codesDTO));
+            KoodistoVersio koodistoVersio = koodistoBusinessService.createKoodisto(codesGroupUris, converter.convertFromDTOToCreateKoodistoDataType(codesDTO));
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoVersio, KoodistoDto.class)).build();
         } catch (Exception e) {
             LOGGER.warn("Koodistoa ei saatu lisättyä. ", e);
@@ -207,36 +195,11 @@ public class CodesResource {
         }
     }
 
-    private CreateKoodistoDataType convertFromDTOToCreateKoodistoDataType(KoodistoDto koodistoDto) {
-        CreateKoodistoDataType createKoodistoDataType = new CreateKoodistoDataType();
-        GregorianCalendar c = new GregorianCalendar();
-        c.setTime(koodistoDto.getVoimassaAlkuPvm());
-        XMLGregorianCalendar startDate = null;
-        XMLGregorianCalendar endDate = null;
-        try {
-            startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            if (koodistoDto.getVoimassaLoppuPvm() != null) {
-                c.setTime(koodistoDto.getVoimassaLoppuPvm());
-                endDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            }
-        } catch (DatatypeConfigurationException e) {
-            LOGGER.warn("Date couldn't be parsed: ", e);
-        }
-        createKoodistoDataType.setVoimassaAlkuPvm(startDate);
-        createKoodistoDataType.setVoimassaLoppuPvm(endDate);
-        createKoodistoDataType.setOmistaja(koodistoDto.getOmistaja());
-        createKoodistoDataType.setOrganisaatioOid(koodistoDto.getOrganisaatioOid());
-        for (KoodistoMetadata koodistoMetadata : koodistoDto.getMetadata()) {
-            createKoodistoDataType.getMetadataList().add(conversionService.convert(koodistoMetadata, KoodistoMetadataType.class));
-        }
 
-        return createKoodistoDataType;
-    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView(JsonViews.Simple.class)
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa kaikki koodistoryhmät",
             notes = "",
@@ -250,7 +213,6 @@ public class CodesResource {
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa kaikki koodistoryhmät ja niiden sisältämät koodistot",
             notes = "",
@@ -265,7 +227,6 @@ public class CodesResource {
     @Path("/{codesUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa koodiston",
             notes = "",
@@ -284,7 +245,6 @@ public class CodesResource {
     @Path("/{codesUri}/{codesVersion}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Extended.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa tietyn koodistoversion",
             notes = "",

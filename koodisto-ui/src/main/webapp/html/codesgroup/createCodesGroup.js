@@ -13,8 +13,9 @@ app.factory('CodesGroupCreatorModel', function($location) {
     return model;
 });
 
-function CodesGroupCreatorController($scope, $location, CodesGroupCreatorModel, NewCodesGroup, Treemodel) {
+function CodesGroupCreatorController($scope, $location, $filter, CodesGroupCreatorModel, NewCodesGroup, Treemodel) {
     $scope.model = CodesGroupCreatorModel;
+    $scope.errorMessage = $filter('i18n')('field.required');
     CodesGroupCreatorModel.init();
 
     $scope.closeAlert = function(index) {

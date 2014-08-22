@@ -38,15 +38,13 @@ public class KoodiMetadata extends BaseEntity {
     private String nimi;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
-    @NotBlank
     @Size(min = 0, max = FieldLengths.LONG_FIELD_LENGTH)
-    @Column(name = "kuvaus", length = FieldLengths.LONG_FIELD_LENGTH, nullable = false)
+    @Column(name = "kuvaus", length = FieldLengths.LONG_FIELD_LENGTH, nullable = true)
     private String kuvaus;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-    @NotBlank
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
-    @Column(name = "lyhytNimi", length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = false)
+    @Column(name = "lyhytNimi", length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = true)
     private String lyhytNimi;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})

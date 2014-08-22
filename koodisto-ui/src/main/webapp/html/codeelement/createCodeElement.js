@@ -7,23 +7,18 @@ app.factory('CodeElementCreatorModel', function($location) {
         this.init = function() {
             this.alerts = [];
         };
-
-
-        this.languageSpecificValue = function(fieldArray,fieldName,language) {
-            return getLanguageSpecificValue(fieldArray,fieldName,language);
-        };
-
-
     };
-
-
     return model;
 });
 
-function CodeElementCreatorController($scope, $location, $routeParams, CodeElementCreatorModel, NewCodeElement, ValidateService) {
+function CodeElementCreatorController($scope, $location, $routeParams, $filter,  CodeElementCreatorModel, NewCodeElement) {
     $scope.model = CodeElementCreatorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
+    $scope.errorMessage = $filter('i18n')('field.required');
+    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.at.least.one.name');
+    $scope.errorMessageIfOtherInfoIsGiven = $filter('i18n')('field.required.if.other.info.is.given');
+    
     CodeElementCreatorModel.init();
 
     $scope.closeAlert = function(index) {
@@ -43,7 +38,10 @@ function CodeElementCreatorController($scope, $location, $routeParams, CodeEleme
             voimassaAlkuPvm: $scope.dActiveStart,
             voimassaLoppuPvm: $scope.dActiveEnd,
             koodiArvo: $scope.codeValue,
-            metadata : [{
+            metadata : []
+        };
+        if ($scope.namefi){
+            codeelement.metadata.push({
                 kieli: 'FI',
                 nimi: $scope.namefi,
                 kuvaus: $scope.descriptionfi,
@@ -54,8 +52,8 @@ function CodeElementCreatorController($scope, $location, $routeParams, CodeEleme
                 sisaltaaMerkityksen: $scope.containssignificancefi,
                 eiSisallaMerkitysta: $scope.doesnotcontainsignificancefi,
                 sisaltaaKoodiston: $scope.containscodesfi
-            }]
-        };
+            });
+        }
         if ($scope.namesv) {
             codeelement.metadata.push({
                 kieli: 'SV',
@@ -87,7 +85,8 @@ function CodeElementCreatorController($scope, $location, $routeParams, CodeEleme
         NewCodeElement.post({codesUri: $scope.codesUri}, codeelement, function(result) {
             $location.path("/koodi/"+result.koodiUri+"/"+result.versio).search({edited: true});
         }, function(error) {
-            ValidateService.validateCodeElement($scope,error,false);
+            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
+            $scope.model.alerts.push(alert);
         });
     };
 

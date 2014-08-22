@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import java.util.Arrays;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -13,9 +12,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.annotate.JsonView;
@@ -37,21 +33,16 @@ import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.dto.SimpleKoodiDto;
 import fi.vm.sade.koodisto.model.JsonViews;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
+import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.impl.conversion.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
-import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodiTilaType;
-import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 
 @Component
 @Path("/codeelement")
-@PreAuthorize("isAuthenticated()")
 @Api(value = "/rest/codeelement", description = "Koodit")
 public class CodeElementResource {
     private final static Logger logger = LoggerFactory.getLogger(CodeElementResource.class);
@@ -64,15 +55,14 @@ public class CodeElementResource {
 
     @Autowired
     private KoodistoConfiguration koodistoConfiguration;
-
-    // ////
-    // GET
+    
+    @Autowired
+    private CodeElementResourceConverter converter;
 
     @GET
     @Path("/{codeElementUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Simple.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa koodiversiot tietystä koodista",
             notes = "",
@@ -90,7 +80,6 @@ public class CodeElementResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Extended.class })
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa tietyn koodiversion",
             notes = "sisältää koodiversion koodinsuhteet",
@@ -111,7 +100,6 @@ public class CodeElementResource {
     @Path("/{codesUri}/{codesVersion}/{codeElementUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa koodin tietystä koodistoversiosta",
             notes = "",
@@ -128,7 +116,6 @@ public class CodeElementResource {
     @Path("/codes/{codesUri}/{codesVersion}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Simple.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa koodin tietystä koodistoversiosta",
             notes = "",
@@ -151,7 +138,6 @@ public class CodeElementResource {
     @Path("/latest/{codeElementUri}")
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Palauttaa uusimman koodiversion",
             notes = "",
@@ -168,9 +154,6 @@ public class CodeElementResource {
         }
         return conversionService.convert(codeElements.get(0), KoodiDto.class);
     }
-
-    // /////
-    // POST
 
     @POST
     @Path("/{codesUri}")
@@ -190,7 +173,7 @@ public class CodeElementResource {
         }
         try {
             KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem = koodiBusinessService.createKoodi(codesUri,
-                    convertFromDTOToCreateKoodiDataType(codeelementDTO));
+                    converter.convertFromDTOToCreateKoodiDataType(codeelementDTO));
             KoodiVersioWithKoodistoItemToKoodiDtoConverter koodiVersioWithKoodistoItemToKoodiDtoConverter = new KoodiVersioWithKoodistoItemToKoodiDtoConverter();
             koodiVersioWithKoodistoItemToKoodiDtoConverter.setKoodistoConfiguration(koodistoConfiguration);
 
@@ -236,7 +219,7 @@ public class CodeElementResource {
             ) {
         List<String> relationsToAdd = koodiRelaatioDto.getRelations();
         if (relationsToAdd == null || relationsToAdd.isEmpty()) {
-            logger.info("Called mass remove for relations without required query param (relationsToRemove)");
+            logger.info("Called mass add for relations without required query param (relationsToAdd)");
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         try {
@@ -322,9 +305,6 @@ public class CodeElementResource {
         }
     }
 
-    // ////
-    // PUT
-
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -343,9 +323,34 @@ public class CodeElementResource {
         try {
 
             KoodiVersioWithKoodistoItem koodiVersio =
-                    koodiBusinessService.updateKoodi(convertFromDTOToUpdateKoodiDataType(codeElementDTO));
+                    koodiBusinessService.updateKoodi(converter.convertFromDTOToUpdateKoodiDataType(codeElementDTO));
             return Response.status(Response.Status.CREATED).entity
                     (conversionService.convert(koodiVersio, KoodiDto.class)).build();
+        } catch (Exception e) {
+            logger.warn("Koodia ei saatu päivitettyä. ", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+    }
+    
+    @PUT
+    @Path("/save")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({ JsonViews.Basic.class })
+    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @ApiOperation(
+            value = "Päivittää koodin kokonaisuutena",
+            notes = "Lisää ja poistaa koodinsuhteita vastaamaan annettua koodia.",
+            response = Response.class)
+    public Response save(
+            @ApiParam(value = "Koodi") ExtendedKoodiDto koodiDTO) {
+        if (koodiDTO == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
+
+        }
+        try {
+            KoodiVersio koodiVersio = koodiBusinessService.saveKoodi(koodiDTO);
+            return Response.status(Response.Status.OK).entity(koodiVersio.getVersio()).build();
         } catch (Exception e) {
             logger.warn("Koodia ei saatu päivitettyä. ", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -354,66 +359,6 @@ public class CodeElementResource {
 
     // ////////
     // METHODS
-
-    private UpdateKoodiDataType convertFromDTOToUpdateKoodiDataType(KoodiDto koodiDto) {
-        UpdateKoodiDataType updateKoodiDataType = new UpdateKoodiDataType();
-        GregorianCalendar c = new GregorianCalendar();
-        c.setTime(koodiDto.getVoimassaAlkuPvm());
-        XMLGregorianCalendar startDate = null;
-        XMLGregorianCalendar endDate = null;
-
-        try {
-            startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            if (koodiDto.getVoimassaLoppuPvm() != null) {
-                c.setTime(koodiDto.getVoimassaLoppuPvm());
-                endDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            }
-        } catch (DatatypeConfigurationException e) {
-            logger.warn("Date couldn't be parsed: ", e);
-        }
-
-        updateKoodiDataType.setVoimassaAlkuPvm(startDate);
-        updateKoodiDataType.setVoimassaLoppuPvm(endDate);
-        updateKoodiDataType.setKoodiArvo(koodiDto.getKoodiArvo());
-        updateKoodiDataType.setKoodiUri(koodiDto.getKoodiUri());
-        updateKoodiDataType.setVersio(koodiDto.getVersio());
-        updateKoodiDataType.setLockingVersion(koodiDto.getVersion());
-
-        if (!koodiDto.getTila().toString().equals("HYVAKSYTTY")) {
-            updateKoodiDataType.setTila(UpdateKoodiTilaType.fromValue(koodiDto.getTila().toString()));
-        }
-        for (KoodiMetadata koodiMetadata : koodiDto.getMetadata()) {
-            updateKoodiDataType.getMetadata().add(conversionService.convert(koodiMetadata, KoodiMetadataType.class));
-        }
-
-        return updateKoodiDataType;
-    }
-
-    private CreateKoodiDataType convertFromDTOToCreateKoodiDataType(KoodiDto koodiDto) {
-        CreateKoodiDataType createKoodiDataType = new CreateKoodiDataType();
-        GregorianCalendar c = new GregorianCalendar();
-        c.setTime(koodiDto.getVoimassaAlkuPvm());
-        XMLGregorianCalendar startDate = null;
-        XMLGregorianCalendar endDate = null;
-        try {
-            startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            if (koodiDto.getVoimassaLoppuPvm() != null) {
-                c.setTime(koodiDto.getVoimassaLoppuPvm());
-                endDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            }
-        } catch (DatatypeConfigurationException e) {
-            logger.warn("Date couldn't be parsed: ", e);
-        }
-        createKoodiDataType.setVoimassaAlkuPvm(startDate);
-        createKoodiDataType.setVoimassaLoppuPvm(endDate);
-        createKoodiDataType.setKoodiArvo(koodiDto.getKoodiArvo());
-
-        for (KoodiMetadata koodiMetadata : koodiDto.getMetadata()) {
-            createKoodiDataType.getMetadata().add(conversionService.convert(koodiMetadata, KoodiMetadataType.class));
-        }
-
-        return createKoodiDataType;
-    }
 
     private boolean isValidEnum(String relationType) {
         try {

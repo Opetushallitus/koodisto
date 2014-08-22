@@ -50,9 +50,9 @@
                 type="tns:KieliType" />
             <xs:element minOccurs="1" maxOccurs="1" name="nimi"
                 type="xs:string" />
-            <xs:element minOccurs="1" maxOccurs="1" name="kuvaus"
+            <xs:element minOccurs="0" maxOccurs="1" name="kuvaus"
                 type="xs:string" />
-            <xs:element minOccurs="1" maxOccurs="1" name="lyhytNimi"
+            <xs:element minOccurs="0" maxOccurs="1" name="lyhytNimi"
                 type="xs:string" />
             <xs:element minOccurs="0" maxOccurs="1" name="kayttoohje"
                 type="xs:string" />
@@ -110,7 +110,7 @@
                 type="tns:KieliType" />
             <xs:element minOccurs="1" maxOccurs="1" name="nimi"
                 type="xs:string" />
-            <xs:element minOccurs="1" maxOccurs="1" name="kuvaus"
+            <xs:element minOccurs="0" maxOccurs="1" name="kuvaus"
                 type="xs:string" />
             <xs:element minOccurs="0" maxOccurs="1" name="kayttoohje"
                 type="xs:string" />

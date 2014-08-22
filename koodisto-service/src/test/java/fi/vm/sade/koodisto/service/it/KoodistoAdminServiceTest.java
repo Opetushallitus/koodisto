@@ -216,7 +216,7 @@ public class KoodistoAdminServiceTest {
         }
     }
 
-    @Test(expected = GenericFault.class)
+    @Test
     public void testUpdateWithInsufficientMetadataFields() {
         final String koodistoUri = "http://paljon_versioita.fi/1";
         KoodistoType koodistoToUpdate = getKoodistoByUri(koodistoUri);
@@ -252,16 +252,6 @@ public class KoodistoAdminServiceTest {
         }
 
         assertTrue(caughtOne);
-
-        enMeta.setNimi("not empty");
-        enMeta.setKuvaus("");
-
-        try {
-            koodistoAdminService.updateKoodisto(updateData);
-        } catch (GenericFault e) {
-            assertEquals(KoodistoKuvausEmptyException.class.getCanonicalName(), e.getFaultInfo().getErrorCode());
-            throw e;
-        }
     }
 
     @Test
