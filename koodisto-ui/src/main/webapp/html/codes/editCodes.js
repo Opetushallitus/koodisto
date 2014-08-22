@@ -167,7 +167,8 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
     $scope.errorMessage = $filter('i18n')('field.required');
-    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.atLeastOneName');
+    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.at.least.one.name');
+    $scope.errorMessagIfOtherInfoIsGiven = $filter('i18n')('field.required.if.other.info.is.given');
     
     if (!isModalController) {
         CodesEditorModel.init($scope,$routeParams.codesUri, $scope.codesVersion);
