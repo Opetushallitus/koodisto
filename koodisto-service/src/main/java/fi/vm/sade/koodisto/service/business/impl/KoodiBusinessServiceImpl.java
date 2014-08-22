@@ -1027,8 +1027,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         List<String> removedLevelsWithParentUris = filterRemovedRelationUrisToSet(koodiDTO.getLevelsWithCodeElements(), existingLevelsWithParentUris);
         removeRelationsFromLists(koodiUri, removedIncludesUris, removedWithinUris, removedLevelsWithChildUris, removedLevelsWithParentUris);
 
-        latest = getLatestKoodiVersio(koodiUri);
-
         HashSet<String> existingLevelsWithUris = new HashSet<String>();
         existingLevelsWithUris.addAll(existingLevelsWithChildUris);
         existingLevelsWithUris.addAll(existingLevelsWithParentUris);
@@ -1056,16 +1054,19 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     private void separateKoodiRelationsToUriLists(Set<KoodinSuhde> koodiRelations, HashSet<String> sisaltyyUris, HashSet<String> rinnasteinenUris,
             boolean isAlaKoodis) {
         for (KoodinSuhde koodinSuhde : koodiRelations) {
-            String koodiUri = isAlaKoodis ? koodinSuhde.getAlakoodiVersio().getKoodi().getKoodiUri() : koodinSuhde.getYlakoodiVersio().getKoodi().getKoodiUri();
-            if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY)) {
-                sisaltyyUris.add(koodiUri);
-            } else if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)) {
-                rinnasteinenUris.add(koodiUri);
+            KoodiVersio koodiVersio = isAlaKoodis ? koodinSuhde.getAlakoodiVersio() : koodinSuhde.getYlakoodiVersio();
+            if (koodiVersioDAO.isLatestKoodiVersio(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio())) {
+                if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY)) {
+                    sisaltyyUris.add(koodiVersio.getKoodi().getKoodiUri());
+                } else if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)) {
+                    rinnasteinenUris.add(koodiVersio.getKoodi().getKoodiUri());
+                }
             }
         }
     }
 
-    private void removeRelationsFromLists(String koodiUri, List<String> removedIncludesUris, List<String> removedWithinUris, List<String> removedLevelsWithChildUris,
+    private void removeRelationsFromLists(String koodiUri, List<String> removedIncludesUris, List<String> removedWithinUris,
+            List<String> removedLevelsWithChildUris,
             List<String> removedLevelsWithParentUris) {
         if (removedWithinUris.size() > 0) {
             removeRelation(koodiUri, removedWithinUris, SuhteenTyyppi.SISALTYY, true);

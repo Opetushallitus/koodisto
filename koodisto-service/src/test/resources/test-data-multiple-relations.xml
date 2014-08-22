@@ -19,6 +19,8 @@
   <koodisto id="17" koodistouri="savetestkoodistosisaltaa" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="18" koodistouri="savetestkoodistorinnastuu" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="19" koodistouri="savetestkoodistosisaltyy" version="0" organisaatioOid="1.2.2004.6" />
+  <koodisto id="20" koodistouri="kerranpoistetturelaatioluodaanuudelleen1" version="0" organisaatioOid="1.2.2004.6" />
+  <koodisto id="21" koodistouri="kerranpoistetturelaatioluodaanuudelleen2" version="0" organisaatioOid="1.2.2004.6" />
   
   <koodi id="1" koodisto_id="1" version="0" koodiuri="sisaltyysuhde4kanssa1"/>
   <koodi id="2" koodisto_id="1" version="0" koodiuri="sisaltyysuhde4kanssa2"/>
@@ -53,6 +55,8 @@
   <koodi id="31" koodisto_id="17" version="0" koodiuri="uusisavekoodinsuhde1"/>
   <koodi id="32" koodisto_id="18" version="0" koodiuri="uusisavekoodinsuhde2"/>
   <koodi id="33" koodisto_id="19" version="0" koodiuri="uusisavekoodinsuhde3"/>
+  <koodi id="34" koodisto_id="20" version="0" koodiuri="uusirelaatiovanhantilalle1"/>
+  <koodi id="35" koodisto_id="21" version="0" koodiuri="uusirelaatiovanhantilalle2"/>
   
   <koodiversio id="1" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="1" koodiarvo="ss4k1"/>
   <koodiversio id="2" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="ss4k2"/>
@@ -89,6 +93,9 @@
   <koodiversio id="33" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="31" koodiarvo="tobesaved6"/>
   <koodiversio id="34" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="32" koodiarvo="tobesaved7"/>
   <koodiversio id="35" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="33" koodiarvo="tobesaved8"/>
+  <koodiversio id="36" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="34" koodiarvo="relaatiovanhaan1"/>
+  <koodiversio id="37" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="35" koodiarvo="relaatiovanhaan2"/>
+  <koodiversio id="38" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="1990-01-01" koodi_id="35" koodiarvo="eienaarelaatiotavanhaan"/>
   
   <koodimetadata id="1" kieli="FI" nimi="Alajärvi" version="0" koodiversio_id="1" lyhytnimi="Alajärvi" kuvaus="Alajärvi"/>
   <koodimetadata id="2" kieli="FI" nimi="Olajärvi" version="0" koodiversio_id="2" lyhytnimi="Olajärvi" kuvaus="Olajärvi"/>
@@ -125,6 +132,9 @@
   <koodimetadata id="33" kieli="FI" nimi="Tallennustestikoodirelaatio5" version="0" koodiversio_id="33" lyhytnimi="savetesti" kuvaus="tallennetaan testissä"/>
   <koodimetadata id="34" kieli="FI" nimi="Tallennustestikoodirelaatio6" version="0" koodiversio_id="34" lyhytnimi="savetesti" kuvaus="tallennetaan testissä"/>
   <koodimetadata id="35" kieli="FI" nimi="Tallennustestikoodirelaatio7" version="0" koodiversio_id="35" lyhytnimi="savetesti" kuvaus="tallennetaan testissä"/>
+  <koodimetadata id="36" kieli="FI" nimi="Relaation uudelleenluonti vanha1" version="0" koodiversio_id="36"/>
+  <koodimetadata id="37" kieli="FI" nimi="Relaation uudelleenluonti vanha2" version="0" koodiversio_id="37"/>
+  <koodimetadata id="38" kieli="FI" nimi="Relaation uudelleenluonti uusi" version="0" koodiversio_id="38"/>
   
   <koodinsuhde id="1" alakoodiversio_id="1" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1"/>
   <koodinsuhde id="2" alakoodiversio_id="2" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1"/>
@@ -143,6 +153,7 @@
   <koodinsuhde id="15" alakoodiversio_id="28" ylakoodiversio_id="30" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
   <koodinsuhde id="16" alakoodiversio_id="31" ylakoodiversio_id="28" suhteentyyppi="RINNASTEINEN" version="0" versio="1"/>
   <koodinsuhde id="17" alakoodiversio_id="32" ylakoodiversio_id="28" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="18" alakoodiversio_id="37" ylakoodiversio_id="36" suhteentyyppi="SISALTYY" version="0" versio="1"/>
   
   <koodistoversio id="1" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="1" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="2" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="2" voimassaalkupvm="2012-11-20"/>
@@ -163,6 +174,9 @@
   <koodistoversio id="17" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="17" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="18" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="18" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="19" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="19" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="20" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="20" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="21" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="21" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="22" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="2" koodisto_id="21" voimassaalkupvm="2012-11-20"/>
   
   <koodistometadata id="1" kieli="FI" nimi="Järvet" version="0" koodistoversio_id="1" kuvaus="Järvet"/>
   <koodistometadata id="2" kieli="FI" nimi="Joet" version="0" koodistoversio_id="2" kuvaus="Joet"/>
@@ -183,6 +197,9 @@
   <koodistometadata id="17" kieli="FI" nimi="Testi koodien tallennusta varten sisaltää" version="0" koodistoversio_id="17" kuvaus="Kuvaus"/>
   <koodistometadata id="18" kieli="FI" nimi="Testi koodien tallennusta varten rinnastuu" version="0" koodistoversio_id="18" kuvaus="Kuvaus"/>
   <koodistometadata id="19" kieli="FI" nimi="Testi koodien tallennusta varten sisaltyy" version="0" koodistoversio_id="19" kuvaus="Kuvaus"/>
+  <koodistometadata id="20" kieli="FI" nimi="Luodaan uudelleen kerran poistettu relaatio 1" version="0" koodistoversio_id="20"/>
+  <koodistometadata id="21" kieli="FI" nimi="Luodaan uudelleen kerran poistettu relaatio 2" version="0" koodistoversio_id="21"/>
+  <koodistometadata id="22" kieli="FI" nimi="Luodaan uudelleen kerran poistettu relaatio 3" version="0" koodistoversio_id="22"/>
   
   <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="1" koodiversio_id="1"/>
   <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="1" koodiversio_id="2"/>
@@ -215,6 +232,9 @@
   <koodistoversio_koodiversio id="29" version="0" koodistoversio_id="18" koodiversio_id="34"/>
   <koodistoversio_koodiversio id="30" version="0" koodistoversio_id="19" koodiversio_id="32"/>
   <koodistoversio_koodiversio id="31" version="0" koodistoversio_id="19" koodiversio_id="35"/>
+  <koodistoversio_koodiversio id="32" version="0" koodistoversio_id="20" koodiversio_id="36"/>
+  <koodistoversio_koodiversio id="33" version="0" koodistoversio_id="21" koodiversio_id="37"/>
+  <koodistoversio_koodiversio id="34" version="0" koodistoversio_id="22" koodiversio_id="38"/>
   
   <koodistoryhma id="1" koodistoryhmauri="maantieto" version="0"/>
   <koodistoryhma id="2" koodistoryhmauri="rakennukset" version="0"/>
@@ -250,5 +270,6 @@
   <koodistonsuhde id="9" alakoodistoversio_id="16" ylakoodistoversio_id="17" versio="1" suhteentyyppi="SISALTYY" version="0"/>
   <koodistonsuhde id="10" alakoodistoversio_id="16" ylakoodistoversio_id="18" versio="1" suhteentyyppi="RINNASTEINEN" version="0"/>
   <koodistonsuhde id="11" alakoodistoversio_id="19" ylakoodistoversio_id="16" versio="1" suhteentyyppi="SISALTYY" version="0"/>
+  <koodistonsuhde id="12" alakoodistoversio_id="21" ylakoodistoversio_id="20" versio="1" suhteentyyppi="SISALTYY" version="0"/>
     
 </dataset>
