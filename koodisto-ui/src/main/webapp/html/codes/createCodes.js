@@ -51,7 +51,8 @@ app.factory('CodesCreatorModel', function($location, RootCodes, $modal) {
 function CodesCreatorController($scope, $location, $modal, $log, $filter, CodesCreatorModel, NewCodes, Treemodel) {
     $scope.model = CodesCreatorModel;
     $scope.errorMessage = $filter('i18n')('field.required');
-    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.atLeastOneName');
+    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.at.least.one.name');
+    $scope.errorMessageIfOtherInfoIsGiven = $filter('i18n')('field.required.if.other.info.is.given');
 
     CodesCreatorModel.init();
 

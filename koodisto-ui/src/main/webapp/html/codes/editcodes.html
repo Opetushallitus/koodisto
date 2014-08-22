@@ -60,7 +60,7 @@
                     ng-required="!namesv && !nameen || descriptionfi" />
                 <span class="text-error" ng-if="form.namefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
                     <span ng-if="!namesv && !nameen">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namesv && !nameen)">{{errorMessagIfOtherInfoIsGiven}}</span>
+                    <span ng-if="!(!namesv && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
@@ -70,7 +70,7 @@
                     ng-required="!namefi && !nameen || descriptionsv" />
                 <span class="text-error" ng-if="form.namesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
                     <span ng-if="!namefi && !nameen">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namefi && !nameen)">{{errorMessagIfOtherInfoIsGiven}}</span>
+                    <span ng-if="!(!namefi && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
@@ -80,7 +80,7 @@
                     ng-required="!namefi && !namesv || descriptionen" />
                 <span class="text-error" ng-if="form.nameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
                     <span ng-if="!namefi && !namesv">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namefi && !namesv)">{{errorMessagIfOtherInfoIsGiven}}</span>
+                    <span ng-if="!(!namefi && !namesv)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>

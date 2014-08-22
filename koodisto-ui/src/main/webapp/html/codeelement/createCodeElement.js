@@ -16,7 +16,8 @@ function CodeElementCreatorController($scope, $location, $routeParams, $filter, 
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
     $scope.errorMessage = $filter('i18n')('field.required');
-    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.atLeastOneName');
+    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.at.least.one.name');
+    $scope.errorMessageIfOtherInfoIsGiven = $filter('i18n')('field.required.if.other.info.is.given');
     
     CodeElementCreatorModel.init();
 

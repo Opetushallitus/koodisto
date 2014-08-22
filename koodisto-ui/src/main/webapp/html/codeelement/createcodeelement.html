@@ -23,7 +23,7 @@
                 <span class="text-error" ng-if="visitedName && form.namefi.$error.required"><img style="margin-right: 10px;"
                     src="../img/alert-icon28x29.png">
                     <span ng-if="!namesv && !nameen">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namesv && !nameen)">{{errorMessage}}</span>
+                    <span ng-if="!(!namesv && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
@@ -35,7 +35,7 @@
                 <span class="text-error" ng-if="visitedName && form.namesv.$error.required"><img style="margin-right: 10px;"
                     src="../img/alert-icon28x29.png">
                     <span ng-if="!namefi && !nameen">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namefi && !nameen)">{{errorMessage}}</span>
+                    <span ng-if="!(!namefi && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
@@ -47,7 +47,7 @@
                 <span class="text-error" ng-if="visitedName && form.nameen.$error.required"><img style="margin-right: 10px;"
                     src="../img/alert-icon28x29.png">
                     <span ng-if="!namefi && !namesv">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namefi && !namesv)">{{errorMessage}}</span>
+                    <span ng-if="!(!namefi && !namesv)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
