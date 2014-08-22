@@ -81,7 +81,7 @@ describe("Codes View test", function() {
 
         it("Editing latest version of codes is permitted", function() {
             mockBackend.expectGET(SERVICE_URL_BASE + "codes/espoonoikeudet/2").respond(givenCodesResponse(false));
-            model.init("espoonoikeudet", 2);
+            model.init(scope, "espoonoikeudet", 2);
             mockBackend.flush();
             expect(model.editState).toEqual("");
         });
@@ -213,17 +213,17 @@ describe("Codes View test", function() {
         });
 
         it("Calling subsequent inits should make no calls to backend", function() {
-            model.init("espoonoikeudet", 1);
-            model.init("espoonoikeudet", 1);
-            model.init("espoonoikeudet", 1);
+            model.init(scope, "espoonoikeudet", 1);
+            model.init(scope, "espoonoikeudet", 1);
+            model.init(scope, "espoonoikeudet", 1);
         });
 
         it("Calling init after forcerefresh should load eveything", function() {
-            model.init("espoonoikeudet", 1);
+            model.init(scope, "espoonoikeudet", 1);
 
             model.forceRefresh = true; // simulates clicking the edit link
             mockBackend.expectGET(SERVICE_URL_BASE + "codes/espoonoikeudet/1").respond(givenCodesWithRelationsResponse());
-            model.init("espoonoikeudet", 1);
+            model.init(scope, "espoonoikeudet", 1);
             mockBackend.flush();
         });
     });

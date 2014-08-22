@@ -1,10 +1,6 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -33,6 +29,7 @@ import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dto.FileDto;
 import fi.vm.sade.koodisto.dto.FileFormatDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
+import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.dto.KoodistoListDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaListDto;
 import fi.vm.sade.koodisto.dto.KoodistoVersioListDto;
@@ -464,6 +461,47 @@ public class CodesResourceTest {
             assertResponse(resource.delete(codesUri, codesVersion), 500);
         }
 
+    }
+    
+    @Test
+    public void savesCodesWithNewName() {
+        String koodistoUri = "eisuhteitaviela1";
+        String nimi = "uusinimi";
+        int versio = 1;
+
+        KoodistoDto codesToBeSaved = resource.getCodesByCodesUriAndVersion(koodistoUri, versio);
+        assertEquals(Tila.HYVAKSYTTY, codesToBeSaved.getTila());
+        assertFalse(nimi.equals(codesToBeSaved.getMetadata().get(0).getNimi()));
+
+        codesToBeSaved.getMetadata().get(0).setNimi(nimi);
+        assertResponse(resource.save(codesToBeSaved), 200);
+
+        KoodistoDto codes = resource.getCodesByCodesUriAndVersion(koodistoUri, versio+1);
+        assertEquals(Tila.LUONNOS, codes.getTila());
+        assertEquals(nimi, codes.getMetadata().get(0).getNimi());
+    }
+    
+    @Test
+    public void savesCodesWithNewNameAndRelations() {
+        String koodistoUri = "eisuhteitaviela1";
+        String nimi = "uusinimi";
+        int versio = 1;
+
+        KoodistoDto codesToBeSaved = resource.getCodesByCodesUriAndVersion(koodistoUri, versio);
+        assertTrue(codesToBeSaved.getIncludesCodes().size() == 0);
+        assertTrue(codesToBeSaved.getWithinCodes().size() == 0);
+        assertTrue(codesToBeSaved.getLevelsWithCodes().size() == 0);
+
+        codesToBeSaved.getMetadata().get(0).setNimi(nimi);
+        codesToBeSaved.getIncludesCodes().add(new RelationCodes("eisuhteitaviela2", 1));
+        codesToBeSaved.getWithinCodes().add(new RelationCodes("eisuhteitaviela3", 1));
+        codesToBeSaved.getLevelsWithCodes().add(new RelationCodes("eisuhteitaviela4", 1));
+        assertResponse(resource.save(codesToBeSaved), 200);
+
+        KoodistoDto codes = resource.getCodesByCodesUriAndVersion(koodistoUri, versio+1);
+        assertTrue(codes.getIncludesCodes().size() == 1);
+        assertTrue(codes.getWithinCodes().size() == 1);
+        assertTrue(codes.getLevelsWithCodes().size() == 1);
     }
 
     // UTILITIES

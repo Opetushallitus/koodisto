@@ -6,6 +6,7 @@ package fi.vm.sade.koodisto.service.business;
 import java.io.File;
 import java.util.List;
 
+import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.Format;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
@@ -62,5 +63,7 @@ public interface KoodistoBusinessService {
     boolean hasAnyRelation(String koodistoUri, String anotherKoodistoUri);
 
     File downloadFile(String codesUri, int codesVersion, Format fileFormat, String encoding);
+
+    KoodistoVersio saveKoodisto(KoodistoDto codesDTO);
 
 }

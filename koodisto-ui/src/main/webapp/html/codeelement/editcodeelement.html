@@ -90,19 +90,6 @@
 
 </script>
 
-<script type="text/ng-template" id="confirmModalContent.html">
-    <div class="modal-header">
-        <h3>{{'codeelement.editpage.modal.header' | i18n}}</h3>
-    </div>
-    <div class="modal-body">
-        Olet poistamassa koodin {{ namefi }} ja {{ model.withinRelationToRemove.name || model.includesRelationToRemove.name || model.levelsRelationToRemove.name }} v&auml;list&auml; yhteytt&auml;
-    </div>
-    <div class="modal-footer">
-        <button ng-disabled="clickedSubmit" class="btn btn-primary" ng-click="okconfirm()">OK</button>
-        <button ng-disabled="clickedSubmit" class="btn btn-warning" ng-click="cancelconfirm()">Cancel</button>
-    </div>
-</script>
-
 <script type="text/ng-template" id="codeElementModalContent.html">
     <div class="modal-header">
         <h3>{{'codeelement.editpage.choosecodeelements' | i18n}}</h3>
@@ -125,7 +112,7 @@
     </div>
     <div class="modal-footer">
         <span ng-if="clickedSubmit">{{'codes.viewpage.codeelements.saving' | i18n}}</span>
-        <button ng-disabled="clickedSubmit" class="btn btn-primary" ng-click="okcodeelement(); clickedSubmit=true">{{'codes.save' | i18n}}</button>
+        <button ng-disabled="clickedSubmit" class="btn btn-primary" ng-click="okcodeelement(); clickedSubmit=true">{{'codes.ok' | i18n}}</button>
         <button ng-disabled="clickedSubmit" class="btn btn-warning" ng-click="cancelcodeelement()">{{'codes.cancel' | i18n}}</button>
     </div>
 </script>
@@ -142,47 +129,56 @@
 
             <label for="codesstate" class="control-label">{{'codes.editpage.state' | i18n}}</label>
             <div class="controls">
-                <select id="codesstate" ng-model="model.codeElement.tila" class="width-30"
-                        ng-options="state.key as state.value for state in model.states">
+                <select id="codesstate" ng-model="model.codeElement.tila" class="width-30" ng-options="state.key as state.value for state in model.states">
                 </select>
             </div>
         </div>
 
         <div class="control-group">
             <div class="controls">
-                <label for="same_name" class="checkbox">
-                    <input id="same_name" type="checkbox" ng-model="samename" ng-click="setSameValue('name')"
-                       codeelement-combined-field/>
-                {{'codes.sameinalllanguages' | i18n}}</label>
+                <label for="same_name" class="checkbox"> <input id="same_name" type="checkbox" ng-model="samename" ng-click="setSameValue('name')" />
+                    {{'codes.sameinalllanguages' | i18n}}
+                </label>
             </div>
         </div>
         <div class="control-group">
             <label for="name_fi" class="control-label">{{'codeelement.editpage.name' | i18n}}</label>
             <div class="controls">
-                <input id="name_fi" type="text" maxlength="256" class="width-30" ng-model="namefi" name="namefi"
-                       placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field required-field/>
-                <span class="text-error" ng-show="form.namefi.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
+                <input id="name_fi" type="text" maxlength="256" class="width-30" ng-model="namefi" name="namefi" placeholder="{{'codes.finnish' | i18n}}"
+                    ng-required="!namesv && !nameen || shortnamefi || descriptionfi" />
+                <span class="text-error" ng-if="form.namefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
+                    <span ng-if="!namesv && !nameen">{{errorMessageAtLeastOneName}}</span>
+                    <span ng-if="!(!namesv && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
+                </span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
-                <input id="name_sv" type="text" maxlength="256" class="width-30" ng-model="namesv"
-                       placeholder="{{'codes.swedish' | i18n}}" codeelement-combined-field/>
+                <input id="name_sv" type="text" maxlength="256" class="width-30" ng-model="namesv" name="namesv" placeholder="{{'codes.swedish' | i18n}}"
+                    ng-required="!namefi && !nameen || shortnamesv || descriptionsv" />
+                <span class="text-error" ng-if="form.namesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
+                    <span ng-if="!namefi && !nameen">{{errorMessageAtLeastOneName}}</span>
+                    <span ng-if="!(!namefi && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
+                </span>
             </div>
         </div>
 
         <div class="control-group">
             <div class="controls">
-                <input id="name_en" type="text" maxlength="256" class="width-30" ng-model="nameen"
-                       placeholder="{{'codes.english' | i18n}}" codeelement-combined-field/>
+                <input id="name_en" type="text" maxlength="256" class="width-30" ng-model="nameen" name="nameen" placeholder="{{'codes.english' | i18n}}"
+                    ng-required="!namefi && !namesv || shortnameen || descriptionen" />
+                <span class="text-error" ng-if="form.nameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
+                    <span ng-if="!namefi && !namesv">{{errorMessageAtLeastOneName}}</span>
+                    <span ng-if="!(!namefi && !namesv)">{{errorMessageIfOtherInfoIsGiven}}</span>
+                </span>
             </div>
         </div>
 
         <div class="control-group">
             <label for="code" class="control-label">{{'codeelement.editpage.codevalue' | i18n}}</label>
             <div class="controls">
-                <input id="code" type="text" maxlength="256" class="width-30" ng-model="codeValue" name="codeValue" ng-required="true" required-field/>
-                <span class="text-error" ng-show="form.codeValue.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
+                <input id="code" type="text" maxlength="256" class="width-30" ng-model="codeValue" name="codeValue" required />
+                <span class="text-error" ng-if="form.codeValue.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -190,71 +186,75 @@
             <label for="datesactivestart" class="control-label">{{'codeelement.editpage.datesactive' | i18n}}</label>
 
             <div class="controls">
-                <input id="datesactivestart" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" name="voimassaAlkuPvm" ng-model="model.codeElement.voimassaAlkuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" required-field/>
+                <input id="datesactivestart" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" name="voimassaAlkuPvm"
+                    ng-model="model.codeElement.voimassaAlkuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" required />
                 -
-                <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codeElement.voimassaLoppuPvm" min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" />
+                <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codeElement.voimassaLoppuPvm"
+                    min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" />
                 <i class="icon-calendar"></i>
-                <span class="text-error" ng-show="form.voimassaAlkuPvm.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
+                <span class="text-error" ng-if="form.voimassaAlkuPvm.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
         <div class="control-group">
             <div class="controls">
-                <label for="same_shortname" class="checkbox">
-                    <input id="same_shortname" type="checkbox" ng-model="sameshortname"
-                       ng-click="setSameValue('shortname')" codeelement-combined-field/>
-                {{'codes.sameinalllanguages' | i18n}}</label>
+                <label for="same_shortname" class="checkbox"> <input id="same_shortname" type="checkbox" ng-model="sameshortname"
+                        ng-click="setSameValue('shortname')" /> {{'codes.sameinalllanguages' | i18n}}
+                </label>
             </div>
         </div>
         <div class="control-group">
             <label for="shortname_fi" class="control-label">{{'codeelement.editpage.shortname' | i18n}}</label>
             <div class="controls">
                 <input id="shortname_fi" type="text" maxlength="256" class="width-30" ng-model="shortnamefi" name="shortnamefi"
-                       placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field required-field/>
-                <span class="text-error" ng-show="form.shortnamefi.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
+                    placeholder="{{'codes.finnish' | i18n}}" />
+                <span class="text-error" ng-if="form.shortnamefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
-                <input id="shortname_sv" type="text" maxlength="256" class="width-30" ng-model="shortnamesv"
-                       placeholder="{{'codes.swedish' | i18n}}" codeelement-combined-field/>
+                <input id="shortname_sv" type="text" maxlength="256" class="width-30" ng-model="shortnamesv" name="shortnamesv"
+                    placeholder="{{'codes.swedish' | i18n}}" />
+                <span class="text-error" ng-if="form.shortnamesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
-                <input id="shortname_en" type="text" maxlength="256" class="width-30" ng-model="shortnameen"
-                       placeholder="{{'codes.english' | i18n}}" codeelement-combined-field/>
+                <input id="shortname_en" type="text" maxlength="256" class="width-30" ng-model="shortnameen" name="shortnameen"
+                    placeholder="{{'codes.english' | i18n}}" />
+                <span class="text-error" ng-if="form.shortnameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
         <div class="control-group">
             <div class="controls">
-                <label for="same_description" class="checkbox">
-                <input id="same_description" type="checkbox" ng-model="samedescription" ng-click="setSameValue('description')"
-                       codeelement-combined-field/>
-                {{'codes.sameinalllanguages' | i18n}}</label>
+                <label for="same_description" class="checkbox"> <input id="same_description" type="checkbox" ng-model="samedescription"
+                        ng-click="setSameValue('description')" /> {{'codes.sameinalllanguages' | i18n}}
+                </label>
             </div>
         </div>
         <div class="control-group">
             <label for="description_fi" class="control-label">{{'codeelement.editpage.description' | i18n}}</label>
             <div class="controls">
                 <textarea id="description_fi" maxlength="2048" class="width-30" ng-model="descriptionfi" name="descriptionfi"
-                          placeholder="{{'codes.finnish' | i18n}}" ng-required="true" codeelement-combined-field required-field></textarea>
-                <span class="text-error" ng-show="form.descriptionfi.$error.requiredfield"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{'field.required' | i18n}}</span>
+                    placeholder="{{'codes.finnish' | i18n}}" ></textarea>
+                <span class="text-error" ng-if="form.descriptionfi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
         <div class="control-group">
             <div class="controls">
-                <textarea id="description_sv" maxlength="2048" class="width-30" ng-model="descriptionsv"
-                          placeholder="{{'codes.swedish' | i18n}}" codeelement-combined-field></textarea>
+                <textarea id="description_sv" maxlength="2048" class="width-30" ng-model="descriptionsv" name="descriptionsv"
+                    placeholder="{{'codes.swedish' | i18n}}" ></textarea>
+                <span class="text-error" ng-if="form.descriptionsv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
         <div class="control-group">
             <div class="controls">
-                <textarea id="description_en" maxlength="2048" class="width-30" ng-model="descriptionen"
-                      placeholder="{{'codes.english' | i18n}}" codeelement-combined-field></textarea>
+                <textarea id="description_en" maxlength="2048" class="width-30" ng-model="descriptionen" name="descriptionen"
+                    placeholder="{{'codes.english' | i18n}}" ></textarea>
+                <span class="text-error" ng-if="form.descriptionen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -282,17 +282,18 @@
                         <tr bindonce ng-repeat="codeElement in model.withinCodeElements | orderBy:sortBy | limitTo:model.withinListLengthLimit">
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
-                            <td class="align-center">
-                                <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromWithinCodeElements(codeElement)"></i>
-                            </td>
+                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
+                                    ng-click="removeFromWithinCodeElements(codeElement)"></i></td>
                         </tr>
 
                     </tbody>
 
                 </table>
                 <div ng-if="model.withinListLengthLimit < model.withinCodeElements.length")>
-                    <button type="button" class="btn pull-right" ng-click="model.incrementListLimit('within')">{{'codeelement.editpage.relationlist.loadmore' | i18n}}</button>
-                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.withinListLengthLimit}} / {{model.withinCodeElements.length}} {{'codeelement.editpage.relationlist.label.end' | i18n}}
+                    <button type="button" class="btn pull-right" ng-click="model.incrementListLimit('within')">{{'codeelement.editpage.relationlist.loadmore'
+                        | i18n}}</button>
+                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.withinListLengthLimit}} / {{model.withinCodeElements.length}}
+                    {{'codeelement.editpage.relationlist.label.end' | i18n}}
                 </div>
             </div>
         </div>
@@ -319,15 +320,16 @@
                         <tr bindonce ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy | limitTo:model.includesListLengthLimit">
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
-                            <td class="align-center">
-                                <i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="model.removeFromIncludesCodeElements(codeElement)"></i>
-                            </td>
+                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
+                                    ng-click="removeFromIncludesCodeElements(codeElement)"></i></td>
                         </tr>
                     </tbody>
                 </table>
                 <div ng-if="model.includesListLengthLimit < model.includesCodeElements.length")>
-                    <button type="button" class="btn pull-right" ng-click="model.incrementListLimit('includes')">{{'codeelement.editpage.relationlist.loadmore' | i18n}}</button>
-                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.includesListLengthLimit}} / {{model.includesCodeElements.length}} {{'codeelement.editpage.relationlist.label.end' | i18n}}
+                    <button type="button" class="btn pull-right" ng-click="model.incrementListLimit('includes')">{{'codeelement.editpage.relationlist.loadmore'
+                        | i18n}}</button>
+                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.includesListLengthLimit}} / {{model.includesCodeElements.length}}
+                    {{'codeelement.editpage.relationlist.label.end' | i18n}}
                 </div>
             </div>
         </div>
@@ -355,14 +357,16 @@
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
-                                ng-click="model.removeFromLevelsWithCodeElements(codeElement)"></i></td>
+                                    ng-click="removeFromLevelsWithCodeElements(codeElement)"></i></td>
                         </tr>
                     </tbody>
                 </table>
                 <div ng-if="model.levelsWithListLengthLimit < model.levelsWithCodeElements.length")>
 
-                    <button type="button" class="btn pull-right" ng-click="model.incrementListLimit('levelsWith')">{{'codeelement.editpage.relationlist.loadmore' | i18n}}</button>
-                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.levelsWithListLengthLimit}} / {{model.levelsWithCodeElements.length}} {{'codeelement.editpage.relationlist.label.end' | i18n}}
+                    <button type="button" class="btn pull-right" ng-click="model.incrementListLimit('levelsWith')">{{'codeelement.editpage.relationlist.loadmore'
+                        | i18n}}</button>
+                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.levelsWithListLengthLimit}} / {{model.levelsWithCodeElements.length}}
+                    {{'codeelement.editpage.relationlist.label.end' | i18n}}
                 </div>
             </div>
         </div>
@@ -370,196 +374,180 @@
 
         <div class="control-group">
             <div class="span12">
-                <accordion close-others="false">
-                    <accordion-group is-open="isopen" class="">
-                        <accordion-heading>
-                            <i class="pull-left" ng-class="{'icon-chevron-down': isopen, 'icon-chevron-right': !isopen}"></i> {{'codes.createpage.showextra' | i18n}}
-                        </accordion-heading>
-                        <div class="control-group">
-                            <div class="controls">
-                                <label for="same_instructions" class="checkbox">
-                                    <input id="same_instructions" type="checkbox" ng-model="sameinstructions" ng-click="setSameValue('instructions')"/>
-                                    {{'codes.sameinalllanguages' | i18n}}</label>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label for="instructions_fi" class="control-label">{{'codeelement.createpage.instructions' | i18n}}</label>
-                            <div class="controls">
-                                <textarea id="instructions_fi" maxlength="2048" class="width-30" ng-model="instructionsfi"
-                                      placeholder="{{'codes.finnish' | i18n}}"></textarea>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                            <textarea id="instructions_sv" maxlength="2048" class="width-30" ng-model="instructionssv"
-                                      placeholder="{{'codes.swedish' | i18n}}"></textarea>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                            <textarea id="instructions_en" maxlength="2048" class="width-30" ng-model="instructionsen"
-                                      placeholder="{{'codes.english' | i18n}}"></textarea>
-                            </div>
-                        </div>
+                <accordion close-others="false"> <accordion-group is-open="isopen" class=""> <accordion-heading>
+                <i class="pull-left" ng-class="{'icon-chevron-down': isopen, 'icon-chevron-right': !isopen}"></i> {{'codes.createpage.showextra' | i18n}} </accordion-heading>
+                <div class="control-group">
+                    <div class="controls">
+                        <label for="same_instructions" class="checkbox"> <input id="same_instructions" type="checkbox" ng-model="sameinstructions"
+                                ng-click="setSameValue('instructions')" /> {{'codes.sameinalllanguages' | i18n}}
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="instructions_fi" class="control-label">{{'codeelement.createpage.instructions' | i18n}}</label>
+                    <div class="controls">
+                        <textarea id="instructions_fi" maxlength="2048" class="width-30" ng-model="instructionsfi" placeholder="{{'codes.finnish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <textarea id="instructions_sv" maxlength="2048" class="width-30" ng-model="instructionssv" placeholder="{{'codes.swedish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <textarea id="instructions_en" maxlength="2048" class="width-30" ng-model="instructionsen" placeholder="{{'codes.english' | i18n}}"></textarea>
+                    </div>
+                </div>
 
 
-                        <div class="control-group">
-                            <div class="controls">
-                                <label for="same_concept" class="checkbox">
-                                    <input id="same_concept" type="checkbox" ng-model="sameconcept"
-                                   ng-click="setSameValue('concept')" />
-                                    {{'codes.sameinalllanguages' | i18n}}</label>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label for="concept_fi" class="control-label">{{'codeelement.createpage.concept' | i18n}}</label>
-                            <div class="controls">
-                            <input id="concept_fi" type="text" maxlength="256" class="width-30" ng-model="conceptfi"
-                                   placeholder="{{'codes.finnish' | i18n}}"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                            <input id="concept_sv" type="text" maxlength="256" class="width-30" ng-model="conceptsv"
-                                   placeholder="{{'codes.swedish' | i18n}}" />
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                            <input id="concept_en" type="text" maxlength="256" class="width-30" ng-model="concepten"
-                                   placeholder="{{'codes.english' | i18n}}"/>
-                            </div>
-                        </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <label for="same_concept" class="checkbox"> <input id="same_concept" type="checkbox" ng-model="sameconcept"
+                                ng-click="setSameValue('concept')" /> {{'codes.sameinalllanguages' | i18n}}
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="concept_fi" class="control-label">{{'codeelement.createpage.concept' | i18n}}</label>
+                    <div class="controls">
+                        <input id="concept_fi" type="text" maxlength="256" class="width-30" ng-model="conceptfi" placeholder="{{'codes.finnish' | i18n}}" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <input id="concept_sv" type="text" maxlength="256" class="width-30" ng-model="conceptsv" placeholder="{{'codes.swedish' | i18n}}" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <input id="concept_en" type="text" maxlength="256" class="width-30" ng-model="concepten" placeholder="{{'codes.english' | i18n}}" />
+                    </div>
+                </div>
 
 
-                        <div class="control-group">
-                            <div class="controls">
-                            <label for="same_totakenoticeof" class="checkbox">
-                            <input id="same_totakenoticeof" type="checkbox" ng-model="sametotakenoticeof"
-                                   ng-click="setSameValue('totakenoticeof')"/>
-                            {{'codes.sameinalllanguages' | i18n}}</label>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label for="totakenoticeof_fi" class="control-label">{{'codeelement.createpage.totakenoticeof' | i18n}}</label>
-                            <div class="controls">
-                            <input id="totakenoticeof_fi" type="text" maxlength="256" class="width-30" ng-model="totakenoticeoffi"
-                                   placeholder="{{'codes.finnish' | i18n}}"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                            <input id="totakenoticeof_sv" type="text" maxlength="256" class="width-30" ng-model="totakenoticeofsv"
-                                   placeholder="{{'codes.swedish' | i18n}}"/>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                            <input id="totakenoticeof_en" type="text" maxlength="256" class="width-30" ng-model="totakenoticeofen"
-                                   placeholder="{{'codes.english' | i18n}}"/>
-                            </div>
-                        </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <label for="same_totakenoticeof" class="checkbox"> <input id="same_totakenoticeof" type="checkbox" ng-model="sametotakenoticeof"
+                                ng-click="setSameValue('totakenoticeof')" /> {{'codes.sameinalllanguages' | i18n}}
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="totakenoticeof_fi" class="control-label">{{'codeelement.createpage.totakenoticeof' | i18n}}</label>
+                    <div class="controls">
+                        <input id="totakenoticeof_fi" type="text" maxlength="256" class="width-30" ng-model="totakenoticeoffi"
+                            placeholder="{{'codes.finnish' | i18n}}" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <input id="totakenoticeof_sv" type="text" maxlength="256" class="width-30" ng-model="totakenoticeofsv"
+                            placeholder="{{'codes.swedish' | i18n}}" />
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <input id="totakenoticeof_en" type="text" maxlength="256" class="width-30" ng-model="totakenoticeofen"
+                            placeholder="{{'codes.english' | i18n}}" />
+                    </div>
+                </div>
 
-                        <div class="control-group">
-                            <div class="controls">
-                                <label for="same_containssignificance" class="checkbox"><input id="same_containssignificance" type="checkbox" ng-model="samecontainssignificance" ng-click="setSameValue('containssignificance')"
-                                   />
-                            {{'codes.sameinalllanguages' | i18n}}</label>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label for="containssignificance_fi" class="control-label">{{'codeelement.createpage.containssignificance' | i18n}}</label>
-                            <div class="controls">
+                <div class="control-group">
+                    <div class="controls">
+                        <label for="same_containssignificance" class="checkbox"><input id="same_containssignificance" type="checkbox"
+                                ng-model="samecontainssignificance" ng-click="setSameValue('containssignificance')" /> {{'codes.sameinalllanguages' | i18n}}</label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="containssignificance_fi" class="control-label">{{'codeelement.createpage.containssignificance' | i18n}}</label>
+                    <div class="controls">
 
-                            <textarea id="containssignificance_fi" maxlength="2048" class="width-30" ng-model="containssignificancefi"
-                                      placeholder="{{'codes.finnish' | i18n}}"></textarea>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                            <textarea id="containssignificance_sv" maxlength="2048" class="width-30" ng-model="containssignificancesv"
-                                      placeholder="{{'codes.swedish' | i18n}}"></textarea>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                            <textarea id="containssignificance_en" maxlength="2048" class="width-30" ng-model="containssignificanceen"
-                                      placeholder="{{'codes.english' | i18n}}"></textarea>
-                            </div>
-                        </div>
+                        <textarea id="containssignificance_fi" maxlength="2048" class="width-30" ng-model="containssignificancefi"
+                            placeholder="{{'codes.finnish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <textarea id="containssignificance_sv" maxlength="2048" class="width-30" ng-model="containssignificancesv"
+                            placeholder="{{'codes.swedish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <textarea id="containssignificance_en" maxlength="2048" class="width-30" ng-model="containssignificanceen"
+                            placeholder="{{'codes.english' | i18n}}"></textarea>
+                    </div>
+                </div>
 
-                        <div class="control-group">
-                            <div class="controls">
-                                <label for="same_doesnotcontainsignificance" class="checkbox">
-                                <input id="same_doesnotcontainsignificance" type="checkbox" ng-model="samedoesnotcontainsignificance" ng-click="setSameValue('doesnotcontainsignificance')"/>
-                                {{'codes.sameinalllanguages' | i18n}}</label>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label for="doesnotcontainsignificance_fi" class="control-label">{{'codeelement.createpage.doesnotcontainsignificance' | i18n}}</label>
-                            <div class="controls">
+                <div class="control-group">
+                    <div class="controls">
+                        <label for="same_doesnotcontainsignificance" class="checkbox"> <input id="same_doesnotcontainsignificance" type="checkbox"
+                                ng-model="samedoesnotcontainsignificance" ng-click="setSameValue('doesnotcontainsignificance')" /> {{'codes.sameinalllanguages'
+                            | i18n}}
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="doesnotcontainsignificance_fi" class="control-label">{{'codeelement.createpage.doesnotcontainsignificance' | i18n}}</label>
+                    <div class="controls">
 
-                            <textarea id="doesnotcontainsignificance_fi" maxlength="2048" class="width-30" ng-model="doesnotcontainsignificancefi"
-                                      placeholder="{{'codes.finnish' | i18n}}"></textarea>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                            <textarea id="doesnotcontainsignificance_sv" maxlength="2048" class="width-30" ng-model="doesnotcontainsignificancesv"
-                                      placeholder="{{'codes.swedish' | i18n}}"></textarea>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                            <textarea id="doesnotcontainsignificance_en" maxlength="2048" class="width-30" ng-model="doesnotcontainsignificanceen"
-                                      placeholder="{{'codes.english' | i18n}}"></textarea>
-                            </div>
-                        </div>
+                        <textarea id="doesnotcontainsignificance_fi" maxlength="2048" class="width-30" ng-model="doesnotcontainsignificancefi"
+                            placeholder="{{'codes.finnish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <textarea id="doesnotcontainsignificance_sv" maxlength="2048" class="width-30" ng-model="doesnotcontainsignificancesv"
+                            placeholder="{{'codes.swedish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <textarea id="doesnotcontainsignificance_en" maxlength="2048" class="width-30" ng-model="doesnotcontainsignificanceen"
+                            placeholder="{{'codes.english' | i18n}}"></textarea>
+                    </div>
+                </div>
 
-                        <div class="control-group">
-                            <div class="controls">
-                                <label for="same_containscodes" class="checkbox">
-                                <input id="same_containscodes" type="checkbox" ng-model="samecontainscodes" ng-click="setSameValue('containscodes')"
-                                       />
-                                {{'codes.sameinalllanguages' | i18n}}</label>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label for="containscodes_fi" class="control-label">{{'codeelement.createpage.containscodes' | i18n}}</label>
-                            <div class="controls">
-                            <textarea id="containscodes_fi" maxlength="2048" class="width-30" ng-model="containscodesfi"
-                                      placeholder="{{'codes.finnish' | i18n}}"></textarea>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                            <textarea id="containscodes_sv" maxlength="2048" class="width-30" ng-model="containscodessv"
-                                  placeholder="{{'codes.swedish' | i18n}}"></textarea>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                            <textarea id="containscodes_en" maxlength="2048" class="width-30" ng-model="containscodesen"
-                                      placeholder="{{'codes.english' | i18n}}"></textarea>
-                            </div>
-                        </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <label for="same_containscodes" class="checkbox"> <input id="same_containscodes" type="checkbox" ng-model="samecontainscodes"
+                                ng-click="setSameValue('containscodes')" /> {{'codes.sameinalllanguages' | i18n}}
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="containscodes_fi" class="control-label">{{'codeelement.createpage.containscodes' | i18n}}</label>
+                    <div class="controls">
+                        <textarea id="containscodes_fi" maxlength="2048" class="width-30" ng-model="containscodesfi" placeholder="{{'codes.finnish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <textarea id="containscodes_sv" maxlength="2048" class="width-30" ng-model="containscodessv" placeholder="{{'codes.swedish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <textarea id="containscodes_en" maxlength="2048" class="width-30" ng-model="containscodesen" placeholder="{{'codes.english' | i18n}}"></textarea>
+                    </div>
+                </div>
 
-                    </accordion-group>
-                </accordion>
+                </accordion-group> </accordion>
             </div>
         </div>
 
         <div class="row-fluid">
             <div class="span9">
-                <alert ng-repeat="alert in model.alerts" type="alert.type" close="closeAlert($index)">
-                    <img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{alert.msg}}</alert>
+                <alert ng-repeat="alert in model.alerts" type="alert.type" close="closeAlert($index)"> <img style="margin-right: 10px;"
+                    src="../img/alert-icon28x29.png">{{alert.msg}}</alert>
             </div>
         </div>
 
         <div class="row-fluid navbar-fixed-bottom">
-            <button ng-disabled="!form.$valid" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-primary pull-right" type="submit">{{'codes.save' | i18n}}</button>
-            <button type="button" class="btn pull-right" ng-click="cancel()">{{'codes.cancel' | i18n}}
-            </button>
+            <button ng-disabled="!form.$valid" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-primary pull-right" type="submit">{{'codes.save'
+                | i18n}}</button>
+            <button type="button" class="btn pull-right" ng-click="cancel()">{{'codes.cancel' | i18n}}</button>
         </div>
 
     </form>
