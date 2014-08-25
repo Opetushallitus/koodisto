@@ -13,11 +13,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.oxm.UnmarshallingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.UploadBusinessService;
+import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoExportException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoImportException;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoCsvConverter;
@@ -51,7 +53,6 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
     @Override
     public void upload(String koodistoUri, ExportImportFormatType format, String encoding, DataHandler file) {
         try {
-
             List<KoodiType> koodis = null;
             switch (format) {
 
@@ -68,8 +69,8 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
                 throw new KoodistoExportException("Unknown koodisto import format.");
             }
 
-            if(koodis == null || koodis.size() == 0){
-                throw new KoodistoExportException("File contained no valid codeElements.");
+            if (koodis == null || koodis.size() == 0) {
+                throw new KoodistoExportException("Tiedostossa ei ollut tuotavia koodeja");
             }
             List<UpdateKoodiDataType> updateDatas = new ArrayList<UpdateKoodiDataType>();
             for (KoodiType k : koodis) {
@@ -80,10 +81,13 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
                 updateData.getMetadata().addAll(k.getMetadata());
                 updateDatas.add(updateData);
             }
-
             koodiBusinessService.massCreate(koodistoUri, updateDatas);
         } catch (IOException e) {
-            throw new KoodistoImportException(e);
+            throw new KoodistoImportException("XLS tiedosto viallinen", e);
+        } catch (InvalidKoodiCsvLineException e) {
+            throw new KoodistoImportException("CSV tiedosto viallinen", e);
+        } catch (UnmarshallingFailureException e) {
+            throw new KoodistoImportException("XML tiedosto viallinen", e);
         }
     }
 
@@ -106,7 +110,7 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
             String koodiUri = (koodistoUri + "_" + trimKoodiArvo(koodi.getKoodiArvo()));
             koodi.setKoodiUri(koodiUri);
         }
-        if (koodi.getVersio() == 0){
+        if (koodi.getVersio() == 0) {
             koodi.setVersio(1);
         }
     }

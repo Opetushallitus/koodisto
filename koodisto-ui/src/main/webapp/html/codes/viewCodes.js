@@ -10,7 +10,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.deleteState = "disabled";
 
         this.init = function(scope, codesUri, codesVersion) {
-            if(model.forceRefresh){
+            if (model.forceRefresh) {
                 model.forceRefreshCodeElements = "?forceRefresh";
             } else {
                 model.forceRefreshCodeElements = "";
@@ -176,7 +176,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                     model.searchResultsLength++;
                 }
                 updatedCodeElementsCount++;
-                if(updatedCodeElementsCount == elementCount){
+                if (updatedCodeElementsCount == elementCount) {
                     model.codeElements = list;
                 }
             });
@@ -213,14 +213,14 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
 function ViewCodesController($scope, $location, $filter, $routeParams, $window, ViewCodesModel, DownloadCodes, RemoveRelationCodes, DeleteCodes, loadingService) {
     $scope.model = ViewCodesModel;
     $scope.codesUri = $routeParams.codesUri;
+    $scope.uploadUrl = SERVICE_URL_BASE + "codes" + "/upload/" + $scope.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
-    $scope.model.forceRefresh=$routeParams.forceRefresh == true;
+    $scope.model.forceRefresh = $routeParams.forceRefresh == true;
     $scope.identity = angular.identity;
     ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
     $scope.sortBy1 = 'name';
     $scope.sortBy2 = 'name';
     $scope.sortBy3 = 'name';
-
 
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
@@ -243,7 +243,9 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
             codesUri : $scope.codesUri,
             codesVersion : $scope.codesVersion
         }, function(success) {
-            $location.path("/etusivu").search({forceRefresh: true});
+            $location.path("/etusivu").search({
+                forceRefresh : true
+            });
         }, function(error) {
             var alert = {
                 type : 'danger',
@@ -294,83 +296,36 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
         $scope.model.downloadModalInstance.dismiss('cancel');
     };
 
-    $scope.okupload = function() {
-        var fd = new FormData();
-        for ( var i in $scope.files) {
-            fd.append("uploadedFile", $scope.files[i]);
-        }
-        fd.append("fileFormat", $scope.model.format);
-        fd.append("fileEncoding", $scope.model.encoding);
-        var xhr = new XMLHttpRequest();
-        xhr.addEventListener("load", uploadComplete, false);
-        xhr.addEventListener("error", uploadFailed, false);
-        xhr.addEventListener("abort", uploadCanceled, false);
-        xhr.upload.addEventListener("loadstart", loadStartFunction, false); 
-        xhr.upload.addEventListener("load", transferCompleteFunction, false); 
-        xhr.open("POST", SERVICE_URL_BASE + "codes" + "/upload/" + $scope.codesUri);
-        xhr.timeout = 0;;
-        xhr.send(fd);
-
-        $scope.model.forceRefresh = true;
-                
-        $scope.model.uploadModalInstance.close();
-    };
-
-    function loadStartFunction(evt) {
+    $scope.loadStartFunction = function(evt) {
         loadingService.requestCount++;
-    }
-    function transferCompleteFunction(evt) {
+    };
+    $scope.transferCompleteFunction = function(evt) {
         loadingService.requestCount--;
-
-    }
+    };
 
     $scope.cancelupload = function() {
         $scope.model.uploadModalInstance.dismiss('cancel');
     };
 
-    $scope.setFiles = function(element) {
-        $scope.$apply(function(scope) {
-            // Turn the FileList object into an Array
-            $scope.files = [];
-            for (var i = 0; i < element.files.length; i++) {
-                $scope.files.push(element.files[i]);
-            }
-        });
-    };
-
-    function uploadComplete(evt) {
-        ViewCodesModel.init($scope.codesUri, $scope.codesVersion);
+    $scope.uploadComplete = function(evt) {
         var alert;
-        if (evt.originalTarget.status == "202") {
+        if (evt != "OK") {
             alert = {
-                type : 'success',
-                msg : 'Koodisto ' + $scope.codesUri + ' on tuotu koodistoryhm\u00E4\u00E4n ' + $scope.model.codes.codesGroupUri
+                type : 'danger',
+                msg : 'Koodiston ' + $scope.codesUri + ' vienti ep\u00E4onnistui. Virhe tiedoston lukemisessa: ' + evt
             };
         } else {
             alert = {
-                type : 'danger',
-                msg : 'Koodiston ' + $scope.codesUri + ' vienti ep\u00E4onnistui: ' + evt.originalTarget.status + ': ' + evt.originalTarget.statusText
+                type : 'success',
+                msg : 'Koodisto ' + $scope.codesUri + ' on tuotu onnistuneesti'
             };
         }
+        $scope.transferCompleteFunction();
+        $scope.model.forceRefresh = true;
+        ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
         $scope.model.alerts.push(alert);
-    }
-
-    function uploadFailed(evt) {
-        var alert = {
-            type : 'danger',
-            msg : 'Koodiston vienti ep\u00E4onnistui.'
-        };
-        $scope.model.alerts.push(alert);
-    }
-
-    function uploadCanceled(evt) {
-        var alert = {
-            type : 'danger',
-            msg : 'Koodiston vienti ep\u00E4onnistui.'
-        };
-        $scope.model.alerts.push(alert);
-
-    }
+        $scope.model.uploadModalInstance.close();
+    };
 
     // Pagination
 
@@ -396,7 +351,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     // Refresh the page count (less redundant filtering)
     $scope.refreshNumberOfPages = function() {
         $scope.model.searchResultsLength = ($filter("filter")($scope.model.codeElements, $scope.search)).length;
-        $scope.cachedPageCount = Math.ceil( $scope.model.searchResultsLength / $scope.model.pageSize);
+        $scope.cachedPageCount = Math.ceil($scope.model.searchResultsLength / $scope.model.pageSize);
         return $scope.cachedPageCount;
     };
 
@@ -410,7 +365,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     };
 
     $scope.sortOrderChanged = function(value) {
-        if(value){
+        if (value) {
             $scope.model.sortOrderSelection = value;
         }
         var selection = parseInt($scope.model.sortOrderSelection);
@@ -467,18 +422,17 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
             $scope.model.currentPage = newPageNumber;
         }
     };
-    
 
     var refreshPage = true;
-    $scope.getPaginationPage = function(){
-        if(refreshPage){
+    $scope.getPaginationPage = function() {
+        if (refreshPage) {
             // Only do sorting when the model has changed, heavy operation
             refreshPage = false;
             $scope.model.codeElements = $filter("naturalSort")($scope.model.codeElements, $scope.model.sortOrder, $scope.model.sortOrderReversed);
         }
         var results = $scope.model.codeElements;
         results = $filter("filter")(results, $scope.search);
-        results = results.splice($scope.model.currentPage*$scope.model.pageSize, $scope.model.pageSize);
+        results = results.splice($scope.model.currentPage * $scope.model.pageSize, $scope.model.pageSize);
         return results;
     };
     // Pagination ends

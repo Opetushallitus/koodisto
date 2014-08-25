@@ -29,31 +29,33 @@
     <div class="modal-header">
         <h3>{{'codes.uploadmodal.header' | i18n}}</h3>
     </div>
-    <div class="modal-body">
-        <label for="fileFormat2">{{'codes.downloadmodal.format' | i18n}}</label>
-        <br>
-        <select id="fileFormat2" ng-model="model.format">
-            <option value="JHS_XML">JHS_XML</option>
-            <option value="CSV">CSV</option>
-            <option value="XLS">XLS</option>
-        </select>
-        <br>
-        <label for="fileEncoding2">{{'codes.downloadmodal.encoding' | i18n}}</label>
-        <br>
-        <select id="fileEncoding2" ng-model="model.encoding"  ng-disabled="formatEquals('XLS')">
-            <option value="UTF-8">UTF8</option>
-            <option value="ISO-88519-1">ISO_88519_1</option>
-            <option value="ISO-88519-15">ISO_88519_15</option>
-        </select>
-        <br>
-        <label for="fileToUpload">{{'codes.uploadmodal.selectfile' | i18n}}</label><br />
-        <input type="file" ng-model-instant id="fileToUpload" onchange="angular.element(this).scope().setFiles(this)" />
-
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-warning" ng-click="cancelupload()">{{'codes.cancel' | i18n}}</button>
-        <button class="btn btn-primary" ng-click="okupload()">{{'codes.select' | i18n}}</button>
-    </div>
+    <form action="{{uploadUrl}}" method="post" ng-upload="uploadComplete(content)" name="uploadForm">
+        <div class="modal-body">
+            <label for="fileFormat2">{{'codes.downloadmodal.format' | i18n}}</label>
+            <br>
+            <select id="fileFormat2" ng-model="model.format" name="fileFormat">
+                <option value="JHS_XML">JHS_XML</option>
+                <option value="CSV">CSV</option>
+                <option value="XLS">XLS</option>
+            </select>
+            <br>
+            <label for="fileEncoding2">{{'codes.downloadmodal.encoding' | i18n}}</label>
+            <br>
+            <select id="fileEncoding2" ng-model="model.encoding" ng-disabled="formatEquals('XLS')" name="fileEncoding">
+                <option value="UTF-8">UTF8</option>
+                <option value="ISO-88519-1">ISO_88519_1</option>
+                <option value="ISO-88519-15">ISO_88519_15</option>
+            </select>
+            <br>
+            <label for="fileToUpload">{{'codes.uploadmodal.selectfile' | i18n}}</label><br />
+            <input id="fileToUpload" type="file" name="uploadedFile" ng-required="true"/>
+        </div>
+        <div class="modal-footer">
+            <span ng-if="$isUploading">{{'codes.viewpage.codeelements.saving' | i18n}}</span>
+            <button class="btn btn-warning" ng-click="cancelupload()" ng-disabled="$isUploading">{{'codes.cancel' | i18n}}</button>
+            <button class="btn btn-primary" ng-click="loadStartFunction()" ng-disabled="$isUploading" upload-submit>{{'codes.select' | i18n}}</button>
+        </div>
+    </form>
 </script>
 
 <script type="text/ng-template" id="confirmDeleteCodesModalContent.html">

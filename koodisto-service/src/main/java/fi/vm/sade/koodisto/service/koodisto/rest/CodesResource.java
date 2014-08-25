@@ -73,10 +73,10 @@ public class CodesResource {
 
     @Autowired
     private SadeConversionService conversionService;
-    
+
     @Autowired
     private DownloadService downloadService;
-    
+
     @Autowired
     private CodesResourceConverter converter;
 
@@ -143,7 +143,7 @@ public class CodesResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
-    
+
     @PUT
     @Path("/save")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -167,8 +167,6 @@ public class CodesResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
-
-    
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -194,8 +192,6 @@ public class CodesResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
         }
     }
-
-
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -275,14 +271,12 @@ public class CodesResource {
             response = Response.class)
     public Response uploadFile(
             @ApiParam(value = "Tuotava tiedosto") @FormDataParam("uploadedFile") InputStream fileInputStream,
-            @ApiParam(value = "") @FormDataParam("uploadedFile") com.sun.jersey.core.header.FormDataContentDisposition contentDispositionHeader,
             @ApiParam(value = "Tiedostotyyppi") @FormDataParam("fileFormat") String fileFormat,
             @ApiParam(value = "Tiedoston koodaus") @FormDataParam("fileEncoding") String fileEncoding,
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri) {
         if (fileInputStream == null
-                || contentDispositionHeader == null
                 || StringUtils.isBlank(fileFormat)
-                || StringUtils.isBlank(fileEncoding)
+                || StringUtils.isBlank(fileEncoding) && Format.valueOf(fileFormat) != Format.XLS
                 || StringUtils.isBlank(codesUri)) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         } else {
@@ -313,10 +307,10 @@ public class CodesResource {
                 DataSource ds = new InputStreamDataSource(fileInputStream, mime);
                 DataHandler handler = new DataHandler(ds);
                 uploadService.upload(codesUri, formatStr, encoding, handler);
-                return Response.status(Response.Status.ACCEPTED).build();
+                return Response.status(Response.Status.ACCEPTED).entity("OK").build();
             } catch (Exception e) {
                 LOGGER.warn("Koodistoa ei saatu vietyä. ", e);
-                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
             }
         }
     }

@@ -2,7 +2,7 @@
 
 var SERVICE_NAME = "APP_KOODISTO";
 
-var app = angular.module('koodisto', [ 'ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization', 'ui.bootstrap', 'ui.utils', 'ngIdle', 'pasvaz.bindonce' ]);
+var app = angular.module('koodisto', [ 'ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization', 'ui.bootstrap', 'ui.utils', 'ngIdle', 'pasvaz.bindonce', 'ngUpload']);
 //
 // i18n toteutus kopioitu osittain http://jsfiddle.net/4tRBY/41/
 //
