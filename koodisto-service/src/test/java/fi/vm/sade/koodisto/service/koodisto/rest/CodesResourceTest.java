@@ -1,7 +1,5 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-import static org.junit.Assert.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,8 +21,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dto.FileDto;
 import fi.vm.sade.koodisto.dto.FileFormatDto;
@@ -38,6 +34,12 @@ import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
@@ -63,7 +65,7 @@ public class CodesResourceTest {
         // assertNull(resource.listAllCodesInAllCodeGroups()); // No params
         assertNull(resource.getCodesByCodesUri(nullString));
         assertNull(resource.getCodesByCodesUriAndVersion(nullString, 0));
-        assertResponse(resource.uploadFile(null, null, nullString, nullString, nullString), 400);
+        assertResponse(resource.uploadFile(null, nullString, nullString, nullString), 400);
         assertNull(resource.download(nullString, 0, null));
         assertResponse(resource.delete(nullString, 0), 400);
         assertNull(resource.download(nullString, 0, null));
@@ -205,8 +207,7 @@ public class CodesResourceTest {
         String codesUri = "csvfileuploaduri";
         try {
             is = getClass().getClassLoader().getResourceAsStream("csv_example.csv");
-            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.csv").build();
-            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
+            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
         } finally {
             if (is != null) {
                 try {
@@ -229,8 +230,7 @@ public class CodesResourceTest {
         String codesUri = "xmlfileuploaduri";
         try {
             is = getClass().getClassLoader().getResourceAsStream("jhs_xml_example.xml");
-            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.xml").build();
-            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
+            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
         } finally {
             if (is != null) {
                 try {
@@ -253,8 +253,7 @@ public class CodesResourceTest {
         String codesUri = "xlsfileuploaduri";
         try {
             is = getClass().getClassLoader().getResourceAsStream("excel_example.xls");
-            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.xml").build();
-            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
+            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
         } finally {
             if (is != null) {
                 try {
@@ -277,8 +276,7 @@ public class CodesResourceTest {
         String codesUri = "csvfileuploaduri";
         try {
             is = getClass().getClassLoader().getResourceAsStream("csv_example.csv");
-            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.csv").build();
-            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
+            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
         } finally {
             if (is != null) {
                 try {
@@ -294,8 +292,7 @@ public class CodesResourceTest {
 
         try {
             is = getClass().getClassLoader().getResourceAsStream("csv_example.csv");
-            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.csv").build();
-            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
+            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
         } finally {
             if (is != null) {
                 try {
@@ -314,8 +311,7 @@ public class CodesResourceTest {
         String codesUri = "csvfileuploaduri";
         try {
             is = new ByteArrayInputStream("Failure Of Files!".getBytes(Charset.defaultCharset()));
-            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.csv").build();
-            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 500);
+            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 500);
         } finally {
             if (is != null)
                 try {
