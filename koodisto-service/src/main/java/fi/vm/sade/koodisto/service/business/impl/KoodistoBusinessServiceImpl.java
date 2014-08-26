@@ -59,8 +59,6 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoHasNoKoodisWhenAcceptedExcetion;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoKuvausEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiNotUniqueException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
