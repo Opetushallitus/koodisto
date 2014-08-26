@@ -378,13 +378,14 @@
                     </div>
                     <label for="page_size_select">{{'codes.viewpage.codeelements.pagination.nayta'
                     | i18n}}</label>
-                    <select ng-model="model.pageSize"
+                    <select ie-select-fix="model"
+                        ng-model="model.pageSize"
                         ng-options="n for n in model.pageSizeOptions"
                         ng-change="pageSizeChanged()"
                         id="page_size_select"
                         style="width:auto;">
                     </select>
-                    <select
+                    <select ie-select-fix="model"
                         ng-model="model.sortOrderSelection"
                         ng-change="sortOrderChanged()"
                         id="ordering_select"
