@@ -134,7 +134,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Autowired
     private DownloadService downloadService;
-    
+
     @Autowired
     private CodesResourceConverter converter;
 
@@ -610,21 +610,18 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         if (!Tila.HYVAKSYTTY.equals(latest.getTila()) && updateKoodistoData.getTila().equals(TilaType.HYVAKSYTTY)) {
             List<KoodiVersio> koodis = koodiVersioDAO.getKoodiVersiosByKoodistoAndKoodiTila(latest.getId(), Tila.LUONNOS);
 
-            if(koodis.size() == 0){
-                throw new KoodistoHasNoKoodisWhenAcceptedExcetion("Hyväksyttävällä koodistolla ei ole koodeja.");
-            }
-            
-            ArrayList<String> koodiUris = new ArrayList<String>();
-            for (KoodiVersio koodiVersio : koodis) {
-                koodiUris.add(koodiVersio.getKoodi().getKoodiUri());
-            }
+            if (koodis.size() > 0) {
+                ArrayList<String> koodiUris = new ArrayList<String>();
+                for (KoodiVersio koodiVersio : koodis) {
+                    koodiUris.add(koodiVersio.getKoodi().getKoodiUri());
+                }
 
-            List<KoodiVersio> latestKoodis = koodiDAO.getLatestCodeElementVersiosByUrisAndTila(koodiUris, Tila.HYVAKSYTTY);
+                List<KoodiVersio> latestKoodis = koodiDAO.getLatestCodeElementVersiosByUrisAndTila(koodiUris, Tila.HYVAKSYTTY);
 
-            for (KoodiVersio latestVersio : latestKoodis) {
-                koodiBusinessService.setKoodiTila(latestVersio, TilaType.HYVAKSYTTY);
+                for (KoodiVersio latestVersio : latestKoodis) {
+                    koodiBusinessService.setKoodiTila(latestVersio, TilaType.HYVAKSYTTY);
+                }
             }
-
             KoodistoVersio previousVersion = koodistoVersioDAO.getPreviousKoodistoVersio(latest.getKoodisto().getKoodistoUri(), latest.getVersio());
             if (previousVersion != null) {
                 previousVersion.setVoimassaLoppuPvm(new Date());
@@ -634,7 +631,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         // Update the version itself
         EntityUtils.copyFields(updateKoodistoData, latest);
 
-        if(latest.getVoimassaAlkuPvm() == null) {
+        if (latest.getVoimassaAlkuPvm() == null) {
             // Set start date to current date
             latest.setVoimassaAlkuPvm(new Date());
         }
@@ -796,7 +793,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         updateKoodisto(codesDTOAsDataType);
         String koodistoUri = codesDTO.getKoodistoUri();
         KoodistoVersio latest = getLatestKoodistoVersio(koodistoUri);
-        
+
         Set<KoodistonSuhde> alaKoodistos = latest.getAlakoodistos();
         Set<KoodistonSuhde> ylaKoodistos = latest.getYlakoodistos();
 
@@ -828,21 +825,21 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         for (String relationCodes : includesUris) {
             if (!updatedIncludesUris.contains(relationCodes)) {
-                 addRelation(latest, SuhteenTyyppi.SISALTYY, getLatestKoodistoVersio(relationCodes));
+                addRelation(latest, SuhteenTyyppi.SISALTYY, getLatestKoodistoVersio(relationCodes));
             } else {
                 updatedIncludesUris.remove(relationCodes);
             }
         }
         for (String relationCodes : withinUris) {
             if (!updatedWithinUris.contains(relationCodes) && !relationCodes.equals(koodistoUri)) { // Duplicate if includes self
-                 addRelation(getLatestKoodistoVersio(relationCodes), SuhteenTyyppi.SISALTYY, latest);
+                addRelation(getLatestKoodistoVersio(relationCodes), SuhteenTyyppi.SISALTYY, latest);
             } else {
                 updatedWithinUris.remove(relationCodes);
             }
         }
         for (String relationCodes : levelsWithUris) {
             if (!updatedLevelsWithUris.contains(relationCodes)) {
-                 addRelation(latest, SuhteenTyyppi.RINNASTEINEN, getLatestKoodistoVersio(relationCodes));
+                addRelation(latest, SuhteenTyyppi.RINNASTEINEN, getLatestKoodistoVersio(relationCodes));
             } else {
                 updatedLevelsWithUris.remove(relationCodes);
             }
@@ -851,11 +848,11 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         String latestUri = latest.getKoodisto().getKoodistoUri();
         removeRelation(latestUri, new ArrayList<String>(updatedIncludesUris), SuhteenTyyppi.SISALTYY);
         removeRelation(latestUri, new ArrayList<String>(updatedLevelsWithUris), SuhteenTyyppi.RINNASTEINEN);
-        
+
         ArrayList<String> latestUriAsList = new ArrayList<String>();
         latestUriAsList.add(latestUri);
-        
-        for (String  yk: updatedWithinUris) {
+
+        for (String yk : updatedWithinUris) {
             removeRelation(yk, latestUriAsList, SuhteenTyyppi.SISALTYY);
         }
 
@@ -863,7 +860,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     private Set<String> urisAsSet(List<RelationCodes> relations) {
-        HashSet<String> result = new  HashSet<String>();
+        HashSet<String> result = new HashSet<String>();
         for (RelationCodes r : relations) {
             result.add(r.codesUri);
         }
