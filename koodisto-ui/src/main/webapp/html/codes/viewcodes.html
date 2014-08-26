@@ -48,12 +48,12 @@
             </select>
             <br>
             <label for="fileToUpload">{{'codes.uploadmodal.selectfile' | i18n}}</label><br />
-            <input id="fileToUpload" type="file" name="uploadedFile" ng-required="true"/>
+            <input id="fileToUpload" type="file" name="uploadedFile" ng-click="fileSelected=true"/>
         </div>
         <div class="modal-footer">
             <span ng-if="$isUploading">{{'codes.viewpage.codeelements.saving' | i18n}}</span>
             <button class="btn btn-warning" ng-click="cancelupload()" ng-disabled="$isUploading">{{'codes.cancel' | i18n}}</button>
-            <button class="btn btn-primary" ng-click="loadStartFunction()" ng-disabled="$isUploading" upload-submit>{{'codes.select' | i18n}}</button>
+            <button class="btn btn-primary" ng-click="loadStartFunction()" ng-disabled="!fileSelected || $isUploading" upload-submit>{{'codes.select' | i18n}}</button>
         </div>
     </form>
 </script>
