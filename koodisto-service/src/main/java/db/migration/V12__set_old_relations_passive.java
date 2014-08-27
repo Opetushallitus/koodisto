@@ -2,6 +2,7 @@ package db.migration;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -21,6 +22,8 @@ import fi.vm.sade.koodisto.model.Tila;
 public class V12__set_old_relations_passive implements SpringJdbcMigration {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(V12__set_old_relations_passive.class);
+    
+    private List<CodesUriVersionDto> codesUriVersions;
     
     @Override
     public void migrate(final JdbcTemplate jdbcTemplate) throws Exception {
@@ -47,9 +50,8 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
                         return new UriVersionDto(rs.getLong("id"), rs.getInt("versio"), rs.getString("koodiuri"), Tila.valueOf(rs.getString("tila")));
                     }
         });
-        Collection<RelationDto> relationsToUpdate = Collections2.filter(codeElementRelations, new RelationsToPassivePredicate(uriVersions));
-        //Collection<RelationDto> relationsToUpdate = Collections2.filter(codeElementRelations, 
-                //new CodeElementRelationsToPassivePredicate(jdbcTemplate, uriVersions));
+        Collection<RelationDto> relationsToUpdate = Collections2.filter(codeElementRelations, 
+                new CodeElementRelationsToPassivePredicate(jdbcTemplate, uriVersions));
         LOGGER.info("Updating " + relationsToUpdate.size() + "  koodinsuhde rows to passive");
         updateCodeElementRelationsToPassive(jdbcTemplate, relationsToUpdate);
     }
@@ -65,19 +67,35 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
             
         });
         
-        List<UriVersionDto> uriVersions = jdbcTemplate.query("SELECT kv.*, k.koodistouri FROM koodistoversio kv, koodisto k WHERE kv.koodisto_id = k.id",
-                new RowMapper<UriVersionDto>() {
-
-                    @Override
-                    public UriVersionDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new UriVersionDto(rs.getLong("id"), rs.getInt("versio"), rs.getString("koodistouri"), Tila.valueOf(rs.getString("tila")));
-                    }
-            
-        });
+        List<CodesUriVersionDto> uriVersions = getCodesUriVersions(jdbcTemplate);
         
-        Collection<RelationDto> relationsToUpdate = Collections2.filter(codesRelations, new RelationsToPassivePredicate(uriVersions));
+        Collection<RelationDto> relationsToUpdate = Collections2.filter(codesRelations, new RelationsToPassivePredicate<CodesUriVersionDto>(uriVersions));
         LOGGER.info("Updating " + relationsToUpdate.size() + "  koodistonsuhde rows to passive");
         updateCodesRelationsToPassive(jdbcTemplate, relationsToUpdate);
+    }
+
+    private List<CodesUriVersionDto> getCodesUriVersions(final JdbcTemplate jdbcTemplate) {
+        if (codesUriVersions == null) {
+            codesUriVersions = jdbcTemplate.query("SELECT kv.*, k.koodistouri FROM koodistoversio kv, koodisto k WHERE kv.koodisto_id = k.id",
+                    new RowMapper<CodesUriVersionDto>() {
+
+                @Override
+                public CodesUriVersionDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    List<Long> koodiVersios = jdbcTemplate.query("SELECT kvkv.koodiversio_id FROM koodistoversio_koodiversio kvkv WHERE kvkv.koodistoversio_id = '" + rs.getLong("id") + "'",
+                            new RowMapper<Long>() {
+
+                        @Override
+                        public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
+                            return rs.getLong("koodiversio_id");
+                        }
+
+                    });
+                    return new CodesUriVersionDto(rs.getLong("id"), rs.getInt("versio"), rs.getString("koodistouri"), Tila.valueOf(rs.getString("tila")), koodiVersios);
+                }
+
+            });
+        }
+        return codesUriVersions;
     }
     
     private void updateCodeElementRelationsToPassive(JdbcTemplate jdbcTemplate, Collection<RelationDto> relationsToUpdate) {
@@ -108,11 +126,11 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
         
     }
     
-    private static class UriVersionDto {
+    private static class UriVersionDto implements Comparable<UriVersionDto>{
         private final Long id;
         private final Integer versio;
-        private final String uri;
-        private final Tila tila;
+        final String uri;
+        final Tila tila;
         
         private UriVersionDto(long id, int versio, String uri, Tila tila) {
             this.id = id;
@@ -120,13 +138,28 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
             this.uri = uri;
             this.tila = tila;
         }
+
+        @Override
+        public int compareTo(UriVersionDto arg0) {
+            return versio.compareTo(arg0.versio);
+        }
     }
     
-    private class RelationsToPassivePredicate implements Predicate<RelationDto> {
+    private static class CodesUriVersionDto extends UriVersionDto {
         
-        private final List<UriVersionDto> uriVersions;
+        private final List<Long> codeElementVersions;
         
-        public RelationsToPassivePredicate(List<UriVersionDto> uriVersions) {
+        private CodesUriVersionDto(long id, int versio, String uri, Tila tila, List<Long> codeElementVersions) {
+            super(id, versio, uri, tila);
+            this.codeElementVersions = codeElementVersions;
+        }
+    }
+    
+    private class RelationsToPassivePredicate<T extends UriVersionDto> implements Predicate<RelationDto> {
+        
+        private final List<T> uriVersions;
+        
+        public RelationsToPassivePredicate(List<T> uriVersions) {
             this.uriVersions = uriVersions;
         }
         
@@ -150,7 +183,7 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
                 }
                 
             });
-            Collection<UriVersionDto> matchingVersions = Collections2.filter(uriVersions, new Predicate<UriVersionDto>() {
+            Collection<T> matchingVersions = Collections2.filter(uriVersions, new Predicate<T>() {
 
                 @Override
                 public boolean apply(UriVersionDto input) {
@@ -160,14 +193,14 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
             return isRelationActive(uriVersion, matchingVersions);
         }
 
-        protected boolean isRelationActive(UriVersionDto uriVersion, Collection<UriVersionDto> matchingVersions) {
+        protected boolean isRelationActive(UriVersionDto uriVersion, Collection<T> matchingVersions) {
             UriVersionDto latest = getLatestVersion(uriVersion, matchingVersions);
             return !Tila.PASSIIVINEN.equals(latest.tila) 
                     && (latest == uriVersion 
                     || (latest.versio == uriVersion.versio + 1 && Tila.LUONNOS.equals(latest.tila)));
         }
 
-        private UriVersionDto getLatestVersion(UriVersionDto uriVersion, Collection<UriVersionDto> matchingVersions) {
+        private UriVersionDto getLatestVersion(UriVersionDto uriVersion, Collection<T> matchingVersions) {
             UriVersionDto latest = uriVersion;
             for (UriVersionDto uriVersionDto : matchingVersions) {
                 latest = uriVersionDto.versio > latest.versio ? uriVersionDto : latest;
@@ -176,7 +209,7 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
         }
     }
     
-    private class CodeElementRelationsToPassivePredicate extends RelationsToPassivePredicate {
+    private class CodeElementRelationsToPassivePredicate extends RelationsToPassivePredicate<UriVersionDto> {
         
         private final JdbcTemplate jdbcTemplate;
         
@@ -192,52 +225,42 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
         }
 
         private boolean isCodeElementVersionInLatestCodes(UriVersionDto latestVersion) {
-            List<KoodistoVersio> codesVersions = jdbcTemplate.query("SELECT koodistoV.id, koodistoV.tila, koodistoV.versio "
-                    + "FROM koodistoversio koodistoV, koodi koodi, koodisto "
-                    + "WHERE koodistoV.koodisto_id = koodisto.id AND koodisto.id = koodi.koodisto_id AND koodi.koodiuri = '" 
-                    + latestVersion.uri + "'", 
-                    new RowMapper<KoodistoVersio>() {
+            try {
+                List<CodesUriVersionDto> codesVersions = getMatchingCodesUriVersions(latestVersion);
+                Collections.sort(codesVersions);
+                CodesUriVersionDto latestCodes = codesVersions.get(codesVersions.size() - 1);
+                CodesUriVersionDto secondLatestCodes = codesVersions.size() > 1 ? codesVersions.get(codesVersions.size() - 2) : null;
+                return latestCodes.codeElementVersions.contains(latestVersion.id) 
+                        || (Tila.LUONNOS.equals(latestCodes.tila) 
+                                && secondLatestCodes != null && secondLatestCodes.codeElementVersions.contains(latestVersion.id));
+            } catch (Exception e) {
+                LOGGER.error("Error while handling status of latestVersion[id=" + latestVersion.id + ", uri=" +latestVersion.uri +"]. Reason was: " + e.getMessage());
+                return false;
+            }
+        }
 
-                        @Override
-                        public KoodistoVersio mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            List<Long> koodiVersios = jdbcTemplate.query("SELECT kvkv.koodiversio_id FROM koodistoversio_koodiversio kvkv WHERE kvkv.koodistoversio_id = '" + rs.getLong("id") + "'",
-                                    new RowMapper<Long>() {
+        private List<CodesUriVersionDto> getMatchingCodesUriVersions(UriVersionDto latestVersion) {
+            List<CodesUriVersionDto> codesVersions = getCodesUriVersions(jdbcTemplate);
+            final CodesUriVersionDto firstFound = getFirstFoundMatchingCodesVersio(latestVersion, codesVersions);
+            return new ArrayList<CodesUriVersionDto>(Collections2.filter(codesVersions, new Predicate<CodesUriVersionDto>() {
 
-                                        @Override
-                                        public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
-                                            return rs.getLong("koodiversio_id");
-                                        }
-                                
-                            });
-                            return new KoodistoVersio(Tila.valueOf(rs.getString("tila")), rs.getInt("versio"), koodiVersios);
-                        }
-                        
-                    });
-            Collections.sort(codesVersions);
-            KoodistoVersio latestCodes = codesVersions.get(codesVersions.size() - 1);
-            KoodistoVersio secondLatestCodes = codesVersions.size() > 1 ? codesVersions.get(codesVersions.size() - 2) : null;
-            return latestCodes.koodiVersios.contains(latestVersion.id) 
-                    || (Tila.LUONNOS.equals(latestCodes.tila) 
-                            && secondLatestCodes != null && secondLatestCodes.koodiVersios.contains(latestVersion.id));
+                @Override
+                public boolean apply(CodesUriVersionDto input) {
+                    return firstFound.uri.equals(input.uri);
+                }
+                
+            }));
+        }
+
+        private CodesUriVersionDto getFirstFoundMatchingCodesVersio(UriVersionDto latestVersion, List<CodesUriVersionDto> codesVersions) {
+            for (CodesUriVersionDto codesUriVersionDto : codesVersions) {
+                if(codesUriVersionDto.codeElementVersions.contains(latestVersion.id)) {
+                    return codesUriVersionDto;
+                }
+            }
+            throw new RuntimeException("Could not find any koodistoversio for koodiversio");
         }
         
-        private class KoodistoVersio implements Comparable<KoodistoVersio> {
-            private final Tila tila;
-            private final Integer versio;
-            private final List<Long> koodiVersios;
-            
-            public KoodistoVersio(Tila tila, Integer versio, List<Long> koodiVersios) {
-                this.tila = tila;
-                this.versio = versio;
-                this.koodiVersios = koodiVersios;
-            }
-
-            @Override
-            public int compareTo(KoodistoVersio arg0) {
-                return versio.compareTo(arg0.versio);
-            }
-            
-        }
     }
     
 }
