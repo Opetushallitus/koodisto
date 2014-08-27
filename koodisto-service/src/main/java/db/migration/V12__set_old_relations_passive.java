@@ -92,6 +92,7 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
             jdbcTemplate.update("UPDATE koodistonsuhde SET ylakoodistostapassiivinen = ?, alakoodistostapassiivinen = ? WHERE id = ?", 
                     relationDto.upperPassive, relationDto.lowerPassive, relationDto.id);
         }
+        LOGGER.info(relationsToUpdate.size() + " koodistonsuhde rows was succesfully set to passive");
     }
 
     private static class RelationDto {
@@ -136,8 +137,8 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
         }
 
         private void makeRelationPassiveIfRequired(RelationDto input) {
-            input.upperPassive = isRelationActive(input.upper) ? false : true;
-            input.lowerPassive = isRelationActive(input.lower) ? false : true;
+            input.upperPassive = !isRelationActive(input.upper);
+            input.lowerPassive = !isRelationActive(input.lower);
         }
 
         private boolean isRelationActive(final Long upper) {
@@ -238,4 +239,5 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
             
         }
     }
+    
 }
