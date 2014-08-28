@@ -29,49 +29,49 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 model.codes = result;
 
 
-                scope.namefi = model.languageSpecificValue(result.metadata, 'nimi', 'FI');
-                scope.namesv = model.languageSpecificValue(result.metadata, 'nimi', 'SV');
-                scope.nameen = model.languageSpecificValue(result.metadata, 'nimi', 'EN');
+                scope.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
+                scope.namesv = getLanguageSpecificValue(result.metadata, 'nimi', 'SV');
+                scope.nameen = getLanguageSpecificValue(result.metadata, 'nimi', 'EN');
 
-                scope.descriptionfi = model.languageSpecificValue(result.metadata, 'kuvaus', 'FI');
-                scope.descriptionsv = model.languageSpecificValue(result.metadata, 'kuvaus', 'SV');
-                scope.descriptionen = model.languageSpecificValue(result.metadata, 'kuvaus', 'EN');
+                scope.descriptionfi = getLanguageSpecificValue(result.metadata, 'kuvaus', 'FI');
+                scope.descriptionsv = getLanguageSpecificValue(result.metadata, 'kuvaus', 'SV');
+                scope.descriptionen = getLanguageSpecificValue(result.metadata, 'kuvaus', 'EN');
 
-                scope.instructionsfi = model.languageSpecificValue(result.metadata, 'kayttoohje', 'FI');
-                scope.instructionssv = model.languageSpecificValue(result.metadata, 'kayttoohje', 'SV');
-                scope.instructionsen = model.languageSpecificValue(result.metadata, 'kayttoohje', 'EN');
+                scope.instructionsfi = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'FI');
+                scope.instructionssv = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'SV');
+                scope.instructionsen = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'EN');
 
-                scope.targetareafi = model.languageSpecificValue(result.metadata, 'kohdealue', 'FI');
-                scope.targetareasv = model.languageSpecificValue(result.metadata, 'kohdealue', 'SV');
-                scope.targetareaen = model.languageSpecificValue(result.metadata, 'kohdealue', 'EN');
+                scope.targetareafi = getLanguageSpecificValue(result.metadata, 'kohdealue', 'FI');
+                scope.targetareasv = getLanguageSpecificValue(result.metadata, 'kohdealue', 'SV');
+                scope.targetareaen = getLanguageSpecificValue(result.metadata, 'kohdealue', 'EN');
 
-                scope.targetareapartfi = model.languageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'FI');
-                scope.targetareapartsv = model.languageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'SV');
-                scope.targetareaparten = model.languageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'EN');
+                scope.targetareapartfi = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'FI');
+                scope.targetareapartsv = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'SV');
+                scope.targetareaparten = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'EN');
 
-                scope.conceptfi = model.languageSpecificValue(result.metadata, 'kasite', 'FI');
-                scope.conceptsv = model.languageSpecificValue(result.metadata, 'kasite', 'SV');
-                scope.concepten = model.languageSpecificValue(result.metadata, 'kasite', 'EN');
+                scope.conceptfi = getLanguageSpecificValue(result.metadata, 'kasite', 'FI');
+                scope.conceptsv = getLanguageSpecificValue(result.metadata, 'kasite', 'SV');
+                scope.concepten = getLanguageSpecificValue(result.metadata, 'kasite', 'EN');
 
-                scope.operationalenvironmentfi = model.languageSpecificValue(result.metadata, 'toimintaymparisto', 'FI');
-                scope.operationalenvironmentsv = model.languageSpecificValue(result.metadata, 'toimintaymparisto', 'SV');
-                scope.operationalenvironmenten = model.languageSpecificValue(result.metadata, 'toimintaymparisto', 'EN');
+                scope.operationalenvironmentfi = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'FI');
+                scope.operationalenvironmentsv = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'SV');
+                scope.operationalenvironmenten = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'EN');
 
-                scope.codessourcefi = model.languageSpecificValue(result.metadata, 'koodistonLahde', 'FI');
-                scope.codessourcesv = model.languageSpecificValue(result.metadata, 'koodistonLahde', 'SV');
-                scope.codessourceen = model.languageSpecificValue(result.metadata, 'koodistonLahde', 'EN');
+                scope.codessourcefi = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'FI');
+                scope.codessourcesv = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'SV');
+                scope.codessourceen = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'EN');
 
-                scope.specifiescodesfi = model.languageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'FI');
-                scope.specifiescodessv = model.languageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'SV');
-                scope.specifiescodesen = model.languageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'EN');
+                scope.specifiescodesfi = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'FI');
+                scope.specifiescodessv = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'SV');
+                scope.specifiescodesen = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'EN');
 
-                scope.totakenoticeoffi = model.languageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'FI');
-                scope.totakenoticeofsv = model.languageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'SV');
-                scope.totakenoticeofen = model.languageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'EN');
+                scope.totakenoticeoffi = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'FI');
+                scope.totakenoticeofsv = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'SV');
+                scope.totakenoticeofen = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'EN');
 
-                scope.validitylevelfi = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'FI');
-                scope.validitylevelsv = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
-                scope.validitylevelen = model.languageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
+                scope.validitylevelfi = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'FI');
+                scope.validitylevelsv = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
+                scope.validitylevelen = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
 
                 model.codes.withinCodes.forEach(function(codes){
                     model.getLatestCodesVersionsByCodesUri(codes,model.withinCodes);
@@ -86,6 +86,8 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result2) {
                     model.codes.organizationName = result2.nimi['fi'] || result2.nimi['sv'] || result2.nimi['en'];
                 });
+                
+                scope.loadingReady = true;
             });
         };
 
@@ -93,7 +95,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             CodesByUri.get({codesUri: codes.codesUri}, function (result) {
                 var ce = {};
                 ce.uri = codes.codesUri;
-                ce.name = model.languageSpecificValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
+                ce.name = getLanguageSpecificValueOrValidValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
                 ce.versio = codes.codesVersion;
                 list.push(ce);
             });
@@ -137,43 +139,6 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             return false;
         };
 
-        this.languageSpecificValue = function(fieldArray,fieldName,language) {
-            return getLanguageSpecificValue(fieldArray,fieldName,language);
-        };
-
-
-        this.removeFromWithinCodes = function(codes) {
-            model.withinRelationToRemove = codes;
-
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: CodesEditorController,
-                resolve: {
-                }
-            });
-
-        };
-
-        this.removeFromIncludesCodes = function(codes) {
-            model.includesRelationToRemove = codes;
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: CodesEditorController,
-                resolve: {
-                }
-            });
-        };
-
-        this.removeFromLevelsWithCodes = function(codes) {
-            model.levelsRelationToRemove = codes;
-            model.modalInstance = $modal.open({
-                templateUrl: 'confirmModalContent.html',
-                controller: CodesEditorController,
-                resolve: {
-                }
-            });
-        };
-
         this.openChildren = function(data) {
             data.open = !data.open;
             if(data.open) {
@@ -196,13 +161,19 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
     return model;
 });
 
-function CodesEditorController($scope, $location, $modal, $log, $routeParams, CodesEditorModel, UpdateCodes, Treemodel,
-                               ValidateService, AddRelationCodes, RemoveRelationCodes, CodesMatcher) {
+function CodesEditorController($scope, $location, $modal, $log, $routeParams, $filter, CodesEditorModel, Treemodel,
+                               CodesMatcher, SaveCodes, isModalController) {
     $scope.model = CodesEditorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
-    CodesEditorModel.init($scope,$routeParams.codesUri, $scope.codesVersion);
-
+    $scope.errorMessage = $filter('i18n')('field.required');
+    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.at.least.one.name');
+    $scope.errorMessageIfOtherInfoIsGiven = $filter('i18n')('field.required.if.other.info.is.given');
+    
+    if (!isModalController) {
+        CodesEditorModel.init($scope,$routeParams.codesUri, $scope.codesVersion);
+    }
+    
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
     };
@@ -237,7 +208,13 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
             tila: $scope.model.codes.tila,
             version: $scope.model.codes.version,
             codesGroupUri: $scope.model.codes.codesGroupUri,
-            metadata : [{
+            metadata : [],
+            withinCodes : $scope.changeToRelationCodes($scope.model.withinCodes),
+            includesCodes : $scope.changeToRelationCodes($scope.model.includesCodes),
+            levelsWithCodes : $scope.changeToRelationCodes($scope.model.levelsWithCodes)
+        };
+        if ($scope.namefi) {
+            codes.metadata.push({
                 kieli: 'FI',
                 nimi: $scope.namefi,
                 kuvaus: $scope.descriptionfi,
@@ -250,10 +227,10 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 tarkentaaKoodistoa: $scope.specifiescodesfi,
                 huomioitavaKoodisto: $scope.totakenoticeoffi,
                 sitovuustaso: $scope.validitylevelfi
-            }]
-        };
+            });
+        }
         if ($scope.namesv) {
-            codes.metadata.push({
+                codes.metadata.push({
                 kieli: 'SV',
                 nimi: $scope.namesv,
                 kuvaus: $scope.descriptionsv,
@@ -284,14 +261,26 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 sitovuustaso: $scope.validitylevelen
             });
         }
-        UpdateCodes.put({}, codes, function(result) {
+        SaveCodes.put({}, codes, function(result) {
             Treemodel.refresh();
             $location.path("/koodisto/"+$scope.codesUri+"/"+result[0]).search({forceRefresh: true});
         }, function(error) {
-            ValidateService.validateCodes($scope,error,true);
+            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
+            $scope.model.alerts.push(alert);
         });
     };
 
+    $scope.changeToRelationCodes = function(listToBeChanged){
+        result = [];
+        listToBeChanged.forEach(function(ce){
+            dt = {};
+            dt.codesUri = ce.uri;
+            dt.codesVersion = 1;
+            result.push(dt);
+        });
+        return result;
+    };
+    
     $scope.setSameValue = function(name) {
         if (name === 'name' && !$scope.samename) {
             $scope.namesv = $scope.namefi;
@@ -332,7 +321,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
     $scope.createCodes = function(data) {
         var ce = {};
         ce.uri = data.koodistoUri;
-        ce.name = $scope.model.languageSpecificValue(data.latestKoodistoVersio.metadata, 'nimi', 'FI');
+        ce.name = getLanguageSpecificValueOrValidValue(data.latestKoodistoVersio.metadata, 'nimi', 'FI');
         return ce;
     };
 
@@ -347,13 +336,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         });
 
         if (found === false) {
-            AddRelationCodes.put({codesUri: data.koodistoUri,
-                codesUriToAdd: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
-                    $scope.model.withinCodes.push(ce);
-                }, function(error) {
-                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' };
-                    $scope.model.alerts.push(alert);
-                });
+            $scope.model.withinCodes.push(ce);
         }
     };
 
@@ -368,13 +351,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         });
 
         if (found === false) {
-            AddRelationCodes.put({codesUri: $scope.model.codes.koodistoUri,
-                codesUriToAdd: data.koodistoUri,relationType: "SISALTYY"},function(result) {
-                    $scope.model.includesCodes.push(ce);
-                }, function(error) {
-                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' };
-                    $scope.model.alerts.push(alert);
-                });
+            $scope.model.includesCodes.push(ce);
         }
     };
     $scope.addToLevelsWithCodes = function(data) {
@@ -388,13 +365,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         });
 
         if (found === false) {
-            AddRelationCodes.put({codesUri: data.koodistoUri,
-                codesUriToAdd: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
-                    $scope.model.levelsWithCodes.push(ce);
-                }, function(error) {
-                    var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen lis\u00E4\u00E4minen ep\u00E4onnistui' };
-                    $scope.model.alerts.push(alert);
-                });
+            $scope.model.levelsWithCodes.push(ce);
         }
     };
 
@@ -425,7 +396,10 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
         var modalInstance = $modal.open({
             templateUrl: 'organizationModalContent.html',
             controller: ModalInstanceCtrl,
-            resolve: {
+            resolve : {
+                isModalController : function() {
+                    return true;
+                }
             }
         });
 
@@ -446,43 +420,40 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, Co
                 }
             });
 
-            RemoveRelationCodes.put({codesUri: $scope.model.withinRelationToRemove.uri,
-                codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "SISALTYY"},function(result) {
-
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
-                $scope.model.alerts.push(alert);
-            });
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
             $scope.model.includesCodes.forEach(function(codes, index){
                 if (codes.uri.indexOf($scope.model.includesRelationToRemove.uri) !== -1) {
                     $scope.model.includesCodes.splice(index,1);
                 }
             });
-            RemoveRelationCodes.put({codesUri: $scope.model.codes.koodistoUri,
-                codesUriToRemove: $scope.model.includesRelationToRemove.uri,relationType: "SISALTYY"},function(result) {
 
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
-                $scope.model.alerts.push(alert);
-            });
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
             $scope.model.levelsWithCodes.forEach(function(codes, index){
                 if (codes.uri.indexOf($scope.model.levelsRelationToRemove.uri) !== -1) {
                     $scope.model.levelsWithCodes.splice(index,1);
                 }
             });
-            RemoveRelationCodes.put({codesUri: $scope.model.levelsRelationToRemove.uri,
-                codesUriToRemove: $scope.model.codes.koodistoUri,relationType: "RINNASTEINEN"},function(result) {
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodistojen v\u00E4lisen suhteen poistaminen ep\u00E4onnistui' };
-                $scope.model.alerts.push(alert);
-            });
+
         }
         $scope.model.levelsRelationToRemove = null;
         $scope.model.includesRelationToRemove = null;
         $scope.model.withinRelationToRemove = null;
         $scope.model.modalInstance.close();
+    };
+    
+    $scope.removeFromWithinCodes = function(codes) {
+        $scope.model.withinRelationToRemove = codes;
+        $scope.okconfirm();
+    };
+
+    $scope.removeFromIncludesCodes = function(codes) {
+        $scope.model.includesRelationToRemove = codes;
+        $scope.okconfirm();
+    };
+
+    $scope.removeFromLevelsWithCodes = function(codes) {
+        $scope.model.levelsRelationToRemove = codes;
+        $scope.okconfirm();
     };
 
     $scope.cancelconfirm = function() {

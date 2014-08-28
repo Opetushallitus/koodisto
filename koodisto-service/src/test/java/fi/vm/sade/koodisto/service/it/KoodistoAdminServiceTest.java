@@ -1,21 +1,11 @@
 package fi.vm.sade.koodisto.service.it;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
-import fi.vm.sade.generic.common.DateHelper;
-import fi.vm.sade.koodisto.service.GenericFault;
-import fi.vm.sade.koodisto.service.KoodiService;
-import fi.vm.sade.koodisto.service.KoodistoAdminService;
-import fi.vm.sade.koodisto.service.KoodistoService;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoKuvausEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiNotUniqueException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoVersioNotPassiivinenException;
-import fi.vm.sade.koodisto.service.types.*;
-import fi.vm.sade.koodisto.service.types.common.*;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
-import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
-import fi.vm.sade.koodisto.util.KoodistoHelper;
-import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +16,38 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import java.util.*;
-
-import static org.junit.Assert.*;
+import fi.vm.sade.dbunit.annotation.DataSetLocation;
+import fi.vm.sade.generic.common.DateHelper;
+import fi.vm.sade.koodisto.service.GenericFault;
+import fi.vm.sade.koodisto.service.KoodiService;
+import fi.vm.sade.koodisto.service.KoodistoAdminService;
+import fi.vm.sade.koodisto.service.KoodistoService;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoKuvausEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiNotUniqueException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoVersioNotPassiivinenException;
+import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
+import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
+import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.common.KieliType;
+import fi.vm.sade.koodisto.service.types.common.KoodiType;
+import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
+import fi.vm.sade.koodisto.service.types.common.KoodistoRyhmaListType;
+import fi.vm.sade.koodisto.service.types.common.KoodistoType;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
+import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
+import fi.vm.sade.koodisto.util.KoodistoHelper;
+import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = {JtaCleanInsertTestExecutionListener.class,
@@ -56,10 +75,7 @@ public class KoodistoAdminServiceTest {
         SearchKoodistosCriteriaType searchType = KoodistoServiceSearchCriteriaBuilder.latestKoodistoByUri(koodistoUri);
 
         List<KoodistoType> koodistos = koodistoService.searchKoodistos(searchType);
-        if (koodistos.size() != 1) {
-            throw new RuntimeException("Failing");
-        }
-
+        assertEquals(1, koodistos.size());
         return koodistos.get(0);
     }
 
@@ -68,9 +84,7 @@ public class KoodistoAdminServiceTest {
                 koodistoUri, koodistoVersio);
 
         List<KoodistoType> koodistos = koodistoService.searchKoodistos(searchType);
-        if (koodistos.size() != 1) {
-            throw new RuntimeException("Failing");
-        }
+        assertEquals(1, koodistos.size());
 
         return koodistos.get(0);
     }
@@ -202,7 +216,7 @@ public class KoodistoAdminServiceTest {
         }
     }
 
-    @Test(expected = GenericFault.class)
+    @Test
     public void testUpdateWithInsufficientMetadataFields() {
         final String koodistoUri = "http://paljon_versioita.fi/1";
         KoodistoType koodistoToUpdate = getKoodistoByUri(koodistoUri);
@@ -238,16 +252,6 @@ public class KoodistoAdminServiceTest {
         }
 
         assertTrue(caughtOne);
-
-        enMeta.setNimi("not empty");
-        enMeta.setKuvaus("");
-
-        try {
-            koodistoAdminService.updateKoodisto(updateData);
-        } catch (GenericFault e) {
-            assertEquals(KoodistoKuvausEmptyException.class.getCanonicalName(), e.getFaultInfo().getErrorCode());
-            throw e;
-        }
     }
 
     @Test

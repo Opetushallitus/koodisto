@@ -1,11 +1,5 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,12 +21,11 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
-
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dto.FileDto;
 import fi.vm.sade.koodisto.dto.FileFormatDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
+import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.dto.KoodistoListDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaListDto;
 import fi.vm.sade.koodisto.dto.KoodistoVersioListDto;
@@ -41,6 +34,12 @@ import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
@@ -66,7 +65,7 @@ public class CodesResourceTest {
         // assertNull(resource.listAllCodesInAllCodeGroups()); // No params
         assertNull(resource.getCodesByCodesUri(nullString));
         assertNull(resource.getCodesByCodesUriAndVersion(nullString, 0));
-        assertResponse(resource.uploadFile(null, null, nullString, nullString, nullString), 400);
+        assertResponse(resource.uploadFile(null, nullString, nullString, nullString), 400);
         assertNull(resource.download(nullString, 0, null));
         assertResponse(resource.delete(nullString, 0), 400);
         assertNull(resource.download(nullString, 0, null));
@@ -208,8 +207,7 @@ public class CodesResourceTest {
         String codesUri = "csvfileuploaduri";
         try {
             is = getClass().getClassLoader().getResourceAsStream("csv_example.csv");
-            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.csv").build();
-            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
+            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
         } finally {
             if (is != null) {
                 try {
@@ -232,8 +230,7 @@ public class CodesResourceTest {
         String codesUri = "xmlfileuploaduri";
         try {
             is = getClass().getClassLoader().getResourceAsStream("jhs_xml_example.xml");
-            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.xml").build();
-            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
+            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
         } finally {
             if (is != null) {
                 try {
@@ -256,8 +253,7 @@ public class CodesResourceTest {
         String codesUri = "xlsfileuploaduri";
         try {
             is = getClass().getClassLoader().getResourceAsStream("excel_example.xls");
-            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.xml").build();
-            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
+            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
         } finally {
             if (is != null) {
                 try {
@@ -280,8 +276,7 @@ public class CodesResourceTest {
         String codesUri = "csvfileuploaduri";
         try {
             is = getClass().getClassLoader().getResourceAsStream("csv_example.csv");
-            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.csv").build();
-            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
+            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
         } finally {
             if (is != null) {
                 try {
@@ -297,8 +292,7 @@ public class CodesResourceTest {
 
         try {
             is = getClass().getClassLoader().getResourceAsStream("csv_example.csv");
-            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.csv").build();
-            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 202);
+            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
         } finally {
             if (is != null) {
                 try {
@@ -317,8 +311,7 @@ public class CodesResourceTest {
         String codesUri = "csvfileuploaduri";
         try {
             is = new ByteArrayInputStream("Failure Of Files!".getBytes(Charset.defaultCharset()));
-            FormDataContentDisposition contentDispositionHeader = FormDataContentDisposition.name("file").fileName("test.csv").build();
-            assertResponse(resource.uploadFile(is, contentDispositionHeader, fileFormat, fileEncoding, codesUri), 500);
+            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 500);
         } finally {
             if (is != null)
                 try {
@@ -464,6 +457,47 @@ public class CodesResourceTest {
             assertResponse(resource.delete(codesUri, codesVersion), 500);
         }
 
+    }
+    
+    @Test
+    public void savesCodesWithNewName() {
+        String koodistoUri = "eisuhteitaviela1";
+        String nimi = "uusinimi";
+        int versio = 1;
+
+        KoodistoDto codesToBeSaved = resource.getCodesByCodesUriAndVersion(koodistoUri, versio);
+        assertEquals(Tila.HYVAKSYTTY, codesToBeSaved.getTila());
+        assertFalse(nimi.equals(codesToBeSaved.getMetadata().get(0).getNimi()));
+
+        codesToBeSaved.getMetadata().get(0).setNimi(nimi);
+        assertResponse(resource.save(codesToBeSaved), 200);
+
+        KoodistoDto codes = resource.getCodesByCodesUriAndVersion(koodistoUri, versio+1);
+        assertEquals(Tila.LUONNOS, codes.getTila());
+        assertEquals(nimi, codes.getMetadata().get(0).getNimi());
+    }
+    
+    @Test
+    public void savesCodesWithNewNameAndRelations() {
+        String koodistoUri = "eisuhteitaviela1";
+        String nimi = "uusinimi";
+        int versio = 1;
+
+        KoodistoDto codesToBeSaved = resource.getCodesByCodesUriAndVersion(koodistoUri, versio);
+        assertTrue(codesToBeSaved.getIncludesCodes().size() == 0);
+        assertTrue(codesToBeSaved.getWithinCodes().size() == 0);
+        assertTrue(codesToBeSaved.getLevelsWithCodes().size() == 0);
+
+        codesToBeSaved.getMetadata().get(0).setNimi(nimi);
+        codesToBeSaved.getIncludesCodes().add(new RelationCodes("eisuhteitaviela2", 1));
+        codesToBeSaved.getWithinCodes().add(new RelationCodes("eisuhteitaviela3", 1));
+        codesToBeSaved.getLevelsWithCodes().add(new RelationCodes("eisuhteitaviela4", 1));
+        assertResponse(resource.save(codesToBeSaved), 200);
+
+        KoodistoDto codes = resource.getCodesByCodesUriAndVersion(koodistoUri, versio+1);
+        assertTrue(codes.getIncludesCodes().size() == 1);
+        assertTrue(codes.getWithinCodes().size() == 1);
+        assertTrue(codes.getLevelsWithCodes().size() == 1);
     }
 
     // UTILITIES
