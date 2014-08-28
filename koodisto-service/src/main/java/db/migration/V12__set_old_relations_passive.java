@@ -5,7 +5,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +26,14 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
     private static final Logger LOGGER = LoggerFactory.getLogger(V12__set_old_relations_passive.class);
     
     private List<CodesUriVersionDto> codesUriVersions;
+    private Map<Long, String> errorMap = new HashMap<>();
     
     @Override
     public void migrate(final JdbcTemplate jdbcTemplate) throws Exception {
         LOGGER.info("Starting migration of setting old relations to passive where applicable");
         handleCodesRelations(jdbcTemplate);
         handleCodeElementsRelations(jdbcTemplate);
+        logErrors();
     }
 
     private void handleCodeElementsRelations(JdbcTemplate jdbcTemplate) {
@@ -37,7 +41,7 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
 
             @Override
             public RelationDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new RelationDto(rs.getLong("id"), rs.getLong("alakoodiversio_id"), rs.getLong("ylakoodiversio_id"));
+                return new RelationDto(rs.getLong("id"), rs.getLong("ylakoodiversio_id"), rs.getLong("alakoodiversio_id"));
             }
             
         });
@@ -57,12 +61,19 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
     }
 
 
+    private void logErrors() {
+        LOGGER.error("Script completed with " + errorMap.size() + " errors.");
+        for(Long key : errorMap.keySet()) {
+            LOGGER.error(errorMap.get(key));
+        }
+    }
+
     private void handleCodesRelations(final JdbcTemplate jdbcTemplate) {
         List<RelationDto> codesRelations = jdbcTemplate.query("SELECT * FROM koodistonsuhde ks", new RowMapper<RelationDto>() {
 
             @Override
             public RelationDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new RelationDto(rs.getLong("id"), rs.getLong("alakoodistoversio_id"), rs.getLong("ylakoodistoversio_id"));
+                return new RelationDto(rs.getLong("id"), rs.getLong("ylakoodistoversio_id"), rs.getLong("alakoodistoversio_id"));
             }
             
         });
@@ -103,6 +114,7 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
             jdbcTemplate.update("UPDATE koodinsuhde SET ylakoodistapassiivinen = ?, alakoodistapassiivinen = ? WHERE id = ?", 
                     relationDto.upperPassive, relationDto.lowerPassive, relationDto.id);
         }
+        LOGGER.info(relationsToUpdate.size() + " koodinsuhde rows was succesfully set to passive");
     }
     
     private void updateCodesRelationsToPassive(JdbcTemplate jdbcTemplate, Collection<RelationDto> relationsToUpdate) {
@@ -187,7 +199,7 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
 
                 @Override
                 public boolean apply(UriVersionDto input) {
-                    return input.equals(uriVersion.uri);
+                    return input.uri.equals(uriVersion.uri);
                 }
             });
             return isRelationActive(uriVersion, matchingVersions);
@@ -196,7 +208,7 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
         protected boolean isRelationActive(UriVersionDto uriVersion, Collection<T> matchingVersions) {
             UriVersionDto latest = getLatestVersion(uriVersion, matchingVersions);
             return !Tila.PASSIIVINEN.equals(latest.tila) 
-                    && (latest == uriVersion 
+                    && (latest.versio == uriVersion.versio 
                     || (latest.versio == uriVersion.versio + 1 && Tila.LUONNOS.equals(latest.tila)));
         }
 
@@ -234,7 +246,7 @@ public class V12__set_old_relations_passive implements SpringJdbcMigration {
                         || (Tila.LUONNOS.equals(latestCodes.tila) 
                                 && secondLatestCodes != null && secondLatestCodes.codeElementVersions.contains(latestVersion.id));
             } catch (Exception e) {
-                LOGGER.error("Error while handling status of latestVersion[id=" + latestVersion.id + ", uri=" +latestVersion.uri +"]. Reason was: " + e.getMessage());
+                errorMap.put(latestVersion.id, "Error while handling status of latestVersion[id=" + latestVersion.id + ", uri=" +latestVersion.uri +"]. Reason was: " + e.getMessage());
                 return false;
             }
         }
