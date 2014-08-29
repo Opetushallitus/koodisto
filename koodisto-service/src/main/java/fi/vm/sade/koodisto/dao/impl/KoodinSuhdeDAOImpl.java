@@ -65,7 +65,7 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
             concatenatedAlaList.add(ak.getKoodiUri() + SEPARATOR + ak.getVersio());
         }
         if (concatenatedAlaList.isEmpty()) {
-            throw new KoodiNotFoundException("Alakoodi list was empty");
+            throw new KoodiNotFoundException("error.codeelement.relation.list.empty");
         }
         Predicate concatenatedAlakoodiUriAndVersioRestriction =
                 cb.concat(alakoodiJoin.<String> get(KOODI_URI), cb.concat(SEPARATOR, alakoodiVersioJoin.<String> get(VERSIO)))
@@ -124,7 +124,7 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
             concatenatedYlaList.add(ak.getKoodiUri() + SEPARATOR + ak.getVersio());
         }
         if (concatenatedYlaList.isEmpty()) {
-            throw new IllegalArgumentException("Ylakoodi list was empty");
+            throw new KoodiNotFoundException("error.codeelement.relation.list.empty");
         }
         Predicate concatenatedAlakoodiUriAndVersioRestriction =
                 cb.concat(ylakoodiJoin.<String> get(KOODI_URI), cb.concat(SEPARATOR, ylakoodiVersioJoin.<String> get(VERSIO)))

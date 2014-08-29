@@ -13,67 +13,67 @@ import static org.junit.Assert.assertEquals;
 
 public class ValidatorUtilTest {
     
-    private final static String ERROR_MESSAGE = "error"; 
+    private final static KoodistoValidationException ERROR = new KoodistoValidationException("error"); 
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = KoodistoValidationException.class)
     public void throwsExceptionWhenGivenStringIsEmpty() {
-        ValidatorUtil.checkForBlank("", ERROR_MESSAGE);
+        ValidatorUtil.checkForBlank("", ERROR);
     }
     
     @Test    
     public void throwsExceptionWithGivenMessageWhenGivenStringIsNull() {
         try {
-            ValidatorUtil.checkForBlank(null, ERROR_MESSAGE);
-        } catch (IllegalArgumentException e) {
-            assertEquals(ERROR_MESSAGE, e.getMessage());
+            ValidatorUtil.checkForBlank(null, ERROR);
+        } catch (KoodistoValidationException e) {
+            assertEquals(ERROR.getMessage(), e.getMessage());
         }
     }
     
     @Test
     public void throwsExceptionWithGivenMessageWhenGivenStringIsEmpty() {
         try {
-            ValidatorUtil.checkForBlank("", ERROR_MESSAGE);
-        } catch (IllegalArgumentException e) {
-            assertEquals(ERROR_MESSAGE, e.getMessage());
+            ValidatorUtil.checkForBlank("", ERROR);
+        } catch (KoodistoValidationException e) {
+            assertEquals(ERROR.getMessage(), e.getMessage());
         }
     }
     
     @Test
     public void throwsExceptionWithGivenMessageWhenGivenStringHasOnlySpaces() {
         try {
-            ValidatorUtil.checkForBlank("    ", ERROR_MESSAGE);
-        } catch (IllegalArgumentException e) {
-            assertEquals(ERROR_MESSAGE, e.getMessage());
+            ValidatorUtil.checkForBlank("    ", ERROR);
+        } catch (KoodistoValidationException e) {
+            assertEquals(ERROR.getMessage(), e.getMessage());
         }
     }
     
     @Test
     public void throwsExceptionWithGivenMessageWhenObjectThatIsCheckedIsNull() {
         try {
-            ValidatorUtil.checkForNull((Tila) null, ERROR_MESSAGE);
-        } catch (IllegalArgumentException e) {
-            assertEquals(ERROR_MESSAGE, e.getMessage());
+            ValidatorUtil.checkForNull((Tila) null, ERROR);
+        } catch (KoodistoValidationException e) {
+            assertEquals(ERROR.getMessage(), e.getMessage());
         }
     }
     
     @Test(expected = KoodistoNimiEmptyException.class)
     public void throwsGivenExceptionWhenCheckingForBlank() {
-        ValidatorUtil.checkForBlank("  ", new KoodistoNimiEmptyException(ERROR_MESSAGE));
+        ValidatorUtil.checkForBlank("  ", new KoodistoNimiEmptyException(ERROR));
     }
     
     @Test(expected = KoodistoValidatorRuntimeException.class)
     public void throwsGivenExceptionWhenCheckingForNull() {
-        ValidatorUtil.checkForNull(null, new KoodistoValidatorRuntimeException(ERROR_MESSAGE));
+        ValidatorUtil.checkForNull(null, new KoodistoValidatorRuntimeException(ERROR));
     }
     
     @Test(expected = MetadataEmptyException.class)
     public void throwsExceptionWithNullCollection() {
-        ValidatorUtil.checkCollectionIsNotNullOrEmpty(null, new MetadataEmptyException(ERROR_MESSAGE));
+        ValidatorUtil.checkCollectionIsNotNullOrEmpty(null, new MetadataEmptyException(ERROR));
     }
     
     @Test(expected = MetadataEmptyException.class)
     public void throwsExceptionWithEmptyCollection() {
-        ValidatorUtil.checkCollectionIsNotNullOrEmpty(new ArrayList<String>(), new MetadataEmptyException(ERROR_MESSAGE));
+        ValidatorUtil.checkCollectionIsNotNullOrEmpty(new ArrayList<String>(), new MetadataEmptyException(ERROR));
     }
     
     @Test(expected = IllegalArgumentException.class)

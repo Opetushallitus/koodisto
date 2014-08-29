@@ -67,7 +67,7 @@ public class DownloadBusinessServiceImpl implements DownloadBusinessService {
                     returnValue = koodistoXlsConverter.marshal(koodiTypes, encoding);
                     break;
                 default:
-                    throw new KoodistoExportException("Unknown koodisto export format!");
+                    throw new KoodistoExportException("error.codes.exporting.unknown.format");
             }
 
             return returnValue;

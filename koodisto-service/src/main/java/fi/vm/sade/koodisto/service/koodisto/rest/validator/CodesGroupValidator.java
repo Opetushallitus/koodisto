@@ -2,45 +2,56 @@ package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.Validatable.ValidationType;
 
 public class CodesGroupValidator implements RestValidator<KoodistoRyhmaDto> {
 
     @Override
+    public void validate(KoodistoRyhmaDto validatable, ValidationType type) {
+        if (type == ValidationType.INSERT) {
+            validateInsert(validatable);
+        } else {
+            validateUpdate(validatable);
+        }
+    }
+
+    @Override
     public void validateInsert(KoodistoRyhmaDto validatable) {
-        ValidatorUtil.checkForNull(validatable, "No " + KoodistoRyhmaDto.class.getSimpleName() + " given while inserting codesgroup");
-        checkMetadatas(validatable.getKoodistoRyhmaMetadatas());
+        try {
+            ValidatorUtil.checkForNull(validatable, new KoodistoValidationException("error.validation.codesgroup"));
+            checkMetadatas(validatable.getKoodistoRyhmaMetadatas());
+        } catch (Exception e) {
+            throw new KoodistoValidationException(e.getMessage(), e);
+        }
     }
 
     @Override
     public void validateUpdate(KoodistoRyhmaDto validatable) {
-        ValidatorUtil.checkForNull(validatable, "No " + KoodistoRyhmaDto.class.getSimpleName() + " given while updating codesgroup");
-        ValidatorUtil.checkForBlank(validatable.getKoodistoRyhmaUri(), new KoodistoRyhmaUriEmptyException("codesgroup.uri.is.empty"));
+        try {
+            ValidatorUtil.checkForNull(validatable, new KoodistoValidationException("error.validation.codesgroup"));
+            ValidatorUtil.checkForBlank(validatable.getKoodistoRyhmaUri(), new KoodistoRyhmaUriEmptyException());
+        } catch (Exception e) {
+            throw new KoodistoValidationException(e.getMessage(), e);
+        }
     }
 
-    @Override
-    public void validateDelete(String uri, Integer version) {
-        ValidatorUtil.checkForGreaterThan(version, 0, new IllegalArgumentException("Invalid parameter for deleting codesgroup, id: " + version));
-    }
-
-    @Override
-    public void validateGet(String uri) {
-        ValidatorUtil.checkForGreaterThan(Integer.valueOf(uri), 0, new IllegalArgumentException("Invalid parameter for fetching codesgroup, id: " + uri));
-    }
-    
     private void checkRequiredMetadataFields(Collection<KoodistoRyhmaMetadata> metadatas) {
         for (KoodistoRyhmaMetadata md : metadatas) {
-            ValidatorUtil.checkForNull(md.getKieli(), "No language defined for metadata");
-            ValidatorUtil.checkForBlank(md.getNimi(), new KoodistoRyhmaNimiEmptyException("No koodistoryhma nimi defined for language " + md.getKieli().name()));
+            ValidatorUtil.checkForNull(md.getKieli(), new KoodistoValidationException("error.validation.metadata"));
+            ValidatorUtil.checkForBlank(md.getNimi(), new KoodistoRyhmaNimiEmptyException());
         }
     }
 
     private void checkMetadatas(Collection<KoodistoRyhmaMetadata> metadatas) {
-        ValidatorUtil.checkCollectionIsNotNullOrEmpty(metadatas, new MetadataEmptyException("codes.metadata.is.empty"));
+        ValidatorUtil.checkCollectionIsNotNullOrEmpty(metadatas, new MetadataEmptyException());
         checkRequiredMetadataFields(metadatas);
     }
 

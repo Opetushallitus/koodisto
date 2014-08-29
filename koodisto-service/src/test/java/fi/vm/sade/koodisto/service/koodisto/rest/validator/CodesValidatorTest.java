@@ -9,11 +9,6 @@ import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.Tila;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoKuvausEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoUriEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoVersionNumberEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 
 public class CodesValidatorTest {
     
@@ -21,19 +16,19 @@ public class CodesValidatorTest {
     
     public static class ValidatingInsert {
         
-        @Test(expected = IllegalArgumentException.class)
+        @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowNullKoodistoDtoWhenCreatingCodes() {
             validator.validateInsert(null);
         }
         
-        @Test(expected = IllegalArgumentException.class)
+        @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodesWithoutCodesGroupUri() {
             KoodistoDto dto = new KoodistoDto();
             dto.setCodesGroupUri("");
             validator.validateInsert(dto); 
         }
         
-        @Test(expected = IllegalArgumentException.class)
+        @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodesWithoutTila() {
             KoodistoDto dto = new KoodistoDto();
             dto.setCodesGroupUri("group");
@@ -41,7 +36,7 @@ public class CodesValidatorTest {
             validator.validateInsert(dto); 
         }
         
-        @Test(expected = IllegalArgumentException.class)
+        @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodesWithoutOrganization() {
             KoodistoDto dto = new KoodistoDto();
             dto.setCodesGroupUri("group");
@@ -51,13 +46,13 @@ public class CodesValidatorTest {
             validator.validateInsert(dto);
         }
         
-        @Test(expected = MetadataEmptyException.class)
+        @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodesWithoutMetadata() {
             KoodistoDto dto = givenKoodistoDtoWithBasicFields();
             validator.validateInsert(dto); 
         }
         
-        @Test(expected = IllegalArgumentException.class)
+        @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodesWithoutLanguageDefinedForMetadata() {
             KoodistoDto dto = givenKoodistoDtoWithBasicFields();
             KoodistoMetadata data = new KoodistoMetadata();
@@ -65,7 +60,7 @@ public class CodesValidatorTest {
             validator.validateInsert(dto); 
         }
         
-        @Test(expected = KoodistoNimiEmptyException.class)
+        @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodesWithoutName() {
             KoodistoDto dto = givenKoodistoDtoWithBasicFields();
             KoodistoMetadata data = new KoodistoMetadata();
@@ -75,17 +70,7 @@ public class CodesValidatorTest {
             validator.validateInsert(dto); 
         }
         
-        @Test(expected = KoodistoKuvausEmptyException.class)
-        public void doesNotAllowCreatingCodesWithoutDescription() {
-            KoodistoDto dto = givenKoodistoDtoWithBasicFields();
-            KoodistoMetadata data = new KoodistoMetadata();
-            data.setNimi("name");
-            data.setKuvaus(" ");
-            data.setKieli(Kieli.FI);
-            dto.setMetadata(Arrays.asList(data));
-            validator.validateInsert(dto); 
-        }
-        
+       
         @Test
         public void passessWithAllDataGiven() {
             KoodistoDto dto = givenKoodistoDtoWithBasicFields();
@@ -99,24 +84,24 @@ public class CodesValidatorTest {
     
     public static class ValidatingUpdate {
         
-        @Test(expected = IllegalArgumentException.class)
+        @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowNullKoodistoDtoWhenUpdating() {
             validator.validateUpdate(null);
         }
         
-        @Test(expected = KoodistoUriEmptyException.class)
+        @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowUpdatingCodesWithoutCodesUri() {
             KoodistoDto dto = new KoodistoDto();
             validator.validateUpdate(dto); 
         }
         
-        @Test(expected = MetadataEmptyException.class)
+        @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowUpdatingCodesWithoutMetadata() {
             KoodistoDto dto = givenKoodistoDtoWithBasicFields();
             validator.validateUpdate(dto); 
         }
         
-        @Test(expected = IllegalArgumentException.class)
+        @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowUpdatingCodesWithoutLanguageDefinedForMetadata() {
             KoodistoDto dto = givenKoodistoDtoWithBasicFields();
             KoodistoMetadata data = new KoodistoMetadata();
@@ -124,22 +109,11 @@ public class CodesValidatorTest {
             validator.validateUpdate(dto); 
         }
         
-        @Test(expected = KoodistoNimiEmptyException.class)
+        @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowUpdatingCodesWithoutName() {
             KoodistoDto dto = givenKoodistoDtoWithBasicFields();
             KoodistoMetadata data = new KoodistoMetadata();
             data.setNimi("    ");
-            data.setKieli(Kieli.FI);
-            dto.setMetadata(Arrays.asList(data));
-            validator.validateUpdate(dto); 
-        }
-        
-        @Test(expected = KoodistoKuvausEmptyException.class)
-        public void doesNotAllowUpdatingCodesWithoutDescription() {
-            KoodistoDto dto = givenKoodistoDtoWithBasicFields();
-            KoodistoMetadata data = new KoodistoMetadata();
-            data.setNimi("name");
-            data.setKuvaus(" ");
             data.setKieli(Kieli.FI);
             dto.setMetadata(Arrays.asList(data));
             validator.validateUpdate(dto); 
@@ -152,38 +126,7 @@ public class CodesValidatorTest {
             validator.validateUpdate(dto);
         }
     }
-    
-    public static class ValidatingDelete {
-        
-        @Test(expected = KoodistoUriEmptyException.class)
-        public void doesNotAllowEmptyCodesUriWhenDeleting() {
-            validator.validateDelete("", 1);
-        }
-        
-        @Test(expected = KoodistoVersionNumberEmptyException.class)
-        public void doesNotAllowNullVersionWhenDeleting() {
-            validator.validateDelete("uri", null);
-        }
-        
-        @Test
-        public void passesWithAllDataGiven() {
-            validator.validateDelete("uri", 1);
-        }
-    }
-    
-    public static class ValidatingGet {
-        
-        @Test(expected = KoodistoUriEmptyException.class)
-        public void doesNotAllowEmptyCodesUriWhenFetching() {
-            validator.validateGet("");
-        }
-        
-        @Test
-        public void passesWithAllDataGiven() {
-            validator.validateGet("uri");
-        }
-    }
-   
+       
     private static KoodistoDto givenKoodistoDtoWithBasicFields() {
         KoodistoDto dto = new KoodistoDto();
         dto.setCodesGroupUri("group");
