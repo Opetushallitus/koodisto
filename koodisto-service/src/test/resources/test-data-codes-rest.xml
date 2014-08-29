@@ -5,7 +5,7 @@
   <koodi id="99" koodisto_id="99" version="0" koodiuri="dummy"/>
   <koodiversio id="99" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="99" koodiarvo="dummy"/>
   <koodimetadata id="99" kieli="FI" nimi="Dummy" version="0" koodiversio_id="99" lyhytnimi="Dummy" kuvaus="Dummy"/>
-  <koodinsuhde id="99" alakoodiversio_id="99" ylakoodiversio_id="99" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="99" alakoodiversio_id="99" ylakoodiversio_id="99" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
   <koodistoversio id="99" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="99" voimassaalkupvm="2012-11-20"/>
   <koodistometadata id="99" kieli="FI" nimi="Dummy" version="0" koodistoversio_id="99" kuvaus="Dummy"/>
   <koodistoversio_koodiversio id="99" version="0" koodistoversio_id="99" koodiversio_id="99"/>
@@ -68,7 +68,7 @@
   <koodistometadata id="17" kieli="FI" nimi="Update koodistoryhmä testi" version="0" koodistoversio_id="17" kuvaus="Tämä testaa täyden koodistoryhmän päivittämistä"/>
   <koodistometadata id="18" kieli="FI" nimi="Koodistoryhmään lisättävä koodi" version="0" koodistoversio_id="18" kuvaus="Lisätään koodiryhmään urin ja organisaation perusteella"/>
   
-  <koodistonsuhde id="1" alakoodistoversio_id="6" ylakoodistoversio_id="5" versio="1" suhteentyyppi="SISALTYY" version="0"/>
+  <koodistonsuhde id="1" alakoodistoversio_id="6" ylakoodistoversio_id="5" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
   
   <koodistoryhma id="1" koodistoryhmauri="relaatioidenlisaaminen" version="0"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="1"/>
