@@ -14,15 +14,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
@@ -255,6 +258,25 @@ public class KoodistoBusinessServiceTest {
         assertEquals(nimi, result.getMetadatas().get(0).getNimi());
         assertEquals(kuvaus, result.getMetadatas().get(0).getKuvaus());
     }
+	
+	 @Transactional
+	 @Test
+	 public void setsOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsAccepted() throws Exception {
+	     UpdateKoodistoDataType dataType = DataUtils.convert(koodistoBusinessService.getLatestKoodistoVersio("vanhasuhdepassivoidaan"));
+	     dataType.setTila(TilaType.HYVAKSYTTY);
+	     koodistoBusinessService.updateKoodisto(dataType);
+	     KoodistoVersio kv = koodistoBusinessService.getKoodistoVersio("vanhasuhdepassivoidaan", 1);
+	     for(KoodistonSuhde ks : kv.getAlakoodistos()) {
+	         assertTrue(ks.isPassive());
+	         assertTrue(ks.isYlaKoodistoPassive());
+	         assertFalse(ks.isAlaKoodistoPassive());
+	     }
+	     for (KoodinSuhde ks : koodiBusinessService.getKoodiVersio("vanhasuhdepassivoidaan", 1).getAlakoodis()) {
+	         assertTrue(ks.isPassive());
+	         assertTrue(ks.isYlaKoodiPassive());
+	         assertFalse(ks.isAlaKoodiPassive());
+	     }
+	 }
 
     private KoodistoDto createKoodistoDto(String koodistoUri, int versio, Tila tila, Kieli kieli, String kuvaus, String nimi, List<RelationCodes> includesCodes, List<RelationCodes> withinCodes, List<RelationCodes> levelsWithCodes) {
         KoodistoDto d = new KoodistoDto();

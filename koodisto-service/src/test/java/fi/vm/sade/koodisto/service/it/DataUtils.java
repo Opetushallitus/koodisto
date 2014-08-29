@@ -1,11 +1,24 @@
 package fi.vm.sade.koodisto.service.it;
 
-import fi.vm.sade.generic.common.DateHelper;
-import fi.vm.sade.koodisto.service.types.*;
-import fi.vm.sade.koodisto.service.types.common.*;
-
 import java.util.Calendar;
 import java.util.Date;
+
+import fi.vm.sade.generic.common.DateHelper;
+import fi.vm.sade.koodisto.model.Koodisto;
+import fi.vm.sade.koodisto.model.KoodistoMetadata;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.service.impl.conversion.koodisto.KoodistoMetadataToKoodistoMetadataTypeConverter;
+import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
+import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodiTilaType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.common.KieliType;
+import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
+import fi.vm.sade.koodisto.service.types.common.KoodiType;
+import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
+import fi.vm.sade.koodisto.service.types.common.KoodistoType;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
 
 public final class DataUtils {
 
@@ -112,6 +125,23 @@ public final class DataUtils {
         koodiDataType.setLockingVersion(version);
 
         return koodiDataType;
+    }
+    
+    public static UpdateKoodistoDataType convert(KoodistoVersio from) {
+        UpdateKoodistoDataType to = new UpdateKoodistoDataType();
+        Koodisto koodisto = from.getKoodisto();
+        to.setKoodistoUri(koodisto.getKoodistoUri());
+        to.setLukittu(koodisto.getLukittu());
+        to.setOmistaja(koodisto.getOmistaja());
+        to.setOrganisaatioOid(koodisto.getOrganisaatioOid());
+        to.setVoimassaAlkuPvm(DateHelper.DateToXmlCal(from.getVoimassaAlkuPvm()));
+        if (from.getVoimassaLoppuPvm() != null) to.setVoimassaLoppuPvm(DateHelper.DateToXmlCal(from.getVoimassaLoppuPvm()));
+        KoodistoMetadataToKoodistoMetadataTypeConverter converter = new KoodistoMetadataToKoodistoMetadataTypeConverter();
+        for (KoodistoMetadata metaData : from.getMetadatas()) {
+            to.getMetadataList().add(converter.convert(metaData));
+        }
+        to.setVersio(from.getVersio());
+        return to;
     }
 
     public static void copyFields(KoodistoType from, UpdateKoodistoDataType to) {

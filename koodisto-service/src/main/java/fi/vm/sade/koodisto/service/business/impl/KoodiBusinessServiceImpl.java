@@ -597,10 +597,19 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         // Update the version itself by copying all the fields
         EntityUtils.copyFields(updateKoodiData, latest);
-
+        
         // Set update date
         latest.setPaivitysPvm(new Date());
         return latest;
+    }
+
+    private void setRelationsInPreviousVersionToPassive(KoodiVersio previous) {
+        for (KoodinSuhde ks : previous.getAlakoodis()) {
+            ks.setYlaKoodiPassive(true);
+        }
+        for (KoodinSuhde ks : previous.getYlakoodis()) {
+            ks.setAlaKoodiPassive(true);
+        }
     }
 
     private KoodiVersio createNewVersion(UpdateKoodiDataType updateKoodiData, KoodistoVersio newKoodistoVersio) {
@@ -713,6 +722,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             KoodiVersio previousVersion = koodiVersioDAO.getPreviousKoodiVersio(latest.getKoodi().getKoodiUri(), latest.getVersio());
             if (previousVersion != null) {
                 previousVersion.setVoimassaLoppuPvm(getValidEndDateForKoodiVersio(previousVersion, latest));
+                setRelationsInPreviousVersionToPassive(previousVersion);
             }
             latest.setTila(Tila.valueOf(tila.name()));
         }
