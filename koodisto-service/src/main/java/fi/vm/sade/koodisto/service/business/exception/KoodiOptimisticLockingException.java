@@ -6,9 +6,10 @@ public class KoodiOptimisticLockingException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodiOptimisticLockingException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.codeelement.locking";
 
     public KoodiOptimisticLockingException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public KoodiOptimisticLockingException(String message, Throwable cause) {
@@ -20,7 +21,7 @@ public class KoodiOptimisticLockingException extends SadeBusinessException {
     }
 
     public KoodiOptimisticLockingException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override
