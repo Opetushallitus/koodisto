@@ -102,16 +102,4 @@ public class KoodistonSuhdeDAOImplTest {
         return versionDAO.insert(newVersion);
     }
     
-    private KoodistoVersio givenNewKoodistoVersioAndTila(KoodistoVersio original, Tila tila) {
-        KoodistoVersio newVersion = new KoodistoVersio();
-        newVersion.setKoodisto(original.getKoodisto());
-        newVersion.setTila(tila);
-        newVersion.setVoimassaAlkuPvm(original.getVoimassaAlkuPvm());
-        newVersion.setVersio(2);
-        for ( KoodistoMetadata data : original.getMetadatas()) {
-            newVersion.addMetadata(data);
-        }
-        return versionDAO.insert(newVersion);
-    }
-
 }
