@@ -141,6 +141,7 @@ public final class DataUtils {
             to.getMetadataList().add(converter.convert(metaData));
         }
         to.setVersio(from.getVersio());
+        to.setLockingVersion(from.getVersion());
         return to;
     }
 
