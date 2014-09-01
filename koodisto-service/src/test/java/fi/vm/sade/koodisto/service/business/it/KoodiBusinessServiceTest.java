@@ -198,6 +198,13 @@ public class KoodiBusinessServiceTest {
     }
     
     @Test
+    public void doesNotCopyPassiveRelationsWhenNewVersionIsCreated() {
+        String koodiUri = "passiivisuhdeeikopioidu";
+        koodiBusinessService.createNewVersion(koodiUri);
+        assertTrue(koodiBusinessService.listByRelation(koodiUri, true, SuhteenTyyppi.SISALTYY).isEmpty());
+    }
+    
+    @Test
     public void fetchesKoodiAndInitializesKoodiVersions() {
         Koodi koodi = koodiBusinessService.getKoodi("435");
         assertNotNull(koodi);

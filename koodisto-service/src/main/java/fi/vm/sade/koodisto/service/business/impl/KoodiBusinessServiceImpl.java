@@ -694,8 +694,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void createNewKoodinSuhdeIfRelationReferencesLatestKoodiVersio(KoodinSuhde ks, KoodiVersio ala, KoodiVersio yla, boolean checkUpperCode) {
+        //TODO: Only need to check for isPassive() in future. Once KH-219 and KH-214 have been done
         KoodiVersio toCheck = checkUpperCode ? yla : ala;
-        if (!koodiVersioDAO.isLatestKoodiVersio(toCheck.getKoodi().getKoodiUri(), toCheck.getVersio())) {
+        if (ks.isPassive() || !koodiVersioDAO.isLatestKoodiVersio(toCheck.getKoodi().getKoodiUri(), toCheck.getVersio())) {
             return;
         }
         KoodinSuhde newSuhde = new KoodinSuhde();
