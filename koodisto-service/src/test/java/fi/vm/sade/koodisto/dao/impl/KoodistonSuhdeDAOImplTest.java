@@ -1,8 +1,5 @@
 package fi.vm.sade.koodisto.dao.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -25,6 +22,9 @@ import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
@@ -72,6 +72,16 @@ public class KoodistonSuhdeDAOImplTest {
         assertEquals(new Integer(2), newVersion.getAlakoodistos().iterator().next().getAlakoodistoVersio().getVersio());
         assertEquals(new Integer(2), newVersion.getYlakoodistos().iterator().next().getYlakoodistoVersio().getVersio());
         assertEquals(new Integer(2), newVersion.getYlakoodistos().iterator().next().getAlakoodistoVersio().getVersio());
+    }
+    
+    @Test
+    public void doesNotCopyPassiveRelations() {
+        KoodistoVersio original = versionDAO.read(Long.valueOf(911));
+        KoodistoVersio newVersion = givenNewKoodistoVersio(original);
+        suhdeDAO.copyRelations(original, newVersion);
+        newVersion = versionDAO.read(newVersion.getId());
+        assertTrue(newVersion.getAlakoodistos().isEmpty());
+        assertTrue(newVersion.getYlakoodistos().isEmpty());
     }
 
     @Test
