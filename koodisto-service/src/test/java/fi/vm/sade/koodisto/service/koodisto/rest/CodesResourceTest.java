@@ -55,20 +55,40 @@ public class CodesResourceTest {
     private KoodiBusinessService service;
 
     @Test
-    public void returns400OrNullIfQueryParamsAreMissing() {
+    public void returns400AndCorrectErrorCodeIfQueryParamsAreMissing() {
         String nullString = null;
+        String blankString = "";
         KoodistoDto nullCodesDTO = null;
+        
+        String stubString = "uri";
+        InputStream stubInputStream = IOUtils.toInputStream("stubfile");
 
-        assertResponse(resource.update(nullCodesDTO), 400);
-        assertResponse(resource.insert(nullCodesDTO), 400);
-        // assertNull(resource.listAllCodesGroups()); // No params
-        // assertNull(resource.listAllCodesInAllCodeGroups()); // No params
-        assertResponse(resource.getCodesByCodesUri(nullString), 400);
-        assertResponse(resource.getCodesByCodesUriAndVersion(nullString, 0), 400);
-        assertResponse(resource.uploadFile(null, nullString, nullString, nullString), 400);
-        assertResponse(resource.download(nullString, 0, null, nullString), 400);
-        assertResponse(resource.delete(nullString, 0), 400);
-        assertResponse(resource.download(nullString, 0, null, nullString), 400);
+        assertResponse(resource.update(nullCodesDTO), 400, "error.validation.codes");
+        
+        assertResponse(resource.insert(nullCodesDTO), 400, "error.validation.codes");
+        
+        assertResponse(resource.getCodesByCodesUri(nullString), 400, "error.validation.codesuri");
+        assertResponse(resource.getCodesByCodesUri(blankString), 400, "error.validation.codesuri");
+        
+        assertResponse(resource.getCodesByCodesUriAndVersion(nullString, 0), 400, "error.validation.codesuri");
+        assertResponse(resource.getCodesByCodesUriAndVersion(blankString, 0), 400, "error.validation.codesuri");
+        
+        assertResponse(resource.uploadFile(null, stubString, stubString, stubString), 400, "error.validation.file");
+        assertResponse(resource.uploadFile(stubInputStream, nullString, stubString, stubString), 400, "error.validation.fileformat");
+        assertResponse(resource.uploadFile(stubInputStream, blankString, stubString, stubString), 400, "error.validation.fileformat");
+        assertResponse(resource.uploadFile(stubInputStream, stubString, nullString, stubString), 400, "error.validation.fileencoding");
+        assertResponse(resource.uploadFile(stubInputStream, stubString, blankString, stubString), 400, "error.validation.fileencoding");
+        assertResponse(resource.uploadFile(stubInputStream, stubString, stubString, nullString), 400, "error.validation.codesuri");
+        assertResponse(resource.uploadFile(stubInputStream, stubString, stubString, blankString), 400, "error.validation.codesuri");
+
+        assertResponse(resource.download(nullString, 0, Format.JHS_XML, stubString), 400, "error.validation.codesuri");
+        assertResponse(resource.download(blankString, 0, Format.JHS_XML, stubString), 400, "error.validation.codesuri");
+        assertResponse(resource.download(stubString, 0, null, stubString), 400, "error.validation.fileformat");
+        assertResponse(resource.download(stubString, 0, Format.JHS_XML, nullString), 400, "error.validation.encoding");
+        assertResponse(resource.download(stubString, 0, Format.JHS_XML, blankString), 400, "error.validation.encoding");
+
+        assertResponse(resource.delete(nullString, 0), 400, "error.validation.codesuri");
+        assertResponse(resource.delete(blankString, 0), 400, "error.validation.codesuri");
     }
 
     @Test
@@ -466,6 +486,11 @@ public class CodesResourceTest {
 
     private void assertResponse(Response response, int expectedStatus) {
         assertEquals(expectedStatus, response.getStatus());
+    }
+
+    private void assertResponse(Response response, int expectedStatus, Object expectedEntity) {
+        assertResponse(response, expectedStatus);
+        assertEquals(expectedEntity, response.getEntity());
     }
 
     private String inputStreamToString(Object entity) {

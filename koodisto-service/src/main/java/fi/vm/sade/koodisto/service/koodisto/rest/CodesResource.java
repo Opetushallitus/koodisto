@@ -101,7 +101,7 @@ public class CodesResource {
             @ApiParam(value = "Linkitettävän koodiston URI") @PathParam("codesUriToAdd") String codesUriToAdd,
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType) {
         try {
-            String[] errors = { "codesUri", "codesUriToAdd", "relationType" };
+            String[] errors = { "codesuri", "codesuritoadd", "relationtype" };
             ValidatorUtil.validateArgs(errors, codesUri, codesUriToAdd, relationType);
 
             koodistoBusinessService.addRelation(codesUri, codesUriToAdd, SuhteenTyyppi.valueOf(relationType));
@@ -132,7 +132,7 @@ public class CodesResource {
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType) {
 
         try {
-            String[] errors = { "codesUri", "codesUriToRemove", "relationType" };
+            String[] errors = { "codesUri", "codesuritoremove", "relationtype" };
             ValidatorUtil.validateArgs(errors, codesUri, codesUriToRemove, relationType);
 
             koodistoBusinessService.removeRelation(codesUri, Arrays.asList(codesUriToRemove), SuhteenTyyppi.valueOf(relationType));
@@ -283,7 +283,7 @@ public class CodesResource {
     public Response getCodesByCodesUri(
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri) {
         try {
-            String[] errors = { "codesUri" };
+            String[] errors = { "codesuri" };
             ValidatorUtil.validateArgs(errors, codesUri);
             
             Koodisto koodisto = koodistoBusinessService.getKoodistoByKoodistoUri(codesUri);
@@ -312,7 +312,7 @@ public class CodesResource {
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
             @ApiParam(value = "Koodiston vesio") @PathParam("codesVersion") int codesVersion) {
         try {
-            String[] errors = { "fileFormat", "codesVersion" };
+            String[] errors = { "codesuri", "codesversion" };
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
 
             KoodistoVersio koodistoVersio = null;
@@ -348,11 +348,11 @@ public class CodesResource {
             @ApiParam(value = "Tiedoston koodaus") @FormDataParam("fileEncoding") String fileEncoding,
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri) {
         try {
-            String[] errors = { "fileInputStream", "fileFormat", "codesUri" };
+            String[] errors = { "file", "fileformat", "codesuri" };
             ValidatorUtil.validateArgs(errors, fileInputStream, fileFormat, codesUri);
-            if (StringUtils.isBlank(fileEncoding) && Format.valueOf(fileFormat) != Format.XLS) {
+            if (StringUtils.isBlank(fileEncoding) && fileFormat != "XLS") {
                 // Encoding can be empty if filetype is binary XLS
-                throw new KoodistoValidationException("error.validation.fileEncoding");
+                throw new KoodistoValidationException("error.validation.fileencoding");
             }
 
             String mime = "";
@@ -409,7 +409,7 @@ public class CodesResource {
             @ApiParam(value = "Tiedostotyyppi (JHS_XML, CSV, XLS)") @PathParam("fileFormat") Format fileFormat,
             @ApiParam(value = "Tiedoston merkistö (UTF-8, ISO-88519-1, ISO-88519-15)") @DefaultValue("UTF-8") @QueryParam("encoding") String encoding) {
         try {
-            String[] errors = { "codesUri", "codesVersion", "fileFormat", "encoding" };
+            String[] errors = { "codesuri", "codesversion", "fileformat", "encoding" };
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion, fileFormat, encoding);
             
             File file = koodistoBusinessService.downloadFile(codesUri, codesVersion, fileFormat, encoding);
@@ -457,7 +457,7 @@ public class CodesResource {
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
             @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") int codesVersion) {
         try {
-            String[] errors = { "codesUri", "codesVersion" };
+            String[] errors = { "codesuri", "codesversion" };
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
             
             koodistoBusinessService.delete(codesUri, codesVersion);
