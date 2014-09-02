@@ -1,7 +1,5 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-import static org.junit.Assert.*;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +36,12 @@ import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
@@ -493,9 +497,9 @@ public class CodesResourceTest {
         assertTrue(codesToBeSaved.getLevelsWithCodes().size() == 0);
 
         codesToBeSaved.getMetadata().get(0).setNimi(nimi);
-        codesToBeSaved.getIncludesCodes().add(new RelationCodes("eisuhteitaviela2", 1));
-        codesToBeSaved.getWithinCodes().add(new RelationCodes("eisuhteitaviela3", 1));
-        codesToBeSaved.getLevelsWithCodes().add(new RelationCodes("eisuhteitaviela4", 1));
+        codesToBeSaved.getIncludesCodes().add(new RelationCodes("eisuhteitaviela2", 1, false));
+        codesToBeSaved.getWithinCodes().add(new RelationCodes("eisuhteitaviela3", 1, false));
+        codesToBeSaved.getLevelsWithCodes().add(new RelationCodes("eisuhteitaviela4", 1, false));
         assertResponse(resource.save(codesToBeSaved), 200);
 
         KoodistoDto codes = resource.getCodesByCodesUriAndVersion(koodistoUri, versio+1);

@@ -1,14 +1,14 @@
 package fi.vm.sade.koodisto.dto;
 
-import fi.vm.sade.koodisto.model.JsonViews;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
-import fi.vm.sade.koodisto.model.Tila;
-
-import org.codehaus.jackson.map.annotate.JsonView;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.codehaus.jackson.map.annotate.JsonView;
+
+import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.model.KoodistoMetadata;
+import fi.vm.sade.koodisto.model.Tila;
 
 /**
  * User: wuoti
@@ -153,15 +153,19 @@ public class KoodistoDto extends AbstractKoodistoDto {
         public final String codesUri;
         @JsonView({JsonViews.Extended.class})
         public final Integer codesVersion;
+        @JsonView({JsonViews.Extended.class})
+        public final boolean passive;
         
         public RelationCodes() {
             this.codesUri = null;
             this.codesVersion = -1;
+            this.passive = false;
         }
 
-        public RelationCodes(String codesUri, Integer codesVersion) {
+        public RelationCodes(String codesUri, Integer codesVersion, boolean passive) {
             this.codesUri = codesUri;
             this.codesVersion = codesVersion;
+            this.passive = passive;
         }
     }
 }

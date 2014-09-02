@@ -648,9 +648,9 @@ public class CodeElementResourceTest {
         assertEquals(0, codeElementToBeSaved.getLevelsWithCodeElements().size());
 
         codeElementToBeSaved.getMetadata().get(0).setNimi(nimi);
-        codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa1", 1));
-        codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa2", 1));
-        codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa3", 1));
+        codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa1", 1, false));
+        codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa2", 1, false));
+        codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa3", 1, false));
         assertResponse(resource.save(codeElementToBeSaved), 200);
 
         ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio+1);
@@ -666,7 +666,7 @@ public class CodeElementResourceTest {
 
         ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
 
-        codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa1", 1));
+        codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa1", 1, false));
         assertResponse(resource.save(codeElementToBeSaved), 200);
 
         ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio+1);
@@ -682,7 +682,7 @@ public class CodeElementResourceTest {
 
         ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
 
-        codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa2", 1));
+        codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa2", 1, false));
         assertResponse(resource.save(codeElementToBeSaved), 200);
 
         ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio);
@@ -698,7 +698,7 @@ public class CodeElementResourceTest {
 
         ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
 
-        codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa3", 1));
+        codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("lisaarinnasteinen14kanssa3", 1, false));
         assertResponse(resource.save(codeElementToBeSaved), 200);
 
         ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio);
@@ -721,9 +721,9 @@ public class CodeElementResourceTest {
         codeElementToBeSaved.getIncludesCodeElements().clear();
         codeElementToBeSaved.getWithinCodeElements().clear();
         codeElementToBeSaved.getLevelsWithCodeElements().clear();
-        codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde1", 1));
-        codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde2", 1));
-        codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde3", 1));
+        codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde1", 1, false));
+        codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde2", 1, false));
+        codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde3", 1, false));
         assertResponse(resource.save(codeElementToBeSaved), 200);
 
         ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio+1);

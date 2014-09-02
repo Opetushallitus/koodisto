@@ -184,28 +184,35 @@ public class ExtendedKoodiDto {
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
         public final List<SimpleMetadataDto> parentMetadata;
         
+        @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+        public final boolean passive;
+        
         public RelationCodeElement() {
             this.codeElementUri = null;
             this.codeElementVersion = -1;
             this.relationMetadata = null;
             this.parentMetadata = null;
             this.codeElementValue = null;
+            this.passive = false;
         }
 
-        public RelationCodeElement(String codeElementUri, Integer version) {
+        public RelationCodeElement(String codeElementUri, Integer version, boolean passive) {
             this.codeElementUri = codeElementUri;
             this.codeElementVersion = version;
             this.relationMetadata = null;
             this.parentMetadata = null;
             this.codeElementValue = null;
+            this.passive = passive;
+            
         }
         
-        public RelationCodeElement(String codeElementUri, Integer codeElementVersion, String codeElementValue, List<SimpleMetadataDto> relationMetadata, List<SimpleMetadataDto> parentMetadata) {
+        public RelationCodeElement(String codeElementUri, Integer codeElementVersion, String codeElementValue, List<SimpleMetadataDto> relationMetadata, List<SimpleMetadataDto> parentMetadata, boolean passive) {
             this.codeElementUri = codeElementUri;
             this.codeElementVersion = codeElementVersion;
             this.relationMetadata = relationMetadata;
             this.parentMetadata = parentMetadata;
             this.codeElementValue = codeElementValue;
+            this.passive = passive;
         }
     }
 
