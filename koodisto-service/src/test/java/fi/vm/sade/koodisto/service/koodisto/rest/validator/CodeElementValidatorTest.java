@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -97,6 +98,7 @@ public class CodeElementValidatorTest {
         dto.setKoodiUri("uri");
         dto.setKoodiArvo("arvo");
         dto.setTila(Tila.LUONNOS);
+        dto.setVoimassaAlkuPvm(new Date());
         return dto;
     }
 

@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -46,6 +47,13 @@ public class ValidatorUtil {
                 checkForBlank((String) object, toThrow);
             }
             i++;
+        }
+    }
+
+    public static void checkBeginDateBeforeEndDate(Date start, Date end, RuntimeException toThrow) {
+        if(start != null && end != null && end.before(start)){
+            logger.warn("Failure during date validation: " + toThrow.getMessage());
+            throw toThrow;
         }
     }
 

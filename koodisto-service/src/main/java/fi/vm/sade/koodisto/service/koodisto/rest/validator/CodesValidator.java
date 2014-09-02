@@ -2,14 +2,8 @@ package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
 import java.util.Collection;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoUriEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.Validatable.ValidationType;
 
 public class CodesValidator implements RestValidator<KoodistoDto> {
@@ -25,37 +19,31 @@ public class CodesValidator implements RestValidator<KoodistoDto> {
 
     @Override
     public void validateInsert(KoodistoDto validatable) {
-        try {
-            ValidatorUtil.checkForNull(validatable, new KoodistoValidationException("error.validation.codes"));
-            ValidatorUtil.checkForBlank(validatable.getCodesGroupUri(), new KoodistoValidationException("error.validation.codesgroup"));
-            ValidatorUtil.checkForNull(validatable.getTila(), new KoodistoValidationException("error.validation.tila"));
-            ValidatorUtil.checkForBlank(validatable.getOrganisaatioOid(), new KoodistoValidationException("error.validation.organization"));
-            checkMetadatas(validatable.getMetadata());
-        } catch (Exception e) {
-            throw new KoodistoValidationException(e.getMessage(), e);
-        }
+        ValidatorUtil.checkForNull(validatable, new KoodistoValidationException("error.validation.codes"));
+        ValidatorUtil.checkForBlank(validatable.getCodesGroupUri(), new KoodistoValidationException("error.validation.codesgroup"));
+        ValidatorUtil.checkForNull(validatable.getTila(), new KoodistoValidationException("error.validation.tila"));
+        ValidatorUtil.checkForBlank(validatable.getOrganisaatioOid(), new KoodistoValidationException("error.validation.organization"));
+        ValidatorUtil.checkForNull(validatable.getTila(), new KoodistoValidationException("error.validation.startdate"));
+        ValidatorUtil.checkBeginDateBeforeEndDate(validatable.getVoimassaAlkuPvm(), validatable.getVoimassaLoppuPvm(), new KoodistoValidationException("error.validation.enddate"));
+        checkMetadatas(validatable.getMetadata());
     }
 
     @Override
     public void validateUpdate(KoodistoDto validatable) {
-        try {
-            ValidatorUtil.checkForNull(validatable, new KoodistoValidationException("error.validation.codes"));
-            ValidatorUtil.checkForBlank(validatable.getKoodistoUri(), new KoodistoUriEmptyException());
-            checkMetadatas(validatable.getMetadata());
-        } catch (Exception e) {
-            throw new KoodistoValidationException(e.getMessage(), e);
-        }
+        ValidatorUtil.checkForNull(validatable, new KoodistoValidationException("error.validation.codes"));
+        ValidatorUtil.checkForBlank(validatable.getKoodistoUri(), new KoodistoValidationException("error.validation.codesuri"));
+        checkMetadatas(validatable.getMetadata());
     }
 
     private void checkRequiredMetadataFields(Collection<KoodistoMetadata> metadatas) {
         for (KoodistoMetadata md : metadatas) {
-            ValidatorUtil.checkForNull(md.getKieli(), new KoodistoValidationException("error.validation.metadata"));
-            ValidatorUtil.checkForBlank(md.getNimi(), new KoodistoNimiEmptyException());
+            ValidatorUtil.checkForNull(md.getKieli(), new KoodistoValidationException("error.validation.language"));
+            ValidatorUtil.checkForBlank(md.getNimi(), new KoodistoValidationException("error.validation.name"));
         }
     }
 
     private void checkMetadatas(Collection<KoodistoMetadata> metadatas) {
-        ValidatorUtil.checkCollectionIsNotNullOrEmpty(metadatas, new MetadataEmptyException());
+        ValidatorUtil.checkCollectionIsNotNullOrEmpty(metadatas, new KoodistoValidationException("error.validation.metadata"));
         checkRequiredMetadataFields(metadatas);
     }
 

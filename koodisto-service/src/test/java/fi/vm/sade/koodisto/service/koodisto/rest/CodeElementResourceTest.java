@@ -333,33 +333,33 @@ public class CodeElementResourceTest {
     @Test
     public void testInsertInvalid() {
         KoodiDto validDto = createValidCodeElementDto("newdtouri", "Name", 3);
-        assertResponse(resource.insert(null, validDto), 400);
-        assertResponse(resource.insert("", validDto), 400);
+        assertResponse(resource.insert(null, validDto), 400, "error.validation.codesuri");
+        assertResponse(resource.insert("", validDto), 400, "error.validation.codesuri");
         assertResponse(resource.insert("totallyInvalidKoodistoUri", validDto), 500, "error.codes.not.found");
 
-        assertResponse(resource.insert("lisaasisaltyy3", null), 400);
-        assertResponse(resource.insert("lisaasisaltyy3", new KoodiDto()), 400);
+        assertResponse(resource.insert("lisaasisaltyy3", null), 400, "error.validation.codeelement");
+        assertResponse(resource.insert("lisaasisaltyy3", new KoodiDto()), 400, "error.validation.value");
 
         KoodiDto invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
         invalidDto.setKoodiArvo("");
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 500);
+        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400, "error.validation.value");
 
         invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
         invalidDto.setKoodiArvo(null);
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 500);
+        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400, "error.validation.value");
 
         invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
         invalidDto.setMetadata(null);
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400);
+        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400, "error.validation.metadata");
 
         invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
         ArrayList<KoodiMetadata> metadatas = new ArrayList<KoodiMetadata>();
         invalidDto.setMetadata(metadatas);
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400);
+        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400, "error.validation.metadata");
 
         invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
         invalidDto.setVoimassaLoppuPvm(new Date(0L));
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 500);
+        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400, "error.validation.enddate");
 
         invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
         KoodiMetadata invalidMd = new KoodiMetadata();

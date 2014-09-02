@@ -29,6 +29,8 @@ public class CodeElementValidator implements RestValidator<KoodiDto> {
     public void validateInsert(KoodiDto validatable) {
         ValidatorUtil.checkForNull(validatable, new KoodistoValidationException("error.validation.codeelement"));
         ValidatorUtil.checkForBlank(validatable.getKoodiArvo(), new KoodistoValidationException("error.validation.value"));
+        ValidatorUtil.checkForNull(validatable.getVoimassaAlkuPvm(), new KoodistoValidationException("error.validation.startdate"));
+        ValidatorUtil.checkBeginDateBeforeEndDate(validatable.getVoimassaAlkuPvm(), validatable.getVoimassaLoppuPvm(), new KoodistoValidationException("error.validation.enddate"));
         checkMetadatas(validatable.getMetadata());
     }
 
@@ -40,6 +42,7 @@ public class CodeElementValidator implements RestValidator<KoodiDto> {
         ValidatorUtil.checkForBlank(validatable.getKoodiArvo(), new KoodistoValidationException("error.validation.value"));
         ValidatorUtil.checkForNull(validatable.getVersio(), new KoodistoValidationException("error.validation.versio"));
         ValidatorUtil.checkForNull(validatable.getTila(), new KoodistoValidationException("error.validation.status"));
+        ValidatorUtil.checkBeginDateBeforeEndDate(validatable.getVoimassaAlkuPvm(), validatable.getVoimassaLoppuPvm(), new KoodistoValidationException("error.validation.enddate"));
 
         checkMetadatas(validatable.getMetadata());
     }
