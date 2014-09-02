@@ -6,14 +6,14 @@ import java.util.List;
 
 import org.junit.Test;
 
-import fi.vm.sade.koodisto.dto.KoodiDto;
+import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.Tila;
 
-public class CodeElementValidatorTest {
+public class ExtendedCodeElementValidatorTest {
 
-    private static CodeElementValidator validator = new CodeElementValidator();
+    private static ExtendedCodeElementValidator validator = new ExtendedCodeElementValidator();
 
     public static class ValidatingInsert {
 
@@ -24,96 +24,58 @@ public class CodeElementValidatorTest {
 
         @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodeElementWithoutMetadata() {
-            KoodiDto dto = new KoodiDto();
+            ExtendedKoodiDto dto = new ExtendedKoodiDto();
             validator.validateInsert(dto);
         }
 
         @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodeElementWithoutLanguageDefinedForMetadata() {
-            KoodiDto dto = new KoodiDto();
+            ExtendedKoodiDto dto = new ExtendedKoodiDto();
             KoodiMetadata data = new KoodiMetadata();
-            dto.setMetadata(Arrays.asList(data));
-            validator.validateInsert(dto);
-        }
-
-        @Test(expected = KoodistoValidationException.class)
-        public void doesNotAllowCreatingCodeElementWithoutName() {
-            KoodiDto dto = new KoodiDto();
-            KoodiMetadata data = new KoodiMetadata();
-            data.setNimi("    ");
-            data.setKieli(Kieli.FI);
             dto.setMetadata(Arrays.asList(data));
             validator.validateInsert(dto);
         }
 
         @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodeElementWithoutValue() {
-            KoodiDto dto = givenCorrectKoodiDto();
+            ExtendedKoodiDto dto = givenCorrectExtendedKoodiDto();
             dto.setKoodiArvo("");
             validator.validateInsert(dto);
         }
 
         @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodeElementWithoutBeginDate() {
-            KoodiDto dto = givenCorrectKoodiDto();
+            ExtendedKoodiDto dto = givenCorrectExtendedKoodiDto();
             dto.setVoimassaAlkuPvm(null);
             validator.validateInsert(dto);
         }
 
         @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodeElementWithInvalidEndDate() {
-            KoodiDto dto = givenCorrectKoodiDto();
+            ExtendedKoodiDto dto = givenCorrectExtendedKoodiDto();
             dto.setVoimassaLoppuPvm(new Date(0L));
+            validator.validateInsert(dto);
+        }
+
+        @Test(expected = KoodistoValidationException.class)
+        public void doesNotAllowCreatingCodeElementWithoutName() {
+            ExtendedKoodiDto dto = new ExtendedKoodiDto();
+            KoodiMetadata data = new KoodiMetadata();
+            data.setNimi("    ");
+            data.setKieli(Kieli.FI);
+            dto.setMetadata(Arrays.asList(data));
             validator.validateInsert(dto);
         }
 
         @Test
         public void passessWithAllDataGiven() {
-            validator.validateInsert(givenCorrectKoodiDto());
+            validator.validateInsert(givenCorrectExtendedKoodiDto());
         }
 
     }
 
-    public static class ValidatingUpdate {
-
-        @Test(expected = KoodistoValidationException.class)
-        public void doesNotAllowNullKoodiDtoWhenUpdatingCodeElement() {
-            validator.validateUpdate(null);
-        }
-
-        @Test(expected = KoodistoValidationException.class)
-        public void doesNotAllowUpdatingCodeElementWithoutUri() {
-            validator.validateUpdate(new KoodiDto());
-        }
-
-        @Test(expected = KoodistoValidationException.class)
-        public void doesNotAllowUpdatingCodeElementWithoutLanguageDefinedForMetadata() {
-            KoodiDto dto = new KoodiDto();
-            dto.setKoodiUri("uri");
-            KoodiMetadata data = new KoodiMetadata();
-            dto.setMetadata(Arrays.asList(data));
-            validator.validateUpdate(dto);
-        }
-
-        @Test(expected = KoodistoValidationException.class)
-        public void doesNotAllowUpdatingCodeElementWithoutName() {
-            KoodiDto dto = new KoodiDto();
-            dto.setKoodiUri("uri");
-            KoodiMetadata data = new KoodiMetadata();
-            data.setNimi("    ");
-            data.setKieli(Kieli.FI);
-            dto.setMetadata(Arrays.asList(data));
-            validator.validateUpdate(dto);
-        }
-
-        @Test
-        public void passessWithAllDataGiven() {
-            validator.validateUpdate(givenCorrectKoodiDto());
-        }
-    }
-
-    private static KoodiDto givenCorrectKoodiDto() {
-        KoodiDto dto = new KoodiDto();
+    private static ExtendedKoodiDto givenCorrectExtendedKoodiDto() {
+        ExtendedKoodiDto dto = new ExtendedKoodiDto();
         dto.setMetadata(givenCorrectMetaData());
         dto.setKoodiUri("uri");
         dto.setKoodiArvo("arvo");

@@ -47,9 +47,8 @@ public class ExtendedCodeElementValidator implements RestValidator<ExtendedKoodi
 
     private void checkRequiredMetadataFields(Collection<KoodiMetadata> metadatas) {
         for (KoodiMetadata md : metadatas) {
-            ValidatorUtil.checkForNull(md.getKieli(), new KoodistoValidationException("error.validation.metadata"));
-            logger.warn("No koodi nimi defined for language " + md.getKieli().name());
-            ValidatorUtil.checkForBlank(md.getNimi(), new KoodiNimiEmptyException());
+            ValidatorUtil.checkForNull(md.getKieli(), new KoodistoValidationException("error.validation.kieli"));
+            ValidatorUtil.checkForBlank(md.getNimi(), new KoodistoValidationException("error.validation.nimi"));
         }
     }
 
