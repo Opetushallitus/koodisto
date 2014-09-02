@@ -13,8 +13,6 @@ import fi.vm.sade.koodisto.service.koodisto.rest.validator.Validatable.Validatio
 
 public class ExtendedCodeElementValidator implements RestValidator<ExtendedKoodiDto> {
 
-    private static final KoodistoValidationException TO_THROW = new KoodistoValidationException("error.validation.codeelement");
-
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
@@ -29,20 +27,18 @@ public class ExtendedCodeElementValidator implements RestValidator<ExtendedKoodi
     @Override
     public void validateInsert(ExtendedKoodiDto validatable) {
         try {
-            ValidatorUtil.checkForNull(validatable, TO_THROW);
+            ValidatorUtil.checkForNull(validatable, new KoodistoValidationException("error.validation.codeelement"));
 
-            ValidatorUtil.checkForNull(validatable.getIncludesCodeElements(), TO_THROW);
-            ValidatorUtil.checkForNull(validatable.getLevelsWithCodeElements(), TO_THROW);
-            ValidatorUtil.checkForNull(validatable.getWithinCodeElements(), TO_THROW);
+            ValidatorUtil.checkForNull(validatable.getIncludesCodeElements(), new KoodistoValidationException("error.validation.codeelement.relations"));
+            ValidatorUtil.checkForNull(validatable.getLevelsWithCodeElements(), new KoodistoValidationException("error.validation.codeelement.relations"));
+            ValidatorUtil.checkForNull(validatable.getWithinCodeElements(), new KoodistoValidationException("error.validation.codeelement.relations"));
 
-            ValidatorUtil.checkForBlank(validatable.getKoodiUri(), TO_THROW);
-            ValidatorUtil.checkForNull(validatable.getVoimassaAlkuPvm(), TO_THROW);
-            ValidatorUtil.checkForBlank(validatable.getKoodiArvo(), TO_THROW);
-            ValidatorUtil.checkForNull(validatable.getVersio(), TO_THROW);
-            ValidatorUtil.checkForNull(validatable.getVersion(), TO_THROW);
-            ValidatorUtil.checkForNull(validatable.getTila(), TO_THROW);
-            ValidatorUtil.checkForNull(validatable.getMetadata(), TO_THROW);
-            ValidatorUtil.checkForNull(validatable.getKoodisto(), TO_THROW);
+            ValidatorUtil.checkForBlank(validatable.getKoodiUri(), new KoodistoValidationException("error.validation.codeelementuri"));
+            ValidatorUtil.checkForNull(validatable.getVoimassaAlkuPvm(), new KoodistoValidationException("error.validation.begindate"));
+            ValidatorUtil.checkForBlank(validatable.getKoodiArvo(), new KoodistoValidationException("error.validation.value"));
+            ValidatorUtil.checkForNull(validatable.getVersio(), new KoodistoValidationException("error.validation.versio"));
+            ValidatorUtil.checkForNull(validatable.getTila(), new KoodistoValidationException("error.validation.status"));
+            ValidatorUtil.checkForNull(validatable.getMetadata(), new KoodistoValidationException("error.validation.metadata"));
 
             checkMetadatas(validatable.getMetadata());
         } catch (Exception e) {

@@ -8,6 +8,7 @@ import org.junit.Test;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
+import fi.vm.sade.koodisto.model.Tila;
 
 
 public class CodeElementValidatorTest {
@@ -94,6 +95,8 @@ public class CodeElementValidatorTest {
         KoodiDto dto = new KoodiDto();
         dto.setMetadata(givenCorrectMetaData());
         dto.setKoodiUri("uri");
+        dto.setKoodiArvo("arvo");
+        dto.setTila(Tila.LUONNOS);
         return dto;
     }
 

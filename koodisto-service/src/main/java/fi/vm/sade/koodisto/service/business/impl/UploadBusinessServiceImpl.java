@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.UploadBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoExportException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoImportException;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoCsvConverter;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXlsConverter;
