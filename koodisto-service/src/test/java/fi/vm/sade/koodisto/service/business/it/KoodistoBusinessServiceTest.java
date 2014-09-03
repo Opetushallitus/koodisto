@@ -209,12 +209,6 @@ public class KoodistoBusinessServiceTest {
         assertTrue(koodistoBusinessService.hasAnyRelation("suhde502kanssa", "suhde502kanssa"));
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY);
     }
-    
-    
-    @Test
-    public void onlyFetchesRelationsThatArePartOfTheLatestVersion() {
-        assertEquals(1, koodistoBusinessService.getLatestKoodistoVersio("vaintuoreimmatrelaatiot").getAlakoodistos().size());
-    }
 
     @Test
     public void willFetchRelationsForOlderVersions() {
