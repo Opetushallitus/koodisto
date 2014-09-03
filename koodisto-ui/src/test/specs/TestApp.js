@@ -7,7 +7,10 @@ describe("Application Test", function() {
     var Organizations, OrganizationChildrenByOid, OrganizationByOid;
     var scope;
     
-    beforeEach(module("koodisto"));
+    beforeEach(module("koodisto", function ($provide) {
+	    $provide.value('NoCacheInterceptor', {});
+    }));
+    
     beforeEach(function () {
         inject(function ($injector, $rootScope) {
             scope = $rootScope;
@@ -87,10 +90,14 @@ describe("Application Test", function() {
     });
     
     describe("Test natural ordering", function() {
-    var compile;
+    var compile, mockBackend;
     
-    beforeEach(inject(function($compile) {
+    beforeEach(inject(function($compile, $injector) {
         compile = $compile;
+        angular.mock.inject(function ($injector) {
+            mockBackend = $injector.get('$httpBackend');
+        });
+        mockBackend.whenGET(SERVICE_URL_BASE + "session/maxinactiveinterval").respond(1);
     }))
     
     createElementAndCompile = function(elementString) {

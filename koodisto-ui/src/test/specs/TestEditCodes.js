@@ -22,7 +22,8 @@ describe("Edit codes test", function() {
     $controller("CodesEditorController", {$scope: scope, CodesEditorModel : model, isModalController : false});
     angular.mock.inject(function ($injector) {
         mockBackend = $injector.get('$httpBackend');
-    });     
+    });
+    mockBackend.whenGET(SERVICE_URL_BASE + "session/maxinactiveinterval").respond(1);
     }));
     
     it("CodesEditorModel is defined and it is in scope", function() {

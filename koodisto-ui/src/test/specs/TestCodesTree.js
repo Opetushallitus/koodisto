@@ -168,7 +168,8 @@ describe("Codes Tree test", function() {
     controller = $controller("KoodistoTreeController", {$scope: scope, Treemodel : treeModel});
     angular.mock.inject(function ($injector) {
             mockBackend = $injector.get('$httpBackend');
-        })        
+        });
+    mockBackend.whenGET(SERVICE_URL_BASE + "session/maxinactiveinterval").respond(1);
     }));
     
     it("Treemodel is defined and it is in scope", function() {

@@ -425,6 +425,12 @@ app.factory('OrganizationByOid', function($resource) {
     });
 });
 
+app.factory('SessionPoll', function($resource) {
+    return $resource(SERVICE_URL_BASE + "session/maxinactiveinterval", {}, {
+        get: {method:   "GET"}
+    });
+});
+
 app.filter('naturalSort', function() {
     return function(arrInput, field, reverse) {
         var arr = arrInput.sort(function(a, b) {
@@ -487,3 +493,7 @@ app.filter('forLoop', function() {
         return input;
     };
 });
+
+app.run(["SessionPoll", function(SessionPoll) {
+    SessionPoll.get({});
+}]);
