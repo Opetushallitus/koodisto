@@ -506,7 +506,7 @@
         <div class="row-fluid">
             <div class="span9">
                 <alert ng-repeat="alert in model.alerts" type="alert.type" close="closeAlert($index)">
-                <img ng-if="alert.type == 'alert'" style="margin-right: 10px;" src="../img/alert-icon28x29.png"></img>
+                <img ng-if="alert.type == 'danger'" style="margin-right: 10px;" src="../img/alert-icon28x29.png"></img>
                 <img ng-if="alert.type == 'info'" style="margin-right: 10px;" src="../img/info-icon28x29.png"></img>
                 {{alert.msg}}
                 </alert>
