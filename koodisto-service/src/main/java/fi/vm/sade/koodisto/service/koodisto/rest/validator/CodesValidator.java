@@ -21,9 +21,8 @@ public class CodesValidator implements RestValidator<KoodistoDto> {
     public void validateInsert(KoodistoDto validatable) {
         ValidatorUtil.checkForNull(validatable, new KoodistoValidationException("error.validation.codes"));
         ValidatorUtil.checkForBlank(validatable.getCodesGroupUri(), new KoodistoValidationException("error.validation.codesgroup"));
-        ValidatorUtil.checkForNull(validatable.getTila(), new KoodistoValidationException("error.validation.tila"));
         ValidatorUtil.checkForBlank(validatable.getOrganisaatioOid(), new KoodistoValidationException("error.validation.organization"));
-        ValidatorUtil.checkForNull(validatable.getTila(), new KoodistoValidationException("error.validation.startdate"));
+        ValidatorUtil.checkForNull(validatable.getVoimassaAlkuPvm(), new KoodistoValidationException("error.validation.startdate"));
         ValidatorUtil.checkBeginDateBeforeEndDate(validatable.getVoimassaAlkuPvm(), validatable.getVoimassaLoppuPvm(), new KoodistoValidationException("error.validation.enddate"));
         checkMetadatas(validatable.getMetadata());
     }

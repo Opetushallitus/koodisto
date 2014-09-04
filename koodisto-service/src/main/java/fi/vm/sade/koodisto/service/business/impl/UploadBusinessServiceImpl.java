@@ -20,10 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.UploadBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiNimiEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoImportException;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoCsvConverter;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXlsConverter;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXmlConverter;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.ValidatorUtil;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
@@ -112,6 +115,11 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
         if (koodi.getVersio() == 0) {
             koodi.setVersio(1);
         }
+        ValidatorUtil.checkForBlank(koodi.getKoodiUri(), new KoodiUriEmptyException());
+        ValidatorUtil.checkForBlank(koodi.getKoodiArvo(), new KoodistoImportException("error.codeelement.value.empty"));
+        ValidatorUtil.checkForNull(koodi.getTila(), new KoodistoImportException("error.codeelement.status.empty"));
+        ValidatorUtil.checkCollectionIsNotNullOrEmpty(koodi.getMetadata(), new KoodistoImportException("error.metadata.empty"));
+        ValidatorUtil.checkForBlank(koodi.getMetadata().get(0).getNimi(), new KoodiNimiEmptyException());
     }
 
     private String trimKoodiArvo(String value) {

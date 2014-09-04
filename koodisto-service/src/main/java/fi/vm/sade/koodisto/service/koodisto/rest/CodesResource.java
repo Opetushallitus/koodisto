@@ -22,8 +22,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
 import org.codehaus.jackson.map.annotate.JsonView;
@@ -40,8 +38,6 @@ import com.wordnik.swagger.annotations.ApiParam;
 
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.generic.service.exception.SadeBusinessException;
-import fi.vm.sade.koodisto.dto.FileDto;
-import fi.vm.sade.koodisto.dto.FileFormatDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoListDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaListDto;
@@ -54,6 +50,7 @@ import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.DownloadService;
 import fi.vm.sade.koodisto.service.UploadService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.business.UploadBusinessService;
 import fi.vm.sade.koodisto.service.impl.stream.TemporaryFileInputStream;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.CodesValidator;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.KoodistoValidationException;
@@ -74,7 +71,7 @@ public class CodesResource {
     private KoodistoBusinessService koodistoBusinessService;
 
     @Autowired
-    private UploadService uploadService;
+    private UploadBusinessService uploadService;
 
     @Autowired
     private SadeConversionService conversionService;
@@ -350,7 +347,7 @@ public class CodesResource {
         try {
             String[] errors = { "file", "fileformat", "codesuri" };
             ValidatorUtil.validateArgs(errors, fileInputStream, fileFormat, codesUri);
-            if (StringUtils.isBlank(fileEncoding) && fileFormat != "XLS") {
+            if (StringUtils.isBlank(fileEncoding) && !fileFormat.equals("XLS")) {
                 // Encoding can be empty if filetype is binary XLS
                 throw new KoodistoValidationException("error.validation.fileencoding");
             }
