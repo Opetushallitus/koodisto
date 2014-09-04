@@ -179,8 +179,24 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
     };
 
     $scope.cancel = function() {
-        //must force refresh since relation changes don't require saving
-        $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.codesVersion).search({forceRefresh: true});
+        $scope.closeCancelConfirmModal();
+        $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.codesVersion);
+    };
+    
+    $scope.showCancelConfirmModal = function() {
+        $scope.model.cancelConfirmModal = $modal.open({
+            templateUrl : 'confirmcancel.html',
+            controller : CodesEditorController,
+            resolve : {
+                isModalController : function() {
+                    return true;
+                }
+            }
+        });
+    };
+    
+    $scope.closeCancelConfirmModal = function() {
+        $scope.model.cancelConfirmModal.close();
     };
 
     $scope.submit = function() {

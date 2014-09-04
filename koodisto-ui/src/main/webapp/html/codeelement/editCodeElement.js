@@ -227,6 +227,27 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             edited : true
         });
     };
+    
+    $scope.cancel = function() {
+        $scope.closeCancelConfirmModal();
+        $location.path("/koodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion);
+    };
+    
+    $scope.showCancelConfirmModal = function() {
+        $scope.model.cancelConfirmModal = $modal.open({
+            templateUrl : 'confirmcancel.html',
+            controller : CodeElementEditorController,
+            resolve : {
+                isModalController : function() {
+                    return true;
+                }
+            }
+        });
+    };
+    
+    $scope.closeCancelConfirmModal = function() {
+        $scope.model.cancelConfirmModal.close();
+    };
 
     $scope.submit = function() {
         $scope.persistCodes();
