@@ -265,8 +265,19 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
             Treemodel.refresh();
             $location.path("/koodisto/"+$scope.codesUri+"/"+result[0]).search({forceRefresh: true});
         }, function(error) {
-            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
-            $scope.model.alerts.push(alert);
+            if (error.data == "error.codes.has.no.codeelements") {
+                var alert = {
+                    type : 'info',
+                    msg : jQuery.i18n.prop(error.data)
+                };
+                $scope.model.alerts.push(alert);
+            } else {
+                var alert = {
+                    type : 'danger',
+                    msg : jQuery.i18n.prop(error.data)
+                };
+                $scope.model.alerts.push(alert);
+            }
         });
     };
 

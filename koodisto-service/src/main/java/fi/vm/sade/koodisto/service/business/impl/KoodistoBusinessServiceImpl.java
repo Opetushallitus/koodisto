@@ -59,6 +59,7 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoExportException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiNotUniqueException;
@@ -620,6 +621,8 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
                 for (KoodiVersio latestVersio : latestKoodis) {
                     koodiBusinessService.setKoodiTila(latestVersio, TilaType.HYVAKSYTTY);
                 }
+            } else {
+                throw new KoodistoEmptyException();
             }
             KoodistoVersio previousVersion = koodistoVersioDAO.getPreviousKoodistoVersio(latest.getKoodisto().getKoodistoUri(), latest.getVersio());
             if (previousVersion != null) {
