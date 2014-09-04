@@ -49,5 +49,10 @@ public class DtoFactory {
     public static KoodiMetadata createKoodiMetadata(String name, String shortName, String description, Kieli language) {
         return new KoodiMetadataBuilder().setKieli(language).setNimi(name).setLyhytNimi(shortName).setKuvaus(description).build();
     }
+    
+    public static KoodinSuhde createKoodinSuhde(SuhteenTyyppi tyyppi, KoodiVersio child, KoodiVersio parent, boolean parentPassive, boolean childPassive) {
+        return new KoodinSuhdeBuilder().setSuhteenTyyppi(tyyppi).setChildVersio(child).setParentVersio(parent).setParentPassive(parentPassive)
+                .setChildPassive(childPassive).build();
+    }
 
 }

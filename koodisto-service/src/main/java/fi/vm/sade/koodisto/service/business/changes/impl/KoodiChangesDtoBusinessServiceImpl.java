@@ -16,11 +16,13 @@ import com.google.common.collect.Collections2;
 
 import fi.vm.sade.koodisto.dto.KoodiChangesDto;
 import fi.vm.sade.koodisto.dto.KoodiChangesDto.MuutosTila;
+import fi.vm.sade.koodisto.dto.KoodiChangesDto.SimpleCodeElementRelation;
 import fi.vm.sade.koodisto.dto.SimpleKoodiMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.ChangesDateComparator;
@@ -70,22 +72,64 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         DatesChangedHandler dateHandler = DatesChangedHandler.setDatesHaveChanged(koodiVersio.getVoimassaAlkuPvm(), koodiVersio.getVoimassaLoppuPvm(),
                 latestKoodiVersio.getVoimassaAlkuPvm(), latestKoodiVersio.getVoimassaLoppuPvm());
         Tila tilaHasChanged = latestKoodiVersio.getTila().equals(koodiVersio.getTila()) ? null : latestKoodiVersio.getTila();
-        MuutosTila muutosTila = anyChanges(koodiVersio.getVersio(), latestKoodiVersio.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), tilaHasChanged);
-        return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, null, null, latestKoodiVersio.getPaivitysPvm(), 
-                dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, tilaHasChanged);
+        List<SimpleCodeElementRelation> addedRelations = addedRelations(koodiVersio, latestKoodiVersio);
+        MuutosTila muutosTila = anyChanges(koodiVersio.getVersio(), latestKoodiVersio.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), tilaHasChanged, addedRelations);
+        return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, addedRelations, null, null, 
+                latestKoodiVersio.getPaivitysPvm(), dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, tilaHasChanged);
     }
 
-    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleKoodiMetadataDto> changedMetas, List<SimpleKoodiMetadataDto> removedMetas, boolean anyChangesInValidThruDates, Tila tilaHasChanged) {
+    private List<SimpleCodeElementRelation> addedRelations(KoodiVersio koodiVersio, KoodiVersio latestKoodiVersio) {
+        final String koodiUri = latestKoodiVersio.getKoodi().getKoodiUri();
+        final List<KoodinSuhde> relationsFromVersio = getRelationsFromKoodiVersio(koodiVersio);
+        Collection<SimpleCodeElementRelation> relationsAdded = Collections2.transform(Collections2.filter(getRelationsFromKoodiVersio(latestKoodiVersio), new Predicate<KoodinSuhde>() {
+
+            @Override
+            public boolean apply(KoodinSuhde input) {
+                boolean missing = true;
+                String upperCodeUri = input.getYlakoodiVersio().getKoodi().getKoodiUri();
+                String lowerCodeUri = input.getAlakoodiVersio().getKoodi().getKoodiUri();
+                for (KoodinSuhde ks : relationsFromVersio) {
+                    if (lowerCodeUri.equals(ks.getAlakoodiVersio().getKoodi().getKoodiUri()) && upperCodeUri.equals(ks.getAlakoodiVersio().getKoodi().getKoodiUri())) {
+                        missing = false;
+                    }
+                }
+                return missing;
+            }
+            
+        }), new Function<KoodinSuhde, SimpleCodeElementRelation>() {
+
+            @Override
+            public SimpleCodeElementRelation apply(KoodinSuhde input) {
+                boolean isChild = koodiUri.equals(input.getYlakoodiVersio().getKoodi().getKoodiUri()) ? true : false;
+                String uri = isChild ? input.getAlakoodiVersio().getKoodi().getKoodiUri() : input.getYlakoodiVersio().getKoodi().getKoodiUri();
+                Integer versio = isChild ? input.getAlakoodiVersio().getVersio() : input.getYlakoodiVersio().getVersio();
+                return new SimpleCodeElementRelation(uri, versio, input.getSuhteenTyyppi(), isChild);
+            }
+            
+        });
+        return new ArrayList<SimpleCodeElementRelation>(relationsAdded);
+    }
+
+    private List<KoodinSuhde> getRelationsFromKoodiVersio(KoodiVersio koodiVersio) {
+        List<KoodinSuhde> allRelations = new ArrayList<>(koodiVersio.getAlakoodis());
+        allRelations.addAll(koodiVersio.getYlakoodis());
+        return allRelations;
+    }
+
+    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleKoodiMetadataDto> changedMetas, List<SimpleKoodiMetadataDto> removedMetas, boolean anyChangesInValidThruDates, Tila tilaHasChanged, List<SimpleCodeElementRelation> addedRelations) {
         if (versio.equals(latestVersio)) {
             return MuutosTila.EI_MUUTOKSIA;
         }
         if (removedMetas.size() > 0) {
             return MuutosTila.MUUTOKSIA;
         }
-        if(anyChangesInValidThruDates) {
+        if (anyChangesInValidThruDates) {
             return MuutosTila.MUUTOKSIA;
         }
-        if(tilaHasChanged != null) {
+        if (tilaHasChanged != null) {
+            return MuutosTila.MUUTOKSIA;
+        }
+        if (addedRelations.size() > 0) {
             return MuutosTila.MUUTOKSIA;
         }
         return changedMetas.size() > 0 ? MuutosTila.MUUTOKSIA : MuutosTila.EI_MUUTOKSIA;

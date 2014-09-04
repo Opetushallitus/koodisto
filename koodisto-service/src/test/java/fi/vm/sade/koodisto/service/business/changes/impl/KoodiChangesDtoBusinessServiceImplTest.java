@@ -17,15 +17,19 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fi.vm.sade.koodisto.dto.KoodiChangesDto;
 import fi.vm.sade.koodisto.dto.KoodiChangesDto.MuutosTila;
+import fi.vm.sade.koodisto.dto.KoodiChangesDto.SimpleCodeElementRelation;
 import fi.vm.sade.koodisto.dto.SimpleKoodiMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.KoodinSuhde;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessService;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
+import fi.vm.sade.koodisto.test.support.builder.KoodiVersioBuilder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -41,7 +45,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     
     private static final Date FIRST_DATE = new Date(1000), SECOND_DATE = new Date(20000000), THIRD_DATE = new Date(30000000);
     
-    private static final String KOODI_URI = "uri";
+    private static final String KOODI_URI = "elefantti";
     
     private static final String NAME = "elefantti", SHORT_NAME = "fantti", DESCRIPTION = "kärsäeläin";
     private static final String NAME_EN = "African elephant", SHORT_NAME_EN = "elephant", DESCRIPTION_EN = "trunkard";
@@ -192,8 +196,8 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     @Test
     public void returnsHasChangedIfEndDateHasBeenRemoved() {
         int versio = 5;
-        KoodiVersio latest = givenKoodiVersio(versio);
-        KoodiVersio original = givenKoodiVersioWithCustomDatesItIsInEffect(versio + 1, CURRENT_DATE, CURRENT_DATE);
+        KoodiVersio latest = givenKoodiVersio(versio + 1);
+        KoodiVersio original = givenKoodiVersioWithCustomDatesItIsInEffect(versio, CURRENT_DATE, CURRENT_DATE);
         KoodiChangesDto result = givenResult(original, latest);
         assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
         assertNull(result.voimassaLoppuPvm);
@@ -241,12 +245,31 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     }
 
     @Test
-    public void returnsHasChangedIfRelationHasBeenAdded() {
+    public void returnsHasChangedIfRelationHaveBeenAdded() {
+        Integer versio = 1;
+        Integer relationVersion = 3;
+        String koodiUri = "kirahvi";
+        KoodiVersio original = givenKoodiVersio(versio);
+        KoodiVersio latest = givenKoodiVersioWithRelations(versio + 1, givenKoodinSuhde(SuhteenTyyppi.RINNASTEINEN, null, givenKoodiVersio(relationVersion, koodiUri)));
+        KoodiChangesDto dto = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
+        assertNull(dto.passivoidutKoodinSuhteet);
+        assertNull(dto.poistetutKoodinSuhteet);
+        assertEquals(1, dto.lisatytKoodinSuhteet.size());
+        SimpleCodeElementRelation relation = dto.lisatytKoodinSuhteet.get(0);
+        assertEquals(koodiUri, relation.koodiUri);
+        assertEquals(SuhteenTyyppi.RINNASTEINEN, relation.suhteenTyyppi);
+        assertTrue(relation.lapsiKoodi);
+        assertEquals(relationVersion, relation.versio);
+    }
+    
+    @Test
+    public void returnsHasChangedIfRelationsHaveBeenRemoved() {
         
     }
     
     @Test
-    public void returnsHasChangedIfRelationsHasBeenRemoved() {
+    public void returnsHasChangedIfRelationsHaveBeenTurnedIntoPassive() {
         
     }
     
@@ -278,7 +301,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     private void assertResultIsNoChanges(KoodiChangesDto result, int versio) {
         assertEquals(KoodiChangesDto.MuutosTila.EI_MUUTOKSIA, result.muutosTila);
         assertEquals(versio, result.viimeisinVersio.intValue());
-        assertNull(result.lisatytKoodinSuhteet);
+        assertTrue(result.lisatytKoodinSuhteet.isEmpty());
         assertNull(result.poistetutKoodinSuhteet);
         assertTrue(result.muuttuneetTiedot.isEmpty());
         assertNotNull(result.viimeksiPaivitetty);
@@ -335,6 +358,10 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         return DtoFactory.createKoodiVersioWithUriAndVersioWithoutMetadatas(KOODI_URI, versio).build();        
     }
     
+    private KoodiVersio givenKoodiVersio(Integer versio, String koodiUri) {
+        return DtoFactory.createKoodiVersioWithUriAndVersioWithoutMetadatas(koodiUri, versio).build();        
+    }
+    
     private KoodiVersio givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(Integer versio, String name, String shortName, String description, Kieli language) {
         return givenKoodiVersioWithMetadata(versio, givenKoodiMetadata(name, shortName, description, language));
     }
@@ -359,5 +386,25 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     
     private KoodiVersio givenKoodiVersioWithMetaDataAndCustomDateItWasCreated(int versio, Date created, KoodiMetadata ... datas) {
         return DtoFactory.createKoodiVersioWithUriAndVersioWithoutMetadatas(KOODI_URI, versio).addMetadata(datas).setCreated(created).build();
+    }
+    
+    private KoodiVersio givenKoodiVersioWithRelations(int versio, KoodinSuhde ... relations) {
+        KoodiVersioBuilder builder = DtoFactory.createKoodiVersioWithUriAndVersioWithoutMetadatas(KOODI_URI, versio);
+        for(KoodinSuhde ks : relations){
+            if(ks.getAlakoodiVersio() == null) {
+                builder.addParentRelation(ks);
+            } else {
+                builder.addChildRelation(ks);
+            }
+        }
+        return builder.build();
+    }
+    
+    private KoodinSuhde givenKoodinSuhde(SuhteenTyyppi tyyppi, KoodiVersio parent, KoodiVersio child) {
+        return givenPassiveKoodinSuhde(tyyppi, parent, child, false, false);
+    }
+    
+    private KoodinSuhde givenPassiveKoodinSuhde(SuhteenTyyppi tyyppi, KoodiVersio parent, KoodiVersio child, boolean parentPassive, boolean childPassive) {
+        return DtoFactory.createKoodinSuhde(tyyppi, child, parent, parentPassive, childPassive);
     }
 }
