@@ -181,7 +181,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="codes in model.withinCodes | unique:'name' | orderBy:sortBy1">
+                        <tr ng-repeat="codes in model.withinCodes | filter:codes.passive | unique:'name' | orderBy:sortBy1">
                             <td class="align-center">{{codes.name}}</td>
                             <td class="align-center">{{codes.versio}}</td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromWithinCodes(codes)"></i></td>
@@ -212,7 +212,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="codes in model.includesCodes | unique:'name' | orderBy:sortBy2">
+                        <tr ng-repeat="codes in model.includesCodes | filter:codes.passive | unique:'name' | orderBy:sortBy2">
                             <td class="align-center">{{codes.name}}</td>
                             <td class="align-center">{{codes.versio}}</td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromIncludesCodes(codes)"></i></td>
@@ -243,7 +243,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="codes in model.levelsWithCodes | unique:'name' | orderBy:sortBy3">
+                        <tr ng-repeat="codes in model.levelsWithCodes | filter:codes.passive | unique:'name' | orderBy:sortBy3">
                             <td class="align-center">{{codes.name}}</td>
                             <td class="align-center">{{codes.versio}}</td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromLevelsWithCodes(codes)"></i></td>

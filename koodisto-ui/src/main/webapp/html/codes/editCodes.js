@@ -275,6 +275,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
             dt = {};
             dt.codesUri = ce.uri;
             dt.codesVersion = 1;
+            dt.passive = ce.passive ? ce.passive : false;
             result.push(dt);
         });
         return result;
