@@ -62,21 +62,29 @@ function CodesCreatorController($scope, $location, $modal, $log, $filter, CodesC
         $scope.model.alerts.splice(index, 1);
     };
 
-    $scope.cancel = function() {
-        $scope.closeCancelConfirmModal();
+    $scope.redirectCancel = function(){
         $location.path("/");
     };
 
-    $scope.showCancelConfirmModal = function() {
-        $scope.model.cancelConfirmModal = $modal.open({
-            templateUrl : 'confirmcancel.html',
-            controller : CodesCreatorController,
-            resolve : {
-                isModalController : function() {
-                    return true;
+    $scope.cancel = function() {
+        $scope.closeCancelConfirmModal();
+        $scope.redirectCancel();
+    };
+    
+    $scope.showCancelConfirmModal = function(formHasChanged) {
+        if (formHasChanged) {
+            $scope.model.cancelConfirmModal = $modal.open({
+                templateUrl : 'confirmcancel.html',
+                controller : CodesCreatorController,
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            $scope.redirectCancel();
+        }
     };
 
     $scope.closeCancelConfirmModal = function() {

@@ -27,21 +27,30 @@ function CodeElementCreatorController($scope, $location, $routeParams, $filter, 
         $scope.model.alerts.splice(index, 1);
     };
 
-    $scope.cancel = function() {
-        $scope.closeCancelConfirmModal();
+    $scope.redirectCancel = function() {
         $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.codesVersion);
     };
     
-    $scope.showCancelConfirmModal = function() {
-        $scope.model.cancelConfirmModal = $modal.open({
-            templateUrl : 'confirmcancel.html',
-            controller : CodeElementCreatorController,
-            resolve : {
-                isModalController : function() {
-                    return true;
+    $scope.cancel = function() {
+        $scope.closeCancelConfirmModal();
+        $scope.redirectCancel();
+    };
+    
+
+    $scope.showCancelConfirmModal = function(formHasChanged) {
+        if (formHasChanged) {
+            $scope.model.cancelConfirmModal = $modal.open({
+                templateUrl : 'confirmcancel.html',
+                controller : CodeElementCreatorController,
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            $scope.redirectCancel();
+        }
     };
     
     $scope.closeCancelConfirmModal = function() {
