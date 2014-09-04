@@ -32,6 +32,7 @@ import org.supercsv.prefs.CsvPreference;
 
 import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiTilaInvalidException;
 import fi.vm.sade.koodisto.service.koodisto.rest.CodesResource;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
@@ -322,7 +323,11 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         } else if (VOIMASSALOPPUPVM_COLUMN.equals(fieldName)) {
             koodi.setVoimassaLoppuPvm(parseDate(value));
         } else if (TILA_COLUMN.equals(fieldName)) {
-            koodi.setTila(TilaType.valueOf(value));
+            try {
+                koodi.setTila(TilaType.valueOf(value));
+            } catch (IllegalArgumentException e) {
+                throw new KoodiTilaInvalidException();
+            }
         }
     }
 
