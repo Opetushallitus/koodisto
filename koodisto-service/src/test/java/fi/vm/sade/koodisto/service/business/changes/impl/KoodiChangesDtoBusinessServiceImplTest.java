@@ -31,6 +31,7 @@ import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessServi
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import fi.vm.sade.koodisto.test.support.builder.KoodiVersioBuilder;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -254,7 +255,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         KoodiChangesDto dto = givenResult(original, latest);
         assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
         assertNull(dto.passivoidutKoodinSuhteet);
-        assertNull(dto.poistetutKoodinSuhteet);
+        assertTrue(dto.poistetutKoodinSuhteet.isEmpty());
         assertEquals(1, dto.lisatytKoodinSuhteet.size());
         SimpleCodeElementRelation relation = dto.lisatytKoodinSuhteet.get(0);
         assertEquals(koodiUri, relation.koodiUri);
@@ -265,7 +266,21 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     
     @Test
     public void returnsHasChangedIfRelationsHaveBeenRemoved() {
-        
+        Integer versio = 1;
+        Integer relationVersion = 3;
+        String koodiUri = "kirahvi";
+        KoodiVersio latest = givenKoodiVersio(versio + 1);
+        KoodiVersio original = givenKoodiVersioWithRelations(versio, givenKoodinSuhde(SuhteenTyyppi.SISALTYY, givenKoodiVersio(relationVersion, koodiUri), null));
+        KoodiChangesDto dto = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
+        assertNull(dto.passivoidutKoodinSuhteet);
+        assertTrue(dto.lisatytKoodinSuhteet.isEmpty());
+        assertEquals(1, dto.poistetutKoodinSuhteet.size());
+        SimpleCodeElementRelation relation = dto.poistetutKoodinSuhteet.get(0);
+        assertEquals(koodiUri, relation.koodiUri);
+        assertEquals(SuhteenTyyppi.SISALTYY, relation.suhteenTyyppi);
+        assertFalse(relation.lapsiKoodi);
+        assertEquals(relationVersion, relation.versio);
     }
     
     @Test
@@ -302,7 +317,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         assertEquals(KoodiChangesDto.MuutosTila.EI_MUUTOKSIA, result.muutosTila);
         assertEquals(versio, result.viimeisinVersio.intValue());
         assertTrue(result.lisatytKoodinSuhteet.isEmpty());
-        assertNull(result.poistetutKoodinSuhteet);
+        assertTrue(result.poistetutKoodinSuhteet.isEmpty());
         assertTrue(result.muuttuneetTiedot.isEmpty());
         assertNotNull(result.viimeksiPaivitetty);
         assertNull(result.voimassaAlkuPvm);

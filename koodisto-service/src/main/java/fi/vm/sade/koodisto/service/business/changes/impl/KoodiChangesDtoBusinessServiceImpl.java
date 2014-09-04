@@ -73,40 +73,23 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
                 latestKoodiVersio.getVoimassaAlkuPvm(), latestKoodiVersio.getVoimassaLoppuPvm());
         Tila tilaHasChanged = latestKoodiVersio.getTila().equals(koodiVersio.getTila()) ? null : latestKoodiVersio.getTila();
         List<SimpleCodeElementRelation> addedRelations = addedRelations(koodiVersio, latestKoodiVersio);
-        MuutosTila muutosTila = anyChanges(koodiVersio.getVersio(), latestKoodiVersio.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), tilaHasChanged, addedRelations);
-        return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, addedRelations, null, null, 
+        List<SimpleCodeElementRelation> removedRelations = removedRelations(koodiVersio, latestKoodiVersio);
+        MuutosTila muutosTila = anyChanges(koodiVersio.getVersio(), latestKoodiVersio.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), tilaHasChanged, addedRelations, removedRelations);
+        return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, addedRelations, removedRelations, null, 
                 latestKoodiVersio.getPaivitysPvm(), dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, tilaHasChanged);
+    }
+
+    private List<SimpleCodeElementRelation> removedRelations(KoodiVersio koodiVersio, KoodiVersio latestKoodiVersio) {
+        final String koodiUri = latestKoodiVersio.getKoodi().getKoodiUri();
+        final List<KoodinSuhde> relationsFromLatest = getRelationsFromKoodiVersio(latestKoodiVersio);
+        Collection<SimpleCodeElementRelation> removedRelations = Collections2.transform(Collections2.filter(getRelationsFromKoodiVersio(koodiVersio), new KoodinSuhdeFoundNotFound(relationsFromLatest)), new KoodinSuhdeToSimpleCodeElementRelation(koodiUri));
+        return new ArrayList<SimpleCodeElementRelation>(removedRelations);
     }
 
     private List<SimpleCodeElementRelation> addedRelations(KoodiVersio koodiVersio, KoodiVersio latestKoodiVersio) {
         final String koodiUri = latestKoodiVersio.getKoodi().getKoodiUri();
         final List<KoodinSuhde> relationsFromVersio = getRelationsFromKoodiVersio(koodiVersio);
-        Collection<SimpleCodeElementRelation> relationsAdded = Collections2.transform(Collections2.filter(getRelationsFromKoodiVersio(latestKoodiVersio), new Predicate<KoodinSuhde>() {
-
-            @Override
-            public boolean apply(KoodinSuhde input) {
-                boolean missing = true;
-                String upperCodeUri = input.getYlakoodiVersio().getKoodi().getKoodiUri();
-                String lowerCodeUri = input.getAlakoodiVersio().getKoodi().getKoodiUri();
-                for (KoodinSuhde ks : relationsFromVersio) {
-                    if (lowerCodeUri.equals(ks.getAlakoodiVersio().getKoodi().getKoodiUri()) && upperCodeUri.equals(ks.getAlakoodiVersio().getKoodi().getKoodiUri())) {
-                        missing = false;
-                    }
-                }
-                return missing;
-            }
-            
-        }), new Function<KoodinSuhde, SimpleCodeElementRelation>() {
-
-            @Override
-            public SimpleCodeElementRelation apply(KoodinSuhde input) {
-                boolean isChild = koodiUri.equals(input.getYlakoodiVersio().getKoodi().getKoodiUri()) ? true : false;
-                String uri = isChild ? input.getAlakoodiVersio().getKoodi().getKoodiUri() : input.getYlakoodiVersio().getKoodi().getKoodiUri();
-                Integer versio = isChild ? input.getAlakoodiVersio().getVersio() : input.getYlakoodiVersio().getVersio();
-                return new SimpleCodeElementRelation(uri, versio, input.getSuhteenTyyppi(), isChild);
-            }
-            
-        });
+        Collection<SimpleCodeElementRelation> relationsAdded = Collections2.transform(Collections2.filter(getRelationsFromKoodiVersio(latestKoodiVersio), new KoodinSuhdeFoundNotFound(relationsFromVersio)), new KoodinSuhdeToSimpleCodeElementRelation(koodiUri));
         return new ArrayList<SimpleCodeElementRelation>(relationsAdded);
     }
 
@@ -116,7 +99,7 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         return allRelations;
     }
 
-    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleKoodiMetadataDto> changedMetas, List<SimpleKoodiMetadataDto> removedMetas, boolean anyChangesInValidThruDates, Tila tilaHasChanged, List<SimpleCodeElementRelation> addedRelations) {
+    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleKoodiMetadataDto> changedMetas, List<SimpleKoodiMetadataDto> removedMetas, boolean anyChangesInValidThruDates, Tila tilaHasChanged, List<SimpleCodeElementRelation> addedRelations, List<SimpleCodeElementRelation> removedRelations) {
         if (versio.equals(latestVersio)) {
             return MuutosTila.EI_MUUTOKSIA;
         }
@@ -129,7 +112,7 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         if (tilaHasChanged != null) {
             return MuutosTila.MUUTOKSIA;
         }
-        if (addedRelations.size() > 0) {
+        if (addedRelations.size() > 0 || removedRelations.size() > 0) {
             return MuutosTila.MUUTOKSIA;
         }
         return changedMetas.size() > 0 ? MuutosTila.MUUTOKSIA : MuutosTila.EI_MUUTOKSIA;
@@ -190,6 +173,43 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         return null;
     }
     
+    private final class KoodinSuhdeFoundNotFound implements Predicate<KoodinSuhde> {
+        private final List<KoodinSuhde> relationsToCompare;
+
+        private KoodinSuhdeFoundNotFound(List<KoodinSuhde> relationsToCompare) {
+            this.relationsToCompare = relationsToCompare;
+        }
+
+        @Override
+        public boolean apply(KoodinSuhde input) {
+            boolean missing = true;
+            String upperCodeUri = input.getYlakoodiVersio().getKoodi().getKoodiUri();
+            String lowerCodeUri = input.getAlakoodiVersio().getKoodi().getKoodiUri();
+            for (KoodinSuhde ks : relationsToCompare) {
+                if (lowerCodeUri.equals(ks.getAlakoodiVersio().getKoodi().getKoodiUri()) && upperCodeUri.equals(ks.getAlakoodiVersio().getKoodi().getKoodiUri())) {
+                    missing = false;
+                }
+            }
+            return missing;
+        }
+    }
+
+    private class KoodinSuhdeToSimpleCodeElementRelation implements Function<KoodinSuhde, SimpleCodeElementRelation> {
+        private final String koodiUri;
+
+        private KoodinSuhdeToSimpleCodeElementRelation(String koodiUri) {
+            this.koodiUri = koodiUri;
+        }
+
+        @Override
+        public SimpleCodeElementRelation apply(KoodinSuhde input) {
+            boolean isChild = koodiUri.equals(input.getYlakoodiVersio().getKoodi().getKoodiUri()) ? true : false;
+            String uri = isChild ? input.getAlakoodiVersio().getKoodi().getKoodiUri() : input.getYlakoodiVersio().getKoodi().getKoodiUri();
+            Integer versio = isChild ? input.getAlakoodiVersio().getVersio() : input.getYlakoodiVersio().getVersio();
+            return new SimpleCodeElementRelation(uri, versio, input.getSuhteenTyyppi(), isChild);
+        }
+    }
+
     private static class DatesChangedHandler {
         
         private final Date startDateChanged;
