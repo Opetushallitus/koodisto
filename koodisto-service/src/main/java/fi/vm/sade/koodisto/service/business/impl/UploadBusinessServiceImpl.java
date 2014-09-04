@@ -20,11 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.UploadBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoExportException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiNimiEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoImportException;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoCsvConverter;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXlsConverter;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXmlConverter;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.ValidatorUtil;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
@@ -66,11 +68,11 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
                 koodis = koodistoXlsConverter.unmarshal(file, encoding);
                 break;
             default:
-                throw new KoodistoExportException("Unknown koodisto import format.");
+                throw new KoodistoImportException();
             }
 
             if (koodis == null || koodis.size() == 0) {
-                throw new KoodistoExportException("Tiedostossa ei ollut tuotavia koodeja");
+                throw new KoodistoImportException("error.codes.importing.empty.file");
             }
             List<UpdateKoodiDataType> updateDatas = new ArrayList<UpdateKoodiDataType>();
             for (KoodiType k : koodis) {
@@ -83,11 +85,11 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
             }
             koodiBusinessService.massCreate(koodistoUri, updateDatas);
         } catch (IOException e) {
-            throw new KoodistoImportException("XLS tiedosto viallinen", e);
+            throw new KoodistoImportException(e);
         } catch (InvalidKoodiCsvLineException e) {
-            throw new KoodistoImportException("CSV tiedosto viallinen", e);
+            throw new KoodistoImportException(e);
         } catch (UnmarshallingFailureException e) {
-            throw new KoodistoImportException("XML tiedosto viallinen", e);
+            throw new KoodistoImportException(e);
         }
     }
 
@@ -113,6 +115,11 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
         if (koodi.getVersio() == 0) {
             koodi.setVersio(1);
         }
+        ValidatorUtil.checkForBlank(koodi.getKoodiUri(), new KoodiUriEmptyException());
+        ValidatorUtil.checkForBlank(koodi.getKoodiArvo(), new KoodistoImportException("error.codeelement.value.empty"));
+        ValidatorUtil.checkForNull(koodi.getTila(), new KoodistoImportException("error.codeelement.status.empty"));
+        ValidatorUtil.checkCollectionIsNotNullOrEmpty(koodi.getMetadata(), new KoodistoImportException("error.metadata.empty"));
+        ValidatorUtil.checkForBlank(koodi.getMetadata().get(0).getNimi(), new KoodiNimiEmptyException());
     }
 
     private String trimKoodiArvo(String value) {

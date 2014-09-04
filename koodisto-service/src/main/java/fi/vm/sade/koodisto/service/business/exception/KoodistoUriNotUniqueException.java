@@ -12,9 +12,10 @@ public class KoodistoUriNotUniqueException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodistoUriNotUniqueException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.codes.uri.not.unique";
 
     public KoodistoUriNotUniqueException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public KoodistoUriNotUniqueException(String message, Throwable cause) {
@@ -26,7 +27,7 @@ public class KoodistoUriNotUniqueException extends SadeBusinessException {
     }
 
     public KoodistoUriNotUniqueException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

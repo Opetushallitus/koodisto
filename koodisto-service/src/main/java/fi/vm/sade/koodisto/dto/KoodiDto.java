@@ -1,14 +1,14 @@
 package fi.vm.sade.koodisto.dto;
 
-import fi.vm.sade.koodisto.model.JsonViews;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
-import fi.vm.sade.koodisto.model.Tila;
-
-import org.codehaus.jackson.map.annotate.JsonView;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.codehaus.jackson.map.annotate.JsonView;
+
+import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.model.KoodiMetadata;
+import fi.vm.sade.koodisto.model.Tila;
 
 /**
  * User: wuoti

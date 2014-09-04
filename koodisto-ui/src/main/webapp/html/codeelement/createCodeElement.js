@@ -11,7 +11,7 @@ app.factory('CodeElementCreatorModel', function($location) {
     return model;
 });
 
-function CodeElementCreatorController($scope, $location, $routeParams, $filter,  CodeElementCreatorModel, NewCodeElement) {
+function CodeElementCreatorController($scope, $location, $routeParams, $filter, $modal,  CodeElementCreatorModel, NewCodeElement, isModalController) {
     $scope.model = CodeElementCreatorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
@@ -19,14 +19,42 @@ function CodeElementCreatorController($scope, $location, $routeParams, $filter, 
     $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.at.least.one.name');
     $scope.errorMessageIfOtherInfoIsGiven = $filter('i18n')('field.required.if.other.info.is.given');
     
-    CodeElementCreatorModel.init();
-
+    if(!isModalController){
+        CodeElementCreatorModel.init();
+    }
+    
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
     };
 
+    $scope.redirectCancel = function() {
+        $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.codesVersion);
+    };
+    
     $scope.cancel = function() {
-        $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.codesVersion).search({edited: false});
+        $scope.closeCancelConfirmModal();
+        $scope.redirectCancel();
+    };
+    
+
+    $scope.showCancelConfirmModal = function(formHasChanged) {
+        if (formHasChanged) {
+            $scope.model.cancelConfirmModal = $modal.open({
+                templateUrl : 'confirmcancel.html',
+                controller : CodeElementCreatorController,
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
+                }
+            });
+        } else {
+            $scope.redirectCancel();
+        }
+    };
+    
+    $scope.closeCancelConfirmModal = function() {
+        $scope.model.cancelConfirmModal.close();
     };
 
     $scope.submit = function() {

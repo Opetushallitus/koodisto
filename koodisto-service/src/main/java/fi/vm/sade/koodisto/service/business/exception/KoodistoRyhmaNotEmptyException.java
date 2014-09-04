@@ -12,9 +12,10 @@ public class KoodistoRyhmaNotEmptyException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodistoRyhmaNotEmptyException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.codesgroup.not.empty";
 
     public KoodistoRyhmaNotEmptyException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public KoodistoRyhmaNotEmptyException(String message, Throwable cause) {
@@ -26,7 +27,7 @@ public class KoodistoRyhmaNotEmptyException extends SadeBusinessException {
     }
 
     public KoodistoRyhmaNotEmptyException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

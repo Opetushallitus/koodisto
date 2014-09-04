@@ -27,6 +27,7 @@ import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
 
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
+import fi.vm.sade.generic.service.exception.SadeBusinessException;
 import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
@@ -38,6 +39,12 @@ import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.impl.conversion.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.CodeElementRelationListValidator;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.CodeElementValidator;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.ExtendedCodeElementValidator;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.KoodistoValidationException;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.Validatable.ValidationType;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.ValidatorUtil;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 
@@ -55,9 +62,13 @@ public class CodeElementResource {
 
     @Autowired
     private KoodistoConfiguration koodistoConfiguration;
-    
+
     @Autowired
     private CodeElementResourceConverter converter;
+
+    private CodeElementValidator codesValidator = new CodeElementValidator();
+    private CodeElementRelationListValidator relationValidator = new CodeElementRelationListValidator();
+    private ExtendedCodeElementValidator extendedValidator = new ExtendedCodeElementValidator();
 
     @GET
     @Path("/{codeElementUri}")
@@ -68,11 +79,24 @@ public class CodeElementResource {
             notes = "",
             response = SimpleKoodiDto.class,
             responseContainer = "List")
-    public List<SimpleKoodiDto> getAllCodeElementVersionsByCodeElementUri(
+    public Response getAllCodeElementVersionsByCodeElementUri(
             @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri) {
-        SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(codeElementUri);
-        List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
-        return conversionService.convertAll(codeElements, SimpleKoodiDto.class);
+        try {
+            String[] errors = { "codeelementuri" };
+            ValidatorUtil.validateArgs(errors, codeElementUri);
+
+            SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(codeElementUri);
+            List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
+            return Response.status(Response.Status.OK).entity(conversionService.convertAll(codeElements, SimpleKoodiDto.class)).build();
+
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: getAllCodeElementVersionsByCodeElementUri. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Fetching codeElement versions by uri failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
+        }
     }
 
     @GET
@@ -84,16 +108,29 @@ public class CodeElementResource {
             value = "Palauttaa tietyn koodiversion",
             notes = "sisältää koodiversion koodinsuhteet",
             response = ExtendedKoodiDto.class)
-    public ExtendedKoodiDto getCodeElementByUriAndVersion(
+    public Response getCodeElementByUriAndVersion(
             @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
             @ApiParam(value = "Koodin versio") @PathParam("codeElementVersion") int codeElementVersion) {
-        SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(codeElementUri, codeElementVersion);
-        List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
+        try {
+            String[] errors = { "codeelementuri", "codeelementversion" };
+            ValidatorUtil.validateArgs(errors, codeElementUri, codeElementVersion);
+            ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException("error.validation.codeelementversion"));
 
-        if (codeElements.size() == 0) {
-            return null;
+            SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(codeElementUri, codeElementVersion);
+            List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
+
+            if (codeElements.size() == 0) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("error.codeelement.not.found").build();
+            }
+            return Response.status(Response.Status.OK).entity(conversionService.convert(codeElements.get(0), ExtendedKoodiDto.class)).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: getCodeElementByUriAndVersion. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Fetching codeElement by uri and version failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
-        return conversionService.convert(codeElements.get(0), ExtendedKoodiDto.class);
     }
 
     @GET
@@ -104,12 +141,25 @@ public class CodeElementResource {
             value = "Palauttaa koodin tietystä koodistoversiosta",
             notes = "",
             response = KoodiDto.class)
-    public KoodiDto getCodeElementByCodeElementUri(
+    public Response getCodeElementByCodeElementUri(
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
             @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") int codesVersion,
             @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri) {
-        KoodiVersioWithKoodistoItem codeElement = koodiBusinessService.getKoodiByKoodistoVersio(codesUri, codesVersion, codeElementUri);
-        return conversionService.convert(codeElement, KoodiDto.class);
+        try {
+            String[] errors = { "codesuri", "codesversion", "codeelementuri" };
+            ValidatorUtil.validateArgs(errors, codesUri, codesVersion, codeElementUri);
+            ValidatorUtil.checkForGreaterThan(codesVersion, 0, new KoodistoValidationException("error.validation.codesversion"));
+
+            KoodiVersioWithKoodistoItem codeElement = koodiBusinessService.getKoodiByKoodistoVersio(codesUri, codesVersion, codeElementUri);
+            return Response.status(Response.Status.OK).entity(conversionService.convert(codeElement, KoodiDto.class)).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: getCodeElementByCodeElementUri. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Fetching codeElement by uri failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
+        }
     }
 
     @GET
@@ -121,17 +171,30 @@ public class CodeElementResource {
             notes = "",
             response = SimpleKoodiDto.class,
             responseContainer = "List")
-    public List<SimpleKoodiDto> getAllCodeElementsByCodesUriAndVersion(
+    public Response getAllCodeElementsByCodesUriAndVersion(
             @ApiParam(value = "Koodisto URI") @PathParam("codesUri") String codesUri,
             @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") int codesVersion) {
-        List<KoodiVersioWithKoodistoItem> codeElements = null;
-        if (codesVersion == 0) {
-            // FIXME: Why return anything when version is invalid?
-            codeElements = koodiBusinessService.getKoodisByKoodisto(codesUri, false);
-        } else {
-            codeElements = koodiBusinessService.getKoodisByKoodistoVersio(codesUri, codesVersion, false);
+        try {
+            String[] errors = { "codesuri", "codesversion" };
+            ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
+            ValidatorUtil.checkForGreaterThan(codesVersion, -1, new KoodistoValidationException("error.validation.codeelementversion"));
+
+            List<KoodiVersioWithKoodistoItem> codeElements = null;
+            if (codesVersion == 0) {
+                // FIXME: Why return anything when version is invalid?
+                codeElements = koodiBusinessService.getKoodisByKoodisto(codesUri, false);
+            } else {
+                codeElements = koodiBusinessService.getKoodisByKoodistoVersio(codesUri, codesVersion, false);
+            }
+            return Response.status(Response.Status.OK).entity(conversionService.convertAll(codeElements, SimpleKoodiDto.class)).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: getAllCodeElementsByCodesUriAndVersion. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Fetching codeElement failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
-        return conversionService.convertAll(codeElements, SimpleKoodiDto.class);
     }
 
     @GET
@@ -142,17 +205,26 @@ public class CodeElementResource {
             value = "Palauttaa uusimman koodiversion",
             notes = "",
             response = KoodiDto.class)
-    public KoodiDto getLatestCodeElementVersionsByCodeElementUri(
+    public Response getLatestCodeElementVersionsByCodeElementUri(
             @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri) {
-        if (StringUtils.isBlank(codeElementUri)) {
-            return null;
+        try {
+            String[] errors = { "codeelementuri" };
+            ValidatorUtil.validateArgs(errors, codeElementUri);
+
+            SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(codeElementUri);
+            List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
+            if (codeElements.size() < 1) {
+                return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("error.codeelement.not.found").build();
+            }
+            return Response.status(Response.Status.OK).entity(conversionService.convert(codeElements.get(0), KoodiDto.class)).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: getLatestCodeElementVersionsByCodeElementUri. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Fetching codeElement by uri failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
-        SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(codeElementUri);
-        List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
-        if (codeElements.size() < 1) {
-            return null;
-        }
-        return conversionService.convert(codeElements.get(0), KoodiDto.class);
     }
 
     @POST
@@ -166,21 +238,27 @@ public class CodeElementResource {
             notes = "",
             response = Response.class)
     public Response insert(
-            @ApiParam(value = "Koodin URI") @PathParam("codesUri") String codesUri,
+            @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
             @ApiParam(value = "Koodi") KoodiDto codeelementDTO) {
-        if (StringUtils.isBlank(codesUri) || codeelementDTO == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
         try {
+            String[] errors = { "codesuri" };
+            ValidatorUtil.validateArgs(errors, codesUri);
+            codesValidator.validate(codeelementDTO, ValidationType.INSERT);
+
             KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem = koodiBusinessService.createKoodi(codesUri,
                     converter.convertFromDTOToCreateKoodiDataType(codeelementDTO));
             KoodiVersioWithKoodistoItemToKoodiDtoConverter koodiVersioWithKoodistoItemToKoodiDtoConverter = new KoodiVersioWithKoodistoItemToKoodiDtoConverter();
             koodiVersioWithKoodistoItemToKoodiDtoConverter.setKoodistoConfiguration(koodistoConfiguration);
 
-            return Response.status(Response.Status.CREATED).entity(koodiVersioWithKoodistoItemToKoodiDtoConverter.convert(koodiVersioWithKoodistoItem)).build();
+            return Response.status(Response.Status.CREATED).entity(koodiVersioWithKoodistoItemToKoodiDtoConverter.convert(koodiVersioWithKoodistoItem))
+                    .build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: insert. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {
-            logger.warn("Koodia ei saatu lisättyä. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Inserting codeElement failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
 
@@ -193,15 +271,23 @@ public class CodeElementResource {
     @ApiOperation(
             value = "Lisää relaation koodien välille",
             notes = "")
-    public void addRelation(
+    public Response addRelation(
             @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
             @ApiParam(value = "Linkitettävän koodin URI") @PathParam("codeElementUriToAdd") String codeElementUriToAdd,
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType) {
-        if (StringUtils.isNotBlank(codeElementUri)
-                && StringUtils.isNotBlank(codeElementUriToAdd)
-                && StringUtils.isNotBlank(relationType)
-                && isValidEnum(relationType)) {
+        try {
+            String[] errors = { "codeelementuri", "codeelementuritoadd", "relationtype" };
+            ValidatorUtil.validateArgs(errors, codeElementUri, codeElementUriToAdd, relationType);
+
             koodiBusinessService.addRelation(codeElementUri, Arrays.asList(codeElementUriToAdd), SuhteenTyyppi.valueOf(relationType), false);
+            return Response.status(Response.Status.OK).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: addRelation. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Adding relation to codeElement failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
 
@@ -217,17 +303,18 @@ public class CodeElementResource {
     public Response addRelations(
             @ApiParam(value = "Relaation tiedot JSON muodossa") KoodiRelaatioListaDto koodiRelaatioDto
             ) {
-        List<String> relationsToAdd = koodiRelaatioDto.getRelations();
-        if (relationsToAdd == null || relationsToAdd.isEmpty()) {
-            logger.info("Called mass add for relations without required query param (relationsToAdd)");
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
         try {
+            relationValidator.validate(koodiRelaatioDto, ValidationType.INSERT);
+
             koodiBusinessService.addRelation(koodiRelaatioDto);
             return Response.status(Response.Status.OK).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: addRelations. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {
-            logger.warn("Exception caught while trying remove relations for codeelement " + koodiRelaatioDto.getCodeElementUri(), e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Adding multiple relations to codeElement failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
 
@@ -240,17 +327,25 @@ public class CodeElementResource {
     @ApiOperation(
             value = "Poistaa koodien välisen relaation",
             notes = "")
-    public void removeRelation(
+    public Response removeRelation(
             @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
             @ApiParam(value = "Irroitettavan koodin URI") @PathParam("codeElementUriToRemove") String codeElementUriToRemove,
             @ApiParam(value = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathParam("relationType") String relationType) {
 
-        if (StringUtils.isNotBlank(codeElementUri)
-                && StringUtils.isNotBlank(codeElementUriToRemove)
-                && StringUtils.isNotBlank(relationType)
-                && isValidEnum(relationType)) {
+        try {
+            String[] errors = { "codeelementuri", "codeelementuritoremove", "relationtype" };
+            ValidatorUtil.validateArgs(errors, codeElementUri, codeElementUriToRemove, relationType);
+
             koodiBusinessService.removeRelation(codeElementUri, Arrays.asList(codeElementUriToRemove),
                     SuhteenTyyppi.valueOf(relationType), false);
+            return Response.status(Response.Status.OK).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: removeRelation. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Removing relation to codeElement failed failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
 
@@ -264,18 +359,18 @@ public class CodeElementResource {
     public Response removeRelations(
             @ApiParam(value = "Relaation tiedot JSON muodossa") KoodiRelaatioListaDto koodiRelaatioDto
             ) {
-
-        List<String> relationsToRemove = koodiRelaatioDto.getRelations();
-        if (relationsToRemove == null || relationsToRemove.isEmpty()) {
-            logger.info("Called mass remove for relations without required query param (relationsToRemove)");
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
         try {
+            relationValidator.validate(koodiRelaatioDto, ValidationType.UPDATE);
+
             koodiBusinessService.removeRelation(koodiRelaatioDto);
             return Response.status(Response.Status.OK).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: removeRelations. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {
-            logger.warn("Exception caught while trying remove relations for codeelement " + koodiRelaatioDto.getCodeElementUri(), e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Removing multiple relations form codeElement failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
 
@@ -292,16 +387,20 @@ public class CodeElementResource {
     public Response delete(
             @ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
             @ApiParam(value = "Koodin versio") @PathParam("codeElementVersion") int codeElementVersion) {
-        if (StringUtils.isBlank(codeElementUri) || codeElementVersion < 1) {
-            logger.debug("invalid parameters for code element deletion.");
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
         try {
+            String[] errors = { "codeelementuri", "codeelementversion" };
+            ValidatorUtil.validateArgs(errors, codeElementUri, codeElementVersion);
+            ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException("error.validation.codeelementversion"));
+
             koodiBusinessService.delete(codeElementUri, codeElementVersion);
             return Response.status(Response.Status.ACCEPTED).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: delete. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {
-            logger.warn("Koodia ei saatu poistettua. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Deleting the codeElement failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
 
@@ -316,22 +415,22 @@ public class CodeElementResource {
             response = Response.class)
     public Response update(
             @ApiParam(value = "Koodi") KoodiDto codeElementDTO) {
-        if (codeElementDTO == null) {
-            logger.debug("Null code element DTO.");
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
         try {
-
+            codesValidator.validate(codeElementDTO, ValidationType.UPDATE);
             KoodiVersioWithKoodistoItem koodiVersio =
                     koodiBusinessService.updateKoodi(converter.convertFromDTOToUpdateKoodiDataType(codeElementDTO));
             return Response.status(Response.Status.CREATED).entity
                     (conversionService.convert(koodiVersio, KoodiDto.class)).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: update. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {
-            logger.warn("Koodia ei saatu päivitettyä. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Updating codeElement failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
-    
+
     @PUT
     @Path("/save")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -344,28 +443,18 @@ public class CodeElementResource {
             response = Response.class)
     public Response save(
             @ApiParam(value = "Koodi") ExtendedKoodiDto koodiDTO) {
-        if (koodiDTO == null) {
-            return Response.status(Response.Status.BAD_REQUEST).build();
-
-        }
         try {
+            extendedValidator.validate(koodiDTO, ValidationType.UPDATE);
+
             KoodiVersio koodiVersio = koodiBusinessService.saveKoodi(koodiDTO);
             return Response.status(Response.Status.OK).entity(koodiVersio.getVersio()).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: save. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {
-            logger.warn("Koodia ei saatu päivitettyä. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-        }
-    }
-
-    // ////////
-    // METHODS
-
-    private boolean isValidEnum(String relationType) {
-        try {
-            SuhteenTyyppi.valueOf(relationType);
-            return true;
-        } catch (IllegalArgumentException e) {
-            return false;
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Saving codeElement failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
 }

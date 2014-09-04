@@ -12,9 +12,10 @@ public class MetadataEmptyException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = MetadataEmptyException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.metadata.empty";
 
     public MetadataEmptyException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public MetadataEmptyException(String message, Throwable cause) {
@@ -26,7 +27,7 @@ public class MetadataEmptyException extends SadeBusinessException {
     }
 
     public MetadataEmptyException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

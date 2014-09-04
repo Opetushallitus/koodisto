@@ -6,9 +6,10 @@ public class KoodiVersioHasRelationsException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodiVersioHasRelationsException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.codeelement.has.relations";
 
     public KoodiVersioHasRelationsException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public KoodiVersioHasRelationsException(String message, Throwable cause) {
@@ -20,7 +21,7 @@ public class KoodiVersioHasRelationsException extends SadeBusinessException {
     }
 
     public KoodiVersioHasRelationsException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

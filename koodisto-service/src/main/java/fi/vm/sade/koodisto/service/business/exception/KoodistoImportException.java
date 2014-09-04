@@ -10,9 +10,10 @@ import fi.vm.sade.generic.service.exception.SadeBusinessException;
 public class KoodistoImportException extends SadeBusinessException {
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodistoImportException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.codes.importing";
 
     public KoodistoImportException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public KoodistoImportException(String message, Throwable cause) {
@@ -24,7 +25,7 @@ public class KoodistoImportException extends SadeBusinessException {
     }
 
     public KoodistoImportException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

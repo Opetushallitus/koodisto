@@ -312,7 +312,7 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
         if (evt != "OK") {
             alert = {
                 type : 'danger',
-                msg : 'Koodiston ' + $scope.codesUri + ' vienti ep\u00E4onnistui. Virhe tiedoston lukemisessa: ' + evt
+                msg : 'Koodiston ' + $scope.codesUri + ' vienti ep\u00E4onnistui. Virhe tiedoston lukemisessa: ' + ($filter("i18n")(evt))
             };
         } else {
             alert = {

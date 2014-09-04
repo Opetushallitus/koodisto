@@ -57,7 +57,12 @@ app.config([ '$routeProvider', '$httpProvider', function($routeProvider, $httpPr
         templateUrl : TEMPLATE_URL_BASE + 'codesmainpage.html'
     }).when('/lisaaKoodisto', {
         controller : CodesCreatorController,
-        templateUrl : TEMPLATE_URL_BASE + 'codes/createcodes.html'
+        templateUrl : TEMPLATE_URL_BASE + 'codes/createcodes.html',
+        resolve : {
+            isModalController : function() {
+                return false;
+            }
+        }
     }).when('/muokkaaKoodisto/:codesUri/:codesVersion', {
         controller : CodesEditorController,
         templateUrl : TEMPLATE_URL_BASE + 'codes/editcodes.html',
@@ -74,7 +79,12 @@ app.config([ '$routeProvider', '$httpProvider', function($routeProvider, $httpPr
         templateUrl : TEMPLATE_URL_BASE + 'codeelement/viewcodeelement.html'
     }).when('/lisaaKoodi/:codesUri/:codesVersion', {
         controller : CodeElementCreatorController,
-        templateUrl : TEMPLATE_URL_BASE + 'codeelement/createcodeelement.html'
+        templateUrl : TEMPLATE_URL_BASE + 'codeelement/createcodeelement.html',
+        resolve : {
+            isModalController : function() {
+                return false;
+            }
+        }
     }).when('/muokkaaKoodi/:codeElementUri/:codeElementVersion', {
         controller : CodeElementEditorController,
         templateUrl : TEMPLATE_URL_BASE + 'codeelement/editcodeelement.html',

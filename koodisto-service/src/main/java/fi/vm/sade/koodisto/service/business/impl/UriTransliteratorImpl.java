@@ -79,7 +79,7 @@ public class UriTransliteratorImpl implements UriTransliterator {
         }
 
         if (meta == null) {
-            throw new MetadataEmptyException("Metadata is empty");
+            throw new MetadataEmptyException();
         }
 
         String baseKoodistoUri = transliterate(meta.getNimi());
@@ -122,7 +122,7 @@ public class UriTransliteratorImpl implements UriTransliterator {
         }
 
         if (meta == null) {
-            throw new MetadataEmptyException("Metadata is empty");
+            throw new MetadataEmptyException();
         }
 
         String baseKoodistoRyhmaUri = transliterate(meta.getNimi());
