@@ -172,7 +172,7 @@
             <label for="withincodes" class="control-label">{{'codes.editpage.withincodes' | i18n}}</label><br>
             <div class="controls">
                 <button id="withincodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codesSelector" ng-show="!codesSelector"
-                    ng-click="show('withincodes')">{{'codes.editpage.addcodes' | i18n}}</button>
+                    ng-click="show('withincodes'); form.$setDirty()">{{'codes.editpage.addcodes' | i18n}}</button>
 
             </div>
 
@@ -192,7 +192,7 @@
                         <tr ng-repeat="codes in model.withinCodes | unique:'name' | orderBy:sortBy1">
                             <td class="align-center">{{codes.name}}</td>
                             <td class="align-center">{{codes.versio}}</td>
-                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromWithinCodes(codes)"></i></td>
+                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromWithinCodes(codes); form.$setDirty()"></i></td>
                         </tr>
 
                     </tbody>
@@ -205,7 +205,7 @@
             <label for="includescodes" class="control-label">{{'codes.editpage.includescodes' | i18n}}</label><br>
             <div class="controls">
                 <button id="includescodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codesSelector"
-                    ng-show="!codesSelector" ng-click="show('includescodes')">{{'codes.editpage.addcodes' | i18n}}</button>
+                    ng-show="!codesSelector" ng-click="show('includescodes'); form.$setDirty()">{{'codes.editpage.addcodes' | i18n}}</button>
             </div>
         </div>
 
@@ -223,7 +223,7 @@
                         <tr ng-repeat="codes in model.includesCodes | unique:'name' | orderBy:sortBy2">
                             <td class="align-center">{{codes.name}}</td>
                             <td class="align-center">{{codes.versio}}</td>
-                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromIncludesCodes(codes)"></i></td>
+                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromIncludesCodes(codes); form.$setDirty()"></i></td>
                         </tr>
 
                     </tbody>
@@ -236,7 +236,7 @@
             <label for="levelswithcodes" class="control-label">{{'codes.editpage.levelswithcodes' | i18n}}</label><br>
             <div class="controls">
                 <button id="levelswithcodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codesSelector"
-                    ng-show="!codesSelector" ng-click="show('levelswithcodes')">{{'codes.editpage.addcodes' | i18n}}</button>
+                    ng-show="!codesSelector" ng-click="show('levelswithcodes'); form.$setDirty()">{{'codes.editpage.addcodes' | i18n}}</button>
             </div>
         </div>
 
@@ -254,7 +254,7 @@
                         <tr ng-repeat="codes in model.levelsWithCodes | unique:'name' | orderBy:sortBy3">
                             <td class="align-center">{{codes.name}}</td>
                             <td class="align-center">{{codes.versio}}</td>
-                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromLevelsWithCodes(codes)"></i></td>
+                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromLevelsWithCodes(codes); form.$setDirty()"></i></td>
                         </tr>
 
                     </tbody>

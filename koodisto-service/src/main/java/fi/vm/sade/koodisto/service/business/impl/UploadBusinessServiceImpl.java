@@ -117,7 +117,6 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
         }
         ValidatorUtil.checkForBlank(koodi.getKoodiUri(), new KoodiUriEmptyException());
         ValidatorUtil.checkForBlank(koodi.getKoodiArvo(), new KoodistoImportException("error.codeelement.value.empty"));
-        ValidatorUtil.checkForNull(koodi.getTila(), new KoodistoImportException("error.codeelement.status.empty"));
         ValidatorUtil.checkCollectionIsNotNullOrEmpty(koodi.getMetadata(), new KoodistoImportException("error.metadata.empty"));
         ValidatorUtil.checkForBlank(koodi.getMetadata().get(0).getNimi(), new KoodiNimiEmptyException());
     }
