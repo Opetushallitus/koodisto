@@ -351,8 +351,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         KoodistoVersio koodistoVersio = null;
         if (createKoodiList.size() > 0) {
-            koodistoBusinessService.createNewVersion(koodistoUri);
-            koodistoVersio = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+            koodistoVersio = koodistoBusinessService.createNewVersion(koodistoUri);
             authorizer.checkOrganisationAccess(koodistoVersio.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD);
         }
 
