@@ -377,8 +377,8 @@ public class CodesResource {
 
             DataSource ds = new InputStreamDataSource(fileInputStream, mime);
             DataHandler handler = new DataHandler(ds);
-            uploadService.upload(codesUri, formatStr, encoding, handler);
-            return Response.status(Response.Status.ACCEPTED).entity("OK").build();
+            KoodistoVersio kv = uploadService.upload(codesUri, formatStr, encoding, handler);
+            return Response.status(Response.Status.ACCEPTED).entity(kv.getVersio().toString()).build();
 
         } catch (KoodistoValidationException e) {
             LOGGER.warn("Invalid parameter for rest call: uploadFile. ", e);

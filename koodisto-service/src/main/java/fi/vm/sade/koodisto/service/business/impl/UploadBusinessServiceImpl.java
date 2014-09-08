@@ -17,6 +17,7 @@ import org.springframework.oxm.UnmarshallingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.UploadBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
@@ -53,7 +54,7 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
     private KoodiBusinessService koodiBusinessService;
 
     @Override
-    public void upload(String koodistoUri, ExportImportFormatType format, String encoding, DataHandler file) {
+    public KoodistoVersio upload(String koodistoUri, ExportImportFormatType format, String encoding, DataHandler file) {
         try {
             List<KoodiType> koodis = null;
             switch (format) {
@@ -83,7 +84,7 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
                 updateData.getMetadata().addAll(k.getMetadata());
                 updateDatas.add(updateData);
             }
-            koodiBusinessService.massCreate(koodistoUri, updateDatas);
+            return koodiBusinessService.massCreate(koodistoUri, updateDatas);
         } catch (IOException e) {
             throw new KoodistoImportException(e);
         } catch (InvalidKoodiCsvLineException e) {

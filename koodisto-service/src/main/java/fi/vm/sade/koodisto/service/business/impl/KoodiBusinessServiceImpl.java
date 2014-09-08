@@ -287,7 +287,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     @Override
-    public void massCreate(String koodistoUri, List<UpdateKoodiDataType> koodiList) {
+    public KoodistoVersio massCreate(String koodistoUri, List<UpdateKoodiDataType> koodiList) {
         if (StringUtils.isBlank(koodistoUri)) {
             throw new KoodistoUriEmptyException();
         }
@@ -349,18 +349,19 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             createKoodiList.add(createData);
         }
 
-        KoodistoVersio koodistoVersio = null;
+        KoodistoVersio newKoodistoVersio = koodisto;
         if (createKoodiList.size() > 0) {
-            koodistoVersio = koodistoBusinessService.createNewVersion(koodistoUri);
-            authorizer.checkOrganisationAccess(koodistoVersio.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD);
+            newKoodistoVersio = koodistoBusinessService.createNewVersion(koodistoUri);
+            authorizer.checkOrganisationAccess(newKoodistoVersio.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD);
         }
 
         for (CreateKoodiDataType createData : createKoodiList) {
-            createKoodiNonFlush(koodistoUri, createData, koodistoVersio);
+            createKoodiNonFlush(koodistoUri, createData, newKoodistoVersio);
         }
         flushAfterCreation();
 
         koodisto.setPaivitysPvm(new Date());
+        return newKoodistoVersio;
     }
 
     @Override

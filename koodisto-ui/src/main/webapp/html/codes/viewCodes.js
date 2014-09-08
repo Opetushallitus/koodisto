@@ -218,6 +218,9 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     $scope.model.forceRefresh = $routeParams.forceRefresh == true;
     $scope.identity = angular.identity;
     ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
+    if($routeParams.alert){
+        $scope.model.alerts.push($routeParams.alert);
+    }
     $scope.sortBy1 = 'name';
     $scope.sortBy2 = 'name';
     $scope.sortBy3 = 'name';
@@ -308,21 +311,27 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     };
 
     $scope.uploadComplete = function(evt) {
+        $scope.transferCompleteFunction();
         var alert;
-        if (evt != "OK") {
+        if (evt.indexOf && evt.indexOf("error") > -1) {
             alert = {
-                type : 'danger',
-                msg : 'Koodiston ' + $scope.codesUri + ' vienti ep\u00E4onnistui. Virhe tiedoston lukemisessa: ' + ($filter("i18n")(evt))
+                    type : 'danger',
+                    msg : 'Koodiston ' + $scope.codesUri + ' tuonti ep\u00E4onnistui. Virhe tiedoston lukemisessa: ' + ($filter("i18n")(evt))
             };
         } else {
             alert = {
                 type : 'success',
                 msg : 'Koodisto ' + $scope.codesUri + ' on tuotu onnistuneesti'
             };
+            if (evt > $scope.codesVersion) { // Redirect to new version
+                $location.path("/koodisto/" + $scope.codesUri + "/" + evt).search({
+                    forceRefresh : true,
+                    alert : alert
+                });
+            }
         }
-        $scope.transferCompleteFunction();
         $scope.model.forceRefresh = true;
-        ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
+        $scope.model.init($scope, $scope.codesUri, evt);
         $scope.model.alerts.push(alert);
         $scope.model.uploadModalInstance.close();
     };
