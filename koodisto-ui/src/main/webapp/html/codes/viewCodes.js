@@ -328,10 +328,11 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
                     forceRefresh : true,
                     alert : alert
                 });
+                return;
             }
         }
         $scope.model.forceRefresh = true;
-        $scope.model.init($scope, $scope.codesUri, evt);
+        ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
         $scope.model.alerts.push(alert);
         $scope.model.uploadModalInstance.close();
     };

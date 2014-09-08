@@ -109,7 +109,7 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
                 e.printStackTrace();
             }
         }
-        if (StringUtils.isBlank(koodi.getKoodiUri())) {
+        if (StringUtils.isBlank(koodi.getKoodiUri()) && StringUtils.isNotBlank(koodi.getKoodiArvo())) {
             String koodiUri = (koodistoUri + "_" + trimKoodiArvo(koodi.getKoodiArvo()));
             koodi.setKoodiUri(koodiUri);
         }
