@@ -98,9 +98,6 @@ describe("Edit codes test", function() {
     });
     
     it("should show error message when removerelation is rejected", function() {
-        scope.model.modalInstance = {
-            close: jasmine.createSpy('modalInstance.close')
-        };
         var relationCount = scope.model.withinCodes.length;
         scope.model.withinRelationToRemove = relationCodes;
         scope.okconfirm();
@@ -109,7 +106,6 @@ describe("Edit codes test", function() {
         mockBackend.flush();        
         expect(scope.model.alerts.length).toEqual(1);
         expect(scope.model.withinCodes.length).toEqual(relationCount);
-        expect(scope.model.modalInstance.close).toHaveBeenCalledWith();
     });
     
     it("should show error message when addrelation is rejected", function() {

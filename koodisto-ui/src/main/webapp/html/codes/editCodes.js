@@ -473,7 +473,6 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         $scope.model.levelsRelationToRemove = null;
         $scope.model.includesRelationToRemove = null;
         $scope.model.withinRelationToRemove = null;
-        $scope.model.modalInstance.close();
     };
     
     $scope.removeFromWithinCodes = function(codes) {
