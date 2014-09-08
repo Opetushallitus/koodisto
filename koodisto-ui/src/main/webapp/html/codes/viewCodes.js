@@ -318,6 +318,9 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
                     type : 'danger',
                     msg : 'Koodiston ' + $scope.codesUri + ' tuonti ep\u00E4onnistui. Virhe tiedoston lukemisessa: ' + ($filter("i18n")(evt))
             };
+            $scope.model.forceRefresh = true;
+            ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
+            $scope.model.alerts.push(alert);
         } else {
             alert = {
                 type : 'success',
@@ -328,12 +331,8 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
                     forceRefresh : true,
                     alert : alert
                 });
-                return;
             }
         }
-        $scope.model.forceRefresh = true;
-        ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
-        $scope.model.alerts.push(alert);
         $scope.model.uploadModalInstance.close();
     };
 
