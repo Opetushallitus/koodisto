@@ -218,9 +218,12 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     $scope.model.forceRefresh = $routeParams.forceRefresh == true;
     $scope.identity = angular.identity;
     ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
-    if($routeParams.alert){
+
+    // Alert is passed when reloading after versioning import.
+    if ($routeParams.alert && $routeParams.alert.type) {
         $scope.model.alerts.push($routeParams.alert);
     }
+
     $scope.sortBy1 = 'name';
     $scope.sortBy2 = 'name';
     $scope.sortBy3 = 'name';
@@ -313,14 +316,12 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     $scope.uploadComplete = function(evt) {
         $scope.transferCompleteFunction();
         var alert;
+        $scope.model.forceRefresh = true;
         if (evt.indexOf && evt.indexOf("error") > -1) {
             alert = {
-                    type : 'danger',
-                    msg : 'Koodiston ' + $scope.codesUri + ' tuonti ep\u00E4onnistui. Virhe tiedoston lukemisessa: ' + ($filter("i18n")(evt))
+                type : 'danger',
+                msg : 'Koodiston ' + $scope.codesUri + ' tuonti ep\u00E4onnistui. Virhe tiedoston lukemisessa: ' + ($filter("i18n")(evt))
             };
-            $scope.model.forceRefresh = true;
-            ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
-            $scope.model.alerts.push(alert);
         } else {
             alert = {
                 type : 'success',
@@ -331,8 +332,12 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
                     forceRefresh : true,
                     alert : alert
                 });
+                $scope.model.uploadModalInstance.close();
+                return;
             }
         }
+        ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
+        $scope.model.alerts.push(alert);
         $scope.model.uploadModalInstance.close();
     };
 
