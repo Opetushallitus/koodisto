@@ -13,7 +13,8 @@ describe("Codes View test", function() {
         $routeParams.codesVersion = 1;
         controller = $controller("ViewCodesController", {
             $scope : scope,
-            ViwCodesModel : model
+            ViwCodesModel : model,
+            isModalController : false
         });
         angular.mock.inject(function($injector) {
             mockBackend = $injector.get('$httpBackend');

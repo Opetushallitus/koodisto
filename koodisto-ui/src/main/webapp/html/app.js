@@ -73,7 +73,12 @@ app.config([ '$routeProvider', '$httpProvider', function($routeProvider, $httpPr
         }
     }).when('/koodisto/:codesUri/:codesVersion', {
         controller : ViewCodesController,
-        templateUrl : TEMPLATE_URL_BASE + 'codes/viewcodes.html'
+        templateUrl : TEMPLATE_URL_BASE + 'codes/viewcodes.html',
+        resolve : {
+            isModalController : function() {
+                return false;
+            }
+        }
     }).when('/koodi/:codeElementUri/:codeElementVersion', {
         controller : ViewCodeElementController,
         templateUrl : TEMPLATE_URL_BASE + 'codeelement/viewcodeelement.html'

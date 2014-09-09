@@ -186,7 +186,11 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             model.downloadModalInstance = $modal.open({
                 templateUrl : 'downloadModalContent.html',
                 controller : ViewCodesController,
-                resolve : {}
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
+                }
             });
         };
 
@@ -194,7 +198,11 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             model.uploadModalInstance = $modal.open({
                 templateUrl : 'uploadModalContent.html',
                 controller : ViewCodesController,
-                resolve : {}
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
+                }
             });
         };
 
@@ -202,7 +210,11 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             model.deleteCodesModalInstance = $modal.open({
                 templateUrl : 'confirmDeleteCodesModalContent.html',
                 controller : ViewCodesController,
-                resolve : {}
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
+                }
             });
         };
     };
@@ -210,14 +222,16 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
     return model;
 });
 
-function ViewCodesController($scope, $location, $filter, $routeParams, $window, ViewCodesModel, DownloadCodes, RemoveRelationCodes, DeleteCodes, loadingService) {
+function ViewCodesController($scope, $location, $filter, $routeParams, $window, ViewCodesModel, DownloadCodes, RemoveRelationCodes, DeleteCodes, loadingService, isModalController) {
     $scope.model = ViewCodesModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.uploadUrl = SERVICE_URL_BASE + "codes" + "/upload/" + $scope.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
     $scope.model.forceRefresh = $routeParams.forceRefresh == true;
     $scope.identity = angular.identity;
-    ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
+    if (!isModalController) {
+        ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
+    }
 
     // Alert is passed when reloading after versioning import.
     if ($routeParams.alert && $routeParams.alert.type) {
