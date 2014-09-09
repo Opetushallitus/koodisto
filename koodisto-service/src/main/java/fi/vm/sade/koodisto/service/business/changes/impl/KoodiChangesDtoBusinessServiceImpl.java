@@ -74,9 +74,22 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         Tila tilaHasChanged = latestKoodiVersio.getTila().equals(koodiVersio.getTila()) ? null : latestKoodiVersio.getTila();
         List<SimpleCodeElementRelation> addedRelations = addedRelations(koodiVersio, latestKoodiVersio);
         List<SimpleCodeElementRelation> removedRelations = removedRelations(koodiVersio, latestKoodiVersio);
-        MuutosTila muutosTila = anyChanges(koodiVersio.getVersio(), latestKoodiVersio.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), tilaHasChanged, addedRelations, removedRelations);
-        return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, addedRelations, removedRelations, null, 
+        List<SimpleCodeElementRelation> passiveRelations = passiveRelations(koodiVersio, latestKoodiVersio);
+        MuutosTila muutosTila = anyChanges(koodiVersio.getVersio(), latestKoodiVersio.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), tilaHasChanged, 
+                addedRelations, removedRelations, passiveRelations);
+        return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, addedRelations, removedRelations, passiveRelations, 
                 latestKoodiVersio.getPaivitysPvm(), dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, tilaHasChanged);
+    }
+
+    private List<SimpleCodeElementRelation> passiveRelations(KoodiVersio kv, KoodiVersio latestKoodiVersio) {
+        Collection<KoodinSuhde> passiveRelations = Collections2.filter(getRelationsFromKoodiVersio(latestKoodiVersio), new Predicate<KoodinSuhde>() {
+            
+            @Override
+            public boolean apply(KoodinSuhde input) {
+                return input.isPassive();
+            }
+        });
+        return new ArrayList<SimpleCodeElementRelation>(Collections2.transform(passiveRelations, new KoodinSuhdeToSimpleCodeElementRelation(kv.getKoodi().getKoodiUri())));
     }
 
     private List<SimpleCodeElementRelation> removedRelations(KoodiVersio koodiVersio, KoodiVersio latestKoodiVersio) {
@@ -99,7 +112,7 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         return allRelations;
     }
 
-    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleKoodiMetadataDto> changedMetas, List<SimpleKoodiMetadataDto> removedMetas, boolean anyChangesInValidThruDates, Tila tilaHasChanged, List<SimpleCodeElementRelation> addedRelations, List<SimpleCodeElementRelation> removedRelations) {
+    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleKoodiMetadataDto> changedMetas, List<SimpleKoodiMetadataDto> removedMetas, boolean anyChangesInValidThruDates, Tila tilaHasChanged, List<SimpleCodeElementRelation> addedRelations, List<SimpleCodeElementRelation> removedRelations, List<SimpleCodeElementRelation> passiveRelations) {
         if (versio.equals(latestVersio)) {
             return MuutosTila.EI_MUUTOKSIA;
         }
@@ -112,7 +125,7 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         if (tilaHasChanged != null) {
             return MuutosTila.MUUTOKSIA;
         }
-        if (addedRelations.size() > 0 || removedRelations.size() > 0) {
+        if (addedRelations.size() > 0 || removedRelations.size() > 0 || passiveRelations.size() > 0) {
             return MuutosTila.MUUTOKSIA;
         }
         return changedMetas.size() > 0 ? MuutosTila.MUUTOKSIA : MuutosTila.EI_MUUTOKSIA;
@@ -186,7 +199,7 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
             String upperCodeUri = input.getYlakoodiVersio().getKoodi().getKoodiUri();
             String lowerCodeUri = input.getAlakoodiVersio().getKoodi().getKoodiUri();
             for (KoodinSuhde ks : relationsToCompare) {
-                if (lowerCodeUri.equals(ks.getAlakoodiVersio().getKoodi().getKoodiUri()) && upperCodeUri.equals(ks.getAlakoodiVersio().getKoodi().getKoodiUri())) {
+                if (lowerCodeUri.equals(ks.getAlakoodiVersio().getKoodi().getKoodiUri()) && upperCodeUri.equals(ks.getYlakoodiVersio().getKoodi().getKoodiUri())) {
                     missing = false;
                 }
             }

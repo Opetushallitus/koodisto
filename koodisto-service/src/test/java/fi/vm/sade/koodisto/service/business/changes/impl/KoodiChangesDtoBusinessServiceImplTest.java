@@ -254,7 +254,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         KoodiVersio latest = givenKoodiVersioWithRelations(versio + 1, givenKoodinSuhde(SuhteenTyyppi.RINNASTEINEN, null, givenKoodiVersio(relationVersion, koodiUri)));
         KoodiChangesDto dto = givenResult(original, latest);
         assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
-        assertNull(dto.passivoidutKoodinSuhteet);
+        assertTrue(dto.passivoidutKoodinSuhteet.isEmpty());
         assertTrue(dto.poistetutKoodinSuhteet.isEmpty());
         assertEquals(1, dto.lisatytKoodinSuhteet.size());
         SimpleCodeElementRelation relation = dto.lisatytKoodinSuhteet.get(0);
@@ -273,7 +273,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         KoodiVersio original = givenKoodiVersioWithRelations(versio, givenKoodinSuhde(SuhteenTyyppi.SISALTYY, givenKoodiVersio(relationVersion, koodiUri), null));
         KoodiChangesDto dto = givenResult(original, latest);
         assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
-        assertNull(dto.passivoidutKoodinSuhteet);
+        assertTrue(dto.passivoidutKoodinSuhteet.isEmpty());
         assertTrue(dto.lisatytKoodinSuhteet.isEmpty());
         assertEquals(1, dto.poistetutKoodinSuhteet.size());
         SimpleCodeElementRelation relation = dto.poistetutKoodinSuhteet.get(0);
@@ -285,6 +285,26 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     
     @Test
     public void returnsHasChangedIfRelationsHaveBeenTurnedIntoPassive() {
+        Integer versio = 1;
+        Integer relationVersion = 3;
+        String koodiUri = "kirahvi";
+        KoodiVersio related = givenKoodiVersio(relationVersion, koodiUri);
+        KoodiVersio original = givenKoodiVersioWithRelations(versio, givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, related));
+        KoodiVersio latest = givenKoodiVersioWithRelations(versio + 1, givenPassiveKoodinSuhde(SuhteenTyyppi.SISALTYY, null, related, true, false));
+        KoodiChangesDto dto = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
+        assertTrue(dto.lisatytKoodinSuhteet.isEmpty());
+        assertTrue(dto.poistetutKoodinSuhteet.isEmpty());
+        assertEquals(1, dto.passivoidutKoodinSuhteet.size());
+        SimpleCodeElementRelation relation = dto.passivoidutKoodinSuhteet.get(0);
+        assertEquals(koodiUri, relation.koodiUri);
+        assertEquals(SuhteenTyyppi.SISALTYY, relation.suhteenTyyppi);
+        assertTrue(relation.lapsiKoodi);
+        assertEquals(relationVersion, relation.versio);
+    }
+    
+    @Test
+    public void returnsHasBeenDeletedIfCodeElementIsNotFoundInLatestCodes() {
         
     }
     
