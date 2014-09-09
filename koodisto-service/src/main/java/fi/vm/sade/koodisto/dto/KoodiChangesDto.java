@@ -14,7 +14,7 @@ import fi.vm.sade.koodisto.model.Tila;
 public class KoodiChangesDto {
     
     public enum MuutosTila {
-        EI_MUUTOKSIA("Ei muutoksia"), MUUTOKSIA("Muutoksia on tapahtunut");
+        EI_MUUTOKSIA("Ei muutoksia"), MUUTOKSIA("Muutoksia on tapahtunut"), POISTETTU("Koodi on poistettu koodistosta");
         
         private String value;
         
