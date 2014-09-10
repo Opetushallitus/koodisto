@@ -21,6 +21,7 @@ import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.UploadBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiArvoEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoImportException;
@@ -109,7 +110,8 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
                 e.printStackTrace();
             }
         }
-        if (StringUtils.isBlank(koodi.getKoodiUri()) && StringUtils.isNotBlank(koodi.getKoodiArvo())) {
+        if (StringUtils.isBlank(koodi.getKoodiUri())) {
+            ValidatorUtil.checkForBlank(koodi.getKoodiArvo(), new KoodiArvoEmptyException());
             String koodiUri = (koodistoUri + "_" + trimKoodiArvo(koodi.getKoodiArvo()));
             koodi.setKoodiUri(koodiUri);
         }
@@ -117,7 +119,7 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
             koodi.setVersio(1);
         }
         ValidatorUtil.checkForBlank(koodi.getKoodiUri(), new KoodiUriEmptyException());
-        ValidatorUtil.checkForBlank(koodi.getKoodiArvo(), new KoodistoImportException("error.codeelement.value.empty"));
+        ValidatorUtil.checkForBlank(koodi.getKoodiArvo(), new KoodiArvoEmptyException());
         ValidatorUtil.checkCollectionIsNotNullOrEmpty(koodi.getMetadata(), new KoodistoImportException("error.metadata.empty"));
         ValidatorUtil.checkForBlank(koodi.getMetadata().get(0).getNimi(), new KoodiNimiEmptyException());
     }

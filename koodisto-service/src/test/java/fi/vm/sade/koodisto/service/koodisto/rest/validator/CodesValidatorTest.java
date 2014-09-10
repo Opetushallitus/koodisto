@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -129,6 +130,7 @@ public class CodesValidatorTest {
        
     private static KoodistoDto givenKoodistoDtoWithBasicFields() {
         KoodistoDto dto = new KoodistoDto();
+        dto.setVoimassaAlkuPvm(new Date());
         dto.setCodesGroupUri("group");
         dto.setKoodistoUri("koodistoUri");
         dto.setTila(Tila.LUONNOS);
