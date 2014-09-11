@@ -48,22 +48,47 @@ app.factory('CodesCreatorModel', function($location, RootCodes, $modal) {
     return model;
 });
 
-function CodesCreatorController($scope, $location, $modal, $log, $filter, CodesCreatorModel, NewCodes, Treemodel) {
+function CodesCreatorController($scope, $location, $modal, $log, $filter, CodesCreatorModel, NewCodes, Treemodel, isModalController) {
     $scope.model = CodesCreatorModel;
     $scope.errorMessage = $filter('i18n')('field.required');
     $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.at.least.one.name');
     $scope.errorMessageIfOtherInfoIsGiven = $filter('i18n')('field.required.if.other.info.is.given');
 
-    CodesCreatorModel.init();
-
+    if (!isModalController) {
+        CodesCreatorModel.init();
+    }
+    
     $scope.closeAlert = function(index) {
         $scope.model.alerts.splice(index, 1);
     };
 
+    $scope.redirectCancel = function(){
+        $location.path("/");
+    };
+
     $scope.cancel = function() {
-        $location.path("/").search({
-            forceRefresh : false
-        });
+        $scope.closeCancelConfirmModal();
+        $scope.redirectCancel();
+    };
+    
+    $scope.showCancelConfirmModal = function(formHasChanged) {
+        if (formHasChanged) {
+            $scope.model.cancelConfirmModal = $modal.open({
+                templateUrl : 'confirmcancel.html',
+                controller : CodesCreatorController,
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
+                }
+            });
+        } else {
+            $scope.redirectCancel();
+        }
+    };
+
+    $scope.closeCancelConfirmModal = function() {
+        $scope.model.cancelConfirmModal.close();
     };
 
     $scope.submit = function() {

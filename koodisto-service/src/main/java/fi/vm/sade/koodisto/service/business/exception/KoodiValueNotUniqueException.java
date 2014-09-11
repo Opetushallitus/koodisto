@@ -6,9 +6,10 @@ public class KoodiValueNotUniqueException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodiValueNotUniqueException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.codeelement.value.not.unique";
 
     public KoodiValueNotUniqueException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public KoodiValueNotUniqueException(String message, Throwable cause) {
@@ -20,7 +21,7 @@ public class KoodiValueNotUniqueException extends SadeBusinessException {
     }
 
     public KoodiValueNotUniqueException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

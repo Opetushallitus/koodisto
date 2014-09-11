@@ -12,9 +12,10 @@ public class KoodiNotInKoodistoException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodiNotInKoodistoException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.codeelement.not.in.codes";
 
     public KoodiNotInKoodistoException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public KoodiNotInKoodistoException(String message, Throwable cause) {
@@ -26,7 +27,7 @@ public class KoodiNotInKoodistoException extends SadeBusinessException {
     }
 
     public KoodiNotInKoodistoException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

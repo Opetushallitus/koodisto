@@ -4,10 +4,10 @@
   <koodisto id="99" koodistouri="dummy" version="0" organisaatioOid="1.2.2004.6" />
   <koodi id="99" koodisto_id="99" version="0" koodiuri="dummy"/>
   <koodiversio id="99" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="99" koodiarvo="dummy"/>
-  <koodimetadata id="99" kieli="FI" nimi="Dummy" version="0" koodiversio_id="99"/>
+  <koodimetadata id="99" kieli="FI" nimi="Dummy" kuvaus="Dummy" lyhytnimi="Dummy" version="0" koodiversio_id="99"/>
   <koodinsuhde id="99" alakoodiversio_id="99" ylakoodiversio_id="99" suhteentyyppi="SISALTYY" version="0" versio="1"/>
   <koodistoversio id="99" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="99" voimassaalkupvm="2012-11-20"/>
-  <koodistometadata id="99" kieli="FI" nimi="Dummy" version="0" koodistoversio_id="99"/>
+  <koodistometadata id="99" kieli="FI" nimi="Dummy" kuvaus="kuvaus" version="0" koodistoversio_id="99"/>
   <koodistoversio_koodiversio id="99" version="0" koodistoversio_id="99" koodiversio_id="99"/>
   <koodistoryhma id="99" koodistoryhmauri="dummy" version="0"/>
   <koodistoryhma_koodisto koodistoryhma_id="99" koodisto_id="99"/>

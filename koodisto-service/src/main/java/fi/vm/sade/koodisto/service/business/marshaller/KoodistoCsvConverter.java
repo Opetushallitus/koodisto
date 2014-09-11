@@ -23,6 +23,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.io.CsvListWriter;
@@ -30,6 +32,8 @@ import org.supercsv.prefs.CsvPreference;
 
 import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiTilaInvalidException;
+import fi.vm.sade.koodisto.service.koodisto.rest.CodesResource;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
@@ -74,7 +78,9 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         SISALTAAMERKITYKSEN_COLUMN, EISISALLAMERKITYSTA_COLUMN, HUOMIOITAVAKOODI_COLUMN, SISALTAAKOODISTON_COLUMN };
 
     static final KieliType[] kielet = { KieliType.FI, KieliType.SV, KieliType.EN };
-
+    
+    private static final Logger LOG = LoggerFactory.getLogger(KoodistoCsvConverter.class);
+    
     static {
 
         HEADER_FIELDS = new LinkedList<String>(Arrays.asList(basicFields));
@@ -246,8 +252,9 @@ public class KoodistoCsvConverter extends KoodistoConverter {
 
     protected KoodiType createKoodiFromCsvRow(List<String> row, Map<Integer, String> fieldNameToIndex) {
         if (fieldNameToIndex.size() != row.size()) {
-            throw new InvalidKoodiCsvLineException("Invalid number of fields for koodi CSV line. Required " + fieldNameToIndex.size() + " but got "
+            LOG.error("Invalid number of fields for koodi CSV line. Required " + fieldNameToIndex.size() + " but got "
                     + row.size());
+            throw new InvalidKoodiCsvLineException();
         }
 
         KoodiType koodi = new KoodiType();
@@ -316,7 +323,11 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         } else if (VOIMASSALOPPUPVM_COLUMN.equals(fieldName)) {
             koodi.setVoimassaLoppuPvm(parseDate(value));
         } else if (TILA_COLUMN.equals(fieldName)) {
-            koodi.setTila(TilaType.valueOf(value));
+            try {
+                koodi.setTila(TilaType.valueOf(value));
+            } catch (IllegalArgumentException e) {
+                throw new KoodiTilaInvalidException();
+            }
         }
     }
 

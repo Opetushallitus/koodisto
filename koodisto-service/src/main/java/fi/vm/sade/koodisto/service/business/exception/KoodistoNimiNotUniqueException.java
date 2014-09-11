@@ -11,9 +11,10 @@ import fi.vm.sade.generic.service.exception.SadeBusinessException;
 public class KoodistoNimiNotUniqueException extends SadeBusinessException {
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodistoNimiNotUniqueException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.codes.name.not.unique";
 
     public KoodistoNimiNotUniqueException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public KoodistoNimiNotUniqueException(String message, Throwable cause) {
@@ -25,7 +26,7 @@ public class KoodistoNimiNotUniqueException extends SadeBusinessException {
     }
 
     public KoodistoNimiNotUniqueException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

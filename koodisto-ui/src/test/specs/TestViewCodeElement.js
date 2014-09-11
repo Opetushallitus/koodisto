@@ -48,6 +48,7 @@ describe("Code Element View test", function() {
         angular.mock.inject(function($injector) {
             mockBackend = $injector.get('$httpBackend');
         });
+        mockBackend.whenGET(SERVICE_URL_BASE + "session/maxinactiveinterval").respond(1);
     }));
 
     it("ViewCodeElementModel is defined and it is in scope", function() {

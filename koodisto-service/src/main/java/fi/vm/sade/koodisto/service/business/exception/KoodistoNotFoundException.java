@@ -12,9 +12,10 @@ public class KoodistoNotFoundException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodistoNotFoundException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.codes.not.found";
 
     public KoodistoNotFoundException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public KoodistoNotFoundException(String message, Throwable cause) {
@@ -26,7 +27,7 @@ public class KoodistoNotFoundException extends SadeBusinessException {
     }
 
     public KoodistoNotFoundException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

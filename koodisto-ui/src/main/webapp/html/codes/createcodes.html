@@ -1,5 +1,15 @@
+<script type="text/ng-template" id="confirmcancel.html">
+    <div class="modal-header">
+        <h3>{{'codes.createpage.confirmcancel.header' | i18n}}</h3>
+    </div>
+    <div class="modal-body">{{'codes.createpage.confirmcancel.text' | i18n}}</div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="cancel()">{{'codes.ok' | i18n}}</button>
+        <button class="btn btn-warning" ng-click="closeCancelConfirmModal()">{{'codes.cancel' | i18n}}</button>
+    </div>
+</script>
 
-<div ng-include="'partials/organisaatioSelector.html'" />
+<div ng-include="'partials/organisaatioSelector.html'" ></div>
 
 <div class="container">
     <div class="row-fluid">
@@ -373,7 +383,7 @@
         <div class="row-fluid navbar-fixed-bottom">
             <button ng-disabled="!form.$valid" auth="crud" auth-service="APP_KOODISTO" auth-org="{{organizationOid}}" class="btn btn-primary pull-right" type="submit">{{'codes.save'
                 | i18n}}</button>
-            <button type="button" class="btn pull-right" ng-click="cancel()">{{'codes.cancel' | i18n}}</button>
+            <button type="button" class="btn pull-right" ng-click="showCancelConfirmModal(form.$dirty)">{{'codes.cancel' | i18n}}</button>
         </div>
 
  </form>
