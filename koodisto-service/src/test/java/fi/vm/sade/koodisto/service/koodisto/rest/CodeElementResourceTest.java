@@ -616,6 +616,11 @@ public class CodeElementResourceTest {
         assertTrue(dto.muuttuneetTiedot.isEmpty());
         assertEquals(3, dto.viimeisinVersio.intValue());
     }
+    
+    @Test
+    public void returnsCodeElementHasBeenRemovedWhenItIsNotFoundInLatestCodesVersion() {
+        assertEquals(MuutosTila.POISTETTU, ((KoodiChangesDto) resource.getChangesToCodeElement("poistettu", 1, false).getEntity()).muutosTila);
+    }
 
     
     @Test

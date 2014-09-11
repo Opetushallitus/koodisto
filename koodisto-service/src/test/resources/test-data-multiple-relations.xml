@@ -55,6 +55,7 @@
   <koodi id="32" koodisto_id="18" version="0" koodiuri="uusisavekoodinsuhde2"/>
   <koodi id="33" koodisto_id="19" version="0" koodiuri="uusisavekoodinsuhde3"/>
   <koodi id="34" koodisto_id="20" version="0" koodiuri="viimeinenonluonnos"/>
+  <koodi id="35" koodisto_id="13" version="0" koodiuri="poistettu"/>
   
   <koodiversio id="1" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="1" koodiarvo="ss4k1"/>
   <koodiversio id="2" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="ss4k2"/>
@@ -94,6 +95,7 @@
   <koodiversio id="36" version="0" paivityspvm="2013-01-01" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="34" koodiarvo="viimeinenonluonnos"/>
   <koodiversio id="37" version="0" paivityspvm="2013-04-20" luotu="2013-02-02" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="1990-01-01" koodi_id="34" koodiarvo="viimeinenonluonnos"/>
   <koodiversio id="38" version="0" paivityspvm="2013-06-15" luotu="2013-05-11" tila="LUONNOS" versio="3" voimassaalkupvm="1990-01-01" koodi_id="34" koodiarvo="viimeinenonluonnos"/>
+  <koodiversio id="39" version="0" paivityspvm="2013-06-15" luotu="2013-05-11" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="35" koodiarvo="poistettu"/>
   
   <koodimetadata id="1" kieli="FI" nimi="Alajärvi" version="0" koodiversio_id="1" lyhytnimi="Alajärvi" kuvaus="Alajärvi"/>
   <koodimetadata id="2" kieli="FI" nimi="Olajärvi" version="0" koodiversio_id="2" lyhytnimi="Olajärvi" kuvaus="Olajärvi"/>
@@ -133,6 +135,7 @@
   <koodimetadata id="36" kieli="FI" nimi="Viimeinen on luonnos" version="0" koodiversio_id="36" lyhytnimi="viimeinenluonnos" kuvaus="Viimeinen versio on luonnos"/>
   <koodimetadata id="37" kieli="FI" nimi="Seuraava on luonnos" version="0" koodiversio_id="37" lyhytnimi="seuraavaluonnos" kuvaus="Seuraava versio on luonnos"/>
   <koodimetadata id="38" kieli="FI" nimi="Tämä on luonnos" version="0" koodiversio_id="38" lyhytnimi="luonnos" kuvaus="Tämä versio on luonnos"/>
+  <koodimetadata id="39" kieli="FI" nimi="Poistettu" version="0" koodiversio_id="39" lyhytnimi="poistettu" kuvaus="Poistettu uudemmista koodistoversioista"/>
   
   <koodinsuhde id="1" alakoodiversio_id="1" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
   <koodinsuhde id="2" alakoodiversio_id="2" ylakoodiversio_id="4" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
@@ -237,6 +240,7 @@
   <koodistoversio_koodiversio id="35" version="0" koodistoversio_id="13" koodiversio_id="23"/>
   <koodistoversio_koodiversio id="36" version="0" koodistoversio_id="23" koodiversio_id="24"/>
   <koodistoversio_koodiversio id="37" version="0" koodistoversio_id="24" koodiversio_id="25"/>
+  <koodistoversio_koodiversio id="38" version="0" koodistoversio_id="13" koodiversio_id="39"/>
   
   
   <koodistoryhma id="1" koodistoryhmauri="maantieto" version="0"/>
