@@ -1,12 +1,13 @@
 package fi.vm.sade.koodisto.dto;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.codehaus.jackson.map.annotate.JsonView;
+
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
-import org.codehaus.jackson.map.annotate.JsonView;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class KoodistoRyhmaDto {
     @JsonView(JsonViews.Basic.class)
@@ -49,4 +50,5 @@ public class KoodistoRyhmaDto {
     public void setKoodistos(Set<Koodisto> koodistos) {
         this.koodistos = koodistos;
     }
+
 }

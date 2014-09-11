@@ -12,9 +12,10 @@ public class SearchCriteriaEmptyException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = SearchCriteriaEmptyException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.search.criteria.empty";
 
     public SearchCriteriaEmptyException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public SearchCriteriaEmptyException(String message, Throwable cause) {
@@ -26,7 +27,7 @@ public class SearchCriteriaEmptyException extends SadeBusinessException {
     }
 
     public SearchCriteriaEmptyException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

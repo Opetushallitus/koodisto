@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.service.business;
 
+import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 
 import javax.activation.DataHandler;
@@ -10,5 +11,5 @@ import javax.activation.DataHandler;
  * Time: 8.58
  */
 public interface UploadBusinessService {
-    void upload(String koodistoUri, ExportImportFormatType format, String encoding, DataHandler file);
+    KoodistoVersio upload(String koodistoUri, ExportImportFormatType format, String encoding, DataHandler file);
 }

@@ -222,10 +222,33 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         $scope.model.alerts.splice(index, 1);
     };
 
+    $scope.redirectCancel = function() {
+        $location.path("/koodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion);
+    };
+    
     $scope.cancel = function() {
-        $location.path("/koodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion).search({
-            edited : true
-        });
+        $scope.closeCancelConfirmModal();
+        $scope.redirectCancel();
+    };
+    
+    $scope.showCancelConfirmModal = function(formHasChanged) {
+        if (formHasChanged) {
+            $scope.model.cancelConfirmModal = $modal.open({
+                templateUrl : 'confirmcancel.html',
+                controller : CodeElementEditorController,
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
+                }
+            });
+        } else {
+            $scope.redirectCancel();
+        }
+    };
+    
+    $scope.closeCancelConfirmModal = function() {
+        $scope.model.cancelConfirmModal.close();
     };
 
     $scope.submit = function() {

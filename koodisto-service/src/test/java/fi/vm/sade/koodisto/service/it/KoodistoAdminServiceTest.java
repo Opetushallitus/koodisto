@@ -22,7 +22,6 @@ import fi.vm.sade.koodisto.service.GenericFault;
 import fi.vm.sade.koodisto.service.KoodiService;
 import fi.vm.sade.koodisto.service.KoodistoAdminService;
 import fi.vm.sade.koodisto.service.KoodistoService;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoKuvausEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiNotUniqueException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoVersioNotPassiivinenException;

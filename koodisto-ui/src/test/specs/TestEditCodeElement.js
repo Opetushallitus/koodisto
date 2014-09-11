@@ -30,6 +30,7 @@ describe(
                 angular.mock.inject(function() {
                     mockBackend = $injector.get('$httpBackend');
                 });
+                mockBackend.whenGET(SERVICE_URL_BASE + "session/maxinactiveinterval").respond(1);
             }));
 
             it("CodeElementEditorModel is defined and it is in scope", function() {

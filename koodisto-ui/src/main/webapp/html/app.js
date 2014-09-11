@@ -2,7 +2,7 @@
 
 var SERVICE_NAME = "APP_KOODISTO";
 
-var app = angular.module('koodisto', [ 'ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization', 'ui.bootstrap', 'ui.utils', 'ngIdle', 'pasvaz.bindonce' ]);
+var app = angular.module('koodisto', [ 'ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization', 'ui.bootstrap', 'ui.utils', 'ngIdle', 'pasvaz.bindonce', 'ngUpload']);
 //
 // i18n toteutus kopioitu osittain http://jsfiddle.net/4tRBY/41/
 //
@@ -57,7 +57,12 @@ app.config([ '$routeProvider', '$httpProvider', function($routeProvider, $httpPr
         templateUrl : TEMPLATE_URL_BASE + 'codesmainpage.html'
     }).when('/lisaaKoodisto', {
         controller : CodesCreatorController,
-        templateUrl : TEMPLATE_URL_BASE + 'codes/createcodes.html'
+        templateUrl : TEMPLATE_URL_BASE + 'codes/createcodes.html',
+        resolve : {
+            isModalController : function() {
+                return false;
+            }
+        }
     }).when('/muokkaaKoodisto/:codesUri/:codesVersion', {
         controller : CodesEditorController,
         templateUrl : TEMPLATE_URL_BASE + 'codes/editcodes.html',
@@ -68,13 +73,23 @@ app.config([ '$routeProvider', '$httpProvider', function($routeProvider, $httpPr
         }
     }).when('/koodisto/:codesUri/:codesVersion', {
         controller : ViewCodesController,
-        templateUrl : TEMPLATE_URL_BASE + 'codes/viewcodes.html'
+        templateUrl : TEMPLATE_URL_BASE + 'codes/viewcodes.html',
+        resolve : {
+            isModalController : function() {
+                return false;
+            }
+        }
     }).when('/koodi/:codeElementUri/:codeElementVersion', {
         controller : ViewCodeElementController,
         templateUrl : TEMPLATE_URL_BASE + 'codeelement/viewcodeelement.html'
     }).when('/lisaaKoodi/:codesUri/:codesVersion', {
         controller : CodeElementCreatorController,
-        templateUrl : TEMPLATE_URL_BASE + 'codeelement/createcodeelement.html'
+        templateUrl : TEMPLATE_URL_BASE + 'codeelement/createcodeelement.html',
+        resolve : {
+            isModalController : function() {
+                return false;
+            }
+        }
     }).when('/muokkaaKoodi/:codeElementUri/:codeElementVersion', {
         controller : CodeElementEditorController,
         templateUrl : TEMPLATE_URL_BASE + 'codeelement/editcodeelement.html',
@@ -425,6 +440,12 @@ app.factory('OrganizationByOid', function($resource) {
     });
 });
 
+app.factory('SessionPoll', function($resource) {
+    return $resource(SERVICE_URL_BASE + "session/maxinactiveinterval", {}, {
+        get: {method:   "GET"}
+    });
+});
+
 app.filter('naturalSort', function() {
     return function(arrInput, field, reverse) {
         var arr = arrInput.sort(function(a, b) {
@@ -487,3 +508,7 @@ app.filter('forLoop', function() {
         return input;
     };
 });
+
+app.run(["SessionPoll", function(SessionPoll) {
+    SessionPoll.get({});
+}]);

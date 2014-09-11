@@ -117,6 +117,17 @@
     </div>
 </script>
 
+<script type="text/ng-template" id="confirmcancel.html">
+    <div class="modal-header">
+        <h3>{{'codeelement.editpage.confirmcancel.header' | i18n}}</h3>
+    </div>
+    <div class="modal-body">{{'codeelement.editpage.confirmcancel.text' | i18n}}</div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="cancel()">{{'codes.ok' | i18n}}</button>
+        <button class="btn btn-warning" ng-click="closeCancelConfirmModal()">{{'codes.cancel' | i18n}}</button>
+    </div>
+</script>
+
 <div class="container">
     <div class="row-fluid">
         <div class="span12">
@@ -264,7 +275,7 @@
             <label for="withincodes" class="control-label">{{'codeelement.editpage.withincodeelements' | i18n}}</label><br>
             <div class="controls">
                 <button id="withincodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector"
-                    ng-click="show('withincodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
+                    ng-click="show('withincodes'); form.$setDirty()">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
             </div>
         </div>
 
@@ -283,7 +294,7 @@
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
-                                    ng-click="removeFromWithinCodeElements(codeElement)"></i></td>
+                                    ng-click="removeFromWithinCodeElements(codeElement); form.$setDirty()"></i></td>
                         </tr>
 
                     </tbody>
@@ -302,7 +313,7 @@
             <label for="includescodes" class="control-label">{{'codeelement.editpage.includescodeelements' | i18n}}</label><br>
             <div class="controls">
                 <button id="includescodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector"
-                    ng-click="show('includescodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
+                    ng-click="show('includescodes'); form.$setDirty()">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
             </div>
         </div>
 
@@ -321,7 +332,7 @@
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
-                                    ng-click="removeFromIncludesCodeElements(codeElement)"></i></td>
+                                    ng-click="removeFromIncludesCodeElements(codeElement); form.$setDirty()"></i></td>
                         </tr>
                     </tbody>
                 </table>
@@ -338,7 +349,7 @@
             <label for="levelswithcodes" class="control-label">{{'codeelement.editpage.levelswithcodeelements' | i18n}}</label><br>
             <div class="controls">
                 <button id="levelswithcodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector"
-                    ng-click="show('levelswithcodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
+                    ng-click="show('levelswithcodes'); form.$setDirty()">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
             </div>
         </div>
 
@@ -357,7 +368,7 @@
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
-                                    ng-click="removeFromLevelsWithCodeElements(codeElement)"></i></td>
+                                    ng-click="removeFromLevelsWithCodeElements(codeElement); form.$setDirty()"></i></td>
                         </tr>
                     </tbody>
                 </table>
@@ -547,7 +558,7 @@
         <div class="row-fluid navbar-fixed-bottom">
             <button ng-disabled="!form.$valid" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-primary pull-right" type="submit">{{'codes.save'
                 | i18n}}</button>
-            <button type="button" class="btn pull-right" ng-click="cancel()">{{'codes.cancel' | i18n}}</button>
+            <button type="button" class="btn pull-right" ng-click="showCancelConfirmModal(form.$dirty)">{{'codes.cancel' | i18n}}</button>
         </div>
 
     </form>
