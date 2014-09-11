@@ -29,7 +29,7 @@ public class DtoFactory {
     public static KoodiVersioBuilder createKoodiVersioWithUriAndVersioWithoutMetadatas(String uri, Integer versio) {
         Koodisto koodisto = new Koodisto();
         Koodi koodi = new KoodiBuilder().setKoodiUri(uri).setKoodisto(koodisto).build();
-        KoodistoVersio kv = createKoodistoVersio();
+        KoodistoVersio kv = createKoodistoVersio(koodisto, versio);
         return new KoodiVersioBuilder().setKoodiVersio(versio).addKoodistoVersio(kv).setKoodi(koodi).setStartDate(new Date()).setKoodiValue("value").setTila(Tila.HYVAKSYTTY);
     }
     
@@ -42,8 +42,8 @@ public class DtoFactory {
         return createKoodiVersioWithUriAndVersio(uri, versio).addParentRelation(relation).build();
     }
     
-    public static KoodistoVersio createKoodistoVersio() {
-        return new KoodistoVersioBuilder().addMetadata(Kieli.FI, "koodisto", "kuvaus").setVersio(1).build();
+    public static KoodistoVersio createKoodistoVersio(Koodisto koodisto, Integer versio) {
+        return new KoodistoVersioBuilder().addMetadata(Kieli.FI, "koodisto", "kuvaus").setVersio(versio).setKoodisto(koodisto).setTila(Tila.HYVAKSYTTY).build();
     }
     
     public static KoodiMetadata createKoodiMetadata(String name, String shortName, String description, Kieli language) {

@@ -13,6 +13,8 @@ import fi.vm.sade.koodisto.model.Tila;
 public class KoodiVersioBuilder implements Builder<KoodiVersio>{
     
     private KoodiVersio koodiVersio;
+    
+    private static long id = 11;
 
     public KoodiVersioBuilder() {
         this.koodiVersio = new KoodiVersio();
@@ -35,6 +37,7 @@ public class KoodiVersioBuilder implements Builder<KoodiVersio>{
         KoodistoVersioKoodiVersio kvkv = new KoodistoVersioKoodiVersio();
         kvkv.setKoodistoVersio(koodisto);
         kvkv.setKoodiVersio(koodiVersio);
+        koodisto.addKoodiVersio(kvkv);
         koodiVersio.addKoodistoVersio(kvkv);
         return this;
     }
@@ -89,6 +92,9 @@ public class KoodiVersioBuilder implements Builder<KoodiVersio>{
     public KoodiVersio build() {
         if (koodiVersio.getPaivitysPvm() == null ) {
             koodiVersio.setPaivitysPvm(new Date());
+        }
+        if (koodiVersio.getId() == null) {
+            koodiVersio.setId(id++);
         }
         return this.koodiVersio;
     }

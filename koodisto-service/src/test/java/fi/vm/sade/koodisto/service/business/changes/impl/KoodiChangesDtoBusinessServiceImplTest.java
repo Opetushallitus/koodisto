@@ -3,6 +3,7 @@ package fi.vm.sade.koodisto.service.business.changes.impl;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,9 +25,12 @@ import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
+import fi.vm.sade.koodisto.model.Koodisto;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
+import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessService;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import fi.vm.sade.koodisto.test.support.builder.KoodiVersioBuilder;
@@ -35,6 +39,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 
 import static org.mockito.Mockito.when;
 
@@ -56,6 +61,10 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     @Autowired
     private KoodiBusinessService koodiService;
     
+    @ReplaceWithMock
+    @Autowired
+    private KoodistoBusinessService koodistoService;
+    
     @Autowired
     private KoodiChangesDtoBusinessService service;
     
@@ -69,7 +78,6 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         int versio = 1;
         assertResultIsNoChanges(givenResult(givenKoodiVersio(versio), givenKoodiVersio(versio)), versio);
     }
-
 
     @Test
     public void returnsNoChangesIfOnlyVersionHasChanged() {
@@ -305,7 +313,14 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     
     @Test
     public void returnsHasBeenDeletedIfCodeElementIsNotFoundInLatestCodes() {
-        
+        int versio = 1;
+        assertResultIsDeleted(givenDeletedResult(givenKoodiVersio(versio), givenKoodiVersio(versio + 1), false));
+    }
+    
+    @Test
+    public void returnsHasBeenDeletedIfCodeElementIsNotFoundInLatestAcceptedCodes() {
+        int versio = 1;
+        assertResultIsDeleted(givenDeletedResult(givenKoodiVersio(versio), givenKoodiVersio(versio + 1), true));
     }
     
     private void assertGivenResultWithDateQuery(Date query, boolean shouldUseFirst) {
@@ -345,6 +360,10 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         assertNull(result.tila);
     }
     
+    private void assertResultIsDeleted(KoodiChangesDto result) {
+        assertEquals(MuutosTila.POISTETTU, result.muutosTila);
+    }
+    
     private void assertResultHasMetadataChanges(KoodiChangesDto result, int versio, SimpleKoodiMetadataDto ... expecteds) {
         assertEquals(KoodiChangesDto.MuutosTila.MUUTOKSIA, result.muutosTila);
         assertTrue(result.muuttuneetTiedot.containsAll(Arrays.asList(expecteds)));
@@ -355,15 +374,26 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         Integer versio = koodiVersio.getVersio();
         when(koodiService.getKoodiVersio(KOODI_URI, versio)).thenReturn(koodiVersio);
         when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
+        when(koodistoService.getKoodistoByKoodistoUri(any(String.class))).thenReturn(latest.getKoodi().getKoodisto());
+        return service.getChangesDto(KOODI_URI, versio, false);
+    }
+    
+    private KoodiChangesDto givenDeletedResult(KoodiVersio koodiVersio, KoodiVersio latest, boolean compareToLatestAccepted) {
+        Integer versio = koodiVersio.getVersio();
+        when(koodiService.getKoodiVersio(KOODI_URI, versio)).thenReturn(koodiVersio);
+        when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
+        when(koodistoService.getKoodistoByKoodistoUri(any(String.class))).thenReturn(DtoFactory.createKoodistoVersio(new Koodisto(), 999).getKoodisto());
         return service.getChangesDto(KOODI_URI, versio, false);
     }
     
     private KoodiChangesDto givenResultWithMultipleKoodiVersios(Integer versio, boolean compareToLatestAccepted, KoodiVersio ... versios) {
+        when(koodiService.getKoodiVersio(KOODI_URI, versio)).thenReturn(getMatchingCodeElementVersion(versio, versios));
         if (compareToLatestAccepted) {
             returnGivenKoodiVersiosWithKoodiFromMockedKoodiService(versios);
         } else {
             returnLatestKoodiVersioFromMockedKoodiService(versios);
         }
+        koodistoServiceReturnsKoodistoWithAllVersions(versios);
         return service.getChangesDto(KOODI_URI, versio, compareToLatestAccepted);
     }
 
@@ -372,7 +402,26 @@ public class KoodiChangesDtoBusinessServiceImplTest {
             returnLatestKoodiVersioFromMockedKoodiService(versios);
         }
         returnGivenKoodiVersiosWithKoodiFromMockedKoodiService(versios);
+        koodistoServiceReturnsKoodistoWithAllVersions(versios);
         return service.getChangesDto(KOODI_URI, date, compareToLatestAccepted);
+    }
+    
+    private void koodistoServiceReturnsKoodistoWithAllVersions(KoodiVersio ... versios) {
+        Set<KoodistoVersio> koodistoVersios = new HashSet<>();
+        for (KoodiVersio kv : versios) {
+            koodistoVersios.add(kv.getKoodistoVersios().iterator().next().getKoodistoVersio());
+        }        
+        Koodisto koodisto = Mockito.mock(Koodisto.class);
+        when(koodisto.getKoodistoVersios()).thenReturn(koodistoVersios);
+        when(koodistoService.getKoodistoByKoodistoUri(any(String.class))).thenReturn(koodisto);
+    }
+    
+    private KoodiVersio getMatchingCodeElementVersion(Integer versio, KoodiVersio[] versios) {
+        for (KoodiVersio koodiVersio : versios) {
+            if(versio.equals(koodiVersio.getVersio()))
+                return koodiVersio;
+        }
+        return null;
     }
 
     void returnGivenKoodiVersiosWithKoodiFromMockedKoodiService(KoodiVersio... versios) {
@@ -408,6 +457,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     private KoodiVersio givenKoodiVersioWithTilaAndMetadata(Integer versio, Tila tila, KoodiMetadata ... datas) {
         KoodiVersio kv = givenKoodiVersioWithMetadata(versio, datas);
         kv.setTila(tila);
+        kv.getKoodistoVersios().iterator().next().getKoodistoVersio().setTila(tila);
         return kv;
     }
     

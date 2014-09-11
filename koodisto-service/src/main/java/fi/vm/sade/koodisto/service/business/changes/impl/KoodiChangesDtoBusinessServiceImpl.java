@@ -9,6 +9,7 @@ import java.util.Set;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -23,31 +24,39 @@ import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
+import fi.vm.sade.koodisto.model.Koodisto;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
+import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.ChangesDateComparator;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessService;
 
+@Transactional(readOnly = true)
 @Service
 public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusinessService {
     
     @Autowired
     private KoodiBusinessService service;
+    
+    @Autowired
+    private KoodistoBusinessService koodistoService;
 
     @Override
     public KoodiChangesDto getChangesDto(String uri, Integer versio, boolean compareToLatestAccepted) {
         KoodiVersio koodiVersio = service.getKoodiVersio(uri, versio);
         KoodiVersio latestKoodiVersio = fetchLatestDesiredCodeVersion(uri, compareToLatestAccepted);
-        return constructChangesDto(koodiVersio, latestKoodiVersio);
+        return constructChangesDto(koodiVersio, latestKoodiVersio, compareToLatestAccepted);
     }
     
     @Override
     public KoodiChangesDto getChangesDto(String uri, Date date, boolean compareToLatestAccepted) {
         KoodiVersio koodiVersio = determineCodeVersionThatMatchesDate(uri, date);
         KoodiVersio latestKoodiVersio = fetchLatestDesiredCodeVersion(uri, compareToLatestAccepted);
-        return constructChangesDto(koodiVersio, latestKoodiVersio);
+        return constructChangesDto(koodiVersio, latestKoodiVersio, compareToLatestAccepted);
     }
-
+    
     private KoodiVersio determineCodeVersionThatMatchesDate(String uri, Date date) {
         return new KoodiChangesDateComparator().getClosestMatchingEntity(date, service.getKoodi(uri).getKoodiVersios());
     }
@@ -66,7 +75,10 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         return service.getLatestKoodiVersio(uri);
     }
 
-    private KoodiChangesDto constructChangesDto(KoodiVersio koodiVersio, KoodiVersio latestKoodiVersio) {
+    private KoodiChangesDto constructChangesDto(KoodiVersio koodiVersio, KoodiVersio latestKoodiVersio, boolean compareToLatestAccepted) {
+        if (removedFromLatestCodes(latestKoodiVersio, compareToLatestAccepted)) {
+            return new KoodiChangesDto(MuutosTila.POISTETTU, null, null, null, null, null, null, null, null, null, null, null);
+        }
         List<SimpleKoodiMetadataDto> changedMetas = changedMetadatas(koodiVersio.getMetadatas(), latestKoodiVersio.getMetadatas());
         List<SimpleKoodiMetadataDto> removedMetas = removedMetadatas(koodiVersio.getMetadatas(), latestKoodiVersio.getMetadatas());
         DatesChangedHandler dateHandler = DatesChangedHandler.setDatesHaveChanged(koodiVersio.getVoimassaAlkuPvm(), koodiVersio.getVoimassaLoppuPvm(),
@@ -79,6 +91,33 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
                 addedRelations, removedRelations, passiveRelations);
         return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, addedRelations, removedRelations, passiveRelations, 
                 latestKoodiVersio.getPaivitysPvm(), dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, tilaHasChanged);
+    }
+    
+    private boolean removedFromLatestCodes(KoodiVersio koodiVersio, boolean compareToLatestAccepted) {
+        Koodisto koodisto = koodistoService.getKoodistoByKoodistoUri(koodiVersio.getKoodi().getKoodisto().getKoodistoUri());
+        KoodistoVersio koodistoVersio = getMatchingKoodistoVersio(koodisto.getKoodistoVersios(), compareToLatestAccepted);
+        return !containsCodeElementVersion(koodiVersio, koodistoVersio);
+    }
+
+    private boolean containsCodeElementVersion(KoodiVersio koodiVersio, KoodistoVersio koodistoVersio) {
+        Collection<KoodiVersio> koodiVersios = Collections2.transform(koodistoVersio.getKoodiVersios(), new Function<KoodistoVersioKoodiVersio, KoodiVersio>() {
+
+            @Override
+            public KoodiVersio apply(KoodistoVersioKoodiVersio input) {
+                return input.getKoodiVersio();
+            }
+            
+        });
+        return koodiVersios.contains(koodiVersio);
+    }
+
+    private KoodistoVersio getMatchingKoodistoVersio(Set<KoodistoVersio> koodistoVersios, boolean compareToLatestAccepted) {
+        KoodistoVersio latestMatching = null;
+        for (KoodistoVersio kv : koodistoVersios) {
+            latestMatching = latestMatching == null || (latestMatching.getVersio() < kv.getVersio() && (!compareToLatestAccepted || Tila.HYVAKSYTTY.equals(kv.getTila()))) ? 
+                    kv : latestMatching;
+        }
+        return latestMatching;
     }
 
     private List<SimpleCodeElementRelation> passiveRelations(KoodiVersio kv, KoodiVersio latestKoodiVersio) {

@@ -729,7 +729,7 @@ public class CodeElementResourceTest {
         ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio+1);
         assertEquals(1, codeElement.getIncludesCodeElements().size());
         assertEquals(1, codeElement.getWithinCodeElements().size());
-        assertEquals(2, codeElement.getLevelsWithCodeElements().size());
+        assertEquals(1, codeElement.getLevelsWithCodeElements().size());
 
         assertEquals("uusisavekoodinsuhde1", codeElement.getIncludesCodeElements().get(0).codeElementUri);
         assertEquals("uusisavekoodinsuhde2", codeElement.getWithinCodeElements().get(0).codeElementUri);
