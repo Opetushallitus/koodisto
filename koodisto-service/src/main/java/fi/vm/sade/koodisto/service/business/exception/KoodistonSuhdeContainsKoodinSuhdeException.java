@@ -6,11 +6,15 @@ public class KoodistonSuhdeContainsKoodinSuhdeException extends
 SadeBusinessException {
 
     private static final long serialVersionUID = 4713895721067413817L;
-
     public static final String ERROR_KEY = KoodistonSuhdeContainsKoodinSuhdeException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.codes.contains.codeelement.relations";
 
     public KoodistonSuhdeContainsKoodinSuhdeException(String message) {
         super(message);
+    }
+    
+    public KoodistonSuhdeContainsKoodinSuhdeException(){
+        super(ERROR_MESSAGE);
     }
 
     @Override

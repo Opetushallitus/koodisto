@@ -48,10 +48,10 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
             KoodiVersio koodiVersio = koodinSuhde.getYlakoodiVersio();
             switch (koodinSuhde.getSuhteenTyyppi()) {
             case RINNASTEINEN:
-                converted.getLevelsWithCodeElements().add(makeRelationCodeElement(koodiVersio, false));
+                converted.getLevelsWithCodeElements().add(makeRelationCodeElement(koodiVersio, koodinSuhde.isPassive()));
                 break;
             case SISALTYY:
-                converted.getWithinCodeElements().add(makeRelationCodeElement(koodiVersio, false));
+                converted.getWithinCodeElements().add(makeRelationCodeElement(koodiVersio, koodinSuhde.isPassive()));
                 break;
             }
         }
@@ -60,10 +60,10 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
             KoodiVersio koodiVersio = koodinSuhde.getAlakoodiVersio();
             switch (koodinSuhde.getSuhteenTyyppi()) {
             case RINNASTEINEN:
-                converted.getLevelsWithCodeElements().add(makeRelationCodeElement(koodiVersio, false));
+                converted.getLevelsWithCodeElements().add(makeRelationCodeElement(koodiVersio, koodinSuhde.isPassive()));
                 break;
             case SISALTYY:
-                converted.getIncludesCodeElements().add(makeRelationCodeElement(koodiVersio, false));
+                converted.getIncludesCodeElements().add(makeRelationCodeElement(koodiVersio, koodinSuhde.isPassive()));
                 break;
             }
         }

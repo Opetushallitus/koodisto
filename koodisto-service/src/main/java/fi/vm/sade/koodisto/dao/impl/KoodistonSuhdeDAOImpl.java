@@ -127,12 +127,15 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
     }
 
     private KoodistonSuhde insertNewRelation(KoodistoVersio parent, KoodistoVersio child, KoodistonSuhde relation) {
+        return insert(createNewRelation(parent, child, relation));
+    }
+
+    private KoodistonSuhde createNewRelation(KoodistoVersio parent, KoodistoVersio child, KoodistonSuhde relation) {
         KoodistonSuhde newRelation = new KoodistonSuhde();
         newRelation.setAlakoodistoVersio(child);
         newRelation.setYlakoodistoVersio(parent);
         newRelation.setVersio(relation.getVersio() + 1);
         newRelation.setSuhteenTyyppi(relation.getSuhteenTyyppi());
-        insert(newRelation);
         return newRelation;
     }
 

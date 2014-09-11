@@ -199,7 +199,8 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     $scope.codeElementUri = $routeParams.codeElementUri;
     $scope.codeElementVersion = $routeParams.codeElementVersion;
     $scope.errorMessage = $filter('i18n')('field.required');
-    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.atLeastOneName');
+    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.at.least.one.name');
+    $scope.errorMessageIfOtherInfoIsGiven = $filter('i18n')('field.required.if.other.info.is.given');
     $scope.sortBy = 'name';
 
     if (!isModalController) {
@@ -221,10 +222,33 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         $scope.model.alerts.splice(index, 1);
     };
 
+    $scope.redirectCancel = function() {
+        $location.path("/koodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion);
+    };
+    
     $scope.cancel = function() {
-        $location.path("/koodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion).search({
-            edited : true
-        });
+        $scope.closeCancelConfirmModal();
+        $scope.redirectCancel();
+    };
+    
+    $scope.showCancelConfirmModal = function(formHasChanged) {
+        if (formHasChanged) {
+            $scope.model.cancelConfirmModal = $modal.open({
+                templateUrl : 'confirmcancel.html',
+                controller : CodeElementEditorController,
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
+                }
+            });
+        } else {
+            $scope.redirectCancel();
+        }
+    };
+    
+    $scope.closeCancelConfirmModal = function() {
+        $scope.model.cancelConfirmModal.close();
     };
 
     $scope.submit = function() {

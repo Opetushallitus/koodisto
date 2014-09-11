@@ -10,9 +10,11 @@ import fi.vm.sade.generic.service.exception.SadeBusinessException;
 public class InvalidKoodiCsvLineException extends SadeBusinessException {
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodistoImportException.class.getCanonicalName();
-
+    private static final String ERROR_MESSAGE = "error.codes.invalid.csv.file";
+    
+    
     public InvalidKoodiCsvLineException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public InvalidKoodiCsvLineException(String message, Throwable cause) {
@@ -24,7 +26,7 @@ public class InvalidKoodiCsvLineException extends SadeBusinessException {
     }
 
     public InvalidKoodiCsvLineException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

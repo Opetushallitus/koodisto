@@ -9,6 +9,7 @@ import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
@@ -27,8 +28,9 @@ public interface KoodiBusinessService {
      * 
      * @param koodistoUri
      * @param koodiList
+     * @return 
      */
-    void massCreate(String koodistoUri, List<UpdateKoodiDataType> koodiList);
+    KoodistoVersio massCreate(String koodistoUri, List<UpdateKoodiDataType> koodiList);
 
     /**
      * Lists koodis by the relation to given koodi.

@@ -6,9 +6,10 @@ public class KoodiVersioNotPassiivinenException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodiVersioNotPassiivinenException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.codeelement.not.passive";
 
     public KoodiVersioNotPassiivinenException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public KoodiVersioNotPassiivinenException(String message, Throwable cause) {
@@ -20,7 +21,7 @@ public class KoodiVersioNotPassiivinenException extends SadeBusinessException {
     }
 
     public KoodiVersioNotPassiivinenException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

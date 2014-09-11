@@ -167,7 +167,8 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
     $scope.errorMessage = $filter('i18n')('field.required');
-    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.atLeastOneName');
+    $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.at.least.one.name');
+    $scope.errorMessageIfOtherInfoIsGiven = $filter('i18n')('field.required.if.other.info.is.given');
     
     if (!isModalController) {
         CodesEditorModel.init($scope,$routeParams.codesUri, $scope.codesVersion);
@@ -177,9 +178,33 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         $scope.model.alerts.splice(index, 1);
     };
 
+    $scope.redirectCancel = function() {
+        $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.codesVersion);
+    };
+    
     $scope.cancel = function() {
-        //must force refresh since relation changes don't require saving
-        $location.path("/koodisto/"+$scope.codesUri+"/"+$scope.codesVersion).search({forceRefresh: true});
+        $scope.closeCancelConfirmModal();
+        $scope.redirectCancel();
+    };
+    
+    $scope.showCancelConfirmModal = function(formHasChanged) {
+        if (formHasChanged) {
+            $scope.model.cancelConfirmModal = $modal.open({
+                templateUrl : 'confirmcancel.html',
+                controller : CodesEditorController,
+                resolve : {
+                    isModalController : function() {
+                        return true;
+                    }
+                }
+            });
+        } else {
+            $scope.redirectCancel();
+        }
+    };
+    
+    $scope.closeCancelConfirmModal = function() {
+        $scope.model.cancelConfirmModal.close();
     };
 
     $scope.submit = function() {
@@ -264,8 +289,19 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
             Treemodel.refresh();
             $location.path("/koodisto/"+$scope.codesUri+"/"+result[0]).search({forceRefresh: true});
         }, function(error) {
-            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
-            $scope.model.alerts.push(alert);
+            if (error.data == "error.codes.has.no.codeelements") {
+                var alert = {
+                    type : 'info',
+                    msg : jQuery.i18n.prop(error.data)
+                };
+                $scope.model.alerts.push(alert);
+            } else {
+                var alert = {
+                    type : 'danger',
+                    msg : jQuery.i18n.prop(error.data)
+                };
+                $scope.model.alerts.push(alert);
+            }
         });
     };
 
@@ -438,7 +474,6 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         $scope.model.levelsRelationToRemove = null;
         $scope.model.includesRelationToRemove = null;
         $scope.model.withinRelationToRemove = null;
-        $scope.model.modalInstance.close();
     };
     
     $scope.removeFromWithinCodes = function(codes) {

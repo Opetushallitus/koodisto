@@ -12,9 +12,10 @@ public class KoodistoRyhmaNotFoundException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodistoRyhmaNotFoundException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.codesgroup.not.found";
 
     public KoodistoRyhmaNotFoundException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public KoodistoRyhmaNotFoundException(String message, Throwable cause) {
@@ -26,7 +27,7 @@ public class KoodistoRyhmaNotFoundException extends SadeBusinessException {
     }
 
     public KoodistoRyhmaNotFoundException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

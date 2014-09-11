@@ -52,6 +52,7 @@
   <koodisto id="809" koodistouri="vanhasuhdepassivoidaan" version="0" organisaatioOid="1.2.2004.6"/>
   <koodisto id="810" koodistouri="809suhdetahan" version="0" organisaatioOid="1.2.2004.6"/>
   <koodisto id="811" koodistouri="passiivisuhdeeikopioidu" version="0" organisaatioOid="1.2.2004.6"/>
+  <koodisto id="812" koodistouri="koodistonsuhdeitsensakanssa2" version="0" organisaatioOid="1.2.2004.6"/>
   
   <koodi id="3" koodisto_id="1" version="0" koodiuri="3"/>
   <koodi id="5" koodisto_id="1" version="0" koodiuri="5"/>
@@ -931,6 +932,7 @@
   <koodistoversio id="907" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="807"/>
   <koodistoversio id="910" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="808"/>
   <koodistoversio id="911" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="811"/>
+  <koodistoversio id="912" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="812"/>
 
   
   <koodistometadata id="2" kieli="FI" nimi="Kunnat" version="0" koodistoversio_id="1" kuvaus="Kunnat"/>
@@ -1016,6 +1018,7 @@
   <koodistometadata id="912" kieli="FI" nimi="muutetaanaktiiviseksi" version="0" koodistoversio_id="807" kuvaus="Tämä hyväksytään"/>   
   <koodistometadata id="913" kieli="FI" nimi="sisaltyy" version="0" koodistoversio_id="808" kuvaus="sisaltyy"/>
   <koodistometadata id="914" kieli="FI" nimi="passiivinensuhdeeikopioidu" version="0" koodistoversio_id="911" kuvaus="Passiivinen koodistonsuhde ei kopioidu uuteen versioon"/> 
+  <koodistometadata id="915" kieli="FI" nimi="RelaatioItseensäRinnasteinen" version="0" koodistoversio_id="912" kuvaus="Tällä on Hyväksytty relaatio itseensä"/>    
   
   <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="1" koodiversio_id="3"/>
   <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="1" koodiversio_id="5"/>
@@ -1285,5 +1288,7 @@
   <koodistonsuhde id="911" alakoodistoversio_id="808" ylakoodistoversio_id="806" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="912" alakoodistoversio_id="808" ylakoodistoversio_id="807" versio="2" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="913" alakoodistoversio_id="911" ylakoodistoversio_id="506" versio="2" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="true" alakoodistostapassiivinen="false"/>
+  <koodistonsuhde id="914" alakoodistoversio_id="912" ylakoodistoversio_id="912" versio="1" suhteentyyppi="RINNASTEINEN" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
+>>>>>>> origin/develop
 
 </dataset>

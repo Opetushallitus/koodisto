@@ -6,7 +6,10 @@ import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.*;
+
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,10 +27,12 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     @Autowired
     private KoodistoRyhmaMetadataDAO koodistoRyhmaMetadataDAO;
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
+
     @Override
     public KoodistoRyhma createKoodistoRyhma(final KoodistoRyhmaDto koodistoRyhmaDto) {
         if (koodistoRyhmaDto == null || StringUtils.isBlank(koodistoRyhmaDto.getKoodistoRyhmaUri())) {
-            throw new KoodistoRyhmaUriEmptyException("codesgroup.uri.is.empty");
+            throw new KoodistoRyhmaUriEmptyException();
         }
         List<KoodistoRyhmaMetadata> metadatas = new ArrayList<KoodistoRyhmaMetadata>();
         metadatas.addAll(koodistoRyhmaDto.getKoodistoRyhmaMetadatas());
@@ -46,14 +51,15 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     private void checkRequiredMetadataFields(List<KoodistoRyhmaMetadata> metadatas) {
         for (KoodistoRyhmaMetadata md : metadatas) {
             if (StringUtils.isBlank(md.getNimi())) {
-                throw new KoodistoRyhmaNimiEmptyException("No koodistoryhmä nimi defined for language " + md.getKieli().name());
+                logger.error("No koodistoryhmä nimi defined for language " + md.getKieli().name());
+                throw new KoodistoRyhmaNimiEmptyException();
             }
         }
     }
 
     private void checkMetadatas(List<KoodistoRyhmaMetadata> metadatas) {
         if (metadatas == null || metadatas.isEmpty()) {
-            throw new MetadataEmptyException("codes.metadata.is.empty");
+            throw new MetadataEmptyException();
         } else {
             checkRequiredMetadataFields(metadatas);
         }
@@ -62,7 +68,7 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     @Override
     public KoodistoRyhma updateKoodistoRyhma(final KoodistoRyhmaDto koodistoRyhmaDto) {
         if (koodistoRyhmaDto == null || StringUtils.isBlank(koodistoRyhmaDto.getKoodistoRyhmaUri())) {
-            throw new KoodistoRyhmaUriEmptyException("codesgroup.uri.is.empty");
+            throw new KoodistoRyhmaUriEmptyException();
         }
         List<KoodistoRyhmaMetadata> metadatas = new ArrayList<KoodistoRyhmaMetadata>();
         metadatas.addAll(koodistoRyhmaDto.getKoodistoRyhmaMetadatas());
@@ -108,7 +114,7 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
         if (koodistoRyhma.getKoodistos().isEmpty()) {
             koodistoRyhmaDAO.remove(koodistoRyhma);
         } else {
-            throw new KoodistoRyhmaNotEmptyException("Koodistoryhmä is not empty");
+            throw new KoodistoRyhmaNotEmptyException();
         }
     }
 }

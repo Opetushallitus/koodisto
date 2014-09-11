@@ -1,7 +1,10 @@
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.generic.dao.GenericDAO;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.validation.ConstraintViolationException;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +16,8 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolationException;
-import java.util.Calendar;
-import java.util.Date;
-
+import fi.vm.sade.generic.dao.GenericDAO;
+import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -128,7 +129,7 @@ public class ValidationTest {
         try {
             genericDAO.insert(new KoodistoMetadata());
         } catch (ConstraintViolationException e) {
-            assertEquals(4, e.getConstraintViolations().size());
+            assertEquals(3, e.getConstraintViolations().size());
             throw e;
         }
     }
@@ -261,7 +262,7 @@ public class ValidationTest {
         try {
             genericDAO.insert(new KoodiMetadata());
         } catch (ConstraintViolationException e) {
-            assertEquals(5, e.getConstraintViolations().size());
+            assertEquals(3, e.getConstraintViolations().size());
             throw e;
         }
     }

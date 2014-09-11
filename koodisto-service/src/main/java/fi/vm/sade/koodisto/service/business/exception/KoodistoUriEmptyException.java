@@ -12,9 +12,10 @@ public class KoodistoUriEmptyException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodistoUriEmptyException.class.getCanonicalName();
+    private static final String ERROR_MESSAGE = "error.codes.uri.empty";
 
     public KoodistoUriEmptyException() {
-        super();
+        super(ERROR_MESSAGE);
     }
 
     public KoodistoUriEmptyException(String message, Throwable cause) {
@@ -26,7 +27,7 @@ public class KoodistoUriEmptyException extends SadeBusinessException {
     }
 
     public KoodistoUriEmptyException(Throwable cause) {
-        super(cause);
+        super(ERROR_MESSAGE, cause);
     }
 
     @Override

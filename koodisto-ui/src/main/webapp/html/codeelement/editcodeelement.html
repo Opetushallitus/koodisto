@@ -112,8 +112,19 @@
     </div>
     <div class="modal-footer">
         <span ng-if="clickedSubmit">{{'codes.viewpage.codeelements.saving' | i18n}}</span>
-        <button ng-disabled="clickedSubmit" class="btn btn-primary" ng-click="okcodeelement(); clickedSubmit=true">{{'codes.save' | i18n}}</button>
+        <button ng-disabled="clickedSubmit" class="btn btn-primary" ng-click="okcodeelement(); clickedSubmit=true">{{'codes.ok' | i18n}}</button>
         <button ng-disabled="clickedSubmit" class="btn btn-warning" ng-click="cancelcodeelement()">{{'codes.cancel' | i18n}}</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="confirmcancel.html">
+    <div class="modal-header">
+        <h3>{{'codeelement.editpage.confirmcancel.header' | i18n}}</h3>
+    </div>
+    <div class="modal-body">{{'codeelement.editpage.confirmcancel.text' | i18n}}</div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="cancel()">{{'codes.ok' | i18n}}</button>
+        <button class="btn btn-warning" ng-click="closeCancelConfirmModal()">{{'codes.cancel' | i18n}}</button>
     </div>
 </script>
 
@@ -148,7 +159,7 @@
                     ng-required="!namesv && !nameen || shortnamefi || descriptionfi" />
                 <span class="text-error" ng-if="form.namefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
                     <span ng-if="!namesv && !nameen">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namesv && !nameen)">{{errorMessage}}</span>
+                    <span ng-if="!(!namesv && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
@@ -158,7 +169,7 @@
                     ng-required="!namefi && !nameen || shortnamesv || descriptionsv" />
                 <span class="text-error" ng-if="form.namesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
                     <span ng-if="!namefi && !nameen">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namefi && !nameen)">{{errorMessage}}</span>
+                    <span ng-if="!(!namefi && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
@@ -169,7 +180,7 @@
                     ng-required="!namefi && !namesv || shortnameen || descriptionen" />
                 <span class="text-error" ng-if="form.nameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
                     <span ng-if="!namefi && !namesv">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namefi && !namesv)">{{errorMessage}}</span>
+                    <span ng-if="!(!namefi && !namesv)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
@@ -207,21 +218,21 @@
             <label for="shortname_fi" class="control-label">{{'codeelement.editpage.shortname' | i18n}}</label>
             <div class="controls">
                 <input id="shortname_fi" type="text" maxlength="256" class="width-30" ng-model="shortnamefi" name="shortnamefi"
-                    placeholder="{{'codes.finnish' | i18n}}" ng-required="namefi" />
+                    placeholder="{{'codes.finnish' | i18n}}" />
                 <span class="text-error" ng-if="form.shortnamefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
                 <input id="shortname_sv" type="text" maxlength="256" class="width-30" ng-model="shortnamesv" name="shortnamesv"
-                    placeholder="{{'codes.swedish' | i18n}}" ng-required="namesv" />
+                    placeholder="{{'codes.swedish' | i18n}}" />
                 <span class="text-error" ng-if="form.shortnamesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
                 <input id="shortname_en" type="text" maxlength="256" class="width-30" ng-model="shortnameen" name="shortnameen"
-                    placeholder="{{'codes.english' | i18n}}" ng-required="nameen" />
+                    placeholder="{{'codes.english' | i18n}}" />
                 <span class="text-error" ng-if="form.shortnameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
@@ -237,7 +248,7 @@
             <label for="description_fi" class="control-label">{{'codeelement.editpage.description' | i18n}}</label>
             <div class="controls">
                 <textarea id="description_fi" maxlength="2048" class="width-30" ng-model="descriptionfi" name="descriptionfi"
-                    placeholder="{{'codes.finnish' | i18n}}" ng-required="namefi"></textarea>
+                    placeholder="{{'codes.finnish' | i18n}}" ></textarea>
                 <span class="text-error" ng-if="form.descriptionfi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
@@ -245,7 +256,7 @@
         <div class="control-group">
             <div class="controls">
                 <textarea id="description_sv" maxlength="2048" class="width-30" ng-model="descriptionsv" name="descriptionsv"
-                    placeholder="{{'codes.swedish' | i18n}}" ng-required="namesv"></textarea>
+                    placeholder="{{'codes.swedish' | i18n}}" ></textarea>
                 <span class="text-error" ng-if="form.descriptionsv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
@@ -253,7 +264,7 @@
         <div class="control-group">
             <div class="controls">
                 <textarea id="description_en" maxlength="2048" class="width-30" ng-model="descriptionen" name="descriptionen"
-                    placeholder="{{'codes.english' | i18n}}" ng-required="nameen"></textarea>
+                    placeholder="{{'codes.english' | i18n}}" ></textarea>
                 <span class="text-error" ng-if="form.descriptionen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
@@ -264,7 +275,7 @@
             <label for="withincodes" class="control-label">{{'codeelement.editpage.withincodeelements' | i18n}}</label><br>
             <div class="controls">
                 <button id="withincodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector"
-                    ng-click="show('withincodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
+                    ng-click="show('withincodes'); form.$setDirty()">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
             </div>
         </div>
 
@@ -283,7 +294,7 @@
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
-                                    ng-click="removeFromWithinCodeElements(codeElement)"></i></td>
+                                    ng-click="removeFromWithinCodeElements(codeElement); form.$setDirty()"></i></td>
                         </tr>
 
                     </tbody>
@@ -302,7 +313,7 @@
             <label for="includescodes" class="control-label">{{'codeelement.editpage.includescodeelements' | i18n}}</label><br>
             <div class="controls">
                 <button id="includescodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector"
-                    ng-click="show('includescodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
+                    ng-click="show('includescodes'); form.$setDirty()">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
             </div>
         </div>
 
@@ -321,7 +332,7 @@
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
-                                    ng-click="removeFromIncludesCodeElements(codeElement)"></i></td>
+                                    ng-click="removeFromIncludesCodeElements(codeElement); form.$setDirty()"></i></td>
                         </tr>
                     </tbody>
                 </table>
@@ -338,7 +349,7 @@
             <label for="levelswithcodes" class="control-label">{{'codeelement.editpage.levelswithcodeelements' | i18n}}</label><br>
             <div class="controls">
                 <button id="levelswithcodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codeElementSelector"
-                    ng-click="show('levelswithcodes')">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
+                    ng-click="show('levelswithcodes'); form.$setDirty()">{{'codeelement.editpage.choosecodeelements' | i18n}}</button>
             </div>
         </div>
 
@@ -357,7 +368,7 @@
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
-                                    ng-click="removeFromLevelsWithCodeElements(codeElement)"></i></td>
+                                    ng-click="removeFromLevelsWithCodeElements(codeElement); form.$setDirty()"></i></td>
                         </tr>
                     </tbody>
                 </table>
@@ -547,7 +558,7 @@
         <div class="row-fluid navbar-fixed-bottom">
             <button ng-disabled="!form.$valid" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-primary pull-right" type="submit">{{'codes.save'
                 | i18n}}</button>
-            <button type="button" class="btn pull-right" ng-click="cancel()">{{'codes.cancel' | i18n}}</button>
+            <button type="button" class="btn pull-right" ng-click="showCancelConfirmModal(form.$dirty)">{{'codes.cancel' | i18n}}</button>
         </div>
 
     </form>
