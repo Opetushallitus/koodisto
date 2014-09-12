@@ -21,9 +21,9 @@ import com.googlecode.flyway.core.api.migration.spring.SpringJdbcMigration;
 
 import fi.vm.sade.koodisto.model.Tila;
 
-public class V12__set_old_relations_passive implements SpringJdbcMigration {
+public class V13__set_old_relations_passive implements SpringJdbcMigration {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(V12__set_old_relations_passive.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(V13__set_old_relations_passive.class);
     
     private List<CodesUriVersionDto> codesUriVersions;
     private Map<Long, String> errorMap = new HashMap<>();
