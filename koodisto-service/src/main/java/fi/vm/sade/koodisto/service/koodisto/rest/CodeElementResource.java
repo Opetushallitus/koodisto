@@ -16,7 +16,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.annotate.JsonView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -246,9 +245,18 @@ public class CodeElementResource {
     public Response getChangesToCodeElement(@ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
             @ApiParam(value = "Koodin versio") @PathParam("codeElementVersion") Integer codeElementVersion, 
             @ApiParam(value = "Verrataanko viimeiseen hyväksyttyyn versioon") @DefaultValue("false") @QueryParam("compareToLatestAccepted") boolean compareToLatestAccepted) {
-        //TODO: use validators when OVT-7653 is merged
-        KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, codeElementVersion, compareToLatestAccepted);
-        return Response.status(Response.Status.OK).entity(dto).build();
+        try {
+            ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException("error.validation.codeelementversion"));
+            KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, codeElementVersion, compareToLatestAccepted);
+            return Response.status(Response.Status.OK).entity(dto).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: get changes. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Fetching changes to code element failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
+        }
     }
     
     @GET
@@ -267,10 +275,20 @@ public class CodeElementResource {
             @ApiParam(value = "Minuutti") @PathParam("minute") Integer minute,
             @ApiParam(value = "Sekunti") @PathParam("second") Integer second,
             @ApiParam(value = "Verrataanko viimeiseen hyväksyttyyn versioon") @DefaultValue("false") @QueryParam("compareToLatestAccepted") boolean compareToLatestAccepted) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, month, dayOfMonth, hourOfDay, minute, second);
-        KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, cal.getTime(), compareToLatestAccepted);
-        return Response.status(Response.Status.OK).entity(dto).build();
+        try {
+            ValidatorUtil.validateDateParameters(dayOfMonth, month, year, hourOfDay, minute, second);
+            Calendar cal = Calendar.getInstance();
+            cal.set(year, month, dayOfMonth, hourOfDay, minute, second);
+            KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, cal.getTime(), compareToLatestAccepted);
+            return Response.status(Response.Status.OK).entity(dto).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: get changes. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Fetching changes to code element failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
+        }
     }
 
     @POST

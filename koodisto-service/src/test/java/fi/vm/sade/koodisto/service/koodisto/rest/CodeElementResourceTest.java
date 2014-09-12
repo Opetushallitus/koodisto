@@ -636,6 +636,21 @@ public class CodeElementResourceTest {
     public void returnsCodeElementHasBeenRemovedWhenItIsNotFoundInLatestCodesVersion() {
         assertEquals(MuutosTila.POISTETTU, ((KoodiChangesDto) resource.getChangesToCodeElement("poistettu", 1, false).getEntity()).muutosTila);
     }
+    
+    @Test
+    public void returnsBadRequestWhenVersionNumberIsZeroForQueryingCodeElementChanges() {
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), resource.getChangesToCodeElement("poistettu", 0, false).getStatus());
+    }
+    
+    @Test
+    public void returnsBadRequestForBadDateParametersWhenQueryingCodeElementChanges() {
+        int badRequest = Response.Status.BAD_REQUEST.getStatusCode();
+        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 0,0, -1, false).getStatus());
+        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 0,-1, 0, false).getStatus());
+        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 25,0, 0, false).getStatus());
+        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 32, 1, 4000, 0,0, 0, false).getStatus());
+        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 15, 4000, 0,0, 0, true).getStatus());
+    }
 
     @Test
     public void savesCodeElementWithNewName() {
