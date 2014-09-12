@@ -238,7 +238,8 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
             String upperCodeUri = input.getYlakoodiVersio().getKoodi().getKoodiUri();
             String lowerCodeUri = input.getAlakoodiVersio().getKoodi().getKoodiUri();
             for (KoodinSuhde ks : relationsToCompare) {
-                if (lowerCodeUri.equals(ks.getAlakoodiVersio().getKoodi().getKoodiUri()) && upperCodeUri.equals(ks.getYlakoodiVersio().getKoodi().getKoodiUri())) {
+                if (lowerCodeUri.equals(ks.getAlakoodiVersio().getKoodi().getKoodiUri()) && upperCodeUri.equals(ks.getYlakoodiVersio().getKoodi().getKoodiUri()) 
+                        && ks.getSuhteenTyyppi().equals(input.getSuhteenTyyppi())) {
                     missing = false;
                 }
             }

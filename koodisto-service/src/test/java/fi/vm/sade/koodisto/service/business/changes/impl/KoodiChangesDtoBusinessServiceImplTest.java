@@ -312,6 +312,31 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     }
     
     @Test
+    public void returnsHasChangedForMultipleRelations() {
+        Integer versio = 1;
+        KoodiVersio original = givenKoodiVersioWithRelations(versio, givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "kirahvi")), givenKoodinSuhde(SuhteenTyyppi.RINNASTEINEN, null, givenKoodiVersio(3, "seepra")));
+        KoodiVersio latest = givenKoodiVersioWithRelations(versio + 1, givenPassiveKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "kirahvi"), true, false), givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "gnu")));
+        KoodiChangesDto dto = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
+        assertEquals(1, dto.lisatytKoodinSuhteet.size());
+        assertEquals(1, dto.poistetutKoodinSuhteet.size());
+        assertEquals(1, dto.passivoidutKoodinSuhteet.size());
+    }
+    
+    @Test
+    public void returnsHasChangedForMultipleRelationsAndTreatsRelationsWithSameCodeUriButDifferentRelationTypeAsDifferent() {
+        Integer versio = 1;
+        KoodiVersio relationCode = givenKoodiVersio(3, "seepra");
+        KoodiVersio original = givenKoodiVersioWithRelations(versio, givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "kirahvi")), givenKoodinSuhde(SuhteenTyyppi.RINNASTEINEN, null, relationCode));
+        KoodiVersio latest = givenKoodiVersioWithRelations(versio + 1, givenPassiveKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "kirahvi"), true, false), givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, relationCode));
+        KoodiChangesDto dto = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
+        assertEquals(1, dto.lisatytKoodinSuhteet.size());
+        assertEquals(1, dto.poistetutKoodinSuhteet.size());
+        assertEquals(1, dto.passivoidutKoodinSuhteet.size());
+    }
+    
+    @Test
     public void returnsHasBeenDeletedIfCodeElementIsNotFoundInLatestCodes() {
         int versio = 1;
         assertResultIsDeleted(givenDeletedResult(givenKoodiVersio(versio), givenKoodiVersio(versio + 1), false));
