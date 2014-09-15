@@ -1,12 +1,13 @@
 # Logger
 log4j.rootLogger={{env_loglevel}}, FILE
+log4j.appender.FILE.Threshold={{env_loglevel}}
 {# raw-endraw -välillä template engine ei tee mitään! #} 
+{% raw %}
 # Console output
 log4j.appender.STDOUT=org.apache.log4j.ConsoleAppender
 log4j.appender.STDOUT.Threshold=ERROR
 log4j.appender.STDOUT.layout.ConversionPattern=%d{ISO8601} %-5p {%X{user}} [%t] %-5p %c: %m%n
 # File output
-log4j.appender.FILE.Threshold={{env_loglevel}}
 log4j.appender.FILE.File=${user.home}/tomcat/logs/oph-koodisto.log
 log4j.appender.FILE=org.apache.log4j.RollingFileAppender
 log4j.appender.FILE.Append=true
@@ -14,6 +15,7 @@ log4j.appender.FILE.layout=org.apache.log4j.PatternLayout
 log4j.appender.FILE.layout.ConversionPattern=%d{ISO8601} %-5p {%X{user}} [%t] %-5p %c: %m%n
 log4j.appender.FILE.MaxFileSize=10MB
 log4j.appender.FILE.MaxBackupIndex=20
+{% endraw %}
 # By default hide these spammers by default
 log4j.logger.org.apache.cxf=ERROR
 log4j.logger.org.springframework=ERROR
