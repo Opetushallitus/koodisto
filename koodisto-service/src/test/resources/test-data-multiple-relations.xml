@@ -268,6 +268,7 @@
   <koodistoryhma id="3" koodistoryhmauri="varusteet" version="0"/>
   <koodistoryhma id="4" koodistoryhmauri="kulkuvalineet" version="0"/>
   <koodistoryhma id="5" koodistoryhmauri="abstrakti" version="0"/>
+  <koodistoryhma id="6" koodistoryhmauri="savetesti" version="0"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="1"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="2"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="3"/>
@@ -282,11 +283,16 @@
   <koodistoryhma_koodisto koodistoryhma_id="4" koodisto_id="12"/>
   <koodistoryhma_koodisto koodistoryhma_id="4" koodisto_id="13"/>
   <koodistoryhma_koodisto koodistoryhma_id="5" koodisto_id="15"/>
+  <koodistoryhma_koodisto koodistoryhma_id="6" koodisto_id="16"/>
+  <koodistoryhma_koodisto koodistoryhma_id="6" koodisto_id="17"/>
+  <koodistoryhma_koodisto koodistoryhma_id="6" koodisto_id="18"/>
+  <koodistoryhma_koodisto koodistoryhma_id="6" koodisto_id="19"/>
   <koodistoryhmametadata id="1" koodistoryhma_id="1" kieli="FI" nimi="Maantieto" version="0"/>
   <koodistoryhmametadata id="2" koodistoryhma_id="2" kieli="FI" nimi="Rakennukset" version="0"/>
   <koodistoryhmametadata id="3" koodistoryhma_id="3" kieli="FI" nimi="Varusteet" version="0"/>
   <koodistoryhmametadata id="4" koodistoryhma_id="4" kieli="FI" nimi="Kulkuvälineet" version="0"/>
   <koodistoryhmametadata id="5" koodistoryhma_id="5" kieli="FI" nimi="Abstrakteja testejä" version="0"/>
+  <koodistoryhmametadata id="6" koodistoryhma_id="6" kieli="FI" nimi="Talennukseen testikoodistot" version="0"/>
   
   <koodistonsuhde id="1" alakoodistoversio_id="1" ylakoodistoversio_id="2" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="2" alakoodistoversio_id="2" ylakoodistoversio_id="3" versio="1" suhteentyyppi="RINNASTEINEN" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
