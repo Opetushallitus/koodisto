@@ -446,7 +446,7 @@
   <koodiversio id="704" version="0" paivityspvm="2013-08-13" luotu="2013-01-01" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="2013-04-14" koodi_id="702" koodiarvo="wanha2"/>
   <koodiversio id="705" version="0" paivityspvm="2013-08-13" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="2013-04-14" koodi_id="703" koodiarvo="wanha2"/>
   <koodiversio id="706" version="0" paivityspvm="2013-08-13" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="2013-04-14" koodi_id="704" koodiarvo="tamansuhdepassivoidaan"/>
-  <koodiversio id="707" version="0" paivityspvm="2013-08-13" luotu="2013-01-01" tila="LUONNOS" versio="2" voimassaalkupvm="2013-04-14" koodi_id="704" koodiarvo="tamahyvaksytaan"/>
+  <koodiversio id="707" version="0" paivityspvm="2013-08-13" luotu="2013-01-01" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="2013-04-14" koodi_id="704" koodiarvo="tamahyvaksytaan"/>
   <koodiversio id="708" version="0" paivityspvm="2013-08-13" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="2013-04-14" koodi_id="705" koodiarvo="sisaltyy706ja707"/>
   <koodiversio id="709" version="0" paivityspvm="2013-08-13" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="2013-04-14" koodi_id="706" koodiarvo="passiivinensuhdeeikopioidu"/>
   
@@ -920,7 +920,7 @@
   <koodistoversio id="804" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" luotu="2013-01-01" tila="LUONNOS" versio="2" koodisto_id="702"/>
   <koodistoversio id="805" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="703"/>
   <koodistoversio id="806" version="0" paivityspvm="2013-04-15" voimassaalkupvm="2013-04-15" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="809"/>
-  <koodistoversio id="807" version="0" paivityspvm="2013-04-15" voimassaalkupvm="2013-04-15" luotu="2013-01-01" tila="LUONNOS" versio="2" koodisto_id="809"/>
+  <koodistoversio id="807" version="0" paivityspvm="2013-04-15" voimassaalkupvm="2013-04-15" luotu="2013-01-01" tila="HYVAKSYTTY" versio="2" koodisto_id="809"/>
   <koodistoversio id="808" version="0" paivityspvm="2013-04-15" voimassaalkupvm="2013-04-15" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="810"/>
   <koodistoversio id="900" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="800"/>
   <koodistoversio id="901" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="801"/>

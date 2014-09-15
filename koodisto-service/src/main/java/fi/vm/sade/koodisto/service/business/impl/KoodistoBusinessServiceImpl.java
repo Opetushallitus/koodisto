@@ -608,7 +608,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             KoodistoVersio previousVersion = koodistoVersioDAO.getPreviousKoodistoVersio(latest.getKoodisto().getKoodistoUri(), latest.getVersio());
             if (previousVersion != null) {
                 previousVersion.setVoimassaLoppuPvm(new Date());
-                setRelationsInPreviousVersionToPassive(previousVersion);
             }
         }
 
@@ -624,15 +623,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         latest.setPaivitysPvm(new Date());
 
         return latest;
-    }
-
-    private void setRelationsInPreviousVersionToPassive(KoodistoVersio previousVersion) {
-        for (KoodistonSuhde ks : previousVersion.getYlakoodistos()) {
-            ks.setAlaKoodistoPassive(true);
-        }
-        for (KoodistonSuhde ks : previousVersion.getAlakoodistos()) {
-            ks.setYlaKoodistoPassive(true);
-        }
     }
 
     @Override

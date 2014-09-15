@@ -270,10 +270,8 @@ public class KoodistoBusinessServiceTest {
 	@Test
 	public void setsOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsAccepted() throws Exception {
 	    String koodistoUri = "vanhasuhdepassivoidaan";
-	    UpdateKoodistoDataType dataType = DataUtils.convert(koodistoBusinessService.getLatestKoodistoVersio(koodistoUri));
-	    dataType.setTila(TilaType.HYVAKSYTTY);
-	    koodistoBusinessService.updateKoodisto(dataType);
-	    assertRelationsArePassive(koodistoBusinessService.getKoodistoVersio(koodistoUri, 1), koodistoUri, false);
+	    koodistoBusinessService.createNewVersion("vanhasuhdepassivoidaan");
+	    assertRelationsArePassive(koodistoBusinessService.getKoodistoVersio(koodistoUri, 2), koodistoUri, false);
 	}
 
 	@Transactional
