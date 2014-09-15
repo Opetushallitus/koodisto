@@ -1289,6 +1289,5 @@
   <koodistonsuhde id="912" alakoodistoversio_id="808" ylakoodistoversio_id="807" versio="2" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="913" alakoodistoversio_id="911" ylakoodistoversio_id="506" versio="2" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="true" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="914" alakoodistoversio_id="912" ylakoodistoversio_id="912" versio="1" suhteentyyppi="RINNASTEINEN" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
->>>>>>> origin/develop
 
 </dataset>
