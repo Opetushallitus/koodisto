@@ -23,6 +23,7 @@ import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -68,6 +69,15 @@ public class KoodistonSuhdeDAOImplTest {
         assertTrue(newVersion.getAlakoodistos().isEmpty());
         assertTrue(newVersion.getYlakoodistos().isEmpty());
     }
+    
+    @Test
+    public void oldRelationsAreSetToPassiveWhenCopying() {
+        KoodistoVersio original = versionDAO.read(Long.valueOf(1));
+        KoodistoVersio newVersion = givenNewKoodistoVersio(original);
+        suhdeDAO.copyRelations(original, newVersion);
+        assertOldRelationsArePassive(original, newVersion);
+    }
+
 
     @Test
     public void deleRelations() {
@@ -90,6 +100,21 @@ public class KoodistonSuhdeDAOImplTest {
         assertEquals(original.getAlakoodistos().size(), newVersion.getAlakoodistos().size());
     }
 
+    private void assertOldRelationsArePassive(KoodistoVersio original, KoodistoVersio newVersion) {
+        for (KoodistonSuhde ks : original.getYlakoodistos()) {
+            assertTrue(ks.isAlaKoodistoPassive());
+        }
+        for (KoodistonSuhde ks : original.getAlakoodistos()) {
+            assertTrue(ks.isYlaKoodistoPassive());
+        }
+        for (KoodistonSuhde ks : newVersion.getAlakoodistos()) {
+            assertFalse(ks.isPassive());
+        }
+        for (KoodistonSuhde ks : newVersion.getYlakoodistos()) {
+            assertFalse(ks.isPassive());
+        }
+    }
+    
     private KoodistoVersio givenNewKoodistoVersio(KoodistoVersio original) {
         KoodistoVersio newVersion = new KoodistoVersio();
         newVersion.setKoodisto(original.getKoodisto());

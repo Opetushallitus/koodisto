@@ -117,13 +117,23 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
             if (relation.isPassive()) {
                 continue;
             }
-            KoodistoVersio child = relation.getAlakoodistoVersio().getKoodisto().getKoodistoUri().equals(fresh.getKoodisto().getKoodistoUri()) ?
+            String koodistoUri = fresh.getKoodisto().getKoodistoUri();
+            KoodistoVersio child = relation.getAlakoodistoVersio().getKoodisto().getKoodistoUri().equals(koodistoUri) ?
                     fresh : relation.getAlakoodistoVersio();
-            KoodistoVersio parent = relation.getYlakoodistoVersio().getKoodisto().getKoodistoUri().equals(fresh.getKoodisto().getKoodistoUri()) ?
+            KoodistoVersio parent = relation.getYlakoodistoVersio().getKoodisto().getKoodistoUri().equals(koodistoUri) ?
                     fresh : relation.getYlakoodistoVersio();
             copiedRelations.add(insertNewRelation(parent, child, relation));
+            setOldRelationToPassive(relation, koodistoUri);
         }
         return copiedRelations;
+    }
+
+    private void setOldRelationToPassive(KoodistonSuhde relation, String koodistoUri) {
+        if (relation.getAlakoodistoVersio().getKoodisto().getKoodistoUri().equals(koodistoUri)) {
+            relation.setAlaKoodistoPassive(true);
+        } else {
+            relation.setYlaKoodistoPassive(true);
+        }
     }
 
     private KoodistonSuhde insertNewRelation(KoodistoVersio parent, KoodistoVersio child, KoodistonSuhde relation) {
