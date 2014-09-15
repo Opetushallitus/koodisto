@@ -291,7 +291,7 @@ public class KoodistoBusinessServiceTest {
              assertTrue((!lowerPassive && ks.isYlaKoodistoPassive()) || lowerPassive && ! ks.isYlaKoodistoPassive());
              assertTrue((lowerPassive && ks.isAlaKoodistoPassive()) || !lowerPassive && !ks.isAlaKoodistoPassive());
          }
-         for (KoodinSuhde ks : koodiBusinessService.getKoodiVersio(koodiUri, 1).getAlakoodis()) {
+         for (KoodinSuhde ks : koodiBusinessService.getKoodiVersio(koodiUri, 2).getAlakoodis()) {
              assertTrue(ks.isPassive());
              assertTrue((!lowerPassive && ks.isYlaKoodiPassive()) || lowerPassive && ! ks.isYlaKoodiPassive());
              assertTrue((lowerPassive && ks.isAlaKoodiPassive()) || !lowerPassive && !ks.isAlaKoodiPassive());

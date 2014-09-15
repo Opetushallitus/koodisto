@@ -683,10 +683,10 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         for (KoodinSuhde ks : latest.getYlakoodis()) {
             createNewKoodinSuhdeIfRelationReferencesLatestKoodiVersio(ks, newVersio, ks.getYlakoodiVersio(), true);
         }
-
         for (KoodinSuhde ks : latest.getAlakoodis()) {
             createNewKoodinSuhdeIfRelationReferencesLatestKoodiVersio(ks, ks.getAlakoodiVersio(), newVersio, false);
         }
+        setRelationsInPreviousVersionToPassive(latest);
     }
 
     private void createNewKoodinSuhdeIfRelationReferencesLatestKoodiVersio(KoodinSuhde ks, KoodiVersio ala, KoodiVersio yla, boolean checkUpperCode) {
@@ -719,7 +719,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             KoodiVersio previousVersion = koodiVersioDAO.getPreviousKoodiVersio(latest.getKoodi().getKoodiUri(), latest.getVersio());
             if (previousVersion != null) {
                 previousVersion.setVoimassaLoppuPvm(getValidEndDateForKoodiVersio(previousVersion, latest));
-                setRelationsInPreviousVersionToPassive(previousVersion);
             }
             latest.setTila(Tila.valueOf(tila.name()));
         }
