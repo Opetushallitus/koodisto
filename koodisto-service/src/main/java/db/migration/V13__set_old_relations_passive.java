@@ -207,9 +207,7 @@ public class V13__set_old_relations_passive implements SpringJdbcMigration {
 
         protected boolean isRelationActive(UriVersionDto uriVersion, Collection<T> matchingVersions) {
             UriVersionDto latest = getLatestVersion(uriVersion, matchingVersions);
-            return !Tila.PASSIIVINEN.equals(latest.tila) 
-                    && (latest.versio == uriVersion.versio 
-                    || (latest.versio == uriVersion.versio + 1 && Tila.LUONNOS.equals(latest.tila)));
+            return !Tila.PASSIIVINEN.equals(latest.tila) && latest.versio == uriVersion.versio;
         }
 
         private UriVersionDto getLatestVersion(UriVersionDto uriVersion, Collection<T> matchingVersions) {
@@ -241,10 +239,7 @@ public class V13__set_old_relations_passive implements SpringJdbcMigration {
                 List<CodesUriVersionDto> codesVersions = getMatchingCodesUriVersions(latestVersion);
                 Collections.sort(codesVersions);
                 CodesUriVersionDto latestCodes = codesVersions.get(codesVersions.size() - 1);
-                CodesUriVersionDto secondLatestCodes = codesVersions.size() > 1 ? codesVersions.get(codesVersions.size() - 2) : null;
-                return latestCodes.codeElementVersions.contains(latestVersion.id) 
-                        || (Tila.LUONNOS.equals(latestCodes.tila) 
-                                && secondLatestCodes != null && secondLatestCodes.codeElementVersions.contains(latestVersion.id));
+                return latestCodes.codeElementVersions.contains(latestVersion.id);
             } catch (Exception e) {
                 errorMap.put(latestVersion.id, "Error while handling status of latestVersion[id=" + latestVersion.id + ", uri=" +latestVersion.uri +"]. Reason was: " + e.getMessage());
                 return false;
