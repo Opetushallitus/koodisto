@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.business.changes.impl;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +19,7 @@ import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodistoChangesService;
@@ -37,6 +39,7 @@ public class KoodistoChangesServiceImplTest {
     private final static String KOODISTO_URI = "lehtipuut";
     private final static String NAME = "Lehtipuut", DESCRIPTION = "pudottavat lehtensä syksyisin";
     private final static String NAME_EN = "Leaftrees", DESCRIPTION_EN = "leaves are dropped during autumn";
+    private final static Date CURRENT_DATE = new Date();
     
     private final static Integer VERSIO = 1;
     
@@ -121,6 +124,47 @@ public class KoodistoChangesServiceImplTest {
         assertEquals(new SimpleMetadataDto(newName, Kieli.FI, null), dto.muuttuneetTiedot.get(0));
     }
     
+    @Test
+    public void returnsHasChangedIfStartDateHasChanged() {
+        int versio = 4;
+        KoodistoVersio original = givenKoodistoVersio(versio);
+        KoodistoVersio latest = givenKoodistoVersioWithCustomDatesItIsInEffect(versio + 1, CURRENT_DATE, null);
+        KoodistoChangesDto result = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertEquals(CURRENT_DATE, result.voimassaAlkuPvm);
+    }
+
+    @Test
+    public void returnsHasChangedIfEndDateHasChanged() {
+        int versio = 5;
+        KoodistoVersio original = givenKoodistoVersio(versio);
+        KoodistoVersio latest = givenKoodistoVersioWithCustomDatesItIsInEffect(versio + 1, original.getVoimassaAlkuPvm(), CURRENT_DATE);
+        KoodistoChangesDto result = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertEquals(CURRENT_DATE, result.voimassaLoppuPvm);
+        assertNull(result.poistettuVoimassaLoppuPvm);
+    }
+    
+    @Test
+    public void returnsHasChangedIfEndDateHasBeenRemoved() {
+        int versio = 5;
+        KoodistoVersio latest = givenKoodistoVersio(versio + 1);
+        KoodistoVersio original = givenKoodistoVersioWithCustomDatesItIsInEffect(versio, CURRENT_DATE, CURRENT_DATE);
+        KoodistoChangesDto result = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertNull(result.voimassaLoppuPvm);
+        assertTrue(result.poistettuVoimassaLoppuPvm);
+    }
+    
+    @Test
+    public void returnsHasChangedIfTilaHasChanged() {
+        KoodistoVersio latest = givenKoodistoVersio(VERSIO + 1);
+        latest.setTila(Tila.PASSIIVINEN);
+        KoodistoChangesDto result = givenResult(givenKoodistoVersio(VERSIO), latest);
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertEquals(Tila.PASSIIVINEN, result.tila);
+    }
+    
     private void assertResultIsNoChanges(KoodistoChangesDto result, int versio) {
         assertEquals(MuutosTila.EI_MUUTOKSIA, result.muutosTila);
         assertEquals(versio, result.viimeisinVersio.intValue());
@@ -145,7 +189,7 @@ public class KoodistoChangesServiceImplTest {
     }
     
     private KoodistoVersio givenKoodistoVersio(Integer versio) {
-        return DtoFactory.createKoodistoVersio(new Koodisto(), versio);
+        return DtoFactory.createKoodistoVersio(new Koodisto(), versio).build();
     }
     
     private KoodistoVersio givenKoodistoVersioWithMetadata(Integer versio, String name, String description) {
@@ -154,6 +198,10 @@ public class KoodistoChangesServiceImplTest {
     
     private KoodistoVersio givenKoodistoVersioWithMetadata(Integer versio, KoodistoMetadata ... datas) {
         return DtoFactory.createKoodistoVersioWithMetadata(new Koodisto(), versio, datas).build();
+    }
+    
+    private KoodistoVersio givenKoodistoVersioWithCustomDatesItIsInEffect(int versio, Date startDate, Date endDate) {
+        return DtoFactory.createKoodistoVersioWithStartAndEndDates(new Koodisto(), versio, startDate, endDate).build();
     }
     
     private KoodistoMetadata givenKoodistoMetadata(String name, String description, Kieli kieli) {

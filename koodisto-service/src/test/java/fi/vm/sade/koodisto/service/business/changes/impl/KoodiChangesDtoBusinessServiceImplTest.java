@@ -401,7 +401,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         Integer versio = koodiVersio.getVersio();
         when(koodiService.getKoodiVersio(KOODI_URI, versio)).thenReturn(koodiVersio);
         when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
-        when(koodistoService.getKoodistoByKoodistoUri(any(String.class))).thenReturn(DtoFactory.createKoodistoVersio(new Koodisto(), 999).getKoodisto());
+        when(koodistoService.getKoodistoByKoodistoUri(any(String.class))).thenReturn(DtoFactory.createKoodistoVersio(new Koodisto(), 999).build().getKoodisto());
         return service.getChangesDto(KOODI_URI, versio, false);
     }
     

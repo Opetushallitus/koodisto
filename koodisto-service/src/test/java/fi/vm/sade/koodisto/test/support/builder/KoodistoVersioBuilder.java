@@ -49,6 +49,16 @@ public class KoodistoVersioBuilder implements Builder<KoodistoVersio> {
         kv.setTila(tila);
         return this;
     }
+    
+    public KoodistoVersioBuilder setStartDate(Date startDate) {
+        kv.setVoimassaAlkuPvm(startDate);
+        return this;
+    }
+    
+    public KoodistoVersioBuilder setEndDate(Date endDate) {
+        kv.setVoimassaLoppuPvm(endDate);
+        return this;
+    }
 
     @Override
     public KoodistoVersio build() {
@@ -57,6 +67,9 @@ public class KoodistoVersioBuilder implements Builder<KoodistoVersio> {
         }
         if (kv.getPaivitysPvm() == null) {
             kv.setPaivitysPvm(new Date());
+        }
+        if (kv.getVoimassaAlkuPvm() == null) {
+            kv.setVoimassaAlkuPvm(new Date(1));
         }
         return kv;
     }

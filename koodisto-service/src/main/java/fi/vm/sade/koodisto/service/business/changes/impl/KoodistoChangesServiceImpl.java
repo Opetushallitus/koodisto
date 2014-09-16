@@ -18,6 +18,7 @@ import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodistoChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
@@ -45,15 +46,19 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
     private KoodistoChangesDto constructChangesDto(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
         List<SimpleMetadataDto> changedMetas = changedMetadatas(koodistoVersio.getMetadatas(), latest.getMetadatas());
         List<SimpleMetadataDto> removedMetas = removedMetadatas(koodistoVersio.getMetadatas(), latest.getMetadatas());
-        MuutosTila changesState = anyChanges(koodistoVersio.getVersio(), latest.getVersio(), changedMetas, removedMetas);
-        return new KoodistoChangesDto(changesState, latest.getVersio(), changedMetas, removedMetas, latest.getPaivitysPvm(), null, null, null, null, null, null, null, null, null, null);
+        DatesChangedHandler dateHandler = DatesChangedHandler.setDatesHaveChanged(koodistoVersio.getVoimassaAlkuPvm(), koodistoVersio.getVoimassaLoppuPvm(),
+                latest.getVoimassaAlkuPvm(), latest.getVoimassaLoppuPvm());
+        Tila changedTila = koodistoVersio.getTila().equals(latest.getTila()) ? null : latest.getTila();
+        MuutosTila changesState = anyChanges(koodistoVersio.getVersio(), latest.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), changedTila);
+        return new KoodistoChangesDto(changesState, latest.getVersio(), changedMetas, removedMetas, latest.getPaivitysPvm(), 
+                dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, changedTila, null, null, null, null, null, null);
     }
     
-    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleMetadataDto> changedMetas, List<SimpleMetadataDto> removedMetas) {
+    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleMetadataDto> changedMetas, List<SimpleMetadataDto> removedMetas, boolean validDateHasChanged, Tila changedTila) {
         if (versio.equals(latestVersio)) {
             return MuutosTila.EI_MUUTOKSIA;
         }
-        return changedMetas.size() > 0 || removedMetas.size() > 0? MuutosTila.MUUTOKSIA : MuutosTila.EI_MUUTOKSIA;
+        return changedMetas.size() > 0 || removedMetas.size() > 0 || validDateHasChanged || changedTila != null ? MuutosTila.MUUTOKSIA : MuutosTila.EI_MUUTOKSIA;
     }
     
     private List<SimpleMetadataDto> removedMetadatas(List<KoodistoMetadata> compareToMetas, final List<KoodistoMetadata> latestMetas) {
