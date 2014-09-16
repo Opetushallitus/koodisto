@@ -32,6 +32,13 @@ public class KoodistoVersioBuilder implements Builder<KoodistoVersio> {
         return this;
     }
     
+    public KoodistoVersioBuilder setMetadatas(KoodistoMetadata ... koodistoMetadatas) {
+        for (KoodistoMetadata data : koodistoMetadatas) {
+            kv.addMetadata(data);
+        }
+        return this;
+    }
+    
     public KoodistoVersioBuilder setKoodisto(Koodisto koodisto) {
         kv.setKoodisto(koodisto);
         koodisto.addKoodistoVersion(kv);

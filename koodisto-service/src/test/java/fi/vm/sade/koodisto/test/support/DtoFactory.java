@@ -8,6 +8,7 @@ import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.Koodisto;
+import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
@@ -57,8 +58,12 @@ public class DtoFactory {
                 .setChildPassive(childPassive).build();
     }
 
-    public static KoodistoVersio createKoodistoVersioWithMetadata(Koodisto koodisto, Integer versio, String name, String description, Kieli kieli) {
-        return new KoodistoVersioBuilder().setVersio(versio).setKoodisto(koodisto).setTila(Tila.HYVAKSYTTY).addMetadata(kieli, name, description).build();
+    public static KoodistoVersioBuilder createKoodistoVersioWithMetadata(Koodisto koodisto, Integer versio, String name, String description, Kieli kieli) {
+        return new KoodistoVersioBuilder().setVersio(versio).setKoodisto(koodisto).setTila(Tila.HYVAKSYTTY).addMetadata(kieli, name, description);
+    }
+
+    public static KoodistoVersioBuilder createKoodistoVersioWithMetadata(Koodisto koodisto, Integer versio, KoodistoMetadata ... datas) {
+        return new KoodistoVersioBuilder().setVersio(versio).setKoodisto(koodisto).setMetadatas(datas);
     }
 
 }

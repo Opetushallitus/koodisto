@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.service.business.changes.impl;
 
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +16,7 @@ import fi.vm.sade.koodisto.dto.KoodistoChangesDto;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.Koodisto;
+import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
@@ -32,6 +35,8 @@ import static org.mockito.Mockito.when;
 public class KoodistoChangesServiceImplTest {
     
     private final static String KOODISTO_URI = "lehtipuut";
+    private final static String NAME = "Lehtipuut", DESCRIPTION = "pudottavat lehtensä syksyisin";
+    private final static String NAME_EN = "Leaftrees", DESCRIPTION_EN = "leaves are dropped during autumn";
     
     private final static Integer VERSIO = 1;
     
@@ -64,19 +69,56 @@ public class KoodistoChangesServiceImplTest {
     @Test
     public void returnsHasChangedIfNameHasChanged() {
         String newName = "koivu";
-        KoodistoChangesDto result = givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithMetadata(VERSIO+1, newName, DtoFactory.KOODISTO_DESCRIPTION));
-        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
-        assertEquals(1, result.muuttuneetTiedot.size());
-        assertEquals(new SimpleMetadataDto(newName, Kieli.FI, null), result.muuttuneetTiedot.get(0));
+        assertResultHasMetadataChanges(givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithMetadata(VERSIO + 1, newName, DtoFactory.KOODISTO_DESCRIPTION)), VERSIO + 1, new SimpleMetadataDto(newName, Kieli.FI, null));
     }
     
     @Test
     public void returnsHasChangedIfDescriptionHasChanged() {
         String newDescription = "parempi kuvaus";
-        KoodistoChangesDto result = givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithMetadata(VERSIO+1, DtoFactory.KOODISTO_NAME, newDescription));
+        assertResultHasMetadataChanges(givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithMetadata(VERSIO+1, DtoFactory.KOODISTO_NAME, newDescription)), VERSIO + 1, new SimpleMetadataDto(null, Kieli.FI, newDescription));
+    }
+    
+    @Test
+    public void returnsHasChangedIfMultipleMetadataHasChanged() {
+        int versio = 6;
+        String newDesc = "pudottaa lehdet syksyllä";
+        String newNameEn = "drops leaves during autumn";
+        KoodistoMetadata originalFi = givenKoodistoMetadata(NAME, DESCRIPTION, Kieli.FI);
+        KoodistoMetadata originalEn = givenKoodistoMetadata(NAME_EN, DESCRIPTION_EN, Kieli.EN);
+        KoodistoMetadata latestFi = givenKoodistoMetadata(NAME, newDesc, Kieli.FI);
+        KoodistoMetadata latestEn = givenKoodistoMetadata(newNameEn, DESCRIPTION_EN, Kieli.EN);
+        KoodistoVersio original = givenKoodistoVersioWithMetadata(versio, originalFi, originalEn);        
+        KoodistoVersio latest = givenKoodistoVersioWithMetadata(versio + 1, latestFi, latestEn);
+        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleMetadataDto(null, Kieli.FI, newDesc), 
+                new SimpleMetadataDto(newNameEn, Kieli.EN, null));
+    }
+    
+    @Test
+    public void returnsHasChangedIfMetadataHasBeenRemoved() {
+        int versio = 10;
+        KoodistoVersio original = givenKoodistoVersioWithMetadata(versio, givenKoodistoMetadata(NAME_EN, DESCRIPTION_EN, Kieli.EN));
+        KoodistoVersio latest = givenKoodistoVersioWithMetadata(versio + 1);
+        KoodistoChangesDto result = givenResult(original, latest);
         assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
-        assertEquals(1, result.muuttuneetTiedot.size());
-        assertEquals(new SimpleMetadataDto(null, Kieli.FI, newDescription), result.muuttuneetTiedot.get(0));
+        assertTrue(result.poistuneetTiedot.contains(new SimpleMetadataDto(NAME_EN, Kieli.EN, DESCRIPTION_EN)));
+    }
+    
+    @Test
+    public void returnsHasChangedIfMetadataHasBeenAdded() {
+        KoodistoVersio latest = givenKoodistoVersioWithMetadata(VERSIO + 1, NAME, DESCRIPTION);
+        KoodistoVersio original = givenKoodistoVersio(VERSIO);
+        assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleMetadataDto(NAME, Kieli.FI, DESCRIPTION));
+    }
+    
+    @Test
+    public void metadataWithSameLanguageCannotBeBothInRemovedMetadatasAndInChangedMetadatas() {
+        String newName = "tammi";
+        KoodistoVersio latest = givenKoodistoVersioWithMetadata(VERSIO + 1, newName, DESCRIPTION);
+        KoodistoVersio original = givenKoodistoVersioWithMetadata(VERSIO, NAME, DESCRIPTION);
+        KoodistoChangesDto dto = givenResult(original, latest);
+        assertTrue(dto.poistuneetTiedot.isEmpty());
+        assertEquals(1, dto.muuttuneetTiedot.size());
+        assertEquals(new SimpleMetadataDto(newName, Kieli.FI, null), dto.muuttuneetTiedot.get(0));
     }
     
     private void assertResultIsNoChanges(KoodistoChangesDto result, int versio) {
@@ -87,6 +129,12 @@ public class KoodistoChangesServiceImplTest {
         assertNull(result.voimassaAlkuPvm);
         assertNull(result.voimassaLoppuPvm);
         assertNull(result.tila);
+    }
+    
+    private void assertResultHasMetadataChanges(KoodistoChangesDto result, int versio, SimpleMetadataDto ... expecteds) {
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertTrue(result.muuttuneetTiedot.containsAll(Arrays.asList(expecteds)));
+        assertEquals(versio, result.viimeisinVersio.intValue());
     }
     
     private KoodistoChangesDto givenResult(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
@@ -101,7 +149,18 @@ public class KoodistoChangesServiceImplTest {
     }
     
     private KoodistoVersio givenKoodistoVersioWithMetadata(Integer versio, String name, String description) {
-        return DtoFactory.createKoodistoVersioWithMetadata(new Koodisto(), versio, name, description, Kieli.FI);
+        return DtoFactory.createKoodistoVersioWithMetadata(new Koodisto(), versio, name, description, Kieli.FI).build();
     }
     
+    private KoodistoVersio givenKoodistoVersioWithMetadata(Integer versio, KoodistoMetadata ... datas) {
+        return DtoFactory.createKoodistoVersioWithMetadata(new Koodisto(), versio, datas).build();
+    }
+    
+    private KoodistoMetadata givenKoodistoMetadata(String name, String description, Kieli kieli) {
+        KoodistoMetadata meta = new KoodistoMetadata();
+        meta.setNimi(name);
+        meta.setKuvaus(description);
+        meta.setKieli(kieli);
+        return meta;
+    }
 }

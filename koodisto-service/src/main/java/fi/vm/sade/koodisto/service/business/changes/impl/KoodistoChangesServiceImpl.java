@@ -1,12 +1,17 @@
 package fi.vm.sade.koodisto.service.business.changes.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 import fi.vm.sade.koodisto.dto.KoodistoChangesDto;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
@@ -39,15 +44,40 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
 
     private KoodistoChangesDto constructChangesDto(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
         List<SimpleMetadataDto> changedMetas = changedMetadatas(koodistoVersio.getMetadatas(), latest.getMetadatas());
-        MuutosTila changesState = anyChanges(koodistoVersio.getVersio(), latest.getVersio(), changedMetas);
-        return new KoodistoChangesDto(changesState, latest.getVersio(), changedMetas, null, latest.getPaivitysPvm(), null, null, null, null, null, null, null, null, null, null);
+        List<SimpleMetadataDto> removedMetas = removedMetadatas(koodistoVersio.getMetadatas(), latest.getMetadatas());
+        MuutosTila changesState = anyChanges(koodistoVersio.getVersio(), latest.getVersio(), changedMetas, removedMetas);
+        return new KoodistoChangesDto(changesState, latest.getVersio(), changedMetas, removedMetas, latest.getPaivitysPvm(), null, null, null, null, null, null, null, null, null, null);
     }
     
-    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleMetadataDto> changedMetas) {
+    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleMetadataDto> changedMetas, List<SimpleMetadataDto> removedMetas) {
         if (versio.equals(latestVersio)) {
             return MuutosTila.EI_MUUTOKSIA;
         }
-        return changedMetas.size() > 0 ? MuutosTila.MUUTOKSIA : MuutosTila.EI_MUUTOKSIA;
+        return changedMetas.size() > 0 || removedMetas.size() > 0? MuutosTila.MUUTOKSIA : MuutosTila.EI_MUUTOKSIA;
+    }
+    
+    private List<SimpleMetadataDto> removedMetadatas(List<KoodistoMetadata> compareToMetas, final List<KoodistoMetadata> latestMetas) {
+        Collection<SimpleMetadataDto> removedMetas = Collections2.transform(Collections2.filter(compareToMetas, new Predicate<KoodistoMetadata>() {
+
+            @Override
+            public boolean apply(KoodistoMetadata input) {
+                for (KoodistoMetadata data : latestMetas) {
+                    if(data.getKieli().equals(input.getKieli())) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            
+        }), new Function<KoodistoMetadata, SimpleMetadataDto>() {
+
+            @Override
+            public SimpleMetadataDto apply(KoodistoMetadata input) {
+                return new SimpleMetadataDto(input.getNimi(), input.getKieli(), input.getKuvaus());
+            }
+        });
+        
+        return new ArrayList<>(removedMetas);
     }
     
     private List<SimpleMetadataDto> changedMetadatas(List<KoodistoMetadata> compareToMetadatas, List<KoodistoMetadata> latestMetadatas) {
