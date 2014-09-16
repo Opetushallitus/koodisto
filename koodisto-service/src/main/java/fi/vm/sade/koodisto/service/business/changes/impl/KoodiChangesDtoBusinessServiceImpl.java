@@ -16,7 +16,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 import fi.vm.sade.koodisto.dto.KoodiChangesDto;
-import fi.vm.sade.koodisto.dto.KoodiChangesDto.MuutosTila;
 import fi.vm.sade.koodisto.dto.KoodiChangesDto.SimpleCodeElementRelation;
 import fi.vm.sade.koodisto.dto.SimpleKoodiMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
@@ -32,6 +31,7 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.ChangesDateComparator;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 
 @Transactional(readOnly = true)
 @Service

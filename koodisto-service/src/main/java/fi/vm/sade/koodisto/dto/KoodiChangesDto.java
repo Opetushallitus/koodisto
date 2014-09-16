@@ -9,24 +9,10 @@ import org.codehaus.jackson.map.annotate.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
 public class KoodiChangesDto {
-    
-    public enum MuutosTila {
-        EI_MUUTOKSIA("Ei muutoksia"), MUUTOKSIA("Muutoksia on tapahtunut"), POISTETTU("Koodi on poistettu koodistosta");
-        
-        private String value;
-        
-        private MuutosTila(String value) {
-            this.value = value;
-        }
-        
-        @Override
-        public String toString() {
-            return this.value;
-        }
-    }
     
     @JsonView(JsonViews.Basic.class)
     public final MuutosTila muutosTila;
