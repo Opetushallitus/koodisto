@@ -11,6 +11,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fi.vm.sade.koodisto.dto.KoodistoChangesDto;
+import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
+import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
@@ -31,6 +33,8 @@ public class KoodistoChangesServiceImplTest {
     
     private final static String KOODISTO_URI = "lehtipuut";
     
+    private final static Integer VERSIO = 1;
+    
     @ReplaceWithMock
     @Autowired
     private KoodistoBusinessService koodistoService;
@@ -49,24 +53,30 @@ public class KoodistoChangesServiceImplTest {
     
     @Test
     public void returnsNoChangesIfNothingHasChanged() {
-        int versio = 1;
-        assertResultIsNoChanges(givenResult(givenKoodistoVersio(versio), givenKoodistoVersio(versio)), versio);
+        assertResultIsNoChanges(givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersio(VERSIO)), VERSIO);
     }
 
     @Test
     public void returnsNoChangesIfOnlyVersionHasChanged() {
-        int versio = 1;
-        assertResultIsNoChanges(givenResult(givenKoodistoVersio(versio), givenKoodistoVersio(versio + 1)), versio + 1);
+        assertResultIsNoChanges(givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersio(VERSIO + 1)), VERSIO + 1);
     }
     
     @Test
     public void returnsHasChangedIfNameHasChanged() {
-        
+        String newName = "koivu";
+        KoodistoChangesDto result = givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithMetadata(VERSIO+1, newName, DtoFactory.KOODISTO_DESCRIPTION));
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertEquals(1, result.muuttuneetTiedot.size());
+        assertEquals(new SimpleMetadataDto(newName, Kieli.FI, null), result.muuttuneetTiedot.get(0));
     }
     
     @Test
     public void returnsHasChangedIfDescriptionHasChanged() {
-        
+        String newDescription = "parempi kuvaus";
+        KoodistoChangesDto result = givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithMetadata(VERSIO+1, DtoFactory.KOODISTO_NAME, newDescription));
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertEquals(1, result.muuttuneetTiedot.size());
+        assertEquals(new SimpleMetadataDto(null, Kieli.FI, newDescription), result.muuttuneetTiedot.get(0));
     }
     
     private void assertResultIsNoChanges(KoodistoChangesDto result, int versio) {
@@ -88,6 +98,10 @@ public class KoodistoChangesServiceImplTest {
     
     private KoodistoVersio givenKoodistoVersio(Integer versio) {
         return DtoFactory.createKoodistoVersio(new Koodisto(), versio);
+    }
+    
+    private KoodistoVersio givenKoodistoVersioWithMetadata(Integer versio, String name, String description) {
+        return DtoFactory.createKoodistoVersioWithMetadata(new Koodisto(), versio, name, description, Kieli.FI);
     }
     
 }

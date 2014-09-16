@@ -19,9 +19,11 @@ import fi.vm.sade.koodisto.test.support.builder.KoodistoVersioBuilder;
 
 public class DtoFactory {
 
+    public static final String KOODISTO_DESCRIPTION = "kuvaus";
+    public static final String KOODISTO_NAME = "koodisto";
     public static final KoodiMetadata KOODI_METADATA = new KoodiMetadataBuilder().setKieli(Kieli.FI).setNimi("Name").setLyhytNimi("Short")
             .setKuvaus("Description").build();
-
+    
     public static KoodiVersioBuilder createKoodiVersioWithUriAndVersio(String uri, Integer versio) {
         return createKoodiVersioWithUriAndVersioWithoutMetadatas(uri, versio).addMetadata(KOODI_METADATA);
     }
@@ -43,7 +45,7 @@ public class DtoFactory {
     }
     
     public static KoodistoVersio createKoodistoVersio(Koodisto koodisto, Integer versio) {
-        return new KoodistoVersioBuilder().addMetadata(Kieli.FI, "koodisto", "kuvaus").setVersio(versio).setKoodisto(koodisto).setTila(Tila.HYVAKSYTTY).build();
+        return new KoodistoVersioBuilder().addMetadata(Kieli.FI, KOODISTO_NAME, KOODISTO_DESCRIPTION).setVersio(versio).setKoodisto(koodisto).setTila(Tila.HYVAKSYTTY).build();
     }
     
     public static KoodiMetadata createKoodiMetadata(String name, String shortName, String description, Kieli language) {
@@ -53,6 +55,10 @@ public class DtoFactory {
     public static KoodinSuhde createKoodinSuhde(SuhteenTyyppi tyyppi, KoodiVersio child, KoodiVersio parent, boolean parentPassive, boolean childPassive) {
         return new KoodinSuhdeBuilder().setSuhteenTyyppi(tyyppi).setChildVersio(child).setParentVersio(parent).setParentPassive(parentPassive)
                 .setChildPassive(childPassive).build();
+    }
+
+    public static KoodistoVersio createKoodistoVersioWithMetadata(Koodisto koodisto, Integer versio, String name, String description, Kieli kieli) {
+        return new KoodistoVersioBuilder().setVersio(versio).setKoodisto(koodisto).setTila(Tila.HYVAKSYTTY).addMetadata(kieli, name, description).build();
     }
 
 }
