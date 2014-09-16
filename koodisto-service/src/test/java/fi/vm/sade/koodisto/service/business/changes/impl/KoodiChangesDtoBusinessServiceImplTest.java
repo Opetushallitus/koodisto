@@ -86,13 +86,6 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     }
     
     @Test
-    public void returnsNoChangesIfVersionHasNotChangedButThereAreOtherChanges() {
-        int versio = 5;
-        KoodiVersio withChanges = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, "hippopotamus", "hippo", "large water-dwelling mammal", Kieli.EN);
-        assertResultIsNoChanges(givenResult(withChanges, givenKoodiVersio(versio)), versio);
-    }
-    
-    @Test
     public void returnsHasChangedIfNameHasChanged() {
         int versio = 3;
         String newName = "norsu";
@@ -367,6 +360,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     }
     
     private void assertResultWithTila(int expectedVersion, String expectedDescription, Tila expectedTila, KoodiChangesDto result) {
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
         assertEquals(expectedTila, result.tila);
         assertEquals(expectedVersion, result.viimeisinVersio.intValue());
         assertEquals(1, result.muuttuneetTiedot.size());
@@ -446,7 +440,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
             if(versio.equals(koodiVersio.getVersio()))
                 return koodiVersio;
         }
-        return null;
+        return versios[0];
     }
 
     void returnGivenKoodiVersiosWithKoodiFromMockedKoodiService(KoodiVersio... versios) {
