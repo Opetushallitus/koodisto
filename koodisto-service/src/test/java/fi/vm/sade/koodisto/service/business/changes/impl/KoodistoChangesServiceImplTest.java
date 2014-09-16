@@ -59,6 +59,16 @@ public class KoodistoChangesServiceImplTest {
         assertResultIsNoChanges(givenResult(givenKoodistoVersio(versio), givenKoodistoVersio(versio + 1)), versio + 1);
     }
     
+    @Test
+    public void returnsHasChangedIfNameHasChanged() {
+        
+    }
+    
+    @Test
+    public void returnsHasChangedIfDescriptionHasChanged() {
+        
+    }
+    
     private void assertResultIsNoChanges(KoodistoChangesDto result, int versio) {
         assertEquals(MuutosTila.EI_MUUTOKSIA, result.muutosTila);
         assertEquals(versio, result.viimeisinVersio.intValue());
