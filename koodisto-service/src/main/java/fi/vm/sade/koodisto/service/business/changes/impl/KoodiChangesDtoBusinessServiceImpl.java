@@ -263,33 +263,6 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         }
     }
 
-    private static class DatesChangedHandler {
-        
-        private final Date startDateChanged;
-        
-        private final Date endDateChanged;
-        
-        private final Boolean endDateRemoved;
-        
-        public DatesChangedHandler(Date startDateChanged, Date endDateChanged, Boolean endDateRemoved) {
-            this.startDateChanged = startDateChanged;
-            this.endDateChanged = endDateChanged;
-            this.endDateRemoved = endDateRemoved;
-        }
-        
-        private static DatesChangedHandler setDatesHaveChanged(Date relateToStartDate, Date relateToEndDate, Date latestStartDate, Date latestEndDate) {
-            Date startDateChanged = relateToStartDate.equals(latestStartDate) ? null : latestStartDate;
-            Date endDateChanged = latestEndDate == null || latestEndDate.equals(relateToEndDate) ? null : latestEndDate;
-            Boolean endDateRemoved = relateToEndDate != null && latestEndDate == null ? true : null;
-            return new DatesChangedHandler(startDateChanged, endDateChanged, endDateRemoved);
-        }
-        
-        private boolean anyChanges() {
-            return startDateChanged != null || endDateChanged != null || endDateRemoved != null;
-        }
-        
-    }
-    
     private class KoodiChangesDateComparator extends ChangesDateComparator<KoodiVersio> {
 
         @Override
