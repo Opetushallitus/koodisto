@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.test.support.builder;
 
+import java.util.Date;
+
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
@@ -45,6 +47,9 @@ public class KoodistoVersioBuilder implements Builder<KoodistoVersio> {
     public KoodistoVersio build() {
         if (kv.getId() == null) {
             kv.setId(id++);
+        }
+        if (kv.getPaivitysPvm() == null) {
+            kv.setPaivitysPvm(new Date());
         }
         return kv;
     }
