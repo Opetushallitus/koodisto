@@ -2,12 +2,14 @@ package fi.vm.sade.koodisto.service.business.changes.impl;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kubek2k.springockito.annotations.ReplaceWithMock;
 import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -165,6 +167,32 @@ public class KoodistoChangesServiceImplTest {
         assertEquals(Tila.PASSIIVINEN, result.tila);
     }
     
+    @Test
+    public void usesLatestAcceptedVersionForComparison() {
+        String changedSecondDescription = "jumbo";
+        KoodistoVersio first = givenKoodistoVersioWithMetadata(VERSIO, givenKoodistoMetadata(NAME, DESCRIPTION, Kieli.FI));
+        KoodistoVersio second = givenKoodistoVersioWithMetadata(VERSIO + 1, givenKoodistoMetadata(NAME, changedSecondDescription, Kieli.FI));
+        KoodistoVersio third = givenKoodistoVersioWithTilaAndMetadata(VERSIO + 2 , Tila.LUONNOS, givenKoodistoMetadata(NAME, "huono kuvaus", Kieli.FI));
+        assertResultWithTila(VERSIO + 1, changedSecondDescription, null, givenResultWithMultipleKoodistoVersios(VERSIO, true, first, second, third));
+    }
+
+    @Test
+    public void doesNotUseLatestAcceptedVersionForComparison() {
+        String changedThirdDescription = "huono kuvaus";
+        KoodistoVersio first = givenKoodistoVersioWithMetadata(VERSIO, givenKoodistoMetadata(NAME, DESCRIPTION, Kieli.FI));
+        KoodistoVersio second = givenKoodistoVersioWithMetadata(VERSIO + 1, givenKoodistoMetadata(NAME, "jumbo", Kieli.FI));
+        KoodistoVersio third = givenKoodistoVersioWithTilaAndMetadata(VERSIO + 2 , Tila.LUONNOS, givenKoodistoMetadata(NAME, changedThirdDescription, Kieli.FI));
+        assertResultWithTila(VERSIO + 2, changedThirdDescription, Tila.LUONNOS, givenResultWithMultipleKoodistoVersios(VERSIO, false, first, second, third));
+    }
+    
+
+    private void assertResultWithTila(Integer expectedVersio, String expectedDescription, Tila expectedTila, KoodistoChangesDto result) {
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertEquals(expectedVersio, result.viimeisinVersio);
+        assertEquals(expectedTila, result.tila);
+        assertEquals(expectedDescription, result.muuttuneetTiedot.get(0).kuvaus);
+    }
+
     private void assertResultIsNoChanges(KoodistoChangesDto result, int versio) {
         assertEquals(MuutosTila.EI_MUUTOKSIA, result.muutosTila);
         assertEquals(versio, result.viimeisinVersio.intValue());
@@ -188,6 +216,39 @@ public class KoodistoChangesServiceImplTest {
         return service.getChangesDto(KOODISTO_URI, versio, false);
     }
     
+    private KoodistoChangesDto givenResultWithMultipleKoodistoVersios(Integer versio, boolean compareToLatestAccepted, KoodistoVersio ... versios) {
+        when(koodistoService.getKoodistoVersio(KOODISTO_URI, versio)).thenReturn(getMatchingCodesVersion(versio, versios));
+        if (compareToLatestAccepted) {
+            returnGivenKoodistoVersiosWithKoodistoFromMockedKoodistoService(versios);
+        } else {
+            returnLatestKoodistoVersioFromMockedKoodistoService(versios);
+        }
+        return service.getChangesDto(KOODISTO_URI, versio, compareToLatestAccepted);
+    }
+    
+    private void returnLatestKoodistoVersioFromMockedKoodistoService(KoodistoVersio[] versios) {
+        KoodistoVersio latest = null;
+        for (KoodistoVersio kv : versios) {
+            latest = latest == null || kv.getVersio() > latest.getVersio() ? kv : latest;
+        }
+        when(koodistoService.getLatestKoodistoVersio(KOODISTO_URI)).thenReturn(latest);        
+    }
+
+    private void returnGivenKoodistoVersiosWithKoodistoFromMockedKoodistoService(KoodistoVersio[] versios) {
+        Koodisto koodisto = Mockito.mock(Koodisto.class);
+        when(koodisto.getKoodistoVersios()).thenReturn(new HashSet<KoodistoVersio>(Arrays.asList(versios)));
+        when(koodistoService.getKoodistoByKoodistoUri(KOODISTO_URI)).thenReturn(koodisto);
+    }
+
+    private KoodistoVersio getMatchingCodesVersion(Integer versio, KoodistoVersio ... versios) {
+        for (KoodistoVersio kv : versios) {
+            if (kv.getVersio().equals(versio)) {
+                return kv;
+            }
+        }
+        throw new IllegalArgumentException("Could not find koodistoversio using versio: " + versio);
+    }
+
     private KoodistoVersio givenKoodistoVersio(Integer versio) {
         return DtoFactory.createKoodistoVersio(new Koodisto(), versio).build();
     }
@@ -210,5 +271,11 @@ public class KoodistoChangesServiceImplTest {
         meta.setKuvaus(description);
         meta.setKieli(kieli);
         return meta;
+    }
+    
+    private KoodistoVersio givenKoodistoVersioWithTilaAndMetadata(int versio, Tila tila, KoodistoMetadata ...koodistoMetadatas) {
+        KoodistoVersio kv = givenKoodistoVersioWithMetadata(versio,  koodistoMetadatas);
+        kv.setTila(tila);
+        return kv;
     }
 }

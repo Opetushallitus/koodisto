@@ -16,6 +16,7 @@ import com.google.common.collect.Collections2;
 import fi.vm.sade.koodisto.dto.KoodistoChangesDto;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.Tila;
@@ -33,7 +34,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
     @Override
     public KoodistoChangesDto getChangesDto(String uri, Integer versio, boolean compareToLatestAccepted) {
         KoodistoVersio koodistoVersio = koodistoService.getKoodistoVersio(uri, versio);
-        KoodistoVersio latest = koodistoService.getLatestKoodistoVersio(uri);
+        KoodistoVersio latest = fetchLatestDesiredCodesVersion(uri, compareToLatestAccepted);
         return constructChangesDto(koodistoVersio, latest);
     }
 
@@ -41,6 +42,20 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
     public KoodistoChangesDto getChangesDto(String uri, Date date, boolean compareToLatestAccepted) {
         // TODO Auto-generated method stub
         return null;
+    }
+    
+    private KoodistoVersio fetchLatestDesiredCodesVersion(String uri, boolean compareToLatestAccepted) {
+        if (compareToLatestAccepted) {
+            Koodisto koodisto = koodistoService.getKoodistoByKoodistoUri(uri);
+            KoodistoVersio latestAccepted = null;
+            for (KoodistoVersio kv : koodisto.getKoodistoVersios()) {
+                if ((latestAccepted == null || latestAccepted.getVersio() < kv.getVersio()) && Tila.HYVAKSYTTY.equals(kv.getTila())) {
+                    latestAccepted = kv;
+                }
+            }
+            return latestAccepted;
+        }
+        return koodistoService.getLatestKoodistoVersio(uri);
     }
 
     private KoodistoChangesDto constructChangesDto(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
