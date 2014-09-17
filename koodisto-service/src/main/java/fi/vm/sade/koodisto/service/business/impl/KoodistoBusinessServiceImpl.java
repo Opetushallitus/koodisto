@@ -481,7 +481,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     private KoodistoVersio createNewVersion(KoodistoVersio base, KoodistoVersio input) {
 
-        logger.info("Creating new version of KoodistoVersio, koodisto id =" + base.getKoodisto().getId() + ", base versio=" + base.getVersio());
+        logger.info("Creating new version of KoodistoVersio, koodisto id=" + base.getKoodisto().getId() + ", base versio=" + base.getVersio());
 
         input.setId(null);
         input.setVersion(null);
@@ -510,6 +510,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     private void copyKoodiVersiosFromOldKoodistoToNew(KoodistoVersio base, KoodistoVersio inserted) {
+        logger.info("Copying codeElement versios to new Codes version, codes id=" + base.getKoodisto().getId() + ", codes versio=" + base.getVersio() + ", new codes versio=" + inserted.getVersio());
         for (KoodistoVersioKoodiVersio kv : base.getKoodiVersios()) {
             KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
 
@@ -518,6 +519,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             newRelationEntry.setKoodiVersio(koodiVersio);
             newRelationEntry.setKoodistoVersio(inserted);
             inserted.addKoodiVersio(newRelationEntry);
+            logger.info("  Copied codeElement version, codes id=" + inserted.getKoodisto().getId() + ", codeElement version id=" + koodiVersio.getId());
         }
     }
 

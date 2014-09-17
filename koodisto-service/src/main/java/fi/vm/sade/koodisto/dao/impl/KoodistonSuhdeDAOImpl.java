@@ -15,6 +15,8 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import fi.vm.sade.generic.dao.AbstractJpaDAOImpl;
@@ -30,6 +32,8 @@ import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
  */
 @Repository
 public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Long> implements KoodistonSuhdeDAO {
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final String VERSIO = "versio";
     private static final String KOODISTO_URI = "koodistoUri";
@@ -107,17 +111,18 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
 
     @Override
     public void copyRelations(KoodistoVersio old, KoodistoVersio fresh) {
+        logger.info("Copying codes relations, old codes versio id=" + old.getId() + ", new codes versio id=" + fresh.getId());
         fresh.setYlakoodistos(copyRelations(old.getYlakoodistos(), fresh));
         fresh.setAlakoodistos(copyRelations(old.getAlakoodistos(), fresh));
     }
 
     private Set<KoodistonSuhde> copyRelations(Set<KoodistonSuhde> relations, KoodistoVersio fresh) {
         Set<KoodistonSuhde> copiedRelations = new HashSet<KoodistonSuhde>();
+        String koodistoUri = fresh.getKoodisto().getKoodistoUri();
         for (KoodistonSuhde relation : relations) {
             if (relation.isPassive()) {
                 continue;
             }
-            String koodistoUri = fresh.getKoodisto().getKoodistoUri();
             KoodistoVersio child = relation.getAlakoodistoVersio().getKoodisto().getKoodistoUri().equals(koodistoUri) ?
                     fresh : relation.getAlakoodistoVersio();
             KoodistoVersio parent = relation.getYlakoodistoVersio().getKoodisto().getKoodistoUri().equals(koodistoUri) ?
@@ -141,6 +146,12 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
     }
 
     private KoodistonSuhde createNewRelation(KoodistoVersio parent, KoodistoVersio child, KoodistonSuhde relation) {
+        logger.info(
+                "  Inserting new codes version relation, parent codes id=" + parent.getKoodisto().getId() + ", parent version id=" + parent.getId()
+                + ", child codes id=" + child.getKoodisto().getId() + ", child version id=" + child.getId() + ", relation id="
+                + relation.getId() + ", relation version="
+                + (relation.getVersio() + 1) + ", relation type="
+                + relation.getSuhteenTyyppi());
         KoodistonSuhde newRelation = new KoodistonSuhde();
         newRelation.setAlakoodistoVersio(child);
         newRelation.setYlakoodistoVersio(parent);
