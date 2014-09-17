@@ -9,10 +9,5 @@
 
     <context:annotation-config />
     <context:component-scan base-package="fi.vm.sade.koodisto.service.business.changes" />
-<!--     <context:component-scan base-package="fi.vm.sade.koodisto.service.business" /> -->
-<!--     <context:component-scan base-package="fi.vm.sade.koodisto.dao" /> -->
-
-<!--     <import resource="classpath:/META-INF/spring/logger-mock-context.xml"/> -->
-<!--     <import resource="classpath:META-INF/spring/context/service-context.xml"/> -->
 
 </beans>

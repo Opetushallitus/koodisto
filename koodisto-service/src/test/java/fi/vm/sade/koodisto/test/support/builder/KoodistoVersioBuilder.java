@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.test.support.builder;
 
+import java.util.Date;
+
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
@@ -30,6 +32,13 @@ public class KoodistoVersioBuilder implements Builder<KoodistoVersio> {
         return this;
     }
     
+    public KoodistoVersioBuilder setMetadatas(KoodistoMetadata ... koodistoMetadatas) {
+        for (KoodistoMetadata data : koodistoMetadatas) {
+            kv.addMetadata(data);
+        }
+        return this;
+    }
+    
     public KoodistoVersioBuilder setKoodisto(Koodisto koodisto) {
         kv.setKoodisto(koodisto);
         koodisto.addKoodistoVersion(kv);
@@ -40,11 +49,27 @@ public class KoodistoVersioBuilder implements Builder<KoodistoVersio> {
         kv.setTila(tila);
         return this;
     }
+    
+    public KoodistoVersioBuilder setStartDate(Date startDate) {
+        kv.setVoimassaAlkuPvm(startDate);
+        return this;
+    }
+    
+    public KoodistoVersioBuilder setEndDate(Date endDate) {
+        kv.setVoimassaLoppuPvm(endDate);
+        return this;
+    }
 
     @Override
     public KoodistoVersio build() {
         if (kv.getId() == null) {
             kv.setId(id++);
+        }
+        if (kv.getPaivitysPvm() == null) {
+            kv.setPaivitysPvm(new Date());
+        }
+        if (kv.getVoimassaAlkuPvm() == null) {
+            kv.setVoimassaAlkuPvm(new Date(1));
         }
         return kv;
     }

@@ -30,7 +30,7 @@ public class V13__set_old_relations_passive implements SpringJdbcMigration {
     
     @Override
     public void migrate(final JdbcTemplate jdbcTemplate) throws Exception {
-        LOGGER.info("Starting migration of setting old relations to passive where applicable");
+        LOGGER.warn("Starting migration of setting old relations to passive where applicable");
         handleCodesRelations(jdbcTemplate);
         handleCodeElementsRelations(jdbcTemplate);
         logErrors();
@@ -56,7 +56,7 @@ public class V13__set_old_relations_passive implements SpringJdbcMigration {
         });
         Collection<RelationDto> relationsToUpdate = Collections2.filter(codeElementRelations, 
                 new CodeElementRelationsToPassivePredicate(jdbcTemplate, uriVersions));
-        LOGGER.info("Updating " + relationsToUpdate.size() + "  koodinsuhde rows to passive");
+        LOGGER.warn("Updating " + relationsToUpdate.size() + "  koodinsuhde rows to passive");
         updateCodeElementRelationsToPassive(jdbcTemplate, relationsToUpdate);
     }
 
@@ -81,7 +81,7 @@ public class V13__set_old_relations_passive implements SpringJdbcMigration {
         List<CodesUriVersionDto> uriVersions = getCodesUriVersions(jdbcTemplate);
         
         Collection<RelationDto> relationsToUpdate = Collections2.filter(codesRelations, new RelationsToPassivePredicate<CodesUriVersionDto>(uriVersions));
-        LOGGER.info("Updating " + relationsToUpdate.size() + "  koodistonsuhde rows to passive");
+        LOGGER.warn("Updating " + relationsToUpdate.size() + "  koodistonsuhde rows to passive");
         updateCodesRelationsToPassive(jdbcTemplate, relationsToUpdate);
     }
 
@@ -114,7 +114,7 @@ public class V13__set_old_relations_passive implements SpringJdbcMigration {
             jdbcTemplate.update("UPDATE koodinsuhde SET ylakoodistapassiivinen = ?, alakoodistapassiivinen = ? WHERE id = ?", 
                     relationDto.upperPassive, relationDto.lowerPassive, relationDto.id);
         }
-        LOGGER.info(relationsToUpdate.size() + " koodinsuhde rows was succesfully set to passive");
+        LOGGER.warn(relationsToUpdate.size() + " koodinsuhde rows was succesfully set to passive");
     }
     
     private void updateCodesRelationsToPassive(JdbcTemplate jdbcTemplate, Collection<RelationDto> relationsToUpdate) {
@@ -122,7 +122,7 @@ public class V13__set_old_relations_passive implements SpringJdbcMigration {
             jdbcTemplate.update("UPDATE koodistonsuhde SET ylakoodistostapassiivinen = ?, alakoodistostapassiivinen = ? WHERE id = ?", 
                     relationDto.upperPassive, relationDto.lowerPassive, relationDto.id);
         }
-        LOGGER.info(relationsToUpdate.size() + " koodistonsuhde rows was succesfully set to passive");
+        LOGGER.warn(relationsToUpdate.size() + " koodistonsuhde rows was succesfully set to passive");
     }
 
     private static class RelationDto {
@@ -207,9 +207,7 @@ public class V13__set_old_relations_passive implements SpringJdbcMigration {
 
         protected boolean isRelationActive(UriVersionDto uriVersion, Collection<T> matchingVersions) {
             UriVersionDto latest = getLatestVersion(uriVersion, matchingVersions);
-            return !Tila.PASSIIVINEN.equals(latest.tila) 
-                    && (latest.versio == uriVersion.versio 
-                    || (latest.versio == uriVersion.versio + 1 && Tila.LUONNOS.equals(latest.tila)));
+            return !Tila.PASSIIVINEN.equals(latest.tila) && latest.versio == uriVersion.versio;
         }
 
         private UriVersionDto getLatestVersion(UriVersionDto uriVersion, Collection<T> matchingVersions) {
@@ -241,10 +239,7 @@ public class V13__set_old_relations_passive implements SpringJdbcMigration {
                 List<CodesUriVersionDto> codesVersions = getMatchingCodesUriVersions(latestVersion);
                 Collections.sort(codesVersions);
                 CodesUriVersionDto latestCodes = codesVersions.get(codesVersions.size() - 1);
-                CodesUriVersionDto secondLatestCodes = codesVersions.size() > 1 ? codesVersions.get(codesVersions.size() - 2) : null;
-                return latestCodes.codeElementVersions.contains(latestVersion.id) 
-                        || (Tila.LUONNOS.equals(latestCodes.tila) 
-                                && secondLatestCodes != null && secondLatestCodes.codeElementVersions.contains(latestVersion.id));
+                return latestCodes.codeElementVersions.contains(latestVersion.id);
             } catch (Exception e) {
                 errorMap.put(latestVersion.id, "Error while handling status of latestVersion[id=" + latestVersion.id + ", uri=" +latestVersion.uri +"]. Reason was: " + e.getMessage());
                 return false;

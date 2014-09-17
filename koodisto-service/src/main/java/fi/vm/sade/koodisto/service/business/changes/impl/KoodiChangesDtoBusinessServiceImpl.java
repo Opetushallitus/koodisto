@@ -16,7 +16,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 import fi.vm.sade.koodisto.dto.KoodiChangesDto;
-import fi.vm.sade.koodisto.dto.KoodiChangesDto.MuutosTila;
 import fi.vm.sade.koodisto.dto.KoodiChangesDto.SimpleCodeElementRelation;
 import fi.vm.sade.koodisto.dto.SimpleKoodiMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
@@ -32,6 +31,7 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.ChangesDateComparator;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 
 @Transactional(readOnly = true)
 @Service
@@ -263,33 +263,6 @@ public class KoodiChangesDtoBusinessServiceImpl implements KoodiChangesDtoBusine
         }
     }
 
-    private static class DatesChangedHandler {
-        
-        private final Date startDateChanged;
-        
-        private final Date endDateChanged;
-        
-        private final Boolean endDateRemoved;
-        
-        public DatesChangedHandler(Date startDateChanged, Date endDateChanged, Boolean endDateRemoved) {
-            this.startDateChanged = startDateChanged;
-            this.endDateChanged = endDateChanged;
-            this.endDateRemoved = endDateRemoved;
-        }
-        
-        private static DatesChangedHandler setDatesHaveChanged(Date relateToStartDate, Date relateToEndDate, Date latestStartDate, Date latestEndDate) {
-            Date startDateChanged = relateToStartDate.equals(latestStartDate) ? null : latestStartDate;
-            Date endDateChanged = latestEndDate == null || latestEndDate.equals(relateToEndDate) ? null : latestEndDate;
-            Boolean endDateRemoved = relateToEndDate != null && latestEndDate == null ? true : null;
-            return new DatesChangedHandler(startDateChanged, endDateChanged, endDateRemoved);
-        }
-        
-        private boolean anyChanges() {
-            return startDateChanged != null || endDateChanged != null || endDateRemoved != null;
-        }
-        
-    }
-    
     private class KoodiChangesDateComparator extends ChangesDateComparator<KoodiVersio> {
 
         @Override

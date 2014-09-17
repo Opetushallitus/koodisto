@@ -17,7 +17,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fi.vm.sade.koodisto.dto.KoodiChangesDto;
-import fi.vm.sade.koodisto.dto.KoodiChangesDto.MuutosTila;
 import fi.vm.sade.koodisto.dto.KoodiChangesDto.SimpleCodeElementRelation;
 import fi.vm.sade.koodisto.dto.SimpleKoodiMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
@@ -32,6 +31,7 @@ import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import fi.vm.sade.koodisto.test.support.builder.KoodiVersioBuilder;
 import static org.junit.Assert.assertEquals;
@@ -83,13 +83,6 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     public void returnsNoChangesIfOnlyVersionHasChanged() {
         int versio = 1;
         assertResultIsNoChanges(givenResult(givenKoodiVersio(versio), givenKoodiVersio(versio + 1)), versio + 1);
-    }
-    
-    @Test
-    public void returnsNoChangesIfVersionHasNotChangedButThereAreOtherChanges() {
-        int versio = 5;
-        KoodiVersio withChanges = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, "hippopotamus", "hippo", "large water-dwelling mammal", Kieli.EN);
-        assertResultIsNoChanges(givenResult(withChanges, givenKoodiVersio(versio)), versio);
     }
     
     @Test
@@ -367,6 +360,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     }
     
     private void assertResultWithTila(int expectedVersion, String expectedDescription, Tila expectedTila, KoodiChangesDto result) {
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
         assertEquals(expectedTila, result.tila);
         assertEquals(expectedVersion, result.viimeisinVersio.intValue());
         assertEquals(1, result.muuttuneetTiedot.size());
@@ -374,7 +368,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     }
     
     private void assertResultIsNoChanges(KoodiChangesDto result, int versio) {
-        assertEquals(KoodiChangesDto.MuutosTila.EI_MUUTOKSIA, result.muutosTila);
+        assertEquals(MuutosTila.EI_MUUTOKSIA, result.muutosTila);
         assertEquals(versio, result.viimeisinVersio.intValue());
         assertTrue(result.lisatytKoodinSuhteet.isEmpty());
         assertTrue(result.poistetutKoodinSuhteet.isEmpty());
@@ -390,7 +384,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     }
     
     private void assertResultHasMetadataChanges(KoodiChangesDto result, int versio, SimpleKoodiMetadataDto ... expecteds) {
-        assertEquals(KoodiChangesDto.MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
         assertTrue(result.muuttuneetTiedot.containsAll(Arrays.asList(expecteds)));
         assertEquals(versio, result.viimeisinVersio.intValue());
     }
@@ -407,7 +401,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
         Integer versio = koodiVersio.getVersio();
         when(koodiService.getKoodiVersio(KOODI_URI, versio)).thenReturn(koodiVersio);
         when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
-        when(koodistoService.getKoodistoByKoodistoUri(any(String.class))).thenReturn(DtoFactory.createKoodistoVersio(new Koodisto(), 999).getKoodisto());
+        when(koodistoService.getKoodistoByKoodistoUri(any(String.class))).thenReturn(DtoFactory.createKoodistoVersio(new Koodisto(), 999).build().getKoodisto());
         return service.getChangesDto(KOODI_URI, versio, false);
     }
     
@@ -446,7 +440,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
             if(versio.equals(koodiVersio.getVersio()))
                 return koodiVersio;
         }
-        return null;
+        return versios[0];
     }
 
     void returnGivenKoodiVersiosWithKoodiFromMockedKoodiService(KoodiVersio... versios) {
