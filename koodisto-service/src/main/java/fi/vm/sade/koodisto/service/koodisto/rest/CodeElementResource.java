@@ -40,7 +40,7 @@ import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
-import fi.vm.sade.koodisto.service.business.changes.KoodiChangesDtoBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.impl.conversion.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.CodeElementRelationListValidator;
@@ -68,7 +68,7 @@ public class CodeElementResource {
     private KoodistoConfiguration koodistoConfiguration;
 
     @Autowired
-    private KoodiChangesDtoBusinessService changesService;
+    private KoodiChangesService changesService;
     
     @Autowired
     private CodeElementResourceConverter converter;
