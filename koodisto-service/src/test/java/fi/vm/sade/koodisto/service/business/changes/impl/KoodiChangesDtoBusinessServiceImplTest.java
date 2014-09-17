@@ -217,7 +217,7 @@ public class KoodiChangesDtoBusinessServiceImplTest {
     }
     
     @Test
-    public void usesLatestHyvaksyttyVersionForComparison() {
+    public void usesLatestAcceptedVersionForComparison() {
         int versio = 1;
         String changedSecondDescription = "jumbo";
         KoodiVersio first = givenKoodiVersioWithMetadata(versio, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
