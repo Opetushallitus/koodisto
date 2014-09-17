@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.ChangesDateComparator;
 import fi.vm.sade.koodisto.service.business.changes.KoodistoChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 
@@ -40,8 +42,13 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
 
     @Override
     public KoodistoChangesDto getChangesDto(String uri, Date date, boolean compareToLatestAccepted) {
-        // TODO Auto-generated method stub
-        return null;
+        KoodistoVersio koodistoVersio = determineCodeVersionThatMatchesDate(uri, date);
+        KoodistoVersio latest = fetchLatestDesiredCodesVersion(uri, compareToLatestAccepted);
+        return constructChangesDto(koodistoVersio, latest);
+    }
+    
+    private KoodistoVersio determineCodeVersionThatMatchesDate(String uri, Date date) {
+        return new KoodistoChangesDateComparator().getClosestMatchingEntity(date, koodistoService.getKoodistoByKoodistoUri(uri).getKoodistoVersios());
     }
     
     private KoodistoVersio fetchLatestDesiredCodesVersion(String uri, boolean compareToLatestAccepted) {
@@ -131,5 +138,14 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
             }
         }
         return null;
+    }
+    
+    private class KoodistoChangesDateComparator extends ChangesDateComparator<KoodistoVersio> {
+
+        @Override
+        protected DateTime getDateFromEntity(KoodistoVersio entity) {
+            return new DateTime(entity.getLuotu());
+        }
+        
     }
 }

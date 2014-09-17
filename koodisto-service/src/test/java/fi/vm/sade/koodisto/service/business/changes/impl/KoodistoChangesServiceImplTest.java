@@ -42,6 +42,7 @@ public class KoodistoChangesServiceImplTest {
     private final static String NAME = "Lehtipuut", DESCRIPTION = "pudottavat lehtensä syksyisin";
     private final static String NAME_EN = "Leaftrees", DESCRIPTION_EN = "leaves are dropped during autumn";
     private final static Date CURRENT_DATE = new Date();
+    private static final Date FIRST_DATE = new Date(2000), SECOND_DATE = new Date(20050000), THIRD_DATE = new Date(30050000);
     
     private final static Integer VERSIO = 1;
     
@@ -185,6 +186,32 @@ public class KoodistoChangesServiceImplTest {
         assertResultWithTila(VERSIO + 2, changedThirdDescription, Tila.LUONNOS, givenResultWithMultipleKoodistoVersios(VERSIO, false, first, second, third));
     }
     
+    @Test
+    public void usesCodesVersionThatIsClosestToGivenDateForComparison() {
+        assertGivenResultWithDateQuery(SECOND_DATE, false);
+    }
+    
+    @Test
+    public void usesFirstVersionForComparisonWhenDateUsedForQueryIsBeforeAnyVersion() {
+        assertGivenResultWithDateQuery(new Date(0), true);
+    }
+
+    private void assertGivenResultWithDateQuery(Date query, boolean shouldUseFirst) {
+        String descriptionChangedForSecond = "kuvausta norsusta";
+        String nameChangedForThird = "Otus";
+        KoodistoVersio first = givenKoodistoVersioWithMetaDataAndCustomDateItWasCreated(VERSIO, FIRST_DATE, givenKoodistoMetadata(NAME, DESCRIPTION, Kieli.FI));
+        KoodistoVersio second = givenKoodistoVersioWithMetaDataAndCustomDateItWasCreated(VERSIO + 1, SECOND_DATE, givenKoodistoMetadata(NAME, descriptionChangedForSecond, Kieli.FI));
+        KoodistoVersio third = givenKoodistoVersioWithMetaDataAndCustomDateItWasCreated(VERSIO + 2, THIRD_DATE, givenKoodistoMetadata(nameChangedForThird, descriptionChangedForSecond, Kieli.FI));
+        KoodistoChangesDto dto = givenResultWithMultipleKoodistoVersiosForDateQuery(query, false, first, second, third);
+        assertEquals(3, dto.viimeisinVersio.intValue());
+        SimpleMetadataDto data = dto.muuttuneetTiedot.get(0);
+        assertEquals(nameChangedForThird, data.nimi);
+        if (shouldUseFirst) {
+            assertEquals(descriptionChangedForSecond, data.kuvaus);
+        } else {
+            assertNull(data.kuvaus);
+        }
+    }
 
     private void assertResultWithTila(Integer expectedVersio, String expectedDescription, Tila expectedTila, KoodistoChangesDto result) {
         assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
@@ -207,6 +234,14 @@ public class KoodistoChangesServiceImplTest {
         assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
         assertTrue(result.muuttuneetTiedot.containsAll(Arrays.asList(expecteds)));
         assertEquals(versio, result.viimeisinVersio.intValue());
+    }
+    
+    private KoodistoChangesDto givenResultWithMultipleKoodistoVersiosForDateQuery(Date date, boolean compareToLatestAccepted, KoodistoVersio ... versios) {
+        if (!compareToLatestAccepted) {
+            returnLatestKoodistoVersioFromMockedKoodistoService(versios);
+        }
+        returnGivenKoodistoVersiosWithKoodistoFromMockedKoodistoService(versios);
+        return service.getChangesDto(KOODISTO_URI, date, compareToLatestAccepted);
     }
     
     private KoodistoChangesDto givenResult(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
@@ -276,6 +311,13 @@ public class KoodistoChangesServiceImplTest {
     private KoodistoVersio givenKoodistoVersioWithTilaAndMetadata(int versio, Tila tila, KoodistoMetadata ...koodistoMetadatas) {
         KoodistoVersio kv = givenKoodistoVersioWithMetadata(versio,  koodistoMetadatas);
         kv.setTila(tila);
+        return kv;
+    }
+    
+
+    private KoodistoVersio givenKoodistoVersioWithMetaDataAndCustomDateItWasCreated(int versio, Date createdDate, KoodistoMetadata ... koodistoMetadata) {
+        KoodistoVersio kv = givenKoodistoVersioWithMetadata(versio, koodistoMetadata);
+        kv.setLuotu(createdDate);
         return kv;
     }
 }
