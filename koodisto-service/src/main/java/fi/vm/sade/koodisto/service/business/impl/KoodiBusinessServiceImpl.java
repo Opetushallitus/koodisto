@@ -53,6 +53,7 @@ import fi.vm.sade.koodisto.service.business.exception.KoodiNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotInKoodistoException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiOptimisticLockingException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiRelationToSelfException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiValueNotUniqueException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioHasRelationsException;
@@ -389,6 +390,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
         if (st == SuhteenTyyppi.SISALTYY && !userIsRootUser() && koodisHaveSameOrganisaatio(codeElementUri, relatedCodeElements)) {
             throw new KoodisHaveDifferentOrganizationsException();
+        }
+        if(relatedCodeElements.contains(codeElementUri)){
+            throw new KoodiRelationToSelfException();
         }
 
         if (!isChild || st.equals(SuhteenTyyppi.RINNASTEINEN)) { // SISALTAA OR RINNASTUU

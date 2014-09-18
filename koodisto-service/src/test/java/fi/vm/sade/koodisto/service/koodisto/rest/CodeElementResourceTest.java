@@ -441,14 +441,15 @@ public class CodeElementResourceTest {
         String codeElementUri = "lisaarinnasteinen14";
         String codeElementUriToAdd = "lisaarinnasteinen14kanssa1";
         String relationType = "RINNASTEINEN";
-        resource.addRelation("", codeElementUriToAdd, relationType);
-        resource.addRelation(null, codeElementUriToAdd, relationType);
-        resource.addRelation(codeElementUri, "", relationType);
-        resource.addRelation(codeElementUri, null, relationType);
-        resource.addRelation(codeElementUri, codeElementUriToAdd, "");
-        resource.addRelation(codeElementUri, codeElementUriToAdd, null);
-        resource.addRelation(codeElementUri, codeElementUriToAdd, "doenostexist");
+        assertResponse(resource.addRelation("", codeElementUriToAdd, relationType), 400, "error.validation.codeelementuri");
+        assertResponse(resource.addRelation(null, codeElementUriToAdd, relationType), 400, "error.validation.codeelementuri");
+        assertResponse(resource.addRelation(codeElementUri, "", relationType), 400, "error.validation.codeelementuritoadd");
+        assertResponse(resource.addRelation(codeElementUri, null, relationType), 400, "error.validation.codeelementuritoadd");
+        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, ""), 400, "error.validation.relationtype");
+        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, null), 400, "error.validation.relationtype");
 
+        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, "doenostexist"), 500, "error.codes.generic");
+        assertResponse(resource.addRelation(codeElementUri, codeElementUri, relationType), 500, "error.codeelement.relation.to.self");
         assertResponse(resource.addRelation("doenotexist", codeElementUriToAdd, relationType), 500, "error.codeelement.not.found");
         assertResponse(resource.addRelation(codeElementUri, "doesnotexist", relationType), 500, "error.codeelement.not.found");
 
@@ -457,18 +458,29 @@ public class CodeElementResourceTest {
         codeElementUri = "lisaasisaltyy18";
         codeElementUriToAdd = "lisaasisaltyy18kanssa1";
         relationType = "SISALTYY";
-        resource.addRelation("", codeElementUriToAdd, relationType);
-        resource.addRelation(null, codeElementUriToAdd, relationType);
-        resource.addRelation(codeElementUri, "", relationType);
-        resource.addRelation(codeElementUri, null, relationType);
-        resource.addRelation(codeElementUri, codeElementUriToAdd, "");
-        resource.addRelation(codeElementUri, codeElementUriToAdd, null);
-        resource.addRelation(codeElementUri, codeElementUriToAdd, "doenostexist");
+        assertResponse(resource.addRelation("", codeElementUriToAdd, relationType), 400, "error.validation.codeelementuri");
+        assertResponse(resource.addRelation(null, codeElementUriToAdd, relationType), 400, "error.validation.codeelementuri");
+        assertResponse(resource.addRelation(codeElementUri, "", relationType), 400, "error.validation.codeelementuritoadd");
+        assertResponse(resource.addRelation(codeElementUri, null, relationType), 400, "error.validation.codeelementuritoadd");
+        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, ""), 400, "error.validation.relationtype");
+        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, null), 400, "error.validation.relationtype");
 
+        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, "doenostexist"), 500, "error.codes.generic");
+        assertResponse(resource.addRelation(codeElementUri, codeElementUri, relationType), 500, "error.codeelement.relation.to.self");
         assertResponse(resource.addRelation("doenotexist", codeElementUriToAdd, relationType), 500, "error.codeelement.not.found");
         assertResponse(resource.addRelation(codeElementUri, "doesnotexist", relationType), 500, "error.codeelement.not.found");
 
         assertEquals(0, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.SISALTYY).size());
+    }
+    
+    @Test
+    public void testAddRelationToSameCodes() {
+        String codeElementUri = "lisaasisaltyy18kanssa1";
+        String codeElementUriToAdd = "lisaasisaltyy18kanssa2";
+        String relationType = "SISALTYY";
+
+        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, relationType), 200);
+    
     }
 
     @Test
