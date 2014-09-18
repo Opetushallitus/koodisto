@@ -487,18 +487,20 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         }, function(result2) {
             $scope.selectallcodelements = true;
             result2.forEach(function(codeElement) {
-                var ce = {};
-                ce.uri = codeElement.koodiUri;
-                ce.checked = jQuery.grep(existingSelections, function(element) {
-                    return codeElement.koodiUri == element.uri;
-                }).length > 0;
-                ce.value = codeElement.koodiArvo;
-                ce.name = getLanguageSpecificValueOrValidValue(codeElement.metadata, 'nimi', 'FI');
-                if ($scope.selectallcodelements && !ce.checked) {
-                    $scope.selectallcodelements = false;
+                if(codeElement.koodiUri != $scope.codeElementUri) {
+                    var ce = {};
+                    ce.uri = codeElement.koodiUri;
+                    ce.checked = jQuery.grep(existingSelections, function(element) {
+                        return codeElement.koodiUri == element.uri;
+                    }).length > 0;
+                    ce.value = codeElement.koodiArvo;
+                    ce.name = getLanguageSpecificValueOrValidValue(codeElement.metadata, 'nimi', 'FI');
+                    if ($scope.selectallcodelements && !ce.checked) {
+                        $scope.selectallcodelements = false;
+                    }
+                    toBeShown.push(ce);
+                    $scope.updatePaginationPage(true);
                 }
-                toBeShown.push(ce);
-                $scope.updatePaginationPage(true);
             });
 
             $scope.model.shownCodeElements = toBeShown;
@@ -542,6 +544,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                     showCodeElementsInCodeSet($scope.model.allWithinCodeElements, $scope.model.withinCodeElements);
                 }
                 $scope.model.shownCodes = getCodesUris(result.withinCodes);
+                $scope.model.shownCodes.unshift($scope.model.codeElement.koodisto.koodistoUri);
                 $scope.model.shownCodeElements = $scope.model.allWithinCodeElements;
 
             } else if (name === 'includescodes') {
@@ -549,6 +552,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                     showCodeElementsInCodeSet($scope.model.allIncludesCodeElements, $scope.model.includesCodeElements);
                 }
                 $scope.model.shownCodes = getCodesUris(result.includesCodes);
+                $scope.model.shownCodes.unshift($scope.model.codeElement.koodisto.koodistoUri);
                 $scope.model.shownCodeElements = $scope.model.allIncludesCodeElements;
 
             } else if (name === 'levelswithcodes') {
