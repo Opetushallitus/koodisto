@@ -6,6 +6,7 @@ import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.Tila;
 
 public class KoodistoVersioBuilder implements Builder<KoodistoVersio> {
@@ -59,7 +60,19 @@ public class KoodistoVersioBuilder implements Builder<KoodistoVersio> {
         kv.setVoimassaLoppuPvm(endDate);
         return this;
     }
+    
+    public KoodistoVersioBuilder addParentRelation(KoodistonSuhde ks) {
+        kv.getYlakoodistos().add(ks);
+        ks.setAlakoodistoVersio(kv);
+        return this;
+    }
 
+    public KoodistoVersioBuilder addChildRelation(KoodistonSuhde ks) {
+        kv.getAlakoodistos().add(ks);
+        ks.setYlakoodistoVersio(kv);
+        return this;
+    }
+    
     @Override
     public KoodistoVersio build() {
         if (kv.getId() == null) {
@@ -73,7 +86,5 @@ public class KoodistoVersioBuilder implements Builder<KoodistoVersio> {
         }
         return kv;
     }
-    
-    
 
 }

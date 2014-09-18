@@ -16,11 +16,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fi.vm.sade.koodisto.dto.KoodistoChangesDto;
+import fi.vm.sade.koodisto.dto.KoodistoChangesDto.SimpleCodesRelation;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistonSuhde;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
@@ -28,6 +31,7 @@ import fi.vm.sade.koodisto.service.business.changes.KoodistoChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -195,6 +199,85 @@ public class KoodistoChangesServiceImplTest {
     public void usesFirstVersionForComparisonWhenDateUsedForQueryIsBeforeAnyVersion() {
         assertGivenResultWithDateQuery(new Date(0), true);
     }
+    
+    @Test
+    public void returnsHasChangedIfRelationHaveBeenAdded() {
+        Integer relationVersion = 3;
+        String koodistoUri = "havupuut";
+        KoodistoVersio original = givenKoodistoVersio(VERSIO);
+        KoodistoVersio latest = givenKoodistoVersioWithRelations(VERSIO + 1, givenKoodistonSuhde(SuhteenTyyppi.RINNASTEINEN, null, givenKoodistoVersio(relationVersion, koodistoUri)));
+        KoodistoChangesDto dto = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
+        assertTrue(dto.passivoidutKoodistonSuhteet.isEmpty());
+        assertTrue(dto.poistetutKoodistonSuhteet.isEmpty());
+        assertEquals(1, dto.lisatytKoodistonSuhteet.size());
+        SimpleCodesRelation relation = dto.lisatytKoodistonSuhteet.get(0);
+        assertEquals(koodistoUri, relation.koodistoUri);
+        assertEquals(SuhteenTyyppi.RINNASTEINEN, relation.suhteenTyyppi);
+        assertTrue(relation.lapsiKoodisto);
+        assertEquals(relationVersion, relation.versio);
+    }
+    
+    @Test
+    public void returnsHasChangedIfRelationsHaveBeenRemoved() {
+        Integer relationVersion = 3;
+        String koodistoUri = "havupuut";
+        KoodistoVersio latest = givenKoodistoVersio(VERSIO + 1);
+        KoodistoVersio original = givenKoodistoVersioWithRelations(VERSIO, givenKoodistonSuhde(SuhteenTyyppi.SISALTYY, givenKoodistoVersio(relationVersion, koodistoUri), null));
+        KoodistoChangesDto dto = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
+        assertTrue(dto.passivoidutKoodistonSuhteet.isEmpty());
+        assertTrue(dto.lisatytKoodistonSuhteet.isEmpty());
+        assertEquals(1, dto.poistetutKoodistonSuhteet.size());
+        SimpleCodesRelation relation = dto.poistetutKoodistonSuhteet.get(0);
+        assertEquals(koodistoUri, relation.koodistoUri);
+        assertEquals(SuhteenTyyppi.SISALTYY, relation.suhteenTyyppi);
+        assertFalse(relation.lapsiKoodisto);
+        assertEquals(relationVersion, relation.versio);
+    }
+    
+    @Test
+    public void returnsHasChangedIfRelationsHaveBeenTurnedIntoPassive() {
+        Integer relationVersion = 3;
+        String koodistoUri = "puut";
+        KoodistoVersio related = givenKoodistoVersio(relationVersion, koodistoUri);
+        KoodistoVersio original = givenKoodistoVersioWithRelations(VERSIO, givenKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, related));
+        KoodistoVersio latest = givenKoodistoVersioWithRelations(VERSIO + 1, givenPassiveKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, related, true, false));
+        KoodistoChangesDto dto = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
+        assertTrue(dto.lisatytKoodistonSuhteet.isEmpty());
+        assertTrue(dto.poistetutKoodistonSuhteet.isEmpty());
+        assertEquals(1, dto.passivoidutKoodistonSuhteet.size());
+        SimpleCodesRelation relation = dto.passivoidutKoodistonSuhteet.get(0);
+        assertEquals(koodistoUri, relation.koodistoUri);
+        assertEquals(SuhteenTyyppi.SISALTYY, relation.suhteenTyyppi);
+        assertTrue(relation.lapsiKoodisto);
+        assertEquals(relationVersion, relation.versio);
+    }
+    
+    @Test
+    public void returnsHasChangedForMultipleRelations() {
+        Integer versio = 1;
+        KoodistoVersio original = givenKoodistoVersioWithRelations(versio, givenKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodistoVersio(3, "juuret")), givenKoodistonSuhde(SuhteenTyyppi.RINNASTEINEN, null, givenKoodistoVersio(3, "lehdet")));
+        KoodistoVersio latest = givenKoodistoVersioWithRelations(versio + 1, givenPassiveKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodistoVersio(3, "juuret"), true, false), givenKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodistoVersio(3, "oksat")));
+        KoodistoChangesDto dto = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
+        assertEquals(1, dto.lisatytKoodistonSuhteet.size());
+        assertEquals(1, dto.poistetutKoodistonSuhteet.size());
+        assertEquals(1, dto.passivoidutKoodistonSuhteet.size());
+    }
+    
+    @Test
+    public void returnsHasChangedForMultipleRelationsAndTreatsRelationsWithSameCodeUriButDifferentRelationTypeAsDifferent() {
+        KoodistoVersio relationCode = givenKoodistoVersio(3, "havupuut");
+        KoodistoVersio original = givenKoodistoVersioWithRelations(VERSIO, givenKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodistoVersio(3, "puut")), givenKoodistonSuhde(SuhteenTyyppi.RINNASTEINEN, null, relationCode));
+        KoodistoVersio latest = givenKoodistoVersioWithRelations(VERSIO + 1, givenPassiveKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodistoVersio(3, "puut"), true, false), givenKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, relationCode));
+        KoodistoChangesDto dto = givenResult(original, latest);
+        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
+        assertEquals(1, dto.lisatytKoodistonSuhteet.size());
+        assertEquals(1, dto.poistetutKoodistonSuhteet.size());
+        assertEquals(1, dto.passivoidutKoodistonSuhteet.size());
+    }
 
     private void assertGivenResultWithDateQuery(Date query, boolean shouldUseFirst) {
         String descriptionChangedForSecond = "kuvausta norsusta";
@@ -285,7 +368,13 @@ public class KoodistoChangesServiceImplTest {
     }
 
     private KoodistoVersio givenKoodistoVersio(Integer versio) {
-        return DtoFactory.createKoodistoVersio(new Koodisto(), versio).build();
+        return givenKoodistoVersio(versio, KOODISTO_URI);
+    }
+    
+    private KoodistoVersio givenKoodistoVersio(Integer versio, String koodistoUri) {
+        Koodisto koodisto = new Koodisto();
+        koodisto.setKoodistoUri(koodistoUri);
+        return DtoFactory.createKoodistoVersio(koodisto, versio).build();
     }
     
     private KoodistoVersio givenKoodistoVersioWithMetadata(Integer versio, String name, String description) {
@@ -314,10 +403,23 @@ public class KoodistoChangesServiceImplTest {
         return kv;
     }
     
-
     private KoodistoVersio givenKoodistoVersioWithMetaDataAndCustomDateItWasCreated(int versio, Date createdDate, KoodistoMetadata ... koodistoMetadata) {
         KoodistoVersio kv = givenKoodistoVersioWithMetadata(versio, koodistoMetadata);
         kv.setLuotu(createdDate);
         return kv;
+    }
+    
+    private KoodistoVersio givenKoodistoVersioWithRelations(int versio, KoodistonSuhde ... relations) {
+        Koodisto koodisto = new Koodisto();
+        koodisto.setKoodistoUri(KOODISTO_URI);
+        return DtoFactory.createKoodistoVersioWithRelations(koodisto, versio, relations).build();
+    }
+    
+    private KoodistonSuhde givenKoodistonSuhde(SuhteenTyyppi tyyppi, KoodistoVersio parent, KoodistoVersio child) {
+        return givenPassiveKoodistonSuhde(tyyppi, parent, child, false, false);
+    }
+    
+    private KoodistonSuhde givenPassiveKoodistonSuhde(SuhteenTyyppi tyyppi, KoodistoVersio parent, KoodistoVersio child, boolean parentPassive, boolean childPassive) {
+        return DtoFactory.createKoodistonSuhde(tyyppi, child, parent, parentPassive, childPassive).build();
     }
 }

@@ -15,11 +15,13 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 import fi.vm.sade.koodisto.dto.KoodistoChangesDto;
+import fi.vm.sade.koodisto.dto.KoodistoChangesDto.SimpleCodesRelation;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.ChangesDateComparator;
@@ -71,16 +73,26 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
         DatesChangedHandler dateHandler = DatesChangedHandler.setDatesHaveChanged(koodistoVersio.getVoimassaAlkuPvm(), koodistoVersio.getVoimassaLoppuPvm(),
                 latest.getVoimassaAlkuPvm(), latest.getVoimassaLoppuPvm());
         Tila changedTila = koodistoVersio.getTila().equals(latest.getTila()) ? null : latest.getTila();
-        MuutosTila changesState = anyChanges(koodistoVersio.getVersio(), latest.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), changedTila);
+        List<SimpleCodesRelation> addedRelations = addedRelations(koodistoVersio, latest);
+        List<SimpleCodesRelation> removedRelations = removedRelations(koodistoVersio, latest);
+        List<SimpleCodesRelation> passiveRelations = passiveRelations(koodistoVersio, latest);
+        MuutosTila changesState = anyChanges(koodistoVersio.getVersio(), latest.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), changedTila, 
+                addedRelations, removedRelations, passiveRelations);
         return new KoodistoChangesDto(changesState, latest.getVersio(), changedMetas, removedMetas, latest.getPaivitysPvm(), 
-                dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, changedTila, null, null, null, null, null, null);
+                dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, changedTila, addedRelations, removedRelations, passiveRelations, 
+                null, null, null);
     }
     
-    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleMetadataDto> changedMetas, List<SimpleMetadataDto> removedMetas, boolean validDateHasChanged, Tila changedTila) {
+    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleMetadataDto> changedMetas, List<SimpleMetadataDto> removedMetas, boolean validDateHasChanged, Tila changedTila, 
+            List<SimpleCodesRelation> addedRelations, List<SimpleCodesRelation> removedRelations, List<SimpleCodesRelation> passiveRelations) {
         if (versio.equals(latestVersio)) {
             return MuutosTila.EI_MUUTOKSIA;
         }
-        return changedMetas.size() > 0 || removedMetas.size() > 0 || validDateHasChanged || changedTila != null ? MuutosTila.MUUTOKSIA : MuutosTila.EI_MUUTOKSIA;
+        boolean noChanges = true;
+        noChanges = noChanges && changedMetas.size() < 1 && removedMetas.size() < 1;
+        noChanges = noChanges && !validDateHasChanged && changedTila == null;
+        noChanges = noChanges && addedRelations.size() < 1 && removedRelations.size() < 1 && passiveRelations.size() < 1;
+        return  noChanges ? MuutosTila.EI_MUUTOKSIA : MuutosTila.MUUTOKSIA;
     }
     
     private List<SimpleMetadataDto> removedMetadatas(List<KoodistoMetadata> compareToMetas, final List<KoodistoMetadata> latestMetas) {
@@ -138,6 +150,75 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
             }
         }
         return null;
+    }
+    
+    private List<SimpleCodesRelation> passiveRelations(KoodistoVersio kv, KoodistoVersio latestKoodistoVersio) {
+        Collection<KoodistonSuhde> passiveRelations = Collections2.filter(getRelationsFromKoodistoVersio(latestKoodistoVersio), new Predicate<KoodistonSuhde>() {
+            
+            @Override
+            public boolean apply(KoodistonSuhde input) {
+                return input.isPassive();
+            }
+        });
+        return new ArrayList<SimpleCodesRelation>(Collections2.transform(passiveRelations, new KoodistonSuhdeToSimpleCodesRelation(kv.getKoodisto().getKoodistoUri())));
+    }
+
+    private List<SimpleCodesRelation> removedRelations(KoodistoVersio kv, KoodistoVersio latestKoodistoVersio) {
+        final String koodistoUri = latestKoodistoVersio.getKoodisto().getKoodistoUri();
+        final List<KoodistonSuhde> relationsFromLatest = getRelationsFromKoodistoVersio(latestKoodistoVersio);
+        Collection<SimpleCodesRelation> removedRelations = Collections2.transform(Collections2.filter(getRelationsFromKoodistoVersio(kv), new KoodistonSuhdeFoundNotFound(relationsFromLatest)), new KoodistonSuhdeToSimpleCodesRelation(koodistoUri));
+        return new ArrayList<SimpleCodesRelation>(removedRelations);
+    }
+
+    private List<SimpleCodesRelation> addedRelations(KoodistoVersio kv, KoodistoVersio latestKoodistoVersio) {
+        final String koodistoUri = latestKoodistoVersio.getKoodisto().getKoodistoUri();
+        final List<KoodistonSuhde> relationsFromVersio = getRelationsFromKoodistoVersio(kv);
+        Collection<SimpleCodesRelation> relationsAdded = Collections2.transform(Collections2.filter(getRelationsFromKoodistoVersio(latestKoodistoVersio), new KoodistonSuhdeFoundNotFound(relationsFromVersio)), new KoodistonSuhdeToSimpleCodesRelation(koodistoUri));
+        return new ArrayList<SimpleCodesRelation>(relationsAdded);
+    }
+
+    private List<KoodistonSuhde> getRelationsFromKoodistoVersio(KoodistoVersio kv) {
+        List<KoodistonSuhde> allRelations = new ArrayList<>(kv.getAlakoodistos());
+        allRelations.addAll(kv.getYlakoodistos());
+        return allRelations;
+    }
+    
+    private final class KoodistonSuhdeFoundNotFound implements Predicate<KoodistonSuhde> {
+        private final List<KoodistonSuhde> relationsToCompare;
+
+        private KoodistonSuhdeFoundNotFound(List<KoodistonSuhde> relationsToCompare) {
+            this.relationsToCompare = relationsToCompare;
+        }
+
+        @Override
+        public boolean apply(KoodistonSuhde input) {
+            boolean missing = true;
+            String upperCodeUri = input.getYlakoodistoVersio().getKoodisto().getKoodistoUri();
+            String lowerCodeUri = input.getAlakoodistoVersio().getKoodisto().getKoodistoUri();
+            for (KoodistonSuhde ks : relationsToCompare) {
+                if (lowerCodeUri.equals(ks.getAlakoodistoVersio().getKoodisto().getKoodistoUri()) && upperCodeUri.equals(ks.getYlakoodistoVersio().getKoodisto().getKoodistoUri()) 
+                        && ks.getSuhteenTyyppi().equals(input.getSuhteenTyyppi())) {
+                    missing = false;
+                }
+            }
+            return missing;
+        }
+    }
+    
+    private class KoodistonSuhdeToSimpleCodesRelation implements Function<KoodistonSuhde, SimpleCodesRelation> {
+        private final String koodistoUri;
+
+        private KoodistonSuhdeToSimpleCodesRelation(String koodistoUri) {
+            this.koodistoUri = koodistoUri;
+        }
+
+        @Override
+        public SimpleCodesRelation apply(KoodistonSuhde input) {
+            boolean isChild = koodistoUri.equals(input.getYlakoodistoVersio().getKoodisto().getKoodistoUri()) ? true : false;
+            String uri = isChild ? input.getAlakoodistoVersio().getKoodisto().getKoodistoUri() : input.getYlakoodistoVersio().getKoodisto().getKoodistoUri();
+            Integer versio = isChild ? input.getAlakoodistoVersio().getVersio() : input.getYlakoodistoVersio().getVersio();
+            return new SimpleCodesRelation(uri, versio, input.getSuhteenTyyppi(), isChild);
+        }
     }
     
     private class KoodistoChangesDateComparator extends ChangesDateComparator<KoodistoVersio> {

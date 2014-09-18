@@ -10,6 +10,7 @@ import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.test.support.builder.KoodiBuilder;
@@ -17,6 +18,7 @@ import fi.vm.sade.koodisto.test.support.builder.KoodiMetadataBuilder;
 import fi.vm.sade.koodisto.test.support.builder.KoodiVersioBuilder;
 import fi.vm.sade.koodisto.test.support.builder.KoodinSuhdeBuilder;
 import fi.vm.sade.koodisto.test.support.builder.KoodistoVersioBuilder;
+import fi.vm.sade.koodisto.test.support.builder.KoodistonSuhdeBuilder;
 
 public class DtoFactory {
 
@@ -68,6 +70,24 @@ public class DtoFactory {
 
     public static KoodistoVersioBuilder createKoodistoVersioWithStartAndEndDates(Koodisto koodisto, int versio, Date startDate, Date endDate) {
         return createKoodistoVersio(koodisto, versio).setStartDate(startDate).setEndDate(endDate);
+    }
+
+    public static KoodistoVersioBuilder createKoodistoVersioWithRelations(Koodisto koodisto, int versio, KoodistonSuhde ... relations) {
+        KoodistoVersioBuilder builder = createKoodistoVersio(koodisto, versio);
+        for(KoodistonSuhde ks : relations){
+            if(ks.getAlakoodistoVersio() == null) {
+                builder.addParentRelation(ks);
+            } else {
+                builder.addChildRelation(ks);
+            }
+        }
+        return builder;
+    }
+
+    public static KoodistonSuhdeBuilder createKoodistonSuhde(SuhteenTyyppi tyyppi, KoodistoVersio child, KoodistoVersio parent, boolean parentPassive,
+            boolean childPassive) {
+        return new KoodistonSuhdeBuilder().setSuhteenTyyppi(tyyppi).setChildVersio(child).setParentVersio(parent)
+                .setParentPassive(parentPassive).setChildPassive(childPassive);
     }
 
 }
