@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.activation.DataHandler;
@@ -38,6 +39,7 @@ import com.wordnik.swagger.annotations.ApiParam;
 
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.generic.service.exception.SadeBusinessException;
+import fi.vm.sade.koodisto.dto.KoodistoChangesDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoListDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaListDto;
@@ -48,9 +50,9 @@ import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.DownloadService;
-import fi.vm.sade.koodisto.service.UploadService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UploadBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.KoodistoChangesService;
 import fi.vm.sade.koodisto.service.impl.stream.TemporaryFileInputStream;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.CodesValidator;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.KoodistoValidationException;
@@ -81,6 +83,9 @@ public class CodesResource {
 
     @Autowired
     private CodesResourceConverter converter;
+    
+    @Autowired
+    private KoodistoChangesService changesService;
 
     private CodesValidator codesValidator = new CodesValidator();
 
@@ -327,6 +332,63 @@ public class CodesResource {
         } catch (Exception e) {
             String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
             LOGGER.error("Getting codes by codes uri and version failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
+        }
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({ JsonViews.Basic.class })
+    @Path("changes/{codesUri}/{codesVersion}")
+    @ApiOperation(
+            value = "Palauttaa muutokset uusimpaan koodistoversioon verrattaessa",
+            notes = "Toimii vain, jos koodisto on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
+            response = KoodistoChangesDto.class)
+    public Response getChangesToCodes(@ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
+            @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") Integer codesVersion, 
+            @ApiParam(value = "Verrataanko viimeiseen hyväksyttyyn versioon") @DefaultValue("false") @QueryParam("compareToLatestAccepted") boolean compareToLatestAccepted) {
+        try {
+            ValidatorUtil.checkForGreaterThan(codesVersion, 0, new KoodistoValidationException("error.validation.codeelementversion"));
+            KoodistoChangesDto dto = changesService.getChangesDto(codesUri, codesVersion, compareToLatestAccepted);
+            return Response.status(Response.Status.OK).entity(dto).build();
+        } catch (KoodistoValidationException e) {
+            LOGGER.warn("Invalid parameter for rest call: get changes. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            LOGGER.error("Fetching changes to codes failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
+        }
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({ JsonViews.Basic.class })
+    @Path("changes/withdate/{codesUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}")
+    @ApiOperation(
+            value = "Palauttaa tehdyt muutokset uusimpaan koodistoversioon käyttäen lähintä päivämäärään osuvaa koodistoversiota vertailussa",
+            notes = "Toimii vain, jos koodisto on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
+            response = KoodistoChangesDto.class)
+    public Response getChangesToCodesWithDate(@ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
+            @ApiParam(value = "Kuukauden päivä") @PathParam("dayofmonth") Integer dayOfMonth,
+            @ApiParam(value = "Kuukausi") @PathParam("month") Integer month,
+            @ApiParam(value = "Vuosi") @PathParam("year") Integer year,
+            @ApiParam(value = "Tunti") @PathParam("hour") Integer hourOfDay,
+            @ApiParam(value = "Minuutti") @PathParam("minute") Integer minute,
+            @ApiParam(value = "Sekunti") @PathParam("second") Integer second,
+            @ApiParam(value = "Verrataanko viimeiseen hyväksyttyyn versioon") @DefaultValue("false") @QueryParam("compareToLatestAccepted") boolean compareToLatestAccepted) {
+        try {
+            ValidatorUtil.validateDateParameters(dayOfMonth, month, year, hourOfDay, minute, second);
+            Calendar cal = Calendar.getInstance();
+            cal.set(year, month, dayOfMonth, hourOfDay, minute, second);
+            KoodistoChangesDto dto = changesService.getChangesDto(codesUri, cal.getTime(), compareToLatestAccepted);
+            return Response.status(Response.Status.OK).entity(dto).build();
+        } catch (KoodistoValidationException e) {
+            LOGGER.warn("Invalid parameter for rest call: get changes. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            LOGGER.error("Fetching changes to codes failed.", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
