@@ -79,6 +79,11 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         if (removedFromLatestCodes(latestKoodiVersio, compareToLatestAccepted)) {
             return new KoodiChangesDto(MuutosTila.POISTETTU, null, null, null, null, null, null, null, null, null, null, null);
         }
+        return constructChangesDto(koodiVersio, latestKoodiVersio);
+    }
+
+    @Override
+    public KoodiChangesDto constructChangesDto(KoodiVersio koodiVersio, KoodiVersio latestKoodiVersio) {
         List<SimpleKoodiMetadataDto> changedMetas = changedMetadatas(koodiVersio.getMetadatas(), latestKoodiVersio.getMetadatas());
         List<SimpleKoodiMetadataDto> removedMetas = removedMetadatas(koodiVersio.getMetadatas(), latestKoodiVersio.getMetadatas());
         DatesChangedHandler dateHandler = DatesChangedHandler.setDatesHaveChanged(koodiVersio.getVoimassaAlkuPvm(), koodiVersio.getVoimassaLoppuPvm(),
