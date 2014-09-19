@@ -235,7 +235,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return result.get(0);
     }
 
-    private KoodiVersio getKoodiVersio(String koodiUri, Integer koodiVersio) {
+    public KoodiVersio getKoodiVersio(String koodiUri, Integer koodiVersio) {
         return getKoodiVersioWithKoodistoVersioItems(koodiUri, koodiVersio).getKoodiVersio();
     }
 
@@ -627,10 +627,19 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         // Update the version itself by copying all the fields
         EntityUtils.copyFields(updateKoodiData, latest);
-
+        
         // Set update date
         latest.setPaivitysPvm(new Date());
         return latest;
+    }
+
+    private void setRelationsInPreviousVersionToPassive(KoodiVersio previous) {
+        for (KoodinSuhde ks : previous.getAlakoodis()) {
+            ks.setYlaKoodiPassive(true);
+        }
+        for (KoodinSuhde ks : previous.getYlakoodis()) {
+            ks.setAlaKoodiPassive(true);
+        }
     }
 
     private KoodiVersio createNewVersion(UpdateKoodiDataType updateKoodiData, KoodistoVersio newKoodistoVersio) {
@@ -708,15 +717,16 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         for (KoodinSuhde ks : latest.getYlakoodis()) {
             createNewKoodinSuhdeIfRelationReferencesLatestKoodiVersio(ks, newVersio, ks.getYlakoodiVersio(), true);
         }
-
         for (KoodinSuhde ks : latest.getAlakoodis()) {
             createNewKoodinSuhdeIfRelationReferencesLatestKoodiVersio(ks, ks.getAlakoodiVersio(), newVersio, false);
         }
+        setRelationsInPreviousVersionToPassive(latest);
     }
 
     private void createNewKoodinSuhdeIfRelationReferencesLatestKoodiVersio(KoodinSuhde ks, KoodiVersio ala, KoodiVersio yla, boolean checkUpperCode) {
+        //TODO: Only need to check for isPassive() in future. Once KH-219 and KH-214 have been done
         KoodiVersio toCheck = checkUpperCode ? yla : ala;
-        if (!koodiVersioDAO.isLatestKoodiVersio(toCheck.getKoodi().getKoodiUri(), toCheck.getVersio())) {
+        if (ks.isPassive() || !koodiVersioDAO.isLatestKoodiVersio(toCheck.getKoodi().getKoodiUri(), toCheck.getVersio())) {
             return;
         }
         KoodinSuhde newSuhde = new KoodinSuhde();
@@ -1046,6 +1056,22 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return koodiVersioDAO.isLatestKoodiVersio(koodiUri, versio);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Koodi getKoodi(String koodiUri) {
+        Koodi koodi = koodiDAO.readByUri(koodiUri);
+        Hibernate.initialize(koodi);
+        for (KoodiVersio kv : koodi.getKoodiVersios()) {
+            Hibernate.initialize(kv.getMetadatas());
+            for (KoodiMetadata data : kv.getMetadatas()) {
+                Hibernate.initialize(data);
+            }
+            initializeRelations(kv.getAlakoodis(), false);
+            initializeRelations(kv.getYlakoodis(), true);
+        }
+        return koodi;
+    }
+    
     @Override
     public KoodiVersio saveKoodi(ExtendedKoodiDto koodiDTO) {
 

@@ -15,6 +15,8 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import fi.vm.sade.generic.dao.AbstractJpaDAOImpl;
@@ -30,6 +32,8 @@ import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
  */
 @Repository
 public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Long> implements KoodistonSuhdeDAO {
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final String VERSIO = "versio";
     private static final String KOODISTO_URI = "koodistoUri";
@@ -107,40 +111,33 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
 
     @Override
     public void copyRelations(KoodistoVersio old, KoodistoVersio fresh) {
-        copyRelations(old.getYlakoodistos(), fresh, true);
-        copyRelations(old.getAlakoodistos(), fresh, false);
-        copyRelationsToSelfFromParentRelationListToChildRelationList(fresh.getKoodisto().getKoodistoUri(), fresh.getYlakoodistos(), fresh.getAlakoodistos());
+        logger.info("Copying codes relations, old codes versio id=" + old.getId() + ", new codes versio id=" + fresh.getId());
+        fresh.setYlakoodistos(copyRelations(old.getYlakoodistos(), fresh));
+        fresh.setAlakoodistos(copyRelations(old.getAlakoodistos(), fresh));
     }
 
-    private void copyRelationsToSelfFromParentRelationListToChildRelationList(String codesUri, Set<KoodistonSuhde> parentRelations,
-            Set<KoodistonSuhde> childRelations) {
-        for (KoodistonSuhde koodistonSuhde : parentRelations) {
-            String ylaKoodistoUri = koodistonSuhde.getYlakoodistoVersio().getKoodisto().getKoodistoUri();
-            if (ylaKoodistoUri.equals(codesUri)) {
-                childRelations.add(koodistonSuhde);
-            }
-        }
-    }
-
-    private void copyRelations(Set<KoodistonSuhde> relations, KoodistoVersio fresh, boolean ylaKoodistos) {
+    private Set<KoodistonSuhde> copyRelations(Set<KoodistonSuhde> relations, KoodistoVersio fresh) {
         Set<KoodistonSuhde> copiedRelations = new HashSet<KoodistonSuhde>();
+        String koodistoUri = fresh.getKoodisto().getKoodistoUri();
         for (KoodistonSuhde relation : relations) {
-            String alaKoodistoUri = relation.getAlakoodistoVersio().getKoodisto().getKoodistoUri();
-            String ylaKoodistoUri = relation.getYlakoodistoVersio().getKoodisto().getKoodistoUri();
-            if (alaKoodistoUri.equals(ylaKoodistoUri)) {
-                if (ylaKoodistos) { // Relation to self
-                    copiedRelations.add(insertNewRelation(fresh, fresh, relation));
-                }
-            } else {
-                KoodistoVersio child = ylaKoodistos ? fresh : relation.getAlakoodistoVersio();
-                KoodistoVersio parent = ylaKoodistos ? relation.getYlakoodistoVersio() : fresh;
-                copiedRelations.add(insertNewRelation(parent, child, relation));
+            if (relation.isPassive()) {
+                continue;
             }
+            KoodistoVersio child = relation.getAlakoodistoVersio().getKoodisto().getKoodistoUri().equals(koodistoUri) ?
+                    fresh : relation.getAlakoodistoVersio();
+            KoodistoVersio parent = relation.getYlakoodistoVersio().getKoodisto().getKoodistoUri().equals(koodistoUri) ?
+                    fresh : relation.getYlakoodistoVersio();
+            copiedRelations.add(insertNewRelation(parent, child, relation));
+            setOldRelationToPassive(relation, koodistoUri);
         }
-        if (ylaKoodistos) {
-            fresh.setYlakoodistos(copiedRelations);
+        return copiedRelations;
+    }
+
+    private void setOldRelationToPassive(KoodistonSuhde relation, String koodistoUri) {
+        if (relation.getAlakoodistoVersio().getKoodisto().getKoodistoUri().equals(koodistoUri)) {
+            relation.setAlaKoodistoPassive(true);
         } else {
-            fresh.setAlakoodistos(copiedRelations);
+            relation.setYlaKoodistoPassive(true);
         }
     }
 
@@ -149,6 +146,12 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
     }
 
     private KoodistonSuhde createNewRelation(KoodistoVersio parent, KoodistoVersio child, KoodistonSuhde relation) {
+        logger.info(
+                "  Inserting new codes version relation, parent codes id=" + parent.getKoodisto().getId() + ", parent version id=" + parent.getId()
+                + ", child codes id=" + child.getKoodisto().getId() + ", child version id=" + child.getId() + ", relation id="
+                + relation.getId() + ", relation version="
+                + (relation.getVersio() + 1) + ", relation type="
+                + relation.getSuhteenTyyppi());
         KoodistonSuhde newRelation = new KoodistonSuhde();
         newRelation.setAlakoodistoVersio(child);
         newRelation.setYlakoodistoVersio(parent);

@@ -1,8 +1,5 @@
 package fi.vm.sade.koodisto.dao.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.util.Arrays;
 
 import org.junit.Test;
@@ -25,6 +22,10 @@ import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
@@ -33,7 +34,7 @@ import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
 @DataSetLocation("classpath:test-data.xml")
-public class KoodistonSuhdeDAOTest {
+public class KoodistonSuhdeDAOImplTest {
 
     @Autowired
     private KoodistonSuhdeDAO suhdeDAO;
@@ -60,36 +61,24 @@ public class KoodistonSuhdeDAOTest {
     }
     
     @Test
-    public void copiesRelationsToPointLatestCodesVersionIfTheIncludesRelationPointsToSelf() {
-        KoodistoVersio original = versionDAO.read(Long.valueOf(910));
-        KoodistoVersio newVersion = givenNewKoodistoVersioAndTila(original, Tila.LUONNOS);
-        suhdeDAO.copyRelations(original, newVersion);
-        versionDAO.detach(newVersion);
-        newVersion = versionDAO.read(newVersion.getId());
-        assertEquals(1, newVersion.getYlakoodistos().size());
-        assertEquals(1, newVersion.getAlakoodistos().size());
-        assertEquals(new Integer(2), newVersion.getAlakoodistos().iterator().next().getYlakoodistoVersio().getVersio());
-        assertEquals(new Integer(2), newVersion.getAlakoodistos().iterator().next().getAlakoodistoVersio().getVersio());
-        assertEquals(new Integer(2), newVersion.getYlakoodistos().iterator().next().getYlakoodistoVersio().getVersio());
-        assertEquals(new Integer(2), newVersion.getYlakoodistos().iterator().next().getAlakoodistoVersio().getVersio());
-    }
-
-    @Test
-    public void copiesRelationsToPointLatestCodesVersionIfTheLevelsWithRelationPointsToSelf() {
+    public void doesNotCopyPassiveRelations() {
         KoodistoVersio original = versionDAO.read(Long.valueOf(911));
-        KoodistoVersio newVersion = givenNewKoodistoVersioAndTila(original, Tila.LUONNOS);
+        KoodistoVersio newVersion = givenNewKoodistoVersio(original);
         suhdeDAO.copyRelations(original, newVersion);
-        versionDAO.detach(newVersion);
         newVersion = versionDAO.read(newVersion.getId());
-        assertEquals(1, newVersion.getYlakoodistos().size());
-        assertEquals(1, newVersion.getAlakoodistos().size());
-        assertEquals(new Integer(2), newVersion.getAlakoodistos().iterator().next().getYlakoodistoVersio().getVersio());
-        assertEquals(new Integer(2), newVersion.getAlakoodistos().iterator().next().getAlakoodistoVersio().getVersio());
-        assertEquals(new Integer(2), newVersion.getYlakoodistos().iterator().next().getYlakoodistoVersio().getVersio());
-        assertEquals(new Integer(2), newVersion.getYlakoodistos().iterator().next().getAlakoodistoVersio().getVersio());
+        assertTrue(newVersion.getAlakoodistos().isEmpty());
+        assertTrue(newVersion.getYlakoodistos().isEmpty());
+    }
+    
+    @Test
+    public void oldRelationsAreSetToPassiveWhenCopying() {
+        KoodistoVersio original = versionDAO.read(Long.valueOf(1));
+        KoodistoVersio newVersion = givenNewKoodistoVersio(original);
+        suhdeDAO.copyRelations(original, newVersion);
+        assertOldRelationsArePassive(original, newVersion);
     }
 
-    
+
     @Test
     public void deleRelations() {
         KoodistonSuhde toBeDeleted = suhdeDAO.read(Long.valueOf(5));
@@ -111,6 +100,21 @@ public class KoodistonSuhdeDAOTest {
         assertEquals(original.getAlakoodistos().size(), newVersion.getAlakoodistos().size());
     }
 
+    private void assertOldRelationsArePassive(KoodistoVersio original, KoodistoVersio newVersion) {
+        for (KoodistonSuhde ks : original.getYlakoodistos()) {
+            assertTrue(ks.isAlaKoodistoPassive());
+        }
+        for (KoodistonSuhde ks : original.getAlakoodistos()) {
+            assertTrue(ks.isYlaKoodistoPassive());
+        }
+        for (KoodistonSuhde ks : newVersion.getAlakoodistos()) {
+            assertFalse(ks.isPassive());
+        }
+        for (KoodistonSuhde ks : newVersion.getYlakoodistos()) {
+            assertFalse(ks.isPassive());
+        }
+    }
+    
     private KoodistoVersio givenNewKoodistoVersio(KoodistoVersio original) {
         KoodistoVersio newVersion = new KoodistoVersio();
         newVersion.setKoodisto(original.getKoodisto());
@@ -123,16 +127,4 @@ public class KoodistonSuhdeDAOTest {
         return versionDAO.insert(newVersion);
     }
     
-    private KoodistoVersio givenNewKoodistoVersioAndTila(KoodistoVersio original, Tila tila) {
-        KoodistoVersio newVersion = new KoodistoVersio();
-        newVersion.setKoodisto(original.getKoodisto());
-        newVersion.setTila(tila);
-        newVersion.setVoimassaAlkuPvm(original.getVoimassaAlkuPvm());
-        newVersion.setVersio(2);
-        for ( KoodistoMetadata data : original.getMetadatas()) {
-            newVersion.addMetadata(data);
-        }
-        return versionDAO.insert(newVersion);
-    }
-
 }

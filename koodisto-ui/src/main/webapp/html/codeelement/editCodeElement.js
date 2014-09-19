@@ -340,6 +340,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             dt = {};
             dt.codeElementUri = ce.uri;
             dt.codeElementVersion = 1;
+            dt.passive = ce.passive ? ce.passive : false;
             result.push(dt);
         });
         return result;

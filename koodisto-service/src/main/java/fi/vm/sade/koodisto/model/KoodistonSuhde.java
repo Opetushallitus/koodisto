@@ -3,12 +3,21 @@
  */
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.generic.model.BaseEntity;
-import fi.vm.sade.koodisto.common.util.FieldLengths;
-
-import javax.persistence.*;
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
+import fi.vm.sade.generic.model.BaseEntity;
+import fi.vm.sade.koodisto.common.util.FieldLengths;
 
 /**
  * @author
@@ -48,7 +57,15 @@ public class KoodistonSuhde extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = SUHTEEN_TYYPPI_COLUMN_NAME, nullable = false, length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private SuhteenTyyppi suhteenTyyppi;
-
+    
+    @NotNull
+    @Column(name = "ylakoodistostapassiivinen", nullable = false)
+    private boolean ylaKoodistoPassive = false;
+    
+    @NotNull
+    @Column(name = "alakoodistostapassiivinen", nullable = false)
+    private boolean alaKoodistoPassive = false;
+    
     public KoodistoVersio getYlakoodistoVersio() {
         return ylakoodistoVersio;
     }
@@ -81,6 +98,26 @@ public class KoodistonSuhde extends BaseEntity {
         this.versio = versio;
     }
     
+    public void setAlaKoodistoPassive(boolean alaKoodistoPassive) {
+        this.alaKoodistoPassive = alaKoodistoPassive;
+    }
+    
+    public void setYlaKoodistoPassive(boolean ylaKoodistoPassive) {
+        this.ylaKoodistoPassive = ylaKoodistoPassive;
+    }
+    
+    public boolean isAlaKoodistoPassive() {
+        return alaKoodistoPassive;
+    }
+    
+    public boolean isYlaKoodistoPassive() {
+        return ylaKoodistoPassive;
+    }
+    
+    public boolean isPassive() {
+        return ylaKoodistoPassive || alaKoodistoPassive;
+    }
+     
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString()).append(": ");
