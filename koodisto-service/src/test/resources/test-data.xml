@@ -1278,6 +1278,10 @@
   <koodistonsuhde id="13" alakoodistoversio_id="803" ylakoodistoversio_id="805" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="14" alakoodistoversio_id="804" ylakoodistoversio_id="805" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
 
+  <koodistonsuhde id="504" alakoodistoversio_id="505" ylakoodistoversio_id="503" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
+  <koodistonsuhde id="503" alakoodistoversio_id="503" ylakoodistoversio_id="504" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
+  <koodistonsuhde id="505" alakoodistoversio_id="505" ylakoodistoversio_id="504" versio="1" suhteentyyppi="RINNASTEINEN" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
+
   <koodistonsuhde id="800" alakoodistoversio_id="900" ylakoodistoversio_id="904" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="801" alakoodistoversio_id="905" ylakoodistoversio_id="900" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="802" alakoodistoversio_id="900" ylakoodistoversio_id="906" versio="1" suhteentyyppi="RINNASTEINEN" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
