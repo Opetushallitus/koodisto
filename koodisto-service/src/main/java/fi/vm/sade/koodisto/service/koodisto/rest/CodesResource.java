@@ -304,7 +304,7 @@ public class CodesResource {
     @ApiOperation(
             value = "Palauttaa tietyn koodistoversion",
             notes = "",
-            response = KoodistoListDto.class)
+            response = KoodistoDto.class)
     public Response getCodesByCodesUriAndVersion(
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
             @ApiParam(value = "Koodiston vesio") @PathParam("codesVersion") int codesVersion) {
