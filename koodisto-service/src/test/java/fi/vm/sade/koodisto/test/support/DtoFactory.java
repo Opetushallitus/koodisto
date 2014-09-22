@@ -47,6 +47,10 @@ public class DtoFactory {
         return createKoodiVersioWithUriAndVersio(uri, versio).addParentRelation(relation).build();
     }
     
+    public static KoodiVersioBuilder createKoodiVersioWithMetadatas(String uri, Integer versio, KoodiMetadata ... metadatas) {
+        return createKoodiVersioWithUriAndVersioWithoutMetadatas(uri, versio).addMetadata(metadatas);
+    }
+    
     public static KoodistoVersioBuilder createKoodistoVersio(Koodisto koodisto, Integer versio) {
         return new KoodistoVersioBuilder().addMetadata(Kieli.FI, KOODISTO_NAME, KOODISTO_DESCRIPTION).setVersio(versio).setKoodisto(koodisto).setTila(Tila.HYVAKSYTTY);
     }

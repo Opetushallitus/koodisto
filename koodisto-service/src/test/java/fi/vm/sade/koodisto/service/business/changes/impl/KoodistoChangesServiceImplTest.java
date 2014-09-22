@@ -285,18 +285,21 @@ public class KoodistoChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedWhenCodeElementHasBeenAdded() {
-        KoodistoChangesDto result = givenResultWithCodeElementsRemoved(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithKoodiVersio(VERSIO + 1));
+        KoodistoChangesDto result = givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithKoodiVersio(VERSIO + 1));
         assertResultWithKoodiChanges(VERSIO + 1, result, 1, 0, 0);
     }
     
     @Test
     public void returnsHasChangedWhenCodeElementHasBeenChanged() {
-        
+        KoodistoVersio original = givenKoodistoVersioWithKoodiVersios(VERSIO, givenKoodiVersio(VERSIO, "koivun kukinto"));
+        KoodistoVersio latest = givenKoodistoVersioWithKoodiVersios(VERSIO + 1, givenKoodiVersio(VERSIO + 1, "koivun kukinto on haitaksi allergikoille"));
+        KoodistoChangesDto result = givenResult(original, latest);
+        assertResultWithKoodiChanges(VERSIO + 1, result, 0, 1, 0);
     }
     
     @Test
     public void returnsHasChangedWhenCodeElementHasBeenRemoved() {
-        KoodistoChangesDto result = givenResult(givenKoodistoVersioWithKoodiVersio(VERSIO), givenKoodistoVersio(VERSIO + 1));
+        KoodistoChangesDto result = givenResultWithCodeElementsRemoved(givenKoodistoVersioWithKoodiVersio(VERSIO), givenKoodistoVersio(VERSIO + 1));
         assertResultWithKoodiChanges(VERSIO + 1, result, 0, 0, 1);
     }
     
@@ -474,5 +477,9 @@ public class KoodistoChangesServiceImplTest {
     
     private KoodistoVersio givenKoodistoVersioWithKoodiVersios(int versio, KoodiVersio ... koodiVersios) {
         return DtoFactory.createKoodistoVersioWithKoodiVersios(versio, KOODISTO_URI, koodiVersios).build();
+    }
+    
+    private KoodiVersio givenKoodiVersio(Integer versio, String description) {
+        return DtoFactory.createKoodiVersioWithMetadatas(KOODI_URI, versio, DtoFactory.createKoodiMetadata(NAME, NAME, description, Kieli.FI)).build();
     }
 }

@@ -94,17 +94,19 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
         List<SimpleCodesRelation> removedRelations = removedRelations(koodistoVersio, latest);
         List<SimpleCodesRelation> passiveRelations = passiveRelations(koodistoVersio, latest);
         List<KoodiChangesDto> addedCodeElements = addedCodeElements(koodistoVersio, latest);
+        List<KoodiChangesDto> changedCodeElements = changedCodeElements(koodistoVersio, latest);
         List<KoodiChangesDto> removedCodeElements = removedCodeElements(koodistoVersio, latest);
         MuutosTila changesState = anyChanges(koodistoVersio.getVersio(), latest.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), changedTila, 
-                addedRelations, removedRelations, passiveRelations, addedCodeElements, removedCodeElements);
+                addedRelations, removedRelations, passiveRelations, addedCodeElements, removedCodeElements, changedCodeElements);
         return new KoodistoChangesDto(changesState, latest.getVersio(), changedMetas, removedMetas, latest.getPaivitysPvm(), 
                 dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, changedTila, addedRelations, removedRelations, passiveRelations, 
-                addedCodeElements, new ArrayList<KoodiChangesDto>(), removedCodeElements);
+                addedCodeElements, changedCodeElements, removedCodeElements);
     }
+
 
     private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleMetadataDto> changedMetas, List<SimpleMetadataDto> removedMetas, boolean validDateHasChanged, Tila changedTila, 
             List<SimpleCodesRelation> addedRelations, List<SimpleCodesRelation> removedRelations, List<SimpleCodesRelation> passiveRelations, 
-            List<KoodiChangesDto> addedCodeElements, List<KoodiChangesDto> removedCodeElements) {
+            List<KoodiChangesDto> addedCodeElements, List<KoodiChangesDto> removedCodeElements, List<KoodiChangesDto> changedCodeElements) {
         if (versio.equals(latestVersio)) {
             return MuutosTila.EI_MUUTOKSIA;
         }
@@ -112,7 +114,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
         noChanges = noChanges && changedMetas.isEmpty() && removedMetas.isEmpty();
         noChanges = noChanges && !validDateHasChanged && changedTila == null;
         noChanges = noChanges && addedRelations.isEmpty() && removedRelations.isEmpty() && passiveRelations.isEmpty();
-        noChanges = noChanges && addedCodeElements.isEmpty() && removedCodeElements.isEmpty();
+        noChanges = noChanges && addedCodeElements.isEmpty() && removedCodeElements.isEmpty() && changedCodeElements.isEmpty();
         return noChanges ? MuutosTila.EI_MUUTOKSIA : MuutosTila.MUUTOKSIA;
     }
     
@@ -193,6 +195,20 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
         return new ArrayList<KoodiChangesDto>(removedCodeElements);
     }
     
+    private List<KoodiChangesDto> changedCodeElements(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
+        List<KoodiChangesDto> changedCodeElements = new ArrayList<>();
+        for (KoodistoVersioKoodiVersio kvkv : koodistoVersio.getKoodiVersios()) {
+            KoodiVersio kv = kvkv.getKoodiVersio();
+            for (KoodistoVersioKoodiVersio latestKvkv : latest.getKoodiVersios()) {
+                KoodiVersio latestKv = latestKvkv.getKoodiVersio();
+                if(latestKv.getKoodi().getKoodiUri().equals(kv.getKoodi().getKoodiUri()) && !latestKv.getVersio().equals(kv.getVersio())) {
+                    changedCodeElements.add(koodiChangesService.constructChangesDto(kv, latestKv));
+                }
+            }
+        }
+        return changedCodeElements;
+    }
+
     private List<SimpleMetadataDto> removedMetadatas(List<KoodistoMetadata> compareToMetas, final List<KoodistoMetadata> latestMetas) {
         Collection<SimpleMetadataDto> removedMetas = Collections2.transform(Collections2.filter(compareToMetas, new Predicate<KoodistoMetadata>() {
 
