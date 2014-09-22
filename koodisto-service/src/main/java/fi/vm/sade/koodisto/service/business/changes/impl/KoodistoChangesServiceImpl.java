@@ -90,25 +90,26 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
         List<SimpleCodesRelation> removedRelations = removedRelations(koodistoVersio, latest);
         List<SimpleCodesRelation> passiveRelations = passiveRelations(koodistoVersio, latest);
         List<KoodiChangesDto> addedCodeElements = addedCodeElements(koodistoVersio, latest);
+        List<KoodiChangesDto> removedCodeElements = removedCodeElements(koodistoVersio, latest);
         MuutosTila changesState = anyChanges(koodistoVersio.getVersio(), latest.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), changedTila, 
-                addedRelations, removedRelations, passiveRelations, addedCodeElements);
+                addedRelations, removedRelations, passiveRelations, addedCodeElements, removedCodeElements);
         return new KoodistoChangesDto(changesState, latest.getVersio(), changedMetas, removedMetas, latest.getPaivitysPvm(), 
                 dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, changedTila, addedRelations, removedRelations, passiveRelations, 
-                addedCodeElements, new ArrayList<KoodiChangesDto>(), new ArrayList<KoodiChangesDto>());
+                addedCodeElements, new ArrayList<KoodiChangesDto>(), removedCodeElements);
     }
-    
 
     private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleMetadataDto> changedMetas, List<SimpleMetadataDto> removedMetas, boolean validDateHasChanged, Tila changedTila, 
-            List<SimpleCodesRelation> addedRelations, List<SimpleCodesRelation> removedRelations, List<SimpleCodesRelation> passiveRelations, List<KoodiChangesDto> addedCodeElements) {
+            List<SimpleCodesRelation> addedRelations, List<SimpleCodesRelation> removedRelations, List<SimpleCodesRelation> passiveRelations, 
+            List<KoodiChangesDto> addedCodeElements, List<KoodiChangesDto> removedCodeElements) {
         if (versio.equals(latestVersio)) {
             return MuutosTila.EI_MUUTOKSIA;
         }
         boolean noChanges = true;
-        noChanges = noChanges && changedMetas.size() < 1 && removedMetas.size() < 1;
+        noChanges = noChanges && changedMetas.isEmpty() && removedMetas.isEmpty();
         noChanges = noChanges && !validDateHasChanged && changedTila == null;
-        noChanges = noChanges && addedRelations.size() < 1 && removedRelations.size() < 1 && passiveRelations.size() < 1;
-        noChanges = noChanges && addedCodeElements.size() < 1;
-        return  noChanges ? MuutosTila.EI_MUUTOKSIA : MuutosTila.MUUTOKSIA;
+        noChanges = noChanges && addedRelations.isEmpty() && removedRelations.isEmpty() && passiveRelations.isEmpty();
+        noChanges = noChanges && addedCodeElements.isEmpty() && removedCodeElements.isEmpty();
+        return noChanges ? MuutosTila.EI_MUUTOKSIA : MuutosTila.MUUTOKSIA;
     }
     
     private List<KoodiChangesDto> addedCodeElements(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
@@ -157,6 +158,35 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
             
         });
         return new ArrayList<KoodiChangesDto>(addedCodeElements);
+    }
+    
+    private List<KoodiChangesDto> removedCodeElements(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
+        final Set<KoodistoVersioKoodiVersio> koodiVersios = latest.getKoodiVersios();
+        Collection<KoodiChangesDto> removedCodeElements = Collections2.transform(Collections2.filter(koodistoVersio.getKoodiVersios(), new Predicate<KoodistoVersioKoodiVersio>() {
+
+            @Override
+            public boolean apply(KoodistoVersioKoodiVersio input) {
+                String koodiUri = input.getKoodiVersio().getKoodi().getKoodiUri();
+                for (KoodistoVersioKoodiVersio kvkv : koodiVersios) {
+                    if (kvkv.getKoodiVersio().getKoodi().getKoodiUri().equals(koodiUri)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            
+        }), new Function<KoodistoVersioKoodiVersio, KoodiChangesDto>() {
+
+            @Override
+            public KoodiChangesDto apply(KoodistoVersioKoodiVersio input) {
+                KoodiVersio koodiVersio = input.getKoodiVersio();
+                String koodiUri = koodiVersio.getKoodi().getKoodiUri();
+                //TODO; it is possible that this is not the latest code element version that exists
+                return new KoodiChangesDto(koodiUri, null, koodiVersio.getVersio(), null, null, null, null, null, null, null, null, null, null);
+            }
+            
+        });
+        return new ArrayList<KoodiChangesDto>(removedCodeElements);
     }
     
     private List<SimpleMetadataDto> removedMetadatas(List<KoodistoMetadata> compareToMetas, final List<KoodistoMetadata> latestMetas) {

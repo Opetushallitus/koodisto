@@ -295,12 +295,14 @@ public class KoodistoChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedWhenCodeElementHasBeenRemoved() {
-        //KoodistoChangesDto result = givenResult(givenKoodistoVersioWithKoodiVersio(VERSIO), givenKoodistoVersio(VERSIO + 1));
-        //assertResultWithKoodiChanges(VERSIO + 1, result, 0, 0, 1);
+        KoodistoChangesDto result = givenResult(givenKoodistoVersioWithKoodiVersio(VERSIO), givenKoodistoVersio(VERSIO + 1));
+        assertResultWithKoodiChanges(VERSIO + 1, result, 0, 0, 1);
     }
     
     @Test
     public void returnsHasChangedWhenCodeElementsHaveBeenAddedAndRemoved() {
+        KoodistoChangesDto result = givenResult(givenKoodistoVersioWithKoodiVersio(VERSIO), givenKoodistoVersioWithKoodiVersio(VERSIO + 1, "tammi"));
+        assertResultWithKoodiChanges(VERSIO + 1, result, 1, 0, 1);
     }
     
     private void assertGivenResultWithDateQuery(Date query, boolean shouldUseFirst) {
@@ -455,7 +457,11 @@ public class KoodistoChangesServiceImplTest {
     }
     
     private KoodistoVersio givenKoodistoVersioWithKoodiVersio(int versio) {
-        return givenKoodistoVersioWithKoodiVersios(versio, DtoFactory.createKoodiVersioWithUriAndVersio(KOODI_URI, VERSIO).build());
+        return givenKoodistoVersioWithKoodiVersio(versio, KOODI_URI);
+    }
+    
+    private KoodistoVersio givenKoodistoVersioWithKoodiVersio(int versio, String koodiUri) {
+        return givenKoodistoVersioWithKoodiVersios(versio, DtoFactory.createKoodiVersioWithUriAndVersio(koodiUri, VERSIO).build());
     }
     
     private KoodistoVersio givenKoodistoVersioWithKoodiVersios(int versio, KoodiVersio ... koodiVersios) {
