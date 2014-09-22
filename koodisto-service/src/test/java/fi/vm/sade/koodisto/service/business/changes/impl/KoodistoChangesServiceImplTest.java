@@ -44,6 +44,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class KoodistoChangesServiceImplTest {
     
+    private static final String KOODI_URI = "koivu";
     private final static String KOODISTO_URI = "lehtipuut";
     private final static String NAME = "Lehtipuut", DESCRIPTION = "pudottavat lehtensä syksyisin";
     private final static String NAME_EN = "Leaftrees", DESCRIPTION_EN = "leaves are dropped during autumn";
@@ -80,7 +81,7 @@ public class KoodistoChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedIfNameHasChanged() {
-        String newName = "koivu";
+        String newName = KOODI_URI;
         assertResultHasMetadataChanges(givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithMetadata(VERSIO + 1, newName, DtoFactory.KOODISTO_DESCRIPTION)), VERSIO + 1, new SimpleMetadataDto(newName, Kieli.FI, null));
     }
     
@@ -283,7 +284,8 @@ public class KoodistoChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedWhenCodeElementHasBeenAdded() {
-        
+        KoodistoChangesDto result = givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithKoodiVersio(VERSIO + 1));
+        assertResultWithKoodiChanges(VERSIO + 1, result, 1, 0, 0);
     }
     
     @Test
@@ -293,14 +295,14 @@ public class KoodistoChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedWhenCodeElementHasBeenRemoved() {
-        
+        //KoodistoChangesDto result = givenResult(givenKoodistoVersioWithKoodiVersio(VERSIO), givenKoodistoVersio(VERSIO + 1));
+        //assertResultWithKoodiChanges(VERSIO + 1, result, 0, 0, 1);
     }
     
     @Test
     public void returnsHasChangedWhenCodeElementsHaveBeenAddedAndRemoved() {
-        
     }
-
+    
     private void assertGivenResultWithDateQuery(Date query, boolean shouldUseFirst) {
         String descriptionChangedForSecond = "kuvausta norsusta";
         String nameChangedForThird = "Otus";
@@ -316,6 +318,13 @@ public class KoodistoChangesServiceImplTest {
         } else {
             assertNull(data.kuvaus);
         }
+    }
+    
+    private void assertResultWithKoodiChanges(Integer expectedVersio, KoodistoChangesDto result, int expectedAmountAdded, int expectedAmountChanged, int expectedAmountDeleted) {
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertEquals(expectedAmountAdded, result.lisatytKoodit.size());
+        assertEquals(expectedAmountDeleted, result.poistetutKoodit.size());
+        assertEquals(expectedAmountChanged, result.muuttuneetKoodit.size());
     }
 
     private void assertResultWithTila(Integer expectedVersio, String expectedDescription, Tila expectedTila, KoodistoChangesDto result) {
@@ -443,6 +452,10 @@ public class KoodistoChangesServiceImplTest {
     
     private KoodistonSuhde givenPassiveKoodistonSuhde(SuhteenTyyppi tyyppi, KoodistoVersio parent, KoodistoVersio child, boolean parentPassive, boolean childPassive) {
         return DtoFactory.createKoodistonSuhde(tyyppi, child, parent, parentPassive, childPassive).build();
+    }
+    
+    private KoodistoVersio givenKoodistoVersioWithKoodiVersio(int versio) {
+        return givenKoodistoVersioWithKoodiVersios(versio, DtoFactory.createKoodiVersioWithUriAndVersio(KOODI_URI, VERSIO).build());
     }
     
     private KoodistoVersio givenKoodistoVersioWithKoodiVersios(int versio, KoodiVersio ... koodiVersios) {

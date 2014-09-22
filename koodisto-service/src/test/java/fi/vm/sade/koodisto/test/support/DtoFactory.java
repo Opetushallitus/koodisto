@@ -91,7 +91,7 @@ public class DtoFactory {
     }
 
     public static KoodistoVersioBuilder createKoodistoVersioWithKoodiVersios(int versio, String koodistoUri, KoodiVersio ... koodiVersios) {
-        return new KoodistoVersioBuilder().setVersio(versio).setKoodisto(createKoodisto(koodistoUri)).addKoodiVersio(koodiVersios);
+        return new KoodistoVersioBuilder().setVersio(versio).setKoodisto(createKoodisto(koodistoUri)).setTila(Tila.HYVAKSYTTY).addKoodiVersio(koodiVersios);
     }
     
     public static Koodisto createKoodisto(String koodistoUri) {
