@@ -98,9 +98,9 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
         List<KoodiChangesDto> removedCodeElements = removedCodeElements(koodistoVersio, latest);
         MuutosTila changesState = anyChanges(koodistoVersio.getVersio(), latest.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), changedTila, 
                 addedRelations, removedRelations, passiveRelations, addedCodeElements, removedCodeElements, changedCodeElements);
-        return new KoodistoChangesDto(changesState, latest.getVersio(), changedMetas, removedMetas, latest.getPaivitysPvm(), 
-                dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, changedTila, addedRelations, removedRelations, passiveRelations, 
-                addedCodeElements, changedCodeElements, removedCodeElements);
+        return new KoodistoChangesDto(latest.getKoodisto().getKoodistoUri(), changesState, latest.getVersio(), changedMetas, removedMetas, 
+                latest.getPaivitysPvm(), dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, changedTila, addedRelations, removedRelations, 
+                passiveRelations, addedCodeElements, changedCodeElements, removedCodeElements);
     }
 
 

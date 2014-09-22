@@ -15,6 +15,9 @@ import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 public class KoodistoChangesDto {
     
     @JsonView(JsonViews.Basic.class)
+    public final String koodistoUri;
+    
+    @JsonView(JsonViews.Basic.class)
     public final MuutosTila muutosTila;
     
     @JsonView(JsonViews.Basic.class)
@@ -59,11 +62,11 @@ public class KoodistoChangesDto {
     @JsonView(JsonViews.Basic.class)
     public final List<KoodiChangesDto> poistetutKoodit;
     
-    public KoodistoChangesDto(MuutosTila muutosTila, Integer viimeisinVersio, List<SimpleMetadataDto> muuttuneetTiedot,
-            List<SimpleMetadataDto> poistuneetTiedot, Date viimeksiPaivitetty, Date voimassaAlkuPvm, Date voimassaLoppuPvm,
-            Boolean poistettuVoimassaLoppuPvm, Tila tila, List<SimpleCodesRelation> lisatytKoodistonSuhteet,
-            List<SimpleCodesRelation> poistetutKoodistonSuhteet, List<SimpleCodesRelation> passivoidutKoodistonSuhteet, List<KoodiChangesDto> lisatytKoodit,
-            List<KoodiChangesDto> muuttuneetKoodit, List<KoodiChangesDto> poistetutKoodit) {
+    public KoodistoChangesDto(String koodistoUri, MuutosTila muutosTila, Integer viimeisinVersio,
+            List<SimpleMetadataDto> muuttuneetTiedot, List<SimpleMetadataDto> poistuneetTiedot, Date viimeksiPaivitetty, Date voimassaAlkuPvm,
+            Date voimassaLoppuPvm, Boolean poistettuVoimassaLoppuPvm, Tila tila,
+            List<SimpleCodesRelation> lisatytKoodistonSuhteet, List<SimpleCodesRelation> poistetutKoodistonSuhteet, List<SimpleCodesRelation> passivoidutKoodistonSuhteet,
+            List<KoodiChangesDto> lisatytKoodit, List<KoodiChangesDto> muuttuneetKoodit, List<KoodiChangesDto> poistetutKoodit) {
         this.muutosTila = muutosTila;
         this.viimeisinVersio = viimeisinVersio;
         this.muuttuneetTiedot = muuttuneetTiedot;
@@ -79,6 +82,7 @@ public class KoodistoChangesDto {
         this.lisatytKoodit = lisatytKoodit;
         this.muuttuneetKoodit = muuttuneetKoodit;
         this.poistetutKoodit = poistetutKoodit;
+        this.koodistoUri = koodistoUri;
     }
 
     public static class SimpleCodesRelation {

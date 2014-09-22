@@ -341,6 +341,7 @@ public class KoodistoChangesServiceImplTest {
     }
 
     private void assertResultIsNoChanges(KoodistoChangesDto result, int versio) {
+        assertEquals(KOODISTO_URI, result.koodistoUri);
         assertEquals(MuutosTila.EI_MUUTOKSIA, result.muutosTila);
         assertEquals(versio, result.viimeisinVersio.intValue());
         assertTrue(result.muuttuneetTiedot.isEmpty());
