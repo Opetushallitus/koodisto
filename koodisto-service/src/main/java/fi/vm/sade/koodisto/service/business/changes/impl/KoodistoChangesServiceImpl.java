@@ -135,7 +135,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
                 Set<KoodiMetadata> metadatas = koodiVersio.getMetadatas();
                 List<SimpleKoodiMetadataDto> simpleMetadata = MetadataToSimpleMetadataConverter.convertToSimpleKoodiMetadata(metadatas.toArray(new KoodiMetadata[metadatas.size()]));
                 List<SimpleCodeElementRelation> relations = Lists.transform(getRelationsFromKoodiVersio(koodiVersio), new KoodinSuhdeToSimpleCodeElementRelation(koodiUri));
-                return new KoodiChangesDto(null, koodiVersio.getVersio(), simpleMetadata, null, relations, null, passiveRelations(koodiVersio), koodiVersio.getPaivitysPvm(), koodiVersio.getVoimassaAlkuPvm(), koodiVersio.getVoimassaLoppuPvm(), null, koodiVersio.getTila());
+                return new KoodiChangesDto(koodiUri, null, koodiVersio.getVersio(), simpleMetadata, null, relations, null, passiveRelations(koodiVersio), koodiVersio.getPaivitysPvm(), koodiVersio.getVoimassaAlkuPvm(), koodiVersio.getVoimassaLoppuPvm(), null, koodiVersio.getTila());
             }
             
             private List<SimpleCodeElementRelation> passiveRelations(KoodiVersio koodiVersio) {

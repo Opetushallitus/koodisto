@@ -15,6 +15,9 @@ import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 public class KoodiChangesDto {
     
     @JsonView(JsonViews.Basic.class)
+    public final String koodiUri;
+    
+    @JsonView(JsonViews.Basic.class)
     public final MuutosTila muutosTila;
     
     @JsonView(JsonViews.Basic.class)
@@ -50,10 +53,11 @@ public class KoodiChangesDto {
     @JsonView(JsonViews.Basic.class)
     public final Tila tila;
 
-    public KoodiChangesDto(MuutosTila muutosTila, Integer viimeisinVersio, List<SimpleKoodiMetadataDto> muuttuneetTiedot,
-            List<SimpleKoodiMetadataDto> poistuneetTiedot, List<SimpleCodeElementRelation> lisatytKoodinSuhteet,
-            List<SimpleCodeElementRelation> poistetutKoodinSuhteet, List<SimpleCodeElementRelation> passivoidutKoodinSuhteet, Date viimeksiPaivitetty, Date voimassaAlkuPvm,
-            Date voimassaLoppuPvm, Boolean poistettuVoimassaLoppuPvm, Tila tila) {
+    public KoodiChangesDto(String koodiUri, MuutosTila muutosTila, Integer viimeisinVersio,
+            List<SimpleKoodiMetadataDto> muuttuneetTiedot, List<SimpleKoodiMetadataDto> poistuneetTiedot,
+            List<SimpleCodeElementRelation> lisatytKoodinSuhteet, List<SimpleCodeElementRelation> poistetutKoodinSuhteet, List<SimpleCodeElementRelation> passivoidutKoodinSuhteet, Date viimeksiPaivitetty,
+            Date voimassaAlkuPvm, Date voimassaLoppuPvm, Boolean poistettuVoimassaLoppuPvm, Tila tila) {
+        this.koodiUri = koodiUri;
         this.muutosTila = muutosTila;
         this.viimeisinVersio = viimeisinVersio;
         this.muuttuneetTiedot = muuttuneetTiedot;

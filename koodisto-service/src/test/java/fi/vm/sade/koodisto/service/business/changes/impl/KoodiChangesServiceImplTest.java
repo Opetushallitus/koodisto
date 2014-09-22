@@ -369,6 +369,7 @@ public class KoodiChangesServiceImplTest {
     }
     
     private void assertResultIsNoChanges(KoodiChangesDto result, int versio) {
+        assertEquals(KOODI_URI, result.koodiUri);
         assertEquals(MuutosTila.EI_MUUTOKSIA, result.muutosTila);
         assertEquals(versio, result.viimeisinVersio.intValue());
         assertTrue(result.lisatytKoodinSuhteet.isEmpty());
@@ -381,6 +382,7 @@ public class KoodiChangesServiceImplTest {
     }
     
     private void assertResultIsDeleted(KoodiChangesDto result) {
+        assertEquals(KOODI_URI, result.koodiUri);
         assertEquals(MuutosTila.POISTETTU, result.muutosTila);
     }
     

@@ -76,7 +76,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
 
     private KoodiChangesDto constructChangesDto(KoodiVersio koodiVersio, KoodiVersio latestKoodiVersio, boolean compareToLatestAccepted) {
         if (removedFromLatestCodes(latestKoodiVersio, compareToLatestAccepted)) {
-            return new KoodiChangesDto(MuutosTila.POISTETTU, null, null, null, null, null, null, null, null, null, null, null);
+            return new KoodiChangesDto(koodiVersio.getKoodi().getKoodiUri(), MuutosTila.POISTETTU, null, null, null, null, null, null, null, null, null, null, null);
         }
         return constructChangesDto(koodiVersio, latestKoodiVersio);
     }
@@ -93,8 +93,8 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         List<SimpleCodeElementRelation> passiveRelations = passiveRelations(latestKoodiVersio);
         MuutosTila muutosTila = anyChanges(koodiVersio.getVersio(), latestKoodiVersio.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), tilaHasChanged, 
                 addedRelations, removedRelations, passiveRelations);
-        return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, addedRelations, removedRelations, passiveRelations, 
-                latestKoodiVersio.getPaivitysPvm(), dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, tilaHasChanged);
+        return new KoodiChangesDto(koodiVersio.getKoodi().getKoodiUri(), muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, addedRelations, removedRelations, 
+                passiveRelations, latestKoodiVersio.getPaivitysPvm(), dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, tilaHasChanged);
     }
     
     private boolean removedFromLatestCodes(KoodiVersio koodiVersio, boolean compareToLatestAccepted) {
