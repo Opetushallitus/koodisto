@@ -33,6 +33,7 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioHasRelationsException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRelationToSelfException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistonSuhdeContainsKoodinSuhdeException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistosAlreadyHaveSuhdeException;
 import fi.vm.sade.koodisto.service.it.DataUtils;
@@ -197,14 +198,14 @@ public class KoodistoBusinessServiceTest {
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.RINNASTEINEN);
     }
 
-    @Test
-    public void addsRelationThatReferencesKoodistoItself() {
+    @Test(expected = KoodistoRelationToSelfException.class)
+    public void addingRelationThatReferencesKoodistoItselfCausesError() {
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY);
         assertTrue(koodistoBusinessService.hasAnyRelation("suhde502kanssa", "suhde502kanssa"));
     }
     
-    @Test(expected = KoodistosAlreadyHaveSuhdeException.class)
-    public void preventsAddingRelationThatReferencesKoodistoItselfMoreThanOnce() {
+    @Test(expected = KoodistoRelationToSelfException.class)
+    public void preventsAddingRelationThatReferencesKoodistoItselfMultipleTimes() {
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.RINNASTEINEN);
         assertTrue(koodistoBusinessService.hasAnyRelation("suhde502kanssa", "suhde502kanssa"));
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY);
