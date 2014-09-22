@@ -3,9 +3,11 @@ package fi.vm.sade.koodisto.test.support.builder;
 import java.util.Date;
 
 import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.Tila;
 
@@ -70,6 +72,16 @@ public class KoodistoVersioBuilder implements Builder<KoodistoVersio> {
     public KoodistoVersioBuilder addChildRelation(KoodistonSuhde ks) {
         kv.getAlakoodistos().add(ks);
         ks.setYlakoodistoVersio(kv);
+        return this;
+    }
+    
+    public KoodistoVersioBuilder addKoodiVersio(KoodiVersio ... koodiVersios) {
+        for (KoodiVersio koodiVersio : koodiVersios) {
+            KoodistoVersioKoodiVersio kvkv = new KoodistoVersioKoodiVersio();
+            kvkv.setKoodistoVersio(kv);
+            kvkv.setKoodiVersio(koodiVersio);
+            kv.addKoodiVersio(kvkv);
+        }
         return this;
     }
     
