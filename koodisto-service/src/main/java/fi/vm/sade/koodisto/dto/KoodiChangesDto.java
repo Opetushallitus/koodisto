@@ -17,7 +17,7 @@ public class KoodiChangesDto {
     @JsonView(JsonViews.Basic.class)
     public final String koodiUri;
     
-    @JsonView(JsonViews.Basic.class)
+    @JsonView(JsonViews.Extended.class)
     public final MuutosTila muutosTila;
     
     @JsonView(JsonViews.Basic.class)

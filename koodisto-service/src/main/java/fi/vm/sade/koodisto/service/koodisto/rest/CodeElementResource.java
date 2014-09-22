@@ -236,7 +236,7 @@ public class CodeElementResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({ JsonViews.Basic.class })
+    @JsonView({ JsonViews.Basic.class, JsonViews.Extended.class })
     @Path("changes/{codeElementUri}/{codeElementVersion}")
     @ApiOperation(
             value = "Palauttaa muutokset uusimpaan koodiversioon",
@@ -261,7 +261,7 @@ public class CodeElementResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({ JsonViews.Basic.class })
+    @JsonView({ JsonViews.Basic.class, JsonViews.Extended.class })
     @Path("changes/withdate/{codeElementUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}")
     @ApiOperation(
             value = "Palauttaa tehdyt muutokset uusimpaan koodiversioon käyttäen lähintä päivämäärään osuvaa koodiversiota vertailussa",
