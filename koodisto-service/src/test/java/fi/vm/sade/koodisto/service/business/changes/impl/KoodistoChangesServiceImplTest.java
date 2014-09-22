@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +20,7 @@ import fi.vm.sade.koodisto.dto.KoodistoChangesDto;
 import fi.vm.sade.koodisto.dto.KoodistoChangesDto.SimpleCodesRelation;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
@@ -278,6 +280,26 @@ public class KoodistoChangesServiceImplTest {
         assertEquals(1, dto.poistetutKoodistonSuhteet.size());
         assertEquals(1, dto.passivoidutKoodistonSuhteet.size());
     }
+    
+    @Test
+    public void returnsHasChangedWhenCodeElementHasBeenAdded() {
+        
+    }
+    
+    @Test
+    public void returnsHasChangedWhenCodeElementHasBeenChanged() {
+        
+    }
+    
+    @Test
+    public void returnsHasChangedWhenCodeElementHasBeenRemoved() {
+        
+    }
+    
+    @Test
+    public void returnsHasChangedWhenCodeElementsHaveBeenAddedAndRemoved() {
+        
+    }
 
     private void assertGivenResultWithDateQuery(Date query, boolean shouldUseFirst) {
         String descriptionChangedForSecond = "kuvausta norsusta";
@@ -324,7 +346,7 @@ public class KoodistoChangesServiceImplTest {
             returnLatestKoodistoVersioFromMockedKoodistoService(versios);
         }
         returnGivenKoodistoVersiosWithKoodistoFromMockedKoodistoService(versios);
-        return service.getChangesDto(KOODISTO_URI, date, compareToLatestAccepted);
+        return service.getChangesDto(KOODISTO_URI, new DateTime(date), compareToLatestAccepted);
     }
     
     private KoodistoChangesDto givenResult(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
@@ -421,5 +443,9 @@ public class KoodistoChangesServiceImplTest {
     
     private KoodistonSuhde givenPassiveKoodistonSuhde(SuhteenTyyppi tyyppi, KoodistoVersio parent, KoodistoVersio child, boolean parentPassive, boolean childPassive) {
         return DtoFactory.createKoodistonSuhde(tyyppi, child, parent, parentPassive, childPassive).build();
+    }
+    
+    private KoodistoVersio givenKoodistoVersioWithKoodiVersios(int versio, KoodiVersio ... koodiVersios) {
+        return DtoFactory.createKoodistoVersioWithKoodiVersios(versio, KOODISTO_URI, koodiVersios).build();
     }
 }

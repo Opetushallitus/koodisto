@@ -2,7 +2,6 @@ package fi.vm.sade.koodisto.service.business.changes.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -51,13 +50,13 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
     }
     
     @Override
-    public KoodiChangesDto getChangesDto(String uri, Date date, boolean compareToLatestAccepted) {
+    public KoodiChangesDto getChangesDto(String uri, DateTime date, boolean compareToLatestAccepted) {
         KoodiVersio koodiVersio = determineCodeVersionThatMatchesDate(uri, date);
         KoodiVersio latestKoodiVersio = fetchLatestDesiredCodeVersion(uri, compareToLatestAccepted);
         return constructChangesDto(koodiVersio, latestKoodiVersio, compareToLatestAccepted);
     }
     
-    private KoodiVersio determineCodeVersionThatMatchesDate(String uri, Date date) {
+    private KoodiVersio determineCodeVersionThatMatchesDate(String uri, DateTime date) {
         return new KoodiChangesDateComparator().getClosestMatchingEntity(date, service.getKoodi(uri).getKoodiVersios());
     }
 
@@ -202,13 +201,23 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
     private List<SimpleKoodiMetadataDto> changedMetadatas(Set<KoodiMetadata> compareToMetadatas, Set<KoodiMetadata> latestMetadatas) {
         List<SimpleKoodiMetadataDto> changedMetadatas = new ArrayList<>();
         for (KoodiMetadata latestData : latestMetadatas) {
-            if (!compareToMetadatas.contains(latestData)) {
+            if (!containsMetadata(compareToMetadatas, latestData)) {
                 KoodiMetadata metaWithMatchingKieli = getMetadataWithMatchingLanguage(compareToMetadatas, latestData.getKieli());
                 changedMetadatas.add(getChangesForMetadata(latestData, metaWithMatchingKieli));
             }
         }
         
         return changedMetadatas;
+    }
+
+    private boolean containsMetadata(Set<KoodiMetadata> compareToMetadatas, KoodiMetadata compareAgainst) {
+        for (KoodiMetadata compare : compareToMetadatas) {
+            if (compare.getKieli().equals(compareAgainst.getKieli()) && compare.getNimi().equals(compareAgainst.getNimi())
+                    && compare.getKuvaus().equals(compareAgainst.getKuvaus()) && compare.getLyhytNimi().equals(compareAgainst.getLyhytNimi())) {
+                        return true;
+                    }
+        }
+        return false;
     }
 
     private SimpleKoodiMetadataDto getChangesForMetadata(KoodiMetadata latestData, KoodiMetadata metaWithMatchingKieli) {

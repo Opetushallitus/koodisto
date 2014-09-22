@@ -90,4 +90,14 @@ public class DtoFactory {
                 .setParentPassive(parentPassive).setChildPassive(childPassive);
     }
 
+    public static KoodistoVersioBuilder createKoodistoVersioWithKoodiVersios(int versio, String koodistoUri, KoodiVersio[] koodiVersios) {
+        return new KoodistoVersioBuilder().setVersio(versio).setKoodisto(createKoodisto(koodistoUri));
+    }
+    
+    public static Koodisto createKoodisto(String koodistoUri) {
+        Koodisto koodisto = new Koodisto();
+        koodisto.setKoodistoUri(koodistoUri);
+        return koodisto;
+    }
+
 }

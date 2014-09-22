@@ -1,17 +1,15 @@
 package fi.vm.sade.koodisto.service.business.changes;
 
 import java.util.Collection;
-import java.util.Date;
 
 import org.joda.time.DateTime;
 
 public abstract class ChangesDateComparator<C> {
 
-    public C getClosestMatchingEntity(Date dateToCompare, Collection<C> entities) {
-        DateTime toCompare = new DateTime(dateToCompare);
+    public C getClosestMatchingEntity(DateTime dateToCompare, Collection<C> entities) {
         C closestMatching = null;
         for (C entity : entities) {
-            closestMatching = compareDateTimes(toCompare, entity, closestMatching);
+            closestMatching = compareDateTimes(dateToCompare, entity, closestMatching);
         }
         return closestMatching;
     }

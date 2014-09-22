@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.activation.DataHandler;
@@ -26,6 +25,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
 import org.codehaus.jackson.map.annotate.JsonView;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -379,9 +379,8 @@ public class CodesResource {
             @ApiParam(value = "Verrataanko viimeiseen hyväksyttyyn versioon") @DefaultValue("false") @QueryParam("compareToLatestAccepted") boolean compareToLatestAccepted) {
         try {
             ValidatorUtil.validateDateParameters(dayOfMonth, month, year, hourOfDay, minute, second);
-            Calendar cal = Calendar.getInstance();
-            cal.set(year, month, dayOfMonth, hourOfDay, minute, second);
-            KoodistoChangesDto dto = changesService.getChangesDto(codesUri, cal.getTime(), compareToLatestAccepted);
+            DateTime date = new DateTime(year, month, dayOfMonth, hourOfDay, minute, second);
+            KoodistoChangesDto dto = changesService.getChangesDto(codesUri, date, compareToLatestAccepted);
             return Response.status(Response.Status.OK).entity(dto).build();
         } catch (KoodistoValidationException e) {
             LOGGER.warn("Invalid parameter for rest call: get changes. ", e);

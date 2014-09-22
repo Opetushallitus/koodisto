@@ -99,5 +99,4 @@ public class KoodiVersioBuilder implements Builder<KoodiVersio>{
         return this.koodiVersio;
     }
 
-
 }

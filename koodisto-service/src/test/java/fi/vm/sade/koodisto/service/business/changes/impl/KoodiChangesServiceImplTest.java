@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -422,7 +423,7 @@ public class KoodiChangesServiceImplTest {
         }
         returnGivenKoodiVersiosWithKoodiFromMockedKoodiService(versios);
         koodistoServiceReturnsKoodistoWithAllVersions(versios);
-        return service.getChangesDto(KOODI_URI, date, compareToLatestAccepted);
+        return service.getChangesDto(KOODI_URI, new DateTime(date), compareToLatestAccepted);
     }
     
     private void koodistoServiceReturnsKoodistoWithAllVersions(KoodiVersio ... versios) {

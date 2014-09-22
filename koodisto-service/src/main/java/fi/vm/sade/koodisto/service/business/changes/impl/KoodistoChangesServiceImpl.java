@@ -2,7 +2,6 @@ package fi.vm.sade.koodisto.service.business.changes.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -43,13 +42,13 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
     }
 
     @Override
-    public KoodistoChangesDto getChangesDto(String uri, Date date, boolean compareToLatestAccepted) {
+    public KoodistoChangesDto getChangesDto(String uri, DateTime date, boolean compareToLatestAccepted) {
         KoodistoVersio koodistoVersio = determineCodeVersionThatMatchesDate(uri, date);
         KoodistoVersio latest = fetchLatestDesiredCodesVersion(uri, compareToLatestAccepted);
         return constructChangesDto(koodistoVersio, latest);
     }
     
-    private KoodistoVersio determineCodeVersionThatMatchesDate(String uri, Date date) {
+    private KoodistoVersio determineCodeVersionThatMatchesDate(String uri, DateTime date) {
         return new KoodistoChangesDateComparator().getClosestMatchingEntity(date, koodistoService.getKoodistoByKoodistoUri(uri).getKoodistoVersios());
     }
     
