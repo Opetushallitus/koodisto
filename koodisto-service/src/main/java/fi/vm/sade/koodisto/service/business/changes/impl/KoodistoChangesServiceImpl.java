@@ -31,6 +31,7 @@ import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.ChangesDateComparator;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
@@ -44,6 +45,9 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
     
     @Autowired
     private KoodistoBusinessService koodistoService;
+    
+    @Autowired
+    private KoodiBusinessService koodiBusinessService;
     
     @Autowired
     private KoodiChangesService koodiChangesService;
@@ -181,8 +185,8 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
             public KoodiChangesDto apply(KoodistoVersioKoodiVersio input) {
                 KoodiVersio koodiVersio = input.getKoodiVersio();
                 String koodiUri = koodiVersio.getKoodi().getKoodiUri();
-                //TODO; it is possible that this is not the latest code element version that exists
-                return new KoodiChangesDto(koodiUri, null, koodiVersio.getVersio(), null, null, null, null, null, null, null, null, null, null);
+                Integer versio = koodiBusinessService.getLatestKoodiVersio(koodiUri).getVersio();
+                return new KoodiChangesDto(koodiUri, null, versio, null, null, null, null, null, null, null, null, null, null);
             }
             
         });

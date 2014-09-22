@@ -37,6 +37,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 
 import static org.mockito.Mockito.when;
 
@@ -284,7 +285,7 @@ public class KoodistoChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedWhenCodeElementHasBeenAdded() {
-        KoodistoChangesDto result = givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithKoodiVersio(VERSIO + 1));
+        KoodistoChangesDto result = givenResultWithCodeElementsRemoved(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithKoodiVersio(VERSIO + 1));
         assertResultWithKoodiChanges(VERSIO + 1, result, 1, 0, 0);
     }
     
@@ -301,7 +302,7 @@ public class KoodistoChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedWhenCodeElementsHaveBeenAddedAndRemoved() {
-        KoodistoChangesDto result = givenResult(givenKoodistoVersioWithKoodiVersio(VERSIO), givenKoodistoVersioWithKoodiVersio(VERSIO + 1, "tammi"));
+        KoodistoChangesDto result = givenResultWithCodeElementsRemoved(givenKoodistoVersioWithKoodiVersio(VERSIO), givenKoodistoVersioWithKoodiVersio(VERSIO + 1, "tammi"));
         assertResultWithKoodiChanges(VERSIO + 1, result, 1, 0, 1);
     }
     
@@ -365,6 +366,13 @@ public class KoodistoChangesServiceImplTest {
         when(koodistoService.getKoodistoVersio(KOODISTO_URI, versio)).thenReturn(koodistoVersio);
         when(koodistoService.getLatestKoodistoVersio(KOODISTO_URI)).thenReturn(latest);
         return service.getChangesDto(KOODISTO_URI, versio, false);
+    }
+    
+    private KoodistoChangesDto givenResultWithCodeElementsRemoved(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
+        KoodiVersio mockedKoodiVersio = Mockito.mock(KoodiVersio.class);
+        when(mockedKoodiVersio.getVersio()).thenReturn(VERSIO);
+        when(koodiService.getLatestKoodiVersio(any(String.class))).thenReturn(mockedKoodiVersio);
+        return givenResult(koodistoVersio, latest);
     }
     
     private KoodistoChangesDto givenResultWithMultipleKoodistoVersios(Integer versio, boolean compareToLatestAccepted, KoodistoVersio ... versios) {
