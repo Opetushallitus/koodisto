@@ -687,6 +687,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private KoodiVersio createNewVersion(KoodiVersio latest) {
+        return createNewVersion(latest, false);
+    }
+    private KoodiVersio createNewVersion(KoodiVersio latest, boolean doNonFlusingInsert) {
         if (!Tila.HYVAKSYTTY.equals(latest.getTila())) {
             return latest;
         }
@@ -702,12 +705,16 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private KoodiVersio createNewVersion(KoodiVersio base, KoodiVersio input) {
+        return createNewVersion(base, input, false);
+    }
+    
+    private KoodiVersio createNewVersion(KoodiVersio base, KoodiVersio input, boolean doNonFlusingInsert) {
         input.setId(null);
         input.setVersio(base.getVersio() + 1);
         input.setTila(Tila.LUONNOS);
 
         input.setKoodi(base.getKoodi());
-        KoodiVersio inserted = koodiVersioDAO.insert(input);
+        KoodiVersio inserted = doNonFlusingInsert ? koodiVersioDAO.insertNonFlush(input) : koodiVersioDAO.insert(input);
         copyRelations(base, inserted);
 
         return inserted;
@@ -744,6 +751,16 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     @Override
     public KoodiVersio createNewVersion(String koodiUri) {
         return createNewVersion(getLatestKoodiVersio(koodiUri));
+    }
+    
+    @Override
+    public Set<KoodiVersio> createNewVersions(Set<KoodistoVersioKoodiVersio> koodiVersios) {
+        HashSet<KoodiVersio> inserted = new HashSet<>();
+        for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
+            inserted.add(createNewVersion(getLatestKoodiVersio(koodiVersio.getKoodiVersio().getKoodi().getKoodiUri()), true));
+        }
+        flushAfterCreation();
+        return inserted;
     }
 
     @Override
@@ -1176,4 +1193,5 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
         return toBeAdded;
     }
+
 }

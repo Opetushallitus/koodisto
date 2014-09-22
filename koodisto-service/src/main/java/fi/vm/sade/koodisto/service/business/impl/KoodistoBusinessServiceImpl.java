@@ -191,7 +191,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         }
         if (suhteenTyyppi == SuhteenTyyppi.SISALTYY && !userIsRootUser() && !koodistosHaveSameOrganisaatio(ylaKoodisto, alaKoodisto)) {
             throw new KoodistosHaveDifferentOrganizationsException();
-
         }
         KoodistoVersio yla = getLatestKoodistoVersio(ylaKoodisto);
         KoodistoVersio ala = getLatestKoodistoVersio(alaKoodisto);
@@ -510,16 +509,15 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     private void copyKoodiVersiosFromOldKoodistoToNew(KoodistoVersio base, KoodistoVersio inserted) {
-        logger.info("Copying codeElement versios to new Codes version, codes id=" + base.getKoodisto().getId() + ", codes versio=" + base.getVersio() + ", new codes versio=" + inserted.getVersio());
-        for (KoodistoVersioKoodiVersio kv : base.getKoodiVersios()) {
+        logger.info("Copying codeElement versios to new Codes version, codes id={}, codes versio={}, new codes versio={}", base.getKoodisto().getId(), base.getVersio(), inserted.getVersio());
+        Set<KoodiVersio> newVersions = koodiBusinessService.createNewVersions(base.getKoodiVersios());
+        for (KoodiVersio koodiVersio : newVersions) {
             KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
-
-            KoodiVersio koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri());
 
             newRelationEntry.setKoodiVersio(koodiVersio);
             newRelationEntry.setKoodistoVersio(inserted);
             inserted.addKoodiVersio(newRelationEntry);
-            logger.info("  Copied codeElement version, codes id=" + inserted.getKoodisto().getId() + ", codeElement version id=" + koodiVersio.getId());
+            logger.info("  Copied codeElement version, codes id={}, codeElement version id={}", inserted.getKoodisto().getId(), koodiVersio.getId());
         }
     }
 
