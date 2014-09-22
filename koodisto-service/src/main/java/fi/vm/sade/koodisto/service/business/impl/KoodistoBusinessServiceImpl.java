@@ -59,6 +59,7 @@ import fi.vm.sade.koodisto.service.DownloadService;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
+import fi.vm.sade.koodisto.service.business.exception.KoodiRelationToSelfException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoExportException;
@@ -66,6 +67,7 @@ import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiNotUniqueException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoOptimisticLockingException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRelationToSelfException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoUriEmptyException;
@@ -186,6 +188,9 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Override
     public void addRelation(String ylaKoodisto, String alaKoodisto, SuhteenTyyppi suhteenTyyppi) {
+        if(ylaKoodisto.equals(alaKoodisto)){
+            throw new KoodistoRelationToSelfException();
+        }
         if (hasAnyRelation(ylaKoodisto, alaKoodisto)) {
             throw new KoodistosAlreadyHaveSuhdeException();
         }
@@ -513,7 +518,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         Set<KoodiVersio> newVersions = koodiBusinessService.createNewVersions(base.getKoodiVersios());
         for (KoodiVersio koodiVersio : newVersions) {
             KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
-
             newRelationEntry.setKoodiVersio(koodiVersio);
             newRelationEntry.setKoodistoVersio(inserted);
             inserted.addKoodiVersio(newRelationEntry);
