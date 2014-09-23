@@ -124,4 +124,6 @@ public interface KoodiBusinessService {
 
     Set<KoodiVersio> createNewVersions(Set<KoodistoVersioKoodiVersio> koodiVersios);
 
+    void acceptCodeElements(KoodistoVersio latest);
+
 }
