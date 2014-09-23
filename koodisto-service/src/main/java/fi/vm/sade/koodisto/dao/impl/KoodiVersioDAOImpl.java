@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -583,6 +584,7 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
     @Override
     public Map<KoodiVersio, KoodiVersio> getPreviousKoodiVersios(List<KoodiVersio> koodis) {
         EntityManager em = getEntityManager();
+        em.setFlushMode(FlushModeType.COMMIT);
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
         HashMap<KoodiVersio, KoodiVersio> results = new HashMap<>();
