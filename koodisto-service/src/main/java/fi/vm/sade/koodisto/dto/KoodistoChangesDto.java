@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -87,6 +88,13 @@ public class KoodistoChangesDto {
         this.muuttuneetKoodit = muuttuneetKoodit;
         this.poistetutKoodit = poistetutKoodit;
         this.koodistoUri = koodistoUri;
+    }
+    
+    public KoodistoChangesDto(String koodistoUri, MuutosTila muutosTila, Integer viimeisinVersio, Date viimeksiPaivitetty) {
+        this(koodistoUri, muutosTila, viimeisinVersio, new ArrayList<SimpleMetadataDto>(), new ArrayList<SimpleMetadataDto>(), 
+                viimeksiPaivitetty, null, null, null, null, 
+                new ArrayList<SimpleCodesRelation>(), new ArrayList<SimpleCodesRelation>(), new ArrayList<SimpleCodesRelation>(), 
+                new ArrayList<KoodiChangesDto>(), new ArrayList<KoodiChangesDto>(), new ArrayList<KoodiChangesDto>());
     }
 
     public static class SimpleCodesRelation {

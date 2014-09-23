@@ -495,15 +495,44 @@ public class CodesResourceTest {
     
     @Test
     public void returnsChangesToCodesWithLotsOfChanges() {
-        KoodistoChangesDto changes = (KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 1, false).getEntity();
-        assertEquals(MuutosTila.MUUTOKSIA, changes.muutosTila);
-        assertEquals(3, changes.viimeisinVersio.intValue());
-        assertEquals(2, changes.muuttuneetTiedot.size());
-        assertEquals(1, changes.poistuneetTiedot.size());
-        assertEquals(2, changes.lisatytKoodistonSuhteet.size());
-        assertEquals(1, changes.passivoidutKoodistonSuhteet.size());
-        assertEquals(1, changes.poistetutKoodistonSuhteet.size());
-        assertEquals(Tila.LUONNOS, changes.tila);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 1, false).getEntity(), 3, 1, 2, 2, 1, 1, Tila.LUONNOS, 1, 1, 0, MuutosTila.MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 2, false).getEntity(), 3, 0, 2, 1, 1, 0, Tila.LUONNOS, 1, 1, 1, MuutosTila.MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 3, false).getEntity(), 3, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+    }
+    
+    @Test
+    public void returnsChangesToCodesWithLotsOfChangesComparingAgainstLatestAcceptedKoodistoVersio() {
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 1, true).getEntity(), 2, 1, 0, 1, 0, 1, null, 1, 1, 0, MuutosTila.MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 2, true).getEntity(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 3, true).getEntity(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+    }
+    
+    @Test
+    public void returnsChangesToCodesWithLotsOfChangesUsingDate() {
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2012, 0, 0, 0, false).getEntity(), 3, 1, 2, 2, 1, 1, Tila.LUONNOS, 1, 1, 0, MuutosTila.MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 5, 2014, 0, 0, 0, false).getEntity(), 3, 0, 2, 1, 1, 0, Tila.LUONNOS, 1, 1, 1, MuutosTila.MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2014, 0, 0, 0, false).getEntity(), 3, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+    }
+    
+    @Test
+    public void returnsChangesToCodesWithLotsOfChangesComparingAgainstLatestAcceptedKoodistoVersioAndDate() {
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2012, 0, 0, 0, true).getEntity(), 2, 1, 0, 1, 0, 1, null, 1, 1, 0, MuutosTila.MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 5, 2014, 0, 0, 0, true).getEntity(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2014, 0, 0, 0, true).getEntity(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+    }
+
+    private void assertChanges(KoodistoChangesDto changes, int expectedVersio, int removedMetas, int changedMetas, int addedRelations, int passiveRelations, int removedRelations, Tila expectedTila, int addedCodeElements, int changedCodeElements, int removedCodeElements, MuutosTila muutosTila) {
+        assertEquals(muutosTila, changes.muutosTila);
+        assertEquals(expectedVersio, changes.viimeisinVersio.intValue());
+        assertEquals(changedMetas, changes.muuttuneetTiedot.size());
+        assertEquals(removedMetas, changes.poistuneetTiedot.size());
+        assertEquals(addedRelations, changes.lisatytKoodistonSuhteet.size());
+        assertEquals(passiveRelations, changes.passivoidutKoodistonSuhteet.size());
+        assertEquals(removedRelations, changes.poistetutKoodistonSuhteet.size());
+        assertEquals(expectedTila, changes.tila);
+        assertEquals(addedCodeElements, changes.lisatytKoodit.size());
+        assertEquals(changedCodeElements, changes.muuttuneetKoodit.size());
+        assertEquals(removedCodeElements, changes.poistetutKoodit.size());
     }
 
     // UTILITIES

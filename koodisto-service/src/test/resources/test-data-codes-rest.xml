@@ -105,11 +105,29 @@
   <koodistoryhmametadata id="8" koodistoryhma_id="6" kieli="EN" nimi="Koodistoryhmä jolla monta metadataa" version="0"/>
   
   <koodi id="1" koodisto_id="13" version="0" koodiuri="downloadtestikoodi"/>
+  <koodi id="2" koodisto_id="17" version="0" koodiuri="v"/>
+  <koodi id="3" koodisto_id="17" version="0" koodiuri="poistettukoodi"/>
+  <koodi id="4" koodisto_id="17" version="0" koodiuri="lisattykoodi"/>
   
   <koodiversio id="1" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="1" koodiarvo="csvtestikoodi"/>
+  <koodiversio id="2" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="muutettukoodi"/>
+  <koodiversio id="3" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="muutettukoodi"/>
+  <koodiversio id="4" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="3" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="muutettukoodi"/>
+  <koodiversio id="5" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="3" koodiarvo="poistettukoodi"/>
+  <koodiversio id="6" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="4" koodiarvo="lisattykoodi"/>
   
   <koodimetadata id="1" kieli="FI" nimi="Download testi" version="0" koodiversio_id="1" lyhytnimi="csv" kuvaus="Description of downloaded code"/>
+  <koodimetadata id="2" kieli="FI" nimi="Muutettu koodi" version="0" koodiversio_id="2" lyhytnimi="csv" kuvaus="Muutettu koodi"/>
+  <koodimetadata id="3" kieli="FI" nimi="Muutettu koodi" version="0" koodiversio_id="3" lyhytnimi="csv" kuvaus="Tätä koodia muutettiin versiossa 2"/>
+  <koodimetadata id="4" kieli="FI" nimi="Koodi muutettu" version="0" koodiversio_id="4" lyhytnimi="csv" kuvaus="Tätä koodia muutettiin versiossa 2 ja 3"/>
+  <koodimetadata id="5" kieli="FI" nimi="Poistettu koodi" version="0" koodiversio_id="5" lyhytnimi="csv" kuvaus="Lisätty versiossa kaksi ja poistettu versiossa 3"/>
+  <koodimetadata id="6" kieli="FI" nimi="Lisätty koodi" version="0" koodiversio_id="6" lyhytnimi="csv" kuvaus="Lisätty versioon kolme"/>
   
   <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="15" koodiversio_id="1"/>
+  <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="19" koodiversio_id="2"/>
+  <koodistoversio_koodiversio id="3" version="0" koodistoversio_id="20" koodiversio_id="3"/>
+  <koodistoversio_koodiversio id="4" version="0" koodistoversio_id="21" koodiversio_id="4"/>
+  <koodistoversio_koodiversio id="5" version="0" koodistoversio_id="20" koodiversio_id="5"/>
+  <koodistoversio_koodiversio id="6" version="0" koodistoversio_id="21" koodiversio_id="6"/>
   
 </dataset>

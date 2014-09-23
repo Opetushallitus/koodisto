@@ -85,6 +85,10 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
     }
 
     private KoodistoChangesDto constructChangesDto(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
+        String koodistoUri = latest.getKoodisto().getKoodistoUri();
+        if (koodistoVersio.getVersio().equals(latest.getVersio()) || koodistoVersio.getVersio() > latest.getVersio()) {
+            return new KoodistoChangesDto(koodistoUri, MuutosTila.EI_MUUTOKSIA, latest.getVersio(), latest.getPaivitysPvm());
+        }
         List<SimpleMetadataDto> changedMetas = changedMetadatas(koodistoVersio.getMetadatas(), latest.getMetadatas());
         List<SimpleMetadataDto> removedMetas = removedMetadatas(koodistoVersio.getMetadatas(), latest.getMetadatas());
         DatesChangedHandler dateHandler = DatesChangedHandler.setDatesHaveChanged(koodistoVersio.getVoimassaAlkuPvm(), koodistoVersio.getVoimassaLoppuPvm(),
@@ -96,20 +100,17 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
         List<KoodiChangesDto> addedCodeElements = addedCodeElements(koodistoVersio, latest);
         List<KoodiChangesDto> changedCodeElements = changedCodeElements(koodistoVersio, latest);
         List<KoodiChangesDto> removedCodeElements = removedCodeElements(koodistoVersio, latest);
-        MuutosTila changesState = anyChanges(koodistoVersio.getVersio(), latest.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), changedTila, 
+        MuutosTila changesState = anyChanges(changedMetas, removedMetas, dateHandler.anyChanges(), changedTila, 
                 addedRelations, removedRelations, passiveRelations, addedCodeElements, removedCodeElements, changedCodeElements);
-        return new KoodistoChangesDto(latest.getKoodisto().getKoodistoUri(), changesState, latest.getVersio(), changedMetas, removedMetas, 
+        return new KoodistoChangesDto(koodistoUri, changesState, latest.getVersio(), changedMetas, removedMetas, 
                 latest.getPaivitysPvm(), dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, changedTila, addedRelations, removedRelations, 
                 passiveRelations, addedCodeElements, changedCodeElements, removedCodeElements);
     }
 
 
-    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleMetadataDto> changedMetas, List<SimpleMetadataDto> removedMetas, boolean validDateHasChanged, Tila changedTila, 
+    private MuutosTila anyChanges(List<SimpleMetadataDto> changedMetas, List<SimpleMetadataDto> removedMetas, boolean validDateHasChanged, Tila changedTila, 
             List<SimpleCodesRelation> addedRelations, List<SimpleCodesRelation> removedRelations, List<SimpleCodesRelation> passiveRelations, 
             List<KoodiChangesDto> addedCodeElements, List<KoodiChangesDto> removedCodeElements, List<KoodiChangesDto> changedCodeElements) {
-        if (versio.equals(latestVersio)) {
-            return MuutosTila.EI_MUUTOKSIA;
-        }
         boolean noChanges = true;
         noChanges = noChanges && changedMetas.isEmpty() && removedMetas.isEmpty();
         noChanges = noChanges && !validDateHasChanged && changedTila == null;

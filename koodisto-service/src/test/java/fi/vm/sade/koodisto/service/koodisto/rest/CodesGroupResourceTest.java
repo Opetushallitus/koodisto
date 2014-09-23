@@ -1,8 +1,5 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.HashSet;
 
 import javax.ws.rs.core.Response;
@@ -22,6 +19,7 @@ import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
@@ -40,7 +38,7 @@ public class CodesGroupResourceTest {
         KoodistoRyhmaDto dto = (KoodistoRyhmaDto) response.getEntity();
         assertEquals("relaatioidenlisaaminen", dto.getKoodistoRyhmaUri());
         assertEquals(1, dto.getKoodistoRyhmaMetadatas().size());
-        assertEquals(4, dto.getKoodistos().size());
+        assertEquals(5, dto.getKoodistos().size());
     }
 
     @Test
