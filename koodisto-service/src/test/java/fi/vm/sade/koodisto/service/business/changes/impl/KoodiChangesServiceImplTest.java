@@ -221,6 +221,15 @@ public class KoodiChangesServiceImplTest {
         KoodiVersio third = givenKoodiVersioWithTilaAndMetadata(VERSIO + 2 , Tila.LUONNOS, givenKoodiMetadata(NAME, SHORT_NAME, "huono kuvaus", Kieli.FI));
         assertResultWithTila(VERSIO + 1, changedSecondDescription, null, givenResultWithMultipleKoodiVersios(VERSIO, true, first, second, third));
     }
+    
+    @Test
+    public void doesNotCompareLatestVersionAgainstLatestAcceptedVersion() {
+        KoodiChangesDto result = givenResultWithMultipleKoodiVersios(VERSIO + 2, true, 
+                givenKoodiVersioWithMetadata(VERSIO, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI)), 
+                givenKoodiVersioWithMetadata(VERSIO + 1, givenKoodiMetadata(NAME, SHORT_NAME, "jumbo", Kieli.FI)), 
+                givenKoodiVersioWithTilaAndMetadata(VERSIO + 2 , Tila.LUONNOS, givenKoodiMetadata(NAME, SHORT_NAME, "huono kuvaus", Kieli.FI)));
+        assertResultIsNoChanges(result, 2);
+    }
 
     @Test
     public void doesNotUseLatestAcceptedVersionForComparison() {

@@ -189,7 +189,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
                 KoodiVersio koodiVersio = input.getKoodiVersio();
                 String koodiUri = koodiVersio.getKoodi().getKoodiUri();
                 Integer versio = koodiBusinessService.getLatestKoodiVersio(koodiUri).getVersio();
-                return new KoodiChangesDto(koodiUri, null, versio, null, null, null, null, null, null, null, null, null, null);
+                return new KoodiChangesDto(koodiUri, null, versio, null);
             }
             
         });
