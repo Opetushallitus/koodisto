@@ -99,8 +99,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         List<SimpleCodeElementRelation> addedRelations = addedRelations(koodiVersio, latestKoodiVersio);
         List<SimpleCodeElementRelation> removedRelations = removedRelations(koodiVersio, latestKoodiVersio);
         List<SimpleCodeElementRelation> passiveRelations = passiveRelations(latestKoodiVersio);
-        MuutosTila muutosTila = anyChanges(koodiVersio.getVersio(), latestKoodiVersio.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), tilaHasChanged, 
-                addedRelations, removedRelations, passiveRelations);
+        MuutosTila muutosTila = anyChanges(changedMetas, removedMetas, dateHandler.anyChanges(), tilaHasChanged, addedRelations, removedRelations, passiveRelations);
         return new KoodiChangesDto(koodiUri, muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, addedRelations, removedRelations, 
                 passiveRelations, latestKoodiVersio.getPaivitysPvm(), dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, tilaHasChanged);
     }
@@ -171,23 +170,11 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         return allRelations;
     }
 
-    private MuutosTila anyChanges(Integer versio, Integer latestVersio, List<SimpleKoodiMetadataDto> changedMetas, List<SimpleKoodiMetadataDto> removedMetas, boolean anyChangesInValidThruDates, Tila tilaHasChanged, List<SimpleCodeElementRelation> addedRelations, List<SimpleCodeElementRelation> removedRelations, List<SimpleCodeElementRelation> passiveRelations) {
-        if (versio.equals(latestVersio)) {
-            return MuutosTila.EI_MUUTOKSIA;
-        }
-        if (removedMetas.size() > 0) {
-            return MuutosTila.MUUTOKSIA;
-        }
-        if (anyChangesInValidThruDates) {
-            return MuutosTila.MUUTOKSIA;
-        }
-        if (tilaHasChanged != null) {
-            return MuutosTila.MUUTOKSIA;
-        }
-        if (addedRelations.size() > 0 || removedRelations.size() > 0 || passiveRelations.size() > 0) {
-            return MuutosTila.MUUTOKSIA;
-        }
-        return changedMetas.size() > 0 ? MuutosTila.MUUTOKSIA : MuutosTila.EI_MUUTOKSIA;
+    private MuutosTila anyChanges(List<SimpleKoodiMetadataDto> changedMetas, List<SimpleKoodiMetadataDto> removedMetas, boolean anyChangesInValidThruDates, Tila tilaHasChanged, List<SimpleCodeElementRelation> addedRelations, List<SimpleCodeElementRelation> removedRelations, List<SimpleCodeElementRelation> passiveRelations) {
+        boolean noChanges = removedMetas.isEmpty() && changedMetas.isEmpty();
+        noChanges = noChanges && !anyChangesInValidThruDates && tilaHasChanged == null;
+        noChanges = noChanges && addedRelations.isEmpty() && removedRelations.isEmpty() && passiveRelations.isEmpty();
+        return noChanges ? MuutosTila.EI_MUUTOKSIA : MuutosTila.MUUTOKSIA;
     }
     
     private List<SimpleKoodiMetadataDto> removedMetadatas(Set<KoodiMetadata> compareToMetas, final Set<KoodiMetadata> latestMetas) {
