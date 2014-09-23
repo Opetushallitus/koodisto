@@ -111,7 +111,7 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
 
     @Override
     public void copyRelations(KoodistoVersio old, KoodistoVersio fresh) {
-        logger.info("Copying codes relations, old codes versio id=" + old.getId() + ", new codes versio id=" + fresh.getId());
+        logger.info("Copying codes relations, old codes versio id={}, new codes versio id={}", old.getId(), fresh.getId());
         fresh.setYlakoodistos(copyRelations(old.getYlakoodistos(), fresh));
         fresh.setAlakoodistos(copyRelations(old.getAlakoodistos(), fresh));
     }
