@@ -60,12 +60,12 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoExportException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiNotUniqueException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoOptimisticLockingException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRelationToSelfException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoUriEmptyException;
@@ -186,12 +186,14 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Override
     public void addRelation(String ylaKoodisto, String alaKoodisto, SuhteenTyyppi suhteenTyyppi) {
+        if(ylaKoodisto.equals(alaKoodisto)){
+            throw new KoodistoRelationToSelfException();
+        }
         if (hasAnyRelation(ylaKoodisto, alaKoodisto)) {
             throw new KoodistosAlreadyHaveSuhdeException();
         }
         if (suhteenTyyppi == SuhteenTyyppi.SISALTYY && !userIsRootUser() && !koodistosHaveSameOrganisaatio(ylaKoodisto, alaKoodisto)) {
             throw new KoodistosHaveDifferentOrganizationsException();
-
         }
         KoodistoVersio yla = getLatestKoodistoVersio(ylaKoodisto);
         KoodistoVersio ala = getLatestKoodistoVersio(alaKoodisto);
@@ -510,16 +512,14 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     private void copyKoodiVersiosFromOldKoodistoToNew(KoodistoVersio base, KoodistoVersio inserted) {
-        logger.info("Copying codeElement versios to new Codes version, codes id=" + base.getKoodisto().getId() + ", codes versio=" + base.getVersio() + ", new codes versio=" + inserted.getVersio());
-        for (KoodistoVersioKoodiVersio kv : base.getKoodiVersios()) {
+        logger.info("Copying codeElement versios to new Codes version, codes id={}, codes versio={}, new codes versio={}", base.getKoodisto().getId(), base.getVersio(), inserted.getVersio());
+        Set<KoodiVersio> newVersions = koodiBusinessService.createNewVersions(base.getKoodiVersios());
+        for (KoodiVersio koodiVersio : newVersions) {
             KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
-
-            KoodiVersio koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri());
-
             newRelationEntry.setKoodiVersio(koodiVersio);
             newRelationEntry.setKoodistoVersio(inserted);
             inserted.addKoodiVersio(newRelationEntry);
-            logger.info("  Copied codeElement version, codes id=" + inserted.getKoodisto().getId() + ", codeElement version id=" + koodiVersio.getId());
+            logger.info("  Copied codeElement version, codes id={}, codeElement version id={}", inserted.getKoodisto().getId(), koodiVersio.getId());
         }
     }
 
@@ -591,22 +591,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         // HYVAKSYTTY, we should also set
         // set all the koodis in this koodisto to HYVAKSYTTY
         if (!Tila.HYVAKSYTTY.equals(latest.getTila()) && updateKoodistoData.getTila().equals(TilaType.HYVAKSYTTY)) {
-            List<KoodiVersio> koodis = koodiVersioDAO.getKoodiVersiosByKoodistoAndKoodiTila(latest.getId(), Tila.LUONNOS);
-
-            if (koodis.size() > 0) {
-                ArrayList<String> koodiUris = new ArrayList<String>();
-                for (KoodiVersio koodiVersio : koodis) {
-                    koodiUris.add(koodiVersio.getKoodi().getKoodiUri());
-                }
-
-                List<KoodiVersio> latestKoodis = koodiDAO.getLatestCodeElementVersiosByUrisAndTila(koodiUris, Tila.HYVAKSYTTY);
-
-                for (KoodiVersio latestVersio : latestKoodis) {
-                    koodiBusinessService.setKoodiTila(latestVersio, TilaType.HYVAKSYTTY);
-                }
-            } else {
-                throw new KoodistoEmptyException();
-            }
+            koodiBusinessService.acceptCodeElements(latest);
             KoodistoVersio previousVersion = koodistoVersioDAO.getPreviousKoodistoVersio(latest.getKoodisto().getKoodistoUri(), latest.getVersio());
             if (previousVersion != null) {
                 previousVersion.setVoimassaLoppuPvm(new Date());
