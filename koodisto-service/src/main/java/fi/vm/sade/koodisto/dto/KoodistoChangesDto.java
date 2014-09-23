@@ -10,6 +10,7 @@ import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
+import fi.vm.sade.koodisto.service.serializer.FinnishJsonDateSerializer;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
 public class KoodistoChangesDto {
@@ -29,12 +30,15 @@ public class KoodistoChangesDto {
     @JsonView(JsonViews.Basic.class)
     public final List<SimpleMetadataDto> poistuneetTiedot;
     
+    @JsonSerialize(using=FinnishJsonDateSerializer.class)
     @JsonView(JsonViews.Basic.class)
     public final Date viimeksiPaivitetty;
-    
+
+    @JsonSerialize(using=FinnishJsonDateSerializer.class)
     @JsonView(JsonViews.Basic.class)
     public final Date voimassaAlkuPvm;
     
+    @JsonSerialize(using=FinnishJsonDateSerializer.class)
     @JsonView(JsonViews.Basic.class)
     public final Date voimassaLoppuPvm;
     
