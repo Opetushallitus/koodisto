@@ -492,6 +492,19 @@ public class CodesResourceTest {
         assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2012, 0, 0, 0, false).getEntity()).muutosTila);
         assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2013, 0, 0, 0, false).getEntity()).muutosTila);
     }
+    
+    @Test
+    public void returnsChangesToCodesWithLotsOfChanges() {
+        KoodistoChangesDto changes = (KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 1, false).getEntity();
+        assertEquals(MuutosTila.MUUTOKSIA, changes.muutosTila);
+        assertEquals(3, changes.viimeisinVersio.intValue());
+        assertEquals(2, changes.muuttuneetTiedot.size());
+        assertEquals(1, changes.poistuneetTiedot.size());
+        assertEquals(2, changes.lisatytKoodistonSuhteet.size());
+        assertEquals(1, changes.passivoidutKoodistonSuhteet.size());
+        assertEquals(1, changes.poistetutKoodistonSuhteet.size());
+        assertEquals(Tila.LUONNOS, changes.tila);
+    }
 
     // UTILITIES
     // /////////
