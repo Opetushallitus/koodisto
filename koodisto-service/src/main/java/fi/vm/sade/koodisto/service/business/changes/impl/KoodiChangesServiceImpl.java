@@ -2,8 +2,12 @@ package fi.vm.sade.koodisto.service.business.changes.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +103,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
     
     private boolean removedFromLatestCodes(KoodiVersio koodiVersio, boolean compareToLatestAccepted) {
         Koodisto koodisto = koodistoService.getKoodistoByKoodistoUri(koodiVersio.getKoodi().getKoodisto().getKoodistoUri());
-        KoodistoVersio koodistoVersio = getMatchingKoodistoVersio(koodisto.getKoodistoVersios(), compareToLatestAccepted);
+        KoodistoVersio koodistoVersio = getMatchingKoodistoVersio(new ArrayList<KoodistoVersio>(koodisto.getKoodistoVersios()), compareToLatestAccepted);
         return !containsCodeElementVersion(koodiVersio, koodistoVersio);
     }
 
@@ -107,7 +111,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         Collection<KoodiVersio> koodiVersios = Collections2.transform(koodistoVersio.getKoodiVersios(), new Function<KoodistoVersioKoodiVersio, KoodiVersio>() {
 
             @Override
-            public KoodiVersio apply(KoodistoVersioKoodiVersio input) {
+            public KoodiVersio apply(@Nonnull KoodistoVersioKoodiVersio input) {
                 return input.getKoodiVersio();
             }
             
@@ -115,8 +119,16 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         return koodiVersios.contains(koodiVersio);
     }
 
-    private KoodistoVersio getMatchingKoodistoVersio(Set<KoodistoVersio> koodistoVersios, boolean compareToLatestAccepted) {
+    private KoodistoVersio getMatchingKoodistoVersio(List<KoodistoVersio> koodistoVersios, boolean compareToLatestAccepted) {
         KoodistoVersio latestMatching = null;
+        Collections.sort(koodistoVersios, new Comparator<KoodistoVersio>() {
+
+            @Override
+            public int compare(KoodistoVersio arg0, KoodistoVersio arg1) {
+                return Long.compare(arg0.getId(), arg1.getId());
+            }
+            
+        });
         for (KoodistoVersio kv : koodistoVersios) {
             latestMatching = latestMatching == null || (latestMatching.getVersio() < kv.getVersio() && (!compareToLatestAccepted || Tila.HYVAKSYTTY.equals(kv.getTila()))) ? 
                     kv : latestMatching;
@@ -128,7 +140,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         Collection<KoodinSuhde> passiveRelations = Collections2.filter(getRelationsFromKoodiVersio(latestKoodiVersio), new Predicate<KoodinSuhde>() {
             
             @Override
-            public boolean apply(KoodinSuhde input) {
+            public boolean apply(@Nonnull KoodinSuhde input) {
                 return input.isPassive();
             }
         });
@@ -190,7 +202,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         }), new Function<KoodiMetadata, SimpleKoodiMetadataDto>() {
 
             @Override
-            public SimpleKoodiMetadataDto apply(KoodiMetadata input) {
+            public SimpleKoodiMetadataDto apply(@Nonnull KoodiMetadata input) {
                 return new SimpleKoodiMetadataDto(input.getNimi(), input.getKieli(), input.getKuvaus(), input.getLyhytNimi());
             }
         });
@@ -239,7 +251,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         return null;
     }
     
-    private final class KoodinSuhdeFoundNotFound implements Predicate<KoodinSuhde> {
+    private static final class KoodinSuhdeFoundNotFound implements Predicate<KoodinSuhde> {
         private final List<KoodinSuhde> relationsToCompare;
 
         private KoodinSuhdeFoundNotFound(List<KoodinSuhde> relationsToCompare) {
@@ -247,7 +259,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         }
 
         @Override
-        public boolean apply(KoodinSuhde input) {
+        public boolean apply(@Nonnull KoodinSuhde input) {
             boolean missing = true;
             String upperCodeUri = input.getYlakoodiVersio().getKoodi().getKoodiUri();
             String lowerCodeUri = input.getAlakoodiVersio().getKoodi().getKoodiUri();
@@ -261,7 +273,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         }
     }
 
-    private class KoodiChangesDateComparator extends ChangesDateComparator<KoodiVersio> {
+    private static class KoodiChangesDateComparator extends ChangesDateComparator<KoodiVersio> {
 
         @Override
         protected DateTime getDateFromEntity(KoodiVersio entity) {
