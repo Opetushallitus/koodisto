@@ -339,7 +339,7 @@ public class CodesResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @Path("changes/{codesUri}/{codesVersion}")
+    @Path("/changes/{codesUri}/{codesVersion}")
     @ApiOperation(
             value = "Palauttaa muutokset uusimpaan koodistoversioon verrattaessa",
             notes = "Toimii vain, jos koodisto on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
@@ -364,7 +364,7 @@ public class CodesResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
-    @Path("changes/withdate/{codesUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}")
+    @Path("/changes/withdate/{codesUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}")
     @ApiOperation(
             value = "Palauttaa tehdyt muutokset uusimpaan koodistoversioon käyttäen lähintä päivämäärään osuvaa koodistoversiota vertailussa",
             notes = "Toimii vain, jos koodisto on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
