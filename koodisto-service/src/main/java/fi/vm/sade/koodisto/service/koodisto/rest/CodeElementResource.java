@@ -236,7 +236,7 @@ public class CodeElementResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({ JsonViews.Basic.class, JsonViews.Extended.class })
+    @JsonView({ JsonViews.Extended.class })
     @Path("/changes/{codeElementUri}/{codeElementVersion}")
     @ApiOperation(
             value = "Palauttaa muutokset uusimpaan koodiversioon",
