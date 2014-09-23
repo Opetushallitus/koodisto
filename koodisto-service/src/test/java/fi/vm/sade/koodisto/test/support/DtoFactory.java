@@ -47,6 +47,10 @@ public class DtoFactory {
         return createKoodiVersioWithUriAndVersio(uri, versio).addParentRelation(relation).build();
     }
     
+    public static KoodiVersioBuilder createKoodiVersioWithMetadatas(String uri, Integer versio, KoodiMetadata ... metadatas) {
+        return createKoodiVersioWithUriAndVersioWithoutMetadatas(uri, versio).addMetadata(metadatas);
+    }
+    
     public static KoodistoVersioBuilder createKoodistoVersio(Koodisto koodisto, Integer versio) {
         return new KoodistoVersioBuilder().addMetadata(Kieli.FI, KOODISTO_NAME, KOODISTO_DESCRIPTION).setVersio(versio).setKoodisto(koodisto).setTila(Tila.HYVAKSYTTY);
     }
@@ -88,6 +92,16 @@ public class DtoFactory {
             boolean childPassive) {
         return new KoodistonSuhdeBuilder().setSuhteenTyyppi(tyyppi).setChildVersio(child).setParentVersio(parent)
                 .setParentPassive(parentPassive).setChildPassive(childPassive);
+    }
+
+    public static KoodistoVersioBuilder createKoodistoVersioWithKoodiVersios(int versio, String koodistoUri, KoodiVersio ... koodiVersios) {
+        return new KoodistoVersioBuilder().setVersio(versio).setKoodisto(createKoodisto(koodistoUri)).setTila(Tila.HYVAKSYTTY).addKoodiVersio(koodiVersios);
+    }
+    
+    public static Koodisto createKoodisto(String koodistoUri) {
+        Koodisto koodisto = new Koodisto();
+        koodisto.setKoodistoUri(koodistoUri);
+        return koodisto;
     }
 
 }

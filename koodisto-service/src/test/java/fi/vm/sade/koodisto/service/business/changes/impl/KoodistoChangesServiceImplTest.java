@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +20,7 @@ import fi.vm.sade.koodisto.dto.KoodistoChangesDto;
 import fi.vm.sade.koodisto.dto.KoodistoChangesDto.SimpleCodesRelation;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
@@ -35,6 +37,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 
 import static org.mockito.Mockito.when;
 
@@ -42,6 +45,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class KoodistoChangesServiceImplTest {
     
+    private static final String KOODI_URI = "koivu";
     private final static String KOODISTO_URI = "lehtipuut";
     private final static String NAME = "Lehtipuut", DESCRIPTION = "pudottavat lehtensä syksyisin";
     private final static String NAME_EN = "Leaftrees", DESCRIPTION_EN = "leaves are dropped during autumn";
@@ -78,7 +82,7 @@ public class KoodistoChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedIfNameHasChanged() {
-        String newName = "koivu";
+        String newName = KOODI_URI;
         assertResultHasMetadataChanges(givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithMetadata(VERSIO + 1, newName, DtoFactory.KOODISTO_DESCRIPTION)), VERSIO + 1, new SimpleMetadataDto(newName, Kieli.FI, null));
     }
     
@@ -278,7 +282,33 @@ public class KoodistoChangesServiceImplTest {
         assertEquals(1, dto.poistetutKoodistonSuhteet.size());
         assertEquals(1, dto.passivoidutKoodistonSuhteet.size());
     }
-
+    
+    @Test
+    public void returnsHasChangedWhenCodeElementHasBeenAdded() {
+        KoodistoChangesDto result = givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithKoodiVersio(VERSIO + 1));
+        assertResultWithKoodiChanges(VERSIO + 1, result, 1, 0, 0);
+    }
+    
+    @Test
+    public void returnsHasChangedWhenCodeElementHasBeenChanged() {
+        KoodistoVersio original = givenKoodistoVersioWithKoodiVersios(VERSIO, givenKoodiVersio(VERSIO, "koivun kukinto"));
+        KoodistoVersio latest = givenKoodistoVersioWithKoodiVersios(VERSIO + 1, givenKoodiVersio(VERSIO + 1, "koivun kukinto on haitaksi allergikoille"));
+        KoodistoChangesDto result = givenResult(original, latest);
+        assertResultWithKoodiChanges(VERSIO + 1, result, 0, 1, 0);
+    }
+    
+    @Test
+    public void returnsHasChangedWhenCodeElementHasBeenRemoved() {
+        KoodistoChangesDto result = givenResultWithCodeElementsRemoved(givenKoodistoVersioWithKoodiVersio(VERSIO), givenKoodistoVersio(VERSIO + 1));
+        assertResultWithKoodiChanges(VERSIO + 1, result, 0, 0, 1);
+    }
+    
+    @Test
+    public void returnsHasChangedWhenCodeElementsHaveBeenAddedAndRemoved() {
+        KoodistoChangesDto result = givenResultWithCodeElementsRemoved(givenKoodistoVersioWithKoodiVersio(VERSIO), givenKoodistoVersioWithKoodiVersio(VERSIO + 1, "tammi"));
+        assertResultWithKoodiChanges(VERSIO + 1, result, 1, 0, 1);
+    }
+    
     private void assertGivenResultWithDateQuery(Date query, boolean shouldUseFirst) {
         String descriptionChangedForSecond = "kuvausta norsusta";
         String nameChangedForThird = "Otus";
@@ -295,6 +325,13 @@ public class KoodistoChangesServiceImplTest {
             assertNull(data.kuvaus);
         }
     }
+    
+    private void assertResultWithKoodiChanges(Integer expectedVersio, KoodistoChangesDto result, int expectedAmountAdded, int expectedAmountChanged, int expectedAmountDeleted) {
+        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
+        assertEquals(expectedAmountAdded, result.lisatytKoodit.size());
+        assertEquals(expectedAmountDeleted, result.poistetutKoodit.size());
+        assertEquals(expectedAmountChanged, result.muuttuneetKoodit.size());
+    }
 
     private void assertResultWithTila(Integer expectedVersio, String expectedDescription, Tila expectedTila, KoodistoChangesDto result) {
         assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
@@ -304,6 +341,7 @@ public class KoodistoChangesServiceImplTest {
     }
 
     private void assertResultIsNoChanges(KoodistoChangesDto result, int versio) {
+        assertEquals(KOODISTO_URI, result.koodistoUri);
         assertEquals(MuutosTila.EI_MUUTOKSIA, result.muutosTila);
         assertEquals(versio, result.viimeisinVersio.intValue());
         assertTrue(result.muuttuneetTiedot.isEmpty());
@@ -324,7 +362,7 @@ public class KoodistoChangesServiceImplTest {
             returnLatestKoodistoVersioFromMockedKoodistoService(versios);
         }
         returnGivenKoodistoVersiosWithKoodistoFromMockedKoodistoService(versios);
-        return service.getChangesDto(KOODISTO_URI, date, compareToLatestAccepted);
+        return service.getChangesDto(KOODISTO_URI, new DateTime(date), compareToLatestAccepted);
     }
     
     private KoodistoChangesDto givenResult(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
@@ -332,6 +370,13 @@ public class KoodistoChangesServiceImplTest {
         when(koodistoService.getKoodistoVersio(KOODISTO_URI, versio)).thenReturn(koodistoVersio);
         when(koodistoService.getLatestKoodistoVersio(KOODISTO_URI)).thenReturn(latest);
         return service.getChangesDto(KOODISTO_URI, versio, false);
+    }
+    
+    private KoodistoChangesDto givenResultWithCodeElementsRemoved(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
+        KoodiVersio mockedKoodiVersio = Mockito.mock(KoodiVersio.class);
+        when(mockedKoodiVersio.getVersio()).thenReturn(VERSIO);
+        when(koodiService.getLatestKoodiVersio(any(String.class))).thenReturn(mockedKoodiVersio);
+        return givenResult(koodistoVersio, latest);
     }
     
     private KoodistoChangesDto givenResultWithMultipleKoodistoVersios(Integer versio, boolean compareToLatestAccepted, KoodistoVersio ... versios) {
@@ -421,5 +466,21 @@ public class KoodistoChangesServiceImplTest {
     
     private KoodistonSuhde givenPassiveKoodistonSuhde(SuhteenTyyppi tyyppi, KoodistoVersio parent, KoodistoVersio child, boolean parentPassive, boolean childPassive) {
         return DtoFactory.createKoodistonSuhde(tyyppi, child, parent, parentPassive, childPassive).build();
+    }
+    
+    private KoodistoVersio givenKoodistoVersioWithKoodiVersio(int versio) {
+        return givenKoodistoVersioWithKoodiVersio(versio, KOODI_URI);
+    }
+    
+    private KoodistoVersio givenKoodistoVersioWithKoodiVersio(int versio, String koodiUri) {
+        return givenKoodistoVersioWithKoodiVersios(versio, DtoFactory.createKoodiVersioWithUriAndVersio(koodiUri, VERSIO).build());
+    }
+    
+    private KoodistoVersio givenKoodistoVersioWithKoodiVersios(int versio, KoodiVersio ... koodiVersios) {
+        return DtoFactory.createKoodistoVersioWithKoodiVersios(versio, KOODISTO_URI, koodiVersios).build();
+    }
+    
+    private KoodiVersio givenKoodiVersio(Integer versio, String description) {
+        return DtoFactory.createKoodiVersioWithMetadatas(KOODI_URI, versio, DtoFactory.createKoodiMetadata(NAME, NAME, description, Kieli.FI)).build();
     }
 }

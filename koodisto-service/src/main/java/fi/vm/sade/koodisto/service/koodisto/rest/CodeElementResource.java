@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -17,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.map.annotate.JsonView;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -236,7 +236,7 @@ public class CodeElementResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({ JsonViews.Basic.class })
+    @JsonView({ JsonViews.Basic.class, JsonViews.Extended.class })
     @Path("changes/{codeElementUri}/{codeElementVersion}")
     @ApiOperation(
             value = "Palauttaa muutokset uusimpaan koodiversioon",
@@ -261,7 +261,7 @@ public class CodeElementResource {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @JsonView({ JsonViews.Basic.class })
+    @JsonView({ JsonViews.Extended.class })
     @Path("changes/withdate/{codeElementUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}")
     @ApiOperation(
             value = "Palauttaa tehdyt muutokset uusimpaan koodiversioon käyttäen lähintä päivämäärään osuvaa koodiversiota vertailussa",
@@ -277,9 +277,8 @@ public class CodeElementResource {
             @ApiParam(value = "Verrataanko viimeiseen hyväksyttyyn versioon") @DefaultValue("false") @QueryParam("compareToLatestAccepted") boolean compareToLatestAccepted) {
         try {
             ValidatorUtil.validateDateParameters(dayOfMonth, month, year, hourOfDay, minute, second);
-            Calendar cal = Calendar.getInstance();
-            cal.set(year, month, dayOfMonth, hourOfDay, minute, second);
-            KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, cal.getTime(), compareToLatestAccepted);
+            DateTime dateTime = new DateTime(year, month, dayOfMonth, hourOfDay, minute, second);
+            KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, dateTime, compareToLatestAccepted);
             return Response.status(Response.Status.OK).entity(dto).build();
         } catch (KoodistoValidationException e) {
             logger.warn("Invalid parameter for rest call: get changes. ", e);

@@ -2,7 +2,6 @@ package fi.vm.sade.koodisto.service.business.changes.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -51,13 +50,13 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
     }
     
     @Override
-    public KoodiChangesDto getChangesDto(String uri, Date date, boolean compareToLatestAccepted) {
+    public KoodiChangesDto getChangesDto(String uri, DateTime date, boolean compareToLatestAccepted) {
         KoodiVersio koodiVersio = determineCodeVersionThatMatchesDate(uri, date);
         KoodiVersio latestKoodiVersio = fetchLatestDesiredCodeVersion(uri, compareToLatestAccepted);
         return constructChangesDto(koodiVersio, latestKoodiVersio, compareToLatestAccepted);
     }
     
-    private KoodiVersio determineCodeVersionThatMatchesDate(String uri, Date date) {
+    private KoodiVersio determineCodeVersionThatMatchesDate(String uri, DateTime date) {
         return new KoodiChangesDateComparator().getClosestMatchingEntity(date, service.getKoodi(uri).getKoodiVersios());
     }
 
@@ -77,7 +76,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
 
     private KoodiChangesDto constructChangesDto(KoodiVersio koodiVersio, KoodiVersio latestKoodiVersio, boolean compareToLatestAccepted) {
         if (removedFromLatestCodes(latestKoodiVersio, compareToLatestAccepted)) {
-            return new KoodiChangesDto(MuutosTila.POISTETTU, null, null, null, null, null, null, null, null, null, null, null);
+            return new KoodiChangesDto(koodiVersio.getKoodi().getKoodiUri(), MuutosTila.POISTETTU, null, null, null, null, null, null, null, null, null, null, null);
         }
         return constructChangesDto(koodiVersio, latestKoodiVersio);
     }
@@ -91,11 +90,11 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         Tila tilaHasChanged = latestKoodiVersio.getTila().equals(koodiVersio.getTila()) ? null : latestKoodiVersio.getTila();
         List<SimpleCodeElementRelation> addedRelations = addedRelations(koodiVersio, latestKoodiVersio);
         List<SimpleCodeElementRelation> removedRelations = removedRelations(koodiVersio, latestKoodiVersio);
-        List<SimpleCodeElementRelation> passiveRelations = passiveRelations(koodiVersio, latestKoodiVersio);
+        List<SimpleCodeElementRelation> passiveRelations = passiveRelations(latestKoodiVersio);
         MuutosTila muutosTila = anyChanges(koodiVersio.getVersio(), latestKoodiVersio.getVersio(), changedMetas, removedMetas, dateHandler.anyChanges(), tilaHasChanged, 
                 addedRelations, removedRelations, passiveRelations);
-        return new KoodiChangesDto(muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, addedRelations, removedRelations, passiveRelations, 
-                latestKoodiVersio.getPaivitysPvm(), dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, tilaHasChanged);
+        return new KoodiChangesDto(koodiVersio.getKoodi().getKoodiUri(), muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, addedRelations, removedRelations, 
+                passiveRelations, latestKoodiVersio.getPaivitysPvm(), dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, tilaHasChanged);
     }
     
     private boolean removedFromLatestCodes(KoodiVersio koodiVersio, boolean compareToLatestAccepted) {
@@ -125,7 +124,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         return latestMatching;
     }
 
-    private List<SimpleCodeElementRelation> passiveRelations(KoodiVersio kv, KoodiVersio latestKoodiVersio) {
+    private List<SimpleCodeElementRelation> passiveRelations(KoodiVersio latestKoodiVersio) {
         Collection<KoodinSuhde> passiveRelations = Collections2.filter(getRelationsFromKoodiVersio(latestKoodiVersio), new Predicate<KoodinSuhde>() {
             
             @Override
@@ -133,7 +132,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
                 return input.isPassive();
             }
         });
-        return new ArrayList<SimpleCodeElementRelation>(Collections2.transform(passiveRelations, new KoodinSuhdeToSimpleCodeElementRelation(kv.getKoodi().getKoodiUri())));
+        return new ArrayList<SimpleCodeElementRelation>(Collections2.transform(passiveRelations, new KoodinSuhdeToSimpleCodeElementRelation(latestKoodiVersio.getKoodi().getKoodiUri())));
     }
 
     private List<SimpleCodeElementRelation> removedRelations(KoodiVersio koodiVersio, KoodiVersio latestKoodiVersio) {
@@ -202,13 +201,23 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
     private List<SimpleKoodiMetadataDto> changedMetadatas(Set<KoodiMetadata> compareToMetadatas, Set<KoodiMetadata> latestMetadatas) {
         List<SimpleKoodiMetadataDto> changedMetadatas = new ArrayList<>();
         for (KoodiMetadata latestData : latestMetadatas) {
-            if (!compareToMetadatas.contains(latestData)) {
+            if (!containsMetadata(compareToMetadatas, latestData)) {
                 KoodiMetadata metaWithMatchingKieli = getMetadataWithMatchingLanguage(compareToMetadatas, latestData.getKieli());
                 changedMetadatas.add(getChangesForMetadata(latestData, metaWithMatchingKieli));
             }
         }
         
         return changedMetadatas;
+    }
+
+    private boolean containsMetadata(Set<KoodiMetadata> compareToMetadatas, KoodiMetadata compareAgainst) {
+        for (KoodiMetadata compare : compareToMetadatas) {
+            if (compare.getKieli().equals(compareAgainst.getKieli()) && compare.getNimi().equals(compareAgainst.getNimi())
+                    && compare.getKuvaus().equals(compareAgainst.getKuvaus()) && compare.getLyhytNimi().equals(compareAgainst.getLyhytNimi())) {
+                        return true;
+                    }
+        }
+        return false;
     }
 
     private SimpleKoodiMetadataDto getChangesForMetadata(KoodiMetadata latestData, KoodiMetadata metaWithMatchingKieli) {
@@ -249,22 +258,6 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
                 }
             }
             return missing;
-        }
-    }
-
-    private class KoodinSuhdeToSimpleCodeElementRelation implements Function<KoodinSuhde, SimpleCodeElementRelation> {
-        private final String koodiUri;
-
-        private KoodinSuhdeToSimpleCodeElementRelation(String koodiUri) {
-            this.koodiUri = koodiUri;
-        }
-
-        @Override
-        public SimpleCodeElementRelation apply(KoodinSuhde input) {
-            boolean isChild = koodiUri.equals(input.getYlakoodiVersio().getKoodi().getKoodiUri()) ? true : false;
-            String uri = isChild ? input.getAlakoodiVersio().getKoodi().getKoodiUri() : input.getYlakoodiVersio().getKoodi().getKoodiUri();
-            Integer versio = isChild ? input.getAlakoodiVersio().getVersio() : input.getYlakoodiVersio().getVersio();
-            return new SimpleCodeElementRelation(uri, versio, input.getSuhteenTyyppi(), isChild);
         }
     }
 
