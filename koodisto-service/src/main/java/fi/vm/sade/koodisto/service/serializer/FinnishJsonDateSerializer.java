@@ -16,7 +16,7 @@ public class FinnishJsonDateSerializer extends JsonSerializer<Date>{
     
     @Override
     public void serialize(Date value, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonProcessingException {
-        jgen.writeString(finnishFormat.format(value));
+        if (value != null) jgen.writeString(finnishFormat.format(value));
     }
 
 }

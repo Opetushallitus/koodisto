@@ -30,15 +30,15 @@ public class KoodistoChangesDto {
     @JsonView(JsonViews.Basic.class)
     public final List<SimpleMetadataDto> poistuneetTiedot;
     
-    @JsonSerialize(using=FinnishJsonDateSerializer.class)
+    @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY, using=FinnishJsonDateSerializer.class)
     @JsonView(JsonViews.Basic.class)
     public final Date viimeksiPaivitetty;
 
-    @JsonSerialize(using=FinnishJsonDateSerializer.class)
+    @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY, using=FinnishJsonDateSerializer.class)
     @JsonView(JsonViews.Basic.class)
     public final Date voimassaAlkuPvm;
     
-    @JsonSerialize(using=FinnishJsonDateSerializer.class)
+    @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY, using=FinnishJsonDateSerializer.class)
     @JsonView(JsonViews.Basic.class)
     public final Date voimassaLoppuPvm;
     

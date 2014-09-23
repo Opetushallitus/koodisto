@@ -57,6 +57,7 @@ public class KoodiChangesServiceImplTest {
     private static final String NAME = "elefantti", SHORT_NAME = "fantti", DESCRIPTION = "kärsäeläin";
     private static final String NAME_EN = "African elephant", SHORT_NAME_EN = "elephant", DESCRIPTION_EN = "trunkard";
     private static final String NAME_SV = "elefant", SHORT_NAME_SV = "kort", DESCRIPTION_SV = "stora flockdjur";
+    private static final Integer VERSIO = 1;
 
     @ReplaceWithMock
     @Autowired
@@ -76,14 +77,12 @@ public class KoodiChangesServiceImplTest {
         
     @Test
     public void returnsNoChangesIfNothingHasChanged() {
-        int versio = 1;
-        assertResultIsNoChanges(givenResult(givenKoodiVersio(versio), givenKoodiVersio(versio)), versio);
+        assertResultIsNoChanges(givenResult(givenKoodiVersio(VERSIO), givenKoodiVersio(VERSIO)), VERSIO);
     }
 
     @Test
     public void returnsNoChangesIfOnlyVersionHasChanged() {
-        int versio = 1;
-        assertResultIsNoChanges(givenResult(givenKoodiVersio(versio), givenKoodiVersio(versio + 1)), versio + 1);
+        assertResultIsNoChanges(givenResult(givenKoodiVersio(VERSIO), givenKoodiVersio(VERSIO + 1)), VERSIO + 1);
     }
     
     @Test
@@ -143,18 +142,16 @@ public class KoodiChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedIfMetadataHasBeenAdded() {
-        int versio = 1;
-        KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio + 1, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
-        KoodiVersio original = givenKoodiVersio(versio);
-        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(NAME, Kieli.FI, DESCRIPTION, SHORT_NAME));
+        KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO + 1, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
+        KoodiVersio original = givenKoodiVersio(VERSIO);
+        assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleKoodiMetadataDto(NAME, Kieli.FI, DESCRIPTION, SHORT_NAME));
     }
     
     @Test
     public void metadataWithSameLanguageCannotBeBothInRemovedMetadatasAndInChangedMetadatas() {
-        int versio = 1;
         String newName = "norsu";
-        KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio + 1, newName, SHORT_NAME, DESCRIPTION, Kieli.FI);
-        KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
+        KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO + 1, newName, SHORT_NAME, DESCRIPTION, Kieli.FI);
+        KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
         KoodiChangesDto dto = givenResult(original, latest);
         assertTrue(dto.poistuneetTiedot.isEmpty());
         assertEquals(1, dto.muuttuneetTiedot.size());
@@ -209,32 +206,29 @@ public class KoodiChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedIfTilaHasChanged() {
-        int versio = 1;
-        KoodiVersio latest = givenKoodiVersio(versio + 1);
+        KoodiVersio latest = givenKoodiVersio(VERSIO + 1);
         latest.setTila(Tila.PASSIIVINEN);
-        KoodiChangesDto result = givenResult(givenKoodiVersio(versio), latest);
+        KoodiChangesDto result = givenResult(givenKoodiVersio(VERSIO), latest);
         assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
         assertEquals(Tila.PASSIIVINEN, result.tila);
     }
     
     @Test
     public void usesLatestAcceptedVersionForComparison() {
-        int versio = 1;
         String changedSecondDescription = "jumbo";
-        KoodiVersio first = givenKoodiVersioWithMetadata(versio, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
-        KoodiVersio second = givenKoodiVersioWithMetadata(versio + 1, givenKoodiMetadata(NAME, SHORT_NAME, changedSecondDescription, Kieli.FI));
-        KoodiVersio third = givenKoodiVersioWithTilaAndMetadata(versio + 2 , Tila.LUONNOS, givenKoodiMetadata(NAME, SHORT_NAME, "huono kuvaus", Kieli.FI));
-        assertResultWithTila(versio + 1, changedSecondDescription, null, givenResultWithMultipleKoodiVersios(versio, true, first, second, third));
+        KoodiVersio first = givenKoodiVersioWithMetadata(VERSIO, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
+        KoodiVersio second = givenKoodiVersioWithMetadata(VERSIO + 1, givenKoodiMetadata(NAME, SHORT_NAME, changedSecondDescription, Kieli.FI));
+        KoodiVersio third = givenKoodiVersioWithTilaAndMetadata(VERSIO + 2 , Tila.LUONNOS, givenKoodiMetadata(NAME, SHORT_NAME, "huono kuvaus", Kieli.FI));
+        assertResultWithTila(VERSIO + 1, changedSecondDescription, null, givenResultWithMultipleKoodiVersios(VERSIO, true, first, second, third));
     }
 
     @Test
     public void doesNotUseLatestAcceptedVersionForComparison() {
-        int versio = 1;
         String changedThirdDescription = "huono kuvaus";
-        KoodiVersio first = givenKoodiVersioWithMetadata(versio, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
-        KoodiVersio second = givenKoodiVersioWithMetadata(versio + 1, givenKoodiMetadata(NAME, SHORT_NAME, "jumbo", Kieli.FI));
-        KoodiVersio third = givenKoodiVersioWithTilaAndMetadata(versio + 2 , Tila.LUONNOS, givenKoodiMetadata(NAME, SHORT_NAME, changedThirdDescription, Kieli.FI));
-        assertResultWithTila(versio + 2, changedThirdDescription, Tila.LUONNOS, givenResultWithMultipleKoodiVersios(versio, false, first, second, third));
+        KoodiVersio first = givenKoodiVersioWithMetadata(VERSIO, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
+        KoodiVersio second = givenKoodiVersioWithMetadata(VERSIO + 1, givenKoodiMetadata(NAME, SHORT_NAME, "jumbo", Kieli.FI));
+        KoodiVersio third = givenKoodiVersioWithTilaAndMetadata(VERSIO + 2 , Tila.LUONNOS, givenKoodiMetadata(NAME, SHORT_NAME, changedThirdDescription, Kieli.FI));
+        assertResultWithTila(VERSIO + 2, changedThirdDescription, Tila.LUONNOS, givenResultWithMultipleKoodiVersios(VERSIO, false, first, second, third));
     }
     
     @Test
@@ -249,11 +243,10 @@ public class KoodiChangesServiceImplTest {
 
     @Test
     public void returnsHasChangedIfRelationHaveBeenAdded() {
-        Integer versio = 1;
         Integer relationVersion = 3;
         String koodiUri = "kirahvi";
-        KoodiVersio original = givenKoodiVersio(versio);
-        KoodiVersio latest = givenKoodiVersioWithRelations(versio + 1, givenKoodinSuhde(SuhteenTyyppi.RINNASTEINEN, null, givenKoodiVersio(relationVersion, koodiUri)));
+        KoodiVersio original = givenKoodiVersio(VERSIO);
+        KoodiVersio latest = givenKoodiVersioWithRelations(VERSIO + 1, givenKoodinSuhde(SuhteenTyyppi.RINNASTEINEN, null, givenKoodiVersio(relationVersion, koodiUri)));
         KoodiChangesDto dto = givenResult(original, latest);
         assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
         assertTrue(dto.passivoidutKoodinSuhteet.isEmpty());
@@ -268,11 +261,10 @@ public class KoodiChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedIfRelationsHaveBeenRemoved() {
-        Integer versio = 1;
         Integer relationVersion = 3;
         String koodiUri = "kirahvi";
-        KoodiVersio latest = givenKoodiVersio(versio + 1);
-        KoodiVersio original = givenKoodiVersioWithRelations(versio, givenKoodinSuhde(SuhteenTyyppi.SISALTYY, givenKoodiVersio(relationVersion, koodiUri), null));
+        KoodiVersio latest = givenKoodiVersio(VERSIO + 1);
+        KoodiVersio original = givenKoodiVersioWithRelations(VERSIO, givenKoodinSuhde(SuhteenTyyppi.SISALTYY, givenKoodiVersio(relationVersion, koodiUri), null));
         KoodiChangesDto dto = givenResult(original, latest);
         assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
         assertTrue(dto.passivoidutKoodinSuhteet.isEmpty());
@@ -287,12 +279,11 @@ public class KoodiChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedIfRelationsHaveBeenTurnedIntoPassive() {
-        Integer versio = 1;
         Integer relationVersion = 3;
         String koodiUri = "kirahvi";
         KoodiVersio related = givenKoodiVersio(relationVersion, koodiUri);
-        KoodiVersio original = givenKoodiVersioWithRelations(versio, givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, related));
-        KoodiVersio latest = givenKoodiVersioWithRelations(versio + 1, givenPassiveKoodinSuhde(SuhteenTyyppi.SISALTYY, null, related, true, false));
+        KoodiVersio original = givenKoodiVersioWithRelations(VERSIO, givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, related));
+        KoodiVersio latest = givenKoodiVersioWithRelations(VERSIO + 1, givenPassiveKoodinSuhde(SuhteenTyyppi.SISALTYY, null, related, true, false));
         KoodiChangesDto dto = givenResult(original, latest);
         assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
         assertTrue(dto.lisatytKoodinSuhteet.isEmpty());
@@ -307,9 +298,8 @@ public class KoodiChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedForMultipleRelations() {
-        Integer versio = 1;
-        KoodiVersio original = givenKoodiVersioWithRelations(versio, givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "kirahvi")), givenKoodinSuhde(SuhteenTyyppi.RINNASTEINEN, null, givenKoodiVersio(3, "seepra")));
-        KoodiVersio latest = givenKoodiVersioWithRelations(versio + 1, givenPassiveKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "kirahvi"), true, false), givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "gnu")));
+        KoodiVersio original = givenKoodiVersioWithRelations(VERSIO, givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "kirahvi")), givenKoodinSuhde(SuhteenTyyppi.RINNASTEINEN, null, givenKoodiVersio(3, "seepra")));
+        KoodiVersio latest = givenKoodiVersioWithRelations(VERSIO + 1, givenPassiveKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "kirahvi"), true, false), givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "gnu")));
         KoodiChangesDto dto = givenResult(original, latest);
         assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
         assertEquals(1, dto.lisatytKoodinSuhteet.size());
@@ -319,10 +309,9 @@ public class KoodiChangesServiceImplTest {
     
     @Test
     public void returnsHasChangedForMultipleRelationsAndTreatsRelationsWithSameCodeUriButDifferentRelationTypeAsDifferent() {
-        Integer versio = 1;
         KoodiVersio relationCode = givenKoodiVersio(3, "seepra");
-        KoodiVersio original = givenKoodiVersioWithRelations(versio, givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "kirahvi")), givenKoodinSuhde(SuhteenTyyppi.RINNASTEINEN, null, relationCode));
-        KoodiVersio latest = givenKoodiVersioWithRelations(versio + 1, givenPassiveKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "kirahvi"), true, false), givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, relationCode));
+        KoodiVersio original = givenKoodiVersioWithRelations(VERSIO, givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "kirahvi")), givenKoodinSuhde(SuhteenTyyppi.RINNASTEINEN, null, relationCode));
+        KoodiVersio latest = givenKoodiVersioWithRelations(VERSIO + 1, givenPassiveKoodinSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodiVersio(3, "kirahvi"), true, false), givenKoodinSuhde(SuhteenTyyppi.SISALTYY, null, relationCode));
         KoodiChangesDto dto = givenResult(original, latest);
         assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
         assertEquals(1, dto.lisatytKoodinSuhteet.size());
@@ -332,23 +321,20 @@ public class KoodiChangesServiceImplTest {
     
     @Test
     public void returnsHasBeenDeletedIfCodeElementIsNotFoundInLatestCodes() {
-        int versio = 1;
-        assertResultIsDeleted(givenDeletedResult(givenKoodiVersio(versio), givenKoodiVersio(versio + 1), false));
+        assertResultIsDeleted(givenDeletedResult(givenKoodiVersio(VERSIO), givenKoodiVersio(VERSIO + 1), false));
     }
     
     @Test
     public void returnsHasBeenDeletedIfCodeElementIsNotFoundInLatestAcceptedCodes() {
-        int versio = 1;
-        assertResultIsDeleted(givenDeletedResult(givenKoodiVersio(versio), givenKoodiVersio(versio + 1), true));
+        assertResultIsDeleted(givenDeletedResult(givenKoodiVersio(VERSIO), givenKoodiVersio(VERSIO + 1), true));
     }
     
     private void assertGivenResultWithDateQuery(Date query, boolean shouldUseFirst) {
-        int versio = 1;
         String descriptionChangedForSecond = "kuvausta norsusta";
         String nameChangedForThird = "Otus";
-        KoodiVersio first = givenKoodiVersioWithMetaDataAndCustomDateItWasCreated(versio, FIRST_DATE, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
-        KoodiVersio second = givenKoodiVersioWithMetaDataAndCustomDateItWasCreated(versio + 1, SECOND_DATE, givenKoodiMetadata(NAME, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
-        KoodiVersio third = givenKoodiVersioWithMetaDataAndCustomDateItWasCreated(versio + 2, THIRD_DATE, givenKoodiMetadata(nameChangedForThird, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
+        KoodiVersio first = givenKoodiVersioWithMetaDataAndCustomDateItWasCreated(VERSIO, FIRST_DATE, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
+        KoodiVersio second = givenKoodiVersioWithMetaDataAndCustomDateItWasCreated(VERSIO + 1, SECOND_DATE, givenKoodiMetadata(NAME, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
+        KoodiVersio third = givenKoodiVersioWithMetaDataAndCustomDateItWasCreated(VERSIO + 2, THIRD_DATE, givenKoodiMetadata(nameChangedForThird, SHORT_NAME, descriptionChangedForSecond, Kieli.FI));
         KoodiChangesDto dto = givenResultWithMultipleKoodiVersiosForDateQuery(query, false, first, second, third);
         assertEquals(3, dto.viimeisinVersio.intValue());
         SimpleKoodiMetadataDto data = dto.muuttuneetTiedot.get(0);

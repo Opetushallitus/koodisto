@@ -39,15 +39,15 @@ public class KoodiChangesDto {
     @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
     public final List<SimpleCodeElementRelation> passivoidutKoodinSuhteet;
     
-    @JsonSerialize(using=FinnishJsonDateSerializer.class)
+    @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY, using=FinnishJsonDateSerializer.class)
     @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
     public final Date viimeksiPaivitetty;
     
-    @JsonSerialize(using=FinnishJsonDateSerializer.class)
+    @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY, using=FinnishJsonDateSerializer.class)
     @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
     public final Date voimassaAlkuPvm;
     
-    @JsonSerialize(using=FinnishJsonDateSerializer.class)
+    @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY, using=FinnishJsonDateSerializer.class)
     @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
     public final Date voimassaLoppuPvm;
     
