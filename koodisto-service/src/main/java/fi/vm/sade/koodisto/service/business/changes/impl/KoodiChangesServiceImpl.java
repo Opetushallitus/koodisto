@@ -225,9 +225,10 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
     private boolean containsMetadata(Set<KoodiMetadata> compareToMetadatas, KoodiMetadata compareAgainst) {
         for (KoodiMetadata compare : compareToMetadatas) {
             if (compare.getKieli().equals(compareAgainst.getKieli()) && compare.getNimi().equals(compareAgainst.getNimi())
-                    && compare.getKuvaus().equals(compareAgainst.getKuvaus()) && compare.getLyhytNimi().equals(compareAgainst.getLyhytNimi())) {
-                        return true;
-                    }
+                    && ((compare.getKuvaus() == null && compareAgainst.getKuvaus() == null) || (compare.getKuvaus() != null && compare.getKuvaus().equals(compareAgainst.getKuvaus())))
+                    && ((compare.getLyhytNimi() == null && compareAgainst.getLyhytNimi() == null) || (compare.getLyhytNimi() != null && compare.getLyhytNimi().equals(compareAgainst.getLyhytNimi())))) {
+                return true;
+            }
         }
         return false;
     }
