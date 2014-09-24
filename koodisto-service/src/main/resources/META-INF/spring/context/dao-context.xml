@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="windows-1252"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:tx="http://www.springframework.org/schema/tx"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context-3.0.xsd
@@ -21,9 +19,14 @@
         <property name="loadTimeWeaver">
             <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
         </property>
+        <property name="jpaDialect">
+            <bean class="fi.vm.sade.koodisto.dao.flushmode.HibernateJpaDialect">
+                <property name="flushMode" value="COMMIT" />
+            </bean>
+        </property>
         <property name="jpaPropertyMap">
             <map>
-                <entry key="hibernate.show_sql" value="${jpa.showSql}" />
+                <entry key="hibernate.show_sql" value="false" />
                 <entry key="hibernate.hbm2ddl.auto" value="${jpa.schemaUpdate}" />
             </map>
         </property>
@@ -38,12 +41,12 @@
     <bean id="genericDAO" class="fi.vm.sade.generic.dao.GenericDAOImpl" />
 
     <bean id="flyway" class="com.googlecode.flyway.core.Flyway" init-method="migrate">
-        <property name="initOnMigrate" value="${flyway.initOnMigrate}"/>
+        <property name="initOnMigrate" value="${flyway.initOnMigrate}" />
         <property name="dataSource" ref="dbDataSource" />
     </bean>
 
     <bean id="dbDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="java:comp/env/jdbc/koodisto"/>
+        <property name="jndiName" value="java:comp/env/jdbc/koodisto" />
     </bean>
 
 </beans>
