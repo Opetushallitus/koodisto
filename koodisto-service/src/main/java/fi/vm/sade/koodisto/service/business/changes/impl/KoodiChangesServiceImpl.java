@@ -229,8 +229,8 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
             return new SimpleKoodiMetadataDto(latestData.getNimi(), latestData.getKieli(), latestData.getKuvaus(), latestData.getLyhytNimi());
         }
         String changedName = latestData.getNimi().equals(metaWithMatchingKieli.getNimi()) ? null : latestData.getNimi();
-        String changedShortName = latestData.getLyhytNimi().equals(metaWithMatchingKieli.getLyhytNimi()) ? null : latestData.getLyhytNimi();
-        String changedDescription = latestData.getKuvaus().equals(metaWithMatchingKieli.getKuvaus()) ? null : latestData.getKuvaus();
+        String changedShortName = latestData.getLyhytNimi() != null && latestData.getLyhytNimi().equals(metaWithMatchingKieli.getLyhytNimi()) ? null : latestData.getLyhytNimi();
+        String changedDescription = latestData.getKuvaus() != null && latestData.getKuvaus().equals(metaWithMatchingKieli.getKuvaus()) ? null : latestData.getKuvaus();
         return new SimpleKoodiMetadataDto(changedName, latestData.getKieli(), changedDescription, changedShortName);
     }
 
