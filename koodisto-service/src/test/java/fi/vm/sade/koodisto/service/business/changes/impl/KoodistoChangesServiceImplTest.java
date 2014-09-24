@@ -29,6 +29,7 @@ import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.ChangesService;
 import fi.vm.sade.koodisto.service.business.changes.KoodistoChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
@@ -122,6 +123,13 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio latest = givenKoodistoVersioWithMetadata(VERSIO + 1, NAME, DESCRIPTION);
         KoodistoVersio original = givenKoodistoVersio(VERSIO);
         assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleMetadataDto(NAME, Kieli.FI, DESCRIPTION));
+    }
+    
+    @Test
+    public void removedDescriptionIsShownAsRemoved() {
+        KoodistoVersio latest = givenKoodistoVersioWithMetadata(VERSIO + 1, NAME, null);
+        KoodistoVersio original = givenKoodistoVersioWithMetadata(VERSIO, NAME, DESCRIPTION);
+        assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleMetadataDto(null, Kieli.FI, ChangesService.REMOVED_METADATA_FIELD));
     }
     
     @Test

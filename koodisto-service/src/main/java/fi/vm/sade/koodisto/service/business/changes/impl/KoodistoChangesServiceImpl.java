@@ -34,6 +34,7 @@ import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.ChangesDateComparator;
+import fi.vm.sade.koodisto.service.business.changes.ChangesService;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
 import fi.vm.sade.koodisto.service.business.changes.KoodistoChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
@@ -211,12 +212,10 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
     private List<SimpleMetadataDto> changedMetadatas(List<KoodistoMetadata> compareToMetadatas, List<KoodistoMetadata> latestMetadatas) {
         List<SimpleMetadataDto> changedMetadatas = new ArrayList<>();
         for (KoodistoMetadata latestData : latestMetadatas) {
-            if (!compareToMetadatas.contains(latestData)) {
-                KoodistoMetadata metaWithMatchingKieli = getMetadataWithMatchingLanguage(compareToMetadatas, latestData.getKieli());
-                SimpleMetadataDto changedMetadata = getChangesForMetadata(latestData, metaWithMatchingKieli);
-                if (changedMetadata != null) {
-                    changedMetadatas.add(changedMetadata);
-                }
+            KoodistoMetadata metaWithMatchingKieli = getMetadataWithMatchingLanguage(compareToMetadatas, latestData.getKieli());
+            SimpleMetadataDto changedMetadata = getChangesForMetadata(latestData, metaWithMatchingKieli);
+            if (changedMetadata != null) {
+                changedMetadatas.add(changedMetadata);
             }
         }
         
@@ -228,8 +227,15 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
             return new SimpleMetadataDto(latestData.getNimi(), latestData.getKieli(), latestData.getKuvaus());
         }
         String changedName = latestData.getNimi().equals(metaWithMatchingKieli.getNimi()) ? null : latestData.getNimi();
-        String changedDescription = latestData.getKuvaus() != null && latestData.getKuvaus().equals(metaWithMatchingKieli.getKuvaus()) ? null : latestData.getKuvaus();
+        String changedDescription = getChangeForMetadataField(latestData.getKuvaus(), metaWithMatchingKieli.getKuvaus());
         return changedName == null && changedDescription == null? null : new SimpleMetadataDto(changedName, latestData.getKieli(), changedDescription);
+    }
+    
+    private String getChangeForMetadataField(String latestData, String matchingData) {
+        if (latestData == null && matchingData != null) {
+            return ChangesService.REMOVED_METADATA_FIELD;
+        }
+        return latestData != null && latestData.equals(matchingData) ? null : latestData;
     }
 
     private KoodistoMetadata getMetadataWithMatchingLanguage(List<KoodistoMetadata> compareToMetadatas, Kieli kieli) {
