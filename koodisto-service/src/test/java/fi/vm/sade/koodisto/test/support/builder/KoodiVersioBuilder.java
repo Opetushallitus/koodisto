@@ -13,6 +13,8 @@ import fi.vm.sade.koodisto.model.Tila;
 public class KoodiVersioBuilder implements Builder<KoodiVersio>{
     
     private KoodiVersio koodiVersio;
+    
+    private static long id = 11;
 
     public KoodiVersioBuilder() {
         this.koodiVersio = new KoodiVersio();
@@ -23,16 +25,19 @@ public class KoodiVersioBuilder implements Builder<KoodiVersio>{
         return this;      
     }
     
-    public KoodiVersioBuilder addMetadata(KoodiMetadata data) {
-        koodiVersio.addMetadata(data);
-        data.setKoodiVersio(koodiVersio);
+    public KoodiVersioBuilder addMetadata(KoodiMetadata ... datas) {
+        for (KoodiMetadata data : datas) {
+            koodiVersio.addMetadata(data);
+            data.setKoodiVersio(koodiVersio);
+        }
         return this;
     }
-    
+        
     public KoodiVersioBuilder addKoodistoVersio(KoodistoVersio koodisto) {
         KoodistoVersioKoodiVersio kvkv = new KoodistoVersioKoodiVersio();
         kvkv.setKoodistoVersio(koodisto);
         kvkv.setKoodiVersio(koodiVersio);
+        koodisto.addKoodiVersio(kvkv);
         koodiVersio.addKoodistoVersio(kvkv);
         return this;
     }
@@ -56,6 +61,11 @@ public class KoodiVersioBuilder implements Builder<KoodiVersio>{
         koodiVersio.setTila(tila);
         return this;
     }
+    
+    public KoodiVersioBuilder setLastUpdateDate(Date date) {
+        koodiVersio.setPaivitysPvm(date);
+        return this;
+    }
 
     public KoodiVersioBuilder setKoodiValue(String koodiValue) {
         koodiVersio.setKoodiarvo(koodiValue);
@@ -73,10 +83,20 @@ public class KoodiVersioBuilder implements Builder<KoodiVersio>{
         relation.setAlakoodiVersio(koodiVersio);
         return this;
     }
-
-    public KoodiVersio build() {
-        return this.koodiVersio;
+    
+    public KoodiVersioBuilder setCreated(Date created) {
+        koodiVersio.setLuotu(created);
+        return this;
     }
 
+    public KoodiVersio build() {
+        if (koodiVersio.getPaivitysPvm() == null ) {
+            koodiVersio.setPaivitysPvm(new Date());
+        }
+        if (koodiVersio.getId() == null) {
+            koodiVersio.setId(id++);
+        }
+        return this.koodiVersio;
+    }
 
 }

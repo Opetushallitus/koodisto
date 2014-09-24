@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>koodisto</artifactId>
         <groupId>fi.vm.sade.koodisto</groupId>
-        <version>11.2</version>
+        <version>11.4-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>koodisto-service</artifactId>
@@ -319,7 +318,7 @@
             <artifactId>super-csv</artifactId>
             <version>${super-csv.version}</version>
         </dependency>
-        
+
         <!-- Apache POI XLS marshaller -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -335,23 +334,23 @@
             <version>${swagger-jaxrs_2.10.version}</version>
         </dependency>
 
-		<!-- JPAAnnotationProcessor -->
-		<dependency>
-			<groupId>com.mysema.querydsl</groupId>
-			<artifactId>querydsl-apt</artifactId>
-			<version>${querydsl-apt.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-			<version>${cglib.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.mysema.querydsl</groupId>
-			<artifactId>querydsl-jpa</artifactId>
-			<version>${querydsl-jpa.version}</version>
-		</dependency>
-		
+    <!-- JPAAnnotationProcessor -->
+    <dependency>
+        <groupId>com.mysema.querydsl</groupId>
+        <artifactId>querydsl-apt</artifactId>
+        <version>${querydsl-apt.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>cglib</groupId>
+        <artifactId>cglib</artifactId>
+        <version>${cglib.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.mysema.querydsl</groupId>
+        <artifactId>querydsl-jpa</artifactId>
+        <version>${querydsl-jpa.version}</version>
+    </dependency>
+
     </dependencies>
 
     <build>
@@ -509,39 +508,7 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>dbunit-maven-plugin</artifactId>
-                        <version>1.0-beta-3</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>postgresql</groupId>
-                                <artifactId>postgresql</artifactId>
-                                <version>${postgresql.version}</version>
-                            </dependency>
-                        </dependencies>
-                        <executions>
-                            <execution>
-                                <id>import</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>operation</goal>
-                                </goals>
-                                <configuration>
-                                    <format>flat</format>
-                                    <schema>public</schema>
-                                    <driver>org.postgresql.Driver</driver>
-                                    <src>src/test/resources/test-data.xml</src>
-                                    <type>INSERT</type>
-                                    <url>jdbc:postgresql:koodisto</url>
-                                    <username>oph</username>
-                                    <password>oph</password>
-                                    <transaction>true</transaction>
-                                    <supportBatchStatement>true</supportBatchStatement>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
+                    
                 </plugins>
             </build>
         </profile>

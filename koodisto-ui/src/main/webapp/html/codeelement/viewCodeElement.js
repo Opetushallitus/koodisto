@@ -97,6 +97,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
             ce.description = getLanguageSpecificValueOrValidValue(codeElement.relationMetadata, 'kuvaus', 'FI');
             ce.versio = codeElement.codeElementVersion;
             ce.codesname = getLanguageSpecificValueOrValidValue(codeElement.parentMetadata, 'nimi', 'FI');
+            ce.active = codeElement.passive ? jQuery.i18n.prop('generic.no') : jQuery.i18n.prop('generic.yes');
             list.push(ce);
         };
 

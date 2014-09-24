@@ -22,8 +22,7 @@ import org.springframework.test.context.support.DirtiesContextTestExecutionListe
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
-import fi.vm.sade.koodisto.dto.FileDto;
-import fi.vm.sade.koodisto.dto.FileFormatDto;
+import fi.vm.sade.koodisto.dto.KoodistoChangesDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.dto.KoodistoListDto;
@@ -32,12 +31,12 @@ import fi.vm.sade.koodisto.dto.KoodistoVersioListDto;
 import fi.vm.sade.koodisto.model.Format;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -208,6 +207,7 @@ public class CodesResourceTest {
         assertEquals(3, codes.getVersio());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void listCodes() {
         List<KoodistoRyhmaListDto> codes = (List<KoodistoRyhmaListDto>) resource.listAllCodesGroups().getEntity();
@@ -461,15 +461,78 @@ public class CodesResourceTest {
         assertTrue(codesToBeSaved.getLevelsWithCodes().size() == 0);
 
         codesToBeSaved.getMetadata().get(0).setNimi(nimi);
-        codesToBeSaved.getIncludesCodes().add(new RelationCodes("eisuhteitaviela2", 1));
-        codesToBeSaved.getWithinCodes().add(new RelationCodes("eisuhteitaviela3", 1));
-        codesToBeSaved.getLevelsWithCodes().add(new RelationCodes("eisuhteitaviela4", 1));
+        codesToBeSaved.getIncludesCodes().add(new RelationCodes("eisuhteitaviela2", 1, false));
+        codesToBeSaved.getWithinCodes().add(new RelationCodes("eisuhteitaviela3", 1, false));
+        codesToBeSaved.getLevelsWithCodes().add(new RelationCodes("eisuhteitaviela4", 1, false));
         assertResponse(resource.save(codesToBeSaved), 200);
 
         KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, versio+1).getEntity();
         assertTrue(codes.getIncludesCodes().size() == 1);
         assertTrue(codes.getWithinCodes().size() == 1);
         assertTrue(codes.getLevelsWithCodes().size() == 1);
+    }
+    
+    @Test
+    public void returnsNoChangesToCodes() {
+        assertEquals(MuutosTila.EI_MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodes("moniaversioita", 3, false).getEntity()).muutosTila);
+    }
+    
+    @Test
+    public void returnsChangesToCodes() {
+        assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodes("moniaversioita", 1, false).getEntity()).muutosTila);
+    }
+    
+    @Test
+    public void returnsNoChangesToCodesUsingDate() {
+        assertEquals(MuutosTila.EI_MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2014, 0, 0, 0, false).getEntity()).muutosTila);
+    }
+    
+    @Test
+    public void returnsChangesToCodesUsingDate() {
+        assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2012, 0, 0, 0, false).getEntity()).muutosTila);
+        assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2013, 0, 0, 0, false).getEntity()).muutosTila);
+    }
+    
+    @Test
+    public void returnsChangesToCodesWithLotsOfChanges() {
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 1, false).getEntity(), 3, 1, 2, 2, 1, 1, Tila.LUONNOS, 1, 1, 0, MuutosTila.MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 2, false).getEntity(), 3, 0, 2, 1, 1, 0, Tila.LUONNOS, 1, 1, 1, MuutosTila.MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 3, false).getEntity(), 3, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+    }
+    
+    @Test
+    public void returnsChangesToCodesWithLotsOfChangesComparingAgainstLatestAcceptedKoodistoVersio() {
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 1, true).getEntity(), 2, 1, 0, 1, 0, 1, null, 1, 1, 0, MuutosTila.MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 2, true).getEntity(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 3, true).getEntity(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+    }
+    
+    @Test
+    public void returnsChangesToCodesWithLotsOfChangesUsingDate() {
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2012, 0, 0, 0, false).getEntity(), 3, 1, 2, 2, 1, 1, Tila.LUONNOS, 1, 1, 0, MuutosTila.MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 5, 2014, 0, 0, 0, false).getEntity(), 3, 0, 2, 1, 1, 0, Tila.LUONNOS, 1, 1, 1, MuutosTila.MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2014, 0, 0, 0, false).getEntity(), 3, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+    }
+    
+    @Test
+    public void returnsChangesToCodesWithLotsOfChangesComparingAgainstLatestAcceptedKoodistoVersioAndDate() {
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2012, 0, 0, 0, true).getEntity(), 2, 1, 0, 1, 0, 1, null, 1, 1, 0, MuutosTila.MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 5, 2014, 0, 0, 0, true).getEntity(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2014, 0, 0, 0, true).getEntity(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+    }
+
+    private void assertChanges(KoodistoChangesDto changes, int expectedVersio, int removedMetas, int changedMetas, int addedRelations, int passiveRelations, int removedRelations, Tila expectedTila, int addedCodeElements, int changedCodeElements, int removedCodeElements, MuutosTila muutosTila) {
+        assertEquals(muutosTila, changes.muutosTila);
+        assertEquals(expectedVersio, changes.viimeisinVersio.intValue());
+        assertEquals(changedMetas, changes.muuttuneetTiedot.size());
+        assertEquals(removedMetas, changes.poistuneetTiedot.size());
+        assertEquals(addedRelations, changes.lisatytKoodistonSuhteet.size());
+        assertEquals(passiveRelations, changes.passivoidutKoodistonSuhteet.size());
+        assertEquals(removedRelations, changes.poistetutKoodistonSuhteet.size());
+        assertEquals(expectedTila, changes.tila);
+        assertEquals(addedCodeElements, changes.lisatytKoodit.size());
+        assertEquals(changedCodeElements, changes.muuttuneetKoodit.size());
+        assertEquals(removedCodeElements, changes.poistetutKoodit.size());
     }
 
     // UTILITIES

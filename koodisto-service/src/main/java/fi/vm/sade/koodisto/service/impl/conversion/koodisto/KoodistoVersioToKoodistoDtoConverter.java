@@ -1,5 +1,12 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodisto;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import fi.vm.sade.generic.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
@@ -7,13 +14,6 @@ import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistonSuhde;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component("koodistoVersioToKoodistoDtoConverter")
 public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConverter<KoodistoVersio, KoodistoDto> {
@@ -27,28 +27,28 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         KoodistoDto converted = new KoodistoDto();
         converted.setKoodistoUri(source.getKoodisto().getKoodistoUri());
 
-        for(KoodistonSuhde koodistonSuhde : source.getYlakoodistos()) {
-            if (koodistonSuhde.getYlakoodistoVersio() != null) {
-                KoodistoVersio relatedKoodisto = koodistonSuhde.getYlakoodistoVersio();
-                switch (koodistonSuhde.getSuhteenTyyppi()) {
+        for(KoodistonSuhde ks : source.getYlakoodistos()) {
+            if (ks.getYlakoodistoVersio() != null) {
+                KoodistoVersio relatedKoodisto = ks.getYlakoodistoVersio();
+                switch (ks.getSuhteenTyyppi()) {
                 case RINNASTEINEN:
-                    converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
+                    converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive()));
                     break;
                 case SISALTYY: 
-                    converted.getWithinCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
+                    converted.getWithinCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive()));
                     break;
                 }
             }
         }
-        for(KoodistonSuhde koodistonSuhde : source.getAlakoodistos()) {
-            if (koodistonSuhde.getAlakoodistoVersio() != null) {
-                KoodistoVersio relatedKoodisto = koodistonSuhde.getAlakoodistoVersio();
-                switch (koodistonSuhde.getSuhteenTyyppi()) {
+        for(KoodistonSuhde ks : source.getAlakoodistos()) {
+            if (ks.getAlakoodistoVersio() != null) {
+                KoodistoVersio relatedKoodisto = ks.getAlakoodistoVersio();
+                switch (ks.getSuhteenTyyppi()) {
                 case RINNASTEINEN:
-                    converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
+                    converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive()));
                     break;
                 case SISALTYY: 
-                    converted.getIncludesCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio()));
+                    converted.getIncludesCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive()));
                     break;
                 }
             }

@@ -1,5 +1,8 @@
 package fi.vm.sade.koodisto.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import fi.vm.sade.generic.dao.JpaDAO;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
@@ -8,9 +11,6 @@ import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
-
-import java.util.List;
-import java.util.Map;
 
 public interface KoodiVersioDAO extends JpaDAO<KoodiVersio, Long> {
     List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisByKoodistoCriteriaType searchCriteria);
@@ -36,4 +36,6 @@ public interface KoodiVersioDAO extends JpaDAO<KoodiVersio, Long> {
     KoodiVersio insertNonFlush(KoodiVersio koodiVersio);
 
     void flush();
+
+    Map<KoodiVersio, KoodiVersio> getPreviousKoodiVersios(List<KoodiVersio> koodis);
 }

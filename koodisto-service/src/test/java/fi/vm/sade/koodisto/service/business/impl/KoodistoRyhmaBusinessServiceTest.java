@@ -1,19 +1,11 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +28,10 @@ import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotEmptyExcep
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
@@ -242,7 +238,7 @@ public class KoodistoRyhmaBusinessServiceTest {
     public void testGetKoodistoRyhmaById() {
         KoodistoRyhma group = resource.getKoodistoRyhmaById(1L);
         assertNotNull(group);
-        assertEquals(4, group.getKoodistos().size());
+        assertEquals(5, group.getKoodistos().size());
         assertEquals(1, group.getKoodistoJoukkoMetadatas().size());
         assertEquals("relaatioidenlisaaminen", group.getKoodistoRyhmaUri());
     }

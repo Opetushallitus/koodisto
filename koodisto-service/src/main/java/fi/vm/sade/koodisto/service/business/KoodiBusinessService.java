@@ -4,11 +4,14 @@
 package fi.vm.sade.koodisto.service.business;
 
 import java.util.List;
+import java.util.Set;
 
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
+import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
@@ -108,11 +111,19 @@ public interface KoodiBusinessService {
     List<KoodiVersioWithKoodistoItem> listByRelation(String koodiUri, Integer koodiVersio, boolean child, SuhteenTyyppi suhteenTyyppi);
 
     KoodiVersio getLatestKoodiVersio(String koodiUri);
+    
+    KoodiVersio getKoodiVersio(String koodiUri, Integer versio);
+    
+    Koodi getKoodi(String koodiUri);
 
     boolean hasRelationBetweenCodeElements(KoodiVersio ylaKoodiVersio, final KoodiVersio alaKoodiVersio);
     
     boolean isLatestKoodiVersio(String koodiUri, Integer versio);
 
     KoodiVersio saveKoodi(ExtendedKoodiDto koodiDTO);
+
+    Set<KoodiVersio> createNewVersions(Set<KoodistoVersioKoodiVersio> koodiVersios);
+
+    void acceptCodeElements(KoodistoVersio latest);
 
 }

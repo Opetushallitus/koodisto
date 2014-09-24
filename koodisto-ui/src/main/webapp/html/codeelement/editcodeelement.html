@@ -290,7 +290,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr bindonce ng-repeat="codeElement in model.withinCodeElements | orderBy:sortBy | limitTo:model.withinListLengthLimit">
+                        <tr bindonce ng-repeat="codeElement in model.withinCodeElements | filter:codeElement.passive | orderBy:sortBy | limitTo:model.withinListLengthLimit">
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
@@ -328,7 +328,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr bindonce ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy | limitTo:model.includesListLengthLimit">
+                        <tr bindonce ng-repeat="codeElement in model.includesCodeElements | filter:codeElement.passive | orderBy:sortBy | limitTo:model.includesListLengthLimit">
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
@@ -364,7 +364,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:sortBy | limitTo:model.levelsWithListLengthLimit">
+                        <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | filter:codeElement.passive | orderBy:sortBy | limitTo:model.levelsWithListLengthLimit">
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"

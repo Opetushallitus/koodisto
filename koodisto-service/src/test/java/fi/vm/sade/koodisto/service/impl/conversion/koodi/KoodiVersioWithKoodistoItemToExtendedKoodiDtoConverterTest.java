@@ -1,9 +1,5 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +30,9 @@ import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
+import static org.junit.Assert.assertEquals;
+
+import static org.mockito.Mockito.when;
 
 @ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "classpath:spring/test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -57,7 +56,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
         KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
         ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
         assertEquals(1, dto.getIncludesCodeElements().size());
-        assertEquals(1, dto.getLevelsWithCodeElements().size());
+        assertEquals(2, dto.getLevelsWithCodeElements().size());
         assertEquals(1, dto.getWithinCodeElements().size());
     }
 
@@ -79,18 +78,6 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
         KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
         ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
         assertEquals(Kieli.EN, dto.getIncludesCodeElements().get(0).parentMetadata.get(0).kieli);
-    }
-
-    @Test
-    public void converterDoesNotProvideRelationCodeElementForLatestCodeVersionWhenRelationDoesNotRelateToLatestCodeVersion() {
-        KoodiVersio parent = DtoFactory.createKoodiVersioWithUriAndVersio("penaali", 1).build();
-        KoodiVersio child = DtoFactory.createKoodiVersioWithUriAndVersioAndRelation("kynä", 1, parent, SuhteenTyyppi.SISALTYY);
-        Map<String, Integer> dummyResponse = new HashMap<String, Integer>();
-        dummyResponse.put("penaali", 2);
-        when(koodiVersioDao.getLatestVersionNumbersForUris("penaali")).thenReturn(dummyResponse);
-        when(koodiVersioDao.isLatestKoodiVersio("kynä", 1)).thenReturn(true);
-        ExtendedKoodiDto dto = conversionService.convert(new KoodiVersioWithKoodistoItem(child, new KoodistoItem()), ExtendedKoodiDto.class);
-        assertTrue(dto.getWithinCodeElements().isEmpty());
     }
 
     @Test
