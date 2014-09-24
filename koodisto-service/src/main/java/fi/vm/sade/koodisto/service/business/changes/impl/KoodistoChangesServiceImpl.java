@@ -121,20 +121,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
     
     private List<KoodiChangesDto> addedCodeElements(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
         final Set<KoodistoVersioKoodiVersio> koodiVersios = koodistoVersio.getKoodiVersios();
-        Collection<KoodiChangesDto> addedCodeElements = Collections2.transform(Collections2.filter(latest.getKoodiVersios(), new Predicate<KoodistoVersioKoodiVersio>() {
-
-            @Override
-            public boolean apply(KoodistoVersioKoodiVersio input) {
-                String koodiUri = input.getKoodiVersio().getKoodi().getKoodiUri();
-                for (KoodistoVersioKoodiVersio kvkv : koodiVersios) {
-                    if (kvkv.getKoodiVersio().getKoodi().getKoodiUri().equals(koodiUri)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            
-        }), new Function<KoodistoVersioKoodiVersio, KoodiChangesDto>() {
+        Collection<KoodiChangesDto> addedCodeElements = Collections2.transform(Collections2.filter(latest.getKoodiVersios(), new KoodiVersioNotFound(koodiVersios)), new Function<KoodistoVersioKoodiVersio, KoodiChangesDto>() {
 
             @Override
             public KoodiChangesDto apply(KoodistoVersioKoodiVersio input) {
@@ -169,20 +156,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
     
     private List<KoodiChangesDto> removedCodeElements(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
         final Set<KoodistoVersioKoodiVersio> koodiVersios = latest.getKoodiVersios();
-        Collection<KoodiChangesDto> removedCodeElements = Collections2.transform(Collections2.filter(koodistoVersio.getKoodiVersios(), new Predicate<KoodistoVersioKoodiVersio>() {
-
-            @Override
-            public boolean apply(KoodistoVersioKoodiVersio input) {
-                String koodiUri = input.getKoodiVersio().getKoodi().getKoodiUri();
-                for (KoodistoVersioKoodiVersio kvkv : koodiVersios) {
-                    if (kvkv.getKoodiVersio().getKoodi().getKoodiUri().equals(koodiUri)) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            
-        }), new Function<KoodistoVersioKoodiVersio, KoodiChangesDto>() {
+        Collection<KoodiChangesDto> removedCodeElements = Collections2.transform(Collections2.filter(koodistoVersio.getKoodiVersios(), new KoodiVersioNotFound(koodiVersios)), new Function<KoodistoVersioKoodiVersio, KoodiChangesDto>() {
 
             @Override
             public KoodiChangesDto apply(KoodistoVersioKoodiVersio input) {
@@ -281,14 +255,14 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
     private List<SimpleCodesRelation> removedRelations(KoodistoVersio kv, KoodistoVersio latestKoodistoVersio) {
         final String koodistoUri = latestKoodistoVersio.getKoodisto().getKoodistoUri();
         final List<KoodistonSuhde> relationsFromLatest = getRelationsFromKoodistoVersio(latestKoodistoVersio);
-        Collection<SimpleCodesRelation> removedRelations = Collections2.transform(Collections2.filter(getRelationsFromKoodistoVersio(kv), new KoodistonSuhdeFoundNotFound(relationsFromLatest)), new KoodistonSuhdeToSimpleCodesRelation(koodistoUri));
+        Collection<SimpleCodesRelation> removedRelations = Collections2.transform(Collections2.filter(getRelationsFromKoodistoVersio(kv), new KoodistonSuhdeNotFound(relationsFromLatest)), new KoodistonSuhdeToSimpleCodesRelation(koodistoUri));
         return new ArrayList<SimpleCodesRelation>(removedRelations);
     }
 
     private List<SimpleCodesRelation> addedRelations(KoodistoVersio kv, KoodistoVersio latestKoodistoVersio) {
         final String koodistoUri = latestKoodistoVersio.getKoodisto().getKoodistoUri();
         final List<KoodistonSuhde> relationsFromVersio = getRelationsFromKoodistoVersio(kv);
-        Collection<SimpleCodesRelation> relationsAdded = Collections2.transform(Collections2.filter(getRelationsFromKoodistoVersio(latestKoodistoVersio), new KoodistonSuhdeFoundNotFound(relationsFromVersio)), new KoodistonSuhdeToSimpleCodesRelation(koodistoUri));
+        Collection<SimpleCodesRelation> relationsAdded = Collections2.transform(Collections2.filter(getRelationsFromKoodistoVersio(latestKoodistoVersio), new KoodistonSuhdeNotFound(relationsFromVersio)), new KoodistonSuhdeToSimpleCodesRelation(koodistoUri));
         return new ArrayList<SimpleCodesRelation>(relationsAdded);
     }
 
@@ -298,10 +272,29 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
         return allRelations;
     }
     
-    private final class KoodistonSuhdeFoundNotFound implements Predicate<KoodistonSuhde> {
+    private final class KoodiVersioNotFound implements Predicate<KoodistoVersioKoodiVersio> {
+        private final Set<KoodistoVersioKoodiVersio> koodiVersiosToCompare;
+
+        private KoodiVersioNotFound(Set<KoodistoVersioKoodiVersio> koodiVersios) {
+            this.koodiVersiosToCompare = koodiVersios;
+        }
+
+        @Override
+        public boolean apply(KoodistoVersioKoodiVersio input) {
+            String koodiUri = input.getKoodiVersio().getKoodi().getKoodiUri();
+            for (KoodistoVersioKoodiVersio kvkv : koodiVersiosToCompare) {
+                if (kvkv.getKoodiVersio().getKoodi().getKoodiUri().equals(koodiUri)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    private final class KoodistonSuhdeNotFound implements Predicate<KoodistonSuhde> {
         private final List<KoodistonSuhde> relationsToCompare;
 
-        private KoodistonSuhdeFoundNotFound(List<KoodistonSuhde> relationsToCompare) {
+        private KoodistonSuhdeNotFound(List<KoodistonSuhde> relationsToCompare) {
             this.relationsToCompare = relationsToCompare;
         }
 
