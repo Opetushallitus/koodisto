@@ -31,6 +31,7 @@ import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.ChangesService;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
@@ -145,6 +146,13 @@ public class KoodiChangesServiceImplTest {
         KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO + 1, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
         KoodiVersio original = givenKoodiVersio(VERSIO);
         assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleKoodiMetadataDto(NAME, Kieli.FI, DESCRIPTION, SHORT_NAME));
+    }
+    
+    @Test
+    public void metadataWhereDescriptionAndShortNameIsRemovedIsShownAsRemoved() {
+        KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO + 1, NAME, null, null, Kieli.FI);
+        KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);;
+        assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, ChangesService.REMOVED_METADATA_FIELD, ChangesService.REMOVED_METADATA_FIELD));
     }
     
     @Test

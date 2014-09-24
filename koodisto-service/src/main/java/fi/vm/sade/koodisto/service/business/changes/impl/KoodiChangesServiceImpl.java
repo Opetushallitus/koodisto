@@ -33,6 +33,7 @@ import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.ChangesDateComparator;
+import fi.vm.sade.koodisto.service.business.changes.ChangesService;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 
@@ -229,9 +230,16 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
             return new SimpleKoodiMetadataDto(latestData.getNimi(), latestData.getKieli(), latestData.getKuvaus(), latestData.getLyhytNimi());
         }
         String changedName = latestData.getNimi().equals(metaWithMatchingKieli.getNimi()) ? null : latestData.getNimi();
-        String changedShortName = latestData.getLyhytNimi() != null && latestData.getLyhytNimi().equals(metaWithMatchingKieli.getLyhytNimi()) ? null : latestData.getLyhytNimi();
-        String changedDescription = latestData.getKuvaus() != null && latestData.getKuvaus().equals(metaWithMatchingKieli.getKuvaus()) ? null : latestData.getKuvaus();
+        String changedShortName = getChangeForMetadataField(latestData.getLyhytNimi(), metaWithMatchingKieli.getLyhytNimi());
+        String changedDescription = getChangeForMetadataField(latestData.getKuvaus(), metaWithMatchingKieli.getKuvaus());
         return new SimpleKoodiMetadataDto(changedName, latestData.getKieli(), changedDescription, changedShortName);
+    }
+
+    private String getChangeForMetadataField(String latestData, String matchingData) {
+        if (latestData == null && matchingData != null) {
+            return ChangesService.REMOVED_METADATA_FIELD;
+        }
+        return latestData != null && latestData.equals(matchingData) ? null : latestData;
     }
 
     private KoodiMetadata getMetadataWithMatchingLanguage(Set<KoodiMetadata> compareToMetadatas, Kieli kieli) {
