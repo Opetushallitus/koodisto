@@ -3,12 +3,21 @@
  */
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.generic.model.BaseEntity;
-import fi.vm.sade.koodisto.common.util.FieldLengths;
-
-import javax.persistence.*;
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+
+import fi.vm.sade.generic.model.BaseEntity;
+import fi.vm.sade.koodisto.common.util.FieldLengths;
 
 /**
  * @author tommiha
@@ -48,6 +57,14 @@ public class KoodinSuhde extends BaseEntity {
     @Min(1)
     @Column(name = VERSIO_COLUMN_NAME, nullable = false)
     private Integer versio;
+    
+    @NotNull
+    @Column(name = "ylakoodistapassiivinen", nullable = false)
+    private boolean ylaKoodiPassive = false;
+    
+    @NotNull
+    @Column(name = "alakoodistapassiivinen", nullable = false)
+    private boolean alaKoodiPassive = false;
 
     public KoodiVersio getYlakoodiVersio() {
         return ylakoodiVersio;
@@ -79,6 +96,26 @@ public class KoodinSuhde extends BaseEntity {
     
     public void setVersio(Integer versio) {
         this.versio = versio;
+    }
+    
+    public void setAlaKoodiPassive(boolean alaKoodiPassive) {
+        this.alaKoodiPassive = alaKoodiPassive;
+    }
+    
+    public void setYlaKoodiPassive(boolean ylaKoodiPassive) {
+        this.ylaKoodiPassive = ylaKoodiPassive;
+    }
+    
+    public boolean isAlaKoodiPassive() {
+        return alaKoodiPassive;
+    }
+    
+    public boolean isYlaKoodiPassive() {
+        return ylaKoodiPassive;
+    }
+    
+    public boolean isPassive() {
+        return ylaKoodiPassive || alaKoodiPassive;
     }
 
     @Override

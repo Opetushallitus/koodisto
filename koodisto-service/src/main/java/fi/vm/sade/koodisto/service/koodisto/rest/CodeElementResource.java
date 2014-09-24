@@ -4,17 +4,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.map.annotate.JsonView;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.generic.service.exception.SadeBusinessException;
 import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
+import fi.vm.sade.koodisto.dto.KoodiChangesDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.dto.SimpleKoodiDto;
@@ -37,6 +40,7 @@ import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.impl.conversion.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.CodeElementRelationListValidator;
@@ -63,6 +67,9 @@ public class CodeElementResource {
     @Autowired
     private KoodistoConfiguration koodistoConfiguration;
 
+    @Autowired
+    private KoodiChangesService changesService;
+    
     @Autowired
     private CodeElementResourceConverter converter;
 
@@ -223,6 +230,62 @@ public class CodeElementResource {
         } catch (Exception e) {
             String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
             logger.error("Fetching codeElement by uri failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
+        }
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({ JsonViews.Extended.class })
+    @Path("/changes/{codeElementUri}/{codeElementVersion}")
+    @ApiOperation(
+            value = "Palauttaa muutokset uusimpaan koodiversioon",
+            notes = "Toimii vain, jos koodi on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
+            response = KoodiChangesDto.class)
+    public Response getChangesToCodeElement(@ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
+            @ApiParam(value = "Koodin versio") @PathParam("codeElementVersion") Integer codeElementVersion, 
+            @ApiParam(value = "Verrataanko viimeiseen hyväksyttyyn versioon") @DefaultValue("false") @QueryParam("compareToLatestAccepted") boolean compareToLatestAccepted) {
+        try {
+            ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException("error.validation.codeelementversion"));
+            KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, codeElementVersion, compareToLatestAccepted);
+            return Response.status(Response.Status.OK).entity(dto).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: get changes. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Fetching changes to code element failed.", e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
+        }
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @JsonView({ JsonViews.Extended.class })
+    @Path("/changes/withdate/{codeElementUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}")
+    @ApiOperation(
+            value = "Palauttaa tehdyt muutokset uusimpaan koodiversioon käyttäen lähintä päivämäärään osuvaa koodiversiota vertailussa",
+            notes = "Toimii vain, jos koodi on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
+            response = KoodiChangesDto.class)
+    public Response getChangesToCodeElementWithDate(@ApiParam(value = "Koodin URI") @PathParam("codeElementUri") String codeElementUri,
+            @ApiParam(value = "Kuukauden päivä") @PathParam("dayofmonth") Integer dayOfMonth,
+            @ApiParam(value = "Kuukausi") @PathParam("month") Integer month,
+            @ApiParam(value = "Vuosi") @PathParam("year") Integer year,
+            @ApiParam(value = "Tunti") @PathParam("hour") Integer hourOfDay,
+            @ApiParam(value = "Minuutti") @PathParam("minute") Integer minute,
+            @ApiParam(value = "Sekunti") @PathParam("second") Integer second,
+            @ApiParam(value = "Verrataanko viimeiseen hyväksyttyyn versioon") @DefaultValue("false") @QueryParam("compareToLatestAccepted") boolean compareToLatestAccepted) {
+        try {
+            ValidatorUtil.validateDateParameters(dayOfMonth, month, year, hourOfDay, minute, second);
+            DateTime dateTime = new DateTime(year, month, dayOfMonth, hourOfDay, minute, second);
+            KoodiChangesDto dto = changesService.getChangesDto(codeElementUri, dateTime, compareToLatestAccepted);
+            return Response.status(Response.Status.OK).entity(dto).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call: get changes. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            logger.error("Fetching changes to code element failed.", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }

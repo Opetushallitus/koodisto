@@ -5,7 +5,7 @@
   <koodi id="99" koodisto_id="99" version="0" koodiuri="dummy"/>
   <koodiversio id="99" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="99" koodiarvo="dummy"/>
   <koodimetadata id="99" kieli="FI" nimi="Dummy" kuvaus="Dummy" lyhytnimi="Dummy" version="0" koodiversio_id="99"/>
-  <koodinsuhde id="99" alakoodiversio_id="99" ylakoodiversio_id="99" suhteentyyppi="SISALTYY" version="0" versio="1"/>
+  <koodinsuhde id="99" alakoodiversio_id="99" ylakoodiversio_id="99" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
   <koodistoversio id="99" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="99" voimassaalkupvm="2012-11-20"/>
   <koodistometadata id="99" kieli="FI" nimi="Dummy" kuvaus="kuvaus" version="0" koodistoversio_id="99"/>
   <koodistoversio_koodiversio id="99" version="0" koodistoversio_id="99" koodiversio_id="99"/>
@@ -29,6 +29,7 @@
   <koodisto id="14" koodistouri="deletethisuri" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="15" koodistouri="koodistoryhmatestikoodisto" version="0" organisaatioOid="1.2.2004.6" />
   <koodisto id="16" koodistouri="newkoodistoforgrouptesting" version="0" organisaatioOid="1.2.2004.6" />
+  <koodisto id="17" koodistouri="paljonmuutoksia" version="0" organisaatioOid="1.2.2004.6" />
   
   <koodistoversio id="1" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="1" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="2" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="2" voimassaalkupvm="2012-11-20"/>
@@ -37,8 +38,8 @@
   <koodistoversio id="5" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="5" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="6" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="6" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="7" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="7" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="8" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="2" koodisto_id="7" voimassaalkupvm="2012-11-20"/>
-  <koodistoversio id="9" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="3" koodisto_id="7" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="8" version="0" paivityspvm="2012-03-22" luotu="2013-06-01" tila="HYVAKSYTTY" versio="2" koodisto_id="7" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="9" version="0" paivityspvm="2012-03-22" luotu="2014-01-01" tila="HYVAKSYTTY" versio="3" koodisto_id="7" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="10" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="8" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="11" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="9" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="12" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="10" voimassaalkupvm="2012-11-20"/>
@@ -48,6 +49,9 @@
   <koodistoversio id="16" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="PASSIIVINEN" versio="1" koodisto_id="14" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="17" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="15" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="18" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="16" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="19" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="17" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="20" version="0" paivityspvm="2012-03-22" luotu="2014-01-01" tila="HYVAKSYTTY" versio="2" koodisto_id="17" voimassaalkupvm="2012-11-20"/>
+  <koodistoversio id="21" version="0" paivityspvm="2012-03-22" luotu="2014-08-20" tila="LUONNOS" versio="3" koodisto_id="17" voimassaalkupvm="2013-11-20"/>
   
   <koodistometadata id="1" kieli="FI" nimi="1 sisältää 2 -testi" version="0" koodistoversio_id="1" kuvaus="1 sisältää 2 -testi"/>
   <koodistometadata id="2" kieli="FI" nimi="2 sisältyy 1 -testi" version="0" koodistoversio_id="2" kuvaus="2 sisältyy 1 -testi"/>
@@ -67,14 +71,24 @@
   <koodistometadata id="16" kieli="FI" nimi="Delete testi" version="0" koodistoversio_id="16" kuvaus="Tämä tuhotaan."/>
   <koodistometadata id="17" kieli="FI" nimi="Update koodistoryhmä testi" version="0" koodistoversio_id="17" kuvaus="Tämä testaa täyden koodistoryhmän päivittämistä"/>
   <koodistometadata id="18" kieli="FI" nimi="Koodistoryhmään lisättävä koodi" version="0" koodistoversio_id="18" kuvaus="Lisätään koodiryhmään urin ja organisaation perusteella"/>
+  <koodistometadata id="19" kieli="FI" nimi="Paljon muutoksia" version="0" koodistoversio_id="19" kuvaus="Tässä on paljon muutoksia"/>
+  <koodistometadata id="20" kieli="SV" nimi="SV" version="0" koodistoversio_id="19" kuvaus="SV"/>
+  <koodistometadata id="21" kieli="FI" nimi="Paljon muutoksia" version="0" koodistoversio_id="20" kuvaus="Tässä on paljon muutoksia"/>
+  <koodistometadata id="22" kieli="FI" nimi="Paljon muutettu" version="0" koodistoversio_id="21" kuvaus="Muutettu vähän kaikkea"/>
+  <koodistometadata id="23" kieli="EN" nimi="Plenty of changes" version="0" koodistoversio_id="21" kuvaus="A lot of changes in this codes"/>
   
-  <koodistonsuhde id="1" alakoodistoversio_id="6" ylakoodistoversio_id="5" versio="1" suhteentyyppi="SISALTYY" version="0"/>
+  <koodistonsuhde id="1" alakoodistoversio_id="6" ylakoodistoversio_id="5" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
+  <koodistonsuhde id="2" alakoodistoversio_id="16" ylakoodistoversio_id="19" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="true" alakoodistostapassiivinen="true"/>
+  <koodistonsuhde id="3" alakoodistoversio_id="17" ylakoodistoversio_id="20" versio="1" suhteentyyppi="RINNASTEINEN" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
+  <koodistonsuhde id="4" alakoodistoversio_id="17" ylakoodistoversio_id="21" versio="2" suhteentyyppi="RINNASTEINEN" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
+  <koodistonsuhde id="5" alakoodistoversio_id="16" ylakoodistoversio_id="21" versio="1" suhteentyyppi="RINNASTEINEN" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="true"/>
   
   <koodistoryhma id="1" koodistoryhmauri="relaatioidenlisaaminen" version="0"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="1"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="2"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="3"/>
   <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="4"/>
+  <koodistoryhma_koodisto koodistoryhma_id="1" koodisto_id="17"/>
   <koodistoryhmametadata id="1" koodistoryhma_id="1" kieli="FI" nimi="Relaatioiden lisääminen" version="0"/>
   <koodistoryhma id="2" koodistoryhmauri="koodistojenlisaaminenkoodistoryhmaan" version="0"/>
   <koodistoryhmametadata id="2" koodistoryhma_id="2" kieli="FI" nimi="Koodistojen lisääminen koodistoryhmään" version="0"/>
@@ -91,8 +105,29 @@
   <koodistoryhmametadata id="8" koodistoryhma_id="6" kieli="EN" nimi="Koodistoryhmä jolla monta metadataa" version="0"/>
   
   <koodi id="1" koodisto_id="13" version="0" koodiuri="downloadtestikoodi"/>
+  <koodi id="2" koodisto_id="17" version="0" koodiuri="v"/>
+  <koodi id="3" koodisto_id="17" version="0" koodiuri="poistettukoodi"/>
+  <koodi id="4" koodisto_id="17" version="0" koodiuri="lisattykoodi"/>
+  
   <koodiversio id="1" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="1" koodiarvo="csvtestikoodi"/>
+  <koodiversio id="2" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="muutettukoodi"/>
+  <koodiversio id="3" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="muutettukoodi"/>
+  <koodiversio id="4" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="3" voimassaalkupvm="1990-01-01" koodi_id="2" koodiarvo="muutettukoodi"/>
+  <koodiversio id="5" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="3" koodiarvo="poistettukoodi"/>
+  <koodiversio id="6" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="4" koodiarvo="lisattykoodi"/>
+  
   <koodimetadata id="1" kieli="FI" nimi="Download testi" version="0" koodiversio_id="1" lyhytnimi="csv" kuvaus="Description of downloaded code"/>
+  <koodimetadata id="2" kieli="FI" nimi="Muutettu koodi" version="0" koodiversio_id="2" lyhytnimi="csv" kuvaus="Muutettu koodi"/>
+  <koodimetadata id="3" kieli="FI" nimi="Muutettu koodi" version="0" koodiversio_id="3" lyhytnimi="csv" kuvaus="Tätä koodia muutettiin versiossa 2"/>
+  <koodimetadata id="4" kieli="FI" nimi="Koodi muutettu" version="0" koodiversio_id="4" lyhytnimi="csv" kuvaus="Tätä koodia muutettiin versiossa 2 ja 3"/>
+  <koodimetadata id="5" kieli="FI" nimi="Poistettu koodi" version="0" koodiversio_id="5" lyhytnimi="csv" kuvaus="Lisätty versiossa kaksi ja poistettu versiossa 3"/>
+  <koodimetadata id="6" kieli="FI" nimi="Lisätty koodi" version="0" koodiversio_id="6" lyhytnimi="csv" kuvaus="Lisätty versioon kolme"/>
+  
   <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="15" koodiversio_id="1"/>
+  <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="19" koodiversio_id="2"/>
+  <koodistoversio_koodiversio id="3" version="0" koodistoversio_id="20" koodiversio_id="3"/>
+  <koodistoversio_koodiversio id="4" version="0" koodistoversio_id="21" koodiversio_id="4"/>
+  <koodistoversio_koodiversio id="5" version="0" koodistoversio_id="20" koodiversio_id="5"/>
+  <koodistoversio_koodiversio id="6" version="0" koodistoversio_id="21" koodiversio_id="6"/>
   
 </dataset>

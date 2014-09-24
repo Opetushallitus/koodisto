@@ -3,12 +3,6 @@
  */
 package fi.vm.sade.koodisto.service.business.it;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -19,6 +13,7 @@ import java.util.Set;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +26,7 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
+import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
@@ -51,6 +47,11 @@ import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author tommiha
@@ -170,6 +171,11 @@ public class KoodiBusinessServiceTest {
     }
     
     @Test
+    public void shouldFetchExactKoodiVersio() {
+        assertEquals(2, koodiBusinessService.getKoodiVersio("455", 2).getVersio().intValue());
+    }
+    
+    @Test
     public void onlyCopiesUpperRelationsThatReferencesLatestKoodiVersioWhenNewKoodiVersioIsCreated() {
         String koodiUri = "vanhasuhdeeiversioiduA";
         koodiBusinessService.createNewVersion(koodiUri);
@@ -189,6 +195,27 @@ public class KoodiBusinessServiceTest {
         KoodiVersio kv = items.get(0).getKoodiVersio();
         assertEquals(Integer.valueOf(2), kv.getVersio());
         assertEquals("vanhasuhdeeiversioiduATake2", kv.getKoodi().getKoodiUri());
+    }
+    
+    @Test
+    public void doesNotCopyPassiveRelationsWhenNewVersionIsCreated() {
+        String koodiUri = "passiivisuhdeeikopioidu";
+        koodiBusinessService.createNewVersion(koodiUri);
+        assertTrue(koodiBusinessService.listByRelation(koodiUri, true, SuhteenTyyppi.SISALTYY).isEmpty());
+    }
+    
+    @Test
+    public void fetchesKoodiAndInitializesKoodiVersions() {
+        Koodi koodi = koodiBusinessService.getKoodi("435");
+        assertNotNull(koodi);
+        assertTrue(Hibernate.isInitialized(koodi.getKoodiVersios()));
+        for (KoodiVersio kv : koodi.getKoodiVersios()) {
+            assertTrue(Hibernate.isInitialized(kv));
+            assertTrue(Hibernate.isInitialized(kv.getMetadatas()));
+            assertTrue(Hibernate.isInitialized(kv.getAlakoodis()));
+            assertTrue(Hibernate.isInitialized(kv.getYlakoodis()));
+            assertFalse(kv.getMetadatas().isEmpty());
+        }
     }
     
     private List<KoodiVersioWithKoodistoItem> listByUri(String koodiUri) {

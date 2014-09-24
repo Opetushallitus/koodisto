@@ -132,6 +132,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 ce.uri = codes.codesUri;
                 ce.name = getLanguageSpecificValueOrValidValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
                 ce.versio = codes.codesVersion;
+                ce.active = codes.passive ? jQuery.i18n.prop('generic.no') : jQuery.i18n.prop('generic.yes');
                 list.push(ce);
             });
         };

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -117,12 +118,10 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
 
         List<KoodiVersio> resultList = em.createQuery(query).setMaxResults(1).getResultList();
 
-        KoodiVersio result = null;
-        if (resultList.size() != 0) {
-            result = resultList.get(0);
+        if (resultList.size() == 1) {
+             return resultList.get(0);
         }
-
-        return result;
+        return null;
     }
 
     @Override
@@ -580,5 +579,30 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
     @Override
     public void flush() {
         getEntityManager().flush();
+    }
+
+    @Override
+    public Map<KoodiVersio, KoodiVersio> getPreviousKoodiVersios(List<KoodiVersio> koodis) {
+        EntityManager em = getEntityManager();
+        em.setFlushMode(FlushModeType.COMMIT);
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        HashMap<KoodiVersio, KoodiVersio> results = new HashMap<>();
+        
+        for (KoodiVersio kv : koodis) {
+            CriteriaQuery<KoodiVersio> query = cb.createQuery(KoodiVersio.class);
+            Root<KoodiVersio> root = query.from(KoodiVersio.class);
+            Join<KoodiVersio, Koodi> koodi = root.join(KOODI);
+            Predicate koodiUriEqual = cb.equal(koodi.<String> get(KOODI_URI), kv.getKoodi().getKoodiUri());
+            Predicate koodiVersioLessThan = cb.lessThan(root.<Integer> get(VERSIO), kv.getVersio());
+            
+            query.select(root).where(cb.and(koodiUriEqual, koodiVersioLessThan)).orderBy(cb.desc(root.<Integer> get(VERSIO)));
+            List<KoodiVersio> resultList = em.createQuery(query).setMaxResults(1).getResultList();
+            if(resultList.size() == 1){
+                results.put(kv, resultList.get(0));
+            }
+        }
+            
+        return results;
     }
 }

@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -59,12 +60,12 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoExportException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiNotUniqueException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoOptimisticLockingException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRelationToSelfException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoUriEmptyException;
@@ -185,12 +186,14 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Override
     public void addRelation(String ylaKoodisto, String alaKoodisto, SuhteenTyyppi suhteenTyyppi) {
+        if(ylaKoodisto.equals(alaKoodisto)){
+            throw new KoodistoRelationToSelfException();
+        }
         if (hasAnyRelation(ylaKoodisto, alaKoodisto)) {
             throw new KoodistosAlreadyHaveSuhdeException();
         }
         if (suhteenTyyppi == SuhteenTyyppi.SISALTYY && !userIsRootUser() && !koodistosHaveSameOrganisaatio(ylaKoodisto, alaKoodisto)) {
             throw new KoodistosHaveDifferentOrganizationsException();
-
         }
         KoodistoVersio yla = getLatestKoodistoVersio(ylaKoodisto);
         KoodistoVersio ala = getLatestKoodistoVersio(alaKoodisto);
@@ -234,7 +237,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
                 if (koodiBusinessService.hasRelationBetweenCodeElements(ylaKoodiVersio.getKoodiVersio(), alaKoodiVersio.getKoodiVersio())) {
                     throw new KoodistonSuhdeContainsKoodinSuhdeException();
                 }
-                ;
             }
         }
     }
@@ -435,9 +437,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         for (KoodistoVersio versio : koodistoVersio.getKoodisto().getKoodistoVersios()) {
             Hibernate.initialize(versio);
         }
-        if (!(koodistoVersio.getKoodisto().getLatestKoodistoVersioNumber() > koodistoVersio.getVersio())) {
-            stripKoodistonSuhdesFromKoodistoVersioThatAreNotInTheLatestKoodistoVersio(koodistoVersio);
-        }
     }
 
     private List<KoodistoVersio> getLatestKoodistoVersios(String... koodistoUris) {
@@ -466,22 +465,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         return result.get(0);
     }
 
-    private void stripKoodistonSuhdesFromKoodistoVersioThatAreNotInTheLatestKoodistoVersio(KoodistoVersio koodistoVersio) {
-        stripKoodistonSuhdesFromKoodistoVersioThatAreNotInTheLatestKoodistoVersio(koodistoVersio, true);
-        stripKoodistonSuhdesFromKoodistoVersioThatAreNotInTheLatestKoodistoVersio(koodistoVersio, false);
-    }
-
-    private void stripKoodistonSuhdesFromKoodistoVersioThatAreNotInTheLatestKoodistoVersio(KoodistoVersio koodistoVersio, boolean fromAlaKoodistos) {
-        Iterator<KoodistonSuhde> suhdes = fromAlaKoodistos ? koodistoVersio.getAlakoodistos().iterator() : koodistoVersio.getYlakoodistos().iterator();
-        while (suhdes.hasNext()) {
-            KoodistonSuhde suhde = suhdes.next();
-            KoodistoVersio kv = fromAlaKoodistos ? suhde.getAlakoodistoVersio() : suhde.getYlakoodistoVersio();
-            if (kv.getKoodisto().getLatestKoodistoVersioNumber() > kv.getVersio()) {
-                suhdes.remove();
-            }
-        }
-    }
-
     private KoodistoVersio createNewVersion(KoodistoVersio latest) {
         authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD, KoodistoRole.UPDATE);
         if (latest.getTila() != Tila.HYVAKSYTTY) {
@@ -500,7 +483,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     private KoodistoVersio createNewVersion(KoodistoVersio base, KoodistoVersio input) {
 
-        logger.info("Creating new version of KoodistoVersio, koodisto id =" + base.getKoodisto().getId() + ", base versio=" + base.getVersio());
+        logger.info("Creating new version of KoodistoVersio, koodisto id=" + base.getKoodisto().getId() + ", base versio=" + base.getVersio());
 
         input.setId(null);
         input.setVersion(null);
@@ -529,14 +512,14 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     private void copyKoodiVersiosFromOldKoodistoToNew(KoodistoVersio base, KoodistoVersio inserted) {
-        for (KoodistoVersioKoodiVersio kv : base.getKoodiVersios()) {
+        logger.info("Copying codeElement versios to new Codes version, codes id={}, codes versio={}, new codes versio={}", base.getKoodisto().getId(), base.getVersio(), inserted.getVersio());
+        Set<KoodiVersio> newVersions = koodiBusinessService.createNewVersions(base.getKoodiVersios());
+        for (KoodiVersio koodiVersio : newVersions) {
             KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
-
-            KoodiVersio koodiVersio = koodiBusinessService.createNewVersion(kv.getKoodiVersio().getKoodi().getKoodiUri());
-
             newRelationEntry.setKoodiVersio(koodiVersio);
             newRelationEntry.setKoodistoVersio(inserted);
             inserted.addKoodiVersio(newRelationEntry);
+            logger.info("  Copied codeElement version, codes id={}, codeElement version id={}", inserted.getKoodisto().getId(), koodiVersio.getId());
         }
     }
 
@@ -608,22 +591,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         // HYVAKSYTTY, we should also set
         // set all the koodis in this koodisto to HYVAKSYTTY
         if (!Tila.HYVAKSYTTY.equals(latest.getTila()) && updateKoodistoData.getTila().equals(TilaType.HYVAKSYTTY)) {
-            List<KoodiVersio> koodis = koodiVersioDAO.getKoodiVersiosByKoodistoAndKoodiTila(latest.getId(), Tila.LUONNOS);
-
-            if (koodis.size() > 0) {
-                ArrayList<String> koodiUris = new ArrayList<String>();
-                for (KoodiVersio koodiVersio : koodis) {
-                    koodiUris.add(koodiVersio.getKoodi().getKoodiUri());
-                }
-
-                List<KoodiVersio> latestKoodis = koodiDAO.getLatestCodeElementVersiosByUrisAndTila(koodiUris, Tila.HYVAKSYTTY);
-
-                for (KoodiVersio latestVersio : latestKoodis) {
-                    koodiBusinessService.setKoodiTila(latestVersio, TilaType.HYVAKSYTTY);
-                }
-            } else {
-                throw new KoodistoEmptyException();
-            }
+            koodiBusinessService.acceptCodeElements(latest);
             KoodistoVersio previousVersion = koodistoVersioDAO.getPreviousKoodistoVersio(latest.getKoodisto().getKoodistoUri(), latest.getVersio());
             if (previousVersion != null) {
                 previousVersion.setVoimassaLoppuPvm(new Date());
@@ -801,27 +769,30 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         Set<KoodistonSuhde> alaKoodistos = latest.getAlakoodistos();
         Set<KoodistonSuhde> ylaKoodistos = latest.getYlakoodistos();
 
-        HashSet<String> includesUrisToBeRemoved = new HashSet<String>();
-        HashSet<String> withinUrisToBeRemoved = new HashSet<String>();
-        HashSet<String> levelsWithUrisToBeRemoved = new HashSet<String>();
+        Set<String> includesUrisToBeRemoved = new HashSet<>();
+        Set<String> withinUrisToBeRemoved = new HashSet<>();
+        Set<String> levelsWithUrisToBeRemoved = new HashSet<>();
         for (KoodistonSuhde koodistonSuhde : alaKoodistos) {
-            String uri = koodistonSuhde.getAlakoodistoVersio().getKoodisto().getKoodistoUri();
-            if (koodistonSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY)) {
-                includesUrisToBeRemoved.add(uri);
-            } else if (koodistonSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)) {
-                levelsWithUrisToBeRemoved.add(uri);
+            if (!koodistonSuhde.isPassive()) {
+                String uri = koodistonSuhde.getAlakoodistoVersio().getKoodisto().getKoodistoUri();
+                if (koodistonSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY)) {
+                    includesUrisToBeRemoved.add(uri);
+                } else if (koodistonSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)) {
+                    levelsWithUrisToBeRemoved.add(uri);
+                }
             }
         }
         for (KoodistonSuhde koodistonSuhde : ylaKoodistos) {
-            String uri = koodistonSuhde.getYlakoodistoVersio().getKoodisto().getKoodistoUri();
-            if (koodistonSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY)) {
-                withinUrisToBeRemoved.add(uri);
-            } else if (koodistonSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)) {
-                levelsWithUrisToBeRemoved.add(uri);
+            if (!koodistonSuhde.isPassive()) {
+                String uri = koodistonSuhde.getYlakoodistoVersio().getKoodisto().getKoodistoUri();
+                if (koodistonSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY)) {
+                    withinUrisToBeRemoved.add(uri);
+                } else if (koodistonSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)) {
+                    levelsWithUrisToBeRemoved.add(uri);
+                }
             }
         }
 
-        // Add relations
         Set<String> includesUris = urisAsSet(codesDTO.getIncludesCodes());
         Set<String> withinUris = urisAsSet(codesDTO.getWithinCodes());
         Set<String> levelsWithUris = urisAsSet(codesDTO.getLevelsWithCodes());
@@ -861,16 +832,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             }
         }
 
-        String latestUri = latest.getKoodisto().getKoodistoUri();
-        removeRelation(latestUri, new ArrayList<String>(includesUrisToBeRemoved), SuhteenTyyppi.SISALTYY);
-        removeRelation(latestUri, new ArrayList<String>(levelsWithUrisToBeRemoved), SuhteenTyyppi.RINNASTEINEN);
-
-        ArrayList<String> latestUriAsList = new ArrayList<String>();
-        latestUriAsList.add(latestUri);
-
-        for (String yk : withinUrisToBeRemoved) {
-            removeRelation(yk, latestUriAsList, SuhteenTyyppi.SISALTYY);
-        }
+        removeRelations(latest.getKoodisto().getKoodistoUri(), includesUrisToBeRemoved, withinUrisToBeRemoved, levelsWithUrisToBeRemoved);
 
         return getLatestKoodistoVersio(koodistoUri);
     }
@@ -878,9 +840,19 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private Set<String> urisAsSet(List<RelationCodes> relations) {
         HashSet<String> result = new HashSet<String>();
         for (RelationCodes r : relations) {
-            result.add(r.codesUri);
+            if(!r.passive) {
+                result.add(r.codesUri);
+            }
         }
         return result;
     }
 
+    private void removeRelations(String koodistoUri, Set<String> updatedIncludesUris, Set<String> updatedWithinUris, Set<String> updatedLevelsWithUris) {
+        removeRelation(koodistoUri, new ArrayList<>(updatedIncludesUris), SuhteenTyyppi.SISALTYY);
+        removeRelation(koodistoUri, new ArrayList<>(updatedLevelsWithUris), SuhteenTyyppi.RINNASTEINEN);
+        List<String> koodistoUriAsList = new ArrayList<>(Arrays.asList(koodistoUri));
+        for (String yk : updatedWithinUris) {
+            removeRelation(yk, koodistoUriAsList, SuhteenTyyppi.SISALTYY);
+        }
+    }
 }
