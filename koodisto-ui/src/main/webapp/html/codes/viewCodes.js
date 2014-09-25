@@ -17,6 +17,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             }
             // Samaa koodistoa on turha ladata uudelleen modelliin
             if (model.forceRefresh || !(model.codes && model.codes.koodistoUri == codesUri && model.codes.versio == codesVersion)) {
+        	scope.showPassive = false;
                 model.forceRefresh = false;
                 model.codes = null;
                 this.withinCodes = [];
@@ -132,7 +133,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 ce.uri = codes.codesUri;
                 ce.name = getLanguageSpecificValueOrValidValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
                 ce.versio = codes.codesVersion;
-                ce.active = codes.passive ? jQuery.i18n.prop('generic.no') : jQuery.i18n.prop('generic.yes');
+                ce.active = !codes.passive;
                 list.push(ce);
             });
         };
@@ -465,4 +466,8 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
         return results;
     };
     // Pagination ends
+    
+    $scope.showRelation = function(codes) {
+	return codes.active || $scope.showPassive
+    }
 }
