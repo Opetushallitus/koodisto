@@ -758,7 +758,6 @@ public class CodeElementResourceTest {
         assertEquals(3, codeElement.getLevelsWithCodeElements().size());
     }
 
-    @Ignore
     @Test
     public void savesCodeElementWithAllRelationChanges() {
         String koodiUri = "savekoodineljallasuhteella";
@@ -777,21 +776,19 @@ public class CodeElementResourceTest {
         codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde3", 1, false));
         assertResponse(resource.save(codeElementToBeSaved), 200);
 
-        ExtendedKoodiDto codeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
-        assertEquals(1, codeElement.getIncludesCodeElements().size());
-        assertEquals(1, codeElement.getWithinCodeElements().size());
-        assertEquals(1, codeElement.getLevelsWithCodeElements().size());
-
-        
-        assertEquals("uusisavekoodinsuhde1", codeElement.getIncludesCodeElements().get(0).codeElementUri);
-        assertEquals("uusisavekoodinsuhde2", codeElement.getLevelsWithCodeElements().get(0).codeElementUri);
-        assertEquals("uusisavekoodinsuhde3", codeElement.getWithinCodeElements().get(0).codeElementUri);
-
         ExtendedKoodiDto oldCodeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
+        ExtendedKoodiDto newCodeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
+        
+        assertEquals(1, newCodeElement.getIncludesCodeElements().size());
+        assertEquals(1, newCodeElement.getLevelsWithCodeElements().size());
+        assertEquals(1, newCodeElement.getWithinCodeElements().size());
+        assertEquals("uusisavekoodinsuhde1", newCodeElement.getIncludesCodeElements().get(0).codeElementUri);
+        assertEquals("uusisavekoodinsuhde2", newCodeElement.getLevelsWithCodeElements().get(0).codeElementUri);
+        assertEquals("uusisavekoodinsuhde3", newCodeElement.getWithinCodeElements().get(0).codeElementUri);
+
         assertEquals(1, oldCodeElement.getIncludesCodeElements().size());
         assertEquals(2, oldCodeElement.getLevelsWithCodeElements().size());
         assertEquals(1, oldCodeElement.getWithinCodeElements().size());
-
 
     }
 
