@@ -165,7 +165,13 @@
         </div>
     </div>
 
-
+	<div class="row-fluid">
+		<div class="span12">
+			<span class="header">{{'codeelement.viewpage.relations.header' | i18n}}</span>
+			<input id="filter_active_relations" type="checkbox" ng-model="model.showversion" ng-click="showPassive=!showPassive" /> 
+            <label for="filter_passive">{{'codeelement.viewpage.relations.show.passive'| i18n}}</label>
+		</div>
+	</div>
     <div class="row-fluid">
         <div class="span9">
             <accordion close-others="oneAtATime">
@@ -182,17 +188,15 @@
                                     <th ng:click="sortBy='codesname'" ng-class="{'sort-true': sortBy=='codesname'}">{{'codeelement.viewpage.tableheader1' | i18n}}</th>
                                     <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.viewpage.tableheader2' | i18n}}</th>
                                     <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
-                                	<th ng:click="sortBy='active'" ng-class="{'sort-true': sortBy=='active'}">{{'codeelement.viewpage.active' | i18n}}</th>
                                     <th ng:click="sortBy='description'" ng-class="{'sort-true': sortBy=='description'}">{{'codeelement.viewpage.tableheader3' | i18n}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr bindonce ng-repeat="codeElement in model.withinCodeElements | orderBy:sortBy">
-                                    <td bo-text="codeElement.codesname"></td>
-                                    <td bo-text="codeElement.name"></td>
-                                    <td bo-text="codeElement.versio"></td>
-                                    <td bo-text="codeElement.active"></td>
-                                    <td bo-text="codeElement.description"></td>
+                                <tr bindonce ng-repeat="codeElement in model.withinCodeElements | orderBy:sortBy | filter:showRelation">
+                                    <td bo-text="codeElement.codesname" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
+                                    <td bo-text="codeElement.name" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
+                                    <td bo-text="codeElement.versio" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
+                                    <td bo-text="codeElement.description" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -219,17 +223,15 @@
                                     <th ng:click="sortBy='codesname'" ng-class="{'sort-true': sortBy=='codesname'}">{{'codeelement.viewpage.tableheader1' | i18n}}</th>
                                     <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.viewpage.tableheader2' | i18n}}</th>
                                     <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
-                                    <th ng:click="sortBy='active'" ng-class="{'sort-true': sortBy=='active'}">{{'codeelement.viewpage.active' | i18n}}</th>
                                     <th ng:click="sortBy='description'" ng-class="{'sort-true': sortBy=='description'}">{{'codeelement.viewpage.tableheader3' | i18n}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr bindonce ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy">
-                                    <td bo-text="codeElement.codesname"></td>
-                                    <td bo-text="codeElement.name"></td>
-                                    <td bo-text="codeElement.versio"></td>
-                                    <td bo-text="codeElement.active"></td>
-                                    <td bo-text="codeElement.description"></td>
+                                    <td bo-text="codeElement.codesname" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
+                                    <td bo-text="codeElement.name" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
+                                    <td bo-text="codeElement.versio" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
+                                    <td bo-text="codeElement.description" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -257,17 +259,15 @@
                                 <th ng:click="sortBy='codesname'" ng-class="{'sort-true': sortBy=='codesname'}">{{'codeelement.viewpage.tableheader1' | i18n}}</th>
                                 <th ng:click="sortBy='name'" ng-class="{'sort-true': sortBy=='name'}">{{'codeelement.viewpage.tableheader2' | i18n}}</th>
                                 <th ng:click="sortBy='versio'" ng-class="{'sort-true': sortBy=='versio'}">{{'codeelement.viewpage.version' | i18n}}</th>
-                                <th ng:click="sortBy='active'" ng-class="{'sort-true': sortBy=='active'}">{{'codeelement.viewpage.active' | i18n}}</th>
                                 <th ng:click="sortBy='description'" ng-class="{'sort-true': sortBy=='description'}">{{'codeelement.viewpage.tableheader3' | i18n}}</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:sortBy">
-                                    <td bo-text="codeElement.codesname"></td>
-                                    <td bo-text="codeElement.name"></td>
-                                    <td bo-text="codeElement.versio"></td>
-                                    <td bo-text="codeElement.active"></td>
-                                    <td bo-text="codeElement.description"></td>
+                                    <td bo-text="codeElement.codesname" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
+                                    <td bo-text="codeElement.name" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
+                                    <td bo-text="codeElement.versio" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
+                                    <td bo-text="codeElement.description" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
                             </tr>
                             </tbody>
                         </table>
