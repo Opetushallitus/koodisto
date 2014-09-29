@@ -23,12 +23,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
@@ -218,6 +220,26 @@ public class KoodiBusinessServiceTest {
         }
     }
     
+    @Transactional
+    @Test
+    public void setsRelationsToPassiveWhenUpdatingTilaToPassive() throws Exception {
+        KoodiVersio latest = koodiBusinessService.getLatestKoodiVersio("809suhdetahan");
+        assertRelationsArePassive(latest, false);
+        UpdateKoodiDataType updateData = convert(latest);
+        updateData.setTila(UpdateKoodiTilaType.PASSIIVINEN);
+        koodiBusinessService.updateKoodi(updateData);
+        assertRelationsArePassive(koodiBusinessService.getLatestKoodiVersio("809suhdetahan"), true);
+    }
+    
+    private void assertRelationsArePassive(KoodiVersio latest, boolean passive) {
+        for (KoodinSuhde ks : latest.getAlakoodis()) {
+            assertEquals(passive, ks.isPassive());
+        }
+        for (KoodinSuhde ks : latest.getYlakoodis()) {
+            assertEquals(passive, ks.isPassive());
+        }
+    }
+
     private List<KoodiVersioWithKoodistoItem> listByUri(String koodiUri) {
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(koodiUri);
         return koodiBusinessService.searchKoodis(searchType);
@@ -248,7 +270,6 @@ public class KoodiBusinessServiceTest {
 
         updateKoodiDataType.setKoodiArvo(koodiVersio.getKoodiarvo());
         updateKoodiDataType.setKoodiUri(koodiVersio.getKoodi().getKoodiUri());
-        //updateKoodiDataType.setTila(UpdateKoodiTilaType.valueOf(koodiVersio.getTila().name()));
         updateKoodiDataType.setVoimassaAlkuPvm(convert(koodiVersio.getVoimassaAlkuPvm()));
         updateKoodiDataType.setVoimassaLoppuPvm(convert(koodiVersio.getVoimassaLoppuPvm()));
         updateKoodiDataType.getMetadata().clear();
