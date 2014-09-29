@@ -108,7 +108,7 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
                     ylakoodiRestriction);
         }
     }
-    
+
     private static Predicate addWithinRestrictions(CriteriaQuery<?> cquery, CriteriaBuilder cb, Root<KoodinSuhde> root, KoodiUriAndVersioType alaKoodi,
             List<KoodiUriAndVersioType> ylaKoodis, SuhteenTyyppi st) {
 
@@ -147,14 +147,15 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
             SuhteenTyyppi st) {
         return privateGetRelations(ylaKoodi, alaKoodis, st, false);
     }
-    
+
     @Override
     public List<KoodinSuhde> getWithinRelations(KoodiUriAndVersioType ylaKoodi, List<KoodiUriAndVersioType> alaKoodis,
             SuhteenTyyppi st) {
         return privateGetRelations(ylaKoodi, alaKoodis, st, true);
     }
 
-    private List<KoodinSuhde> privateGetRelations(KoodiUriAndVersioType singleKoodi, List<KoodiUriAndVersioType> multipleKoodis, SuhteenTyyppi st, boolean isChild) {
+    private List<KoodinSuhde> privateGetRelations(KoodiUriAndVersioType singleKoodi, List<KoodiUriAndVersioType> multipleKoodis, SuhteenTyyppi st,
+            boolean isChild) {
 
         EntityManager em = getEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -165,25 +166,20 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
         root.fetch("ylakoodiVersio");
         root.fetch("alakoodiVersio");
 
-        Predicate restrictions = null;
-        if(!isChild){
-            restrictions = addRestrictions(cquery, cb, root, singleKoodi, multipleKoodis, st);
-        } else {
-            restrictions = addWithinRestrictions(cquery, cb, root, singleKoodi, multipleKoodis, st);
-        }
+        Predicate restrictions = isChild ? addWithinRestrictions(cquery, cb, root, singleKoodi, multipleKoodis, st) : addRestrictions(cquery, cb, root,
+                singleKoodi, multipleKoodis, st);
         cquery.select(root).where(restrictions);
 
-        List<KoodinSuhde> results = em.createQuery(cquery).getResultList();
-
-        return results;
+        return em.createQuery(cquery).getResultList();
     }
-    
+
     @Override
     public void remove(KoodinSuhde entity) {
         EntityManager em = getEntityManager();
 
         // FIXME: This is kinda ugly but it works
         em.createQuery("delete from KoodinSuhde k where k.id = :id").setParameter("id", entity.getId()).executeUpdate();
+        em.flush();
     }
 
     public void massRemove(List<KoodinSuhde> entityList) {
@@ -195,6 +191,7 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
         }
         EntityManager em = getEntityManager();
         em.createQuery("delete from KoodinSuhde k where k.id in (:idList)").setParameter("idList", idList).executeUpdate();
+        em.flush();
     }
 
     @Override

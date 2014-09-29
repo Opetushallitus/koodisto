@@ -93,6 +93,15 @@ public class KoodiBusinessServiceRelationsTest {
         result = koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, false);
         Assert.assertEquals(3L, result.size());
     }
+    
+    @Test
+    public void savedRelationBetweenCodeElementsInSameCodes() {
+        koodiBusinessService.addRelation("31", Arrays.asList("33"), SuhteenTyyppi.SISALTYY, false);
+        KoodiUriAndVersioType kv = givenKoodiUriAndVersioType("31", 2);
+        List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.listByRelation(kv, SuhteenTyyppi.SISALTYY, false);
+        Assert.assertEquals(1, result.size());
+    }
+
 
     @Test
     public void testRemoveRelation() {
@@ -126,5 +135,7 @@ public class KoodiBusinessServiceRelationsTest {
         kv.setVersio(versio);
         return kv;
     }
+    
+    
 
 }

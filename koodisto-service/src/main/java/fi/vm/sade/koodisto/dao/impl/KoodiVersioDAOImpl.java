@@ -570,8 +570,7 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
     @Override
     public KoodiVersio insertNonFlush(KoodiVersio entity) {
         validate(entity);
-        EntityManager em = getEntityManager();
-        em.persist(entity);
+        getEntityManager().persist(entity);
         // Database must be synchronized after this by flushing
         return entity;
     }
@@ -584,7 +583,6 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
     @Override
     public Map<KoodiVersio, KoodiVersio> getPreviousKoodiVersios(List<KoodiVersio> koodis) {
         EntityManager em = getEntityManager();
-        em.setFlushMode(FlushModeType.COMMIT);
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
         HashMap<KoodiVersio, KoodiVersio> results = new HashMap<>();

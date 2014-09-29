@@ -483,12 +483,11 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     private KoodistoVersio createNewVersion(KoodistoVersio base, KoodistoVersio input) {
 
-        logger.info("Creating new version of KoodistoVersio, koodisto id=" + base.getKoodisto().getId() + ", base versio=" + base.getVersio());
+        logger.info("Creating new version of KoodistoVersio, koodisto uri={}, base versio={}", base.getKoodisto().getKoodistoUri(), base.getVersio());
 
         input.setId(null);
         input.setVersion(null);
-        Integer newVersion = base.getVersio() + 1;
-        input.setVersio(newVersion);
+        input.setVersio(base.getVersio() + 1);
         input.setTila(Tila.LUONNOS);
 
         Koodisto koodisto = base.getKoodisto();
@@ -507,7 +506,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         copyKoodiVersiosFromOldKoodistoToNew(base, inserted);
         koodistonSuhdeDAO.copyRelations(base, inserted);
-
         return inserted;
     }
 
@@ -548,7 +546,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         }
 
         KoodistoVersio inserted = koodistoVersioDAO.insert(newVersio);
-
         copyKoodiVersiosFromOldKoodistoToNew(latest, inserted);
 
         koodistonSuhdeDAO.copyRelations(latest, inserted);

@@ -6,12 +6,14 @@ import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -185,5 +187,10 @@ public class KoodistoVersioDAOImpl extends AbstractJpaDAOImpl<KoodistoVersio, Lo
         query.select(cb.count(root.get("id"))).where(cb.and(koodistoUriEqual, koodistoVersioEqual));
 
         return em.createQuery(query).getSingleResult() > 0;
+    }
+    
+    @Override
+    public void flush() {
+        getEntityManager().flush();
     }
 }

@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +37,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
@@ -457,7 +457,8 @@ public class CodeElementResourceTest {
         assertResponse(resource.addRelation(codeElementUri, codeElementUri, relationType), 500, "error.codeelement.relation.to.self");
         assertResponse(resource.addRelation("doenotexist", codeElementUriToAdd, relationType), 500, "error.codeelement.not.found");
         assertResponse(resource.addRelation(codeElementUri, "doesnotexist", relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAddWithoutCodesRelation, relationType), 500, "error.codeelement.codes.have.no.relation");
+        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAddWithoutCodesRelation, relationType), 500,
+                "error.codeelement.codes.have.no.relation");
 
         assertEquals(0, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
 
@@ -476,11 +477,12 @@ public class CodeElementResourceTest {
         assertResponse(resource.addRelation(codeElementUri, codeElementUri, relationType), 500, "error.codeelement.relation.to.self");
         assertResponse(resource.addRelation("doenotexist", codeElementUriToAdd, relationType), 500, "error.codeelement.not.found");
         assertResponse(resource.addRelation(codeElementUri, "doesnotexist", relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAddWithoutCodesRelation, relationType), 500, "error.codeelement.codes.have.no.relation");
+        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAddWithoutCodesRelation, relationType), 500,
+                "error.codeelement.codes.have.no.relation");
 
         assertEquals(0, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.SISALTYY).size());
     }
-    
+
     @Test
     public void testAddRelationToSameCodes() {
         String codeElementUri = "lisaasisaltyy18kanssa1";
@@ -488,7 +490,50 @@ public class CodeElementResourceTest {
         String relationType = "SISALTYY";
 
         assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, relationType), 200);
-    
+
+    }
+
+    @Test
+    public void savesCodeElementWithNameAndRelationsToSameCodesChanges() {
+        String koodiUri = "savekoodisuhteillaomaankoodistoon";
+        String nimi = "uusinimi";
+        int versio = 1;
+
+        ExtendedKoodiDto codeElementToBeSaved = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
+        assertEquals(1, codeElementToBeSaved.getIncludesCodeElements().size());
+        assertEquals("samankoodistonsisalla1", codeElementToBeSaved.getIncludesCodeElements().get(0).codeElementUri);
+        assertEquals(1, codeElementToBeSaved.getWithinCodeElements().size());
+        assertEquals("samankoodistonsisalla2", codeElementToBeSaved.getWithinCodeElements().get(0).codeElementUri);
+
+        codeElementToBeSaved.getMetadata().get(0).setNimi(nimi);
+        codeElementToBeSaved.getIncludesCodeElements().clear();
+        codeElementToBeSaved.getWithinCodeElements().clear();
+        codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusisamankoodistonsisalla1", 1, false));
+        codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisamankoodistonsisalla2", 1, false));
+        assertResponse(resource.save(codeElementToBeSaved), 200);
+
+        ExtendedKoodiDto codeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
+        assertEquals(nimi, codeElement.getMetadata().get(0).getNimi());
+        assertEquals(2, codeElement.getIncludesCodeElements().size());
+        for (RelationCodeElement relation : codeElement.getIncludesCodeElements()) {
+            if (relation.codeElementUri.equals("uusisamankoodistonsisalla1")) {
+                assertFalse(relation.passive);
+            } else if (relation.codeElementUri.equals("samankoodistonsisalla1")) {
+                assertTrue(relation.passive);
+            } else {
+                fail();
+            }
+        }
+        assertEquals(2, codeElement.getWithinCodeElements().size());
+        for (RelationCodeElement relation : codeElement.getWithinCodeElements()) {
+            if (relation.codeElementUri.equals("uusisamankoodistonsisalla2")) {
+                assertFalse(relation.passive);
+            } else if (relation.codeElementUri.equals("samankoodistonsisalla2")) {
+                assertTrue(relation.passive);
+            } else {
+                fail();
+            }
+        }
     }
 
     @Test
@@ -595,7 +640,7 @@ public class CodeElementResourceTest {
         assertNull(dto.voimassaAlkuPvm);
         assertEquals(3, dto.viimeisinVersio.intValue());
     }
-    
+
     @Test
     public void returnsNoChangesForCodeElement() {
         KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("montaversiota", 3, false).getEntity();
@@ -603,70 +648,70 @@ public class CodeElementResourceTest {
         assertTrue(dto.muuttuneetTiedot.isEmpty());
         assertEquals(3, dto.viimeisinVersio.intValue());
     }
-    
+
     @Test
     public void comparesAgainstLatestAcceptedCodeElementVersion() {
         KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("viimeinenonluonnos", 1, true).getEntity();
         assertEquals(2, dto.viimeisinVersio.intValue());
         assertNull(dto.tila);
     }
-    
+
     @Test
     public void comparesAgainstLatestCodeElementVersion() {
         KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("viimeinenonluonnos", 1, false).getEntity();
         assertEquals(3, dto.viimeisinVersio.intValue());
         assertEquals(Tila.LUONNOS, dto.tila);
     }
-    
+
     @Test
     public void comparesAgainstLatestAcceptedCodeElementVersionUsingDate() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("viimeinenonluonnos", 12, 1, 2000, 0,0,0, true).getEntity();
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("viimeinenonluonnos", 12, 1, 2000, 0, 0, 0, true).getEntity();
         assertEquals(2, dto.viimeisinVersio.intValue());
         assertNull(dto.tila);
     }
-    
+
     @Test
     public void comparesAgainstLatestCodeElementVersionUsingDate() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("viimeinenonluonnos", 12, 12, 2000, 0,0,0, false).getEntity();
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("viimeinenonluonnos", 12, 12, 2000, 0, 0, 0, false).getEntity();
         assertEquals(3, dto.viimeisinVersio.intValue());
         assertEquals(Tila.LUONNOS, dto.tila);
     }
-    
+
     @Test
     public void returnsChangesForCodeElementUsingDateFromPast() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 2000, 0,0,0, false).getEntity();
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 2000, 0, 0, 0, false).getEntity();
         assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
         assertEquals("Monta versiota 3", dto.muuttuneetTiedot.get(0).nimi);
         assertNull(dto.voimassaAlkuPvm);
         assertEquals(3, dto.viimeisinVersio.intValue());
     }
-    
+
     @Test
     public void returnsNoChangesForCodeElementUsingDateFromFuture() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 0,0,0, false).getEntity();
+        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 0, 0, 0, false).getEntity();
         assertEquals(MuutosTila.EI_MUUTOKSIA, dto.muutosTila);
         assertTrue(dto.muuttuneetTiedot.isEmpty());
         assertEquals(3, dto.viimeisinVersio.intValue());
     }
-    
+
     @Test
     public void returnsCodeElementHasBeenRemovedWhenItIsNotFoundInLatestCodesVersion() {
         assertEquals(MuutosTila.POISTETTU, ((KoodiChangesDto) resource.getChangesToCodeElement("poistettu", 1, false).getEntity()).muutosTila);
     }
-    
+
     @Test
     public void returnsBadRequestWhenVersionNumberIsZeroForQueryingCodeElementChanges() {
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), resource.getChangesToCodeElement("poistettu", 0, false).getStatus());
     }
-    
+
     @Test
     public void returnsBadRequestForBadDateParametersWhenQueryingCodeElementChanges() {
         int badRequest = Response.Status.BAD_REQUEST.getStatusCode();
-        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 0,0, -1, false).getStatus());
-        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 0,-1, 0, false).getStatus());
-        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 25,0, 0, false).getStatus());
-        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 32, 1, 4000, 0,0, 0, false).getStatus());
-        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 15, 4000, 0,0, 0, true).getStatus());
+        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 0, 0, -1, false).getStatus());
+        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 0, -1, 0, false).getStatus());
+        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 25, 0, 0, false).getStatus());
+        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 32, 1, 4000, 0, 0, 0, false).getStatus());
+        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 15, 4000, 0, 0, 0, true).getStatus());
     }
 
     @Test
@@ -738,7 +783,7 @@ public class CodeElementResourceTest {
 
         ExtendedKoodiDto codeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
         assertEquals(1, codeElement.getIncludesCodeElements().size());
-        assertEquals(3, codeElement.getWithinCodeElements().size()); //Parentcodes versions, so the old relation is duplicated.
+        assertEquals(3, codeElement.getWithinCodeElements().size()); // Parentcodes versions, so the old relation is duplicated.
         assertEquals(2, codeElement.getLevelsWithCodeElements().size());
     }
 
@@ -758,7 +803,6 @@ public class CodeElementResourceTest {
         assertEquals(3, codeElement.getLevelsWithCodeElements().size());
     }
 
-    @Ignore
     @Test
     public void savesCodeElementWithAllRelationChanges() {
         String koodiUri = "savekoodineljallasuhteella";
@@ -777,21 +821,28 @@ public class CodeElementResourceTest {
         codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde3", 1, false));
         assertResponse(resource.save(codeElementToBeSaved), 200);
 
-        ExtendedKoodiDto codeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
-        assertEquals(1, codeElement.getIncludesCodeElements().size());
-        assertEquals(1, codeElement.getWithinCodeElements().size());
-        assertEquals(1, codeElement.getLevelsWithCodeElements().size());
-
-        
-        assertEquals("uusisavekoodinsuhde1", codeElement.getIncludesCodeElements().get(0).codeElementUri);
-        assertEquals("uusisavekoodinsuhde2", codeElement.getLevelsWithCodeElements().get(0).codeElementUri);
-        assertEquals("uusisavekoodinsuhde3", codeElement.getWithinCodeElements().get(0).codeElementUri);
-
         ExtendedKoodiDto oldCodeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
+        ExtendedKoodiDto newCodeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
+        
+        assertEquals(1, newCodeElement.getIncludesCodeElements().size());
+        assertEquals(1, newCodeElement.getLevelsWithCodeElements().size());
+        assertEquals(2, newCodeElement.getWithinCodeElements().size());
+        assertEquals("uusisavekoodinsuhde1", newCodeElement.getIncludesCodeElements().get(0).codeElementUri);
+        assertEquals("uusisavekoodinsuhde2", newCodeElement.getLevelsWithCodeElements().get(0).codeElementUri);
+
+        for (RelationCodeElement relation : newCodeElement.getWithinCodeElements()) {
+            if(relation.codeElementUri.equals("uusisavekoodinsuhde3")){
+                assertFalse(relation.passive);
+            } else if(relation.codeElementUri.equals("savekoodinsuhde4")){
+                assertTrue(relation.passive);
+            } else {
+                fail();
+            }
+        }
+
         assertEquals(1, oldCodeElement.getIncludesCodeElements().size());
         assertEquals(2, oldCodeElement.getLevelsWithCodeElements().size());
         assertEquals(1, oldCodeElement.getWithinCodeElements().size());
-
 
     }
 
@@ -809,7 +860,7 @@ public class CodeElementResourceTest {
         codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusirelaatiovanhantilalle2", 1, false));
         assertResponse(resource.save(codeElementToBeSaved), 200);
 
-        ExtendedKoodiDto codeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio+1).getEntity();
+        ExtendedKoodiDto codeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
         assertEquals(1, codeElement.getIncludesCodeElements().size());
         assertEquals(0, codeElement.getLevelsWithCodeElements().size());
         assertEquals(0, codeElement.getWithinCodeElements().size());

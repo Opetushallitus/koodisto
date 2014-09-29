@@ -173,4 +173,9 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
         }
         em.flush();
     }
+
+    @Override
+    public void flush() {
+        getEntityManager().flush();
+    }
 }

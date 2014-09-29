@@ -51,4 +51,9 @@ public class KoodistoDAOImpl extends AbstractJpaDAOImpl<Koodisto, Long> implemen
         query.select(cb.count(k.<String> get("koodistoUri"))).where(cb.equal(k.get("koodistoUri"), koodistoUri));
         return em.createQuery(query).getSingleResult() > 0;
     }
+    
+    @Override
+    public void flush() {
+        getEntityManager().flush();
+    }
 }
