@@ -57,6 +57,8 @@ import static org.junit.Assert.assertTrue;
 @DataSetLocation("classpath:test-data.xml")
 public class KoodistoBusinessServiceTest {
 
+    private static final String CODES_WITH_RELATIONS = "809suhdetahan";
+
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;
 
@@ -272,27 +274,41 @@ public class KoodistoBusinessServiceTest {
 	public void setsOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsAccepted() throws Exception {
 	    String koodistoUri = "vanhasuhdepassivoidaan";
 	    koodistoBusinessService.createNewVersion("vanhasuhdepassivoidaan");
-	    assertRelationsArePassive(koodistoBusinessService.getKoodistoVersio(koodistoUri, 2), koodistoUri, false);
+	    assertRelationsArePassive(koodistoBusinessService.getKoodistoVersio(koodistoUri, 2), false);
+	    assertCodeElementRelationsArePassive(CODES_WITH_RELATIONS, false);
 	}
 
 	@Transactional
 	@Test
 	public void setsLowerOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsAccepted() throws Exception {
-	    String koodistoUri = "809suhdetahan";
-	    koodistoBusinessService.createNewVersion(koodistoUri);
-	    UpdateKoodistoDataType dataType = DataUtils.convert(koodistoBusinessService.getLatestKoodistoVersio(koodistoUri));
-	    dataType.setTila(TilaType.HYVAKSYTTY);
+	    koodistoBusinessService.createNewVersion(CODES_WITH_RELATIONS);
+	    assertRelationsArePassive(givenKoodistoWithRelationsAndTila(TilaType.HYVAKSYTTY), true);
+	    assertCodeElementRelationsArePassive(CODES_WITH_RELATIONS, true);
+	}
+	
+	@Transactional
+    @Test
+    public void setsRelationsToPassiveWhenKoodistoIsSetToPassive() throws Exception {
+	    assertRelationsArePassive(givenKoodistoWithRelationsAndTila(TilaType.PASSIIVINEN), true);
+    }
+
+	private KoodistoVersio givenKoodistoWithRelationsAndTila(TilaType tila) {
+	    UpdateKoodistoDataType dataType = DataUtils.convert(koodistoBusinessService.getLatestKoodistoVersio(CODES_WITH_RELATIONS));
+	    dataType.setTila(tila);
 	    koodistoBusinessService.updateKoodisto(dataType);
-	    assertRelationsArePassive(koodistoBusinessService.getKoodistoVersio(koodistoUri, 1), koodistoUri, true);
+	    return koodistoBusinessService.getKoodistoVersio(CODES_WITH_RELATIONS, 1);
 	}
 
-    private void assertRelationsArePassive(KoodistoVersio kv, String koodiUri, boolean lowerPassive) {
+    private void assertRelationsArePassive(KoodistoVersio kv, boolean lowerPassive) {
         for(KoodistonSuhde ks : kv.getAlakoodistos()) {
              assertTrue(ks.isPassive());
              assertTrue((!lowerPassive && ks.isYlaKoodistoPassive()) || lowerPassive && ! ks.isYlaKoodistoPassive());
              assertTrue((lowerPassive && ks.isAlaKoodistoPassive()) || !lowerPassive && !ks.isAlaKoodistoPassive());
          }
-         for (KoodinSuhde ks : koodiBusinessService.getKoodiVersio(koodiUri, 2).getAlakoodis()) {
+    }
+
+    private void assertCodeElementRelationsArePassive(String koodiUri, boolean lowerPassive) {
+        for (KoodinSuhde ks : koodiBusinessService.getKoodiVersio(koodiUri, 1).getAlakoodis()) {
              assertTrue(ks.isPassive());
              assertTrue((!lowerPassive && ks.isYlaKoodiPassive()) || lowerPassive && ! ks.isYlaKoodiPassive());
              assertTrue((lowerPassive && ks.isAlaKoodiPassive()) || !lowerPassive && !ks.isAlaKoodiPassive());

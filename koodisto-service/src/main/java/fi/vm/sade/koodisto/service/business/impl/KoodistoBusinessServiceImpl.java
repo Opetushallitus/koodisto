@@ -593,11 +593,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             if (previousVersion != null) {
                 previousVersion.setVoimassaLoppuPvm(new Date());
             }
+        } else if(!Tila.PASSIIVINEN.equals(latest.getTila()) && TilaType.PASSIIVINEN.equals(updateKoodistoData.getTila())) {
+            setRelationsToPassive(latest);
         }
 
         // Update the version itself
         EntityUtils.copyFields(updateKoodistoData, latest);
-
+        
         if (latest.getVoimassaAlkuPvm() == null) {
             // Set start date to current date
             latest.setVoimassaAlkuPvm(new Date());
@@ -607,6 +609,15 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         latest.setPaivitysPvm(new Date());
 
         return latest;
+    }
+
+    private void setRelationsToPassive(KoodistoVersio latest) {
+        for (KoodistonSuhde ks : latest.getAlakoodistos()) {
+            ks.setYlaKoodistoPassive(true);
+        }
+        for (KoodistonSuhde ks : latest.getYlakoodistos()) {
+            ks.setAlaKoodistoPassive(true);
+        }
     }
 
     @Override
