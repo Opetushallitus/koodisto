@@ -629,6 +629,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         // Update the version itself by copying all the fields
         EntityUtils.copyFields(updateKoodiData, latest);
+        if (UpdateKoodiTilaType.PASSIIVINEN.equals(updateKoodiData.getTila())) {
+            setRelationsInPreviousVersionToPassive(latest);
+        }
         
         // Set update date
         latest.setPaivitysPvm(new Date());
