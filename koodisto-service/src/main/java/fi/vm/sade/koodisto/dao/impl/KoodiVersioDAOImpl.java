@@ -570,8 +570,7 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
     @Override
     public KoodiVersio insertNonFlush(KoodiVersio entity) {
         validate(entity);
-        EntityManager em = getEntityManager();
-        em.persist(entity);
+        getEntityManager().persist(entity);
         // Database must be synchronized after this by flushing
         return entity;
     }

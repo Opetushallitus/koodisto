@@ -21,4 +21,6 @@ public interface KoodistonSuhdeDAO extends JpaDAO<KoodistonSuhde, Long> {
     void copyRelations(KoodistoVersio old, KoodistoVersio fresh);
     
     void deleteRelations(KoodistoUriAndVersioType ylaKoodisto, List<KoodistoUriAndVersioType> alaKoodistos, SuhteenTyyppi st);
+
+    void flush();
 }
