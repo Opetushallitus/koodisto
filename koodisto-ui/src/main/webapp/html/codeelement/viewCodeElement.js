@@ -11,6 +11,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
         this.init = function(scope, codeElementUri, codeElementVersion) {
             if (model.forceRefresh || !(model.codeElement && model.codeElement.koodiUri == codeElementUri && model.codeElement.versio == codeElementVersion)) {
                 model.codeElement = null;
+                scope.showPassive = false;
                 this.withinCodeElements = [];
                 this.includesCodeElements = [];
                 this.levelsWithCodeElements = [];
@@ -97,6 +98,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
             ce.description = getLanguageSpecificValueOrValidValue(codeElement.relationMetadata, 'kuvaus', 'FI');
             ce.versio = codeElement.codeElementVersion;
             ce.codesname = getLanguageSpecificValueOrValidValue(codeElement.parentMetadata, 'nimi', 'FI');
+            ce.active = !codeElement.passive;
             list.push(ce);
         };
 
@@ -155,5 +157,9 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
     $scope.cancelconfirmdeletecodeelement = function() {
         $scope.model.deleteCodeElementModalInstance.dismiss('cancel');
     };
+    
+    $scope.showRelation = function(codeElement) {
+	return codeElement.active || $scope.showPassive
+    }
 
 }
