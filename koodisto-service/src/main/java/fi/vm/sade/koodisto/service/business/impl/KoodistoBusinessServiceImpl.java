@@ -823,10 +823,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
                 addRelation(koodistoUri, relationCodes, SuhteenTyyppi.SISALTYY);
             } else {
                 includesUrisToBeRemoved.remove(relationCodes);
+                if(relationCodes.equals(koodistoUri)){
+                    withinUrisToBeRemoved.remove(relationCodes); // Duplicate if includes self
+                }
             }
         }
         for (String relationCodes : withinUris) {
-            if (!withinUrisToBeRemoved.contains(relationCodes) && !relationCodes.equals(koodistoUri)) { // Duplicate if includes self
+            if (!withinUrisToBeRemoved.contains(relationCodes)) {
                 addRelation(relationCodes, koodistoUri, SuhteenTyyppi.SISALTYY);
             } else {
                 withinUrisToBeRemoved.remove(relationCodes);

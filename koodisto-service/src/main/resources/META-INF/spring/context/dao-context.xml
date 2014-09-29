@@ -26,7 +26,7 @@
         </property>
         <property name="jpaPropertyMap">
             <map>
-                <entry key="hibernate.show_sql" value="false" />
+                <entry key="hibernate.show_sql" value="${jpa.showSql}" />
                 <entry key="hibernate.hbm2ddl.auto" value="${jpa.schemaUpdate}" />
             </map>
         </property>
