@@ -739,18 +739,16 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private void copyRelations(KoodiVersio latest, KoodiVersio newVersio) {
         for (KoodinSuhde ks : latest.getYlakoodis()) {
-            createNewKoodinSuhdeIfRelationReferencesLatestKoodiVersio(ks, newVersio, ks.getYlakoodiVersio(), true);
+            createNewKoodinSuhde(ks, newVersio, ks.getYlakoodiVersio(), true);
         }
         for (KoodinSuhde ks : latest.getAlakoodis()) {
-            createNewKoodinSuhdeIfRelationReferencesLatestKoodiVersio(ks, ks.getAlakoodiVersio(), newVersio, false);
+            createNewKoodinSuhde(ks, ks.getAlakoodiVersio(), newVersio, false);
         }
         setRelationsInPreviousVersionToPassive(latest);
     }
 
-    private void createNewKoodinSuhdeIfRelationReferencesLatestKoodiVersio(KoodinSuhde ks, KoodiVersio ala, KoodiVersio yla, boolean checkUpperCode) {
-        // TODO: Only need to check for isPassive() in future. Once KH-219 and KH-214 have been done
-        KoodiVersio toCheck = checkUpperCode ? yla : ala;
-        if (ks.isPassive() || !koodiVersioDAO.isLatestKoodiVersio(toCheck.getKoodi().getKoodiUri(), toCheck.getVersio())) {
+    private void createNewKoodinSuhde(KoodinSuhde ks, KoodiVersio ala, KoodiVersio yla, boolean checkUpperCode) {
+        if (ks.isPassive()) {
             return;
         }
         KoodinSuhde newSuhde = new KoodinSuhde();
@@ -1230,10 +1228,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     private List<String> filterNewRelationUrisToSet(List<RelationCodeElement> newRelations, HashSet<String> existingUris) {
         ArrayList<String> toBeAdded = new ArrayList<String>();
         for (RelationCodeElement koodinSuhde : newRelations) {
-            if (!koodinSuhde.passive) {
-                if (!existingUris.contains(koodinSuhde.codeElementUri)) {
-                    toBeAdded.add(koodinSuhde.codeElementUri);
-                }
+            if (!koodinSuhde.passive && !existingUris.contains(koodinSuhde.codeElementUri)) {
+                toBeAdded.add(koodinSuhde.codeElementUri);
             }
         }
         return toBeAdded;
