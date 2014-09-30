@@ -224,7 +224,6 @@ public class KoodiBusinessServiceTest {
     @Test
     public void setsRelationsToPassiveWhenUpdatingTilaToPassive() throws Exception {
         KoodiVersio latest = koodiBusinessService.getLatestKoodiVersio("809suhdetahan");
-        assertRelationsArePassive(latest, false);
         UpdateKoodiDataType updateData = convert(latest);
         updateData.setTila(UpdateKoodiTilaType.PASSIIVINEN);
         koodiBusinessService.updateKoodi(updateData);
