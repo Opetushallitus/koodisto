@@ -86,18 +86,18 @@ public class KoodistoVersio extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Tila tila;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodistoVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodistoVersio", cascade = { CascadeType.ALL })
     private Set<KoodistoVersioKoodiVersio> koodiVersios = new HashSet<KoodistoVersioKoodiVersio>();
 
     @NotEmpty
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodistoVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodistoVersio", cascade = { CascadeType.ALL })
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private List<KoodistoMetadata> metadatas = new ArrayList<KoodistoMetadata>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodistoVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodistoVersio", cascade = { CascadeType.ALL })
     private Set<KoodistonSuhde> ylakoodistos = new HashSet<KoodistonSuhde>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ylakoodistoVersio", cascade = { CascadeType.REMOVE, CascadeType.PERSIST })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ylakoodistoVersio", cascade = { CascadeType.ALL })
     private Set<KoodistonSuhde> alakoodistos = new HashSet<KoodistonSuhde>();
 
 
