@@ -231,6 +231,17 @@ public class KoodiBusinessServiceTest {
         assertRelationsArePassive(koodiBusinessService.getLatestKoodiVersio("809suhdetahan"), true);
     }
     
+    @Test
+    public void deletingLatestVersionActivatesPreviousRelations() {
+        koodiBusinessService.delete("wanhasuhdeaktivoituupoistossa", 2);
+        Koodi koodi = koodiBusinessService.getKoodi("wanhasuhdeaktivoituupoistossa");
+        assertEquals(1, koodi.getKoodiVersios().size());
+        KoodiVersio kv = koodi.getKoodiVersios().iterator().next();
+        assertEquals(1, kv.getVersio().intValue());
+        assertEquals(1, kv.getAlakoodis().size());
+        assertRelationsArePassive(kv, false);
+    }
+
     private void assertRelationsArePassive(KoodiVersio latest, boolean passive) {
         for (KoodinSuhde ks : latest.getAlakoodis()) {
             assertEquals(passive, ks.isPassive());

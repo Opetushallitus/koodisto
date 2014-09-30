@@ -643,11 +643,15 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void setRelationsInPreviousVersionToPassive(KoodiVersio previous) {
-        for (KoodinSuhde ks : previous.getAlakoodis()) {
-            ks.setYlaKoodiPassive(true);
+        setRelationsToPassiveOrActive(previous, true);
+    }
+    
+    private void setRelationsToPassiveOrActive(KoodiVersio koodiVersio, boolean setToPassive) {
+        for (KoodinSuhde ks : koodiVersio.getAlakoodis()) {
+            ks.setYlaKoodiPassive(setToPassive);
         }
-        for (KoodinSuhde ks : previous.getYlakoodis()) {
-            ks.setAlaKoodiPassive(true);
+        for (KoodinSuhde ks : koodiVersio.getYlakoodis()) {
+            ks.setAlaKoodiPassive(setToPassive);
         }
     }
 
@@ -858,10 +862,20 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             koodiVersioDAO.remove(versio);
             if (koodi.getKoodiVersios().size() == 0) {
                 koodiDAO.remove(koodi);
+            } else {
+                activateRelationsInLatestKoodiVersio(koodi);
             }
-
+            
         }
 
+    }
+
+    private void activateRelationsInLatestKoodiVersio(Koodi koodi) {
+        KoodiVersio latest = null;
+        for (KoodiVersio kv : koodi.getKoodiVersios()) {
+            latest = latest == null || latest.getVersio() < kv.getVersio() ? kv : latest;
+        }
+        setRelationsToPassiveOrActive(latest, false);
     }
 
     @Override
