@@ -500,6 +500,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                     if ($scope.selectallcodelements && !ce.checked) {
                         $scope.selectallcodelements = false;
                     }
+                    ce.passive = false;
                     toBeShown.push(ce);
                     $scope.updatePaginationPage(true);
                 }
