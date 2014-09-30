@@ -227,7 +227,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr bindonce ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy">
+                                <tr bindonce ng-repeat="codeElement in model.includesCodeElements | orderBy:sortBy | filter:showRelation">
                                     <td bo-text="codeElement.codesname" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
                                     <td bo-text="codeElement.name" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
                                     <td bo-text="codeElement.versio" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
@@ -263,7 +263,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:sortBy">
+                            <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | orderBy:sortBy | filter:showRelation">
                                     <td bo-text="codeElement.codesname" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
                                     <td bo-text="codeElement.name" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
                                     <td bo-text="codeElement.versio" ng-class="codeElement.active ? '': 'passiveRelation'"></td>
