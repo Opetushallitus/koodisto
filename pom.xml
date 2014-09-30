@@ -4,7 +4,7 @@
 
 	<groupId>fi.vm.sade.koodisto</groupId>
 	<artifactId>koodisto</artifactId>
-	<version>11.4</version>
+	<version>11.5</version>
 	<packaging>pom</packaging>
 	<name>Koodisto :: Parent</name>
 

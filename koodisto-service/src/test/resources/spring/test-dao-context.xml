@@ -20,6 +20,12 @@
             <bean
                 class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
         </property>
+        <property name="jpaDialect">
+            <bean class="fi.vm.sade.koodisto.dao.flushmode.HibernateJpaDialect">
+                <property name="flushMode" value="COMMIT" />
+            </bean>
+        </property>
+        
         <property name="persistenceXmlLocation"
             value="classpath:META-INF/test-persistence.xml" />
     </bean>

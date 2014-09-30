@@ -23,12 +23,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
@@ -176,28 +178,6 @@ public class KoodiBusinessServiceTest {
     }
     
     @Test
-    public void onlyCopiesUpperRelationsThatReferencesLatestKoodiVersioWhenNewKoodiVersioIsCreated() {
-        String koodiUri = "vanhasuhdeeiversioiduA";
-        koodiBusinessService.createNewVersion(koodiUri);
-        List<KoodiVersioWithKoodistoItem> items = koodiBusinessService.listByRelation(koodiUri, 2, true, SuhteenTyyppi.SISALTYY);
-        assertEquals(1, items.size());
-        KoodiVersio kv = items.get(0).getKoodiVersio();
-        assertEquals(Integer.valueOf(2), kv.getVersio());
-        assertEquals("vanhasuhdeeiversioiduB", kv.getKoodi().getKoodiUri());
-    }
-    
-    @Test
-    public void onlyCopiesLowerRelationsThatReferencesLatestKoodiVersioWhenNewKoodiVersioIsCreated() {
-        String koodiUri = "vanhasuhdeeiversioiduBTake2";
-        koodiBusinessService.createNewVersion(koodiUri);
-        List<KoodiVersioWithKoodistoItem> items = koodiBusinessService.listByRelation(koodiUri, 2, false, SuhteenTyyppi.SISALTYY);
-        assertEquals(1, items.size());
-        KoodiVersio kv = items.get(0).getKoodiVersio();
-        assertEquals(Integer.valueOf(2), kv.getVersio());
-        assertEquals("vanhasuhdeeiversioiduATake2", kv.getKoodi().getKoodiUri());
-    }
-    
-    @Test
     public void doesNotCopyPassiveRelationsWhenNewVersionIsCreated() {
         String koodiUri = "passiivisuhdeeikopioidu";
         koodiBusinessService.createNewVersion(koodiUri);
@@ -218,6 +198,36 @@ public class KoodiBusinessServiceTest {
         }
     }
     
+    @Transactional
+    @Test
+    public void setsRelationsToPassiveWhenUpdatingTilaToPassive() throws Exception {
+        KoodiVersio latest = koodiBusinessService.getLatestKoodiVersio("809suhdetahan");
+        UpdateKoodiDataType updateData = convert(latest);
+        updateData.setTila(UpdateKoodiTilaType.PASSIIVINEN);
+        koodiBusinessService.updateKoodi(updateData);
+        assertRelationsArePassive(koodiBusinessService.getLatestKoodiVersio("809suhdetahan"), true);
+    }
+    
+    @Test
+    public void deletingLatestVersionActivatesPreviousRelations() {
+        koodiBusinessService.delete("wanhasuhdeaktivoituupoistossa", 2);
+        Koodi koodi = koodiBusinessService.getKoodi("wanhasuhdeaktivoituupoistossa");
+        assertEquals(1, koodi.getKoodiVersios().size());
+        KoodiVersio kv = koodi.getKoodiVersios().iterator().next();
+        assertEquals(1, kv.getVersio().intValue());
+        assertEquals(1, kv.getAlakoodis().size());
+        assertRelationsArePassive(kv, false);
+    }
+
+    private void assertRelationsArePassive(KoodiVersio latest, boolean passive) {
+        for (KoodinSuhde ks : latest.getAlakoodis()) {
+            assertEquals(passive, ks.isPassive());
+        }
+        for (KoodinSuhde ks : latest.getYlakoodis()) {
+            assertEquals(passive, ks.isPassive());
+        }
+    }
+
     private List<KoodiVersioWithKoodistoItem> listByUri(String koodiUri) {
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(koodiUri);
         return koodiBusinessService.searchKoodis(searchType);
@@ -248,7 +258,6 @@ public class KoodiBusinessServiceTest {
 
         updateKoodiDataType.setKoodiArvo(koodiVersio.getKoodiarvo());
         updateKoodiDataType.setKoodiUri(koodiVersio.getKoodi().getKoodiUri());
-        //updateKoodiDataType.setTila(UpdateKoodiTilaType.valueOf(koodiVersio.getTila().name()));
         updateKoodiDataType.setVoimassaAlkuPvm(convert(koodiVersio.getVoimassaAlkuPvm()));
         updateKoodiDataType.setVoimassaLoppuPvm(convert(koodiVersio.getVoimassaLoppuPvm()));
         updateKoodiDataType.getMetadata().clear();

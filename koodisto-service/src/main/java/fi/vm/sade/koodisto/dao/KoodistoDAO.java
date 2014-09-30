@@ -21,4 +21,6 @@ public interface KoodistoDAO extends JpaDAO<Koodisto, Long> {
     void delete(String koodistoUri);
 
     boolean koodistoUriExists(String koodistoUri);
+
+    void flush();
 }

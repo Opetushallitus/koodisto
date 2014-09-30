@@ -279,7 +279,7 @@
             </div>
         </div>
 
-        <div class="row-fluid" ng-show="model.withinCodeElements.length">
+        <div class="row-fluid" ng-show="(model.withinCodeElements | filter:{passive:false}).length">
             <div class="span6">
                 <table class="table">
                     <thead>
@@ -290,7 +290,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr bindonce ng-repeat="codeElement in model.withinCodeElements | filter:codeElement.passive | orderBy:sortBy | limitTo:model.withinListLengthLimit">
+                        <tr bindonce ng-repeat="codeElement in model.withinCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:model.withinListLengthLimit">
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
@@ -300,10 +300,10 @@
                     </tbody>
 
                 </table>
-                <div ng-if="model.withinListLengthLimit < model.withinCodeElements.length")>
+                <div ng-if="model.withinListLengthLimit < (model.withinCodeElements | filter:{passive:false}).length")>
                     <button type="button" class="btn pull-right" ng-click="model.incrementListLimit('within')">{{'codeelement.editpage.relationlist.loadmore'
                         | i18n}}</button>
-                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.withinListLengthLimit}} / {{model.withinCodeElements.length}}
+                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.withinListLengthLimit}} / {{(model.withinCodeElements | filter:{passive:false}).length}}
                     {{'codeelement.editpage.relationlist.label.end' | i18n}}
                 </div>
             </div>
@@ -317,7 +317,7 @@
             </div>
         </div>
 
-        <div class="row-fluid" ng-show="model.includesCodeElements.length">
+        <div class="row-fluid" ng-show="(model.includesCodeElements | filter:{passive:false}).length">
             <div class="span6">
                 <table class="table">
                     <thead>
@@ -328,7 +328,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr bindonce ng-repeat="codeElement in model.includesCodeElements | filter:codeElement.passive | orderBy:sortBy | limitTo:model.includesListLengthLimit">
+                        <tr bindonce ng-repeat="codeElement in model.includesCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:model.includesListLengthLimit">
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
@@ -336,10 +336,10 @@
                         </tr>
                     </tbody>
                 </table>
-                <div ng-if="model.includesListLengthLimit < model.includesCodeElements.length")>
+                <div ng-if="model.includesListLengthLimit < (model.includesCodeElements | filter:{passive:false}).length")>
                     <button type="button" class="btn pull-right" ng-click="model.incrementListLimit('includes')">{{'codeelement.editpage.relationlist.loadmore'
                         | i18n}}</button>
-                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.includesListLengthLimit}} / {{model.includesCodeElements.length}}
+                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.includesListLengthLimit}} / {{(model.includesCodeElements | filter:{passive:false}).length}}
                     {{'codeelement.editpage.relationlist.label.end' | i18n}}
                 </div>
             </div>
@@ -353,7 +353,7 @@
             </div>
         </div>
 
-        <div class="row-fluid" ng-show="model.levelsWithCodeElements.length">
+        <div class="row-fluid" ng-show="(model.levelsWithCodeElements | filter:{passive:false}).length">
             <div class="span6">
                 <table class="table">
                     <thead>
@@ -364,19 +364,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | filter:codeElement.passive | orderBy:sortBy | limitTo:model.levelsWithListLengthLimit">
+                        <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:model.levelsWithListLengthLimit">
                             <td class="align-center" bo-text="codeElement.name"></td>
                             <td class="align-center" bo-text="codeElement.versio"></td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
-                                    ng-click="removeFromLevelsWithCodeElements(codeElement); form.$setDirty()"></i></td>
+                                    ng-click="removeFromLevelsWithCodeElements(codeElement); form.$setDirty()"></i>{{codeElement.passive}}</td>
                         </tr>
                     </tbody>
                 </table>
-                <div ng-if="model.levelsWithListLengthLimit < model.levelsWithCodeElements.length")>
+                <div ng-if="model.levelsWithListLengthLimit < (model.levelsWithCodeElements | filter:{passive:false}).length")>
 
                     <button type="button" class="btn pull-right" ng-click="model.incrementListLimit('levelsWith')">{{'codeelement.editpage.relationlist.loadmore'
                         | i18n}}</button>
-                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.levelsWithListLengthLimit}} / {{model.levelsWithCodeElements.length}}
+                    {{'codeelement.editpage.relationlist.label.begining' | i18n}} {{model.levelsWithListLengthLimit}} / {{(model.levelsWithCodeElements | filter:{passive:false}).length}}
                     {{'codeelement.editpage.relationlist.label.end' | i18n}}
                 </div>
             </div>

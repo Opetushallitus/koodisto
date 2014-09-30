@@ -34,6 +34,7 @@ public class KoodiDaoTest {
     public void testDelete() {
         Koodi k = koodiDAO.readByUri("381");
         koodiDAO.delete(k.getKoodiUri());
+        koodiDAO.flush();
         koodiDAO.readByUri(k.getKoodiUri());
     }
 

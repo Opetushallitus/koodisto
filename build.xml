@@ -4,8 +4,7 @@
     <target name="deploy-to-remote-tomcat">
 
         <property name="oph.name" value="koodisto"/>
-		<property name="pom.version" value="11.4"/>
-
+		<property name="pom.version" value="11.5"/>
         <property name="maven.repo" value="${user.home}/.m2/repository"/>
         <property name="tomcat.name" value="tomcat_${oph.name}"/>
         <property name="tomcat.home" value="/data00/oph/${oph.name}/tomcat"/>

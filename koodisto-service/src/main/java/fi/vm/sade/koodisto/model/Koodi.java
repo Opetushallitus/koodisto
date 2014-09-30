@@ -38,7 +38,7 @@ public class Koodi extends BaseEntity {
     @Column(name="koodiUri", nullable =  false, unique = true)
     private String koodiUri;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodi", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodi", cascade = CascadeType.ALL)
     private Set<KoodiVersio> koodiVersios = new HashSet<KoodiVersio>();
 
     public Koodisto getKoodisto() {
