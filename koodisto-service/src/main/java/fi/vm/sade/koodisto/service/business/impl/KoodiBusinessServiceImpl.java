@@ -1129,6 +1129,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
     
     @Override
+    @Transactional
     public KoodiVersio saveKoodi(ExtendedKoodiDto koodiDTO) {
 
         String koodiUri = koodiDTO.getKoodiUri();
@@ -1170,7 +1171,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         addRelation(koodiUri, addedLevelsWithUris, SuhteenTyyppi.RINNASTEINEN, false);
         removeRelation(koodiUri, removedLevelsWithChildUris, SuhteenTyyppi.RINNASTEINEN, false);
 
-
         List<String> koodiuriAsList = new ArrayList<String>();
         koodiuriAsList.add(koodiUri);
         for (String parentUri : removedLevelsWithParentUris) {
@@ -1184,12 +1184,14 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     private void separateKoodiRelationsToUriLists(Set<KoodinSuhde> koodiRelations, HashSet<String> sisaltyyUris, HashSet<String> rinnasteinenUris,
             boolean isAlaKoodis) {
         for (KoodinSuhde koodinSuhde : koodiRelations) {
-            KoodiVersio koodiVersio = isAlaKoodis ? koodinSuhde.getAlakoodiVersio() : koodinSuhde.getYlakoodiVersio();
-            if (koodiVersioDAO.isLatestKoodiVersio(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio())) {
-                if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY)) {
-                    sisaltyyUris.add(koodiVersio.getKoodi().getKoodiUri());
-                } else if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)) {
-                    rinnasteinenUris.add(koodiVersio.getKoodi().getKoodiUri());
+            if (!koodinSuhde.isPassive()) {
+                KoodiVersio koodiVersio = isAlaKoodis ? koodinSuhde.getAlakoodiVersio() : koodinSuhde.getYlakoodiVersio();
+                if (koodiVersioDAO.isLatestKoodiVersio(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio())) {
+                    if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY)) {
+                        sisaltyyUris.add(koodiVersio.getKoodi().getKoodiUri());
+                    } else if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)) {
+                        rinnasteinenUris.add(koodiVersio.getKoodi().getKoodiUri());
+                    }
                 }
             }
         }
@@ -1200,7 +1202,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         for (String existingUri : existingUris) {
             boolean found = false;
             for (RelationCodeElement koodinSuhde : newRelations) {
-                found = found || koodinSuhde.codeElementUri.equals(existingUri);
+                if (!koodinSuhde.passive) {
+                    found = found || koodinSuhde.codeElementUri.equals(existingUri);
+                }
             }
             if (!found) {
                 toBeRemoved.add(existingUri);
@@ -1212,8 +1216,10 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     private List<String> filterNewRelationUrisToSet(List<RelationCodeElement> newRelations, HashSet<String> existingUris) {
         ArrayList<String> toBeAdded = new ArrayList<String>();
         for (RelationCodeElement koodinSuhde : newRelations) {
-            if (!existingUris.contains(koodinSuhde.codeElementUri)) {
-                toBeAdded.add(koodinSuhde.codeElementUri);
+            if (!koodinSuhde.passive) {
+                if (!existingUris.contains(koodinSuhde.codeElementUri)) {
+                    toBeAdded.add(koodinSuhde.codeElementUri);
+                }
             }
         }
         return toBeAdded;
