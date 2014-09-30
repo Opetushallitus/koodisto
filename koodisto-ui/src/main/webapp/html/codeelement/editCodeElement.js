@@ -123,6 +123,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
             ce.value = codeElement.codeElementValue;
             ce.versio = codeElement.codeElementVersion;
             ce.codesname = getLanguageSpecificValueOrValidValue(codeElement.parentMetadata, 'nimi', 'FI');
+            ce.passive = codeElement.passive;
             list.push(ce);
         };
 
