@@ -178,28 +178,6 @@ public class KoodiBusinessServiceTest {
     }
     
     @Test
-    public void onlyCopiesUpperRelationsThatReferencesLatestKoodiVersioWhenNewKoodiVersioIsCreated() {
-        String koodiUri = "vanhasuhdeeiversioiduA";
-        koodiBusinessService.createNewVersion(koodiUri);
-        List<KoodiVersioWithKoodistoItem> items = koodiBusinessService.listByRelation(koodiUri, 2, true, SuhteenTyyppi.SISALTYY);
-        assertEquals(1, items.size());
-        KoodiVersio kv = items.get(0).getKoodiVersio();
-        assertEquals(Integer.valueOf(2), kv.getVersio());
-        assertEquals("vanhasuhdeeiversioiduB", kv.getKoodi().getKoodiUri());
-    }
-    
-    @Test
-    public void onlyCopiesLowerRelationsThatReferencesLatestKoodiVersioWhenNewKoodiVersioIsCreated() {
-        String koodiUri = "vanhasuhdeeiversioiduBTake2";
-        koodiBusinessService.createNewVersion(koodiUri);
-        List<KoodiVersioWithKoodistoItem> items = koodiBusinessService.listByRelation(koodiUri, 2, false, SuhteenTyyppi.SISALTYY);
-        assertEquals(1, items.size());
-        KoodiVersio kv = items.get(0).getKoodiVersio();
-        assertEquals(Integer.valueOf(2), kv.getVersio());
-        assertEquals("vanhasuhdeeiversioiduATake2", kv.getKoodi().getKoodiUri());
-    }
-    
-    @Test
     public void doesNotCopyPassiveRelationsWhenNewVersionIsCreated() {
         String koodiUri = "passiivisuhdeeikopioidu";
         koodiBusinessService.createNewVersion(koodiUri);
