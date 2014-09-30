@@ -483,12 +483,11 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     private KoodistoVersio createNewVersion(KoodistoVersio base, KoodistoVersio input) {
 
-        logger.info("Creating new version of KoodistoVersio, koodisto id=" + base.getKoodisto().getId() + ", base versio=" + base.getVersio());
+        logger.info("Creating new version of KoodistoVersio, koodisto uri={}, base versio={}", base.getKoodisto().getKoodistoUri(), base.getVersio());
 
         input.setId(null);
         input.setVersion(null);
-        Integer newVersion = base.getVersio() + 1;
-        input.setVersio(newVersion);
+        input.setVersio(base.getVersio() + 1);
         input.setTila(Tila.LUONNOS);
 
         Koodisto koodisto = base.getKoodisto();
@@ -507,7 +506,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         copyKoodiVersiosFromOldKoodistoToNew(base, inserted);
         koodistonSuhdeDAO.copyRelations(base, inserted);
-
         return inserted;
     }
 
@@ -548,7 +546,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         }
 
         KoodistoVersio inserted = koodistoVersioDAO.insert(newVersio);
-
         copyKoodiVersiosFromOldKoodistoToNew(latest, inserted);
 
         koodistonSuhdeDAO.copyRelations(latest, inserted);
@@ -596,11 +593,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             if (previousVersion != null) {
                 previousVersion.setVoimassaLoppuPvm(new Date());
             }
+        } else if(!Tila.PASSIIVINEN.equals(latest.getTila()) && TilaType.PASSIIVINEN.equals(updateKoodistoData.getTila())) {
+            setRelationsToPassive(latest);
         }
 
         // Update the version itself
         EntityUtils.copyFields(updateKoodistoData, latest);
-
+        
         if (latest.getVoimassaAlkuPvm() == null) {
             // Set start date to current date
             latest.setVoimassaAlkuPvm(new Date());
@@ -610,6 +609,19 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         latest.setPaivitysPvm(new Date());
 
         return latest;
+    }
+
+    private void setRelationsToPassive(KoodistoVersio latest) {
+        setRelationsToPassiveOrActive(latest, true);
+    }
+
+    private void setRelationsToPassiveOrActive(KoodistoVersio latest, boolean setToPassive) {
+        for (KoodistonSuhde ks : latest.getAlakoodistos()) {
+            ks.setYlaKoodistoPassive(setToPassive);
+        }
+        for (KoodistonSuhde ks : latest.getYlakoodistos()) {
+            ks.setAlaKoodistoPassive(setToPassive);
+        }
     }
 
     @Override
@@ -666,8 +678,18 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
                 kr.removeKoodisto(koodisto);
             }
             koodistoDAO.remove(koodisto);
+        } else {
+            activateRelationsInLatestKoodistoVersio(koodisto);
         }
 
+    }
+
+    private void activateRelationsInLatestKoodistoVersio(Koodisto koodisto) {
+        KoodistoVersio latest = null;
+        for (KoodistoVersio kv : koodisto.getKoodistoVersios()) {
+            latest = latest == null || latest.getVersio() < kv.getVersio() ? kv : latest;
+        }
+        setRelationsToPassiveOrActive(latest, false);
     }
 
     @Override
@@ -815,10 +837,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
                 addRelation(koodistoUri, relationCodes, SuhteenTyyppi.SISALTYY);
             } else {
                 includesUrisToBeRemoved.remove(relationCodes);
+                if(relationCodes.equals(koodistoUri)){
+                    withinUrisToBeRemoved.remove(relationCodes); // Duplicate if includes self
+                }
             }
         }
         for (String relationCodes : withinUris) {
-            if (!withinUrisToBeRemoved.contains(relationCodes) && !relationCodes.equals(koodistoUri)) { // Duplicate if includes self
+            if (!withinUrisToBeRemoved.contains(relationCodes)) {
                 addRelation(relationCodes, koodistoUri, SuhteenTyyppi.SISALTYY);
             } else {
                 withinUrisToBeRemoved.remove(relationCodes);

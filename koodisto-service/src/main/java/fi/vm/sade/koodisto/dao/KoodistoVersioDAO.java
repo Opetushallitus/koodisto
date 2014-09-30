@@ -15,4 +15,6 @@ public interface KoodistoVersioDAO extends JpaDAO<KoodistoVersio, Long> {
     KoodistoVersio getPreviousKoodistoVersio(String koodistoUri, Integer koodistoVersio);
 
     boolean koodistoVersioExists(String koodistoUri, Integer koodistoVersio);
+
+    void flush();
 }

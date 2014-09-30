@@ -53,6 +53,8 @@
   <koodisto id="810" koodistouri="809suhdetahan" version="0" organisaatioOid="1.2.2004.6"/>
   <koodisto id="811" koodistouri="passiivisuhdeeikopioidu" version="0" organisaatioOid="1.2.2004.6"/>
   <koodisto id="812" koodistouri="koodistonsuhdeitsensakanssa2" version="0" organisaatioOid="1.2.2004.6"/>
+  <koodisto id="1000" koodistouri="vanhatsuhteetaktivoituupoistossa" version="0" organisaatioOid="1.2.2004.6"/>
+  <koodisto id="1001" koodistouri="tonnillasuhdetahan" version="0" organisaatioOid="1.2.2004.6"/>
   
   <koodi id="3" koodisto_id="1" version="0" koodiuri="3"/>
   <koodi id="5" koodisto_id="1" version="0" koodiuri="5"/>
@@ -236,6 +238,8 @@
   <koodi id="704" koodisto_id="809" version="0" koodiuri="vanhasuhdepassivoidaan"/>
   <koodi id="705" koodisto_id="810" version="0" koodiuri="809suhdetahan"/>
   <koodi id="706" koodisto_id="811" version="0" koodiuri="passiivisuhdeeikopioidu"/>
+  <koodi id="1000" koodisto_id="1000" version="0" koodiuri="wanhasuhdeaktivoituupoistossa"/>
+  <koodi id="1001" koodisto_id="1001" version="0" koodiuri="tonnillasuhdetahan"/>
 
   <koodiversio id="3" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="3" koodiarvo="005"/>
   <koodiversio id="5" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="1990-01-01" koodi_id="5" koodiarvo="009"/>
@@ -449,6 +453,9 @@
   <koodiversio id="707" version="0" paivityspvm="2013-08-13" luotu="2013-01-01" tila="HYVAKSYTTY" versio="2" voimassaalkupvm="2013-04-14" koodi_id="704" koodiarvo="tamahyvaksytaan"/>
   <koodiversio id="708" version="0" paivityspvm="2013-08-13" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="2013-04-14" koodi_id="705" koodiarvo="sisaltyy706ja707"/>
   <koodiversio id="709" version="0" paivityspvm="2013-08-13" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="2013-04-14" koodi_id="706" koodiarvo="passiivinensuhdeeikopioidu"/>
+  <koodiversio id="1000" version="0" paivityspvm="2013-08-13" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" voimassaalkupvm="2013-04-14" koodi_id="1000" koodiarvo="wanhasuhdeaktivoituu"/>
+  <koodiversio id="1001" version="0" paivityspvm="2014-08-13" luotu="2014-01-01" tila="PASSIIVINEN" versio="2" voimassaalkupvm="2014-04-14" koodi_id="1000" koodiarvo="tamapoistetaan"/>
+  <koodiversio id="1002" version="0" paivityspvm="2013-08-13" luotu="2013-01-01" tila="LUONNOS" versio="1" voimassaalkupvm="2013-04-14" koodi_id="1001" koodiarvo="tonnillasuhdetahan"/>
   
   <koodimetadata id="4" kieli="FI" nimi="Alajärvi" version="0" koodiversio_id="3" lyhytnimi="Alajärvi" kuvaus="Alajärvi"/>
   <koodimetadata id="6" kieli="FI" nimi="Alavieska" version="0" koodiversio_id="5" lyhytnimi="Alavieska" kuvaus="Alavieska"/>
@@ -837,6 +844,9 @@
   <koodimetadata id="585" kieli="FI" nimi="koodihyvaksytään" version="0" koodiversio_id="707" lyhytnimi="hyvaksytään" kuvaus="koodiversio laitetaan hyväksytty tilaan"/>
   <koodimetadata id="586" kieli="FI" nimi="sisaltyy" version="0" koodiversio_id="708" lyhytnimi="sisaltyy" kuvaus="sisaltyy"/>
   <koodimetadata id="587" kieli="FI" nimi="passiivinensuhdeeikopioidu" version="0" koodiversio_id="709" lyhytnimi="passiivinen" kuvaus="Passiivista koodinsuhdetta ei kopioida uusimpaan versioon"/>
+  <koodimetadata id="1000" kieli="FI" nimi="vanhasuhdeaktivoituu" version="0" koodiversio_id="1000" lyhytnimi="suhdeaktivoituu" kuvaus="Vanha suhde tähän aktivoituu poiston yhteydessä"/>
+  <koodimetadata id="1001" kieli="FI" nimi="tämäpoistetaan" version="0" koodiversio_id="1001" lyhytnimi="poistetaan" kuvaus="Tämä poistetaan"/>
+  <koodimetadata id="1002" kieli="FI" nimi="tonnillasuhdetähän" version="0" koodiversio_id="1002" lyhytnimi="tonnisuhde" kuvaus="Tähän on suhde tonnilla"/>
   
   <koodinsuhde id="1" alakoodiversio_id="3" ylakoodiversio_id="7" suhteentyyppi="RINNASTEINEN" version="0" versio="1" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
   <koodinsuhde id="2" alakoodiversio_id="7" ylakoodiversio_id="5" suhteentyyppi="RINNASTEINEN" version="0" versio="1" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
@@ -858,9 +868,10 @@
   <koodinsuhde id="18" alakoodiversio_id="700" ylakoodiversio_id="702" suhteentyyppi="SISALTYY" version="0" versio="2" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
   <koodinsuhde id="19" alakoodiversio_id="703" ylakoodiversio_id="705" suhteentyyppi="SISALTYY" version="0" versio="2" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
   <koodinsuhde id="20" alakoodiversio_id="704" ylakoodiversio_id="705" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
-  <koodinsuhde id="21" alakoodiversio_id="708" ylakoodiversio_id="706" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
+  <koodinsuhde id="21" alakoodiversio_id="708" ylakoodiversio_id="706" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="true" alakoodistapassiivinen="false"/>
   <koodinsuhde id="22" alakoodiversio_id="708" ylakoodiversio_id="707" suhteentyyppi="SISALTYY" version="0" versio="2" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
   <koodinsuhde id="23" alakoodiversio_id="709" ylakoodiversio_id="495" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="true" alakoodistapassiivinen="false"/>
+  <koodinsuhde id="1000" alakoodiversio_id="1002" ylakoodiversio_id="1000" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="true" alakoodistapassiivinen="false"/>
   
   <koodistoversio id="1" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="1" voimassaalkupvm="2012-11-20"/>
   <koodistoversio id="303" version="0" paivityspvm="2012-03-22" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="303" voimassaalkupvm="2012-11-20"/>
@@ -933,7 +944,9 @@
   <koodistoversio id="910" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="808"/>
   <koodistoversio id="911" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="811"/>
   <koodistoversio id="912" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="812"/>
-
+  <koodistoversio id="1000" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" luotu="2013-01-01" tila="HYVAKSYTTY" versio="1" koodisto_id="1000"/>
+  <koodistoversio id="1001" version="0" paivityspvm="2014-08-13" voimassaalkupvm="2014-08-12" luotu="2014-01-01" tila="PASSIIVINEN" versio="2" koodisto_id="1000"/>
+  <koodistoversio id="1002" version="0" paivityspvm="2013-08-13" voimassaalkupvm="2013-08-12" luotu="2013-01-01" tila="LUONNOS" versio="1" koodisto_id="1001"/>
   
   <koodistometadata id="2" kieli="FI" nimi="Kunnat" version="0" koodistoversio_id="1" kuvaus="Kunnat"/>
   <koodistometadata id="304" kieli="FI" nimi="Maakunnat" version="0" koodistoversio_id="303" kuvaus="Maakunnat"/>
@@ -1018,7 +1031,10 @@
   <koodistometadata id="912" kieli="FI" nimi="muutetaanaktiiviseksi" version="0" koodistoversio_id="807" kuvaus="Tämä hyväksytään"/>   
   <koodistometadata id="913" kieli="FI" nimi="sisaltyy" version="0" koodistoversio_id="808" kuvaus="sisaltyy"/>
   <koodistometadata id="914" kieli="FI" nimi="passiivinensuhdeeikopioidu" version="0" koodistoversio_id="911" kuvaus="Passiivinen koodistonsuhde ei kopioidu uuteen versioon"/> 
-  <koodistometadata id="915" kieli="FI" nimi="RelaatioItseensäRinnasteinen" version="0" koodistoversio_id="912" kuvaus="Tällä on Hyväksytty relaatio itseensä"/>    
+  <koodistometadata id="915" kieli="FI" nimi="RelaatioItseensäRinnasteinen" version="0" koodistoversio_id="912" kuvaus="Tällä on Hyväksytty relaatio itseensä"/>
+  <koodistometadata id="1000" kieli="FI" nimi="WanhaSuhdeAktivoituu" version="0" koodistoversio_id="1000" kuvaus="Vanha suhde aktivoituu poiston yhteydessä"/>    
+  <koodistometadata id="1001" kieli="FI" nimi="Tämäpoistetaan" version="0" koodistoversio_id="1001" kuvaus="Tämä versio poistetaan"/>    
+  <koodistometadata id="1002" kieli="FI" nimi="Tonnillawanhasuhdetähän" version="0" koodistoversio_id="1002" kuvaus="Tällä on passiivinen suhde tonnin kanssa"/>    
   
   <koodistoversio_koodiversio id="1" version="0" koodistoversio_id="1" koodiversio_id="3"/>
   <koodistoversio_koodiversio id="2" version="0" koodistoversio_id="1" koodiversio_id="5"/>
@@ -1213,6 +1229,9 @@
   <koodistoversio_koodiversio id="707" version="0" koodistoversio_id="807" koodiversio_id="707"/>
   <koodistoversio_koodiversio id="708" version="0" koodistoversio_id="808" koodiversio_id="708"/>
   <koodistoversio_koodiversio id="709" version="0" koodistoversio_id="911" koodiversio_id="709"/>
+  <koodistoversio_koodiversio id="1000" version="0" koodistoversio_id="1000" koodiversio_id="1000"/>
+  <koodistoversio_koodiversio id="1001" version="0" koodistoversio_id="1001" koodiversio_id="1001"/>
+  <koodistoversio_koodiversio id="1002" version="0" koodistoversio_id="1002" koodiversio_id="1002"/>
 
   <koodistoryhma id="1" koodistoryhmauri="foobarrr" version="0"/>
   <koodistoryhma id="2" koodistoryhmauri="baafoorrr" version="0"/>
@@ -1252,6 +1271,8 @@
   <koodistoryhma_koodisto koodistoryhma_id="426" koodisto_id="809"/>
   <koodistoryhma_koodisto koodistoryhma_id="426" koodisto_id="810"/>
   <koodistoryhma_koodisto koodistoryhma_id="426" koodisto_id="811"/>
+  <koodistoryhma_koodisto koodistoryhma_id="426" koodisto_id="1000"/>
+  <koodistoryhma_koodisto koodistoryhma_id="426" koodisto_id="1001"/>
   <koodistoryhmametadata id="1" koodistoryhma_id="1" kieli="FI" nimi="nimi1" version="0"/>
   <koodistoryhmametadata id="2" koodistoryhma_id="1" kieli="SV" nimi="namn1" version="0"/>
   <koodistoryhmametadata id="3" koodistoryhma_id="2" kieli="FI" nimi="nimi2" version="0"/>
@@ -1289,9 +1310,11 @@
 
   <koodistonsuhde id="910" alakoodistoversio_id="910" ylakoodistoversio_id="910" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
   
-  <koodistonsuhde id="911" alakoodistoversio_id="808" ylakoodistoversio_id="806" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
+  <koodistonsuhde id="911" alakoodistoversio_id="808" ylakoodistoversio_id="806" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="true" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="912" alakoodistoversio_id="808" ylakoodistoversio_id="807" versio="2" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="913" alakoodistoversio_id="911" ylakoodistoversio_id="506" versio="2" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="true" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="914" alakoodistoversio_id="912" ylakoodistoversio_id="912" versio="1" suhteentyyppi="RINNASTEINEN" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
+  
+  <koodistonsuhde id="1000" alakoodistoversio_id="1002" ylakoodistoversio_id="1000" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="true" alakoodistostapassiivinen="false"/>
 
 </dataset>

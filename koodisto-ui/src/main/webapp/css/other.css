@@ -448,3 +448,14 @@ th {
 .modal-warning {
     z-index: 120050 !important;
 }
+
+span.header {
+  font-size: 18px;
+  padding-right: 10px;
+}
+
+td.passiveRelation {
+	background-image: url(http://localhost:8080/koodisto-ui/img/disabled-pat.png);
+	color: rgb(51, 51, 51);
+	opacity: 0.649999976158142;
+}
