@@ -612,11 +612,15 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     private void setRelationsToPassive(KoodistoVersio latest) {
+        setRelationsToPassiveOrActive(latest, true);
+    }
+
+    private void setRelationsToPassiveOrActive(KoodistoVersio latest, boolean setToPassive) {
         for (KoodistonSuhde ks : latest.getAlakoodistos()) {
-            ks.setYlaKoodistoPassive(true);
+            ks.setYlaKoodistoPassive(setToPassive);
         }
         for (KoodistonSuhde ks : latest.getYlakoodistos()) {
-            ks.setAlaKoodistoPassive(true);
+            ks.setAlaKoodistoPassive(setToPassive);
         }
     }
 
@@ -674,8 +678,18 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
                 kr.removeKoodisto(koodisto);
             }
             koodistoDAO.remove(koodisto);
+        } else {
+            activateRelationsInLatestKoodistoVersio(koodisto);
         }
 
+    }
+
+    private void activateRelationsInLatestKoodistoVersio(Koodisto koodisto) {
+        KoodistoVersio latest = null;
+        for (KoodistoVersio kv : koodisto.getKoodistoVersios()) {
+            latest = latest == null || latest.getVersio() < kv.getVersio() ? kv : latest;
+        }
+        setRelationsToPassiveOrActive(latest, false);
     }
 
     @Override

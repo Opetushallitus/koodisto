@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +23,7 @@ import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
@@ -271,48 +273,88 @@ public class KoodistoBusinessServiceTest {
 	
 	@Transactional
 	@Test
-	public void setsOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsAccepted() throws Exception {
+	public void setsOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsCreated() throws Exception {
 	    String koodistoUri = "vanhasuhdepassivoidaan";
-	    koodistoBusinessService.createNewVersion("vanhasuhdepassivoidaan");
-	    assertRelationsArePassive(koodistoBusinessService.getKoodistoVersio(koodistoUri, 2), false);
-	    assertCodeElementRelationsArePassive(CODES_WITH_RELATIONS, false);
-	}
-
-	@Transactional
-	@Test
-	public void setsLowerOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsAccepted() throws Exception {
-	    koodistoBusinessService.createNewVersion(CODES_WITH_RELATIONS);
-	    assertRelationsArePassive(givenKoodistoWithRelationsAndTila(TilaType.HYVAKSYTTY), true);
-	    assertCodeElementRelationsArePassive(CODES_WITH_RELATIONS, true);
+	    koodistoBusinessService.createNewVersion(koodistoUri);
+	    assertRelationsArePassive(koodistoBusinessService.getKoodistoVersio("vanhasuhdepassivoidaan", 2), false);
+	    assertCodeElementRelationsArePassive(koodiBusinessService.getKoodiVersio("vanhasuhdepassivoidaan", 2), false);
 	}
 	
 	@Transactional
+	@Test
+	public void setsLowerOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsCreated() throws Exception {
+	    koodistoBusinessService.createNewVersion(CODES_WITH_RELATIONS);
+	    Set<KoodistonSuhde> relations = koodistoBusinessService.getKoodistoVersio(CODES_WITH_RELATIONS, 1).getYlakoodistos();
+	    assertEquals(2, relations.size());
+	    for (KoodistonSuhde ks : relations) {
+	        assertTrue(ks.isPassive());
+	    }
+	    Set<KoodinSuhde> codeRelations = koodiBusinessService.getKoodiVersio(CODES_WITH_RELATIONS, 1).getYlakoodis();
+	    assertEquals(2, codeRelations.size());
+	    for (KoodinSuhde ks : codeRelations) {
+            assertTrue(ks.isPassive());
+        }
+	}
+	
     @Test
     public void setsRelationsToPassiveWhenKoodistoIsSetToPassive() throws Exception {
-	    assertRelationsArePassive(givenKoodistoWithRelationsAndTila(TilaType.PASSIIVINEN), true);
+	    assertRelationsArePassive(givenKoodistoWithRelationsAndTila("vanhasuhdepassivoidaan", TilaType.PASSIIVINEN), false);
     }
-
-	private KoodistoVersio givenKoodistoWithRelationsAndTila(TilaType tila) {
-	    UpdateKoodistoDataType dataType = DataUtils.convert(koodistoBusinessService.getLatestKoodistoVersio(CODES_WITH_RELATIONS));
-	    dataType.setTila(tila);
-	    koodistoBusinessService.updateKoodisto(dataType);
-	    return koodistoBusinessService.getKoodistoVersio(CODES_WITH_RELATIONS, 1);
+	
+	@Test
+	public void activatesRelationsInPreviousVersion() throws Exception {
+	    koodistoBusinessService.delete("vanhatsuhteetaktivoituupoistossa", 2);
+	    KoodistoVersio latest = koodistoBusinessService.getLatestKoodistoVersio("vanhatsuhteetaktivoituupoistossa");
+	    assertEquals(1, latest.getVersio().intValue());
+	    assertRelationsAreActive(latest);
+	    assertCodeElementRelationsAreActive(koodiBusinessService.getKoodi("wanhasuhdeaktivoituupoistossa").getKoodiVersios().iterator().next());
 	}
 
-    private void assertRelationsArePassive(KoodistoVersio kv, boolean lowerPassive) {
+	private void assertCodeElementRelationsAreActive(KoodiVersio koodiVersio) {
+	    assertFalse(koodiVersio.getAlakoodis().isEmpty());
+	    for (KoodinSuhde ks : koodiVersio.getAlakoodis()) {
+	        assertFalse(ks.isPassive());
+	    }
+    }
+
+    private KoodistoVersio givenKoodistoWithRelationsAndTila(String koodistoUri, TilaType tila) {
+	    UpdateKoodistoDataType dataType = DataUtils.convert(koodistoBusinessService.getLatestKoodistoVersio(koodistoUri));
+	    dataType.setTila(tila);
+	    koodistoBusinessService.updateKoodisto(dataType);
+	    return koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+	}
+	
+	private void assertRelationsAreActive(KoodistoVersio kv) {
+	    assertFalse(kv.getAlakoodistos().isEmpty());
         for(KoodistonSuhde ks : kv.getAlakoodistos()) {
-             assertTrue(ks.isPassive());
-             assertTrue((!lowerPassive && ks.isYlaKoodistoPassive()) || lowerPassive && ! ks.isYlaKoodistoPassive());
-             assertTrue((lowerPassive && ks.isAlaKoodistoPassive()) || !lowerPassive && !ks.isAlaKoodistoPassive());
+             assertFalse(ks.isPassive());
          }
     }
 
-    private void assertCodeElementRelationsArePassive(String koodiUri, boolean lowerPassive) {
-        for (KoodinSuhde ks : koodiBusinessService.getKoodiVersio(koodiUri, 1).getAlakoodis()) {
-             assertTrue(ks.isPassive());
-             assertTrue((!lowerPassive && ks.isYlaKoodiPassive()) || lowerPassive && ! ks.isYlaKoodiPassive());
-             assertTrue((lowerPassive && ks.isAlaKoodiPassive()) || !lowerPassive && !ks.isAlaKoodiPassive());
+    private void assertRelationsArePassive(KoodistoVersio kv, boolean lowerPassive) {
+        assertFalse(kv.getAlakoodistos().isEmpty());
+        for(KoodistonSuhde ks : kv.getAlakoodistos()) {
+             assertRelationIsPassive(lowerPassive, ks);
          }
+    }
+
+    private void assertRelationIsPassive(boolean lowerPassive, KoodistonSuhde ks) {
+        assertTrue(ks.isPassive());
+        assertTrue((!lowerPassive && ks.isYlaKoodistoPassive()) || lowerPassive && ! ks.isYlaKoodistoPassive());
+        assertTrue((lowerPassive && ks.isAlaKoodistoPassive()) || !lowerPassive && !ks.isAlaKoodistoPassive());
+    }
+
+    private void assertCodeElementRelationsArePassive(KoodiVersio kv, boolean lowerPassive) {
+        assertFalse(kv.getAlakoodis().isEmpty());
+        for (KoodinSuhde ks : kv.getAlakoodis()) {
+             assertCodeElementRelationIsPassive(lowerPassive, ks);
+         }
+    }
+
+    private void assertCodeElementRelationIsPassive(boolean lowerPassive, KoodinSuhde ks) {
+        assertTrue(ks.isPassive());
+         assertTrue((!lowerPassive && ks.isYlaKoodiPassive()) || lowerPassive && ! ks.isYlaKoodiPassive());
+         assertTrue((lowerPassive && ks.isAlaKoodiPassive()) || !lowerPassive && !ks.isAlaKoodiPassive());
     }
 
     private KoodistoDto createKoodistoDtoForSave(String koodistoUri, int versio, List<RelationCodes> includesCodes, List<RelationCodes> withinCodes, List<RelationCodes> levelsWithCodes) {

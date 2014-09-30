@@ -868,7 +868,7 @@
   <koodinsuhde id="18" alakoodiversio_id="700" ylakoodiversio_id="702" suhteentyyppi="SISALTYY" version="0" versio="2" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
   <koodinsuhde id="19" alakoodiversio_id="703" ylakoodiversio_id="705" suhteentyyppi="SISALTYY" version="0" versio="2" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
   <koodinsuhde id="20" alakoodiversio_id="704" ylakoodiversio_id="705" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
-  <koodinsuhde id="21" alakoodiversio_id="708" ylakoodiversio_id="706" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
+  <koodinsuhde id="21" alakoodiversio_id="708" ylakoodiversio_id="706" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="true" alakoodistapassiivinen="false"/>
   <koodinsuhde id="22" alakoodiversio_id="708" ylakoodiversio_id="707" suhteentyyppi="SISALTYY" version="0" versio="2" ylakoodistapassiivinen="false" alakoodistapassiivinen="false"/>
   <koodinsuhde id="23" alakoodiversio_id="709" ylakoodiversio_id="495" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="true" alakoodistapassiivinen="false"/>
   <koodinsuhde id="1000" alakoodiversio_id="1002" ylakoodiversio_id="1000" suhteentyyppi="SISALTYY" version="0" versio="1" ylakoodistapassiivinen="true" alakoodistapassiivinen="false"/>
@@ -1310,7 +1310,7 @@
 
   <koodistonsuhde id="910" alakoodistoversio_id="910" ylakoodistoversio_id="910" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
   
-  <koodistonsuhde id="911" alakoodistoversio_id="808" ylakoodistoversio_id="806" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
+  <koodistonsuhde id="911" alakoodistoversio_id="808" ylakoodistoversio_id="806" versio="1" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="true" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="912" alakoodistoversio_id="808" ylakoodistoversio_id="807" versio="2" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="913" alakoodistoversio_id="911" ylakoodistoversio_id="506" versio="2" suhteentyyppi="SISALTYY" version="0" ylakoodistostapassiivinen="true" alakoodistostapassiivinen="false"/>
   <koodistonsuhde id="914" alakoodistoversio_id="912" ylakoodistoversio_id="912" versio="1" suhteentyyppi="RINNASTEINEN" version="0" ylakoodistostapassiivinen="false" alakoodistostapassiivinen="false"/>
