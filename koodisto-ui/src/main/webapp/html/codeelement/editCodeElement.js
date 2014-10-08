@@ -327,9 +327,14 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                 edited : true
             });
         }, function(error) {
+            var type = 'danger';
+            var message = jQuery.i18n.prop(error.data);
+            if (error.status == 504) {
+                message = jQuery.i18n.prop('error.save.timeout');
+            }
             var alert = {
-                type : 'danger',
-                msg : jQuery.i18n.prop(error.data)
+                type : type,
+                msg : message
             };
             $scope.model.alerts.push(alert);
         });

@@ -287,21 +287,23 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         }
         SaveCodes.put({}, codes, function(result) {
             Treemodel.refresh();
-            $location.path("/koodisto/"+$scope.codesUri+"/"+result[0]).search({forceRefresh: true});
+            $location.path("/koodisto/" + $scope.codesUri + "/" + result[0]).search({
+                forceRefresh : true
+            });
         }, function(error) {
+            var type = 'danger';
             if (error.data == "error.codes.has.no.codeelements") {
-                var alert = {
-                    type : 'info',
-                    msg : jQuery.i18n.prop(error.data)
-                };
-                $scope.model.alerts.push(alert);
-            } else {
-                var alert = {
-                    type : 'danger',
-                    msg : jQuery.i18n.prop(error.data)
-                };
-                $scope.model.alerts.push(alert);
+                type = 'info';
             }
+            var message = jQuery.i18n.prop(error.data);
+            if (error.status == 504) {
+                message = jQuery.i18n.prop('error.save.timeout');
+            }
+            var alert = {
+                type : type,
+                msg : message
+            };
+            $scope.model.alerts.push(alert);
         });
     };
 
