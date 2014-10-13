@@ -48,7 +48,7 @@
                           <phantomjs.binary.path>${phantomjs.binary}</phantomjs.binary.path>
                     </webDriverCapabilities>
                     <preloadSources>
-                        <source>${project.basedir}/src/main/webapp/jslib/jquery-2.0.3.min.js</source>
+                        <source>${project.basedir}/src/main/webapp/jslib/jquery-2.1.1.min.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.15/angular.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.15/angular-mocks.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.15/angular-resource.js</source>
