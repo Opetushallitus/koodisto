@@ -29,49 +29,61 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 model.codes = result;
 
 
-                scope.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
-                scope.namesv = getLanguageSpecificValue(result.metadata, 'nimi', 'SV');
-                scope.nameen = getLanguageSpecificValue(result.metadata, 'nimi', 'EN');
+                model.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
+                model.namesv = getLanguageSpecificValue(result.metadata, 'nimi', 'SV');
+                model.nameen = getLanguageSpecificValue(result.metadata, 'nimi', 'EN');
 
-                scope.descriptionfi = getLanguageSpecificValue(result.metadata, 'kuvaus', 'FI');
-                scope.descriptionsv = getLanguageSpecificValue(result.metadata, 'kuvaus', 'SV');
-                scope.descriptionen = getLanguageSpecificValue(result.metadata, 'kuvaus', 'EN');
+                model.descriptionfi = getLanguageSpecificValue(result.metadata, 'kuvaus', 'FI');
+                model.descriptionsv = getLanguageSpecificValue(result.metadata, 'kuvaus', 'SV');
+                model.descriptionen = getLanguageSpecificValue(result.metadata, 'kuvaus', 'EN');
 
-                scope.instructionsfi = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'FI');
-                scope.instructionssv = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'SV');
-                scope.instructionsen = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'EN');
+                model.instructionsfi = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'FI');
+                model.instructionssv = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'SV');
+                model.instructionsen = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'EN');
 
-                scope.targetareafi = getLanguageSpecificValue(result.metadata, 'kohdealue', 'FI');
-                scope.targetareasv = getLanguageSpecificValue(result.metadata, 'kohdealue', 'SV');
-                scope.targetareaen = getLanguageSpecificValue(result.metadata, 'kohdealue', 'EN');
+                model.targetareafi = getLanguageSpecificValue(result.metadata, 'kohdealue', 'FI');
+                model.targetareasv = getLanguageSpecificValue(result.metadata, 'kohdealue', 'SV');
+                model.targetareaen = getLanguageSpecificValue(result.metadata, 'kohdealue', 'EN');
 
-                scope.targetareapartfi = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'FI');
-                scope.targetareapartsv = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'SV');
-                scope.targetareaparten = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'EN');
+                model.targetareapartfi = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'FI');
+                model.targetareapartsv = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'SV');
+                model.targetareaparten = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'EN');
 
-                scope.conceptfi = getLanguageSpecificValue(result.metadata, 'kasite', 'FI');
-                scope.conceptsv = getLanguageSpecificValue(result.metadata, 'kasite', 'SV');
-                scope.concepten = getLanguageSpecificValue(result.metadata, 'kasite', 'EN');
+                model.conceptfi = getLanguageSpecificValue(result.metadata, 'kasite', 'FI');
+                model.conceptsv = getLanguageSpecificValue(result.metadata, 'kasite', 'SV');
+                model.concepten = getLanguageSpecificValue(result.metadata, 'kasite', 'EN');
 
-                scope.operationalenvironmentfi = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'FI');
-                scope.operationalenvironmentsv = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'SV');
-                scope.operationalenvironmenten = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'EN');
+                model.operationalenvironmentfi = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'FI');
+                model.operationalenvironmentsv = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'SV');
+                model.operationalenvironmenten = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'EN');
 
-                scope.codessourcefi = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'FI');
-                scope.codessourcesv = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'SV');
-                scope.codessourceen = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'EN');
+                model.codessourcefi = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'FI');
+                model.codessourcesv = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'SV');
+                model.codessourceen = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'EN');
 
-                scope.specifiescodesfi = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'FI');
-                scope.specifiescodessv = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'SV');
-                scope.specifiescodesen = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'EN');
+                model.specifiescodesfi = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'FI');
+                model.specifiescodessv = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'SV');
+                model.specifiescodesen = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'EN');
 
-                scope.totakenoticeoffi = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'FI');
-                scope.totakenoticeofsv = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'SV');
-                scope.totakenoticeofen = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'EN');
+                model.totakenoticeoffi = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'FI');
+                model.totakenoticeofsv = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'SV');
+                model.totakenoticeofen = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'EN');
 
-                scope.validitylevelfi = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'FI');
-                scope.validitylevelsv = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
-                scope.validitylevelen = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
+                model.validitylevelfi = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'FI');
+                model.validitylevelsv = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
+                model.validitylevelen = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
+                
+                model.samename = false;
+                model.samedescription = false;
+                model.sameinstructions = false;
+                model.sametargetarea = false;
+                model.sametargetareapart = false;
+                model.sameconcept = false;
+                model.sameoperationalenvironment = false;
+                model.samecodessource = false;
+                model.samespecifiescodes = false;
+                model.sametotakenoticeof = false;
+                model.samevaliditylevel = false;
 
                 model.codes.withinCodes.forEach(function(codes){
                     model.getLatestCodesVersionsByCodesUri(codes,model.withinCodes);
@@ -237,52 +249,52 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
             includesCodes : $scope.changeToRelationCodes($scope.model.includesCodes),
             levelsWithCodes : $scope.changeToRelationCodes($scope.model.levelsWithCodes)
         };
-        if ($scope.namefi) {
+        if ($scope.model.namefi) {
             codes.metadata.push({
                 kieli: 'FI',
-                nimi: $scope.namefi,
-                kuvaus: $scope.descriptionfi,
-                kayttoohje: $scope.instructionsfi,
-                kohdealue: $scope.targetareafi,
-                kohdealueenOsaAlue: $scope.targetareapartfi,
-                kasite: $scope.conceptfi,
-                toimintaymparisto: $scope.operationalenvironmentfi,
-                koodistonLahde: $scope.codessourcefi,
-                tarkentaaKoodistoa: $scope.specifiescodesfi,
-                huomioitavaKoodisto: $scope.totakenoticeoffi,
-                sitovuustaso: $scope.validitylevelfi
+                nimi: $scope.model.namefi,
+                kuvaus: $scope.model.descriptionfi,
+                kayttoohje: $scope.model.instructionsfi,
+                kohdealue: $scope.model.targetareafi,
+                kohdealueenOsaAlue: $scope.model.targetareapartfi,
+                kasite: $scope.model.conceptfi,
+                toimintaymparisto: $scope.model.operationalenvironmentfi,
+                koodistonLahde: $scope.model.codessourcefi,
+                tarkentaaKoodistoa: $scope.model.specifiescodesfi,
+                huomioitavaKoodisto: $scope.model.totakenoticeoffi,
+                sitovuustaso: $scope.model.validitylevelfi
             });
         }
-        if ($scope.namesv) {
+        if ($scope.model.namesv) {
                 codes.metadata.push({
                 kieli: 'SV',
-                nimi: $scope.namesv,
-                kuvaus: $scope.descriptionsv,
-                kayttoohje: $scope.instructionssv,
-                kohdealue: $scope.targetareasv,
-                kohdealueenOsaAlue: $scope.targetareapartsv,
-                kasite: $scope.conceptsv,
-                toimintaymparisto: $scope.operationalenvironmentsv,
-                koodistonLahde: $scope.codessourcesv,
-                tarkentaaKoodistoa: $scope.specifiescodessv,
-                huomioitavaKoodisto: $scope.totakenoticeofsv,
-                sitovuustaso: $scope.validitylevelsv
+                nimi: $scope.model.namesv,
+                kuvaus: $scope.model.descriptionsv,
+                kayttoohje: $scope.model.instructionssv,
+                kohdealue: $scope.model.targetareasv,
+                kohdealueenOsaAlue: $scope.model.targetareapartsv,
+                kasite: $scope.model.conceptsv,
+                toimintaymparisto: $scope.model.operationalenvironmentsv,
+                koodistonLahde: $scope.model.codessourcesv,
+                tarkentaaKoodistoa: $scope.model.specifiescodessv,
+                huomioitavaKoodisto: $scope.model.totakenoticeofsv,
+                sitovuustaso: $scope.model.validitylevelsv
             });
         }
-        if ($scope.nameen) {
+        if ($scope.model.nameen) {
             codes.metadata.push({
                 kieli: 'EN',
-                nimi: $scope.nameen,
-                kuvaus: $scope.descriptionen,
-                kayttoohje: $scope.instructionsen,
-                kohdealue: $scope.targetareaen,
-                kohdealueenOsaAlue: $scope.targetareaparten,
-                kasite: $scope.concepten,
-                toimintaymparisto: $scope.operationalenvironmenten,
-                koodistonLahde: $scope.codessourceen,
-                tarkentaaKoodistoa: $scope.specifiescodesen,
-                huomioitavaKoodisto: $scope.totakenoticeofen,
-                sitovuustaso: $scope.validitylevelen
+                nimi: $scope.model.nameen,
+                kuvaus: $scope.model.descriptionen,
+                kayttoohje: $scope.model.instructionsen,
+                kohdealue: $scope.model.targetareaen,
+                kohdealueenOsaAlue: $scope.model.targetareaparten,
+                kasite: $scope.model.concepten,
+                toimintaymparisto: $scope.model.operationalenvironmenten,
+                koodistonLahde: $scope.model.codessourceen,
+                tarkentaaKoodistoa: $scope.model.specifiescodesen,
+                huomioitavaKoodisto: $scope.model.totakenoticeofen,
+                sitovuustaso: $scope.model.validitylevelen
             });
         }
         SaveCodes.put({}, codes, function(result) {
@@ -320,39 +332,39 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
     };
     
     $scope.setSameValue = function(name) {
-        if (name === 'name' && !$scope.samename) {
-            $scope.namesv = $scope.namefi;
-            $scope.nameen = $scope.namefi;
-        } else if (name === 'description' && !$scope.samedescription) {
-            $scope.descriptionsv = $scope.descriptionfi;
-            $scope.descriptionen = $scope.descriptionfi;
-        } else if (name === 'instructions' && !$scope.sameinstructions) {
-            $scope.instructionssv = $scope.instructionsfi;
-            $scope.instructionsen = $scope.instructionsfi;
-        } else if (name === 'targetarea' && !$scope.sametargetarea) {
-            $scope.targetareasv = $scope.targetareafi;
-            $scope.targetareaen = $scope.targetareafi;
-        } else if (name === 'targetareapart' && !$scope.sametargetareapart) {
-            $scope.targetareapartsv = $scope.targetareapartfi;
-            $scope.targetareaparten = $scope.targetareapartfi;
-        } else if (name === 'concept' && !$scope.sameconcept) {
-            $scope.conceptsv = $scope.conceptfi;
-            $scope.concepten = $scope.conceptfi;
-        } else if (name === 'operationalenvironment' && !$scope.sameoperationalenvironment) {
-            $scope.operationalenvironmentsv = $scope.operationalenvironmentfi;
-            $scope.operationalenvironmenten = $scope.operationalenvironmentfi;
-        } else if (name === 'codessource' && !$scope.samecodessource) {
-            $scope.codessourcesv = $scope.codessourcefi;
-            $scope.codessourceen = $scope.codessourcefi;
-        } else if (name === 'specifiescodes' && !$scope.samespecifiescodes) {
-            $scope.specifiescodessv = $scope.specifiescodesfi;
-            $scope.specifiescodesen = $scope.specifiescodesfi;
-        } else if (name === 'totakenoticeof' && !$scope.sametotakenoticeof) {
-            $scope.totakenoticeofsv = $scope.totakenoticeoffi;
-            $scope.totakenoticeofen = $scope.totakenoticeoffi;
-        } else if (name === 'validitylevel' && !$scope.samevaliditylevel) {
-            $scope.validitylevelsv = $scope.validitylevelfi;
-            $scope.validitylevelen = $scope.validitylevelfi;
+        if (name === 'name' && $scope.model.samename) {
+            $scope.model.namesv = $scope.model.namefi;
+            $scope.model.nameen = $scope.model.namefi;
+        } else if (name === 'description' && $scope.model.samedescription) {
+            $scope.model.descriptionsv = $scope.model.descriptionfi;
+            $scope.model.descriptionen = $scope.model.descriptionfi;
+        } else if (name === 'instructions' && $scope.model.sameinstructions) {
+            $scope.model.instructionssv = $scope.model.instructionsfi;
+            $scope.model.instructionsen = $scope.model.instructionsfi;
+        } else if (name === 'targetarea' && $scope.model.sametargetarea) {
+            $scope.model.targetareasv = $scope.model.targetareafi;
+            $scope.model.targetareaen = $scope.model.targetareafi;
+        } else if (name === 'targetareapart' && $scope.model.sametargetareapart) {
+            $scope.model.targetareapartsv = $scope.model.targetareapartfi;
+            $scope.model.targetareaparten = $scope.model.targetareapartfi;
+        } else if (name === 'concept' && $scope.model.sameconcept) {
+            $scope.model.conceptsv = $scope.model.conceptfi;
+            $scope.model.concepten = $scope.model.conceptfi;
+        } else if (name === 'operationalenvironment' && $scope.model.sameoperationalenvironment) {
+            $scope.model.operationalenvironmentsv = $scope.model.operationalenvironmentfi;
+            $scope.model.operationalenvironmenten = $scope.model.operationalenvironmentfi;
+        } else if (name === 'codessource' && $scope.model.samecodessource) {
+            $scope.model.codessourcesv = $scope.model.codessourcefi;
+            $scope.model.codessourceen = $scope.model.codessourcefi;
+        } else if (name === 'specifiescodes' && $scope.model.samespecifiescodes) {
+            $scope.model.specifiescodessv = $scope.model.specifiescodesfi;
+            $scope.model.specifiescodesen = $scope.model.specifiescodesfi;
+        } else if (name === 'totakenoticeof' && $scope.model.sametotakenoticeof) {
+            $scope.model.totakenoticeofsv = $scope.model.totakenoticeoffi;
+            $scope.model.totakenoticeofen = $scope.model.totakenoticeoffi;
+        } else if (name === 'validitylevel' && $scope.model.samevaliditylevel) {
+            $scope.model.validitylevelsv = $scope.model.validitylevelfi;
+            $scope.model.validitylevelen = $scope.model.validitylevelfi;
         }
     };
 

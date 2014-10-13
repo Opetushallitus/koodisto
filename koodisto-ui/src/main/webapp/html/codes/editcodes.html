@@ -58,7 +58,7 @@
         </div>
         <div class="control-group">
             <div class="controls">
-                <label for="same_name" class="checkbox"> <input id="same_name" type="checkbox" ng-model="samename" ng-click="setSameValue('name')" />{{'codes.sameinalllanguages'
+                <label for="same_name" class="checkbox"> <input id="same_name" type="checkbox" ng-model="model.samename" ng-change="setSameValue('name')" />{{'codes.sameinalllanguages'
                     | i18n}}
                 </label>
             </div>
@@ -67,31 +67,31 @@
 
             <label for="name_fi" class="control-label">{{'codes.createpage.name' | i18n}}</label>
             <div class="controls">
-                <input id="name_fi" type="text" maxlength="256" class="width-30" ng-model="namefi" name="namefi" placeholder="{{'codes.finnish' | i18n}}"
-                    ng-required="!namesv && !nameen || descriptionfi" />
+                <input id="name_fi" type="text" maxlength="256" class="width-30" ng-model="model.namefi" name="namefi" placeholder="{{'codes.finnish' | i18n}}"
+                    ng-required="!model.namesv && !model.nameen || model.descriptionfi" ng-change="setSameValue('name')" />
                 <span class="text-error" ng-if="form.namefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
-                    <span ng-if="!namesv && !nameen">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namesv && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
+                    <span ng-if="!model.namesv && !model.nameen">{{errorMessageAtLeastOneName}}</span>
+                    <span ng-if="!(!model.namesv && !model.nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
-                <input id="name_sv" type="text" maxlength="256" class="width-30" ng-model="namesv" name="namesv" placeholder="{{'codes.swedish' | i18n}}"
-                    ng-required="!namefi && !nameen || descriptionsv" />
+                <input id="name_sv" type="text" maxlength="256" class="width-30" ng-model="model.namesv" name="namesv" placeholder="{{'codes.swedish' | i18n}}"
+                    ng-required="!model.namefi && !model.nameen || model.descriptionsv" ng-disabled="model.samename" />
                 <span class="text-error" ng-if="form.namesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
-                    <span ng-if="!namefi && !nameen">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namefi && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
+                    <span ng-if="!model.namefi && !model.nameen">{{errorMessageAtLeastOneName}}</span>
+                    <span ng-if="!(!model.namefi && !model.nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
-                <input id="name_en" type="text" maxlength="256" class="width-30" ng-model="nameen" name="nameen" placeholder="{{'codes.english' | i18n}}"
-                    ng-required="!namefi && !namesv || descriptionen" />
+                <input id="name_en" type="text" maxlength="256" class="width-30" ng-model="model.nameen" name="nameen" placeholder="{{'codes.english' | i18n}}"
+                    ng-required="!model.namefi && !model.namesv || model.descriptionen" ng-disabled="model.samename" />
                 <span class="text-error" ng-if="form.nameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
-                    <span ng-if="!namefi && !namesv">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!namefi && !namesv)">{{errorMessageIfOtherInfoIsGiven}}</span>
+                    <span ng-if="!model.namefi && !model.namesv">{{errorMessageAtLeastOneName}}</span>
+                    <span ng-if="!(!model.namefi && !model.namesv)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
@@ -110,8 +110,8 @@
         </div>
         <div class="control-group">
             <div class="controls">
-                <label for="same_description" class="checkbox"> <input id="same_description" type="checkbox" ng-model="samedescription"
-                        ng-click="setSameValue('description')" /> {{'codes.sameinalllanguages' | i18n}}
+                <label for="same_description" class="checkbox"> <input id="same_description" type="checkbox" ng-model="model.samedescription"
+                        ng-change="setSameValue('description')" /> {{'codes.sameinalllanguages' | i18n}}
                 </label>
             </div>
         </div>
@@ -119,19 +119,19 @@
         <div class="control-group">
             <label for="description_fi" class="control-label">{{'codes.createpage.description' | i18n}}</label>
             <div class="controls">
-                <textarea id="description_fi" maxlength="2048" class="width-30" ng-model="descriptionfi" name="descriptionfi" placeholder="{{'codes.finnish' | i18n}}"></textarea>
+                <textarea id="description_fi" maxlength="2048" class="width-30" ng-model="model.descriptionfi" name="descriptionfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('description')" ></textarea>
                 <span class="text-error" ng-if="form.descriptionfi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
-                <textarea id="description_sv" maxlength="2048" class="width-30" ng-model="descriptionsv" name="descriptionsv" placeholder="{{'codes.swedish' | i18n}}"></textarea>
+                <textarea id="description_sv" maxlength="2048" class="width-30" ng-model="model.descriptionsv" name="descriptionsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.samedescription" ></textarea>
                 <span class="text-error" ng-if="form.descriptionsv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
-                <textarea id="description_en" maxlength="2048" class="width-30" ng-model="descriptionen" name="descriptionen" placeholder="{{'codes.english' | i18n}}"></textarea>
+                <textarea id="description_en" maxlength="2048" class="width-30" ng-model="model.descriptionen" name="descriptionen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.samedescription" ></textarea>
                 <span class="text-error" ng-if="form.descriptionen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
@@ -271,8 +271,8 @@
                     class="pull-left" ng-class="{'icon-chevron-down': isopen, 'icon-chevron-right': !isopen}"></i> {{'codes.createpage.showextra' | i18n}} </accordion-heading>
                 <div class="control-group">
                     <div class="controls">
-                        <label for="same_instructions" class="checkbox"> <input id="same_instructions" type="checkbox" ng-model="sameinstructions"
-                                ng-click="setSameValue('instructions')" /> {{'codes.sameinalllanguages' | i18n}}
+                        <label for="same_instructions" class="checkbox"> <input id="same_instructions" type="checkbox" ng-model="model.sameinstructions"
+                                ng-change="setSameValue('instructions')" /> {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
                 </div>
@@ -280,25 +280,25 @@
 
                     <label for="instructions_fi" class="control-label">{{'codes.createpage.instructions' | i18n}}</label>
                     <div class="controls">
-                        <textarea id="instructions_fi" maxlength="2048" class="width-30" ng-model="instructionsfi" placeholder="{{'codes.finnish' | i18n}}"></textarea>
+                        <textarea id="instructions_fi" maxlength="2048" class="width-30" ng-model="model.instructionsfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('instructions')" ></textarea>
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <textarea id="instructions_sv" maxlength="2048" class="width-30" ng-model="instructionssv" placeholder="{{'codes.swedish' | i18n}}"></textarea>
+                        <textarea id="instructions_sv" maxlength="2048" class="width-30" ng-model="model.instructionssv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.sameinstructions" ></textarea>
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <textarea id="instructions_en" maxlength="2048" class="width-30" ng-model="instructionsen" placeholder="{{'codes.english' | i18n}}"></textarea>
+                        <textarea id="instructions_en" maxlength="2048" class="width-30" ng-model="model.instructionsen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.sameinstructions" ></textarea>
                     </div>
                 </div>
 
 
                 <div class="control-group">
                     <div class="controls">
-                        <label for="same_targetarea" class="checkbox"> <input id="same_targetarea" type="checkbox" ng-model="sametargetarea"
-                                ng-click="setSameValue('targetarea')" /> {{'codes.sameinalllanguages' | i18n}}
+                        <label for="same_targetarea" class="checkbox"> <input id="same_targetarea" type="checkbox" ng-model="model.sametargetarea"
+                                ng-change="setSameValue('targetarea')" /> {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
                 </div>
@@ -306,25 +306,25 @@
 
                     <label for="targetarea_fi" class="control-label">{{'codes.createpage.targetarea' | i18n}}</label>
                     <div class="controls">
-                        <input id="targetarea_fi" type="text" maxlength="256" class="width-30" ng-model="targetareafi" placeholder="{{'codes.finnish' | i18n}}" />
+                        <input id="targetarea_fi" type="text" maxlength="256" class="width-30" ng-model="model.targetareafi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('targetarea')" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="targetarea_sv" type="text" maxlength="256" class="width-30" ng-model="targetareasv" placeholder="{{'codes.swedish' | i18n}}" />
+                        <input id="targetarea_sv" type="text" maxlength="256" class="width-30" ng-model="model.targetareasv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.sametargetarea" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="targetarea_en" type="text" maxlength="256" class="width-30" ng-model="targetareaen" placeholder="{{'codes.english' | i18n}}" />
+                        <input id="targetarea_en" type="text" maxlength="256" class="width-30" ng-model="model.targetareaen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.sametargetarea" />
                     </div>
                 </div>
 
 
                 <div class="control-group">
                     <div class="controls">
-                        <label for="same_targetareapart" class="checkbox"><input id="same_targetareapart" type="checkbox" ng-model="sametargetareapart"
-                                ng-click="setSameValue('targetareapart')" /> {{'codes.sameinalllanguages' | i18n}}</label>
+                        <label for="same_targetareapart" class="checkbox"><input id="same_targetareapart" type="checkbox" ng-model="model.sametargetareapart"
+                                ng-change="setSameValue('targetareapart')" /> {{'codes.sameinalllanguages' | i18n}}</label>
                     </div>
                 </div>
 
@@ -332,24 +332,24 @@
                     <label for="targetareapart_fi" class="control-label">{{'codes.createpage.targetareapart' | i18n}}</label>
 
                     <div class="controls">
-                        <input id="targetareapart_fi" type="text" maxlength="256" class="width-30" ng-model="targetareapartfi" placeholder="{{'codes.finnish' | i18n}}" />
+                        <input id="targetareapart_fi" type="text" maxlength="256" class="width-30" ng-model="model.targetareapartfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('targetareapart')" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="targetareapart_sv" type="text" maxlength="256" class="width-30" ng-model="targetareapartsv" placeholder="{{'codes.swedish' | i18n}}" />
+                        <input id="targetareapart_sv" type="text" maxlength="256" class="width-30" ng-model="model.targetareapartsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.sametargetareapart" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="targetareapart_en" type="text" maxlength="256" class="width-30" ng-model="targetareaparten" placeholder="{{'codes.english' | i18n}}" />
+                        <input id="targetareapart_en" type="text" maxlength="256" class="width-30" ng-model="model.targetareaparten" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.sametargetareapart" />
                     </div>
                 </div>
 
 
                 <div class="control-group">
                     <div class="controls">
-                        <label for="same_concept" class="checkbox"> <input id="same_concept" type="checkbox" ng-model="sameconcept" ng-click="setSameValue('concept')" />
+                        <label for="same_concept" class="checkbox"> <input id="same_concept" type="checkbox" ng-model="model.sameconcept" ng-change="setSameValue('concept')" />
                             {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
@@ -358,24 +358,24 @@
 
                     <label for="concept_fi" class="control-label">{{'codes.createpage.concept' | i18n}}</label>
                     <div class="controls">
-                        <input id="concept_fi" type="text" maxlength="256" class="width-30" ng-model="conceptfi" placeholder="{{'codes.finnish' | i18n}}" />
+                        <input id="concept_fi" type="text" maxlength="256" class="width-30" ng-model="model.conceptfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('concept')" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="concept_sv" type="text" maxlength="256" class="width-30" ng-model="conceptsv" placeholder="{{'codes.swedish' | i18n}}" />
+                        <input id="concept_sv" type="text" maxlength="256" class="width-30" ng-model="model.conceptsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.sameconcept" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="concept_en" type="text" maxlength="256" class="width-30" ng-model="concepten" placeholder="{{'codes.english' | i18n}}" />
+                        <input id="concept_en" type="text" maxlength="256" class="width-30" ng-model="model.concepten" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.sameconcept" />
                     </div>
                 </div>
 
                 <div class="control-group">
                     <div class="controls">
                         <label for="same_operationalenvironment" class="checkbox"> <input id="same_operationalenvironment" type="checkbox"
-                                ng-model="sameoperationalenvironment" ng-click="setSameValue('operationalenvironment')" /> {{'codes.sameinalllanguages' | i18n}}
+                                ng-model="model.sameoperationalenvironment" ng-change="setSameValue('operationalenvironment')" /> {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
                 </div>
@@ -383,51 +383,51 @@
                     <label for="operationalenvironment_fi" class="control-label">{{'codes.createpage.operationalenvironment' | i18n}}</label>
 
                     <div class="controls">
-                        <input id="operationalenvironment_fi" type="text" maxlength="256" class="width-30" ng-model="operationalenvironmentfi"
-                            placeholder="{{'codes.finnish' | i18n}}" />
+                        <input id="operationalenvironment_fi" type="text" maxlength="256" class="width-30" ng-model="model.operationalenvironmentfi"
+                            placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('operationalenvironment')" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="operationalenvironment_sv" type="text" maxlength="256" class="width-30" ng-model="operationalenvironmentsv"
-                            placeholder="{{'codes.swedish' | i18n}}" />
+                        <input id="operationalenvironment_sv" type="text" maxlength="256" class="width-30" ng-model="model.operationalenvironmentsv"
+                            placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.sameoperationalenvironment" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="operationalenvironment_en" type="text" maxlength="256" class="width-30" ng-model="operationalenvironmenten"
-                            placeholder="{{'codes.english' | i18n}}" />
+                        <input id="operationalenvironment_en" type="text" maxlength="256" class="width-30" ng-model="model.operationalenvironmenten"
+                            placeholder="{{'codes.english' | i18n}}" ng-disabled="model.sameoperationalenvironment" />
                     </div>
                 </div>
 
                 <div class="control-group">
                     <div class="controls">
-                        <label for="same_codessource" class="checkbox"><input id="same_codessource" type="checkbox" ng-model="samecodessource"
-                                ng-click="setSameValue('codessource')" /> {{'codes.sameinalllanguages' | i18n}}</label>
+                        <label for="same_codessource" class="checkbox"><input id="same_codessource" type="checkbox" ng-model="model.samecodessource"
+                                ng-change="setSameValue('codessource')" /> {{'codes.sameinalllanguages' | i18n}}</label>
                     </div>
                 </div>
                 <div class="control-group">
                     <label for="codessource_fi" class="control-label">{{'codes.createpage.codessource' | i18n}}</label>
 
                     <div class="controls">
-                        <input id="codessource_fi" type="text" maxlength="256" class="width-30" ng-model="codessourcefi" placeholder="{{'codes.finnish' | i18n}}" />
+                        <input id="codessource_fi" type="text" maxlength="256" class="width-30" ng-model="model.codessourcefi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('codessource')" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="codessource_sv" type="text" maxlength="256" class="width-30" ng-model="codessourcesv" placeholder="{{'codes.swedish' | i18n}}" />
+                        <input id="codessource_sv" type="text" maxlength="256" class="width-30" ng-model="model.codessourcesv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.samecodessource" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="codessource_en" type="text" maxlength="256" class="width-30" ng-model="codessourceen" placeholder="{{'codes.english' | i18n}}" />
+                        <input id="codessource_en" type="text" maxlength="256" class="width-30" ng-model="model.codessourceen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.samecodessource" />
                     </div>
                 </div>
 
                 <div class="control-group">
                     <div class="controls">
-                        <label for="same_specifiescodes" class="checkbox"> <input id="same_specifiescodes" type="checkbox" ng-model="samespecifiescodes"
-                                ng-click="setSameValue('specifiescodes')" /> {{'codes.sameinalllanguages' | i18n}}
+                        <label for="same_specifiescodes" class="checkbox"> <input id="same_specifiescodes" type="checkbox" ng-model="model.samespecifiescodes"
+                                ng-change="setSameValue('specifiescodes')" /> {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
                 </div>
@@ -435,24 +435,24 @@
                 <div class="control-group">
                     <label for="specifiescodes_fi" class="control-label">{{'codes.createpage.specifiescodes' | i18n}}</label>
                     <div class="controls">
-                        <input id="specifiescodes_fi" type="text" maxlength="256" class="width-30" ng-model="specifiescodesfi" placeholder="{{'codes.finnish' | i18n}}" />
+                        <input id="specifiescodes_fi" type="text" maxlength="256" class="width-30" ng-model="model.specifiescodesfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('specifiescodes')" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="specifiescodes_sv" type="text" maxlength="256" class="width-30" ng-model="specifiescodessv" placeholder="{{'codes.swedish' | i18n}}" />
+                        <input id="specifiescodes_sv" type="text" maxlength="256" class="width-30" ng-model="model.specifiescodessv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.samespecifiescodes" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="specifiescodes_en" type="text" maxlength="256" class="width-30" ng-model="specifiescodesen" placeholder="{{'codes.english' | i18n}}" />
+                        <input id="specifiescodes_en" type="text" maxlength="256" class="width-30" ng-model="model.specifiescodesen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.samespecifiescodes" />
                     </div>
                 </div>
 
                 <div class="control-group">
                     <div class="controls">
-                        <label for="same_totakenoticeof" class="checkbox"> <input id="same_totakenoticeof" type="checkbox" ng-model="sametotakenoticeof"
-                                ng-click="setSameValue('totakenoticeof')" /> {{'codes.sameinalllanguages' | i18n}}
+                        <label for="same_totakenoticeof" class="checkbox"> <input id="same_totakenoticeof" type="checkbox" ng-model="model.sametotakenoticeof"
+                                ng-change="setSameValue('totakenoticeof')" /> {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
                 </div>
@@ -460,24 +460,24 @@
 
                     <label for="totakenoticeof_fi" class="control-label">{{'codes.createpage.totakenoticeof' | i18n}}</label>
                     <div class="controls">
-                        <input id="totakenoticeof_fi" type="text" maxlength="256" class="width-30" ng-model="totakenoticeoffi" placeholder="{{'codes.finnish' | i18n}}" />
+                        <input id="totakenoticeof_fi" type="text" maxlength="256" class="width-30" ng-model="model.totakenoticeoffi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('totakenoticeof')" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="totakenoticeof_sv" type="text" maxlength="256" class="width-30" ng-model="totakenoticeofsv" placeholder="{{'codes.swedish' | i18n}}" />
+                        <input id="totakenoticeof_sv" type="text" maxlength="256" class="width-30" ng-model="model.totakenoticeofsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.sametotakenoticeof" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="totakenoticeof_en" type="text" maxlength="256" class="width-30" ng-model="totakenoticeofen" placeholder="{{'codes.english' | i18n}}" />
+                        <input id="totakenoticeof_en" type="text" maxlength="256" class="width-30" ng-model="model.totakenoticeofen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.sametotakenoticeof" />
                     </div>
                 </div>
 
                 <div class="control-group">
                     <div class="controls">
-                        <label for="same_validitylevel" class="checkbox"> <input id="same_validitylevel" type="checkbox" ng-model="samevaliditylevel"
-                                ng-click="setSameValue('validitylevel')" /> {{'codes.sameinalllanguages' | i18n}}
+                        <label for="same_validitylevel" class="checkbox"> <input id="same_validitylevel" type="checkbox" ng-model="model.samevaliditylevel"
+                                ng-change="setSameValue('validitylevel')" /> {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
                 </div>
@@ -485,17 +485,17 @@
 
                     <label for="validitylevel_fi" class="control-label">{{'codes.createpage.validitylevel' | i18n}}</label>
                     <div class="controls">
-                        <input id="validitylevel_fi" type="text" maxlength="256" class="width-30" ng-model="validitylevelfi" placeholder="{{'codes.finnish' | i18n}}" />
+                        <input id="validitylevel_fi" type="text" maxlength="256" class="width-30" ng-model="model.validitylevelfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('validitylevel')" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="validitylevel_sv" type="text" maxlength="256" class="width-30" ng-model="validitylevelsv" placeholder="{{'codes.swedish' | i18n}}" />
+                        <input id="validitylevel_sv" type="text" maxlength="256" class="width-30" ng-model="model.validitylevelsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.samevaliditylevel" />
                     </div>
                 </div>
                 <div class="control-group">
                     <div class="controls">
-                        <input id="validitylevel_en" type="text" maxlength="256" class="width-30" ng-model="validitylevelen" placeholder="{{'codes.english' | i18n}}" />
+                        <input id="validitylevel_en" type="text" maxlength="256" class="width-30" ng-model="model.validitylevelen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.samevaliditylevel" />
                     </div>
                 </div>
 

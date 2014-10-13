@@ -102,6 +102,16 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
                 model.containscodessv = getLanguageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'SV');
                 model.containscodesen = getLanguageSpecificValue(result.metadata, 'sisaltaaKoodiston', 'EN');
 
+                model.samename = false;
+                model.samedescription = false;
+                model.sameshortname = false;
+                model.sameinstructions = false;
+                model.sameconcept = false;
+                model.sametotakenoticeof = false;
+                model.samecontainssignificance = false;
+                model.samedoesnotcontainsignificance = false;
+                model.samecontainscodes = false;
+                
                 model.codeElement.withinCodeElements.forEach(function(codeElement) {
                     model.extractAndPushCodeElementInformation(codeElement, model.withinCodeElements);
                 });
