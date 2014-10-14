@@ -22,8 +22,8 @@ function CodesGroupCreatorController($scope, $location, $filter, CodesGroupCreat
 
     $scope.setSameValue = function(name) {
         if (name === 'name' && !$scope.samename) {
-            $scope.namesv = $scope.namefi;
-            $scope.nameen = $scope.namefi;
+            $scope.model.namesv = $scope.model.namefi;
+            $scope.model.nameen = $scope.model.namefi;
         }
     };
 
@@ -39,22 +39,22 @@ function CodesGroupCreatorController($scope, $location, $filter, CodesGroupCreat
         var codesgroup = {
             koodistoRyhmaMetadatas : []
         };
-        if ($scope.namefi) {
+        if ($scope.model.namefi) {
             codesgroup.koodistoRyhmaMetadatas.push({
                 kieli : 'FI',
-                nimi : $scope.namefi
+                nimi : $scope.model.namefi
             });
         }
-        if ($scope.namesv) {
+        if ($scope.model.namesv) {
             codesgroup.koodistoRyhmaMetadatas.push({
                 kieli : 'SV',
-                nimi : $scope.namesv
+                nimi : $scope.model.namesv
             });
         }
-        if ($scope.nameen) {
+        if ($scope.model.nameen) {
             codesgroup.koodistoRyhmaMetadatas.push({
                 kieli : 'EN',
-                nimi : $scope.nameen
+                nimi : $scope.model.nameen
             });
         }
         NewCodesGroup.post({}, codesgroup, function(result) {
@@ -67,5 +67,12 @@ function CodesGroupCreatorController($scope, $location, $filter, CodesGroupCreat
             };
             $scope.model.alerts.push(alert);
         });
+    };
+    
+    $scope.setSameName = function() {
+        if ($scope.model.samename) {
+            $scope.model.namesv = $scope.model.namefi;
+            $scope.model.nameen = $scope.model.namefi;
+        }
     };
 }

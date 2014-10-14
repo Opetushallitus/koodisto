@@ -67,4 +67,11 @@ function CodesGroupEditorController($scope, $location, $routeParams, $filter, Co
             $scope.model.alerts.push(alert);
         });
     };
+    
+    $scope.setSameName = function() {
+        if ($scope.model.samename) {
+            $scope.model.namesv = $scope.model.namefi;
+            $scope.model.nameen = $scope.model.namefi;
+        }
+    };
 }
