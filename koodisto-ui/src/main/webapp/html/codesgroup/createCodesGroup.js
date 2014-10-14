@@ -4,10 +4,13 @@ app.factory('CodesGroupCreatorModel', function($location) {
         this.alerts = [];
         this.init = function() {
             this.alerts = [];
+            this.namefi = "";
+            this.namesv = "";
+            this.nameen = "";
+            this.samename = false;
         };
 
     };
-
     return model;
 });
 
@@ -21,7 +24,7 @@ function CodesGroupCreatorController($scope, $location, $filter, CodesGroupCreat
     };
 
     $scope.setSameValue = function(name) {
-        if (name === 'name' && !$scope.samename) {
+        if (name === 'name' && !$scope.model.samename) {
             $scope.model.namesv = $scope.model.namefi;
             $scope.model.nameen = $scope.model.namefi;
         }
