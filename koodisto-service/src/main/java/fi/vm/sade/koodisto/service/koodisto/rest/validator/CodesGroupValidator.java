@@ -2,8 +2,9 @@ package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
 import java.util.Collection;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+
+import org.apache.commons.lang.StringUtils;
 
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
@@ -38,15 +39,22 @@ public class CodesGroupValidator implements RestValidator<KoodistoRyhmaDto> {
         try {
             ValidatorUtil.checkForNull(validatable, new KoodistoValidationException("error.validation.codesgroup"));
             ValidatorUtil.checkForBlank(validatable.getKoodistoRyhmaUri(), new KoodistoRyhmaUriEmptyException());
+            checkMetadatas(validatable.getKoodistoRyhmaMetadatas());
         } catch (Exception e) {
             throw new KoodistoValidationException(e.getMessage(), e);
         }
     }
 
     private void checkRequiredMetadataFields(Collection<KoodistoRyhmaMetadata> metadatas) {
+        boolean atLeastOneFieldIsValid = false;
         for (KoodistoRyhmaMetadata md : metadatas) {
             ValidatorUtil.checkForNull(md.getKieli(), new KoodistoValidationException("error.validation.metadata"));
-            ValidatorUtil.checkForBlank(md.getNimi(), new KoodistoRyhmaNimiEmptyException());
+            if(StringUtils.isNotBlank(md.getNimi())){
+                atLeastOneFieldIsValid = true;
+            }
+        }
+        if(!atLeastOneFieldIsValid){
+            throw new KoodistoValidationException("error.validation.metadata");
         }
     }
 

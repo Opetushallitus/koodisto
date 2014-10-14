@@ -39,7 +39,7 @@ public class KoodistoRyhmaMetadata extends BaseEntity {
     @NotNull
     @Column(name = KIELI_COLUMN_NAME, nullable = false, length = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Enumerated(EnumType.STRING)
-    @JsonView(JsonViews.Basic.class)
+    @JsonView({JsonViews.Basic.class, JsonViews.Simple.class})
     private Kieli kieli;
 
     @NotNull

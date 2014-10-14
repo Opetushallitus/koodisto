@@ -1,4 +1,3 @@
-
 app.factory('CodesGroupCreatorModel', function($location) {
     var model;
     model = new function() {
@@ -8,7 +7,6 @@ app.factory('CodesGroupCreatorModel', function($location) {
         };
 
     };
-
 
     return model;
 });
@@ -39,29 +37,34 @@ function CodesGroupCreatorController($scope, $location, $filter, CodesGroupCreat
 
     $scope.persistCodesGroup = function() {
         var codesgroup = {
-            koodistoRyhmaUri: $scope.koodistoRyhmaUri,
-            koodistoRyhmaMetadatas : [{
-                kieli: 'FI',
-                nimi: $scope.namefi
-            }]
+            koodistoRyhmaMetadatas : []
         };
+        if ($scope.namefi) {
+            codesgroup.koodistoRyhmaMetadatas.push({
+                kieli : 'FI',
+                nimi : $scope.namefi
+            });
+        }
         if ($scope.namesv) {
             codesgroup.koodistoRyhmaMetadatas.push({
-                kieli: 'SV',
-                nimi: $scope.namesv
+                kieli : 'SV',
+                nimi : $scope.namesv
             });
         }
         if ($scope.nameen) {
             codesgroup.koodistoRyhmaMetadatas.push({
-                kieli: 'EN',
-                nimi: $scope.nameen
+                kieli : 'EN',
+                nimi : $scope.nameen
             });
         }
         NewCodesGroup.post({}, codesgroup, function(result) {
             Treemodel.refresh();
-            $location.path("/koodistoryhma/"+result.id);
+            $location.path("/koodistoryhma/" + result.id);
         }, function(error) {
-            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
+            var alert = {
+                type : 'danger',
+                msg : jQuery.i18n.prop(error.data)
+            };
             $scope.model.alerts.push(alert);
         });
     };

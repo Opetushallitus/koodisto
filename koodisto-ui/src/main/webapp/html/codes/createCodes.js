@@ -22,6 +22,9 @@ app.factory('CodesCreatorModel', function($location, RootCodes, $modal) {
             RootCodes.get({}, function(result) {
                 model.allCodes = result;
                 for (var i = 0; i < model.allCodes.length; i++) {
+                    if(!model.allCodes[i].shownName){
+                        model.allCodes[i].shownName = getLanguageSpecificValueOrValidValue(model.allCodes[i].metadata, 'nimi', 'FI');
+                    }
                     if (model.allCodes[i].koodistos) {
                         for (var j = 0; j < model.allCodes[i].koodistos.length; j++) {
                             if (!model.inCodesList(model.onlyCodes, model.allCodes[i].koodistos[j])) {

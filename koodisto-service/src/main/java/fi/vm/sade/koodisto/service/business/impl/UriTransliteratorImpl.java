@@ -116,7 +116,7 @@ public class UriTransliteratorImpl implements UriTransliterator {
         KoodistoRyhmaMetadata meta = null;
         for (KieliType k : PREFERRED_ORDER) {
             meta = getKoodistoRyhmaMetadataForLanguage(metadatas, k);
-            if (meta != null) {
+            if (meta != null && StringUtils.isNotBlank(meta.getNimi())) {
                 break;
             }
         }
