@@ -7,12 +7,12 @@
                 kiinni: (!data.open && data.koodistos.length > 0 && data.metadata[0].nimi)}"
            ng-click="openChildren(data)"></i>
         <label>
-            <a href="" ng-if="data.metadata[0].nimi">{{data.metadata[0].nimi || data.metadata[1].nimi || data.metadata[2].nimi}}</a>
-            <a href="" ng-click="close(data)" ng-if="data.latestKoodistoVersio.metadata[0].nimi">{{data.latestKoodistoVersio.metadata[0].nimi || data.latestKoodistoVersio.metadata[1].nimi || data.latestKoodistoVersio.metadata[2].nimi}}</a>
+            <a href="" ng-if="data.metadata[0].nimi">{{data.shownName}}</a>
+            <a href="" ng-click="close(data)" ng-if="data.latestKoodistoVersio.metadata[0].nimi">{{data.shownName}}</a>
         </label>
     </span>
     <ol ng-if="data.open || model.query && model.query.length!=0">
-        <li ng-if="data.latestKoodistoVersio.metadata[0].nimi" ng-repeat="data in data.koodistos | orderBy:'latestKoodistoVersio.metadata[0].nimi' | filter:search" ng-include="'codes.html'">
+        <li ng-if="data.latestKoodistoVersio.metadata[0].nimi" ng-repeat="data in data.koodistos | orderBy:'shownName' | filter:search" ng-include="'codes.html'">
         </li>
     </ol>
 
@@ -52,7 +52,7 @@
             <label for="codesgroup" class="control-label">{{'codes.createpage.codesgroup' | i18n}}</label>
             <div class="controls">
                 <select id="codesgroup" ng-model="model.codes.codesGroupUri" name="codesGroupUri" ng-required="true" required
-                    ng-options="code.koodistoRyhmaUri as code.metadata[0].nimi for code in model.allCodes | orderBy:'metadata[0].nimi'">
+                    ng-options="code.koodistoRyhmaUri as code.shownName for code in model.allCodes | orderBy:'metadata[0].nimi'">
                 </select> <span class="text-error" ng-if="form.codesGroupUri.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>

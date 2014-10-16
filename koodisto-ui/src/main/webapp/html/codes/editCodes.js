@@ -1,6 +1,4 @@
-
-app.factory('CodesEditorModel', function($location, RootCodes, Organizations, CodesByUriAndVersion, OrganizationByOid,
-                                         CodesByUri, AuthService, $modal) {
+app.factory('CodesEditorModel', function($location, RootCodes, Organizations, CodesByUriAndVersion, OrganizationByOid, CodesByUri, AuthService, $modal) {
     var model;
     model = new function() {
         this.withinCodes = [];
@@ -72,7 +70,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 model.validitylevelfi = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'FI');
                 model.validitylevelsv = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
                 model.validitylevelen = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
-                
+
                 model.samename = false;
                 model.samedescription = false;
                 model.sameinstructions = false;
@@ -85,10 +83,10 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 model.sametotakenoticeof = false;
                 model.samevaliditylevel = false;
 
-                model.codes.withinCodes.forEach(function(codes){
-                    model.getLatestCodesVersionsByCodesUri(codes,model.withinCodes);
+                model.codes.withinCodes.forEach(function(codes) {
+                    model.getLatestCodesVersionsByCodesUri(codes, model.withinCodes);
                 });
-                model.codes.includesCodes.forEach(function(codes){
+                model.codes.includesCodes.forEach(function(codes) {
                     model.getLatestCodesVersionsByCodesUri(codes,model.includesCodes);
                 });
                 model.codes.levelsWithCodes.forEach(function(codes){
@@ -112,7 +110,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 list.push(ce);
             });
         };
-        
+
         this.filterCodes = function() {
             for (var i = 0; i < model.allCodes.length; i++) {
                 var koodistos = model.allCodes[i].koodistos;
@@ -133,10 +131,26 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             }
         };
 
-        
+        this.getPreferredNames = function() {
+            for (var i = 0; i < model.allCodes.length; i++) {
+                if (!model.allCodes[i].shownName) {
+                    model.allCodes[i].shownName = getLanguageSpecificValueOrValidValue(model.allCodes[i].metadata, 'nimi', 'FI');
+                }
+                if (model.allCodes[i].koodistos) {
+                    for (var j = 0; j < model.allCodes[i].koodistos.length; j++) {
+                        if (!model.allCodes[i].koodistos[j].shownName) {
+                            model.allCodes[i].koodistos[j].shownName = getLanguageSpecificValueOrValidValue(
+                                    model.allCodes[i].koodistos[j].latestKoodistoVersio.metadata, 'nimi', 'FI');
+                        }
+                    }
+                }
+            }
+        };
+
         this.getAllCodes = function() {
             RootCodes.get({}, function(result) {
                 model.allCodes = result;
+                model.getPreferredNames();
                 AuthService.updateOph(SERVICE_NAME).then(function() {}, model.filterCodes);
             });
         };
@@ -153,7 +167,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
 
         this.openChildren = function(data) {
             data.open = !data.open;
-            if(data.open) {
+            if (data.open) {
 
                 var iter = function(children){
                     if(children) {
@@ -198,7 +212,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         $scope.closeCancelConfirmModal();
         $scope.redirectCancel();
     };
-    
+
     $scope.showCancelConfirmModal = function(formHasChanged) {
         if (formHasChanged) {
             $scope.model.cancelConfirmModal = $modal.open({
@@ -214,7 +228,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
             $scope.redirectCancel();
         }
     };
-    
+
     $scope.closeCancelConfirmModal = function() {
         $scope.model.cancelConfirmModal.close();
     };
@@ -251,50 +265,50 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         };
         if ($scope.model.namefi) {
             codes.metadata.push({
-                kieli: 'FI',
-                nimi: $scope.model.namefi,
-                kuvaus: $scope.model.descriptionfi,
-                kayttoohje: $scope.model.instructionsfi,
-                kohdealue: $scope.model.targetareafi,
-                kohdealueenOsaAlue: $scope.model.targetareapartfi,
-                kasite: $scope.model.conceptfi,
-                toimintaymparisto: $scope.model.operationalenvironmentfi,
-                koodistonLahde: $scope.model.codessourcefi,
-                tarkentaaKoodistoa: $scope.model.specifiescodesfi,
-                huomioitavaKoodisto: $scope.model.totakenoticeoffi,
-                sitovuustaso: $scope.model.validitylevelfi
+                kieli : 'FI',
+                nimi : $scope.model.namefi,
+                kuvaus : $scope.model.descriptionfi,
+                kayttoohje : $scope.model.instructionsfi,
+                kohdealue : $scope.model.targetareafi,
+                kohdealueenOsaAlue : $scope.model.targetareapartfi,
+                kasite : $scope.model.conceptfi,
+                toimintaymparisto : $scope.model.operationalenvironmentfi,
+                koodistonLahde : $scope.model.codessourcefi,
+                tarkentaaKoodistoa : $scope.model.specifiescodesfi,
+                huomioitavaKoodisto : $scope.model.totakenoticeoffi,
+                sitovuustaso : $scope.model.validitylevelfi
             });
         }
         if ($scope.model.namesv) {
-                codes.metadata.push({
-                kieli: 'SV',
-                nimi: $scope.model.namesv,
-                kuvaus: $scope.model.descriptionsv,
-                kayttoohje: $scope.model.instructionssv,
-                kohdealue: $scope.model.targetareasv,
-                kohdealueenOsaAlue: $scope.model.targetareapartsv,
-                kasite: $scope.model.conceptsv,
-                toimintaymparisto: $scope.model.operationalenvironmentsv,
-                koodistonLahde: $scope.model.codessourcesv,
-                tarkentaaKoodistoa: $scope.model.specifiescodessv,
-                huomioitavaKoodisto: $scope.model.totakenoticeofsv,
-                sitovuustaso: $scope.model.validitylevelsv
+            codes.metadata.push({
+                kieli : 'SV',
+                nimi : $scope.model.namesv,
+                kuvaus : $scope.model.descriptionsv,
+                kayttoohje : $scope.model.instructionssv,
+                kohdealue : $scope.model.targetareasv,
+                kohdealueenOsaAlue : $scope.model.targetareapartsv,
+                kasite : $scope.model.conceptsv,
+                toimintaymparisto : $scope.model.operationalenvironmentsv,
+                koodistonLahde : $scope.model.codessourcesv,
+                tarkentaaKoodistoa : $scope.model.specifiescodessv,
+                huomioitavaKoodisto : $scope.model.totakenoticeofsv,
+                sitovuustaso : $scope.model.validitylevelsv
             });
         }
         if ($scope.model.nameen) {
             codes.metadata.push({
-                kieli: 'EN',
-                nimi: $scope.model.nameen,
-                kuvaus: $scope.model.descriptionen,
-                kayttoohje: $scope.model.instructionsen,
-                kohdealue: $scope.model.targetareaen,
-                kohdealueenOsaAlue: $scope.model.targetareaparten,
-                kasite: $scope.model.concepten,
-                toimintaymparisto: $scope.model.operationalenvironmenten,
-                koodistonLahde: $scope.model.codessourceen,
-                tarkentaaKoodistoa: $scope.model.specifiescodesen,
-                huomioitavaKoodisto: $scope.model.totakenoticeofen,
-                sitovuustaso: $scope.model.validitylevelen
+                kieli : 'EN',
+                nimi : $scope.model.nameen,
+                kuvaus : $scope.model.descriptionen,
+                kayttoohje : $scope.model.instructionsen,
+                kohdealue : $scope.model.targetareaen,
+                kohdealueenOsaAlue : $scope.model.targetareaparten,
+                kasite : $scope.model.concepten,
+                toimintaymparisto : $scope.model.operationalenvironmenten,
+                koodistonLahde : $scope.model.codessourceen,
+                tarkentaaKoodistoa : $scope.model.specifiescodesen,
+                huomioitavaKoodisto : $scope.model.totakenoticeofen,
+                sitovuustaso : $scope.model.validitylevelen
             });
         }
         SaveCodes.put({}, codes, function(result) {
@@ -319,9 +333,9 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         });
     };
 
-    $scope.changeToRelationCodes = function(listToBeChanged){
+    $scope.changeToRelationCodes = function(listToBeChanged) {
         result = [];
-        listToBeChanged.forEach(function(ce){
+        listToBeChanged.forEach(function(ce) {
             dt = {};
             dt.codesUri = ce.uri;
             dt.codesVersion = 1;
@@ -330,7 +344,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         });
         return result;
     };
-    
+
     $scope.setSameValue = function(name) {
         if (name === 'name' && $scope.model.samename) {
             $scope.model.namesv = $scope.model.namefi;
@@ -379,7 +393,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         var ce = {};
         ce = $scope.createCodes(data);
         var found = false;
-        $scope.model.withinCodes.forEach(function(codes, index){
+        $scope.model.withinCodes.forEach(function(codes, index) {
             if (codes.uri.indexOf(data.koodistoUri) !== -1) {
                 found = true;
             }
@@ -394,7 +408,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         var ce = {};
         ce = $scope.createCodes(data);
         var found = false;
-        $scope.model.includesCodes.forEach(function(codes, index){
+        $scope.model.includesCodes.forEach(function(codes, index) {
             if (codes.uri.indexOf(data.koodistoUri) !== -1) {
                 found = true;
             }
@@ -408,7 +422,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         var ce = {};
         ce = $scope.createCodes(data);
         var found = false;
-        $scope.model.levelsWithCodes.forEach(function(codes, index){
+        $scope.model.levelsWithCodes.forEach(function(codes, index) {
             if (codes.uri.indexOf(data.koodistoUri) !== -1) {
                 found = true;
             }
@@ -423,7 +437,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         CodesEditorModel.openChildren(data);
     };
 
-    $scope.close = function(selectedCodes){
+    $scope.close = function(selectedCodes) {
         $scope.codesSelector = false;
         if (selectedCodes) {
             if ($scope.addToListName === 'withincodes') {
@@ -436,16 +450,16 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         }
     };
 
-    $scope.show = function(name){
+    $scope.show = function(name) {
         $scope.addToListName = name;
         $scope.codesSelector = true;
     };
 
-    $scope.open = function () {
+    $scope.open = function() {
 
         var modalInstance = $modal.open({
-            templateUrl: 'organizationModalContent.html',
-            controller: ModalInstanceCtrl,
+            templateUrl : 'organizationModalContent.html',
+            controller : ModalInstanceCtrl,
             resolve : {
                 isModalController : function() {
                     return true;
@@ -453,10 +467,10 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
             }
         });
 
-        modalInstance.result.then(function (selectedItem) {
+        modalInstance.result.then(function(selectedItem) {
             $scope.model.codes.organisaatioOid = selectedItem.oid;
             $scope.model.codes.organizationName = selectedItem.nimi['fi'] || selectedItem.nimi['sv'] || selectedItem.nimi['en'];
-        }, function () {
+        }, function() {
             $log.info('Modal dismissed at: ' + new Date());
         });
     };
@@ -464,23 +478,23 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
     $scope.okconfirm = function() {
         if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
 
-            $scope.model.withinCodes.forEach(function(codes, index){
+            $scope.model.withinCodes.forEach(function(codes, index) {
                 if (codes.uri.indexOf($scope.model.withinRelationToRemove.uri) !== -1) {
-                    $scope.model.withinCodes.splice(index,1);
+                    $scope.model.withinCodes.splice(index, 1);
                 }
             });
 
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
-            $scope.model.includesCodes.forEach(function(codes, index){
+            $scope.model.includesCodes.forEach(function(codes, index) {
                 if (codes.uri.indexOf($scope.model.includesRelationToRemove.uri) !== -1) {
-                    $scope.model.includesCodes.splice(index,1);
+                    $scope.model.includesCodes.splice(index, 1);
                 }
             });
 
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
-            $scope.model.levelsWithCodes.forEach(function(codes, index){
+            $scope.model.levelsWithCodes.forEach(function(codes, index) {
                 if (codes.uri.indexOf($scope.model.levelsRelationToRemove.uri) !== -1) {
-                    $scope.model.levelsWithCodes.splice(index,1);
+                    $scope.model.levelsWithCodes.splice(index, 1);
                 }
             });
 
@@ -489,7 +503,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         $scope.model.includesRelationToRemove = null;
         $scope.model.withinRelationToRemove = null;
     };
-    
+
     $scope.removeFromWithinCodes = function(codes) {
         $scope.model.withinRelationToRemove = codes;
         $scope.okconfirm();
