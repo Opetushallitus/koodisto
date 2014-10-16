@@ -151,6 +151,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             RootCodes.get({}, function(result) {
                 model.allCodes = result;
                 model.getPreferredNames();
+                // OVT-7496 skip codes filtering for OPH user
                 AuthService.updateOph(SERVICE_NAME).then(function() {}, model.filterCodes);
             });
         };
