@@ -1,0 +1,122 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>fi.vm.sade.koodisto</groupId>
+        <artifactId>koodisto</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
+    <artifactId>servers</artifactId>
+    <name>Koodisto :: Servers</name>
+    <packaging>pom</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.jolbox</groupId>
+            <artifactId>bonecp</artifactId>
+            <version>0.8.0.RELEASE</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>Servers</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>9.2.1.v20140609</version>
+
+                <configuration>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>log4j.configuration</name>
+                            <!-- have to use file:/// url since -->
+                            <!-- Jetty is using classloader -->
+                            <!-- before the webapp classloader is ready -->
+                            <value>file:///${basedir}/src/main/resources/log4j.properties</value>
+                        </systemProperty>
+                    </systemProperties>
+                    <!--<connectors>-->
+                        <!--&lt;!&ndash; work around file locking on windows &ndash;&gt;-->
+                        <!--<connector implementation="org.eclipse.jetty.server.bio.SocketConnector">-->
+                            <!--<port>8180</port>-->
+                            <!--<maxIdleTime>30000000</maxIdleTime>-->
+                        <!--</connector>-->
+                    <!--</connectors>-->
+
+                    <webAppConfig>
+                        <jettyEnvXml>src/main/webapp/META-INF/jetty-env.xml</jettyEnvXml>
+                        <contextPath>/${project.artifactId}</contextPath>
+                    </webAppConfig>
+                    <httpConnector>
+                        <port>8081</port>
+                        <idleTimeout>30000000</idleTimeout>
+                    </httpConnector>
+                    <contextHandlers>
+                        <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
+                            <contextPath>/koodisto-service</contextPath>
+                            <resourceBase>
+                                ${basedir}/../koodisto-service/target/koodisto-service
+                            </resourceBase>
+                            <configurationClasses>
+                                <configurationClass>org.eclipse.jetty.webapp.WebInfConfiguration</configurationClass>
+                                <configurationClass>org.eclipse.jetty.webapp.WebXmlConfiguration</configurationClass>
+                                <configurationClass>org.eclipse.jetty.webapp.MetaInfConfiguration</configurationClass>
+                                <configurationClass>org.eclipse.jetty.webapp.FragmentConfiguration</configurationClass>
+                                <configurationClass>org.eclipse.jetty.plus.webapp.EnvConfiguration</configurationClass>
+                                <configurationClass>org.eclipse.jetty.plus.webapp.PlusConfiguration</configurationClass>
+                                <configurationClass>org.eclipse.jetty.webapp.JettyWebXmlConfiguration
+                                </configurationClass>
+                            </configurationClasses>
+                        </contextHandler>
+
+                        <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
+                            <contextPath>/koodisto-ui</contextPath>
+                            <resourceBase>${basedir}/../koodisto-ui/target/koodisto-ui</resourceBase>
+                            <configurationClasses>
+                                <configurationClass>org.eclipse.jetty.webapp.WebInfConfiguration</configurationClass>
+                                <configurationClass>org.eclipse.jetty.webapp.WebXmlConfiguration</configurationClass>
+                                <configurationClass>org.eclipse.jetty.webapp.MetaInfConfiguration</configurationClass>
+                                <configurationClass>org.eclipse.jetty.webapp.FragmentConfiguration</configurationClass>
+                                <configurationClass>org.eclipse.jetty.plus.webapp.EnvConfiguration</configurationClass>
+                                <configurationClass>org.eclipse.jetty.plus.webapp.PlusConfiguration</configurationClass>
+                                <configurationClass>org.eclipse.jetty.webapp.JettyWebXmlConfiguration
+                                </configurationClass>
+                                <!--<configurationClass>org.eclipse.jetty.webapp.TagLibConfiguration</configurationClass>-->
+                            </configurationClasses>
+                        </contextHandler>
+						
+                    </contextHandlers>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-servlets</artifactId>
+                        <version>9.2.1.v20140609</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>org.javassist</groupId>
+                                <artifactId>javassist</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>5.0.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm-commons</artifactId>
+                        <version>5.0.2</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+</project>
