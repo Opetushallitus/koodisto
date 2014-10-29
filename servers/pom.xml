@@ -4,7 +4,7 @@
     <parent>
         <groupId>fi.vm.sade.koodisto</groupId>
         <artifactId>koodisto</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>11.5-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>servers</artifactId>
@@ -15,6 +15,7 @@
         <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
         </dependency>
         <dependency>
             <groupId>com.jolbox</groupId>
