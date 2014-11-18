@@ -543,6 +543,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
 
     $scope.getCodeElements = function() {
         $scope.model.loadingCodeElements = true;
+        $scope.model.currentPage = 0;
         var name = $scope.model.addToListName;
         CodesByUriAndVersion.get({
             codesUri : $scope.model.codeElement.koodisto.koodistoUri,

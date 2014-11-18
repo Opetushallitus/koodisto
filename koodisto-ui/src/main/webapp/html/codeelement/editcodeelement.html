@@ -96,19 +96,22 @@
     </div>
     <div class="modal-body">
         <div class="row-fluid">
-            <div class="offset2 span10 form-inline">
-                <label for="codeSelection">{{'codes.viewpage.codeelements.codesSelection.label' | i18n}}</label>
-                <select id="codeSelection" ng-model="model.showCode" ng-options="c for c in model.shownCodes | unique" ng-change="getCodeElements()"></select></br>
-                <label for="CodeElementSearchBox">{{'codes.viewpage.codeelements.search.label' | i18n}}</label>
-                <input id="CodeElementSearchBox" type="text" maxlength="50"
-                       placeholder="{{'codes.viewpage.codeelements.search.placeholder' | i18n}}" ng-model="model.query" ng-change="filterChangedPageCount()"/>
-             </div>
+            <div class="offset1 span11">
+                <table><tbody><tr><td>
+                <label for="codeSelection">{{'codes.viewpage.codeelements.codesSelection.label' | i18n}}</label>&nbsp;</td>
+                <td><ui-select id="codeSelection" ng-model="model.showCode" theme="selectize" style="width: 350px;" ng-change="getCodeElements()">
+                    <ui-select-match placeholder="{{'codeelement.editpage.choosecodes' | i18n}}">{{$select.selected}}</ui-select-match>
+                    <ui-select-choices repeat="item in model.shownCodes | unique | filter: $select.search">
+                        <div ng-bind-html-unsafe="item | highlight: $select.search">{{item}}</div>
+                    </ui-select-choices>
+                </ui-select></tr>
+                <tr><td><label for="CodeElementSearchBox">{{'codes.viewpage.codeelements.search.label' | i18n}}</label></td>
+                <td><input id="CodeElementSearchBox" type="text" maxlength="50"
+                       placeholder="{{'codes.viewpage.codeelements.search.placeholder' | i18n}}" ng-model="model.query" ng-change="filterChangedPageCount()"/></td></tbody></table>
+                <div ng-if="model.loadingCodeElements">{{'codes.viewpage.codeelements.search.loading' | i18n}}</div>
+                <div ng-include="'codeelement.html'" /></div>
+            </div>
         </div>
-
-        <div ng-if="model.loadingCodeElements">{{'codes.viewpage.codeelements.search.loading' | i18n}}</div>
-
-
-        <div class="codeSelector" ng-include="'codeelement.html'" />
     </div>
     <div class="modal-footer">
         <span ng-if="clickedSubmit">{{'codes.viewpage.codeelements.saving' | i18n}}</span>
