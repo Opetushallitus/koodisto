@@ -509,6 +509,11 @@ app.filter('forLoop', function() {
     };
 });
 
+// Konfiguroidaan DatePicker alkamaan viikon maanantaista (default = sunnuntai)
+app.config(function(datepickerConfig) {
+    datepickerConfig.startingDay = 1;
+});
+
 app.run(["SessionPoll", function(SessionPoll) {
     SessionPoll.get({});
 }]);
