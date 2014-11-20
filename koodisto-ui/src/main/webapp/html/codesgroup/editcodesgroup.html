@@ -10,7 +10,7 @@
 
             <div class="controls">
                 <label for="same_name" class="checkbox">
-                    <input id="same_name" type="checkbox" ng-model="samename" ng-click="setSameValue('name')"/>
+                    <input id="same_name" type="checkbox" ng-model="model.samename" ng-change="setSameName()"/>
                     {{'codes.sameinalllanguages' | i18n}}</label>
             </div>
         </div>
@@ -19,24 +19,23 @@
 
             <label for="name_fi" class="control-label">{{'codes.createpage.name' | i18n}}</label>
             <div class="controls">
-                <input id="name_fi" type="text" maxlength="256" class="width-30" ng-model="namefi" name="namefi"
-                       placeholder="{{'codes.finnish' | i18n}}" ng-required="!namesv && !nameen"/>
-                <span class="text-error" ng-if="form.namefi.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <div class="controls">
-                <input id="name_sv" type="text" maxlength="256" class="width-30" ng-model="namesv" name="namesv"
-                       placeholder="{{'codes.swedish' | i18n}}" ng-required="!namefi && !nameen"/>
-                <span class="text-error" ng-if="form.namesv.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                <input id="name_fi" type="text" maxlength="256" class="width-30" ng-model="model.namefi" name="model.namefi"
+                       placeholder="{{'codes.finnish' | i18n}}" ng-required="!model.namesv && !model.nameen" ng-change="setSameName()"/>
+                <span class="text-error" ng-if="form.model.namefi.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
-                <input id="name_en" type="text" maxlength="256" class="width-30"  ng-model="nameen" name="nameen"
-                       placeholder="{{'codes.english' | i18n}}" ng-required="!namefi && !namesv"/>
-                <span class="text-error" ng-if="form.nameen.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                <input id="name_sv" type="text" maxlength="256" class="width-30" ng-model="model.namesv" name="model.namesv"
+                       placeholder="{{'codes.swedish' | i18n}}" ng-required="!model.namefi && !model.nameen" ng-disabled="model.samename"/>
+                <span class="text-error" ng-if="form.model.namesv.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <input id="name_en" type="text" maxlength="256" class="width-30"  ng-model="model.nameen" name="model.nameen"
+                       placeholder="{{'codes.english' | i18n}}" ng-required="!model.namefi && !model.namesv" ng-disabled="model.samename"/>
+                <span class="text-error" ng-if="form.model.nameen.$error.required"><img style="margin-right:10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 

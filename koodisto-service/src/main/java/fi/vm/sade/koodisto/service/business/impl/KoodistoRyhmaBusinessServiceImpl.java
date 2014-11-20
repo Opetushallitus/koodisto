@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.NoResultException;
+
 @Transactional
 @Service("koodistoRyhmaBusinessService")
 public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessService {
@@ -34,9 +36,7 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
         if (koodistoRyhmaDto == null || StringUtils.isBlank(koodistoRyhmaDto.getKoodistoRyhmaUri())) {
             throw new KoodistoRyhmaUriEmptyException();
         }
-        List<KoodistoRyhmaMetadata> metadatas = new ArrayList<KoodistoRyhmaMetadata>();
-        metadatas.addAll(koodistoRyhmaDto.getKoodistoRyhmaMetadatas());
-        checkMetadatas(metadatas);
+        checkMetadatas(new ArrayList<>(koodistoRyhmaDto.getKoodistoRyhmaMetadatas()));
 
         KoodistoRyhma koodistoRyhma = new KoodistoRyhma();
         koodistoRyhma.setKoodistoRyhmaUri(koodistoRyhmaDto.getKoodistoRyhmaUri());
@@ -70,29 +70,26 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
         if (koodistoRyhmaDto == null || StringUtils.isBlank(koodistoRyhmaDto.getKoodistoRyhmaUri())) {
             throw new KoodistoRyhmaUriEmptyException();
         }
-        List<KoodistoRyhmaMetadata> metadatas = new ArrayList<KoodistoRyhmaMetadata>();
-        metadatas.addAll(koodistoRyhmaDto.getKoodistoRyhmaMetadatas());
-
 
         KoodistoRyhma koodistoRyhma = getKoodistoRyhmaById(koodistoRyhmaDto.getId());
         Set<KoodistoRyhmaMetadata> koodistoRyhmaDtoMetadatas = koodistoRyhmaDto.getKoodistoRyhmaMetadatas();
         Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = koodistoRyhma.getKoodistoJoukkoMetadatas();
         Set<KoodistoRyhmaMetadata> removeKoodistoRyhmaMetadatas = new HashSet<KoodistoRyhmaMetadata>();
         koodistoRyhma.setKoodistoRyhmaUri(koodistoRyhmaDto.getKoodistoRyhmaUri());
-        for (KoodistoRyhmaMetadata metadata : koodistoRyhmaDtoMetadatas) {
+        for (KoodistoRyhmaMetadata updatedMetadata : koodistoRyhmaDtoMetadatas) {
             boolean found = false;
-            for (KoodistoRyhmaMetadata koodistoRyhmaMetadata : koodistoRyhmaMetadatas) {
-                if (metadata.getKieli().equals(koodistoRyhmaMetadata.getKieli())) {
-                    if (metadata.getNimi().isEmpty()) {
-                        removeKoodistoRyhmaMetadatas.add(koodistoRyhmaMetadata);
+            for (KoodistoRyhmaMetadata existingMetadata : koodistoRyhmaMetadatas) {
+                if (updatedMetadata.getKieli().equals(existingMetadata.getKieli())) {
+                    if (updatedMetadata.getNimi().isEmpty()) {
+                        removeKoodistoRyhmaMetadatas.add(existingMetadata);
                     } else {
-                        koodistoRyhmaMetadata.setNimi(metadata.getNimi());
+                        existingMetadata.setNimi(updatedMetadata.getNimi());
                     }
                     found = true;
                 }
             }
-            if (!found && !metadata.getNimi().isEmpty()) {
-                koodistoRyhma.addKoodistoRyhmaMetadata(metadata);
+            if (!found && !updatedMetadata.getNimi().isEmpty()) {
+                koodistoRyhma.addKoodistoRyhmaMetadata(updatedMetadata);
             }
         }
         for (KoodistoRyhmaMetadata metadata : removeKoodistoRyhmaMetadatas) {
@@ -104,17 +101,24 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
 
     @Override
     public KoodistoRyhma getKoodistoRyhmaById(final Long id) {
-        KoodistoRyhma koodistoRyhma = koodistoRyhmaDAO.findById(id);
-        return koodistoRyhma;
+        try {
+            return koodistoRyhmaDAO.findById(id);
+        } catch (NoResultException e) {
+            throw new KoodistoRyhmaNotFoundException();
+        }
     }
 
     @Override
     public void delete(final Long id) {
-        KoodistoRyhma koodistoRyhma = koodistoRyhmaDAO.findById(id);
-        if (koodistoRyhma.getKoodistos().isEmpty()) {
-            koodistoRyhmaDAO.remove(koodistoRyhma);
-        } else {
-            throw new KoodistoRyhmaNotEmptyException();
+        try {
+            KoodistoRyhma koodistoRyhma = koodistoRyhmaDAO.findById(id);
+            if (koodistoRyhma.getKoodistos().isEmpty()) {
+                koodistoRyhmaDAO.remove(koodistoRyhma);
+            } else {
+                throw new KoodistoRyhmaNotEmptyException();
+            }
+        } catch (NoResultException e) {
+            throw new KoodistoRyhmaNotFoundException();
         }
     }
 }

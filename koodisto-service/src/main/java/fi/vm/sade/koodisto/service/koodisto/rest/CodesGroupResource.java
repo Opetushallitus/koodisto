@@ -26,11 +26,16 @@ import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
 
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
+import fi.vm.sade.generic.service.exception.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.CodesGroupValidator;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.KoodistoValidationException;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.ValidatorUtil;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.Validatable.ValidationType;
 
 @Component
 @Path("/codesgroup")
@@ -47,6 +52,8 @@ public class CodesGroupResource {
     @Autowired
     private UriTransliterator uriTransliterator;
 
+    private CodesGroupValidator codesGroupValidator = new CodesGroupValidator();
+
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -62,16 +69,18 @@ public class CodesGroupResource {
     })
     public Response getCodesByCodesUri(
             @ApiParam(value = "Koodistoryhmän id") @PathParam("id") Long id) {
-        if (id == null || id < 1) {
-            logger.warn("Invalid parameter for rest call. id: " + id);
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
         try {
+            String[] errors = { "id" };
+            ValidatorUtil.validateArgs(errors, id);
             KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.getKoodistoRyhmaById(id);
             return Response.status(Response.Status.OK).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call. id: " + id);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {
             logger.warn("Error finding CodesGroup. id: " + id, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
 
@@ -91,16 +100,17 @@ public class CodesGroupResource {
     })
     public Response update(
             @ApiParam(value = "Koodistoryhmä") KoodistoRyhmaDto codesGroupDTO) {
-        if (codesGroupDTO == null) {
-            logger.warn("Invalid parameter for rest call. codesGroupDTO: " + codesGroupDTO);
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
         try {
+            codesGroupValidator.validate(codesGroupDTO, ValidationType.UPDATE);
             KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.updateKoodistoRyhma(codesGroupDTO);
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid input for updating codesGroup. ", e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {
             logger.warn("Error while updating codesGroup. ", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
 
@@ -120,17 +130,18 @@ public class CodesGroupResource {
     })
     public Response insert(
             @ApiParam(value = "Koodistoryhmä") KoodistoRyhmaDto codesGroupDTO) {
-        if (codesGroupDTO == null) {
-            logger.warn("Invalid parameter for rest call. codesGroupDTO: " + codesGroupDTO);
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
         try {
+            codesGroupValidator.validate(codesGroupDTO, ValidationType.INSERT);
             codesGroupDTO.setKoodistoRyhmaUri(uriTransliterator.generateKoodistoGroupUriByMetadata((Collection) codesGroupDTO.getKoodistoRyhmaMetadatas()));
             KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.createKoodistoRyhma(codesGroupDTO);
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class)).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call. codesGroupDTO: " + codesGroupDTO);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {
             logger.warn("Error while inserting codesGroup.", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
 
@@ -151,16 +162,18 @@ public class CodesGroupResource {
     })
     public Response delete(
             @ApiParam(value = "Koodistoryhmän URI") @PathParam("id") Long id) {
-        if (id == null || id < 1) {
-            logger.warn("Invalid parameter for rest call. id: " + id);
-            return Response.status(Response.Status.BAD_REQUEST).build();
-        }
         try {
+            String[] errors = { "id" };
+            ValidatorUtil.validateArgs(errors, id);
             koodistoRyhmaBusinessService.delete(id);
             return Response.status(Response.Status.ACCEPTED).build();
+        } catch (KoodistoValidationException e) {
+            logger.warn("Invalid parameter for rest call. id: " + id);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {
             logger.warn("Error while removing codesGroup. id: " + id, e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
 }

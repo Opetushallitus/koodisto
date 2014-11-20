@@ -396,6 +396,7 @@ public class CodesResource {
     @Path("/upload/{codesUri}")
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.TEXT_HTML)
     @ApiOperation(
             value = "Tuo koodiston tiedostosta",
             notes = "",
@@ -441,13 +442,15 @@ public class CodesResource {
             KoodistoVersio kv = uploadService.upload(codesUri, formatStr, encoding, handler);
             return Response.status(Response.Status.ACCEPTED).entity(kv.getVersio().toString()).build();
 
+            // IE9 ei osaa käsitellä iframeja nätisti, jos palvelimelta tulee 500. ngUpload dirketiivi kaatuu Access Denied virheeseen. Siksi tallennus
+            // palauttaa myös virhetilanteissa 200.
         } catch (KoodistoValidationException e) {
             LOGGER.warn("Invalid parameter for rest call: uploadFile. ", e);
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+            return Response.status(Response.Status.ACCEPTED).entity(e.getMessage()).build();
         } catch (Exception e) {
             String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
             LOGGER.error("Uploading codes failed.", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
+            return Response.status(Response.Status.ACCEPTED).entity(message).build();
         }
 
     }

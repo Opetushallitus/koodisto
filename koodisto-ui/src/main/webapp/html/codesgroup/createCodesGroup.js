@@ -1,15 +1,16 @@
-
 app.factory('CodesGroupCreatorModel', function($location) {
     var model;
     model = new function() {
         this.alerts = [];
         this.init = function() {
             this.alerts = [];
+            this.namefi = "";
+            this.namesv = "";
+            this.nameen = "";
+            this.samename = false;
         };
 
     };
-
-
     return model;
 });
 
@@ -23,9 +24,9 @@ function CodesGroupCreatorController($scope, $location, $filter, CodesGroupCreat
     };
 
     $scope.setSameValue = function(name) {
-        if (name === 'name' && !$scope.samename) {
-            $scope.namesv = $scope.namefi;
-            $scope.nameen = $scope.namefi;
+        if (name === 'name' && !$scope.model.samename) {
+            $scope.model.namesv = $scope.model.namefi;
+            $scope.model.nameen = $scope.model.namefi;
         }
     };
 
@@ -39,30 +40,42 @@ function CodesGroupCreatorController($scope, $location, $filter, CodesGroupCreat
 
     $scope.persistCodesGroup = function() {
         var codesgroup = {
-            koodistoRyhmaUri: $scope.koodistoRyhmaUri,
-            koodistoRyhmaMetadatas : [{
-                kieli: 'FI',
-                nimi: $scope.namefi
-            }]
+            koodistoRyhmaMetadatas : []
         };
-        if ($scope.namesv) {
+        if ($scope.model.namefi) {
             codesgroup.koodistoRyhmaMetadatas.push({
-                kieli: 'SV',
-                nimi: $scope.namesv
+                kieli : 'FI',
+                nimi : $scope.model.namefi
             });
         }
-        if ($scope.nameen) {
+        if ($scope.model.namesv) {
             codesgroup.koodistoRyhmaMetadatas.push({
-                kieli: 'EN',
-                nimi: $scope.nameen
+                kieli : 'SV',
+                nimi : $scope.model.namesv
+            });
+        }
+        if ($scope.model.nameen) {
+            codesgroup.koodistoRyhmaMetadatas.push({
+                kieli : 'EN',
+                nimi : $scope.model.nameen
             });
         }
         NewCodesGroup.post({}, codesgroup, function(result) {
             Treemodel.refresh();
-            $location.path("/koodistoryhma/"+result.id);
+            $location.path("/koodistoryhma/" + result.id);
         }, function(error) {
-            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
+            var alert = {
+                type : 'danger',
+                msg : jQuery.i18n.prop(error.data)
+            };
             $scope.model.alerts.push(alert);
         });
+    };
+    
+    $scope.setSameName = function() {
+        if ($scope.model.samename) {
+            $scope.model.namesv = $scope.model.namefi;
+            $scope.model.nameen = $scope.model.namefi;
+        }
     };
 }

@@ -76,6 +76,10 @@ public class CodesGroupValidatorTest {
         public void passes() {
             KoodistoRyhmaDto dto = new KoodistoRyhmaDto();
             dto.setKoodistoRyhmaUri("group");
+            KoodistoRyhmaMetadata data = new KoodistoRyhmaMetadata();
+            data.setNimi("name");
+            data.setKieli(Kieli.EN);
+            dto.setKoodistoRyhmaMetadatas(new HashSet<KoodistoRyhmaMetadata>(Arrays.asList(data)));
             validator.validateUpdate(dto);
         }
     }

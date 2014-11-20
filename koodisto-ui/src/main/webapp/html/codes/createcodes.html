@@ -23,7 +23,7 @@
             <label for="codesgroup" class="control-label">{{'codes.createpage.codesgroup' | i18n}}</label>
             <div class="controls">
                 <select id="codesgroup" ng-model="selectedCGoup" name="selectedCGoup"
-                    ng-options="code.koodistoRyhmaUri as code.metadata[0].nimi for code in model.allCodes | orderBy:'metadata[0].nimi'" ng-required="true">
+                    ng-options="code.koodistoRyhmaUri as code.shownName for code in model.allCodes | orderBy:'shownName'" ng-required="true">
                 </select>
             </div>
         </div>

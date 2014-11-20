@@ -25,6 +25,7 @@ import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
@@ -243,7 +244,7 @@ public class KoodistoRyhmaBusinessServiceTest {
         assertEquals("relaatioidenlisaaminen", group.getKoodistoRyhmaUri());
     }
 
-    @Test(expected = NoResultException.class)
+    @Test(expected = KoodistoRyhmaNotFoundException.class)
     public void testGetKoodistoRyhmaByInvalidId() {
         KoodistoRyhma group = resource.getKoodistoRyhmaById(null);
         assertNull(group);
@@ -264,7 +265,7 @@ public class KoodistoRyhmaBusinessServiceTest {
         try {
             groupAfter = resource.getKoodistoRyhmaById(3L);
             fail("Did not throw exception.");
-        } catch (NoResultException e) {
+        } catch (KoodistoRyhmaNotFoundException e) {
         }
         assertNull(groupAfter);
     }
