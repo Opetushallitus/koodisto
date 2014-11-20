@@ -72,13 +72,14 @@ public class CodesResourceTest {
         assertResponse(resource.getCodesByCodesUriAndVersion(nullString, 0), 400, "error.validation.codesuri");
         assertResponse(resource.getCodesByCodesUriAndVersion(blankString, 0), 400, "error.validation.codesuri");
         
-        assertResponse(resource.uploadFile(null, stubString, stubString, stubString), 400, "error.validation.file");
-        assertResponse(resource.uploadFile(stubInputStream, nullString, stubString, stubString), 400, "error.validation.fileformat");
-        assertResponse(resource.uploadFile(stubInputStream, blankString, stubString, stubString), 400, "error.validation.fileformat");
-        assertResponse(resource.uploadFile(stubInputStream, stubString, nullString, stubString), 400, "error.validation.fileencoding");
-        assertResponse(resource.uploadFile(stubInputStream, stubString, blankString, stubString), 400, "error.validation.fileencoding");
-        assertResponse(resource.uploadFile(stubInputStream, stubString, stubString, nullString), 400, "error.validation.codesuri");
-        assertResponse(resource.uploadFile(stubInputStream, stubString, stubString, blankString), 400, "error.validation.codesuri");
+        // IE9 can not handle upload if server return 400 or 500
+        assertResponse(resource.uploadFile(null, stubString, stubString, stubString), 202, "error.validation.file");
+        assertResponse(resource.uploadFile(stubInputStream, nullString, stubString, stubString), 202, "error.validation.fileformat");
+        assertResponse(resource.uploadFile(stubInputStream, blankString, stubString, stubString), 202, "error.validation.fileformat");
+        assertResponse(resource.uploadFile(stubInputStream, stubString, nullString, stubString), 202, "error.validation.fileencoding");
+        assertResponse(resource.uploadFile(stubInputStream, stubString, blankString, stubString), 202, "error.validation.fileencoding");
+        assertResponse(resource.uploadFile(stubInputStream, stubString, stubString, nullString), 202, "error.validation.codesuri");
+        assertResponse(resource.uploadFile(stubInputStream, stubString, stubString, blankString), 202, "error.validation.codesuri");
 
         assertResponse(resource.download(nullString, 0, Format.JHS_XML, stubString), 400, "error.validation.codesuri");
         assertResponse(resource.download(blankString, 0, Format.JHS_XML, stubString), 400, "error.validation.codesuri");
@@ -331,7 +332,8 @@ public class CodesResourceTest {
         String codesUri = "csvfileuploaduri";
         try {
             is = new ByteArrayInputStream("Failure Of Files!".getBytes(Charset.defaultCharset()));
-            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 500);
+            // IE9 can not handle upload if server return 400 or 500
+            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202, "error.codes.importing.empty.file");
         } finally {
             if (is != null)
                 try {

@@ -1,7 +1,7 @@
 <script type="text/ng-template" id="codesgroup_node.html">
 <div class="state-disabled label">
     <span class="disclose icon valintaryhma folder" ng-class="{ collapse: domain.isCollapsed(data), open: domain.isExpanded(data)}" ng-click="expandNode(data)"></span>
-    <a href="#/koodistoryhma/{{data.id}}">{{data.metadata[0].nimi}}</a>
+    <a href="#/koodistoryhma/{{data.id}}">{{ domain.languageSpecificValue( data.metadata , 'nimi', 'FI') }}</a>
 </div>
 <ol data-valintaryhmaoid="{{data.koodistoRyhmaUri}}">
     <li ng-repeat="koodisto in domain.getKoodistos(data) | filter:{isVisible:true} | orderBy:predicate" data-oid="{{koodisto.koodistoUri}}"

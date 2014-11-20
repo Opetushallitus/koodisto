@@ -43,10 +43,10 @@ public class CodesGroupResourceTest {
 
     @Test
     public void testGetCodesByCodesUriInvalid() {
-        assertResponse(resource.getCodesByCodesUri(0L), 400);
-        assertResponse(resource.getCodesByCodesUri(null), 400);
-        assertResponse(resource.getCodesByCodesUri(-1L), 400);
-        assertResponse(resource.getCodesByCodesUri(99999L), 500);
+        assertResponse(resource.getCodesByCodesUri(0L), 500, "error.codesgroup.not.found");
+        assertResponse(resource.getCodesByCodesUri(null), 400, "error.validation.id");
+        assertResponse(resource.getCodesByCodesUri(-1L), 500, "error.codesgroup.not.found");
+        assertResponse(resource.getCodesByCodesUri(99999L), 500, "error.codesgroup.not.found");
     }
 
     @Test
@@ -67,10 +67,10 @@ public class CodesGroupResourceTest {
     
     @Test
     public void testUpdateInvalid() {
-        assertResponse(resource.update(null), 400);
-        assertResponse(resource.update(new KoodistoRyhmaDto()), 500);
-        assertResponse(resource.update(createDto("totallyvaliduri", 0)), 500);
-        assertResponse(resource.update(createDto("", 3)), 500);
+        assertResponse(resource.update(null), 400, "error.validation.codesgroup");
+        assertResponse(resource.update(new KoodistoRyhmaDto()), 400, "error.codesgroup.uri.empty");
+        assertResponse(resource.update(createDto("totallyvaliduri", 0)), 400, "error.metadata.empty");
+        assertResponse(resource.update(createDto("", 3)), 400, "error.codesgroup.uri.empty");
     }
 
     @Test
@@ -92,10 +92,10 @@ public class CodesGroupResourceTest {
     
     @Test
     public void testInsertInvalid() {
-        assertResponse(resource.insert(null), 400);
-        assertResponse(resource.insert(new KoodistoRyhmaDto()), 500);
-        assertResponse(resource.insert(createDto("totallyvaliduri", 0)), 500);
-        assertResponse(resource.insert(createDto("", 3)), 500);
+        assertResponse(resource.insert(null), 400, "error.validation.codesgroup");
+        assertResponse(resource.insert(new KoodistoRyhmaDto()), 400, "error.metadata.empty");
+        assertResponse(resource.insert(createDto("totallyvaliduri", 0)), 400, "error.metadata.empty");
+        assertResponse(resource.insert(createDto("", 3)), 400, "error.validation.metadata");
     }
 
     @Test
@@ -107,10 +107,10 @@ public class CodesGroupResourceTest {
     
     @Test
     public void testDeleteInvalid() {
-        assertResponse(resource.delete(0L), 400);
-        assertResponse(resource.delete(null), 400);
-        assertResponse(resource.delete(-1L), 400);
-        assertResponse(resource.delete(99999L), 500);
+        assertResponse(resource.delete(null), 400, "error.validation.id");
+        assertResponse(resource.delete(0L), 500, "error.codesgroup.not.found");
+        assertResponse(resource.delete(-1L), 500, "error.codesgroup.not.found");
+        assertResponse(resource.delete(99999L), 500, "error.codesgroup.not.found");
     }
 
     // UTILITIES
@@ -119,7 +119,12 @@ public class CodesGroupResourceTest {
     private void assertResponse(Response response, int expectedStatus) {
         assertEquals(expectedStatus, response.getStatus());
     }
-
+    
+    private void assertResponse(Response response, int expectedStatus, Object expectedEntity) {
+        assertResponse(response, expectedStatus);
+        assertEquals(expectedEntity, response.getEntity());
+    }
+    
     private KoodistoRyhmaDto createDto(String name, int howManyMetadatas) {
         KoodistoRyhmaDto dto = new KoodistoRyhmaDto();
         HashSet<KoodistoRyhmaMetadata> metadatas = new HashSet<KoodistoRyhmaMetadata>();
@@ -130,6 +135,7 @@ public class CodesGroupResourceTest {
             metadatas.add(md);
         }
         dto.setKoodistoRyhmaMetadatas(metadatas);
+        dto.setKoodistoRyhmaUri(name);
         return dto;
     }
 

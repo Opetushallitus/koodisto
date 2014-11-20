@@ -2,7 +2,7 @@
 
 var SERVICE_NAME = "APP_KOODISTO";
 
-var app = angular.module('koodisto', [ 'ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization', 'ui.bootstrap', 'ui.utils', 'ngIdle', 'pasvaz.bindonce', 'ngUpload']);
+var app = angular.module('koodisto', [ 'ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization', 'ui.bootstrap', 'ui.utils', 'ui.select', 'ngIdle', 'pasvaz.bindonce', 'ngUpload']);
 //
 // i18n toteutus kopioitu osittain http://jsfiddle.net/4tRBY/41/
 //
@@ -507,6 +507,11 @@ app.filter('forLoop', function() {
         }
         return input;
     };
+});
+
+// Konfiguroidaan DatePicker alkamaan viikon maanantaista (default = sunnuntai)
+app.config(function(datepickerConfig) {
+    datepickerConfig.startingDay = 1;
 });
 
 app.run(["SessionPoll", function(SessionPoll) {
