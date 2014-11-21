@@ -1,5 +1,6 @@
 .idea/
 target/
+*~
 *.iml
 .project
 .settings/org.eclipse.core.resources.prefs
