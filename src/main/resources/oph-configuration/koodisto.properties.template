@@ -9,6 +9,7 @@
 activemq.brokerurl={{activemq_brokerurl}}
 activemq.jmxurl={{activemq_jmxurl}}
 auth.mode={{auth_mode}}
+common.corsfilter.mode={{corsfilter_mode}}
 env.loglevel={{env_loglevel}}
 host.cas={{host_cas}}
 host.ilb={{host_ilb}}
