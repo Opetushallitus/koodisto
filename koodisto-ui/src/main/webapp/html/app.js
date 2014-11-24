@@ -30,7 +30,7 @@ var MAX_SESSION_IDLE_TIME_IN_SECONDS = MAX_SESSION_IDLE_TIME_IN_SECONDS || 1800;
 app.factory('NoCacheInterceptor', function() {
     return {
         request : function(config) {
-            if (config.method && config.method == 'GET' && config.url.indexOf('html') === -1 && config.url.indexOf(ORGANIZATION_SERVICE_URL_BASE) === -1) {
+            if (config.method && config.method === 'GET' && config.url.indexOf('html') === -1 && config.url.indexOf(ORGANIZATION_SERVICE_URL_BASE) === -1) {
                 var separator = config.url.indexOf('?') === -1 ? '?' : '&';
                 config.url = config.url + separator + 'noCache=' + new Date().getTime();
             }
@@ -458,7 +458,7 @@ function getLanguageSpecificValue(fieldArray, fieldName, language) {
         for (var i = 0; i < fieldArray.length; i++) {
             if (fieldArray[i].kieli === language) {
                 var result = eval("fieldArray[i]." + fieldName);
-                return result == null ? "" : result;
+                return result === null ? "" : result;
             }
         }
     }
@@ -468,13 +468,13 @@ function getLanguageSpecificValue(fieldArray, fieldName, language) {
 function getLanguageSpecificValueOrValidValue(fieldArray, fieldName, language) {
     var specificValue = getLanguageSpecificValue(fieldArray, fieldName, language);
 
-    if (specificValue == "" && language != "FI"){
+    if (specificValue === "" && language !== "FI"){
         specificValue = getLanguageSpecificValue(fieldArray, fieldName, "FI");
     }
-    if (specificValue == "" && language != "SV"){
+    if (specificValue === "" && language !== "SV"){
         specificValue = getLanguageSpecificValue(fieldArray, fieldName, "SV");
     }
-    if (specificValue == "" && language != "EN"){
+    if (specificValue === "" && language !== "EN"){
         specificValue = getLanguageSpecificValue(fieldArray, fieldName, "EN");
     }
     return specificValue;

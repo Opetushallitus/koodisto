@@ -154,6 +154,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private KoodiVersioWithKoodistoItem createKoodiNonFlush(String koodistoUri, CreateKoodiDataType createKoodiData, KoodistoVersio latestKoodistoVersio) {
         if (createKoodiData == null || StringUtils.isBlank(koodistoUri)) {
+            logger.warn("KoodistoUri empty");
             throw new KoodistoUriEmptyException();
         }
 
