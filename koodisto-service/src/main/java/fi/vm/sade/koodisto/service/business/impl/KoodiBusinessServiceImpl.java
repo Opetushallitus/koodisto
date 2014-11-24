@@ -404,7 +404,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         if (relatedCodeElements == null || relatedCodeElements.isEmpty()) {
             return;
         }
-        if (st == SuhteenTyyppi.SISALTYY && !userIsRootUser() && koodisHaveSameOrganisaatio(latest.getKoodi().getKoodiUri(), relatedCodeElements)) {
+        if (st == SuhteenTyyppi.SISALTYY && !userIsRootUser() && !koodisHaveSameOrganisaatio(latest.getKoodi().getKoodiUri(), relatedCodeElements)) {
+            logger.warn("Failed to add 'sisaltyy' relation from " + latest.getKoodi().getKoodiUri() + " to " + relatedCodeElements);
             throw new KoodisHaveDifferentOrganizationsException();
         }
         if (relatedCodeElements.contains(latest.getKoodi().getKoodiUri())) {

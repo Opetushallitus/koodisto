@@ -3,22 +3,14 @@
 var SERVICE_NAME = "APP_KOODISTO";
 
 var app = angular.module('koodisto', [ 'ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization', 'ui.bootstrap', 'ui.utils', 'ui.select', 'ngIdle', 'pasvaz.bindonce', 'ngUpload']);
-//
-// i18n toteutus kopioitu osittain http://jsfiddle.net/4tRBY/41/
-//
 
+// Käytössä vain suomenkieliset "käännökset"
 angular.module('localization', []).filter('i18n', [ '$rootScope', '$locale', function($rootScope, $locale) {
-    var localeMapping = {
-        "en-us" : "en_US",
-        "fi-fi" : "fi_FI",
-        "sv-se" : "sv-SE"
-    };
-
     jQuery.i18n.properties({
         name : 'messages',
         path : '../i18n/',
         mode : 'map',
-        language : localeMapping[$locale.id],
+        language : 'fi_FI',
         callback : function() {
         }
     });
