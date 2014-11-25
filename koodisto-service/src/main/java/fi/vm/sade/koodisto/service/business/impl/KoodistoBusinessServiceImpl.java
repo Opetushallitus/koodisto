@@ -68,6 +68,7 @@ import fi.vm.sade.koodisto.service.business.exception.KoodistoOptimisticLockingE
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRelationToSelfException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoTilaException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoVersioNotPassiivinenException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoVersionNumberEmptyException;
@@ -275,15 +276,23 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         }
     }
 
+    private void checkTila(KoodistoVersio latest, UpdateKoodistoDataType updateKoodistoData) {
+        if (Tila.HYVAKSYTTY.equals(latest.getTila()) && updateKoodistoData.getTila().equals(TilaType.LUONNOS)) {
+            logger.error("Invalid state transition (HYVAKSYTTY->LUONNOS) for koodisto " + latest.getKoodisto().getKoodistoUri());
+            throw new KoodistoTilaException();
+        }
+    }
+
     @Override
     public KoodistoVersio updateKoodisto(UpdateKoodistoDataType updateKoodistoData) {
         if (updateKoodistoData == null || StringUtils.isBlank(updateKoodistoData.getKoodistoUri())) {
             throw new KoodistoUriEmptyException();
         }
-
         checkMetadatas(updateKoodistoData.getMetadataList());
 
         KoodistoVersio latest = getLatestKoodistoVersio(updateKoodistoData.getKoodistoUri());
+
+        checkTila(latest, updateKoodistoData);
 
         if (latest.getVersio() != updateKoodistoData.getVersio()
                 || (latest.getVersio() == updateKoodistoData.getVersio() &&
