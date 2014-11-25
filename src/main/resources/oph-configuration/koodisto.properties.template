@@ -72,9 +72,5 @@ oid.rest.url.backend=${host.ilb}/oid-service/rest/oid
 oid.webservice.url.backend=${host.ilb}/services/oidService
 root.organisaatio.oid=1.2.246.562.10.00000000001
 user.home.conf=${user.home}/oph-configuration
-<<<<<<< HEAD
 user.webservice.url.backend=https\://{{host_henkilo | default("${host.virkailija}") }}/authentication-service/services/userService
-=======
-user.webservice.url.backend=https\://${host.virkailija}/authentication-service/services/userService
->>>>>>> 8e701253c5c9a4f78d1a9b3709443c950b469263
 web.url.cas=https\://${host.cas}/cas
