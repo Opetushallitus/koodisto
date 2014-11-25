@@ -25,7 +25,9 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
         this.getCodes = function(scope, codesUri, codesVersion) {
             CodesByUriAndVersion.get({codesUri: codesUri, codesVersion: codesVersion}, function (result) {
                 model.codes = result;
-
+                if (model.codes.tila && model.codes.tila==='HYVAKSYTTY') {
+                    model.states = model.states.filter(function(item) { return item.key!=='LUONNOS'; });
+                }
 
                 model.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
                 model.namesv = getLanguageSpecificValue(result.metadata, 'nimi', 'SV');

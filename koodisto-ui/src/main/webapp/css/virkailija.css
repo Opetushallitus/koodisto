@@ -7,16 +7,16 @@
 
 /* normaalikokoinen perusnappula */
 .btn {
-color:#333333;    
+color:#333333;
 border-radius: 3px;
 border-color: rgb(146, 204, 224);
 font-size: 13px;
 background-color: rgb(210, 236, 245);
-text-shadow: none; 
+text-shadow: none;
 background-image: none;
 -webkit-box-shadow:inset 1px 1px 1px rgba(223,242,248,1.0);
    -moz-box-shadow:inset 1px 1px 1px rgba(223,242,248,1.0);
-        box-shadow:inset 1px 1px 1px rgba(223,242,248,1.0);    
+        box-shadow:inset 1px 1px 1px rgba(223,242,248,1.0);
 }
 
 /* */
@@ -31,7 +31,7 @@ background-image: none;
   border-color: rgb( 89, 174, 202 );
   border-radius: 3px;
   background-color: rgb(159, 219, 240);
-}   
+}
 
 /* alaspainettu nappula, varjostusmaski */
 .btn.active,
@@ -47,11 +47,11 @@ background-image: none;
 .btn.disabled,
 .btn[disabled] {
   cursor: default;
-  color: #333333;    
+  color: #333333;
   background-image:url("../img/disabled-pat.png");
   background-repeat: repeat;
   border: 1px solid #ababab;
-  box-shadow: none;    
+  box-shadow: none;
 }
 
 /* iso nappula*/
@@ -73,7 +73,7 @@ background-image: none;
   border: 1px solid #dea300;
   -webkit-box-shadow:inset 1px 1px 1px rgba(253, 237, 193,1.0);
      -moz-box-shadow:inset 1px 1px 1px rgba(253, 237, 193,1.0);
-          box-shadow:inset 1px 1px 1px rgba(253, 237, 193,1.0);    
+          box-shadow:inset 1px 1px 1px rgba(253, 237, 193,1.0);
   }
 
 /* primary-nappula, hover ja active*/
@@ -96,7 +96,7 @@ background-image: none;
 .btn-primary.active {
   -webkit-box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.15);
      -moz-box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.15);
-          box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.15);    
+          box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 /* muutetaan inaktiivisen nappulan ääriviiva harmaaksi ja poistetaan sisävarjostus */
@@ -183,7 +183,7 @@ h6 {
     background: linear-gradient(to bottom,  #e6e6e6 25%,#d2d2d2 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e6e6e6', endColorstr='#d2d2d2',GradientType=0 ); /* IE6-9 */
     }
-    
+
 /*aktiivisen tabin gradient*/
 .nav-tabs>.active>a,.nav-tabs>.active>a:hover,.nav-tabs>.active>a:focus {
     /*valkoinen kehys tabin sisällä*/
@@ -226,7 +226,7 @@ h6 {
 
 
 /*Tekstikenttien tyylit*/
-input { 
+input {
     background-color: #ffffff;
     background-image: none;
     border: none;
@@ -238,9 +238,9 @@ input {
     height: 26px;
     line-height: 20px;
     vertical-align: middle;
-} 
+}
 
-input:hover, textarea:hover {  
+input:hover, textarea:hover {
     background-color: #FFF5DA;
 }
 
@@ -267,26 +267,26 @@ a :visited {
 }
 
 /* EROTINVIIVA */
-hr { 
+hr {
     border:0;
-    color: #149ecb; 
+    color: #149ecb;
     background: #149ecb;
     background-color: #149ecb;
-    height: 1px; 
-} 
+    height: 1px;
+}
 
 
 /* TAULUKOT NORMAALI & STRIPED */
 
 .table {
-    border-top-color:#06526B; 
+    border-top-color:#06526B;
 }
 
 .table-striped tbody>tr:nth-child(odd)>td, .table-striped tbody>tr:nth-child(odd)>th {
     background-color: rgba(20, 158, 203, 0.06);
     border-top-color:rgba(6, 82, 107, 0.12);
     border-bottom-color:rgba(6, 82, 107, 0.12);
-    
+
 }
 
 .table th, .table td {
@@ -323,7 +323,7 @@ input[type="radio"] {
     top:3px;
 }
 
-=======
+// =======
 /* Sivutus */
 
 .pagination{

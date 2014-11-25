@@ -36,6 +36,7 @@ import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioHasRelationsException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRelationToSelfException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoTilaException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistonSuhdeContainsKoodinSuhdeException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistosAlreadyHaveSuhdeException;
 import fi.vm.sade.koodisto.service.it.DataUtils;
@@ -271,6 +272,14 @@ public class KoodistoBusinessServiceTest {
         assertTrue(result.getYlakoodistos().isEmpty());
 	}
 	
+        @Test(expected=KoodistoTilaException.class)
+	public void doesNotAllowTilaUpdateFromHyvaksyttyToLuonnos() {
+            KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio("http://koodisto12");
+	    KoodistoDto dto = conversionService.convert(result, KoodistoDto.class);
+            dto.setTila(Tila.LUONNOS);
+            koodistoBusinessService.saveKoodisto(dto);
+	}
+
 	@Transactional
 	@Test
 	public void setsOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsCreated() throws Exception {
