@@ -122,6 +122,11 @@ describe("Edit codes test", function() {
         expect(model.withinCodes.length).toEqual(1);
         expect(model.withinCodes[0].versio).toEqual(2);
     });
+
+    it("Should prevent manual versioning", function() {
+        expect(model.states.filter(function(item) { return item.key==='LUONNOS'; }).length).toEqual(0);
+    });
+
     });
     
 });
