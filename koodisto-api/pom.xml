@@ -50,6 +50,11 @@
             <version>${generic-common.version}</version>
         </dependency>
         <dependency>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
+          <version>${httpcomponents.version}</version>
+        </dependency>
+        <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>dependencies-service</artifactId>
             <type>pom</type>
