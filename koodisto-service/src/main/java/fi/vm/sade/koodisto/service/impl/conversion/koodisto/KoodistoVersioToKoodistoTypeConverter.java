@@ -2,9 +2,9 @@ package fi.vm.sade.koodisto.service.impl.conversion.koodisto;
 
 import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.generic.service.conversion.AbstractFromDomainConverter;
-import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
 import fi.vm.sade.koodisto.service.types.common.KoodistoType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import org.apache.commons.lang.StringUtils;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class KoodistoVersioToKoodistoTypeConverter extends AbstractFromDomainConverter<KoodistoVersio, KoodistoType> {
 
     @Autowired
-    private KoodistoConfiguration koodistoConfiguration;
+    private HostAwareKoodistoConfiguration koodistoConfiguration;
 
     @Override
     public KoodistoType convert(KoodistoVersio source) {
