@@ -734,8 +734,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     private boolean isVersionedRelation(KoodistoVersio yla, KoodistoVersio ala) {
-        return !(Tila.PASSIIVINEN.equals(yla.getTila()) || Tila.PASSIIVINEN.equals(ala.getTila()) ||
-            Tila.LUONNOS.equals(yla.getTila()) || Tila.LUONNOS.equals(ala.getTila()));
+        return Tila.HYVAKSYTTY.equals(yla.getTila()) || Tila.HYVAKSYTTY.equals(ala.getTila());
     }
 
     private boolean koodistosHaveSameOrganisaatio(String koodistoUri, String anotherKoodistoUri) {
