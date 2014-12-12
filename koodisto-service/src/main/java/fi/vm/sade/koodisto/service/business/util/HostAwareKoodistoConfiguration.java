@@ -33,7 +33,6 @@ public class HostAwareKoodistoConfiguration extends KoodistoConfiguration {
 
     static final String protocol = "https://";
     static final private String koodistoUriFormat = "/koodisto-service/rest/codes/{0}";
-    //static final private String koodiUriFormat = koodistoUriFormat + "/koodi/{1}";
     static final private String koodiUriFormat = "/koodisto-service/rest/codeelement/{0}";
 
     public HostAwareKoodistoConfiguration() throws ConfigurationException, MalformedURLException {
@@ -69,7 +68,7 @@ public class HostAwareKoodistoConfiguration extends KoodistoConfiguration {
     @Override
     public String getKoodiResourceUri(String koodistoUri, String koodiUri) {
         if (!host.isEmpty()) {
-            return MessageFormat.format(getBaseUri() + koodiUriFormat, koodistoUri, koodiUri);
+            return MessageFormat.format(getBaseUri() + koodiUriFormat, koodiUri);
         } else {
             return MessageFormat.format(configurationProperties.getString("koodiUri"), koodiUri);
         }
