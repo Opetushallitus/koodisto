@@ -8,18 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fi.vm.sade.generic.service.conversion.AbstractFromDomainConverter;
-import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistonSuhde;
+import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
 
 @Component("koodistoVersioToKoodistoDtoConverter")
 public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConverter<KoodistoVersio, KoodistoDto> {
 
     @Autowired
-    private KoodistoConfiguration koodistoConfiguration;
+    private HostAwareKoodistoConfiguration koodistoConfiguration;
 
     @Override
     public KoodistoDto convert(KoodistoVersio source) {

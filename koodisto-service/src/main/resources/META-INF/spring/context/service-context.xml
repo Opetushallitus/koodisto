@@ -16,7 +16,7 @@
     <bean class="fi.vm.sade.security.OidProvider"/>
 
     <bean id="koodistoConfiguration"
-          class="fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration"/>
+          class="fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration"/>
 
     <bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller">
         <property name="mappingLocation" value="classpath:META-INF/castor/mapping.xml"/>

@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.util;
 
 import fi.vm.sade.generic.common.EnhancedProperties;
+import fi.vm.sade.generic.rest.CachingHttpGetClient;
 import fi.vm.sade.generic.rest.CachingRestClient;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
@@ -30,7 +31,7 @@ public class CachingKoodistoClient implements KoodistoClient {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     // NOTE! cachingRestClient is static because we need application-scoped rest cache for koodisto-service
-    private static CachingRestClient cachingRestClient = new CachingRestClient();
+    private static CachingHttpGetClient cachingRestClient = new CachingHttpGetClient();
     private String koodistoServiceWebappUrl;
 
     public CachingKoodistoClient(String koodistoServiceWebappUrl) {
@@ -66,8 +67,7 @@ public class CachingKoodistoClient implements KoodistoClient {
         try {
             long t0 = System.currentTimeMillis();
             T result = cachingRestClient.get(koodistoServiceWebappUrl + "/rest/json" + uri, resultClass);
-            logger.debug("koodisto rest get done, uri: {}, took: {} ms, cacheStatus: {} result: {}", new Object[] { uri, (System.currentTimeMillis() - t0),
-                    cachingRestClient.getCacheStatus(), result });
+            logger.debug("koodisto rest get done, uri: {}, took: {} ms, cacheStatus: {} result: {}", new Object[] { uri, (System.currentTimeMillis() - t0), result });
             return result;
         } catch (IOException e) {
             throw new RuntimeException(e);

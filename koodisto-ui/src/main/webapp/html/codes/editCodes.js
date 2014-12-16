@@ -26,7 +26,9 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             CodesByUriAndVersion.get({codesUri: codesUri, codesVersion: codesVersion}, function (result) {
                 model.codes = result;
                 if (model.codes.tila && model.codes.tila==='HYVAKSYTTY') {
-                    model.states = model.states.filter(function(item) { return item.key!=='LUONNOS'; });
+                    model.states = [{key:'PASSIIVINEN', value:'PASSIIVINEN'},{key:'HYVAKSYTTY',value:'HYVÄKSYTTY'}];
+                } else {
+                    model.states = [{key:'PASSIIVINEN', value:'PASSIIVINEN'},{key:'LUONNOS', value:'LUONNOS'},{key:'HYVAKSYTTY',value:'HYVÄKSYTTY'}];
                 }
 
                 model.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');

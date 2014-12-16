@@ -1,8 +1,8 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
 import fi.vm.sade.generic.common.DateHelper;
-import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
+import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
@@ -21,7 +21,7 @@ public class KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter implements
         Converter<KoodiVersioWithKoodistoItem, KoodiType> {
 
     @Autowired
-    private KoodistoConfiguration koodistoConfiguration;
+    private HostAwareKoodistoConfiguration koodistoConfiguration;
 
     public KoodiType convert(KoodiVersioWithKoodistoItem source) {
         KoodiType converted = new KoodiType();

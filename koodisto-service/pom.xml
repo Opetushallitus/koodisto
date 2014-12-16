@@ -3,7 +3,7 @@
     <parent>
         <artifactId>koodisto</artifactId>
         <groupId>fi.vm.sade.koodisto</groupId>
-        <version>13.1</version>
+        <version>14.0</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>koodisto-service</artifactId>
