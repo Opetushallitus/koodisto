@@ -24,5 +24,8 @@
     <bean id="koodistoService" class="fi.vm.sade.koodisto.service.impl.KoodistoServiceImpl" />
     <bean id="downloadService" class="fi.vm.sade.koodisto.service.impl.DownloadServiceImpl" />
     <bean id="uploadService" class="fi.vm.sade.koodisto.service.impl.UploadServiceImpl" />
+    <bean id="koodistoConfiguration" class="fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration">
+        <property name="host" value="http://koodistopalvelu.opintopolku.fi" />
+    </bean>
 
 </beans>

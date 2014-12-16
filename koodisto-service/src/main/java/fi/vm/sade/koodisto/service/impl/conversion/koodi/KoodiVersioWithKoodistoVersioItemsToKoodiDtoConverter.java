@@ -1,8 +1,8 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
-import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
+import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ public class KoodiVersioWithKoodistoVersioItemsToKoodiDtoConverter implements
         Converter<KoodiVersioWithKoodistoItem, KoodiDto> {
 
     @Autowired
-    private KoodistoConfiguration koodistoConfiguration;
+    private HostAwareKoodistoConfiguration koodistoConfiguration;
 
     public KoodiDto convert(KoodiVersioWithKoodistoItem source) {
         KoodiDto converted = new KoodiDto();

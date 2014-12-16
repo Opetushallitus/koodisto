@@ -187,24 +187,32 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Override
     public void addRelation(String ylaKoodisto, String alaKoodisto, SuhteenTyyppi suhteenTyyppi) {
+        boolean insert = true;
         if(ylaKoodisto.equals(alaKoodisto)){
             throw new KoodistoRelationToSelfException();
         }
+        KoodistoVersio yla = getLatestKoodistoVersio(ylaKoodisto);
+        KoodistoVersio ala = getLatestKoodistoVersio(alaKoodisto);
         if (hasAnyRelation(ylaKoodisto, alaKoodisto)) {
-            throw new KoodistosAlreadyHaveSuhdeException();
+            if (isVersionedRelation(yla, ala)) {
+                throw new KoodistosAlreadyHaveSuhdeException();
+            } else {
+                logger.warn("Codes already have non-versioned relation: ylakoodisto=" + ylaKoodisto + ", alaKoodisto=" + alaKoodisto);
+                insert = false;
+            }
         }
         if (suhteenTyyppi == SuhteenTyyppi.SISALTYY && !userIsRootUser() && !koodistosHaveSameOrganisaatio(ylaKoodisto, alaKoodisto)) {
             throw new KoodistosHaveDifferentOrganizationsException();
         }
-        KoodistoVersio yla = getLatestKoodistoVersio(ylaKoodisto);
-        KoodistoVersio ala = getLatestKoodistoVersio(alaKoodisto);
+        if (insert) {
+            KoodistonSuhde koodistonSuhde = new KoodistonSuhde();
+            koodistonSuhde.setSuhteenTyyppi(suhteenTyyppi);
+            koodistonSuhde.setYlakoodistoVersio(yla);
+            koodistonSuhde.setAlakoodistoVersio(ala);
+            koodistonSuhde.setVersio(1);
 
-        KoodistonSuhde koodistonSuhde = new KoodistonSuhde();
-        koodistonSuhde.setSuhteenTyyppi(suhteenTyyppi);
-        koodistonSuhde.setYlakoodistoVersio(yla);
-        koodistonSuhde.setAlakoodistoVersio(ala);
-        koodistonSuhde.setVersio(1);
-        koodistonSuhdeDAO.insert(koodistonSuhde);
+            koodistonSuhdeDAO.insert(koodistonSuhde);
+        }
     }
 
     private void removeRelations(String ylakoodistoUri, List<String> alakoodistoUris, SuhteenTyyppi st) {
@@ -723,6 +731,10 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             }
 
         }).isPresent();
+    }
+
+    private boolean isVersionedRelation(KoodistoVersio yla, KoodistoVersio ala) {
+        return Tila.HYVAKSYTTY.equals(yla.getTila()) || Tila.HYVAKSYTTY.equals(ala.getTila());
     }
 
     private boolean koodistosHaveSameOrganisaatio(String koodistoUri, String anotherKoodistoUri) {

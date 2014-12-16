@@ -8,7 +8,7 @@ import java.net.MalformedURLException;
 import java.text.MessageFormat;
 
 public class KoodistoConfiguration {
-    private Configuration configurationProperties;
+    protected Configuration configurationProperties;
 
     public KoodistoConfiguration() throws ConfigurationException, MalformedURLException {
         configurationProperties = new PropertiesConfiguration(getClass().getClassLoader().getResource(
