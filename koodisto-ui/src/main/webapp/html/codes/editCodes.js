@@ -414,7 +414,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         ce = $scope.createCodes(data);
         var found = false;
         $scope.model.includesCodes.forEach(function(codes, index) {
-            if (codes.uri.indexOf(data.koodistoUri) !== -1) {
+            if (codes.uri===data.koodistoUri) {
                 found = true;
             }
         });
