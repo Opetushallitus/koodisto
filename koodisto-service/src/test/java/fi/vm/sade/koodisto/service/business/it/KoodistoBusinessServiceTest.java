@@ -193,14 +193,19 @@ public class KoodistoBusinessServiceTest {
         assertTrue(koodistoBusinessService.hasAnyRelation("http://koodisto20", "http://koodisto21"));
     }
 
-    @Test(expected = KoodistosAlreadyHaveSuhdeException.class)
+    @Test
     public void preventsAddingSameRelationMoreThanOnce() {
+        KoodistoVersio latest = koodistoBusinessService.getLatestKoodistoVersio("suhde502kanssa");
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.SISALTYY);
+        assertEquals(1, suhdeDAO.findBy("ylakoodistoVersio", latest).size());
     }
-
-    @Test(expected = KoodistosAlreadyHaveSuhdeException.class)
+    
+    @Test
     public void preventsAddingSameRelationMoreThanOnceDespiteRelationType() {
+        KoodistoVersio latest = koodistoBusinessService.getLatestKoodistoVersio("suhde502kanssa");
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.RINNASTEINEN);
+        assertEquals(1, suhdeDAO.findBy("ylakoodistoVersio", latest).size());
+        assertTrue(suhdeDAO.findBy("alakoodistoVersio", latest).isEmpty());
     }
 
     @Test(expected = KoodistoRelationToSelfException.class)

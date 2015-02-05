@@ -194,12 +194,8 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         KoodistoVersio yla = getLatestKoodistoVersio(ylaKoodisto);
         KoodistoVersio ala = getLatestKoodistoVersio(alaKoodisto);
         if (hasAnyRelation(ylaKoodisto, alaKoodisto)) {
-            if (isVersionedRelation(yla, ala)) {
-                throw new KoodistosAlreadyHaveSuhdeException();
-            } else {
-                logger.warn("Codes already have non-versioned relation: ylakoodisto=" + ylaKoodisto + ", alaKoodisto=" + alaKoodisto);
-                insert = false;
-            }
+            logger.warn("Codes already have non-versioned relation: ylakoodisto=" + ylaKoodisto + ", alaKoodisto=" + alaKoodisto);
+            insert = false;
         }
         if (suhteenTyyppi == SuhteenTyyppi.SISALTYY && !userIsRootUser() && !koodistosHaveSameOrganisaatio(ylaKoodisto, alaKoodisto)) {
             throw new KoodistosHaveDifferentOrganizationsException();
@@ -731,10 +727,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             }
 
         }).isPresent();
-    }
-
-    private boolean isVersionedRelation(KoodistoVersio yla, KoodistoVersio ala) {
-        return Tila.HYVAKSYTTY.equals(yla.getTila()) || Tila.HYVAKSYTTY.equals(ala.getTila());
     }
 
     private boolean koodistosHaveSameOrganisaatio(String koodistoUri, String anotherKoodistoUri) {
