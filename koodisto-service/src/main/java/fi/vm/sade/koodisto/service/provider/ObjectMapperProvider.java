@@ -19,8 +19,6 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
         objectMapper.configure(SerializationConfig.Feature.DEFAULT_VIEW_INCLUSION, false);
         objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        // FIXME: Tämä tulostaa jsonin nätimmässä muodossa. Varmaan pois tuotannosta..
-        objectMapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
     }
 
     @Override
