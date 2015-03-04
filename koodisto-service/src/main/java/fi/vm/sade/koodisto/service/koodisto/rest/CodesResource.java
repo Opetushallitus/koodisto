@@ -83,7 +83,7 @@ public class CodesResource {
 
     @Autowired
     private CodesResourceConverter converter;
-    
+
     @Autowired
     private KoodistoChangesService changesService;
 
@@ -221,7 +221,7 @@ public class CodesResource {
             codesGroupUris.add(codesDTO.getCodesGroupUri());
             KoodistoVersio koodistoVersio = koodistoBusinessService.createKoodisto(codesGroupUris, converter.convertFromDTOToCreateKoodistoDataType(codesDTO));
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoVersio, KoodistoDto.class)).build();
-        
+
         } catch (KoodistoValidationException e) {
             LOGGER.warn("Invalid parameter for rest call: insert. ", e);
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -242,7 +242,7 @@ public class CodesResource {
             responseContainer = "List")
     public Response listAllCodesGroups() {
         try {
-         
+
             return Response.status(Response.Status.OK).entity(conversionService.convertAll(koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class)).build();
 
         } catch (Exception e) {
@@ -263,7 +263,7 @@ public class CodesResource {
             responseContainer = "List")
     public Response listAllCodesInAllCodeGroups() {
         try {
-         
+
             SearchKoodistosCriteriaType searchType = KoodistoServiceSearchCriteriaBuilder.latestCodes();
             return Response.status(Response.Status.OK).entity(conversionService.convertAll(koodistoBusinessService.searchKoodistos(searchType), KoodistoVersioListDto.class)).build();
 
@@ -287,11 +287,11 @@ public class CodesResource {
         try {
             String[] errors = { "codesuri" };
             ValidatorUtil.validateArgs(errors, codesUri);
-            
+
             Koodisto koodisto = koodistoBusinessService.getKoodistoByKoodistoUri(codesUri);
 
             return Response.status(Response.Status.OK).entity(conversionService.convert(koodisto, KoodistoListDto.class)).build();
-        
+
         } catch (KoodistoValidationException e) {
             LOGGER.warn("Invalid parameter for rest call: getCodesByCodesUri. ", e);
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -335,7 +335,7 @@ public class CodesResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
@@ -345,7 +345,7 @@ public class CodesResource {
             notes = "Toimii vain, jos koodisto on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
             response = KoodistoChangesDto.class)
     public Response getChangesToCodes(@ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
-            @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") Integer codesVersion, 
+            @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") Integer codesVersion,
             @ApiParam(value = "Verrataanko viimeiseen hyväksyttyyn versioon") @DefaultValue("false") @QueryParam("compareToLatestAccepted") boolean compareToLatestAccepted) {
         try {
             ValidatorUtil.checkForGreaterThan(codesVersion, 0, new KoodistoValidationException("error.validation.codeelementversion"));
@@ -360,7 +360,7 @@ public class CodesResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Basic.class })
@@ -459,7 +459,6 @@ public class CodesResource {
     @Path("/download/{codesUri}/{codesVersion}/{fileFormat}")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @JsonView({ JsonViews.Basic.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ','ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
             value = "Lataa koodiston CSV, XML tai XLS tiedostona.",
             notes = "Palauttaa tyhjän koodistopohjan, jos koodiston URI on 'blankKoodistoDocument' ja versio on -1.",
@@ -472,7 +471,7 @@ public class CodesResource {
         try {
             String[] errors = { "codesuri", "codesversion", "fileformat", "encoding" };
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion, fileFormat, encoding);
-            
+
             File file = koodistoBusinessService.downloadFile(codesUri, codesVersion, fileFormat, encoding);
             TemporaryFileInputStream is = null;
             is = new TemporaryFileInputStream(file); // Response will close input stream:
@@ -493,7 +492,7 @@ public class CodesResource {
             responseBuilder.header("Content-Disposition", "inline; filename=\"" + codesUri + extension + "\"");
             Response response = responseBuilder.build();
             return response;
-            
+
         } catch (KoodistoValidationException e) {
             LOGGER.warn("Invalid parameter for rest call: downloadFile. ", e);
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
@@ -520,10 +519,10 @@ public class CodesResource {
         try {
             String[] errors = { "codesuri", "codesversion" };
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
-            
+
             koodistoBusinessService.delete(codesUri, codesVersion);
             return Response.status(Response.Status.ACCEPTED).build();
-            
+
         } catch (KoodistoValidationException e) {
             LOGGER.warn("Invalid parameter for rest call: delete. ", e);
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
