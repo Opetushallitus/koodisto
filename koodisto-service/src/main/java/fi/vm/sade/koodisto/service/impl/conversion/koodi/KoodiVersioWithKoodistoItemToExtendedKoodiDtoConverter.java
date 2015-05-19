@@ -114,13 +114,17 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
 
     private List<SimpleMetadataDto> getKoodistoMetadatas(KoodiVersio kv) {
         KoodistoVersio koodistoVersio = getMatchingKoodistoVersio(kv);
-        return new ArrayList<SimpleMetadataDto>(Collections2.transform(koodistoVersio.getMetadatas(), new Function<KoodistoMetadata, SimpleMetadataDto>() {
+        if (koodistoVersio!=null) {
+            return new ArrayList<SimpleMetadataDto>(Collections2.transform(koodistoVersio.getMetadatas(), new Function<KoodistoMetadata, SimpleMetadataDto>() {
 
-            @Override
-            public SimpleMetadataDto apply(KoodistoMetadata input) {
-                return MetadataToSimpleMetadataConverter.convert(input);
-            }
-        }));
+                @Override
+                public SimpleMetadataDto apply(KoodistoMetadata input) {
+                    return MetadataToSimpleMetadataConverter.convert(input);
+                }
+            }));
+        } else {
+            return new ArrayList<SimpleMetadataDto>();
+        }
     }
 
     private KoodistoVersio getMatchingKoodistoVersio(KoodiVersio kv) {
@@ -129,7 +133,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
                 return kvkv.getKoodistoVersio();
             }
         }
-        return kv.getKoodistoVersios().iterator().next().getKoodistoVersio();
+        return null;
     }
 
 }
