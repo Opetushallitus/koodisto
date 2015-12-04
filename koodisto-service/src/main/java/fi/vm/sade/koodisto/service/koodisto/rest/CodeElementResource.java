@@ -174,7 +174,7 @@ public class CodeElementResource {
     @Produces(MediaType.APPLICATION_JSON)
     @JsonView({ JsonViews.Simple.class })
     @ApiOperation(
-            value = "Palauttaa koodin tietystä koodistoversiosta",
+            value = "Palauttaa tietyn koodistoversion kaikki koodit",
             notes = "",
             response = SimpleKoodiDto.class,
             responseContainer = "List")
@@ -199,7 +199,7 @@ public class CodeElementResource {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {
             String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
-            logger.error("Fetching codeElement failed.", e);
+            logger.error("Fetching codeElements failed.", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
         }
     }
