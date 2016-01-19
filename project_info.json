@@ -1,0 +1,10 @@
+{
+  "name": "koodisto",
+
+  "Makefile": "no",
+
+  "projects": [
+    {"name": "koodisto-web", "uses": "koodisto-rest organisaatio-rest"},
+    {"name": "koodisto-rest", "uses": "cas ldap koodisto-postgres authentication-service"}
+  ]
+}
