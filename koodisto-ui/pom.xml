@@ -55,6 +55,7 @@
                         <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-route.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-sanitize.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-animate.js</source>
+                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-cookies.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/ui-bootstrap-0.6.0.min.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/naturalSort.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/angular-modules/angular-idle-0.3.2.js</source>
