@@ -2,7 +2,19 @@
 
 var SERVICE_NAME = "APP_KOODISTO";
 
-var app = angular.module('koodisto', [ 'ngResource', 'loading', 'ngRoute', 'ngAnimate', 'localization', 'ui.bootstrap', 'ui.utils', 'ui.select', 'ngIdle', 'pasvaz.bindonce', 'ngUpload']);
+var app = angular.module('koodisto', [
+    'ngResource',
+    'loading',
+    'ngRoute',
+    'ngAnimate',
+    'ngCookies',
+    'localization',
+    'ui.bootstrap',
+    'ui.utils',
+    'ui.select',
+    'ngIdle',
+    'pasvaz.bindonce',
+    'ngUpload']);
 
 // Käytössä vain suomenkieliset "käännökset"
 angular.module('localization', []).filter('i18n', [ '$rootScope', '$locale', function($rootScope, $locale) {
@@ -39,9 +51,29 @@ app.factory('NoCacheInterceptor', function() {
     };
 });
 
+app.factory('ajaxInterceptor', function(Config, $cookies) {
+    'use strict';
+    return {
+        request: function(config) {
+            if (callerid) {
+                config.headers['Caller-Id'] = "koodisto.koodisto-ui.frontend";
+            }
+            if($cookies['CSRF']) {
+                config.headers['X-CSRF'] = $cookies['CSRF'];
+            }
+            // Fix IE caching AJAX-requests
+            if (config.method === 'GET' && config.url.indexOf('/tarjonta-service/') !== -1) {
+                config.headers['If-Modified-Since'] = 'Mon, 26 Jul 1997 05:00:00 GMT';
+            }
+            return config;
+        }
+    };
+})
+
 // Route configuration
 app.config([ '$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
     $httpProvider.interceptors.push('NoCacheInterceptor');
+    $httpProvider.interceptors.push('ajaxInterceptor');
     $routeProvider.
     // front page
     when('/etusivu', {
