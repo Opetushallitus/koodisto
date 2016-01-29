@@ -10,6 +10,7 @@ auth.mode={{auth_mode}}
 host.cas={{host_cas}}
 host.ldap={{host_ldap}}
 host.virkailija={{host_virkailija}}
+ldap.manager-password={{ldap_manager_password}}
 ldap.manager.userdn={{ldap_manager_userdn}}
 server.name={{ansible_hostname}}
 
