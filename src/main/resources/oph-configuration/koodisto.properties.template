@@ -34,7 +34,3 @@ ldap.manager-dn=${ldap.manager.userdn}
 ldap.url=ldap://${host.ldap}
 ldap.url.with.base=ldap\://${host.ldap}/dc\=opintopolku,dc\=fi
 web.url.cas=https\://${host.cas}/cas
-
-# Riippuvuuksien tarvitsemia asetuksia
-cas.service.organisaatio-service=https://{{host_organisaatio | default("${host.virkailija}") }}/organisaatio-service
-root.organisaatio.oid=1.2.246.562.10.00000000001
