@@ -6,42 +6,14 @@
 #
 
 # Aseta vähintään nämä ympäristökohtaiset arvot
-activemq.brokerurl={{activemq_brokerurl}}
-activemq.jmxurl={{activemq_jmxurl}}
 auth.mode={{auth_mode}}
-common.corsfilter.mode={{corsfilter_mode}}
-env.loglevel={{env_loglevel}}
 host.cas={{host_cas}}
-host.ilb={{host_ilb}}
 host.ldap={{host_ldap}}
-host.postgresql.koodisto={{host_postgresql_koodisto}}
-host.postgresql.koodisto.password={{host_postgresql_koodisto_password}}
-host.postgresql.koodisto.user={{host_postgresql_koodisto_user}}
 host.virkailija={{host_virkailija}}
-ldap.manager.password={{ldap_manager_password}}
-ldap.manager-password={{ldap_manager_password}}
 ldap.manager.userdn={{ldap_manager_userdn}}
-port.postgresql={{port_postgresql}}
 server.name={{ansible_hostname}}
-common.corsfilter.mode={{corsfilter_mode | default('PRODUCTION')}}
-common.corsfilter.allowed-domains={{corsfilter_allowed_domains | default('')}}
 
 # Oletusarvoja
-accessRight.webservice.url.backend=https\://{{host_henkilo | default("${host.virkailija}") }}/authentication-service/services/accessRightService
-accessRightAdmin.webservice.url.backend=https\://{{host_henkilo | default("${host.virkailija}") }}/authentication-service/services/accessRightAdminService
-accessRightHistory.webservice.url.backend=https\://{{host_henkilo | default("${host.virkailija}") }}/authentication-service/services/accessRightHistoryService
-activemq.queue.name.log.error=Sade.Log_Error
-activemq.queue.name.log=Sade.Log
-activemq.queue.name.mail=Sade.Email
-activeMq.queueName.organisaatio=fi.vm.sade.organisaatio.service
-activeMq.queueNameHaku=fi.vm.sade.tarjonta.haku.service
-activeMq.queueNameTarjontaAdmin=fi.vm.sade.tarjonta.admin.service
-activeMq.queueNameTarjontaPublic=fi.vm.sade.tarjonta.public.service
-activeMq.targetDestination.learningopportunityprovider.public=fi.vm.sade.learningopportunityprovider.public.service
-activeMq.targetDestination.organisaatio=fi.vm.sade.organisaatio.service
-activeMq.targetDestinationAdmin.tarjonta=fi.vm.sade.tarjonta.admin.service
-activeMq.targetDestinationPublic.tarjonta=fi.vm.sade.tarjonta.public.service
-cas.callback.koodisto-app=http://${server.name}:8303/koodisto-app
 cas.callback.koodisto-service=http://${server.name}:8303/koodisto-service
 cas.callback.koodisto-ui=http://${server.name}:8303/koodisto-ui
 cas.group-role-attribute=cn
@@ -52,27 +24,12 @@ cas.user-search-base=ou\=people
 cas.user-search-filter=(|(mail\={0})(uid\={0}))
 cas.service.koodisto-service=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-service
 cas.service.koodisto-ui=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-ui
-cas.service.organisaatio-service=https://{{host_organisaatio | default("${host.virkailija}") }}/organisaatio-service
-customAttribute.webservice.url.backend=https://{{host_henkilo | default("${host.virkailija}") }}/authentication-service/services/customAttributeService
 flyway.initOnMigrate=true
-koodi.public.webservice.url.backend=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-service/services/koodiService
-koodisto.public.webservice.url.backend=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-service/services/koodistoService
 jpa.schemaUpdate=validate
 jpa.showSql=false
 koodisto-ui.koodisto-service-url.rest=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-service/rest/
 koodisto-ui.organisaatio-service-url=https://{{host_organisaatio | default("${host.virkailija}") }}/organisaatio-service/
-ldap.cache.size=10000
-ldap.data.dir=${user.home}/data
-ldap.filter.people=uid\=%u
-ldap.index.cache.size=10000
 ldap.manager-dn=${ldap.manager.userdn}
-ldap.search.base.people=ou=People,dc=opintopolku,dc=fi
 ldap.url=ldap://${host.ldap}
 ldap.url.with.base=ldap\://${host.ldap}/dc\=opintopolku,dc\=fi
-log4j.properties.file=${user.home.conf}/log4j.properties
-oid.rest.url.backend=${host.ilb}/oid-service/rest/oid
-oid.webservice.url.backend=${host.ilb}/services/oidService
-root.organisaatio.oid=1.2.246.562.10.00000000001
-user.home.conf=${user.home}/oph-configuration
-user.webservice.url.backend=https\://{{host_henkilo | default("${host.virkailija}") }}/authentication-service/services/userService
 web.url.cas=https\://${host.cas}/cas
