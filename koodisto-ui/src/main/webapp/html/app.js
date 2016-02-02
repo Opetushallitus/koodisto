@@ -52,9 +52,9 @@ app.factory('NoCacheInterceptor', function() {
 });
 
 app.run(function($http, $cookies) {
-    $http.defaults.headers.common['Caller-Id'] = "koodisto.koodisto-ui.frontend";
+    $http.defaults.headers.common['clientSubSystemCode'] = "koodisto.koodisto-ui.frontend";
     if($cookies['CSRF']) {
-        $http.defaults.headers.common['X-CSRF'] = $cookies['CSRF'];
+        $http.defaults.headers.common['CSRF'] = $cookies['CSRF'];
     }
 });
 
