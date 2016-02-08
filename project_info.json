@@ -10,7 +10,7 @@
   "clean oph-config": "ok",
 
   "projects": [
-    {"name": "koodisto-web", "uses": "koodisto-rest organisaatio-rest"},
+    {"name": "koodisto-web", "uses": "cas koodisto-rest organisaatio-rest lokalisointi-rest"},
     {"name": "koodisto-rest", "uses": "cas ldap koodisto-postgres authentication-service"}
   ]
 }
