@@ -63,6 +63,11 @@ public class CachingKoodistoClient implements KoodistoClient {
         this.koodistoServiceWebappUrl = koodistoServiceWebappUrl;
     }
 
+    public CachingKoodistoClient setClientSubSystemCode(String clientSubSystemCode) {
+        cachingRestClient.setClientSubSystemCode(clientSubSystemCode);
+        return this;
+    }
+
     private <T> T get(String uri, Class<? extends T> resultClass) {
         try {
             long t0 = System.currentTimeMillis();

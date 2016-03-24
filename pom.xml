@@ -184,7 +184,7 @@
 		<generic-common.version>${generic.version}</generic-common.version>
 		<generic-test-support.version>${generic.version}</generic-test-support.version>
 		<log-client.version>8.0</log-client.version>
-		<generic.version>9.1-SNAPSHOT</generic.version>
+		<generic.version>9.2-SNAPSHOT</generic.version>
 
 		<hibernate-core.version>${hibernate.version}</hibernate-core.version>
 		<hibernate-ehcache.version>${hibernate.version}</hibernate-ehcache.version>
