@@ -46,5 +46,5 @@ public interface KoodistoClient {
 
     String buildSearchKoodisUri(SearchKoodisCriteriaType sc);
 
-    CachingKoodistoClient setClientSubSystemCode(String clientSubSystemCode);
+    KoodistoClient setClientSubSystemCode(String clientSubSystemCode);
 }
