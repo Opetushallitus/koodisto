@@ -33,19 +33,19 @@ public class UriTransliteratorImpl implements UriTransliterator {
     @Autowired
     private KoodistoRyhmaDAO koodistoRyhmaDAO;
 
-    private static final Map<Character, Character> TRANSLITERATION = new HashMap<Character, Character>();
+    private static final Map<String, String> TRANSLITERATION = new HashMap<String, String>();
 
     static {
-        Character[][] specialCharacters = new Character[][] { { 'å', 'o' }, { 'ä', 'a' }, { 'ö', 'o' } };
+        String[][] specialCharacters = new String[][] { { "å", "o" }, { "ä", "a" }, { "ö", "o" } };
 
-        Character[] allowedCharacters = new Character[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
-                'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        String[] allowedCharacters = new String[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
+                "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 
-        for (Character c : allowedCharacters) {
+        for (String c : allowedCharacters) {
             TRANSLITERATION.put(c, c);
         }
 
-        for (Character[] c : specialCharacters) {
+        for (String[] c : specialCharacters) {
             TRANSLITERATION.put(c[0], c[1]);
         }
     }
@@ -57,7 +57,7 @@ public class UriTransliteratorImpl implements UriTransliterator {
 
         value = value.toLowerCase();
         for (int i = 0; i < value.length(); ++i) {
-            char c = value.charAt(i);
+            String c = value.substring(i, i+1);
 
             if (TRANSLITERATION.containsKey(c)) {
                 b.append(TRANSLITERATION.get(c));
