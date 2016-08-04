@@ -79,12 +79,7 @@ public class KoodistoRESTService {
             @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri,
             @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
 
-        KoodistoVersio koodisto = null;
-        if (koodistoVersio == null) {
-            koodisto = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
-        } else {
-            koodisto = koodistoBusinessService.getKoodistoVersio(koodistoUri, koodistoVersio);
-        }
+        KoodistoVersio koodisto = getKoodistoVersio(koodistoUri, koodistoVersio);
         return new ObjectFactory().createKoodisto(conversionService.convert(koodisto, KoodistoType.class));
     }
 
@@ -227,12 +222,7 @@ public class KoodistoRESTService {
     public String getKoodistoXsdSkeema(
             @ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri,
             @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
-        KoodistoVersio koodisto = null;
-        if (koodistoVersio == null) {
-            koodisto = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
-        } else {
-            koodisto = koodistoBusinessService.getKoodistoVersio(koodistoUri, koodistoVersio);
-        }
+        KoodistoVersio koodisto = getKoodistoVersio(koodistoUri, koodistoVersio);
 
         // TODO: streamaus vois olla kohdillaan kun esim posti -koodistosta tulee 1,4 meganen xsd-dokkari
         StringBuilder sb = new StringBuilder();
@@ -252,7 +242,15 @@ public class KoodistoRESTService {
         sb.append("        </xs:restriction>\n" + "    </xs:simpleType>\n" + "\n" + "</xs:schema>\n");
         return sb.toString();
     }
-    
+
+    private KoodistoVersio getKoodistoVersio(@ApiParam(value = "Koodiston URI") @PathParam(KOODISTO_URI) String koodistoUri, @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
+        if (koodistoVersio == null) {
+            return koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+        } else {
+            return koodistoBusinessService.getKoodistoVersio(koodistoUri, koodistoVersio);
+        }
+    }
+
     private String escapeXml(Object o, boolean isTypeName) {
         if (o == null) {
             return "";
