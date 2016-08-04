@@ -148,7 +148,7 @@
 
 
 		<!-- Versions -->
-		<java.version>1.7</java.version>
+		<java.version>1.8</java.version>
 
 		<activemq-core.version>${activemq.version}</activemq-core.version>
 		<activemq-pool.version>${activemq.version}</activemq-pool.version>
