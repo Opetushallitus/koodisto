@@ -8,6 +8,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import junit.framework.Assert;
+import junit.framework.ComparisonFailure;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -395,9 +396,15 @@ public class KoodistoRESTServiceTest {
     public void testGetKoodistoXsdSkeema() {
         final String koodistoUri = "http://koodisto17";
         String xsd = koodistoRESTService.getKoodistoXsdSkeema(koodistoUri, null).replaceAll("\\s", "");
-        Assert.assertEquals(
-                "<?xmlversion=\"1.0\"?><xs:schemaxmlns:xs=\"http://www.w3.org/2001/XMLSchema\"targetNamespace=\"http://service.koodisto.sade.vm.fi/types/koodisto\"xmlns=\"http://service.koodisto.sade.vm.fi/types/koodisto\"elementFormDefault=\"qualified\"><xs:simpleTypename=\"httpkoodisto17\"><xs:restrictionbase=\"xs:string\"><xs:enumerationvalue=\"29\"><xs:annotation><xs:documentationxml:lang=\"fi\">koodi31</xs:documentation></xs:annotation></xs:enumeration><xs:enumerationvalue=\"28\"><xs:annotation><xs:documentationxml:lang=\"fi\">koodi30</xs:documentation></xs:annotation></xs:enumeration></xs:restriction></xs:simpleType></xs:schema>"
-                , xsd);
+        try {
+            Assert.assertEquals(
+                    "<?xmlversion=\"1.0\"?><xs:schemaxmlns:xs=\"http://www.w3.org/2001/XMLSchema\"targetNamespace=\"http://service.koodisto.sade.vm.fi/types/koodisto\"xmlns=\"http://service.koodisto.sade.vm.fi/types/koodisto\"elementFormDefault=\"qualified\"><xs:simpleTypename=\"httpkoodisto17\"><xs:restrictionbase=\"xs:string\"><xs:enumerationvalue=\"29\"><xs:annotation><xs:documentationxml:lang=\"fi\">koodi31</xs:documentation></xs:annotation></xs:enumeration><xs:enumerationvalue=\"28\"><xs:annotation><xs:documentationxml:lang=\"fi\">koodi30</xs:documentation></xs:annotation></xs:enumeration></xs:restriction></xs:simpleType></xs:schema>"
+                    , xsd);
+        } catch (ComparisonFailure e) {
+            Assert.assertEquals(
+                    "<?xmlversion=\"1.0\"?><xs:schemaxmlns:xs=\"http://www.w3.org/2001/XMLSchema\"targetNamespace=\"http://service.koodisto.sade.vm.fi/types/koodisto\"xmlns=\"http://service.koodisto.sade.vm.fi/types/koodisto\"elementFormDefault=\"qualified\"><xs:simpleTypename=\"httpkoodisto17\"><xs:restrictionbase=\"xs:string\"><xs:enumerationvalue=\"28\"><xs:annotation><xs:documentationxml:lang=\"fi\">koodi30</xs:documentation></xs:annotation></xs:enumeration><xs:enumerationvalue=\"29\"><xs:annotation><xs:documentationxml:lang=\"fi\">koodi31</xs:documentation></xs:annotation></xs:enumeration></xs:restriction></xs:simpleType></xs:schema>"
+                    , xsd);
+        }
     }
 
 }
