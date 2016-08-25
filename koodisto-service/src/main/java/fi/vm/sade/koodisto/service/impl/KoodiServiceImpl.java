@@ -36,7 +36,7 @@ public class KoodiServiceImpl implements KoodiService {
     @Override
     public List<KoodiType> listKoodiByRelation(KoodiUriAndVersioType koodi, boolean onAlaKoodi,
             SuhteenTyyppiType suhdeTyyppi) throws GenericFault {
-        log.info("listKoodiByRelation called with parameters koodiUri=" + koodi.getKoodiUri() + ", versio="
+        log.debug("listKoodiByRelation called with parameters koodiUri=" + koodi.getKoodiUri() + ", versio="
                 + koodi.getVersio() + ", isChild=" + onAlaKoodi + " relationType=" + suhdeTyyppi);
         SuhteenTyyppi st = SuhteenTyyppi.valueOf(suhdeTyyppi.name());
         return conversionService.convertAll(koodiBusinessService.listByRelation(koodi, st, onAlaKoodi), KoodiType.class);
