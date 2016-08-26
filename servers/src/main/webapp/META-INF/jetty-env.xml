@@ -1,36 +1,5 @@
 <?xml version="1.0"?>
 <!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
-    <New id="jndi" class="org.eclipse.jetty.plus.jndi.Resource">
-        <Arg></Arg>
-        <Arg>jdbc/koodisto</Arg>
-        <!--
-        <Arg>
-            <New class="org.postgresql.ds.PGSimpleDataSource">
-                <Set name="User">oph</Set>
-                <Set name="Password">oph</Set>
-                <Set name="DatabaseName">koodisto</Set>
-                <Set name="ServerName">localhost</Set>
-                <Set name="PortNumber">5432</Set>
-            </New>
-        </Arg>
-        -->
-        <Arg>
-            <New class="com.jolbox.bonecp.BoneCPDataSource">
-                <Set name="driverClass">org.postgresql.Driver</Set>
-                <Set name="jdbcUrl">jdbc:postgresql://localhost:5432/koodisto</Set>
-                <Set name="username">oph</Set>
-                <Set name="password">oph</Set>
-                <Set name="partitionCount">3</Set>
-                <Set name="minConnectionsPerPartition">2</Set>
-                <Set name="maxConnectionsPerPartition">20</Set>
-                <Set name="acquireIncrement">10</Set>
-                <Set name="idleConnectionTestPeriodInMinutes">1</Set>
-                <Set name="idleMaxAgeInMinutes">4</Set>
-                <Set name="statementsCacheSize">50</Set>
-        </New>
-    </Arg>
-
-    </New>
 </Configure>
 

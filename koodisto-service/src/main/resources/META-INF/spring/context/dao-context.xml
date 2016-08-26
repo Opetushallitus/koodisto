@@ -19,6 +19,7 @@
         <property name="loadTimeWeaver">
             <bean class="org.springframework.instrument.classloading.InstrumentationLoadTimeWeaver" />
         </property>
+        <property name="dataSource" ref="dbDataSource"/>
         <property name="jpaDialect">
             <bean class="fi.vm.sade.koodisto.dao.flushmode.HibernateJpaDialect">
                 <property name="flushMode" value="COMMIT" />
@@ -45,8 +46,28 @@
         <property name="dataSource" ref="dbDataSource" />
     </bean>
 
-    <bean id="dbDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="java:comp/env/jdbc/koodisto" />
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="poolName" value="springHikariCP" />
+        <property name="connectionTestQuery" value="SELECT 1" />
+        <property name="dataSourceClassName" value="org.postgresql.ds.PGSimpleDataSource" />
+        <property name="maximumPoolSize" value="${koodisto-service.postgresql.maxactive}" />
+        <property name="minimumIdle" value="${koodisto-service.postgresql.minimumidle}" />
+        <property name="idleTimeout" value="${koodisto-service.postgresql.idletimeoutmillis}" />
+        <property name="connectionTimeout" value="${koodisto-service.postgresql.maxwait}" />
+        <property name="maxLifetime" value="${koodisto-service.postgresql.maxlifetimemillis}"/>
+
+        <property name="dataSourceProperties">
+            <props>
+                <prop key="url">${koodisto-service.postgresql.url}</prop>
+                <prop key="user">${koodisto-service.postgresql.user}</prop>
+                <prop key="password">${koodisto-service.postgresql.password}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- HikariCP configuration -->
+    <bean id="dbDataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="hikariConfig" />
     </bean>
 
 </beans>
