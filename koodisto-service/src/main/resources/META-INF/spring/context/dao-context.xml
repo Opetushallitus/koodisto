@@ -51,8 +51,6 @@
         <property name="connectionTestQuery" value="SELECT 1" />
         <property name="dataSourceClassName" value="org.postgresql.ds.PGSimpleDataSource" />
         <property name="maximumPoolSize" value="${koodisto-service.postgresql.maxactive}" />
-        <property name="minimumIdle" value="${koodisto-service.postgresql.minimumidle}" />
-        <property name="idleTimeout" value="${koodisto-service.postgresql.idletimeoutmillis}" />
         <property name="connectionTimeout" value="${koodisto-service.postgresql.maxwait}" />
         <property name="maxLifetime" value="${koodisto-service.postgresql.maxlifetimemillis}"/>
 

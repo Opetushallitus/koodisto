@@ -18,8 +18,6 @@ koodisto-service.postgresql.user={{host_postgresql_koodisto_user}}
 koodisto-service.postgresql.password={{host_postgresql_koodisto_password}}
 koodisto-service.postgresql.maxactive={{host_postgresql_default_max_active}}
 koodisto-service.postgresql.maxwait={{host_postgresql_default_max_wait}}
-koodisto-service.postgresql.minimumidle=2
-koodisto-service.postgresql.idletimeoutmillis=30000
 koodisto-service.postgresql.maxlifetimemillis=60000
 
 # Oletusarvoja
