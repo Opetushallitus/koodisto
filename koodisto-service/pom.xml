@@ -19,12 +19,15 @@
     <dependencies>
 
         <dependency>
+            <groupId>fi.vm.sade.java-utils</groupId>
+            <artifactId>java-properties</artifactId>
+        </dependency>
+        <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>generic-test-support</artifactId>
             <scope>test</scope>
-            <version>${generic-test-support.version}</version>
         </dependency>
-
+        
         <dependency>
             <groupId>org.kubek2k</groupId>
             <artifactId>springockito</artifactId>
@@ -335,7 +338,6 @@
     <dependency>
         <groupId>cglib</groupId>
         <artifactId>cglib</artifactId>
-        <version>${cglib.version}</version>
     </dependency>
     <dependency>
         <groupId>com.mysema.querydsl</groupId>

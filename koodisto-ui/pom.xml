@@ -74,6 +74,14 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>fi.vm.sade.java-utils</groupId>
+            <artifactId>java-properties</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+        </dependency>
            
         <dependency>
             <groupId>junit</groupId>

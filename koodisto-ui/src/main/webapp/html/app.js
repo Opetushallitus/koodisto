@@ -34,6 +34,8 @@ angular.module('localization', []).filter('i18n', [ '$rootScope', '$locale', fun
 
 var SERVICE_URL_BASE = SERVICE_URL_BASE || "http://localhost:8180/koodisto-service/";
 var ORGANIZATION_SERVICE_URL_BASE = ORGANIZATION_SERVICE_URL_BASE || "/organisaatio-service/";
+var ORGANIZATION_SERVICE_URL_BY_OID = ORGANIZATION_SERVICE_URL_BY_OID || ORGANIZATION_SERVICE_URL_BASE+"rest/organisaatio/:oid";
+var ORGANIZATION_SERVICE_URL_HAE = ORGANIZATION_SERVICE_URL_HAE || ORGANIZATION_SERVICE_URL_BASE+"rest/organisaatio/hae";
 var TEMPLATE_URL_BASE = TEMPLATE_URL_BASE || "";
 var CAS_URL = CAS_URL || "/cas/myroles";
 var SESSION_KEEPALIVE_INTERVAL_IN_SECONDS = SESSION_KEEPALIVE_INTERVAL_IN_SECONDS || 30;
@@ -424,7 +426,7 @@ app.factory('UpdateCodeElement', function($resource) {
 });
 
 app.factory('Organizations', function($resource) {
-    return $resource(ORGANIZATION_SERVICE_URL_BASE + "rest/organisaatio/hae", {}, {
+    return $resource(ORGANIZATION_SERVICE_URL_HAE, {}, {
         get : {
             method : "GET"
         }
@@ -432,7 +434,7 @@ app.factory('Organizations', function($resource) {
 });
 
 app.factory('OrganizationChildrenByOid', function($resource) {
-    return $resource(ORGANIZATION_SERVICE_URL_BASE + "rest/organisaatio/hae?oidrestrictionlist=:oid&skipparents=true", {
+    return $resource(ORGANIZATION_SERVICE_URL_HAE + "?oidrestrictionlist=:oid&skipparents=true", {
         oid : "@oid"
     }, {
         get : {
@@ -442,7 +444,7 @@ app.factory('OrganizationChildrenByOid', function($resource) {
 });
 
 app.factory('OrganizationByOid', function($resource) {
-    return $resource(ORGANIZATION_SERVICE_URL_BASE + "rest/organisaatio/:oid", {
+    return $resource(ORGANIZATION_SERVICE_URL_BY_OID, {
         oid : "@oid"
     }, {
         get : {
