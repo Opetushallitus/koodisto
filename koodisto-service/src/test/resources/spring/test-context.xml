@@ -10,8 +10,9 @@
     <context:annotation-config />
     <context:component-scan base-package="fi.vm.sade.koodisto" />
 
+    <bean class="fi.vm.sade.koodisto.config.UrlConfiguration"/>
     <import resource="classpath:META-INF/spring/context/service-context.xml"/>
     <import resource="test-service-context.xml" />
     <import resource="test-dao-context.xml" />
-
+    
 </beans>

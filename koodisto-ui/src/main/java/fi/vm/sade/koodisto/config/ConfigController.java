@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.config;
 
+import fi.vm.sade.properties.OphProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,17 +11,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class ConfigController {
-
-    @Value("${koodisto-ui.koodisto-service-url.rest}")
-    private String koodistoServiceRestURL;
-
-    @Value("${koodisto-ui.organisaatio-service-url}")
-    private String organisaatioServiceURL;
+    
+    @Autowired
+    private OphProperties urlProperties;
 
     @Value("${auth.mode:}")
     private String authMode;
 
-    @Value("${valintalaskenta-ui.cas.url:/cas/myroles}")
+    @Value("${cas.myroles}")
     private String casUrl;
     
     @Value("${koodisto-ui.session-keepalive-interval.seconds}")
@@ -32,9 +31,10 @@ public class ConfigController {
     @ResponseBody
     public String index() {
         StringBuilder b = new StringBuilder();
-        append(b, "SERVICE_URL_BASE", koodistoServiceRestURL);
-        append(b, "ORGANIZATION_SERVICE_URL_BASE", organisaatioServiceURL);
-
+        append(b, "SERVICE_URL_BASE", urlProperties.getProperty("koodisto-service.baseUrl"));
+        append(b, "ORGANIZATION_SERVICE_URL_BASE", urlProperties.getProperty("organization-service.baseUrl"));
+        append(b, "ORGANIZATION_SERVICE_URL_BY_OID", urlProperties.getProperty("organization-service.byOid", ":oid"));
+        append(b, "ORGANIZATION_SERVICE_URL_HAE", urlProperties.getProperty("organization-service.hae"));
         append(b, "TEMPLATE_URL_BASE", "");
 
         append(b, "CAS_URL", casUrl);

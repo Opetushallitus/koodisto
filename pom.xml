@@ -130,6 +130,22 @@
 				<artifactId>HikariCP</artifactId>
 				<version>2.4.7</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>fi.vm.sade.generic</groupId>
+				<artifactId>generic-test-support</artifactId>
+				<version>${generic-test-support.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>fi.vm.sade.java-utils</groupId>
+				<artifactId>java-properties</artifactId>
+				<version>${java.utils.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>cglib</groupId>
+				<artifactId>cglib</artifactId>
+				<version>${cglib.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -142,9 +158,6 @@
 		<clover.historyDir>${clover.base}/history</clover.historyDir>
 		<clover.snapshot>${clover.base}/snapshot/clover.snapshot</clover.snapshot>
 		<clover.cloverDatabase>${clover.base}/db/clover.db</clover.cloverDatabase>
-
-
-
 
 
 		<!-- Versions -->
@@ -183,6 +196,7 @@
 		<dependencies-service.version>${generic.version}</dependencies-service.version>
 		<generic-common.version>${generic.version}</generic-common.version>
 		<generic-test-support.version>${generic.version}</generic-test-support.version>
+		<java.utils.version>0.0.1-SNAPSHOT</java.utils.version>
 		<log-client.version>8.0</log-client.version>
 		<generic.version>9.5-SNAPSHOT</generic.version>
 
