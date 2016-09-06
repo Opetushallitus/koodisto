@@ -17,9 +17,6 @@ public class ConfigController {
 
     @Value("${auth.mode:}")
     private String authMode;
-
-    @Value("${cas.myroles}")
-    private String casUrl;
     
     @Value("${koodisto-ui.session-keepalive-interval.seconds}")
     private Integer sessionKeepAliveIntervalInSeconds;
@@ -37,7 +34,7 @@ public class ConfigController {
         append(b, "ORGANIZATION_SERVICE_URL_HAE", urlProperties.getProperty("organization-service.hae"));
         append(b, "TEMPLATE_URL_BASE", "");
 
-        append(b, "CAS_URL", casUrl);
+        append(b, "CAS_URL", urlProperties.getOrElse("cas.myroles", "/cas/myroles"));
         append(b, "SESSION_KEEPALIVE_INTERVAL_IN_SECONDS", Integer.toString(sessionKeepAliveIntervalInSeconds));
         append(b, "MAX_SESSION_IDLE_TIME_IN_SECONDS", Integer.toString(maxSessionIdleTimeInSeconds));
         if (!authMode.isEmpty()) {
