@@ -62,77 +62,81 @@
                                 </configurationClass>
                             </configurationClasses>
                         </contextHandler>
-			<contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
+                        <contextHandler implementation="org.eclipse.jetty.maven.plugin.JettyWebAppContext">
                             <contextPath>/koodisto-ui</contextPath>
-                            <resourceBase>${basedir}/../koodisto-ui/target/koodisto-ui</resourceBase>
-                            <configurationClasses>
-                                <configurationClass>org.eclipse.jetty.webapp.WebInfConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.WebXmlConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.MetaInfConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.FragmentConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.plus.webapp.EnvConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.plus.webapp.PlusConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.JettyWebXmlConfiguration
-                                </configurationClass>
-                            </configurationClasses>
+                            <war>${project.basedir}/../koodisto-ui/target/koodisto-ui.war</war>
                         </contextHandler>
+			<!--<contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">-->
+                            <!--<contextPath>/koodisto-ui</contextPath>-->
+                            <!--<resourceBase>${basedir}/../koodisto-ui/target/koodisto-ui</resourceBase>-->
+                            <!--<configurationClasses>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.WebInfConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.WebXmlConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.MetaInfConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.FragmentConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.plus.webapp.EnvConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.plus.webapp.PlusConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.JettyWebXmlConfiguration-->
+                                <!--</configurationClass>-->
+                            <!--</configurationClasses>-->
+                        <!--</contextHandler>-->
+                        <!--<contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">-->
+                            <!--<contextPath>/koodisto-ui/html</contextPath>-->
+                            <!--<resourceBase>${basedir}/../koodisto-ui/src/main/webapp/html</resourceBase>-->
+                            <!--<configurationClasses>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.WebInfConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.WebXmlConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.MetaInfConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.FragmentConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.plus.webapp.EnvConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.plus.webapp.PlusConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.JettyWebXmlConfiguration-->
+                                <!--</configurationClass>-->
+                            <!--</configurationClasses>-->
+                        <!--</contextHandler>-->
+                        <!--<contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">-->
+                            <!--<contextPath>/koodisto-ui/js</contextPath>-->
+                            <!--<resourceBase>${basedir}/../koodisto-ui/src/main/webapp/js</resourceBase>-->
+                            <!--<configurationClasses>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.WebInfConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.WebXmlConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.MetaInfConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.FragmentConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.plus.webapp.EnvConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.plus.webapp.PlusConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.JettyWebXmlConfiguration-->
+                                <!--</configurationClass>-->
+                            <!--</configurationClasses>-->
+                        <!--</contextHandler>-->
+                        <!--<contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">-->
+                            <!--<contextPath>/koodisto-ui/css</contextPath>-->
+                            <!--<resourceBase>${basedir}/../koodisto-ui/src/main/webapp/css</resourceBase>-->
+                            <!--<configurationClasses>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.WebInfConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.WebXmlConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.MetaInfConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.FragmentConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.plus.webapp.EnvConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.plus.webapp.PlusConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.JettyWebXmlConfiguration-->
+                                <!--</configurationClass>-->
+                            <!--</configurationClasses>-->
+                        <!--</contextHandler>-->
+                        <!--<contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">-->
+                            <!--<contextPath>/koodisto-ui/i18n</contextPath>-->
+                            <!--<resourceBase>${basedir}/../koodisto-ui/src/main/webapp/i18n</resourceBase>-->
+                            <!--<configurationClasses>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.WebInfConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.WebXmlConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.MetaInfConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.FragmentConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.plus.webapp.EnvConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.plus.webapp.PlusConfiguration</configurationClass>-->
+                                <!--<configurationClass>org.eclipse.jetty.webapp.JettyWebXmlConfiguration-->
+                                <!--</configurationClass>-->
+                            <!--</configurationClasses>-->
+                        <!--</contextHandler>-->
                         <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
-                            <contextPath>/koodisto-ui/html</contextPath>
-                            <resourceBase>${basedir}/../koodisto-ui/src/main/webapp/html</resourceBase>
-                            <configurationClasses>
-                                <configurationClass>org.eclipse.jetty.webapp.WebInfConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.WebXmlConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.MetaInfConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.FragmentConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.plus.webapp.EnvConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.plus.webapp.PlusConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.JettyWebXmlConfiguration
-                                </configurationClass>
-                            </configurationClasses>
-                        </contextHandler>
-                        <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
-                            <contextPath>/koodisto-ui/js</contextPath>
-                            <resourceBase>${basedir}/../koodisto-ui/src/main/webapp/js</resourceBase>
-                            <configurationClasses>
-                                <configurationClass>org.eclipse.jetty.webapp.WebInfConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.WebXmlConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.MetaInfConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.FragmentConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.plus.webapp.EnvConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.plus.webapp.PlusConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.JettyWebXmlConfiguration
-                                </configurationClass>
-                            </configurationClasses>
-                        </contextHandler>
-                        <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
-                            <contextPath>/koodisto-ui/css</contextPath>
-                            <resourceBase>${basedir}/../koodisto-ui/src/main/webapp/css</resourceBase>
-                            <configurationClasses>
-                                <configurationClass>org.eclipse.jetty.webapp.WebInfConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.WebXmlConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.MetaInfConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.FragmentConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.plus.webapp.EnvConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.plus.webapp.PlusConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.JettyWebXmlConfiguration
-                                </configurationClass>
-                            </configurationClasses>
-                        </contextHandler>
-                        <contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
-                            <contextPath>/koodisto-ui/i18n</contextPath>
-                            <resourceBase>${basedir}/../koodisto-ui/src/main/webapp/i18n</resourceBase>
-                            <configurationClasses>
-                                <configurationClass>org.eclipse.jetty.webapp.WebInfConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.WebXmlConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.MetaInfConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.FragmentConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.plus.webapp.EnvConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.plus.webapp.PlusConfiguration</configurationClass>
-                                <configurationClass>org.eclipse.jetty.webapp.JettyWebXmlConfiguration
-                                </configurationClass>
-                            </configurationClasses>
-                        </contextHandler>
-			<contextHandler implementation="org.eclipse.jetty.webapp.WebAppContext">
                             <contextPath>/cas</contextPath>
                             <resourceBase>${basedir}/src/main/webapp/cas</resourceBase>
                             <configurationClasses>
