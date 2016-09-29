@@ -120,7 +120,7 @@
         <div class="span10 pull-left bold">
             {{ model.codes.versio }} <span
                 ng-show="model.codes.codesVersions.length > 0"> &nbsp;(&nbsp;<a
-                href="#/koodisto/{{codesUri}}/{{codesVersion}}"
+                href="koodisto/{{codesUri}}/{{codesVersion}}"
                 ng-repeat="codesVersion in model.codes.codesVersions | orderBy:identity:true">{{
                     codesVersion }}&nbsp;</a>)
             </span>
@@ -415,7 +415,7 @@
                             ng-repeat="codeElement in getPaginationPage()">
                             <td>{{codeElement.koodiArvo}}</td>
                             <td><a
-                                href="#/koodi/{{codeElement.koodiUri}}/{{codeElement.versio}}{{model.forceRefreshCodeElements}}">{{codeElement.name}}</a>
+                                href="koodi/{{codeElement.koodiUri}}/{{codeElement.versio}}{{model.forceRefreshCodeElements}}">{{codeElement.name}}</a>
                             </td>
                             <td>{{codeElement.versio}}</td>
                         </tr>

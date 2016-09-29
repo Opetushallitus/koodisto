@@ -61,8 +61,9 @@ app.run(function($http, $cookies) {
 });
 
 // Route configuration
-app.config([ '$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
+app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($routeProvider, $httpProvider, $locationProvider) {
     $httpProvider.interceptors.push('NoCacheInterceptor');
+    $locationProvider.html5Mode(true);
     $routeProvider.
     // front page
     when('/etusivu', {
