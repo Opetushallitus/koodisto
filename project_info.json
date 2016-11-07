@@ -1,5 +1,5 @@
 {
-  "name": "koodisto",
+  "name": "koodisto-service",
 
   "Makefile": "no",
 
@@ -7,10 +7,5 @@
 
   "csrf": "koodisto-ui OK, backend ?",
 
-  "clean oph-config": "ok",
-
-  "projects": [
-    {"name": "koodisto-web", "uses": "cas koodisto-rest organisaatio-rest lokalisointi-rest"},
-    {"name": "koodisto-rest", "uses": "cas ldap koodisto-postgres authentication-service"}
-  ]
+  "clean oph-config": "ok"
 }
