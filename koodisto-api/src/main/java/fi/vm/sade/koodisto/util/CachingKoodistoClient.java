@@ -1,158 +1,137 @@
 package fi.vm.sade.koodisto.util;
 
-import fi.vm.sade.generic.common.EnhancedProperties;
-import fi.vm.sade.generic.rest.CachingHttpGetClient;
-import fi.vm.sade.generic.rest.CachingRestClient;
+import fi.vm.sade.javautils.httpclient.*;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoRyhmaListType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoType;
+import fi.vm.sade.properties.OphProperties;
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
-import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+import static fi.vm.sade.javautils.httpclient.OphHttpClient.JSON;
 
 /**
- * Caching koodisto REST client that uses CachingRestClient which in turn uses http-commons and http-commons-cache under the hood.
- * 
- * @see CachingRestClient
- * @author Antti Salonen
+ * Caching koodisto REST client.
+ * @see OphHttpClient
  */
 public class CachingKoodistoClient implements KoodistoClient {
 
+    private final ObjectMapper mapper;
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    // NOTE! cachingRestClient is static because we need application-scoped rest cache for koodisto-service
-    private static CachingHttpGetClient cachingRestClient = new CachingHttpGetClient();
-    private String koodistoServiceWebappUrl;
 
-    public CachingKoodistoClient(String koodistoServiceWebappUrl) {
-        this.koodistoServiceWebappUrl = koodistoServiceWebappUrl;
-    }
+    // NOTE! client is static because we need application-scoped rest cache for koodisto-service
+    private static OphHttpClient client = new OphHttpClient(ApacheOphHttpClient
+            .createCustomBuilder()
+            .createCachingClient(50 * 1000, 10 * 1024 * 1024)
+            .setDefaultConfiguration(5 * 60 * 1000, 60).build(), "koodisto-client");
 
-    public CachingKoodistoClient() {
-        // read koodisto-service url from common.properties
-        FileInputStream fis = null;
-        try {
-            Properties props = new EnhancedProperties();
-            fis = new FileInputStream(new File(System.getProperty("user.home"), "oph-configuration/common.properties"));
-            props.load(fis);
-            this.koodistoServiceWebappUrl = props.getProperty("cas.service.koodisto-service");
-        } catch (IOException e) {
-            throw new RuntimeException("failed to read common.properties", e);
-        } finally {
-            if(fis != null){
-                try {
-                    fis.close();
-                } catch (IOException ignore) {
-                }
-            }
-        }
-
-    }
-
-    public void setKoodistoServiceWebappUrl(String koodistoServiceWebappUrl) {
-        this.koodistoServiceWebappUrl = koodistoServiceWebappUrl;
+    public CachingKoodistoClient(String hostUrl) {
+        OphProperties ophProperties = new OphProperties("/koodisto-client-url.properties").addDefault("url-koodisto", hostUrl);
+        client.setUrlProperties(ophProperties);
+        this.mapper = new ObjectMapper();
+        mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     public CachingKoodistoClient setClientSubSystemCode(String clientSubSystemCode) {
-        cachingRestClient.setClientSubSystemCode(clientSubSystemCode);
+        client.setClientSubSystemCode(clientSubSystemCode);
         return this;
     }
 
-    private <T> T get(String uri, Class<? extends T> resultClass) {
-        try {
-            long t0 = System.currentTimeMillis();
-            T result = cachingRestClient.get(koodistoServiceWebappUrl + "/rest/json" + uri, resultClass);
-            logger.debug("koodisto rest get done, uri: {}, took: {} ms, cacheStatus: {} result: {}", new Object[] { uri, (System.currentTimeMillis() - t0), result });
-            return result;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private OphHttpRequest get(String key, String... params) {
+        long t0 = System.currentTimeMillis();
+        OphHttpRequest result = client.get(key, params);
+        logger.debug("koodisto rest get done, uri: {}, took: {} ms, cacheStatus: {} result: {}", key, (System.currentTimeMillis() - t0), result);
+        return result;
+    }
+
+    private <T> T execute(OphHttpRequest resource, final TypeReference<T> type) {
+        return resource
+                .accept(JSON)
+                .execute(new OphHttpResponseHandler<T>() {
+                    public T handleResponse(OphHttpResponse response) throws IOException {
+                        return mapper.readValue(response.asInputStream(), type);
+                    }
+                });
     }
 
     @Override
     public KoodistoType getKoodistoTypeByUri(String koodistoUri) {
-        return get("/" + koodistoUri, KoodistoType.class);
+        return execute(get("koodisto-service.getKoodistoTypeByUri", koodistoUri), new TypeReference<KoodistoType>() {
+        });
     }
 
     @Override
     public List<KoodiType> getKoodisForKoodisto(String koodistoUri, Integer koodistoVersio) {
-        return Arrays.asList(get("/" + koodistoUri + "/koodi" + (koodistoVersio != null ? "?koodistoVersio=" + koodistoVersio : ""), KoodiType[].class));
+        return execute(
+                get("koodisto-service.getKoodisForKoodisto", koodistoUri)
+                        .param("koodistoVersio", koodistoVersio != null ? String.valueOf(koodistoVersio) : "")
+                , new TypeReference<List<KoodiType>>() {
+                });
     }
 
     @Override
     public List<KoodiType> getKoodisForKoodisto(String koodistoUri, Integer koodistoVersio, boolean onlyValidKoodis) {
-        return Arrays.asList(get("/" + koodistoUri + "/koodi?onlyValidKoodis=" + onlyValidKoodis + ""
-                + (koodistoVersio != null ? "&koodistoVersio=" + koodistoVersio : ""), KoodiType[].class));
+        return execute(
+                get("koodisto-service.getKoodisForKoodisto", koodistoUri)
+                        .param("koodistoVersio", koodistoVersio != null ? String.valueOf(koodistoVersio) : "")
+                        .param("onlyValidKoodis", onlyValidKoodis)
+                , new TypeReference<List<KoodiType>>() {
+                });
     }
 
     @Override
     public List<KoodistoRyhmaListType> getKoodistoRyhmas() {
-        return Arrays.asList(get("", KoodistoRyhmaListType[].class));
+        return execute(
+                get("koodisto-service.getKoodistoRyhmas")
+                , new TypeReference<List<KoodistoRyhmaListType>>() {
+                });
     }
 
     @Override
     public List<KoodiType> getAlakoodis(String koodiUri) {
-        return Arrays.asList(get("/relaatio/sisaltyy-alakoodit/" + koodiUri, KoodiType[].class));
+        return execute(
+                get("koodisto-service.getAlakoodis", koodiUri)
+                , new TypeReference<List<KoodiType>>() {
+                });
     }
 
     @Override
     public List<KoodiType> getYlakoodis(String koodiUri) {
-        return Arrays.asList(get("/relaatio/sisaltyy-ylakoodit/" + koodiUri, KoodiType[].class));
+        return execute(
+                get("koodisto-service.getYlakoodis", koodiUri)
+                , new TypeReference<List<KoodiType>>() {
+                });
     }
-    
+
     @Override
     public List<KoodiType> getRinnasteiset(String koodiUri) {
-        return Arrays.asList(get("/relaatio/rinnasteinen/" + koodiUri, KoodiType[].class));
+        return execute(
+                get("koodisto-service.getRinnasteiset", koodiUri)
+                , new TypeReference<List<KoodiType>>() {
+                });
     }
 
     @Override
     public List<KoodiType> searchKoodis(SearchKoodisCriteriaType sc) {
-        return Arrays.asList(get(buildSearchKoodisUri(sc), KoodiType[].class));
-    }
-
-    @Override
-    public String buildSearchKoodisUri(SearchKoodisCriteriaType sc) {
-        return "/searchKoodis?"
-                +param("koodiUris", sc.getKoodiUris())
-                +param("koodiArvo", sc.getKoodiArvo())
-                +param("koodiTilas", sc.getKoodiTilas())
-                +param("validAt", sc.getValidAt())
-                +param("koodiVersio", sc.getKoodiVersio())
-                +param("koodiVersioSelection", sc.getKoodiVersioSelection());
-    }
-
-    private String param(String name, Object val) {
-        if (val == null) {
-            return "";
-        }
-
-        StringBuilder sb = new StringBuilder();
-
-        if (val instanceof Collection) {
-            for (Object o : (Collection) val) {
-                sb.append(param(name, o));
-            }
-        } else {
-            String valString;
-            if (val instanceof XMLGregorianCalendar) {
-                valString = new SimpleDateFormat("yyyy-MM-dd").format(((XMLGregorianCalendar) val).toGregorianCalendar().getTime());
-            } else {
-                valString = val.toString();
-            }
-
-            sb.append("&").append(name).append("=").append(valString);
-        }
-
-        return sb.toString();
+        return execute(
+                get("koodisto-service.searchKoodis")
+                        .param("koodiUris", sc.getKoodiUris())
+                        .param("koodiArvo", sc.getKoodiArvo())
+                        .param("koodiTilas", sc.getKoodiTilas())
+                        .param("validAt", new SimpleDateFormat("yyyy-MM-dd").format(sc.getValidAt().toGregorianCalendar().getTime()))
+                        .param("koodiVersio", sc.getKoodiVersio())
+                        .param("koodiVersioSelection", sc.getKoodiVersioSelection())
+                , new TypeReference<List<KoodiType>>() {
+                });
     }
 }

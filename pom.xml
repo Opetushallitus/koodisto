@@ -139,7 +139,12 @@
 			<dependency>
 				<groupId>fi.vm.sade.java-utils</groupId>
 				<artifactId>java-properties</artifactId>
-				<version>${java.utils.version}</version>
+				<version>${java.properties.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>fi.vm.sade.java-utils</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${java.httpclient.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>cglib</groupId>
@@ -196,7 +201,8 @@
 		<dependencies-service.version>${generic.version}</dependencies-service.version>
 		<generic-common.version>${generic.version}</generic-common.version>
 		<generic-test-support.version>${generic.version}</generic-test-support.version>
-		<java.utils.version>0.0.1-SNAPSHOT</java.utils.version>
+		<java.properties.version>0.1.0-SNAPSHOT</java.properties.version>
+		<java.httpclient.version>0.1.0-SNAPSHOT</java.httpclient.version>
 		<log-client.version>8.0</log-client.version>
 		<generic.version>9.5-SNAPSHOT</generic.version>
 
