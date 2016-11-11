@@ -12,6 +12,7 @@ import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -48,7 +49,11 @@ public class CachingKoodistoClient implements KoodistoClient {
     private <T> T execute(OphHttpRequest resource, final TypeReference<T> type) {
         return resource
                 .accept(JSON)
-                .execute(response -> mapper.readValue(response.asInputStream(), type));
+                .execute(new OphHttpResponseHandler<T>() {
+                    public T handleResponse(OphHttpResponse response) throws IOException {
+                        return mapper.readValue(response.asInputStream(), type);
+                    }
+                });
     }
 
     @Override
