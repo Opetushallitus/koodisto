@@ -12,10 +12,8 @@ import org.codehaus.jackson.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static fi.vm.sade.javautils.httpclient.OphHttpClient.JSON;
 
@@ -47,33 +45,22 @@ public class CachingKoodistoClient implements KoodistoClient {
         return this;
     }
 
-    private OphHttpRequest get(String key, String... params) {
-        long t0 = System.currentTimeMillis();
-        OphHttpRequest result = client.get(key, params);
-        logger.debug("koodisto rest get done, uri: {}, took: {} ms, cacheStatus: {} result: {}", key, (System.currentTimeMillis() - t0), result);
-        return result;
-    }
-
     private <T> T execute(OphHttpRequest resource, final TypeReference<T> type) {
         return resource
                 .accept(JSON)
-                .execute(new OphHttpResponseHandler<T>() {
-                    public T handleResponse(OphHttpResponse response) throws IOException {
-                        return mapper.readValue(response.asInputStream(), type);
-                    }
-                });
+                .execute(response -> mapper.readValue(response.asInputStream(), type));
     }
 
     @Override
     public KoodistoType getKoodistoTypeByUri(String koodistoUri) {
-        return execute(get("koodisto-service.getKoodistoTypeByUri", koodistoUri), new TypeReference<KoodistoType>() {
+        return execute(client.get("koodisto-service.getKoodistoTypeByUri", koodistoUri), new TypeReference<KoodistoType>() {
         });
     }
 
     @Override
     public List<KoodiType> getKoodisForKoodisto(String koodistoUri, Integer koodistoVersio) {
         return execute(
-                get("koodisto-service.getKoodisForKoodisto", koodistoUri)
+                client.get("koodisto-service.getKoodisForKoodisto", koodistoUri)
                         .param("koodistoVersio", koodistoVersio != null ? String.valueOf(koodistoVersio) : "")
                 , new TypeReference<List<KoodiType>>() {
                 });
@@ -82,7 +69,7 @@ public class CachingKoodistoClient implements KoodistoClient {
     @Override
     public List<KoodiType> getKoodisForKoodisto(String koodistoUri, Integer koodistoVersio, boolean onlyValidKoodis) {
         return execute(
-                get("koodisto-service.getKoodisForKoodisto", koodistoUri)
+                client.get("koodisto-service.getKoodisForKoodisto", koodistoUri)
                         .param("koodistoVersio", koodistoVersio != null ? String.valueOf(koodistoVersio) : "")
                         .param("onlyValidKoodis", onlyValidKoodis)
                 , new TypeReference<List<KoodiType>>() {
@@ -92,7 +79,7 @@ public class CachingKoodistoClient implements KoodistoClient {
     @Override
     public List<KoodistoRyhmaListType> getKoodistoRyhmas() {
         return execute(
-                get("koodisto-service.getKoodistoRyhmas")
+                client.get("koodisto-service.getKoodistoRyhmas")
                 , new TypeReference<List<KoodistoRyhmaListType>>() {
                 });
     }
@@ -100,7 +87,7 @@ public class CachingKoodistoClient implements KoodistoClient {
     @Override
     public List<KoodiType> getAlakoodis(String koodiUri) {
         return execute(
-                get("koodisto-service.getAlakoodis", koodiUri)
+                client.get("koodisto-service.getAlakoodis", koodiUri)
                 , new TypeReference<List<KoodiType>>() {
                 });
     }
@@ -108,7 +95,7 @@ public class CachingKoodistoClient implements KoodistoClient {
     @Override
     public List<KoodiType> getYlakoodis(String koodiUri) {
         return execute(
-                get("koodisto-service.getYlakoodis", koodiUri)
+                client.get("koodisto-service.getYlakoodis", koodiUri)
                 , new TypeReference<List<KoodiType>>() {
                 });
     }
@@ -116,7 +103,7 @@ public class CachingKoodistoClient implements KoodistoClient {
     @Override
     public List<KoodiType> getRinnasteiset(String koodiUri) {
         return execute(
-                get("koodisto-service.getRinnasteiset", koodiUri)
+                client.get("koodisto-service.getRinnasteiset", koodiUri)
                 , new TypeReference<List<KoodiType>>() {
                 });
     }
@@ -124,7 +111,7 @@ public class CachingKoodistoClient implements KoodistoClient {
     @Override
     public List<KoodiType> searchKoodis(SearchKoodisCriteriaType sc) {
         return execute(
-                get("koodisto-service.searchKoodis")
+                client.get("koodisto-service.searchKoodis")
                         .param("koodiUris", sc.getKoodiUris())
                         .param("koodiArvo", sc.getKoodiArvo())
                         .param("koodiTilas", sc.getKoodiTilas())
