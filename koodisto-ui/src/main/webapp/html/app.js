@@ -32,7 +32,7 @@ angular.module('localization', []).filter('i18n', [ '$rootScope', '$locale', fun
     };
 } ]);
 
-var SERVICE_URL_BASE = SERVICE_URL_BASE || "http://localhost:8180/koodisto-service/";
+var SERVICE_URL_BASE;
 var SESSION_KEEPALIVE_INTERVAL_IN_SECONDS = SESSION_KEEPALIVE_INTERVAL_IN_SECONDS || 30;
 var MAX_SESSION_IDLE_TIME_IN_SECONDS = MAX_SESSION_IDLE_TIME_IN_SECONDS || 1800;
 
@@ -49,6 +49,7 @@ app.factory('NoCacheInterceptor', function() {
 });
 
 app.run(function($http, $cookies) {
+    SERVICE_URL_BASE = window.url("koodisto-service.base")
     $http.defaults.headers.common['clientSubSystemCode'] = "koodisto.koodisto-ui.frontend";
     if($cookies['CSRF']) {
         $http.defaults.headers.common['CSRF'] = $cookies['CSRF'];
