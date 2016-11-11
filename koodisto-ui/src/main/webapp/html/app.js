@@ -33,18 +33,13 @@ angular.module('localization', []).filter('i18n', [ '$rootScope', '$locale', fun
 } ]);
 
 var SERVICE_URL_BASE = SERVICE_URL_BASE || "http://localhost:8180/koodisto-service/";
-var ORGANIZATION_SERVICE_URL_BASE = ORGANIZATION_SERVICE_URL_BASE || "/organisaatio-service/";
-var ORGANIZATION_SERVICE_URL_BY_OID = ORGANIZATION_SERVICE_URL_BY_OID || ORGANIZATION_SERVICE_URL_BASE+"rest/organisaatio/:oid";
-var ORGANIZATION_SERVICE_URL_HAE = ORGANIZATION_SERVICE_URL_HAE || ORGANIZATION_SERVICE_URL_BASE+"rest/organisaatio/hae";
-var TEMPLATE_URL_BASE = TEMPLATE_URL_BASE || "";
-var CAS_URL = CAS_URL || "/cas/myroles";
 var SESSION_KEEPALIVE_INTERVAL_IN_SECONDS = SESSION_KEEPALIVE_INTERVAL_IN_SECONDS || 30;
 var MAX_SESSION_IDLE_TIME_IN_SECONDS = MAX_SESSION_IDLE_TIME_IN_SECONDS || 1800;
 
 app.factory('NoCacheInterceptor', function() {
     return {
         request : function(config) {
-            if (config.method && config.method === 'GET' && config.url.indexOf('html') === -1 && config.url.indexOf(ORGANIZATION_SERVICE_URL_BASE) === -1) {
+            if (config.method && config.method === 'GET' && config.url.indexOf('html') === -1 && config.url.indexOf("/organisaatio-service/") === -1) {
                 var separator = config.url.indexOf('?') === -1 ? '?' : '&';
                 config.url = config.url + separator + 'noCache=' + new Date().getTime();
             }
@@ -68,10 +63,10 @@ app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($r
     // front page
     when('/etusivu', {
         controller : KoodistoTreeController,
-        templateUrl : TEMPLATE_URL_BASE + 'codesmainpage.html'
+        templateUrl : 'codesmainpage.html'
     }).when('/lisaaKoodisto', {
         controller : CodesCreatorController,
-        templateUrl : TEMPLATE_URL_BASE + 'codes/createcodes.html',
+        templateUrl : 'codes/createcodes.html',
         resolve : {
             isModalController : function() {
                 return false;
@@ -79,7 +74,7 @@ app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($r
         }
     }).when('/muokkaaKoodisto/:codesUri/:codesVersion', {
         controller : CodesEditorController,
-        templateUrl : TEMPLATE_URL_BASE + 'codes/editcodes.html',
+        templateUrl : 'codes/editcodes.html',
         resolve : {
             isModalController : function() {
                 return false;
@@ -87,7 +82,7 @@ app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($r
         }
     }).when('/koodisto/:codesUri/:codesVersion', {
         controller : ViewCodesController,
-        templateUrl : TEMPLATE_URL_BASE + 'codes/viewcodes.html',
+        templateUrl : 'codes/viewcodes.html',
         resolve : {
             isModalController : function() {
                 return false;
@@ -95,10 +90,10 @@ app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($r
         }
     }).when('/koodi/:codeElementUri/:codeElementVersion', {
         controller : ViewCodeElementController,
-        templateUrl : TEMPLATE_URL_BASE + 'codeelement/viewcodeelement.html'
+        templateUrl : 'codeelement/viewcodeelement.html'
     }).when('/lisaaKoodi/:codesUri/:codesVersion', {
         controller : CodeElementCreatorController,
-        templateUrl : TEMPLATE_URL_BASE + 'codeelement/createcodeelement.html',
+        templateUrl : 'codeelement/createcodeelement.html',
         resolve : {
             isModalController : function() {
                 return false;
@@ -106,7 +101,7 @@ app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($r
         }
     }).when('/muokkaaKoodi/:codeElementUri/:codeElementVersion', {
         controller : CodeElementEditorController,
-        templateUrl : TEMPLATE_URL_BASE + 'codeelement/editcodeelement.html',
+        templateUrl : 'codeelement/editcodeelement.html',
         resolve : {
             isModalController : function() {
                 return false;
@@ -114,13 +109,13 @@ app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($r
         }
     }).when('/lisaaKoodistoryhma', {
         controller : CodesGroupCreatorController,
-        templateUrl : TEMPLATE_URL_BASE + 'codesgroup/createcodesgroup.html'
+        templateUrl : 'codesgroup/createcodesgroup.html'
     }).when('/koodistoryhma/:id', {
         controller : ViewCodesGroupController,
-        templateUrl : TEMPLATE_URL_BASE + 'codesgroup/viewcodesgroup.html'
+        templateUrl : 'codesgroup/viewcodesgroup.html'
     }).when('/muokkaaKoodistoryhma/:id', {
         controller : CodesGroupEditorController,
-        templateUrl : TEMPLATE_URL_BASE + 'codesgroup/editcodesgroup.html'
+        templateUrl : 'codesgroup/editcodesgroup.html'
     }).
     // else
     otherwise({
@@ -161,7 +156,7 @@ app.factory('DeleteCodes', function($resource) {
 });
 
 app.factory('NewCodesGroup', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codesgroup", {}, {
+    return $resource(window.url("koodisto-service.codesgroup"), {}, {
         post : {
             method : "POST"
         }
@@ -257,7 +252,7 @@ app.factory('DownloadCodes', function() {
 });
 
 app.factory('MyRoles', function($resource) {
-    return $resource(CAS_URL, {}, {
+    return $resource(window.url("cas.myroles"), {}, {
         get : {
             method : "GET",
             isArray : true
@@ -427,7 +422,7 @@ app.factory('UpdateCodeElement', function($resource) {
 });
 
 app.factory('Organizations', function($resource) {
-    return $resource(ORGANIZATION_SERVICE_URL_HAE, {}, {
+    return $resource(window.url("organisaatio-service.hae"), {}, {
         get : {
             method : "GET"
         }
@@ -435,7 +430,7 @@ app.factory('Organizations', function($resource) {
 });
 
 app.factory('OrganizationChildrenByOid', function($resource) {
-    return $resource(ORGANIZATION_SERVICE_URL_HAE + "?oidrestrictionlist=:oid&skipparents=true", {
+    return $resource(window.url("organisaatio-service.hae") + "?oidrestrictionlist=:oid&skipparents=true", {
         oid : "@oid"
     }, {
         get : {
@@ -445,7 +440,7 @@ app.factory('OrganizationChildrenByOid', function($resource) {
 });
 
 app.factory('OrganizationByOid', function($resource) {
-    return $resource(ORGANIZATION_SERVICE_URL_BY_OID, {
+    return $resource(window.url("organisaatio-service.byOid"), {
         oid : "@oid"
     }, {
         get : {

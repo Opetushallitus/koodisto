@@ -10,7 +10,7 @@ app.factory('MyRolesModel', function($q, $http) {
         var instance = {};
         instance.myroles = [];
 
-        $http.get(CAS_URL).success(function(result) {
+        $http.get(window.url("cas.myroles")).success(function(result) {
             instance.myroles = result;
             deferred.resolve(instance);
         });
@@ -73,7 +73,7 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
         var deferred = $q.defer();
 
         MyRolesModel.then(function(model){
-            $http.get(ORGANIZATION_SERVICE_URL_BASE + "rest/organisaatio/" + orgOid + "/parentoids").success(function(result) {
+            $http.get(window.url("organisaatio-service.parentoids", orgOid)).success(function(result) {
                 var found = false;
                 result.split("/").forEach(function(org){
                     if(accessFunction(service, org, model)){
