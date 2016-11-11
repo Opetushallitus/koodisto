@@ -11,7 +11,6 @@ import static java.util.Optional.ofNullable;
 public class UrlConfiguration extends OphProperties {
     public UrlConfiguration() {
         addOptionalFiles("/koodisto-ui.properties");
-        addFiles("/koodisto-ui-oph.properties");
         if (!ofNullable(System.getProperty("spring.profiles.active")).orElse("").contains("test")) {
             addOptionalFiles(Paths.get(System.getProperties().getProperty("user.home"), "/oph-configuration/common.properties").toString());
         }

@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
 @Controller
 public class ConfigController {
-    
+
     @Autowired
     private OphProperties urlProperties;
 
@@ -28,13 +27,6 @@ public class ConfigController {
     @ResponseBody
     public String index() {
         StringBuilder b = new StringBuilder();
-        append(b, "SERVICE_URL_BASE", urlProperties.getProperty("koodisto-service.baseUrl"));
-        append(b, "ORGANIZATION_SERVICE_URL_BASE", urlProperties.getProperty("organization-service.baseUrl"));
-        append(b, "ORGANIZATION_SERVICE_URL_BY_OID", urlProperties.getProperty("organization-service.byOid", ":oid"));
-        append(b, "ORGANIZATION_SERVICE_URL_HAE", urlProperties.getProperty("organization-service.hae"));
-        append(b, "TEMPLATE_URL_BASE", "");
-
-        append(b, "CAS_URL", urlProperties.getOrElse("cas.myroles", "/cas/myroles"));
         append(b, "SESSION_KEEPALIVE_INTERVAL_IN_SECONDS", Integer.toString(sessionKeepAliveIntervalInSeconds));
         append(b, "MAX_SESSION_IDLE_TIME_IN_SECONDS", Integer.toString(maxSessionIdleTimeInSeconds));
         if (!authMode.isEmpty()) {
@@ -42,6 +34,12 @@ public class ConfigController {
 
         }
         return b.toString();
+    }
+
+    @RequestMapping(value = "/frontProperties.js", method = RequestMethod.GET, produces = "text/javascript")
+    @ResponseBody
+    public String frontProperties() {
+        return "window.urls.override=" + urlProperties.frontPropertiesToJson();
     }
 
     private void append(StringBuilder b, String key, String value) {

@@ -34,8 +34,6 @@ cas.service.koodisto-ui=https://{{ host_koodisto | default("${host.virkailija}")
 flyway.initOnMigrate=true
 jpa.schemaUpdate=validate
 jpa.showSql=false
-koodisto-ui.koodisto-service-url.rest=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-service/rest/
-koodisto-ui.organisaatio-service-url=https://{{host_organisaatio | default("${host.virkailija}") }}/organisaatio-service/
 ldap.manager-dn=${ldap.manager.userdn}
 ldap.url=ldap://${host.ldap}
 ldap.url.with.base=ldap\://${host.ldap}/dc\=opintopolku,dc\=fi

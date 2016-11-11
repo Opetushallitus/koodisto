@@ -59,6 +59,7 @@
                         <source>${project.basedir}/src/main/webapp/jslib/ui-bootstrap-0.6.0.min.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/naturalSort.js</source>
                         <source>${project.basedir}/src/main/webapp/jslib/angular-modules/angular-idle-0.3.2.js</source>
+                        <source>${project.basedir}/src/main/webapp/jslib/oph_urls.js/index.js</source>
                     </preloadSources>
                     <jsSrcDir>${project.basedir}/src/main/webapp</jsSrcDir>
                     <sourceExcludes>
