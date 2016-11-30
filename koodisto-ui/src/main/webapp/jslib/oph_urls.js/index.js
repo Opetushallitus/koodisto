@@ -15,18 +15,18 @@
  * * for main url window.url's first parameter: "service.info" from all configs
  * * baseUrl: "service.baseUrl" from all configs and "baseUrl" from all configs
  *
- * window.url_properties = {
+ * window.urls.addProperties( {
  *   "service.status": "/rest/status",
  *   "service.payment": "/rest/payment/$1",
  *   "service.order": "/rest/payment/$orderId"
- *   }
+ *   })
  *
  * window.urls.debug = true
  *
  */
 
 (function(exportDest) {
-    var version="1.0"
+    var version="1.2"
 
     if(exportDest.urls) {
         if(exportDest.urls.version !== version)   {
@@ -154,12 +154,12 @@
     exportDest.urls.addDefaults = function (props) {
         mergePropertiesWithWarning(props, exportDest.urls.defaults)
     }
-    exportDest.urls.addOverride = function (props) {
+    exportDest.urls.addOverrides = function (props) {
         mergePropertiesWithWarning(props, exportDest.urls.override)
     }
     function mergePropertiesWithWarning(props, destProps) {
         var existsAlready = Object.keys(props).filter(function (k) {
-            return k in destProps
+            return k in destProps && destProps[k] !== props[k]
         })
         if(existsAlready.length == 0) {
             merge(destProps, props)
@@ -223,7 +223,7 @@
         var args = Array.prototype.slice.call(arguments)
         var jsonProperties = []
         successCBs.push(function(){
-            jsonProperties.forEach(function(json){merge(exportDest.urls.properties, json)})
+            jsonProperties.forEach(function(json){exportDest.urls.addProperties(json)})
         })
         fulfillCountDest += args.length
         args.forEach(function(url, index){
