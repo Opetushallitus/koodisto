@@ -345,6 +345,11 @@
             <version>${querydsl-jpa.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>fi.vm.sade</groupId>
+            <artifactId>auditlogger</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
