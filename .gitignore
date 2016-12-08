@@ -48,6 +48,7 @@ koodisto-service/nb-configuration.xml
 koodisto-api/.settings/org.eclipse.wst.validation.prefs
 *.prefs
 koodisto-service/.settings/org.eclipse.wst.common.project.facet.core.prefs.xml
+koodisto-service/logs
 koodisto-ui/.classpath
 koodisto-ui/.settings/.jsdtscope
 koodisto-ui/.settings/org.eclipse.wst.common.component
