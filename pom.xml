@@ -130,7 +130,7 @@
 				<artifactId>HikariCP</artifactId>
 				<version>2.4.7</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>fi.vm.sade.generic</groupId>
 				<artifactId>generic-test-support</artifactId>
@@ -276,5 +276,25 @@
 		<swagger-jaxrs_2.10.version>1.3.1</swagger-jaxrs_2.10.version>
 
 	</properties>
+
+    <repositories>
+        <repository>
+            <id>oph-sade-artifactory-snapshots</id>
+            <url>https://artifactory.oph.ware.fi/artifactory/oph-sade-snapshot-local</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>oph-sade-artifactory-releases</id>
+            <url>https://artifactory.oph.ware.fi/artifactory/oph-sade-release-local</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
 
 </project>
