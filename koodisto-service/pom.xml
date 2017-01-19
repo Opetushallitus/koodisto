@@ -128,18 +128,10 @@
             <version>${log4j.version}</version>
         </dependency>
 
-        <!-- CAS ticket cache replication -->
+        <!-- CAS ticket cache -->
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache-jgroupsreplication</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jgroups</groupId>
-            <artifactId>jgroups</artifactId>
         </dependency>
         <dependency>
             <groupId>org.jasig.cas.client</groupId>

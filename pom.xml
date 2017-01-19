@@ -105,16 +105,6 @@
 				<version>${ehcache-core.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>net.sf.ehcache</groupId>
-				<artifactId>ehcache-jgroupsreplication</artifactId>
-				<version>${ehcache-jgroupsreplication.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.jgroups</groupId>
-				<artifactId>jgroups</artifactId>
-				<version>${jgroups.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.jasig.cas.client</groupId>
 				<artifactId>cas-client-support-distributed-ehcache</artifactId>
 				<version>${cas-client-support-distributed-ehcache.version}</version>
@@ -200,7 +190,6 @@
 
 		<dbunit.version>2.5.0</dbunit.version>
 		<ehcache-core.version>2.5.0</ehcache-core.version>
-		<ehcache-jgroupsreplication.version>1.5</ehcache-jgroupsreplication.version>
 
 		<dbunit-support.version>${generic.version}</dbunit-support.version>
 		<dependencies-service.version>${generic.version}</dependencies-service.version>
@@ -237,7 +226,6 @@
 		<jersey-spring.version>${jersey.version}</jersey-spring.version>
 		<jersey.version>1.9.1</jersey.version>
 
-		<jgroups.version>2.10.0.GA</jgroups.version>
 		<jta.version>1.1</jta.version>
 		<junit.version>4.10</junit.version>
 		<log4j.version>1.2.14</log4j.version>
