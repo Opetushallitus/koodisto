@@ -197,7 +197,7 @@
 		<generic-test-support.version>${generic.version}</generic-test-support.version>
 		<java.utils.version>0.0.1-SNAPSHOT</java.utils.version>
 		<log-client.version>8.0</log-client.version>
-		<generic.version>9.5-SNAPSHOT</generic.version>
+		<generic.version>9.7-SNAPSHOT</generic.version>
 
 		<hibernate-core.version>${hibernate.version}</hibernate-core.version>
 		<hibernate-ehcache.version>${hibernate.version}</hibernate-ehcache.version>
