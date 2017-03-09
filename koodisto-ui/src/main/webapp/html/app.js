@@ -48,8 +48,12 @@ app.factory('NoCacheInterceptor', function() {
     };
 });
 
+app.config(function($windowProvider) {
+    var $window = $windowProvider.$get();
+    SERVICE_URL_BASE = $window.url("koodisto-service.base");
+});
+
 app.run(function($http, $cookies) {
-    SERVICE_URL_BASE = window.url("koodisto-service.base")
     $http.defaults.headers.common['clientSubSystemCode'] = "koodisto.koodisto-ui.frontend";
     if($cookies['CSRF']) {
         $http.defaults.headers.common['CSRF'] = $cookies['CSRF'];
