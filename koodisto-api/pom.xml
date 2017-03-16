@@ -30,19 +30,16 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
-            <version>${spring-test.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <scope>test</scope>
-            <version>${spring-beans.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
             <scope>test</scope>
-            <version>${spring-context.version}</version>
         </dependency>
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
