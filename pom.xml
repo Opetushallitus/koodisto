@@ -16,6 +16,7 @@
 
 	<modules>
 		<module>koodisto-api</module>
+		<module>koodisto-audit</module>
 		<module>koodisto-common</module>
 		<module>koodisto-service</module>
 		<module>koodisto-ui</module>
