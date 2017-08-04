@@ -1,9 +1,9 @@
 package fi.vm.sade.koodisto.audit;
 
 import fi.vm.sade.auditlog.Audit;
+import fi.vm.sade.auditlog.Changes;
+import fi.vm.sade.auditlog.Target;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
@@ -18,10 +18,14 @@ public class AuditPostUpdateEventListener implements PostUpdateEventListener {
         this.audit = audit;
     }
 
+    private static String toString(Object object) {
+        return object != null ? object.toString() : null;
+    }
+
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
         EntityPersister persister = event.getPersister();
-        Map<String, Change> changes = new HashMap<>();
+        Changes.Builder changesBuilder = new Changes.Builder();
 
         int[] dirtyProperties = event.getDirtyProperties();
         for (int dirtyProperty : dirtyProperties) {
@@ -29,58 +33,25 @@ public class AuditPostUpdateEventListener implements PostUpdateEventListener {
             if (propertyType.isAssociationType() || propertyType.isCollectionType()) {
                 continue;
             }
+            String propertyName = persister.getPropertyNames()[dirtyProperty];
             Object oldValue = event.getOldState()[dirtyProperty];
             Object newValue = event.getState()[dirtyProperty];
-            if (!Objects.equals(oldValue, newValue)) {
-                String propertyName = persister.getPropertyNames()[dirtyProperty];
-                changes.put(propertyName, Change.of(oldValue, newValue));
+            if (oldValue == null && newValue != null) {
+                changesBuilder.added(propertyName, newValue.toString());
+            } else if (oldValue != null && newValue == null) {
+                changesBuilder.removed(propertyName, oldValue.toString());
+            } else if (!Objects.equals(oldValue, newValue)) {
+                changesBuilder.updated(propertyName, toString(oldValue), toString(newValue));
             }
         }
 
-        if (!changes.isEmpty()) {
-            String targetKey = AuditUtils.getTargetKey(persister);
-            Serializable eventId = event.getId();
-            String oid = AuditUtils.getOid();
+        String targetKey = AuditUtils.getTargetKey(persister);
+        Serializable eventId = event.getId();
+        Target.Builder targetBuilder = new Target.Builder()
+                .setField(targetKey, eventId.toString());
 
-            LogMessage.LogMessageBuilder builder = LogMessage.builder()
-                    .operation(KoodistoOperation.PAIVITYS)
-                    .target(targetKey, eventId.toString())
-                    .id(oid)
-                    .changesJson(changes);
-            audit.log(builder.build());
-        }
-    }
-
-    /**
-     * Lokisisällössä käytettävä formaatti muutoksille.
-     */
-    private static class Change {
-
-        private final Object oldValue;
-        private final Object newValue;
-
-        private Change(Object oldValue, Object newValue) {
-            this.oldValue = oldValue;
-            this.newValue = newValue;
-        }
-
-        public static Change of(Object oldValue, Object newValue) {
-            return new Change(oldValue, newValue);
-        }
-
-        public Object getOldValue() {
-            return oldValue;
-        }
-
-        public Object getNewValue() {
-            return newValue;
-        }
-
-        @Override
-        public String toString() {
-            return "Change{" + "oldValue=" + oldValue + ", newValue=" + newValue + '}';
-        }
-
+        audit.log(AuditUtils.getUser(), KoodistoOperation.PAIVITYS,
+                targetBuilder.build(), changesBuilder.build());
     }
 
 }

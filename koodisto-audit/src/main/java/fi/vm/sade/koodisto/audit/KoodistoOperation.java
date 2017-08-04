@@ -1,6 +1,8 @@
 package fi.vm.sade.koodisto.audit;
 
-public enum KoodistoOperation {
+import fi.vm.sade.auditlog.Operation;
+
+public enum KoodistoOperation implements Operation {
     LISAYS,
     PAIVITYS,
     POISTO,

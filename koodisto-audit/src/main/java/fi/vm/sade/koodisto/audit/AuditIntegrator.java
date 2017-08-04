@@ -21,7 +21,7 @@ public class AuditIntegrator implements Integrator {
     private final Audit audit;
 
     public AuditIntegrator() {
-        this.audit = new Audit("koodisto", ApplicationType.BACKEND);
+        this.audit = new Audit(new AuditLogger(), "koodisto", ApplicationType.BACKEND);
     }
 
     @Override

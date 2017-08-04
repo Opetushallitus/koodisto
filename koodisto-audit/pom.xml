@@ -12,6 +12,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+            <version>${servlet.version}</version>
+        </dependency>
+        <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>dependencies-service</artifactId>
             <type>pom</type>
