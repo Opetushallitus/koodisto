@@ -5,7 +5,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.MDC;
+import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
@@ -31,9 +31,15 @@ public class AuditFilter extends OncePerRequestFilter {
     }
 
     private static void insertIntoMDC(HttpServletRequest request) {
-        MDC.put(KEY_REMOTE_ADDR, getRemoteAddr(request));
-        MDC.put(KEY_SESSION, request.getSession().getId());
-        MDC.put(KEY_USER_AGENT, request.getHeader("User-Agent"));
+        insertIntoMdc(KEY_REMOTE_ADDR, getRemoteAddr(request));
+        insertIntoMdc(KEY_SESSION, request.getSession().getId());
+        insertIntoMdc(KEY_USER_AGENT, request.getHeader("User-Agent"));
+    }
+
+    private static void insertIntoMdc(String key, String value) {
+        if (value != null) {
+            MDC.put(key, value);
+        }
     }
 
     private static void clearMDC() {
