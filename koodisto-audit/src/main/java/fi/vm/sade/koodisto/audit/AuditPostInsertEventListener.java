@@ -4,9 +4,10 @@ import fi.vm.sade.auditlog.Audit;
 import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.Target;
 import java.io.Serializable;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
-import org.hibernate.type.Type;
+import org.hibernate.persister.entity.EntityPersister;
 
 public class AuditPostInsertEventListener implements PostInsertEventListener {
 
@@ -22,21 +23,50 @@ public class AuditPostInsertEventListener implements PostInsertEventListener {
         Serializable targetId = event.getId();
         Target.Builder targetBuilder = new Target.Builder()
                 .setField(targetKey, targetId.toString());
+
+        PostInsertEventAdapter eventAdapter = new PostInsertEventAdapter(event);
         Changes.Builder changesBuilder = new Changes.Builder();
         for (int i = 0; i < event.getState().length; ++i) {
-            Type propertyType = event.getPersister().getPropertyTypes()[i];
-            if (propertyType.isAssociationType() || propertyType.isCollectionType()) {
-                continue;
-            }
-            Object value = event.getState()[i];
-            if (value != null) {
-                String propertyName = event.getPersister().getPropertyNames()[i];
-                changesBuilder.added(propertyName, value.toString());
-            }
+            AuditUtils.addChange(eventAdapter, i, changesBuilder);
         }
 
         audit.log(AuditUtils.getUser(), KoodistoOperation.LISAYS,
                 targetBuilder.build(), changesBuilder.build());
+    }
+
+    private static class PostInsertEventAdapter implements Event {
+
+        private final PostInsertEvent event;
+
+        public PostInsertEventAdapter(PostInsertEvent event) {
+            this.event = event;
+        }
+
+        @Override
+        public EntityPersister getEntityPersister() {
+            return event.getPersister();
+        }
+
+        @Override
+        public SessionImplementor getSessionImplementor() {
+            return event.getSession();
+        }
+
+        @Override
+        public Object getEntity() {
+            return event.getEntity();
+        }
+
+        @Override
+        public Object getOldState(int index) {
+            return null;
+        }
+
+        @Override
+        public Object getNewState(int index) {
+            return event.getState()[index];
+        }
+
     }
 
 }

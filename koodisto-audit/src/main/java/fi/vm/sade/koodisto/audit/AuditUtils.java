@@ -1,9 +1,12 @@
 package fi.vm.sade.koodisto.audit;
 
+import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.User;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import org.hibernate.persister.entity.EntityPersister;
+import org.hibernate.type.Type;
 import org.ietf.jgss.GSSException;
 import org.ietf.jgss.Oid;
 import org.slf4j.Logger;
@@ -17,6 +20,42 @@ public final class AuditUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuditUtils.class);
 
     private AuditUtils() {
+    }
+
+    public static void addChange(Event event, int index, Changes.Builder changesBuilder) {
+        EntityPersister entityPersister = event.getEntityPersister();
+        Type propertyType = entityPersister.getPropertyTypes()[index];
+        if (propertyType.isCollectionType()) {
+            return;
+        }
+        if (propertyType.isAssociationType()) {
+            Object oldState = event.getOldState(index);
+            Serializable oldStateId = oldState != null
+                    ? entityPersister.getIdentifier(oldState, event.getSessionImplementor())
+                    : null;
+            Object newState = event.getNewState(index);
+            Serializable newStateId = newState != null
+                    ? entityPersister.getIdentifier(newState, event.getSessionImplementor())
+                    : null;
+
+            String propertyName = entityPersister.getPropertyNames()[index];
+            addChange(propertyName, oldStateId, newStateId, changesBuilder);
+        } else {
+            Object oldState = event.getOldState(index);
+            Object newState = event.getNewState(index);
+            String propertyName = entityPersister.getPropertyNames()[index];
+            addChange(propertyName, oldState, newState, changesBuilder);
+        }
+    }
+
+    private static void addChange(String propertyName, Object oldState, Object newState, Changes.Builder changesBuilder) {
+        if (oldState == null && newState != null) {
+            changesBuilder.added(propertyName, newState.toString());
+        } else if (oldState != null && newState == null) {
+            changesBuilder.removed(propertyName, oldState.toString());
+        } else if (oldState != null && newState != null && !oldState.equals(newState)) {
+            changesBuilder.updated(propertyName, oldState.toString(), newState.toString());
+        }
     }
 
     /**
