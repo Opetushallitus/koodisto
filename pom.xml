@@ -424,6 +424,7 @@
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
+      <releases><enabled>false</enabled></releases>
     </repository>
     <repository>
       <id>oph-sade-artifactory-releases</id>
