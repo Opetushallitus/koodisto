@@ -419,7 +419,7 @@
     <jaxb2-basics.version>${jaxb2_commons.version}</jaxb2-basics.version>
     <jaxb2_commons.version>0.6.4</jaxb2_commons.version>
 
-    <jersey.version>1.19.4</jersey.version>
+    <jersey.version>1.9.1</jersey.version>
 
     <jta.version>1.1</jta.version>
     <maven-apt-plugin.version>1.0</maven-apt-plugin.version>
