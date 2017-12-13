@@ -271,6 +271,11 @@
         <version>2.3.0</version>
       </dependency>
       <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-core</artifactId>
+        <version>2.3.0</version>
+      </dependency>
+      <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
         <version>4.4.8</version>
@@ -400,9 +405,6 @@
     <log-client.version>8.0</log-client.version>
     <generic.version>9.5-SNAPSHOT</generic.version>
 
-    <hibernate-core.version>${hibernate.version}</hibernate-core.version>
-    <hibernate-ehcache.version>${hibernate.version}</hibernate-ehcache.version>
-    <hibernate-validator.version>${hibernate.version}</hibernate-validator.version>
     <hibernate.version>4.1.0.Final</hibernate.version>
 
     <hibernate4-maven-plugin.version>0.1.1</hibernate4-maven-plugin.version>
