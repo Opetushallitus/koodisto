@@ -102,6 +102,16 @@
         <scope>import</scope>
       </dependency>
       <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-jdbc</artifactId>
         <version>${spring.version}</version>
@@ -326,6 +336,11 @@
         <artifactId>guava</artifactId>
         <version>23.5-jre</version>
       </dependency>
+      <dependency>
+        <groupId>asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>3.3.1</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -358,10 +373,6 @@
     <commons-configuration.version>1.9</commons-configuration.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
 
-    <cxf-api.version>${cxf.version}</cxf-api.version>
-    <cxf-codegen-plugin.version>${cxf.version}</cxf-codegen-plugin.version>
-    <cxf-rt-frontend-jaxrs.version>${cxf.version}</cxf-rt-frontend-jaxrs.version>
-    <cxf-rt-transports-jms.version>${cxf.version}</cxf-rt-transports-jms.version>
     <cxf.version>2.5.1</cxf.version>
 
     <dbunit.version>2.5.0</dbunit.version>

@@ -14,7 +14,7 @@
             <groupId>org.apache.cxf</groupId>
             <artifactId>cxf-api</artifactId>
             <scope>provided</scope>
-            <version>${cxf-api.version}</version>
+            <version>${cxf.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -72,7 +72,7 @@
             <plugin>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-codegen-plugin</artifactId>
-                <version>${cxf-codegen-plugin.version}</version>
+                <version>${cxf.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.jvnet.jaxb2_commons</groupId>
