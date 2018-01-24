@@ -4,7 +4,7 @@
   <parent>
     <artifactId>koodisto</artifactId>
     <groupId>fi.vm.sade.koodisto</groupId>
-    <version>2016-04-SNAPSHOT</version>
+    <version>2017-12-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>koodisto-service</artifactId>
@@ -45,12 +45,10 @@
     <dependency>
       <artifactId>aspectjrt</artifactId>
       <groupId>org.aspectj</groupId>
-      <version>${aspectjrt.version}</version>
     </dependency>
     <dependency>
       <artifactId>aspectjweaver</artifactId>
       <groupId>org.aspectj</groupId>
-      <version>${aspectjweaver.version}</version>
     </dependency>
 
     <dependency>
@@ -58,11 +56,11 @@
       <artifactId>generic-common</artifactId>
       <version>${generic-common.version}</version>
     </dependency>
+
     <dependency>
-      <groupId>fi.vm.sade.generic</groupId>
-      <artifactId>dependencies-service</artifactId>
-      <type>pom</type>
-      <version>${dependencies-service.version}</version>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.1.4</version>
     </dependency>
 
     <dependency>
@@ -83,6 +81,44 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.ldap</groupId>
+      <artifactId>spring-ldap-core</artifactId>
+      <version>1.3.2.RELEASE</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-config</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-ldap</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-cas</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.flyway</groupId>
+      <artifactId>flyway-core</artifactId>
+      <version>2.3.1</version>
     </dependency>
     <dependency>
       <groupId>javax.transaction</groupId>
@@ -111,13 +147,42 @@
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxws</artifactId>
+      <version>${cxf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http</artifactId>
+      <version>${cxf.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-jms</artifactId>
       <version>${cxf.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-io</artifactId>
-      <version>${commons-io.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-ehcache</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <version>${hibernate.version}</version>
     </dependency>
 
     <!-- ActiveMQ -->
@@ -134,7 +199,6 @@
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>${log4j.version}</version>
     </dependency>
 
     <!-- CAS ticket cache -->
@@ -156,12 +220,10 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
@@ -218,22 +280,22 @@
     <dependency>
       <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-multipart</artifactId>
-      <version>${jersey-multipart.version}</version>
+      <version>${jersey.version}</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-core</artifactId>
-      <version>${jersey-core.version}</version>
+      <version>${jersey.version}</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-server</artifactId>
-      <version>${jersey-server.version}</version>
+      <version>${jersey.version}</version>
     </dependency>
     <dependency>
       <groupId>com.sun.jersey</groupId>
       <artifactId>jersey-json</artifactId>
-      <version>${jersey-json.version}</version>
+      <version>${jersey.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.codehaus.jackson</groupId>
@@ -256,7 +318,7 @@
     <dependency>
       <groupId>com.sun.jersey.contribs</groupId>
       <artifactId>jersey-spring</artifactId>
-      <version>${jersey-spring.version}</version>
+      <version>${jersey.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.springframework</groupId>
@@ -289,22 +351,26 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
-      <version>${jackson-core-asl.version}</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-jaxrs</artifactId>
-      <version>${jackson-jaxrs.version}</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
-      <version>${jackson-mapper-asl.version}</version>
+      <version>${jackson.version}</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-xc</artifactId>
-      <version>${jackson-xc.version}</version>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
     </dependency>
 
     <!-- CSV marshaller -->
@@ -368,12 +434,12 @@
           <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>${hibernate-core.version}</version>
+            <version>${hibernate.version}</version>
           </dependency>
           <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-ehcache</artifactId>
-            <version>${hibernate-ehcache.version}</version>
+            <version>${hibernate.version}</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -508,17 +574,6 @@
     <repository>
       <id>smartics</id>
       <url>https://www.smartics.eu/nexus/content/groups/public-group</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>codehaus</id>
-      <name>Maven Codehaus repository</name>
-      <url>http://repository.codehaus.org/</url>
       <releases>
         <enabled>true</enabled>
       </releases>

@@ -1,12 +1,14 @@
 package fi.vm.sade.koodisto.audit;
 
-import java.io.IOException;
+import fi.vm.sade.javautils.http.HttpServletRequestUtils;
+import org.slf4j.MDC;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.slf4j.MDC;
-import org.springframework.web.filter.OncePerRequestFilter;
+import java.io.IOException;
 
 /**
  * Fillteri joka lisää lokituksen kontekstiin auditlokituksen tarvitsemia
@@ -31,7 +33,7 @@ public class AuditFilter extends OncePerRequestFilter {
     }
 
     private static void insertIntoMDC(HttpServletRequest request) {
-        insertIntoMdc(KEY_REMOTE_ADDR, getRemoteAddr(request));
+        insertIntoMdc(KEY_REMOTE_ADDR, HttpServletRequestUtils.getRemoteAddress(request));
         insertIntoMdc(KEY_SESSION, request.getSession().getId());
         insertIntoMdc(KEY_USER_AGENT, request.getHeader("User-Agent"));
     }
@@ -47,10 +49,4 @@ public class AuditFilter extends OncePerRequestFilter {
         MDC.remove(KEY_SESSION);
         MDC.remove(KEY_USER_AGENT);
     }
-
-    private static String getRemoteAddr(HttpServletRequest request) {
-        String xForwardedFor = request.getHeader("X-Forwarded-For");
-        return xForwardedFor != null ? xForwardedFor : request.getRemoteAddr();
-    }
-
 }
