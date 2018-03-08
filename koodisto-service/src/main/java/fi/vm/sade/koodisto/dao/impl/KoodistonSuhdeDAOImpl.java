@@ -127,7 +127,7 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
                     fresh : relation.getAlakoodistoVersio();
             KoodistoVersio parent = relation.getYlakoodistoVersio().getKoodisto().getKoodistoUri().equals(koodistoUri) ?
                     fresh : relation.getYlakoodistoVersio();
-            copiedRelations.add(insertNewRelation(parent, child, relation));
+            copiedRelations.add(this.insertNewRelation(parent, child, relation));
             setOldRelationToPassive(relation, koodistoUri);
         }
         return copiedRelations;
@@ -142,7 +142,7 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
     }
 
     private KoodistonSuhde insertNewRelation(KoodistoVersio parent, KoodistoVersio child, KoodistonSuhde relation) {
-        return insert(createNewRelation(parent, child, relation));
+        return this.insert(this.createNewRelation(parent, child, relation));
     }
 
     private KoodistonSuhde createNewRelation(KoodistoVersio parent, KoodistoVersio child, KoodistonSuhde relation) {

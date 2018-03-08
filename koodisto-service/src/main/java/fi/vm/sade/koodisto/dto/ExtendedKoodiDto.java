@@ -173,6 +173,10 @@ public class ExtendedKoodiDto {
     }
     
     public static class RelationCodeElement {
+        public String getCodeElementUri() {
+            return codeElementUri;
+        }
+
         @JsonView({JsonViews.Extended.class})
         public final String codeElementUri;
         @JsonView({JsonViews.Extended.class})
@@ -183,7 +187,11 @@ public class ExtendedKoodiDto {
         public final List<SimpleMetadataDto> relationMetadata;
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
         public final List<SimpleMetadataDto> parentMetadata;
-        
+
+        public boolean isPassive() {
+            return passive;
+        }
+
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
         public final boolean passive;
         

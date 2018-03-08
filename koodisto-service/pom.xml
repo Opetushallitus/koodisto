@@ -27,6 +27,12 @@
       <groupId>fi.vm.sade.generic</groupId>
       <artifactId>generic-test-support</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>fi.vm.sade.generic</groupId>
+          <artifactId>dependencies-vaadin</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -182,7 +188,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
-      <version>${hibernate.version}</version>
+      <version>${hibernate.validator.version}</version>
     </dependency>
 
     <!-- ActiveMQ -->
@@ -225,6 +231,8 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
+
+    <!-- Test -->
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
@@ -236,14 +244,12 @@
       <artifactId>spring-test</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.dbunit</groupId>
       <artifactId>dbunit</artifactId>
       <scope>test</scope>
       <version>${dbunit.version}</version>
     </dependency>
-
     <dependency>
       <groupId>fi.vm.sade.generic</groupId>
       <artifactId>dbunit-support</artifactId>
@@ -253,9 +259,24 @@
           <groupId>org.dbunit</groupId>
           <artifactId>dbunit</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.hibernate</groupId>
+          <artifactId>hibernate-entitymanager</artifactId>
+        </exclusion>
       </exclusions>
       <version>${dbunit-support.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.8.0</version>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -388,11 +409,16 @@
     </dependency>
 
     <!-- Swagger -->
-
     <dependency>
       <groupId>com.wordnik</groupId>
       <artifactId>swagger-jaxrs_2.10</artifactId>
       <version>${swagger-jaxrs_2.10.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.javassist</groupId>
+          <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- JPAAnnotationProcessor -->
@@ -434,6 +460,11 @@
           <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.version}</version>
           </dependency>
           <dependency>

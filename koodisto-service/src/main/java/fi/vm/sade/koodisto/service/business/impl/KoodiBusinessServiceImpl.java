@@ -746,6 +746,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         for (KoodinSuhde ks : latest.getAlakoodis()) {
             createNewKoodinSuhde(ks, ks.getAlakoodiVersio(), newVersio, false);
         }
+        // TODO miksi passivoidaan?
         setRelationsInPreviousVersionToPassive(latest);
     }
 
@@ -771,7 +772,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public Set<KoodiVersio> createNewVersions(Set<KoodistoVersioKoodiVersio> koodiVersios) {
         HashSet<KoodiVersio> inserted = new HashSet<>();
         for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
-            inserted.add(createNewVersion(koodiVersio.getKoodiVersio(), false));
+            inserted.add(this.createNewVersion(koodiVersio.getKoodiVersio(), false));
         }
         return inserted;
     }

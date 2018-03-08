@@ -87,18 +87,18 @@ public class KoodistoVersio extends BaseEntity {
     private Tila tila;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodistoVersio", cascade = { CascadeType.ALL })
-    private Set<KoodistoVersioKoodiVersio> koodiVersios = new HashSet<KoodistoVersioKoodiVersio>();
+    private Set<KoodistoVersioKoodiVersio> koodiVersios = new HashSet<>();
 
     @NotEmpty
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodistoVersio", cascade = { CascadeType.ALL })
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private List<KoodistoMetadata> metadatas = new ArrayList<KoodistoMetadata>();
+    private List<KoodistoMetadata> metadatas = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodistoVersio", cascade = { CascadeType.ALL })
-    private Set<KoodistonSuhde> ylakoodistos = new HashSet<KoodistonSuhde>();
+    private Set<KoodistonSuhde> ylakoodistos = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "ylakoodistoVersio", cascade = { CascadeType.ALL })
-    private Set<KoodistonSuhde> alakoodistos = new HashSet<KoodistonSuhde>();
+    private Set<KoodistonSuhde> alakoodistos = new HashSet<>();
 
 
     @PrePersist
