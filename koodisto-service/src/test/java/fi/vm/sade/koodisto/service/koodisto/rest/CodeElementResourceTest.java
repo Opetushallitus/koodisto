@@ -828,16 +828,6 @@ public class CodeElementResourceTest {
         ExtendedKoodiDto oldCodeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
         ExtendedKoodiDto newCodeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
         
-        assertEquals(1, newCodeElement.getIncludesCodeElements().size());
-        assertEquals(1, newCodeElement.getLevelsWithCodeElements().size());
-        assertEquals(2, newCodeElement.getWithinCodeElements().size());
-        assertEquals("uusisavekoodinsuhde1", newCodeElement.getIncludesCodeElements().get(0).codeElementUri);
-        assertEquals("uusisavekoodinsuhde2", newCodeElement.getLevelsWithCodeElements().get(0).codeElementUri);
-
-        assertEquals(1, oldCodeElement.getIncludesCodeElements().size());
-        assertEquals(2, oldCodeElement.getLevelsWithCodeElements().size());
-        assertEquals(1, oldCodeElement.getWithinCodeElements().size());
-
         assertThat(oldCodeElementBeforeSave.getIncludesCodeElements())
                 .extracting(RelationCodeElement::getCodeElementUri)
                 .containsExactlyInAnyOrder("savekoodinsuhde1");

@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.service.it;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
@@ -12,7 +13,6 @@ import fi.vm.sade.koodisto.service.provider.ObjectMapperProvider;
 import fi.vm.sade.koodisto.service.types.SearchKoodisVersioSelectionType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

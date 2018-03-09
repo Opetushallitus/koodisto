@@ -6,7 +6,7 @@ package fi.vm.sade.koodisto.model;
 import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
 
-import org.codehaus.jackson.map.annotate.JsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;

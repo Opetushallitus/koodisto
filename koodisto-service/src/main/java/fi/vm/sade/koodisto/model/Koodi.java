@@ -5,7 +5,7 @@ package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.generic.model.BaseEntity;
 
-import org.codehaus.jackson.map.annotate.JsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

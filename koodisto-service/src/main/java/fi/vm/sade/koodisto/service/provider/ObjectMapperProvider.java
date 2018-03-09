@@ -1,12 +1,11 @@
 package fi.vm.sade.koodisto.service.provider;
 
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.fasterxml.jackson.databind.*;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
+
 
 @Component
 @Provider
@@ -17,8 +16,8 @@ public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
     public ObjectMapperProvider() {
         objectMapper = new ObjectMapper();
 
-        objectMapper.configure(SerializationConfig.Feature.DEFAULT_VIEW_INCLUSION, false);
-        objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @Override
