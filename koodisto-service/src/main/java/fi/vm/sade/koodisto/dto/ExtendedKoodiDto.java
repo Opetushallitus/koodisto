@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.codehaus.jackson.map.annotate.JsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
@@ -173,6 +173,10 @@ public class ExtendedKoodiDto {
     }
     
     public static class RelationCodeElement {
+        public String getCodeElementUri() {
+            return codeElementUri;
+        }
+
         @JsonView({JsonViews.Extended.class})
         public final String codeElementUri;
         @JsonView({JsonViews.Extended.class})
@@ -183,7 +187,11 @@ public class ExtendedKoodiDto {
         public final List<SimpleMetadataDto> relationMetadata;
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
         public final List<SimpleMetadataDto> parentMetadata;
-        
+
+        public boolean isPassive() {
+            return passive;
+        }
+
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
         public final boolean passive;
         

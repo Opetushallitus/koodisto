@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
+import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -516,9 +519,9 @@ public class CodeElementResourceTest {
         assertEquals(nimi, codeElement.getMetadata().get(0).getNimi());
         assertEquals(2, codeElement.getIncludesCodeElements().size());
         for (RelationCodeElement relation : codeElement.getIncludesCodeElements()) {
-            if (relation.codeElementUri.equals("uusisamankoodistonsisalla1")) {
+            if ("uusisamankoodistonsisalla1".equals(relation.codeElementUri)) {
                 assertFalse(relation.passive);
-            } else if (relation.codeElementUri.equals("samankoodistonsisalla1")) {
+            } else if ("samankoodistonsisalla1".equals(relation.codeElementUri)) {
                 assertTrue(relation.passive);
             } else {
                 fail();
@@ -526,9 +529,9 @@ public class CodeElementResourceTest {
         }
         assertEquals(2, codeElement.getWithinCodeElements().size());
         for (RelationCodeElement relation : codeElement.getWithinCodeElements()) {
-            if (relation.codeElementUri.equals("uusisamankoodistonsisalla2")) {
+            if ("uusisamankoodistonsisalla2".equals(relation.codeElementUri)) {
                 assertFalse(relation.passive);
-            } else if (relation.codeElementUri.equals("samankoodistonsisalla2")) {
+            } else if ("samankoodistonsisalla2".equals(relation.codeElementUri)) {
                 assertTrue(relation.passive);
             } else {
                 fail();
@@ -819,31 +822,41 @@ public class CodeElementResourceTest {
         codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde1", 1, false));
         codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde2", 1, false));
         codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde3", 1, false));
+        ExtendedKoodiDto oldCodeElementBeforeSave = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
         assertResponse(resource.save(codeElementToBeSaved), 200);
 
         ExtendedKoodiDto oldCodeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
         ExtendedKoodiDto newCodeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
         
-        assertEquals(1, newCodeElement.getIncludesCodeElements().size());
-        assertEquals(1, newCodeElement.getLevelsWithCodeElements().size());
-        assertEquals(2, newCodeElement.getWithinCodeElements().size());
-        assertEquals("uusisavekoodinsuhde1", newCodeElement.getIncludesCodeElements().get(0).codeElementUri);
-        assertEquals("uusisavekoodinsuhde2", newCodeElement.getLevelsWithCodeElements().get(0).codeElementUri);
+        assertThat(oldCodeElementBeforeSave.getIncludesCodeElements())
+                .extracting(RelationCodeElement::getCodeElementUri)
+                .containsExactlyInAnyOrder("savekoodinsuhde1");
+        assertThat(oldCodeElementBeforeSave.getLevelsWithCodeElements())
+                .extracting(RelationCodeElement::getCodeElementUri)
+                .containsExactlyInAnyOrder("savekoodinsuhde3", "savekoodinsuhde2");
+        assertThat(oldCodeElementBeforeSave.getWithinCodeElements())
+                .extracting(RelationCodeElement::getCodeElementUri)
+                .containsExactlyInAnyOrder("savekoodinsuhde4");
 
-        for (RelationCodeElement relation : newCodeElement.getWithinCodeElements()) {
-            if(relation.codeElementUri.equals("uusisavekoodinsuhde3")){
-                assertFalse(relation.passive);
-            } else if(relation.codeElementUri.equals("savekoodinsuhde4")){
-                assertTrue(relation.passive);
-            } else {
-                fail();
-            }
-        }
+        assertThat(oldCodeElement.getIncludesCodeElements())
+                .extracting(RelationCodeElement::getCodeElementUri)
+                .containsExactlyInAnyOrder("savekoodinsuhde1");
+        assertThat(oldCodeElement.getLevelsWithCodeElements())
+                .extracting(RelationCodeElement::getCodeElementUri)
+                .containsExactlyInAnyOrder("savekoodinsuhde3", "savekoodinsuhde2");
+        assertThat(oldCodeElement.getWithinCodeElements())
+                .extracting(RelationCodeElement::getCodeElementUri)
+                .containsExactlyInAnyOrder("savekoodinsuhde4");
 
-        assertEquals(1, oldCodeElement.getIncludesCodeElements().size());
-        assertEquals(2, oldCodeElement.getLevelsWithCodeElements().size());
-        assertEquals(1, oldCodeElement.getWithinCodeElements().size());
-
+        assertThat(newCodeElement.getIncludesCodeElements())
+                .extracting(RelationCodeElement::getCodeElementUri)
+                .containsExactlyInAnyOrder("uusisavekoodinsuhde1");
+        assertThat(newCodeElement.getLevelsWithCodeElements())
+                .extracting(RelationCodeElement::getCodeElementUri)
+                .containsExactlyInAnyOrder("uusisavekoodinsuhde2");
+        assertThat(newCodeElement.getWithinCodeElements())
+                .extracting(RelationCodeElement::getCodeElementUri, RelationCodeElement::isPassive)
+                .containsExactlyInAnyOrder(Tuple.tuple("savekoodinsuhde4", true), Tuple.tuple("uusisavekoodinsuhde3", false));
     }
 
     @Test

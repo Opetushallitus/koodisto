@@ -182,6 +182,7 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
         em.flush();
     }
 
+    @Override
     public void massRemove(List<KoodinSuhde> entityList) {
         if (entityList.isEmpty())
             throw new IllegalArgumentException("EntityList was empty.");
