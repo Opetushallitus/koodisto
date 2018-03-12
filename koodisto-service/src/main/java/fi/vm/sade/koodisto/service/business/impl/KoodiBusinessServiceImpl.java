@@ -746,7 +746,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         for (KoodinSuhde ks : latest.getAlakoodis()) {
             createNewKoodinSuhde(ks, ks.getAlakoodiVersio(), newVersio, false);
         }
-        // TODO miksi passivoidaan?
         setRelationsInPreviousVersionToPassive(latest);
     }
 
