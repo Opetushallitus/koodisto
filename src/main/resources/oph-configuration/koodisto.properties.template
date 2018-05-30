@@ -8,10 +8,8 @@
 # Aseta vähintään nämä ympäristökohtaiset arvot
 auth.mode={{auth_mode}}
 host.cas={{host_cas}}
-host.ldap={{host_ldap}}
+host.alb={{host_alb}}
 host.virkailija={{host_virkailija}}
-ldap.manager-password={{ldap_manager_password}}
-ldap.manager.userdn={{ldap_manager_userdn}}
 server.name={{ansible_hostname}}
 koodisto-service.postgresql.url=jdbc:postgresql://{{host_postgresql_koodisto}}:{{port_postgresql}}/koodisto
 koodisto-service.postgresql.user={{host_postgresql_koodisto_user}}
@@ -34,9 +32,6 @@ cas.service.koodisto-ui=https://{{ host_koodisto | default("${host.virkailija}")
 flyway.initOnMigrate=true
 jpa.schemaUpdate=validate
 jpa.showSql=false
-ldap.manager-dn=${ldap.manager.userdn}
-ldap.url=ldap://${host.ldap}
-ldap.url.with.base=ldap\://${host.ldap}/dc\=opintopolku,dc\=fi
 web.url.cas=https\://${host.cas}/cas
 
 # Riippuvuuksien tarvitsemia asetuksia
