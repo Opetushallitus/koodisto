@@ -21,9 +21,7 @@
         </property>
         <property name="dataSource" ref="dbDataSource"/>
         <property name="jpaDialect">
-            <bean class="fi.vm.sade.koodisto.dao.flushmode.HibernateJpaDialect">
-                <property name="flushMode" value="COMMIT" />
-            </bean>
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
         </property>
         <property name="jpaPropertyMap">
             <map>

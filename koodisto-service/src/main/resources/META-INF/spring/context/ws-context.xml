@@ -58,15 +58,15 @@
 
     <!-- Swagger -->
     
-    <bean id="ObjectMapperProvider" class="fi.vm.sade.koodisto.service.provider.ObjectMapperProvider" scope="singleton"/>
+    <bean id="ObjectMapperProvider" class="fi.vm.sade.koodisto.service.provider.ObjectMapperProvider" />
 
     <!-- Swagger API listing resource -->
     <bean id="swaggerResourceJSON"
         class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON" />
 
     <!-- Swagger writers -->
-    <bean id="resourceWriter" class="com.wordnik.swagger.jaxrs.listing.ResourceListingProvider" scope="singleton"/>
-    <bean id="apiWriter" class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider" scope="singleton"/>
+    <bean id="resourceWriter" class="com.wordnik.swagger.jaxrs.listing.ResourceListingProvider" />
+    <bean id="apiWriter" class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider" />
 
     <bean class="org.apache.cxf.jaxrs.JAXRSServerFactoryBean"
         init-method="create">
