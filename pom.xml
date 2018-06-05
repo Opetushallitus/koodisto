@@ -499,6 +499,7 @@ buildTtime=${maven.build.timestamp}]]>
 
     <spring.version>4.3.17.RELEASE</spring.version>
     <spring-security.version>3.2.10.RELEASE</spring-security.version>
+    <spring-session.version>2.0.3.RELEASE</spring-session.version>
 
     <springockito-annotations.version>${springockito.version}</springockito-annotations.version>
     <springockito.version>1.0.9</springockito.version>

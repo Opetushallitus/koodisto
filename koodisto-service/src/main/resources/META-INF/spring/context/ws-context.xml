@@ -26,24 +26,10 @@
     <bean id="downloadWS" class="fi.vm.sade.koodisto.service.impl.DownloadServiceImpl"/>
     <bean id="uploadWS" class="fi.vm.sade.koodisto.service.impl.UploadServiceImpl"/>
 
-    <!--<bean id="koodiRESTService" class="fi.vm.sade.koodisto.service.impl.KoodiRESTService" />-->
     <bean id="koodistoRESTService" class="fi.vm.sade.koodisto.service.impl.KoodistoRESTService"/>
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
     <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-
-    <!-- JAX-RS servers -->
-    <!--<jaxrs:server id="koodistoREST" address="/koodisto/rest">-->
-    <!--<jaxrs:serviceBeans>-->
-    <!--<ref bean="koodistoRESTService" />-->
-    <!--</jaxrs:serviceBeans>-->
-    <!--</jaxrs:server>-->
-
-    <!--<jaxrs:server id="koodiREST" address="/koodi/rest">-->
-    <!--<jaxrs:serviceBeans>-->
-    <!--<ref bean="koodiRESTService" />-->
-    <!--</jaxrs:serviceBeans>-->
-    <!--</jaxrs:server>-->
 
     <jaxws:endpoint address="/services/koodistoAdminService" implementor="#koodistoAdminWS"/>
     <jaxws:endpoint address="/services/koodiAdminService" implementor="#koodiAdminWS"/>
@@ -52,21 +38,12 @@
     <jaxws:endpoint address="/services/downloadService" implementor="#downloadWS"/>
     <jaxws:endpoint address="/services/uploadService" implementor="#uploadWS"/>
 
-    <!-- TODO: cas todo, varmista ettei tartte olla wsdl jne kuten organisaatiossa:? -->
-    <!--<jaxws:endpoint address="/services/organisaatioService" implementor="#organisaatioWs" wsdlLocation="wsdl/organisaatioService.wsdl" serviceName="tns:OrganisaatioService" xmlns:tns="http://model.api.organisaatio.sade.vm.fi/"/>-->
-
 
     <!-- Swagger -->
-    
-    <bean id="ObjectMapperProvider" class="fi.vm.sade.koodisto.service.provider.ObjectMapperProvider" />
 
     <!-- Swagger API listing resource -->
     <bean id="swaggerResourceJSON"
         class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON" />
-
-    <!-- Swagger writers -->
-    <bean id="resourceWriter" class="com.wordnik.swagger.jaxrs.listing.ResourceListingProvider" />
-    <bean id="apiWriter" class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider" />
 
     <bean class="org.apache.cxf.jaxrs.JAXRSServerFactoryBean"
         init-method="create">
@@ -86,11 +63,11 @@
         </property>
         <property name="providers">
             <list>
-                <!-- any other providers you need go here -->
-                <ref bean="ObjectMapperProvider" />
+                <bean class="fi.vm.sade.koodisto.service.provider.ObjectMapperProvider" />
                 <!-- required for writing swagger classes -->
-                <ref bean="resourceWriter" />
-                <ref bean="apiWriter" />
+                <!-- Swagger writers -->
+                <bean class="com.wordnik.swagger.jaxrs.listing.ResourceListingProvider" />
+                <bean class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider" />
             </list>
         </property>
     </bean>
