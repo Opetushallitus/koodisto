@@ -10,11 +10,6 @@ import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.Tila;
 
-/**
- * User: wuoti
- * Date: 21.5.2013
- * Time: 9.18
- */
 public class KoodistoDto extends AbstractKoodistoDto {
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     private String codesGroupUri;
