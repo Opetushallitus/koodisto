@@ -13,11 +13,12 @@ import javax.xml.bind.JAXBElement;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 import fi.vm.sade.generic.rest.Cacheable;
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
@@ -35,7 +36,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodistoRyhmaListType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoType;
 import fi.vm.sade.koodisto.service.types.common.ObjectFactory;
 
-@Component
+@Controller
 @Path("/")
 @Produces(MediaType.APPLICATION_XML)
 @Api(value = "/rest", description = "REST/XML rajapinta")

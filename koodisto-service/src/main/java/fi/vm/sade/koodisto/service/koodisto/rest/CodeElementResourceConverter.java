@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.stereotype.Component;
 
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
@@ -20,6 +19,7 @@ import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiTilaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
+import org.springframework.stereotype.Component;
 
 @Component
 public class CodeElementResourceConverter {

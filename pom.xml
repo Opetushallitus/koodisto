@@ -454,7 +454,7 @@ buildTtime=${maven.build.timestamp}]]>
     <commons-configuration.version>1.9</commons-configuration.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
 
-    <cxf.version>3.0.16</cxf.version>
+    <cxf.version>3.1.15</cxf.version>
 
     <dbunit.version>2.5.0</dbunit.version>
     <ehcache-core.version>2.5.0</ehcache-core.version>

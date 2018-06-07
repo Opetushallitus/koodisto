@@ -1,10 +1,5 @@
 package fi.vm.sade.koodisto.service.impl;
 
-/**
- * User: kwuoti
- * Date: 25.3.2013
- * Time: 9.45
- */
 public abstract class KoodistoRole {
 
     public static final String READ = "ROLE_APP_KOODISTO_READ";
