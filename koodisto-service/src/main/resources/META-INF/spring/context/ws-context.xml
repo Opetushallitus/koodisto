@@ -28,7 +28,6 @@
     <bean id="uploadWS" class="fi.vm.sade.koodisto.service.impl.UploadServiceImpl"/>
 
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
 
     <jaxws:endpoint address="/services/koodistoAdminService" implementor="#koodistoAdminWS"/>
     <jaxws:endpoint address="/services/koodiAdminService" implementor="#koodiAdminWS"/>
@@ -36,7 +35,6 @@
     <jaxws:endpoint address="/services/koodiService" implementor="#koodiWS"/>
     <jaxws:endpoint address="/services/downloadService" implementor="#downloadWS"/>
     <jaxws:endpoint address="/services/uploadService" implementor="#uploadWS"/>
-
 
     <bean class="org.apache.cxf.jaxrs.JAXRSServerFactoryBean"
           init-method="create">
@@ -54,6 +52,8 @@
         <property name="providers">
             <list>
                 <ref bean="objectMapperProvider" />
+                <ref bean="cacheableJaxrsFilter" />
+                <ref bean="configurableKoodistoCorsFilter" />
             </list>
         </property>
         <property name="features">
