@@ -54,10 +54,6 @@
     <servlet>
         <servlet-name>cxf</servlet-name>
         <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
-        <init-param>
-            <param-name>redirect-list</param-name>
-            <param-value>/swagger/index.html</param-value>
-        </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
