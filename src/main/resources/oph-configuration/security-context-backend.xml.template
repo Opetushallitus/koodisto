@@ -169,9 +169,7 @@
     </beans:bean>
 
     <beans:bean id="ehCacheBasedTicketCache" class="org.springframework.security.cas.authentication.EhCacheBasedTicketCache">
-        <beans:property name="cache">
-                <beans:ref local="casTicketsCacheBean"/>
-        </beans:property>
+        <beans:property name="cache" ref="casTicketsCacheBean"/>
     </beans:bean>
 
     <beans:bean id="userDetailsService" class="fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl">
@@ -185,9 +183,7 @@
         <beans:property name="ticketValidator" ref="casTicketValidator"/>
         <beans:property name="key" value="${cas_key}"/>
         <!-- enable proxy authentication (in backend) -->
-        <beans:property name="statelessTicketCache">
-            <beans:ref local="ehCacheBasedTicketCache" />
-        </beans:property>
+        <beans:property name="statelessTicketCache" ref="ehCacheBasedTicketCache"/>
     </beans:bean>
 
     <beans:bean id="casTicketValidator" class="org.jasig.cas.client.validation.Cas20ProxyTicketValidator">
