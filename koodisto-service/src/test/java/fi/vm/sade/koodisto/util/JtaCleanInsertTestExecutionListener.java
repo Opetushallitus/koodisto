@@ -1,10 +1,12 @@
 package fi.vm.sade.koodisto.util;
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
+import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.internal.SessionImpl;
 import org.slf4j.Logger;
@@ -21,8 +23,6 @@ import java.sql.Connection;
  * Spring framework transactional test extension for JUnit4. Cleans the database
  * for DBUnit tests and inserts data set defined in {@link DataSetLocation}
  * annotation. Supports only JTA datasources.
- * 
- * @author kkammone
  * 
  */
 public class JtaCleanInsertTestExecutionListener extends TransactionalTestExecutionListener {
@@ -54,13 +54,14 @@ public class JtaCleanInsertTestExecutionListener extends TransactionalTestExecut
             LocalContainerEntityManagerFactoryBean emf = testContext.getApplicationContext().getBean(
                     org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.class);
 
-            EntityManager entityManager = (EntityManager) emf.getObject().createEntityManager();
+            EntityManager entityManager = emf.getObject().createEntityManager();
 
             // entityManager.getTransaction().begin();
             SessionImpl session = (SessionImpl) entityManager.getDelegate();
             Connection jdbcConn = session.connection();
             IDatabaseConnection con = new DatabaseConnection(jdbcConn);
-            // DatabaseOperation.DELETE_ALL.execute(con, dataSet);
+            DatabaseConfig dbConfig = con.getConfig();
+            dbConfig.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new HsqldbDataTypeFactory());
             DatabaseOperation.CLEAN_INSERT.execute(con, dataSet);
             // entityManager.getTransaction().commit();
             con.close();

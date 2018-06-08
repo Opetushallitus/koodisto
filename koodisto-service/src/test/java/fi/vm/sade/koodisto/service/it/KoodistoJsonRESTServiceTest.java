@@ -21,17 +21,14 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * User: kwuoti Date: 12.4.2013 Time: 14.04
- */
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = {JtaCleanInsertTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class,
@@ -43,7 +40,7 @@ public class KoodistoJsonRESTServiceTest {
     @Autowired
     private KoodistoJsonRESTService koodistoJsonRESTService;
 
-    private ObjectMapper mapper = new ObjectMapperProvider().getContext(KoodistoJsonRESTService.class);
+    private ObjectMapper mapper = new ObjectMapperProvider().locateMapper(KoodistoJsonRESTService.class, MediaType.APPLICATION_JSON_TYPE);
 
 
     @Test
