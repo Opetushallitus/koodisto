@@ -23,7 +23,7 @@ public class SessionResource {
     @PreAuthorize("isAuthenticated()")
     @Produces(MediaType.TEXT_PLAIN)
     @ApiOperation(
-            value = "Palauttaa session erääntymisen aikarajan sekunteina",
+            value = "Palauttaa session erääntymisen aikarajan sekunteina. Luo session jos ei ole ennestään olemassa.",
             notes = "Tarvitsee HTTP kutsun, jossa on session id",
             response = String.class)
     public String maxInactiveInterval(@Context HttpServletRequest req) {
