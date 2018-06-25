@@ -23,7 +23,7 @@
     </bean>
 
     <!-- Conversion service -->
-    <bean id="conversionService"
+    <bean id="sadeConversionService"
           class="fi.vm.sade.generic.service.conversion.SadeConversionServiceFactoryBean">
         <property name="converters">
             <list>

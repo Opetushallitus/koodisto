@@ -8,12 +8,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.stereotype.Controller;
 
-@Component
+@Controller
 @Path("session")
 @Api(value = "/rest/session", description = "Sessionhallinta")
 public class SessionResource {
@@ -23,7 +23,7 @@ public class SessionResource {
     @PreAuthorize("isAuthenticated()")
     @Produces(MediaType.TEXT_PLAIN)
     @ApiOperation(
-            value = "Palauttaa session erääntymisen aikarajan sekunteina",
+            value = "Palauttaa session erääntymisen aikarajan sekunteina. Luo session jos ei ole ennestään olemassa.",
             notes = "Tarvitsee HTTP kutsun, jossa on session id",
             response = String.class)
     public String maxInactiveInterval(@Context HttpServletRequest req) {

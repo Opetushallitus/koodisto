@@ -14,13 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
-/**
- * @author tommiha
- * 
- */
 public class KoodistoAdminServiceImpl implements KoodistoAdminService {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());

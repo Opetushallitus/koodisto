@@ -8,6 +8,7 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -33,8 +34,10 @@ public class AuditFilter extends OncePerRequestFilter {
     }
 
     private static void insertIntoMDC(HttpServletRequest request) {
+        // Do not unnecessarily create session. Leave this to spring-security if necessary.
+        HttpSession httpSession = request.getSession(false);
         insertIntoMdc(KEY_REMOTE_ADDR, HttpServletRequestUtils.getRemoteAddress(request));
-        insertIntoMdc(KEY_SESSION, request.getSession().getId());
+        insertIntoMdc(KEY_SESSION, httpSession == null ? null : httpSession.getId());
         insertIntoMdc(KEY_USER_AGENT, request.getHeader("User-Agent"));
     }
 
