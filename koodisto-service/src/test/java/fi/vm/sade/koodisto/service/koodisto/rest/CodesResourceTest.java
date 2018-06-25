@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.dto.*;
@@ -28,6 +27,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -457,9 +457,9 @@ public class CodesResourceTest {
         assertTrue(codesToBeSaved.getLevelsWithCodes().size() == 0);
 
         codesToBeSaved.getMetadata().get(0).setNimi(nimi);
-        codesToBeSaved.getIncludesCodes().add(new RelationCodes("eisuhteitaviela2", 1, false));
-        codesToBeSaved.getWithinCodes().add(new RelationCodes("eisuhteitaviela3", 1, false));
-        codesToBeSaved.getLevelsWithCodes().add(new RelationCodes("eisuhteitaviela4", 1, false));
+        codesToBeSaved.getIncludesCodes().add(new RelationCodes("eisuhteitaviela2", 1, false, new HashMap<>()));
+        codesToBeSaved.getWithinCodes().add(new RelationCodes("eisuhteitaviela3", 1, false, new HashMap<>()));
+        codesToBeSaved.getLevelsWithCodes().add(new RelationCodes("eisuhteitaviela4", 1, false, new HashMap<>()));
         assertResponse(resource.save(codesToBeSaved), 200);
 
         KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, versio+1).getEntity();

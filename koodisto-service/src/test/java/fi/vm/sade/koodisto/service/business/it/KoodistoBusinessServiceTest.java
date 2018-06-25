@@ -1,10 +1,6 @@
 package fi.vm.sade.koodisto.service.business.it;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
@@ -240,9 +236,9 @@ public class KoodistoBusinessServiceTest {
 	public void testSavingKoodisto() {
 	    String koodistoUri = "koodistonSaveTestiKoodisto0";
 	    int versio = 1;
-	    List<RelationCodes> includesCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto1", 1, false));
-	    List<RelationCodes> withinCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto2", 1, false));
-	    List<RelationCodes> levelsWithCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto3", 1, false));
+	    List<RelationCodes> includesCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto1", 1, false, new HashMap<>()));
+	    List<RelationCodes> withinCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto2", 1, false, new HashMap<>()));
+	    List<RelationCodes> levelsWithCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto3", 1, false, new HashMap<>()));
 	    KoodistoDto codesDTO = createKoodistoDtoForSave(koodistoUri, versio, includesCodes, withinCodes, levelsWithCodes);
 
 	    KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);

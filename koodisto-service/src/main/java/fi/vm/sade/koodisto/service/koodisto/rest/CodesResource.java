@@ -217,7 +217,7 @@ public class CodesResource {
             @ApiParam(value = "Koodisto") KoodistoDto codesDTO) {
         try {
             codesValidator.validate(codesDTO, ValidationType.INSERT);
-            List<String> codesGroupUris = new ArrayList<String>();
+            List<String> codesGroupUris = new ArrayList<>();
             codesGroupUris.add(codesDTO.getCodesGroupUri());
             KoodistoVersio koodistoVersio = koodistoBusinessService.createKoodisto(codesGroupUris, converter.convertFromDTOToCreateKoodistoDataType(codesDTO));
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoVersio, KoodistoDto.class)).build();
