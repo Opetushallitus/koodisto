@@ -1,8 +1,6 @@
 package fi.vm.sade.koodisto.dto;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -150,17 +148,21 @@ public class KoodistoDto extends AbstractKoodistoDto {
         public final Integer codesVersion;
         @JsonView({JsonViews.Extended.class})
         public final boolean passive;
-        
+        @JsonView({JsonViews.Extended.class})
+        public final Map<String, String> nimi;
+
         public RelationCodes() {
             this.codesUri = null;
             this.codesVersion = -1;
             this.passive = false;
+            this.nimi = new HashMap<>();
         }
 
-        public RelationCodes(String codesUri, Integer codesVersion, boolean passive) {
+        public RelationCodes(String codesUri, Integer codesVersion, boolean passive, Map<String, String> nimi) {
             this.codesUri = codesUri;
             this.codesVersion = codesVersion;
             this.passive = passive;
+            this.nimi = nimi;
         }
     }
 }

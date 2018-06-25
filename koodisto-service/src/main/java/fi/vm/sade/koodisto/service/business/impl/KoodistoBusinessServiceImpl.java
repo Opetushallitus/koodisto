@@ -437,11 +437,11 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     private void initializeKoodistoVersio(KoodistoVersio koodistoVersio) {
         for (KoodistonSuhde koodistonSuhde : koodistoVersio.getYlakoodistos()) {
-            Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getMetadatas());
+            koodistonSuhde.getYlakoodistoVersio().getMetadatas().forEach(Hibernate::initialize);
             Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getKoodisto());
         }
         for (KoodistonSuhde koodistonSuhde : koodistoVersio.getAlakoodistos()) {
-            Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getMetadatas());
+            koodistonSuhde.getAlakoodistoVersio().getMetadatas().forEach(Hibernate::initialize);
             Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getKoodisto());
         }
         for (KoodistoRyhma ryhma : koodistoVersio.getKoodisto().getKoodistoRyhmas()) {
