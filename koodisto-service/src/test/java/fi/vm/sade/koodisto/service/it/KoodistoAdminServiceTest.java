@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.util.*;
@@ -37,6 +38,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoRyhmaListType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
@@ -50,10 +52,10 @@ import static org.junit.Assert.fail;
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
-        TransactionDbUnitTestExecutionListener.class })
+        TransactionalTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
 @DatabaseSetup("classpath:test-data.xml")
-@Transactional
 public class KoodistoAdminServiceTest {
     @Autowired
     private KoodistoAdminService koodistoAdminService;

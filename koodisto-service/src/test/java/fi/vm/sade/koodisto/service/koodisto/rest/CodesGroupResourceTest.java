@@ -39,7 +39,7 @@ public class CodesGroupResourceTest {
 
     @Test
     public void testGetCodesByCodesUri() {
-        Response response = resource.getCodesByCodesUri(1L);
+        Response response = resource.getCodesByCodesUri(-1L);
         assertResponse(response, 200);
         KoodistoRyhmaDto dto = (KoodistoRyhmaDto) response.getEntity();
         assertEquals("relaatioidenlisaaminen", dto.getKoodistoRyhmaUri());
@@ -51,13 +51,12 @@ public class CodesGroupResourceTest {
     public void testGetCodesByCodesUriInvalid() {
         assertResponse(resource.getCodesByCodesUri(0L), 500, "error.codesgroup.not.found");
         assertResponse(resource.getCodesByCodesUri(null), 400, "error.validation.id");
-        assertResponse(resource.getCodesByCodesUri(-1L), 500, "error.codesgroup.not.found");
         assertResponse(resource.getCodesByCodesUri(99999L), 500, "error.codesgroup.not.found");
     }
 
     @Test
     public void testUpdate() {
-        Response response = resource.getCodesByCodesUri(4L);
+        Response response = resource.getCodesByCodesUri(-4L);
         assertResponse(response, 200);
         KoodistoRyhmaDto dto = (KoodistoRyhmaDto) response.getEntity();
         changename(dto, "paivitettunimi");
@@ -65,7 +64,7 @@ public class CodesGroupResourceTest {
         Response updateResponse = resource.update(dto);
         assertResponse(updateResponse, 201);
 
-        response = resource.getCodesByCodesUri(4L);
+        response = resource.getCodesByCodesUri(-4L);
         assertResponse(response, 200);
         assertDtoEquals(dto, (KoodistoRyhmaDto) response.getEntity());
 
@@ -106,16 +105,15 @@ public class CodesGroupResourceTest {
 
     @Test
     public void testDelete() {
-        assertResponse(resource.getCodesByCodesUri(3L), 200);
-        assertResponse(resource.delete(3L), 202);
-        assertResponse(resource.getCodesByCodesUri(3L), 500);
+        assertResponse(resource.getCodesByCodesUri(-3L), 200);
+        assertResponse(resource.delete(-3L), 202);
+        assertResponse(resource.getCodesByCodesUri(-3L), 500);
     }
     
     @Test
     public void testDeleteInvalid() {
         assertResponse(resource.delete(null), 400, "error.validation.id");
         assertResponse(resource.delete(0L), 500, "error.codesgroup.not.found");
-        assertResponse(resource.delete(-1L), 500, "error.codesgroup.not.found");
         assertResponse(resource.delete(99999L), 500, "error.codesgroup.not.found");
     }
 
