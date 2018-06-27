@@ -458,77 +458,69 @@
   <build>
     <finalName>koodisto-service</finalName>
     <plugins>
-      <!--<plugin>-->
-        <!--<groupId>de.smartics.maven.plugin</groupId>-->
-        <!--<artifactId>hibernate4-maven-plugin</artifactId>-->
-        <!--<version>${hibernate4-maven-plugin.version}</version>-->
-        <!--<executions>-->
-          <!--<execution>-->
-            <!--<id>export</id>-->
-            <!--<phase>compile</phase>-->
-            <!--<goals>-->
-              <!--<goal>hbm2ddl</goal>-->
-            <!--</goals>-->
-          <!--</execution>-->
-        <!--</executions>-->
-        <!--<configuration>-->
-          <!--<unitName>koodisto</unitName>-->
-          <!--<createOutputFile>${project.build.directory}/hibernate3/sql/schema.ddl</createOutputFile>-->
-          <!--<dropOutputFile>${project.build.directory}/hibernate3/sql/drop.ddl</dropOutputFile>-->
-        <!--</configuration>-->
-        <!--<dependencies>-->
-          <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-core</artifactId>-->
-            <!--<version>${hibernate.version}</version>-->
-          <!--</dependency>-->
-          <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-entitymanager</artifactId>-->
-            <!--<version>${hibernate.version}</version>-->
-          <!--</dependency>-->
-          <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-ehcache</artifactId>-->
-            <!--<version>${hibernate.version}</version>-->
-          <!--</dependency>-->
-        <!--</dependencies>-->
-      <!--</plugin>-->
-      <!--<plugin>-->
-        <!--<groupId>com.mysema.maven</groupId>-->
-        <!--<artifactId>maven-apt-plugin</artifactId>-->
-        <!--<version>${maven-apt-plugin.version}</version>-->
-        <!--<executions>-->
-          <!--<execution>-->
-            <!--<goals>-->
-              <!--<goal>process</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-              <!--<outputDirectory>target/generated-sources/java</outputDirectory>-->
-              <!--<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>-->
-            <!--</configuration>-->
-          <!--</execution>-->
-        <!--</executions>-->
-      <!--</plugin>-->
-      <!--<plugin>-->
-        <!--<groupId>org.codehaus.mojo</groupId>-->
-        <!--<artifactId>build-helper-maven-plugin</artifactId>-->
-        <!--<version>${build-helper-maven-plugin.version}</version>-->
-        <!--<executions>-->
-          <!--<execution>-->
-            <!--<id>add-querydsl-source</id>-->
-            <!--<phase>generate-sources</phase>-->
-            <!--<goals>-->
-              <!--<goal>add-source</goal>-->
-            <!--</goals>-->
-            <!--<configuration>-->
-              <!--<sources>-->
-                <!--<source>${project.build.directory}/generated-sources/java</source>-->
-              <!--</sources>-->
-            <!--</configuration>-->
-          <!--</execution>-->
-        <!--</executions>-->
-      <!--</plugin>-->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <id>add-sources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <directory>target/generated-sources</directory>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>io.github.divinespear</groupId>
+        <artifactId>jpa-schema-maven-plugin</artifactId>
+        <version>0.2.1</version>
+        <configuration>
+          <scriptAction>create</scriptAction>
+          <createOutputFileName>schema.ddl</createOutputFileName>
+          <databaseProductName>PostgreSQL</databaseProductName>
+
+          <databaseMajorVersion>9</databaseMajorVersion>
+          <databaseMinorVersion>3</databaseMinorVersion>
+          <format>true</format>
+          <lineSeparator>LF</lineSeparator>
+          <packageToScan>
+            <scan>fi.vm.sade.koodisto.model</scan>
+          </packageToScan>
+          <vendor>hibernate</vendor>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.jpa</artifactId>
+            <version>2.6.1</version>
+          </dependency>
+          <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>fi.vm.sade.koodisto</groupId>
+            <artifactId>koodisto-audit</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
     </plugins>
   </build>
 
@@ -596,7 +588,7 @@
                 </goals>
                 <configuration>
                   <srcFiles>
-                    <srcFile>target/hibernate3/sql/schema.ddl</srcFile>
+                    <srcFile>target/generated-schema/schema.ddl</srcFile>
                   </srcFiles>
                 </configuration>
               </execution>
@@ -615,7 +607,6 @@
               </execution>
             </executions>
           </plugin>
-
         </plugins>
       </build>
     </profile>
