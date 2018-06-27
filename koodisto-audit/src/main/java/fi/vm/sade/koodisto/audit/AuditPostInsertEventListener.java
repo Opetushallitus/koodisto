@@ -34,6 +34,11 @@ public class AuditPostInsertEventListener implements PostInsertEventListener {
                 targetBuilder.build(), changesBuilder.build());
     }
 
+    @Override
+    public boolean requiresPostCommitHanding(EntityPersister persister) {
+        return false;
+    }
+
     private static class PostInsertEventAdapter implements Event {
 
         private final PostInsertEvent event;

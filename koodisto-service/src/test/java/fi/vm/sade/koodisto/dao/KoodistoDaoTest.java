@@ -11,7 +11,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.*;
@@ -19,10 +18,10 @@ import static org.junit.Assert.*;
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class })
+        DirtiesContextTestExecutionListener.class})
 @RunWith(SpringJUnit4ClassRunner.class)
-@Transactional
 @DataSetLocation("classpath:test-data.xml")
+@Transactional
 public class KoodistoDaoTest {
 
     @Autowired

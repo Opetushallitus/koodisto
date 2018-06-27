@@ -34,6 +34,11 @@ public class AuditPostUpdateEventListener implements PostUpdateEventListener {
                 targetBuilder.build(), changesBuilder.build());
     }
 
+    @Override
+    public boolean requiresPostCommitHanding(EntityPersister persister) {
+        return false;
+    }
+
     private static class PostUpdateEventAdapter implements Event {
 
         private final PostUpdateEvent event;

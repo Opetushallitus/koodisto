@@ -21,6 +21,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
@@ -35,6 +36,7 @@ import static org.junit.Assert.assertEquals;
         DirtiesContextTestExecutionListener.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 @DataSetLocation("classpath:test-data.xml")
+@Transactional
 public class KoodistoJsonRESTServiceTest {
 
     @Autowired

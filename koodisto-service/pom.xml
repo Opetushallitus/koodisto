@@ -192,11 +192,23 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <version>${hibernate.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.logging</groupId>
+          <artifactId>jboss-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>${hibernate.validator.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml</groupId>
+          <artifactId>classmate</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- ActiveMQ -->
@@ -257,6 +269,12 @@
       <artifactId>dbunit</artifactId>
       <scope>test</scope>
       <version>${dbunit.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>fi.vm.sade.generic</groupId>
@@ -449,94 +467,82 @@
       <version>2.9.9</version>
     </dependency>
 
-    <!-- JPAAnnotationProcessor -->
-    <dependency>
-      <groupId>com.mysema.querydsl</groupId>
-      <artifactId>querydsl-apt</artifactId>
-      <version>${querydsl-apt.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.mysema.querydsl</groupId>
-      <artifactId>querydsl-jpa</artifactId>
-      <version>${querydsl-jpa.version}</version>
-    </dependency>
-
   </dependencies>
 
   <build>
     <finalName>koodisto-service</finalName>
     <plugins>
-      <plugin>
-        <groupId>de.smartics.maven.plugin</groupId>
-        <artifactId>hibernate4-maven-plugin</artifactId>
-        <version>${hibernate4-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>export</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>hbm2ddl</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <unitName>koodisto</unitName>
-          <createOutputFile>${project.build.directory}/hibernate3/sql/schema.ddl</createOutputFile>
-          <dropOutputFile>${project.build.directory}/hibernate3/sql/drop.ddl</dropOutputFile>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-ehcache</artifactId>
-            <version>${hibernate.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>com.mysema.maven</groupId>
-        <artifactId>maven-apt-plugin</artifactId>
-        <version>${maven-apt-plugin.version}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>process</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>target/generated-sources/java</outputDirectory>
-              <processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>${build-helper-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>add-querydsl-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${project.build.directory}/generated-sources/java</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+      <!--<plugin>-->
+        <!--<groupId>de.smartics.maven.plugin</groupId>-->
+        <!--<artifactId>hibernate4-maven-plugin</artifactId>-->
+        <!--<version>${hibernate4-maven-plugin.version}</version>-->
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<id>export</id>-->
+            <!--<phase>compile</phase>-->
+            <!--<goals>-->
+              <!--<goal>hbm2ddl</goal>-->
+            <!--</goals>-->
+          <!--</execution>-->
+        <!--</executions>-->
+        <!--<configuration>-->
+          <!--<unitName>koodisto</unitName>-->
+          <!--<createOutputFile>${project.build.directory}/hibernate3/sql/schema.ddl</createOutputFile>-->
+          <!--<dropOutputFile>${project.build.directory}/hibernate3/sql/drop.ddl</dropOutputFile>-->
+        <!--</configuration>-->
+        <!--<dependencies>-->
+          <!--<dependency>-->
+            <!--<groupId>org.hibernate</groupId>-->
+            <!--<artifactId>hibernate-core</artifactId>-->
+            <!--<version>${hibernate.version}</version>-->
+          <!--</dependency>-->
+          <!--<dependency>-->
+            <!--<groupId>org.hibernate</groupId>-->
+            <!--<artifactId>hibernate-entitymanager</artifactId>-->
+            <!--<version>${hibernate.version}</version>-->
+          <!--</dependency>-->
+          <!--<dependency>-->
+            <!--<groupId>org.hibernate</groupId>-->
+            <!--<artifactId>hibernate-ehcache</artifactId>-->
+            <!--<version>${hibernate.version}</version>-->
+          <!--</dependency>-->
+        <!--</dependencies>-->
+      <!--</plugin>-->
+      <!--<plugin>-->
+        <!--<groupId>com.mysema.maven</groupId>-->
+        <!--<artifactId>maven-apt-plugin</artifactId>-->
+        <!--<version>${maven-apt-plugin.version}</version>-->
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<goals>-->
+              <!--<goal>process</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+              <!--<outputDirectory>target/generated-sources/java</outputDirectory>-->
+              <!--<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>-->
+            <!--</configuration>-->
+          <!--</execution>-->
+        <!--</executions>-->
+      <!--</plugin>-->
+      <!--<plugin>-->
+        <!--<groupId>org.codehaus.mojo</groupId>-->
+        <!--<artifactId>build-helper-maven-plugin</artifactId>-->
+        <!--<version>${build-helper-maven-plugin.version}</version>-->
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<id>add-querydsl-source</id>-->
+            <!--<phase>generate-sources</phase>-->
+            <!--<goals>-->
+              <!--<goal>add-source</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+              <!--<sources>-->
+                <!--<source>${project.build.directory}/generated-sources/java</source>-->
+              <!--</sources>-->
+            <!--</configuration>-->
+          <!--</execution>-->
+        <!--</executions>-->
+      <!--</plugin>-->
     </plugins>
   </build>
 

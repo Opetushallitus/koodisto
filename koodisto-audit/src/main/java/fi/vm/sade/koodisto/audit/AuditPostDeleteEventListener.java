@@ -34,6 +34,11 @@ public class AuditPostDeleteEventListener implements PostDeleteEventListener {
                 targetBuilder.build(), changesBuilder.build());
     }
 
+    @Override
+    public boolean requiresPostCommitHanding(EntityPersister persister) {
+        return false;
+    }
+
     private static class PostDeleteEventAdapter implements Event {
 
         private final PostDeleteEvent event;

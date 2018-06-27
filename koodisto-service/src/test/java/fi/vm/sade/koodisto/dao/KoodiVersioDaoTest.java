@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -16,7 +17,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
@@ -31,7 +31,6 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisVersioSelectionType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,10 +39,10 @@ import static org.junit.Assert.assertTrue;
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class })
+        DirtiesContextTestExecutionListener.class})
 @RunWith(SpringJUnit4ClassRunner.class)
-@Transactional
 @DataSetLocation("classpath:test-data.xml")
+@Transactional
 public class KoodiVersioDaoTest {
 
     @Autowired

@@ -6,11 +6,7 @@ import fi.vm.sade.koodisto.service.*;
 import fi.vm.sade.koodisto.service.business.exception.*;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.*;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
-import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
-import fi.vm.sade.koodisto.util.KoodistoHelper;
-import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
-import org.junit.Ignore;
+import fi.vm.sade.koodisto.util.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +15,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -31,6 +27,7 @@ import static org.junit.Assert.*;
         DirtiesContextTestExecutionListener.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 @DataSetLocation("classpath:test-data.xml")
+@Transactional
 public class KoodiAdminServiceTest {
 
     @Autowired
@@ -94,24 +91,6 @@ public class KoodiAdminServiceTest {
         assertEquals(TilaType.LUONNOS, koodisto.getTila());
         assertEquals(2, koodisto.getVersio());
 
-    }
-
-    @Test(expected = GenericFault.class)
-    @Ignore // Ei enää validi.
-    public void testCreateKoodiWithNonUniqueNimi() {
-        final String koodistoUri = "http://www.kunnat.fi/kunta";
-        final String koodiNimi = "haapavesi";
-
-        CreateKoodiDataType createKoodiDataType = DataUtils.createCreateKoodiDataType("arvo", new Date(), new Date(),
-                koodiNimi);
-
-        try {
-            koodiAdminService.createKoodi(koodistoUri, createKoodiDataType);
-
-        } catch (GenericFault e) {
-            assertEquals(KoodiNimiNotUniqueException.ERROR_KEY, e.getFaultInfo().getErrorCode());
-            throw e;
-        }
     }
 
     @Test
@@ -188,41 +167,6 @@ public class KoodiAdminServiceTest {
 
         assertTrue(caughtOne);
 
-    }
-
-    @Test(expected = GenericFault.class)
-    @Ignore // Ei enää validi.
-    public void testUpdateWithNonUniqueNimi() {
-        final String koodiToUpdateUri = "29";
-
-        KoodiType koodiToUpdate = getKoodiByUri(koodiToUpdateUri);
-
-        UpdateKoodiDataType updateData = new UpdateKoodiDataType();
-        DataUtils.copyFields(koodiToUpdate, updateData);
-
-        // Let's first try to update the koodi without changing any fields. This
-        // should not cause an exception.
-        try {
-            koodiAdminService.updateKoodi(updateData);
-        } catch (Exception e) {
-            fail();
-        }
-
-        // Now, let's change the nimi into something non-unique
-        final String koodiUri = "3";
-        KoodiType kunta = getKoodiByUri(koodiUri);
-        String nimi = kunta.getMetadata().get(0).getNimi().toLowerCase();
-
-        for (KoodiMetadataType m : updateData.getMetadata()) {
-            m.setNimi(nimi);
-        }
-
-        try {
-            koodiAdminService.updateKoodi(updateData);
-        } catch (GenericFault e) {
-            assertEquals(KoodiNimiNotUniqueException.ERROR_KEY, e.getFaultInfo().getErrorCode());
-            throw e;
-        }
     }
 
     @Test

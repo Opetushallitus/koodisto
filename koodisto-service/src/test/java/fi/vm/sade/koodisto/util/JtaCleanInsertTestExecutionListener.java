@@ -23,12 +23,17 @@ import java.sql.Connection;
  * Spring framework transactional test extension for JUnit4. Cleans the database
  * for DBUnit tests and inserts data set defined in {@link DataSetLocation}
  * annotation. Supports only JTA datasources.
- * 
  */
 public class JtaCleanInsertTestExecutionListener extends TransactionalTestExecutionListener {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
+    private SessionImpl session;
+    private IDatabaseConnection con;
+    private Connection jdbcConn;
+
+
+    @Override
     public void beforeTestMethod(TestContext testContext) throws Exception {
         super.beforeTestMethod(testContext);
 
@@ -45,29 +50,44 @@ public class JtaCleanInsertTestExecutionListener extends TransactionalTestExecut
         }
 
         if (dataSetResourcePath != null) {
-
             Resource dataSetResource = testContext.getApplicationContext().getResource(dataSetResourcePath);
             FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
             builder.setColumnSensing(true);
             IDataSet dataSet = builder.build(dataSetResource.getInputStream());
 
             LocalContainerEntityManagerFactoryBean emf = testContext.getApplicationContext().getBean(
-                    org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.class);
+                    LocalContainerEntityManagerFactoryBean.class);
 
             EntityManager entityManager = emf.getObject().createEntityManager();
 
-            // entityManager.getTransaction().begin();
-            SessionImpl session = (SessionImpl) entityManager.getDelegate();
-            Connection jdbcConn = session.connection();
-            IDatabaseConnection con = new DatabaseConnection(jdbcConn);
+            session = entityManager.unwrap(SessionImpl.class);
+            jdbcConn = session.connection();
+            con = new DatabaseConnection(jdbcConn);
             DatabaseConfig dbConfig = con.getConfig();
             dbConfig.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new HsqldbDataTypeFactory());
             DatabaseOperation.CLEAN_INSERT.execute(con, dataSet);
-            // entityManager.getTransaction().commit();
-            con.close();
-
+//            con.close();
+            if (session.getSession().isOpen()) {
+                session.getSession().close();
+            }
         } else {
             log.info(testContext.getClass().getName() + " does not have any data set, no data injection.");
         }
+    }
+
+    @Override
+    public void beforeTestClass(TestContext testContext) throws Exception {
+        super.beforeTestClass(testContext);
+
+
+    }
+
+    @Override
+    public void afterTestClass(TestContext testContext) throws Exception {
+        super.afterTestClass(testContext);
+//        if (!jdbcConn.isClosed()) {
+//            jdbcConn.close();
+//        }
+//        con.close();
     }
 }

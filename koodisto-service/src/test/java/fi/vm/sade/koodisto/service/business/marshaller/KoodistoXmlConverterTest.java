@@ -8,18 +8,14 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
-/**
- * User: kwuoti
- * Date: 11.4.2013
- * Time: 10.07
- */
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = {JtaCleanInsertTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class})
 @RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
 public class KoodistoXmlConverterTest extends AbstractKoodistoConverterTest {
 
     @Autowired

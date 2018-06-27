@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.ws.rs.core.Response;
 
+import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,7 +18,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
@@ -32,7 +32,6 @@ import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -45,7 +44,7 @@ import static org.junit.Assert.fail;
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
         DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class })
+        DirtiesContextTestExecutionListener.class})
 @RunWith(SpringJUnit4ClassRunner.class)
 @DataSetLocation("classpath:test-data-multiple-relations.xml")
 public class CodeElementResourceTest {
