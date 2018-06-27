@@ -1,12 +1,13 @@
 package fi.vm.sade.koodisto.service.it;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
+
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.impl.KoodistoRESTService;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoType;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import junit.framework.Assert;
 import junit.framework.ComparisonFailure;
 import org.junit.Test;
@@ -27,11 +28,11 @@ import static org.junit.Assert.assertEquals;
  * User: kwuoti Date: 12.4.2013 Time: 14.04
  */
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
-        DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-@DataSetLocation("classpath:test-data.xml")
+@DatabaseSetup("classpath:test-data.xml")
 @Transactional
 public class KoodistoRESTServiceTest {
 

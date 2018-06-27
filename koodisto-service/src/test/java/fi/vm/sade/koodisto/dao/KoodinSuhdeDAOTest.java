@@ -1,10 +1,11 @@
 package fi.vm.sade.koodisto.dao;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,11 +23,11 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
-        DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-@DataSetLocation("classpath:test-data.xml")
+@DatabaseSetup(value = "classpath:test-data.xml",type = DatabaseOperation.CLEAN_INSERT)
 @Transactional
 public class KoodinSuhdeDAOTest {
 
@@ -36,7 +37,7 @@ public class KoodinSuhdeDAOTest {
     @Test
     public void testGetRelations() {
 
-        List<KoodiUriAndVersioType> list = new ArrayList<KoodiUriAndVersioType>();
+        List<KoodiUriAndVersioType> list = new ArrayList<>();
         KoodiUriAndVersioType kv1 = new KoodiUriAndVersioType();
         kv1.setKoodiUri("3");
         kv1.setVersio(1);
