@@ -256,9 +256,9 @@ public class KoodistoBusinessServiceTest {
 	    assertEquals(versio + 1, result.getVersio().intValue());
 	    assertEquals(Tila.LUONNOS, result.getTila());
 	    KoodistoMetadata expectedMeta = codesDTO.getMetadata().get(0);
-	    assertEquals(expectedMeta.getKieli(), result.getMetadatas().get(0).getKieli());
-	    assertEquals(expectedMeta.getNimi(), result.getMetadatas().get(0).getNimi());
-	    assertEquals(expectedMeta.getKuvaus(), result.getMetadatas().get(0).getKuvaus());
+	    assertEquals(expectedMeta.getKieli(), result.getMetadatas().iterator().next().getKieli());
+	    assertEquals(expectedMeta.getNimi(), result.getMetadatas().iterator().next().getNimi());
+	    assertEquals(expectedMeta.getKuvaus(), result.getMetadatas().iterator().next().getKuvaus());
 	}
 
 	@Test

@@ -92,7 +92,7 @@ public class KoodistoVersio extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodistoVersio", cascade = { CascadeType.ALL })
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @BatchSize(size = 100)
-    private List<KoodistoMetadata> metadatas = new ArrayList<>();
+    private Set<KoodistoMetadata> metadatas = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodistoVersio", cascade = { CascadeType.ALL })
     @BatchSize(size = 100)
@@ -188,8 +188,8 @@ public class KoodistoVersio extends BaseEntity {
         this.metadatas.remove(metadata);
     }
 
-    public List<KoodistoMetadata> getMetadatas() {
-        return Collections.unmodifiableList(metadatas);
+    public Set<KoodistoMetadata> getMetadatas() {
+        return Collections.unmodifiableSet(metadatas);
     }
 
     public void removeKoodiVersios(Collection<KoodistoVersioKoodiVersio> koodiVersios) {
