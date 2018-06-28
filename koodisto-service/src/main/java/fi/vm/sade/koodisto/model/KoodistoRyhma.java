@@ -18,11 +18,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * 
- * @author kkammone
- * 
- */
 @Table(name = KoodistoRyhma.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistoRyhma.TABLE_NAME + "_01", columnNames = { KoodistoRyhma.KOODISTO_RYHMA_URI_COLUMN_NAME }))
 @org.hibernate.annotations.Table(appliesTo = KoodistoRyhma.TABLE_NAME, comment = "Koodistoryhmä sisältää aina tietyn tyyppisiä koodistoja, esim. alueet. Koodisto voi kuulua useaan koodistoryhmään.")
 @Entity
@@ -36,12 +31,12 @@ public class KoodistoRyhma extends BaseEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "koodistoRyhma_koodisto", joinColumns = @JoinColumn(name = "koodistoRyhma_id", referencedColumnName = BaseEntity.ID_COLUMN_NAME), inverseJoinColumns = @JoinColumn(name = "koodisto_id", referencedColumnName = BaseEntity.ID_COLUMN_NAME))
-    private Set<Koodisto> koodistos = new HashSet<Koodisto>();
+    private Set<Koodisto> koodistos = new HashSet<>();
 
     @NotEmpty
     @OneToMany(mappedBy = "koodistoRyhma", fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = new HashSet<KoodistoRyhmaMetadata>();
+    private Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = new HashSet<>();
 
     @NotBlank
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
