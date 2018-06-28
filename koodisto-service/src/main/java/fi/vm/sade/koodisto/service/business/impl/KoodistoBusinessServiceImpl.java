@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.activation.DataHandler;
 import javax.annotation.Nonnull;
@@ -437,19 +438,19 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     private void initializeKoodistoVersio(KoodistoVersio koodistoVersio) {
         for (KoodistonSuhde koodistonSuhde : koodistoVersio.getYlakoodistos()) {
-            koodistonSuhde.getYlakoodistoVersio().getMetadatas().forEach(Hibernate::initialize);
+            koodistonSuhde.getYlakoodistoVersio().getMetadatas().size();
             Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getKoodisto());
         }
+        koodistoVersio.getAlakoodistos().size();
         for (KoodistonSuhde koodistonSuhde : koodistoVersio.getAlakoodistos()) {
-            koodistonSuhde.getAlakoodistoVersio().getMetadatas().forEach(Hibernate::initialize);
+            koodistonSuhde.getAlakoodistoVersio().getMetadatas().size();
             Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getKoodisto());
         }
+        koodistoVersio.getKoodisto().getKoodistoRyhmas().size();
         for (KoodistoRyhma ryhma : koodistoVersio.getKoodisto().getKoodistoRyhmas()) {
-            Hibernate.initialize(ryhma);
+            ryhma.getKoodistoJoukkoMetadatas().size();
         }
-        for (KoodistoVersio versio : koodistoVersio.getKoodisto().getKoodistoVersios()) {
-            Hibernate.initialize(versio);
-        }
+        koodistoVersio.getKoodisto().getKoodistoVersios().size();
     }
 
     private List<KoodistoVersio> getLatestKoodistoVersios(String... koodistoUris) {
