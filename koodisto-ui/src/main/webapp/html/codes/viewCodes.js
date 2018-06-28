@@ -126,16 +126,15 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         };
 
         this.getLatestCodesVersionsByCodesUri = function(codes, list) {
-            CodesByUri.get({
-                codesUri : codes.codesUri
-            }, function(result) {
-                var ce = {};
-                ce.uri = codes.codesUri;
-                ce.name = getLanguageSpecificValueOrValidValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
-                ce.versio = codes.codesVersion;
-                ce.active = !codes.passive;
-                list.push(ce);
+            var languages = Object.keys(codes.nimi).map(function (languageCode) {
+                return {kieli: languageCode, nimi: codes.nimi[languageCode]};
             });
+            var ce = {};
+            ce.uri = codes.codesUri;
+            ce.name = getLanguageSpecificValueOrValidValue(languages, 'nimi', 'FI');
+            ce.versio = codes.codesVersion;
+            ce.active = !codes.passive;
+            list.push(ce);
         };
 
         this.getCodeElements = function(codesUri, codesVersion) {
