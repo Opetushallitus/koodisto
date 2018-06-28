@@ -106,13 +106,14 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
         };
 
         this.getLatestCodesVersionsByCodesUri = function(codes, list) {
-            CodesByUri.get({codesUri: codes.codesUri}, function (result) {
-                var ce = {};
-                ce.uri = codes.codesUri;
-                ce.name = getLanguageSpecificValueOrValidValue(result.latestKoodistoVersio.metadata, 'nimi', 'FI');
-                ce.versio = codes.codesVersion;
-                list.push(ce);
+            var languages = Object.keys(codes.nimi).map(function (languageCode) {
+                return {kieli: languageCode, nimi: codes.nimi[languageCode]};
             });
+            var ce = {};
+            ce.uri = codes.codesUri;
+            ce.name = getLanguageSpecificValueOrValidValue(languages, 'nimi', 'FI');
+            ce.versio = codes.codesVersion;
+            list.push(ce);
         };
 
         this.filterCodes = function() {
