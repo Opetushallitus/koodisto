@@ -185,7 +185,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
         return changedCodeElements;
     }
 
-    private List<SimpleMetadataDto> removedMetadatas(List<KoodistoMetadata> compareToMetas, final List<KoodistoMetadata> latestMetas) {
+    private List<SimpleMetadataDto> removedMetadatas(Set<KoodistoMetadata> compareToMetas, final Set<KoodistoMetadata> latestMetas) {
         Collection<SimpleMetadataDto> removedMetas = Collections2.transform(Collections2.filter(compareToMetas, new Predicate<KoodistoMetadata>() {
 
             @Override
@@ -197,7 +197,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
                 }
                 return true;
             }
-            
+
         }), new Function<KoodistoMetadata, SimpleMetadataDto>() {
 
             @Override
@@ -209,7 +209,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
         return new ArrayList<>(removedMetas);
     }
     
-    private List<SimpleMetadataDto> changedMetadatas(List<KoodistoMetadata> compareToMetadatas, List<KoodistoMetadata> latestMetadatas) {
+    private List<SimpleMetadataDto> changedMetadatas(Set<KoodistoMetadata> compareToMetadatas, Set<KoodistoMetadata> latestMetadatas) {
         List<SimpleMetadataDto> changedMetadatas = new ArrayList<>();
         for (KoodistoMetadata latestData : latestMetadatas) {
             KoodistoMetadata metaWithMatchingKieli = getMetadataWithMatchingLanguage(compareToMetadatas, latestData.getKieli());
@@ -238,7 +238,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
         return latestData != null && latestData.equals(matchingData) ? null : latestData;
     }
 
-    private KoodistoMetadata getMetadataWithMatchingLanguage(List<KoodistoMetadata> compareToMetadatas, Kieli kieli) {
+    private KoodistoMetadata getMetadataWithMatchingLanguage(Set<KoodistoMetadata> compareToMetadatas, Kieli kieli) {
         for(KoodistoMetadata data : compareToMetadatas) {
             if (data.getKieli().equals(kieli)) { 
                 return data;

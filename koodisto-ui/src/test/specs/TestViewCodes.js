@@ -92,14 +92,6 @@ describe("Codes View test", function() {
     describe("Relations", function() {
 
         function givenCodesWithRelationsResponse() {
-            mockBackend.expectGET(SERVICE_URL_BASE + "codes/kauniaisenkoodit").respond({
-                "latestKoodistoVersio" : [ {
-                    "metadata" : [ {
-                        "kieli" : "FI",
-                        "nimi" : "Kauniaisen koodit"
-                    } ]
-                } ]
-            });
             mockBackend.expectGET("/organisaatio-service/rest/organisaatio/1.2.246.562.10.90008375488").respond({
                 "nimi" : {
                     "fi" : "Espoon kaupunki"
@@ -136,7 +128,10 @@ describe("Codes View test", function() {
                 "codesVersions" : [ 1 ],
                 "withinCodes" : [ {
                     "codesUri" : "kauniaisenkoodit",
-                    "codesVersion" : 2
+                    "codesVersion" : 2,
+                    "nimi": {
+                        "FI": "Kauniaisen koodit"
+                    }
                 } ],
                 "includesCodes" : [],
                 "levelsWithCodes" : []
@@ -157,14 +152,6 @@ describe("Codes View test", function() {
     describe("Caching", function() {
 
         function givenCodesWithRelationsResponse() {
-            mockBackend.expectGET(SERVICE_URL_BASE + "codes/kauniaisenkoodit").respond({
-                "latestKoodistoVersio" : [ {
-                    "metadata" : [ {
-                        "kieli" : "FI",
-                        "nimi" : "Kauniaisen koodit"
-                    } ]
-                } ]
-            });
             mockBackend.expectGET("/organisaatio-service/rest/organisaatio/1.2.246.562.10.90008375488").respond({
                 "nimi" : {
                     "fi" : "Espoon kaupunki"
@@ -202,7 +189,10 @@ describe("Codes View test", function() {
                 "codesVersions" : [ 1 ],
                 "withinCodes" : [ {
                     "codesUri" : "kauniaisenkoodit",
-                    "codesVersion" : 2
+                    "codesVersion" : 2,
+                    "nimi": {
+                        "FI": "Kauniaisen koodit"
+                    }
                 } ],
                 "includesCodes" : [],
                 "levelsWithCodes" : []
