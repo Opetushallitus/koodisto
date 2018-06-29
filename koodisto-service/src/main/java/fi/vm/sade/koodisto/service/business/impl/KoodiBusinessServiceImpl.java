@@ -181,7 +181,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         koodistoVersioRelation.setKoodiVersio(koodiVersio);
         koodistoVersioKoodiVersioDAO.insertNonFlush(koodistoVersioRelation);
 
-        Set<Integer> versio = new HashSet<Integer>();
+        Set<Integer> versio = new HashSet<>();
         versio.add(latestKoodistoVersio.getVersio());
 
         return new KoodiVersioWithKoodistoItem(koodiVersio, new KoodistoItem(koodistoUri, versio));
@@ -198,8 +198,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void checkIfCodeElementValueExistsAlready(String koodiUri,
-            String koodiArvo,
-            Set<KoodistoVersioKoodiVersio> koodiVersios) {
+                                                      String koodiArvo,
+                                                      Set<KoodistoVersioKoodiVersio> koodiVersios) {
         for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
             if (!koodiUri.equals(koodiVersio.getKoodiVersio().getKoodi().getKoodiUri()) &&
                     koodiArvo.equals(koodiVersio.getKoodiVersio().getKoodiarvo())) {
@@ -412,7 +412,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         if (!isChild || st.equals(SuhteenTyyppi.RINNASTEINEN)) { // SISALTAA OR RINNASTUU
             if (SuhteenTyyppi.SISALTYY.equals(st)) {
                 koodistoBusinessService.createNewVersion(latest.getKoodi().getKoodisto().getKoodistoUri());
-                latest = createNewVersion(getLatestKoodiVersio(latest.getKoodi().getKoodiUri()), false);
+                latest = createNewVersion(getLatestKoodiVersio(latest.getKoodi().getKoodiUri()));
                 flushAfterCreation();
             }
 
@@ -443,7 +443,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             flushAfterCreation();
             ylakoodiVersios = getLatestKoodiVersios(ylakoodiUris.toArray(new String[ylakoodiUris.size()]));
             for (KoodiVersioWithKoodistoItem latestYlakoodi : ylakoodiVersios) {
-                createNewVersion(latestYlakoodi.getKoodiVersio(), false);
+                createNewVersion(latestYlakoodi.getKoodiVersio());
             }
             flushAfterCreation();
             ylakoodiVersios = getLatestKoodiVersios(ylakoodiUris.toArray(new String[ylakoodiUris.size()]));
@@ -612,7 +612,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private KoodiVersio updateOldVersion(KoodiVersio latest, UpdateKoodiDataType updateKoodiData) {
 
-        List<KoodiMetadata> latestMetadatas = new ArrayList<KoodiMetadata>(latest.getMetadatas());
+        List<KoodiMetadata> latestMetadatas = new ArrayList<>(latest.getMetadatas());
 
         outer: for (KoodiMetadataType updateMetadata : updateKoodiData.getMetadata()) {
             for (int i = 0; i < latestMetadatas.size(); ++i) {
@@ -708,7 +708,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return inserted;
     }
 
-    private KoodiVersio createNewVersion(KoodiVersio latest, boolean doNonFlushingInsert) {
+    private KoodiVersio createNewVersion(KoodiVersio latest) {
         if (!Tila.HYVAKSYTTY.equals(latest.getTila())) {
             return latest;
         }
@@ -720,16 +720,16 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             EntityUtils.copyFields(m, newMeta);
             newVersio.addMetadata(newMeta);
         }
-        return createNewVersion(latest, newVersio, doNonFlushingInsert);
+        return createNewVersion(latest, newVersio);
     }
 
-    private KoodiVersio createNewVersion(KoodiVersio base, KoodiVersio input, boolean doNonFlushingInsert) {
+    private KoodiVersio createNewVersion(KoodiVersio base, KoodiVersio input) {
         input.setId(null);
         input.setVersio(base.getVersio() + 1);
         input.setTila(Tila.LUONNOS);
 
         input.setKoodi(base.getKoodi());
-        KoodiVersio inserted = doNonFlushingInsert ? koodiVersioDAO.insertNonFlush(input) : koodiVersioDAO.insert(input);
+        KoodiVersio inserted = koodiVersioDAO.insert(input);
         copyRelations(base, inserted);
 
         return inserted;
@@ -737,15 +737,15 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private void copyRelations(KoodiVersio latest, KoodiVersio newVersio) {
         for (KoodinSuhde ks : latest.getYlakoodis()) {
-            createNewKoodinSuhde(ks, newVersio, ks.getYlakoodiVersio(), true);
+            createNewKoodinSuhde(ks, newVersio, ks.getYlakoodiVersio());
         }
         for (KoodinSuhde ks : latest.getAlakoodis()) {
-            createNewKoodinSuhde(ks, ks.getAlakoodiVersio(), newVersio, false);
+            createNewKoodinSuhde(ks, ks.getAlakoodiVersio(), newVersio);
         }
         setRelationsInPreviousVersionToPassive(latest);
     }
 
-    private void createNewKoodinSuhde(KoodinSuhde ks, KoodiVersio ala, KoodiVersio yla, boolean checkUpperCode) {
+    private void createNewKoodinSuhde(KoodinSuhde ks, KoodiVersio ala, KoodiVersio yla) {
         if (ks.isPassive()) {
             return;
         }
@@ -760,14 +760,14 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     @Override
     public KoodiVersio createNewVersion(String koodiUri) {
-        return createNewVersion(getLatestKoodiVersio(koodiUri), false);
+        return createNewVersion(getLatestKoodiVersio(koodiUri));
     }
 
     @Override
     public Set<KoodiVersio> createNewVersions(Set<KoodistoVersioKoodiVersio> koodiVersios) {
         HashSet<KoodiVersio> inserted = new HashSet<>();
         for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
-            inserted.add(this.createNewVersion(koodiVersio.getKoodiVersio(), false));
+            inserted.add(this.createNewVersion(koodiVersio.getKoodiVersio()));
         }
         return inserted;
     }
@@ -806,7 +806,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public void acceptCodeElements(KoodistoVersio latest) {
         List<KoodiVersio> koodis = koodiVersioDAO.getKoodiVersiosByKoodistoAndKoodiTila(latest.getId(), Tila.LUONNOS);
         if (koodis.size() > 0) {
-            ArrayList<String> koodiUris = new ArrayList<String>();
+            ArrayList<String> koodiUris = new ArrayList<>();
             for (KoodiVersio koodiVersio : koodis) {
                 koodiUris.add(koodiVersio.getKoodi().getKoodiUri());
             }
@@ -1145,10 +1145,10 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         Set<KoodinSuhde> existingAlaKoodis = latest.getAlakoodis();
         Set<KoodinSuhde> existingYlaKoodis = latest.getYlakoodis();
 
-        HashSet<String> existingIncludesUris = new HashSet<String>();
-        HashSet<String> existingLevelsWithChildUris = new HashSet<String>();
-        HashSet<String> existingLevelsWithParentUris = new HashSet<String>();
-        HashSet<String> existingWithinUris = new HashSet<String>();
+        HashSet<String> existingIncludesUris = new HashSet<>();
+        HashSet<String> existingLevelsWithChildUris = new HashSet<>();
+        HashSet<String> existingLevelsWithParentUris = new HashSet<>();
+        HashSet<String> existingWithinUris = new HashSet<>();
         separateKoodiRelationsToUriLists(existingAlaKoodis, existingIncludesUris, existingLevelsWithChildUris, true);
         separateKoodiRelationsToUriLists(existingYlaKoodis, existingWithinUris, existingLevelsWithParentUris, false);
 
@@ -1157,7 +1157,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         List<String> removedLevelsWithParentUris = filterRemovedRelationUrisToSet(koodiDTO.getLevelsWithCodeElements(), existingLevelsWithParentUris);
         List<String> removedWithinUris = filterRemovedRelationUrisToSet(koodiDTO.getWithinCodeElements(), existingWithinUris);
 
-        HashSet<String> existingLevelsWithUris = new HashSet<String>();
+        HashSet<String> existingLevelsWithUris = new HashSet<>();
         existingLevelsWithUris.addAll(existingLevelsWithChildUris);
         existingLevelsWithUris.addAll(existingLevelsWithParentUris);
         List<String> addedIncludesUris = filterNewRelationUrisToSet(koodiDTO.getIncludesCodeElements(), existingIncludesUris);

@@ -1,6 +1,3 @@
-/**
- *
- */
 package fi.vm.sade.koodisto.model;
 
 import javax.persistence.Cacheable;

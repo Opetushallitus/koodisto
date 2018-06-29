@@ -13,9 +13,6 @@ import javax.validation.constraints.NotNull;
 @Cacheable
 public class KoodistoVersioKoodiVersio extends BaseEntity {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -5215588552498620061L;
 
     @NotNull

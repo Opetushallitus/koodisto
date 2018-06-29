@@ -26,6 +26,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotBlank;
@@ -43,6 +44,7 @@ import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
 @org.hibernate.annotations.Table(appliesTo = KoodiVersio.TABLE_NAME, comment = "Koodiversio sisältää mm. koodiarvon, " +
         "voimassaolopäivämäärät ja koodin tilan.")
 @Cacheable
+@BatchSize(size = 100)
 public class KoodiVersio extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -90,18 +92,20 @@ public class KoodiVersio extends BaseEntity {
     private Tila tila;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodiVersio", cascade = { CascadeType.ALL })
-    private Set<KoodistoVersioKoodiVersio> koodistoVersios = new HashSet<KoodistoVersioKoodiVersio>();
+    private Set<KoodistoVersioKoodiVersio> koodistoVersios = new HashSet<>();
 
     @NotEmpty
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodiVersio", cascade = { CascadeType.ALL })
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<KoodiMetadata> metadatas = new HashSet<KoodiMetadata>();
+    private Set<KoodiMetadata> metadatas = new HashSet<>();
 
+    @BatchSize(size = 100)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodiVersio", cascade = { CascadeType.ALL })
-    private Set<KoodinSuhde> ylakoodis = new HashSet<KoodinSuhde>();
+    private Set<KoodinSuhde> ylakoodis = new HashSet<>();
 
+    @BatchSize(size = 100)
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "ylakoodiVersio", cascade = { CascadeType.ALL })
-    private Set<KoodinSuhde> alakoodis = new HashSet<KoodinSuhde>();
+    private Set<KoodinSuhde> alakoodis = new HashSet<>();
 
     @PrePersist
     protected void onCreate() {
