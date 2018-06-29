@@ -117,7 +117,7 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
     }
 
     private Set<KoodistonSuhde> copyRelations(Set<KoodistonSuhde> relations, KoodistoVersio fresh) {
-        Set<KoodistonSuhde> copiedRelations = new HashSet<KoodistonSuhde>();
+        Set<KoodistonSuhde> copiedRelations = new HashSet<>();
         String koodistoUri = fresh.getKoodisto().getKoodistoUri();
         for (KoodistonSuhde relation : relations) {
             if (relation.isPassive()) {

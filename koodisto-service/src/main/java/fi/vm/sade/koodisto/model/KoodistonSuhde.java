@@ -1,6 +1,3 @@
-/**
- *
- */
 package fi.vm.sade.koodisto.model;
 
 import javax.persistence.Cacheable;
@@ -19,9 +16,6 @@ import javax.validation.constraints.NotNull;
 import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
 
-/**
- * @author
- */
 @Entity
 @Table(name = KoodistonSuhde.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistonSuhde.TABLE_NAME + "_01", columnNames = {
         KoodistonSuhde.ALAKOODISTO_COLUMN_NAME, KoodistonSuhde.YLAKOODISTO_COLUMN_NAME, KoodistonSuhde.SUHTEEN_TYYPPI_COLUMN_NAME, KoodistonSuhde.VERSIO_COLUMN_NAME }))
