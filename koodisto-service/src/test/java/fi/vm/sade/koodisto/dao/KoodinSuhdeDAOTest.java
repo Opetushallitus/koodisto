@@ -1,10 +1,11 @@
 package fi.vm.sade.koodisto.dao;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +15,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -23,12 +23,12 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
-        DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
+@DatabaseSetup(value = "classpath:test-data.xml",type = DatabaseOperation.CLEAN_INSERT)
 @Transactional
-@DataSetLocation("classpath:test-data.xml")
 public class KoodinSuhdeDAOTest {
 
     @Autowired
@@ -37,7 +37,7 @@ public class KoodinSuhdeDAOTest {
     @Test
     public void testGetRelations() {
 
-        List<KoodiUriAndVersioType> list = new ArrayList<KoodiUriAndVersioType>();
+        List<KoodiUriAndVersioType> list = new ArrayList<>();
         KoodiUriAndVersioType kv1 = new KoodiUriAndVersioType();
         kv1.setKoodiUri("3");
         kv1.setVersio(1);

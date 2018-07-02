@@ -6,7 +6,7 @@
 
 
     <persistence-unit name="koodisto" transaction-type="RESOURCE_LOCAL">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <class>fi.vm.sade.koodisto.model.Koodi</class>
         <class>fi.vm.sade.koodisto.model.Koodisto</class>

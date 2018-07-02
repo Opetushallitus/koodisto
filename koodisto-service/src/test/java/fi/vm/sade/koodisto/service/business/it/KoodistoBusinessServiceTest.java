@@ -6,6 +6,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
+import fi.vm.sade.koodisto.service.types.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +19,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
@@ -38,14 +40,12 @@ import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenE
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRelationToSelfException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoTilaException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistonSuhdeContainsKoodinSuhdeException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistosAlreadyHaveSuhdeException;
 import fi.vm.sade.koodisto.service.it.DataUtils;
-import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
-import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -54,11 +54,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
-        DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionalTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-@DataSetLocation("classpath:test-data.xml")
+@DatabaseSetup("classpath:test-data.xml")
 public class KoodistoBusinessServiceTest {
 
     private static final String CODES_WITH_RELATIONS = "809suhdetahan";
@@ -75,7 +76,7 @@ public class KoodistoBusinessServiceTest {
     @Autowired
     private SadeConversionService conversionService;
 
-    private final static Long KOODISTON_SUHDE = 6l;
+    private final static Long KOODISTON_SUHDE = -6L;
 
     @Test
     public void testCreate() {
@@ -173,7 +174,6 @@ public class KoodistoBusinessServiceTest {
         }
 
         assertFalse(koodistoBusinessService.koodistoExists(koodistoUri));
-
     }
 
     @Test(expected = KoodistonSuhdeContainsKoodinSuhdeException.class)
@@ -200,7 +200,7 @@ public class KoodistoBusinessServiceTest {
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.SISALTYY);
         assertEquals(1, suhdeDAO.findBy("ylakoodistoVersio", latest).size());
     }
-    
+
     @Test
     public void preventsAddingSameRelationMoreThanOnceDespiteRelationType() {
         KoodistoVersio latest = koodistoBusinessService.getLatestKoodistoVersio("suhde502kanssa");
@@ -214,7 +214,7 @@ public class KoodistoBusinessServiceTest {
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY);
         assertTrue(koodistoBusinessService.hasAnyRelation("suhde502kanssa", "suhde502kanssa"));
     }
-    
+
     @Test(expected = KoodistoRelationToSelfException.class)
     public void preventsAddingRelationThatReferencesKoodistoItselfMultipleTimes() {
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.RINNASTEINEN);
@@ -250,9 +250,8 @@ public class KoodistoBusinessServiceTest {
 	    assertEquals(2, result.getAlakoodistos().size());
 	    assertEquals(2, result.getYlakoodistos().size());
 
-	    koodistoBusinessService.saveKoodisto(codesDTO);
-
-	    result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+        koodistoBusinessService.saveKoodisto(codesDTO);
+        result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
 
 	    assertEquals(2, result.getAlakoodistos().size());
 	    assertEquals(1, result.getYlakoodistos().size());
@@ -265,7 +264,7 @@ public class KoodistoBusinessServiceTest {
 	    assertEquals(expectedMeta.getNimi(), result.getMetadatas().get(0).getNimi());
 	    assertEquals(expectedMeta.getKuvaus(), result.getMetadatas().get(0).getKuvaus());
 	}
-	
+
 	@Test
 	public void savesKoodistoWithoutCopyingPassiveRelations() {
 	    String koodistoUri = "passiivisuhdeeikopioidu";
@@ -276,26 +275,32 @@ public class KoodistoBusinessServiceTest {
         koodistoBusinessService.saveKoodisto(dto);
         result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
         assertTrue(result.getYlakoodistos().isEmpty());
-	}
-	
-        @Test(expected=KoodistoTilaException.class)
-	public void doesNotAllowTilaUpdateFromHyvaksyttyToLuonnos() {
-            KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio("http://koodisto12");
-	    KoodistoDto dto = conversionService.convert(result, KoodistoDto.class);
-            dto.setTila(Tila.LUONNOS);
-            koodistoBusinessService.saveKoodisto(dto);
-	}
+    }
 
-	@Transactional
+    @Test(expected=KoodistoTilaException.class)
+    public void doesNotAllowTilaUpdateFromHyvaksyttyToLuonnos() {
+        KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio("http://koodisto12");
+        KoodistoDto dto = conversionService.convert(result, KoodistoDto.class);
+        dto.setTila(Tila.LUONNOS);
+        koodistoBusinessService.saveKoodisto(dto);
+    }
+
 	@Test
 	public void setsOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsCreated() throws Exception {
 	    String koodistoUri = "vanhasuhdepassivoidaan";
 	    koodistoBusinessService.createNewVersion(koodistoUri);
 	    assertRelationsArePassive(koodistoBusinessService.getKoodistoVersio("vanhasuhdepassivoidaan", 2), false);
-	    assertCodeElementRelationsArePassive(koodiBusinessService.getKoodiVersio("vanhasuhdepassivoidaan", 2), false);
-	}
-	
-	@Transactional
+        SearchKoodisCriteriaType criteriaType = new SearchKoodisCriteriaType();
+        criteriaType.setKoodiArvo("tamansuhdepassivoidaan");
+        List<KoodiVersioWithKoodistoItem> koodiVersioWithKoodistoItems = koodiBusinessService.searchKoodis(criteriaType);
+        assertEquals(koodiVersioWithKoodistoItems.size(), 1);
+        KoodiVersio kv = koodiVersioWithKoodistoItems.get(0).getKoodiVersio();
+        assertFalse(kv.getAlakoodis().isEmpty());
+        for (KoodinSuhde ks : kv.getAlakoodis()) {
+            assertCodeElementRelationIsPassive(false, ks);
+        }
+    }
+
 	@Test
 	public void setsLowerOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsCreated() throws Exception {
 	    koodistoBusinessService.createNewVersion(CODES_WITH_RELATIONS);
@@ -304,18 +309,26 @@ public class KoodistoBusinessServiceTest {
 	    for (KoodistonSuhde ks : relations) {
 	        assertTrue(ks.isPassive());
 	    }
-	    Set<KoodinSuhde> codeRelations = koodiBusinessService.getKoodiVersio(CODES_WITH_RELATIONS, 1).getYlakoodis();
-	    assertEquals(2, codeRelations.size());
+
+        SearchKoodisCriteriaType criteriaType = new SearchKoodisCriteriaType();
+        criteriaType.setKoodiArvo("sisaltyy706ja707");
+        List<KoodiVersioWithKoodistoItem> koodiVersioWithKoodistoItems = koodiBusinessService.searchKoodis(criteriaType);
+        assertEquals(koodiVersioWithKoodistoItems.size(), 1);
+        KoodiVersio kv = koodiVersioWithKoodistoItems.get(0).getKoodiVersio();
+
+	    Set<KoodinSuhde> codeRelations = kv.getYlakoodis();
+	    // Passive relations don't follow to the new version (initially 2 relations)
+	    assertEquals(1, codeRelations.size());
 	    for (KoodinSuhde ks : codeRelations) {
-            assertTrue(ks.isPassive());
+            assertFalse(ks.isPassive());
         }
 	}
-	
+
     @Test
     public void setsRelationsToPassiveWhenKoodistoIsSetToPassive() throws Exception {
 	    assertRelationsArePassive(givenKoodistoWithRelationsAndTila("vanhasuhdepassivoidaan", TilaType.PASSIIVINEN), false);
     }
-	
+
 	@Test
 	public void activatesRelationsInPreviousVersion() throws Exception {
 	    koodistoBusinessService.delete("vanhatsuhteetaktivoituupoistossa", 2);
@@ -357,13 +370,6 @@ public class KoodistoBusinessServiceTest {
         assertTrue(ks.isPassive());
         assertTrue((!lowerPassive && ks.isYlaKoodistoPassive()) || lowerPassive && ! ks.isYlaKoodistoPassive());
         assertTrue((lowerPassive && ks.isAlaKoodistoPassive()) || !lowerPassive && !ks.isAlaKoodistoPassive());
-    }
-
-    private void assertCodeElementRelationsArePassive(KoodiVersio kv, boolean lowerPassive) {
-        assertFalse(kv.getAlakoodis().isEmpty());
-        for (KoodinSuhde ks : kv.getAlakoodis()) {
-             assertCodeElementRelationIsPassive(lowerPassive, ks);
-         }
     }
 
     private void assertCodeElementRelationIsPassive(boolean lowerPassive, KoodinSuhde ks) {

@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.it;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.service.KoodiService;
 import fi.vm.sade.koodisto.service.KoodistoService;
 import fi.vm.sade.koodisto.service.UploadService;
@@ -10,10 +11,7 @@ import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.koodisto.util.ByteArrayDataSource;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
-import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
-import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import fi.vm.sade.koodisto.util.*;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -24,7 +22,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
 
@@ -33,17 +31,13 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * User: kwuoti
- * Date: 11.4.2013
- * Time: 15.24
- */
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = {JtaCleanInsertTestExecutionListener.class,
-        DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-@DataSetLocation("classpath:test-data.xml")
+@DatabaseSetup("classpath:test-data.xml")
+@Transactional
 public class UploadServiceTest {
 
     @Autowired
@@ -90,7 +84,6 @@ public class UploadServiceTest {
         assertEquals("getKoodisByKoodisto", 0, getKoodisByKoodisto(koodistoUri).size());
 
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(testFile);
-//        DataHandler handler = new DataHandler(new ByteArrayDataSource(convertStreamToString(inputStream).getBytes()));
         DataHandler handler = new DataHandler(new ByteArrayDataSource(IOUtils.toByteArray(inputStream)));
 
         uploadService.upload(koodistoUri, format, "UTF-8", handler);
@@ -117,23 +110,4 @@ public class UploadServiceTest {
         testUpload(ExportImportFormatType.XLS, "excel_example.xls");
     }
 
-    public static final String convertStreamToString(InputStream is) throws IOException {
-        if (is != null) {
-            Writer writer = new StringWriter();
-
-            char[] buffer = new char[1024];
-            try {
-                Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                int n;
-                while ((n = reader.read(buffer)) != -1) {
-                    writer.write(buffer, 0, n);
-                }
-            } finally {
-                is.close();
-            }
-            return writer.toString();
-        } else {
-            return "";
-        }
-    }
 }

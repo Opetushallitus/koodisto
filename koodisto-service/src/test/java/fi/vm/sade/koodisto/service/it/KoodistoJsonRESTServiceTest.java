@@ -1,7 +1,8 @@
 package fi.vm.sade.koodisto.service.it;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaListDto;
@@ -12,7 +13,6 @@ import fi.vm.sade.koodisto.service.impl.KoodistoJsonRESTService;
 import fi.vm.sade.koodisto.service.provider.ObjectMapperProvider;
 import fi.vm.sade.koodisto.service.types.SearchKoodisVersioSelectionType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
@@ -30,11 +31,12 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = {JtaCleanInsertTestExecutionListener.class,
-        DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-@DataSetLocation("classpath:test-data.xml")
+@DatabaseSetup("classpath:test-data.xml")
+@Transactional
 public class KoodistoJsonRESTServiceTest {
 
     @Autowired

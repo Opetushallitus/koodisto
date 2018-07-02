@@ -2,6 +2,8 @@ package fi.vm.sade.koodisto.dao.impl;
 
 import java.util.Arrays;
 
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +12,9 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
+
 import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
 import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
@@ -21,19 +22,19 @@ import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
-        DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
+@DatabaseSetup("classpath:test-data.xml")
 @Transactional
-@DataSetLocation("classpath:test-data.xml")
 public class KoodistonSuhdeDAOImplTest {
 
     @Autowired
@@ -44,7 +45,7 @@ public class KoodistonSuhdeDAOImplTest {
 
     @Test
     public void copiesRelationsFromOldKoodistonVersioToNewOne() {
-        KoodistoVersio original = versionDAO.read(Long.valueOf(1));
+        KoodistoVersio original = versionDAO.read(-1L);
         KoodistoVersio newVersion = givenNewKoodistoVersio(original);
         suhdeDAO.copyRelations(original, newVersion);
         assertRelations(original, newVersion);
@@ -52,17 +53,15 @@ public class KoodistonSuhdeDAOImplTest {
 
     @Test
     public void copiedRelationsAreActuallyStoredInDb() {
-        KoodistoVersio original = versionDAO.read(Long.valueOf(1));
+        KoodistoVersio original = versionDAO.read(-1L);
         KoodistoVersio newVersion = givenNewKoodistoVersio(original);
         suhdeDAO.copyRelations(original, newVersion);
-        versionDAO.detach(newVersion);
-        newVersion = versionDAO.read(newVersion.getId());
         assertRelations(original, newVersion);
     }
-    
+
     @Test
     public void doesNotCopyPassiveRelations() {
-        KoodistoVersio original = versionDAO.read(Long.valueOf(911));
+        KoodistoVersio original = versionDAO.read(-911L);
         KoodistoVersio newVersion = givenNewKoodistoVersio(original);
         suhdeDAO.copyRelations(original, newVersion);
         newVersion = versionDAO.read(newVersion.getId());
@@ -72,16 +71,15 @@ public class KoodistonSuhdeDAOImplTest {
     
     @Test
     public void oldRelationsAreSetToPassiveWhenCopying() {
-        KoodistoVersio original = versionDAO.read(Long.valueOf(1));
+        KoodistoVersio original = versionDAO.read(-1L);
         KoodistoVersio newVersion = givenNewKoodistoVersio(original);
         suhdeDAO.copyRelations(original, newVersion);
         assertOldRelationsArePassive(original, newVersion);
     }
 
-
     @Test
     public void deleRelations() {
-        KoodistonSuhde toBeDeleted = suhdeDAO.read(Long.valueOf(5));
+        KoodistonSuhde toBeDeleted = suhdeDAO.read(-5L);
         KoodistoUriAndVersioType yla = getKoodistoUriAndVersioType(versionDAO.read(toBeDeleted.getYlakoodistoVersio().getId()));
         KoodistoUriAndVersioType ala = getKoodistoUriAndVersioType(versionDAO.read(toBeDeleted.getAlakoodistoVersio().getId()));
         suhdeDAO.deleteRelations(yla, Arrays.asList(ala), toBeDeleted.getSuhteenTyyppi());

@@ -1,9 +1,10 @@
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
+
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.generic.dao.GenericDAO;
 import fi.vm.sade.generic.model.BaseEntity;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.PersistenceException;
@@ -21,12 +21,12 @@ import java.util.Date;
 import static org.junit.Assert.fail;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
-        DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
+@DatabaseSetup("classpath:test-data.xml")
 @Transactional
-@DataSetLocation("classpath:test-data.xml")
 public class UniqueConstraintTest {
 
     @Autowired
@@ -34,7 +34,7 @@ public class UniqueConstraintTest {
 
     @Test(expected = PersistenceException.class)
     public void testDuplicateKoodiUri() {
-        Koodisto koodisto = genericDAO.read(Koodisto.class, 422L);
+        Koodisto koodisto = genericDAO.read(Koodisto.class, -422L);
         Koodi koodi = new Koodi();
         koodi.setKoodiUri("123456");
         koodi.setKoodisto(koodisto);
@@ -44,7 +44,7 @@ public class UniqueConstraintTest {
 
     @Test(expected = PersistenceException.class)
     public void testDuplicateKoodiMetadata() {
-        final Long koodiVersioId = 411L;
+        final Long koodiVersioId = -411L;
         KoodiVersio koodiVersio = genericDAO.read(KoodiVersio.class, koodiVersioId);
 
         KoodiMetadata metadata = new KoodiMetadata();
@@ -58,8 +58,8 @@ public class UniqueConstraintTest {
 
     @Test(expected = PersistenceException.class)
     public void testDuplicateKoodinSuhde() {
-        final Long ylaKoodiId = 412L;
-        final Long alaKoodiId = 411L;
+        final Long ylaKoodiId = -412L;
+        final Long alaKoodiId = -411L;
 
         KoodinSuhde suhde = new KoodinSuhde();
         suhde.setAlakoodiVersio(genericDAO.read(KoodiVersio.class, alaKoodiId));
@@ -82,7 +82,7 @@ public class UniqueConstraintTest {
 
     @Test(expected = PersistenceException.class)
     public void testDuplicateKoodistoMetadata() {
-        final Long koodistoVersioId = 423L;
+        final Long koodistoVersioId = -423L;
         KoodistoVersio koodistoVersio = genericDAO.read(KoodistoVersio.class, koodistoVersioId);
 
         KoodistoMetadata metadata = new KoodistoMetadata();
@@ -109,7 +109,7 @@ public class UniqueConstraintTest {
 
     @Test(expected = PersistenceException.class)
     public void testDuplicateKoodistoRyhmaMetadata() {
-        final Long koodistoRyhmaId = 407L;
+        final Long koodistoRyhmaId = -407L;
         KoodistoRyhma koodistoRyhma = genericDAO.read(KoodistoRyhma.class, koodistoRyhmaId);
 
         KoodistoRyhmaMetadata metadata = new KoodistoRyhmaMetadata();
@@ -122,7 +122,7 @@ public class UniqueConstraintTest {
 
     @Test(expected = PersistenceException.class)
     public void testDuplicateKoodistoVersio() {
-        final Long koodistoId = 422L;
+        final Long koodistoId = -422L;
         final Integer newKoodistoVersio = 2;
         Koodisto koodisto = genericDAO.read(Koodisto.class, koodistoId);
 
@@ -143,7 +143,7 @@ public class UniqueConstraintTest {
 
     @Test(expected = PersistenceException.class)
     public void testDuplicateKoodiVersio() {
-        final Long koodiId = 411L;
+        final Long koodiId = -411L;
         final Integer newKoodiVersio = 3;
         Koodi koodi = genericDAO.read(Koodi.class, koodiId);
 

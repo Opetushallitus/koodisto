@@ -1,9 +1,9 @@
 package fi.vm.sade.koodisto.service.it;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.service.DownloadService;
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,22 +12,18 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
 
 import static org.junit.Assert.assertNotNull;
-/**
- * User: kwuoti
- * Date: 11.4.2013
- * Time: 15.21
- */
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = {JtaCleanInsertTestExecutionListener.class,
-        DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-@DataSetLocation("classpath:test-data.xml")
+@DatabaseSetup("classpath:test-data.xml")
+@Transactional
 public class DownloadServiceTest {
 
     @Autowired
