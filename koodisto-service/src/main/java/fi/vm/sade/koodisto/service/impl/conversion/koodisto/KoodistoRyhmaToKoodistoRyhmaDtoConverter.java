@@ -1,8 +1,8 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodisto;
 
-import fi.vm.sade.generic.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
+import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import org.springframework.stereotype.Component;
 
 @Component("koodistoRyhmaToKoodistoRyhmaDtoConverter")

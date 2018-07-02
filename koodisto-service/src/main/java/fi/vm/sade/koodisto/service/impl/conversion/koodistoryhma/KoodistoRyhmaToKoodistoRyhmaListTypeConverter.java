@@ -1,9 +1,9 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodistoryhma;
 
-import fi.vm.sade.generic.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
+import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.service.impl.conversion.koodisto.KoodistoToKoodistoListTypeConverter;
 import fi.vm.sade.koodisto.service.types.common.KoodistoRyhmaListType;
 import org.springframework.stereotype.Component;

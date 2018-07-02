@@ -412,7 +412,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         if (!isChild || st.equals(SuhteenTyyppi.RINNASTEINEN)) { // SISALTAA OR RINNASTUU
             if (SuhteenTyyppi.SISALTYY.equals(st)) {
                 koodistoBusinessService.createNewVersion(latest.getKoodi().getKoodisto().getKoodistoUri());
-                latest = createNewVersion(getLatestKoodiVersio(latest.getKoodi().getKoodiUri()));
+                latest = createNewVersion(getLatestKoodiVersio(latest.getKoodi().getKoodiUri()), false);
                 flushAfterCreation();
             }
 
@@ -430,7 +430,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             String alakoodiUri = latest.getKoodi().getKoodiUri();
             List<KoodiVersioWithKoodistoItem> ylakoodiVersios = getLatestKoodiVersios(ylakoodiUris.toArray(new String[ylakoodiUris.size()]));
 
-            ArrayList<String> koodistos = new ArrayList<String>();
+            ArrayList<String> koodistos = new ArrayList<>();
             for (KoodiVersioWithKoodistoItem latestYlakoodi : ylakoodiVersios) {
                 String latestYlakoodiKoodisto = latestYlakoodi.getKoodistoItem().getKoodistoUri();
                 if (!koodistos.contains(latestYlakoodiKoodisto)) {
@@ -443,7 +443,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             flushAfterCreation();
             ylakoodiVersios = getLatestKoodiVersios(ylakoodiUris.toArray(new String[ylakoodiUris.size()]));
             for (KoodiVersioWithKoodistoItem latestYlakoodi : ylakoodiVersios) {
-                createNewVersion(latestYlakoodi.getKoodiVersio());
+                createNewVersion(latestYlakoodi.getKoodiVersio(), false);
             }
             flushAfterCreation();
             ylakoodiVersios = getLatestKoodiVersios(ylakoodiUris.toArray(new String[ylakoodiUris.size()]));
@@ -708,7 +708,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return inserted;
     }
 
-    private KoodiVersio createNewVersion(KoodiVersio latest) {
+    private KoodiVersio createNewVersion(KoodiVersio latest, boolean doNonFlushingInsert) {
         if (!Tila.HYVAKSYTTY.equals(latest.getTila())) {
             return latest;
         }
@@ -720,16 +720,16 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             EntityUtils.copyFields(m, newMeta);
             newVersio.addMetadata(newMeta);
         }
-        return createNewVersion(latest, newVersio);
+        return createNewVersion(latest, newVersio, doNonFlushingInsert);
     }
 
-    private KoodiVersio createNewVersion(KoodiVersio base, KoodiVersio input) {
+    private KoodiVersio createNewVersion(KoodiVersio base, KoodiVersio input, boolean doNonFlushingInsert) {
         input.setId(null);
         input.setVersio(base.getVersio() + 1);
         input.setTila(Tila.LUONNOS);
 
         input.setKoodi(base.getKoodi());
-        KoodiVersio inserted = koodiVersioDAO.insert(input);
+        KoodiVersio inserted = doNonFlushingInsert ? koodiVersioDAO.insertNonFlush(input) : koodiVersioDAO.insert(input);
         copyRelations(base, inserted);
 
         return inserted;
@@ -760,15 +760,21 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     @Override
     public KoodiVersio createNewVersion(String koodiUri) {
-        return createNewVersion(getLatestKoodiVersio(koodiUri));
+        return createNewVersion(getLatestKoodiVersio(koodiUri), false);
     }
 
     @Override
     public Set<KoodiVersio> createNewVersions(Set<KoodistoVersioKoodiVersio> koodiVersios) {
         HashSet<KoodiVersio> inserted = new HashSet<>();
+        int i = 0;
         for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
-            inserted.add(this.createNewVersion(koodiVersio.getKoodiVersio()));
+            inserted.add(this.createNewVersion(koodiVersio.getKoodiVersio(), true));
+            i++;
+            if (i % 25 == 0) {
+
+            }
         }
+        this.koodiVersioDAO.flush();
         return inserted;
     }
 

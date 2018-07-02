@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.model.constraint.KoodistoVersioKoodiVersioConstraint;
 
 import javax.persistence.*;
