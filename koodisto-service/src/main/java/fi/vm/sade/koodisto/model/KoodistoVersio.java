@@ -19,7 +19,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAnotherDateAsserter;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;

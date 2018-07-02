@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodisto;
 
-import fi.vm.sade.generic.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
+import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import org.springframework.stereotype.Component;

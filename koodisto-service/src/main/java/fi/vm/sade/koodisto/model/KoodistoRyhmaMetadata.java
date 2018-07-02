@@ -3,7 +3,6 @@
  */
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
 
 import com.fasterxml.jackson.annotation.JsonView;

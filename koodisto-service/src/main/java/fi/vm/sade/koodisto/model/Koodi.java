@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.generic.model.BaseEntity;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.BatchSize;

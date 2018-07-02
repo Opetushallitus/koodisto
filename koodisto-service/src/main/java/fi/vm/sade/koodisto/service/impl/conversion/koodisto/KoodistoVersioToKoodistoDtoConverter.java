@@ -6,11 +6,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
+import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fi.vm.sade.generic.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
