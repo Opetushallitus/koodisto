@@ -764,17 +764,11 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     @Override
-    public Set<KoodiVersio> createNewVersions(Set<KoodistoVersioKoodiVersio> koodiVersios) {
+    public Set<KoodiVersio> createNewVersionsNonFlushing(Set<KoodistoVersioKoodiVersio> koodiVersios) {
         HashSet<KoodiVersio> inserted = new HashSet<>();
-        int i = 0;
         for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
             inserted.add(this.createNewVersion(koodiVersio.getKoodiVersio(), true));
-            i++;
-            if (i % 25 == 0) {
-
-            }
         }
-        this.koodiVersioDAO.flush();
         return inserted;
     }
 

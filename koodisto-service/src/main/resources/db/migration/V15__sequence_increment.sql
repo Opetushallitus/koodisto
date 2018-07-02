@@ -1,1 +1,1 @@
-ALTER SEQUENCE hibernate_sequence INCREMENT 10;
+ALTER SEQUENCE hibernate_sequence INCREMENT 25;
