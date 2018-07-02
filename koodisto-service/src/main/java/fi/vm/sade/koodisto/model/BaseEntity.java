@@ -39,15 +39,15 @@ public class BaseEntity implements Serializable {
 
     @Id
     @Column(name = ID_COLUMN_NAME, unique = true, nullable = false)
-    // Versioning big koodistos creates tons of new entitys. To improve this performance we create 10 sequences with one
+    // Versioning big koodistos creates tons of new entitys. To improve this performance we create 25 sequences with one
     // request for hibernate to use.
     @GenericGenerator(
             name = "pooledLoSeqGenerator",
             strategy = "enhanced-sequence",
             parameters = {
                     @Parameter(name = "optimizer", value = "pooled-lo"),
-                    @Parameter(name = "initial_value", value = "1500000"),
-                    @Parameter(name = "increment_size", value = "10"),
+                    @Parameter(name = "initial_value", value = "1"),
+                    @Parameter(name = "increment_size", value = "25"),
                     @Parameter(name = "sequence_name", value = "hibernate_sequence"),
             }
     )

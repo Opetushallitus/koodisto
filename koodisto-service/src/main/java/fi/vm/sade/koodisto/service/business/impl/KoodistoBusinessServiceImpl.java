@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.activation.DataHandler;
 import javax.annotation.Nonnull;
@@ -518,14 +517,14 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         // insert KoodistoVersio
         KoodistoVersio inserted = koodistoVersioDAO.insert(input);
 
-        copyKoodiVersiosFromOldKoodistoToNew(base, inserted);
+        this.copyKoodiVersiosFromOldKoodistoToNew(base, inserted);
         koodistonSuhdeDAO.copyRelations(base, inserted);
         return inserted;
     }
 
     private void copyKoodiVersiosFromOldKoodistoToNew(KoodistoVersio base, KoodistoVersio inserted) {
         logger.info("Copying codeElement versios to new Codes version, codes id={}, codes versio={}, new codes versio={}", base.getKoodisto().getId(), base.getVersio(), inserted.getVersio());
-        Set<KoodiVersio> newVersions = koodiBusinessService.createNewVersions(base.getKoodiVersios());
+        Set<KoodiVersio> newVersions = koodiBusinessService.createNewVersionsNonFlushing(base.getKoodiVersios());
         for (KoodiVersio koodiVersio : newVersions) {
             KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
             newRelationEntry.setKoodiVersio(koodiVersio);
@@ -533,6 +532,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             inserted.addKoodiVersio(newRelationEntry);
             logger.info("  Copied codeElement version, codes id={}, codeElement version id={}", inserted.getKoodisto().getId(), koodiVersio.getId());
         }
+        this.koodiVersioDAO.flush();
     }
 
     private KoodistoVersio createNewVersion(KoodistoVersio latest, UpdateKoodistoDataType updateKoodistoData) {

@@ -93,7 +93,7 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
 
     @Override
     public List<KoodistonSuhde> getRelations(KoodistoUriAndVersioType ylaKoodisto, List<KoodistoUriAndVersioType> alaKoodistos,
-            SuhteenTyyppi st) {
+                                             SuhteenTyyppi st) {
         EntityManager em = getEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
@@ -127,10 +127,17 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
                     fresh : relation.getAlakoodistoVersio();
             KoodistoVersio parent = relation.getYlakoodistoVersio().getKoodisto().getKoodistoUri().equals(koodistoUri) ?
                     fresh : relation.getYlakoodistoVersio();
-            copiedRelations.add(this.insertNewRelation(parent, child, relation));
+            copiedRelations.add(this.insertNonFlushing(this.createNewRelation(parent, child, relation)));
             setOldRelationToPassive(relation, koodistoUri);
         }
+        this.getEntityManager().flush();
         return copiedRelations;
+    }
+
+    @Override
+    public KoodistonSuhde insertNonFlushing(KoodistonSuhde koodistonSuhde) {
+        this.getEntityManager().persist(koodistonSuhde);
+        return koodistonSuhde;
     }
 
     private void setOldRelationToPassive(KoodistonSuhde relation, String koodistoUri) {
@@ -139,10 +146,6 @@ public class KoodistonSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodistonSuhde, Lo
         } else {
             relation.setYlaKoodistoPassive(true);
         }
-    }
-
-    private KoodistonSuhde insertNewRelation(KoodistoVersio parent, KoodistoVersio child, KoodistonSuhde relation) {
-        return this.insert(this.createNewRelation(parent, child, relation));
     }
 
     private KoodistonSuhde createNewRelation(KoodistoVersio parent, KoodistoVersio child, KoodistonSuhde relation) {
