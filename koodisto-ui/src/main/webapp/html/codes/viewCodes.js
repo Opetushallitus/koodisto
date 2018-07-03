@@ -16,7 +16,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 model.forceRefreshCodeElements = "";
             }
             // Samaa koodistoa on turha ladata uudelleen modelliin
-            if (model.forceRefresh || !(model.codes && model.codes.koodistoUri == codesUri && model.codes.versio == codesVersion)) {
+            if (model.forceRefresh || !(model.codes && model.codes.koodistoUri === codesUri && model.codes.versio === codesVersion)) {
         	scope.showPassive = false;
                 model.forceRefresh = false;
                 model.codes = null;
@@ -98,13 +98,13 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
                 model.validitylevelen = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
 
                 model.codes.withinCodes.forEach(function(codes) {
-                    model.getLatestCodesVersionsByCodesUri(codes, model.withinCodes);
+                    model.extractAndPushRelatedCode(codes, model.withinCodes);
                 });
                 model.codes.includesCodes.forEach(function(codes) {
-                    model.getLatestCodesVersionsByCodesUri(codes, model.includesCodes);
+                    model.extractAndPushRelatedCode(codes, model.includesCodes);
                 });
                 model.codes.levelsWithCodes.forEach(function(codes) {
-                    model.getLatestCodesVersionsByCodesUri(codes, model.levelsWithCodes);
+                    model.extractAndPushRelatedCode(codes, model.levelsWithCodes);
                 });
                 if (model.codes.tila === "PASSIIVINEN") {
                     model.deleteState = "";
@@ -125,7 +125,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
             });
         };
 
-        this.getLatestCodesVersionsByCodesUri = function(codes, list) {
+        this.extractAndPushRelatedCode = function(codes, list) {
             var languages = Object.keys(codes.nimi).map(function (languageCode) {
                 return {kieli: languageCode, nimi: codes.nimi[languageCode]};
             });

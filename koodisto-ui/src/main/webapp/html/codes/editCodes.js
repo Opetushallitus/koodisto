@@ -88,13 +88,13 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
                 model.samevaliditylevel = false;
 
                 model.codes.withinCodes.forEach(function(codes) {
-                    model.getLatestCodesVersionsByCodesUri(codes, model.withinCodes);
+                    model.extractAndPushRelatedCode(codes, model.withinCodes);
                 });
                 model.codes.includesCodes.forEach(function(codes) {
-                    model.getLatestCodesVersionsByCodesUri(codes,model.includesCodes);
+                    model.extractAndPushRelatedCode(codes,model.includesCodes);
                 });
                 model.codes.levelsWithCodes.forEach(function(codes){
-                    model.getLatestCodesVersionsByCodesUri(codes,model.levelsWithCodes);
+                    model.extractAndPushRelatedCode(codes,model.levelsWithCodes);
                 });
 
                 OrganizationByOid.get({oid: model.codes.organisaatioOid}, function (result2) {
@@ -105,7 +105,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
             });
         };
 
-        this.getLatestCodesVersionsByCodesUri = function(codes, list) {
+        this.extractAndPushRelatedCode = function(codes, list) {
             var languages = Object.keys(codes.nimi).map(function (languageCode) {
                 return {kieli: languageCode, nimi: codes.nimi[languageCode]};
             });
@@ -194,7 +194,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
 });
 
 function CodesEditorController($scope, $location, $modal, $log, $routeParams, $filter, CodesEditorModel, Treemodel,
-                               CodesMatcher, SaveCodes, isModalController) {
+                               CodesMatcher, SaveCodes, isModalController, loadingService) {
     $scope.model = CodesEditorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
@@ -531,5 +531,8 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         $scope.model.withinRelationToRemove = null;
         $scope.model.modalInstance.dismiss('cancel');
     };
+
+    $scope.isCodeLoading = loadingService.isLoading;
+
 }
 
