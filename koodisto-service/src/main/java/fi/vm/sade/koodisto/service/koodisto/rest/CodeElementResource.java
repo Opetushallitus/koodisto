@@ -510,7 +510,7 @@ public class CodeElementResource {
             extendedValidator.validate(koodiDTO, ValidationType.UPDATE);
 
             KoodiVersio koodiVersio = koodiBusinessService.saveKoodi(koodiDTO);
-            return Response.status(Response.Status.OK).entity(koodiVersio.getVersio()).build();
+            return Response.status(Response.Status.OK).entity(koodiVersio.getVersio().toString()).build();
         } catch (KoodistoValidationException e) {
             logger.warn("Invalid parameter for rest call: save. ", e);
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();

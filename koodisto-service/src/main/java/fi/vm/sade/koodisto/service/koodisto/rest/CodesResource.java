@@ -192,7 +192,7 @@ public class CodesResource {
             codesValidator.validate(codesDTO, ValidationType.UPDATE);
 
             KoodistoVersio koodistoVersio = koodistoBusinessService.saveKoodisto(codesDTO);
-            return Response.status(Response.Status.OK).entity(koodistoVersio.getVersio()).build();
+            return Response.status(Response.Status.OK).entity(koodistoVersio.getVersio().toString()).build();
 
         } catch (KoodistoValidationException e) {
             LOGGER.warn("Invalid parameter for rest call: save. ", e);
