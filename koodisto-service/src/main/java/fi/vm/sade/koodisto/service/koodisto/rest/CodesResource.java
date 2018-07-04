@@ -179,7 +179,7 @@ public class CodesResource {
     @PUT
     @Path("/save")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
