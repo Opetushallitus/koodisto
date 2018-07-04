@@ -333,13 +333,13 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             });
         }
         SaveCodeElement.put({}, codeelement, function(result) {
-            $location.path("/koodi/" + $scope.codeElementUri + "/" + result[0]).search({
+            $location.path("/koodi/" + $scope.codeElementUri + "/" + parseInt(result)).search({
                 edited : true
             });
         }, function(error) {
             var type = 'danger';
             var message = jQuery.i18n.prop(error.data);
-            if (error.status == 504) {
+            if (error.status === 504) {
                 message = jQuery.i18n.prop('error.save.timeout');
             }
             var alert = {

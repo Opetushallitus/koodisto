@@ -319,7 +319,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         }
         SaveCodes.put({}, codes, function(result) {
             Treemodel.refresh();
-            $location.path("/koodisto/" + $scope.codesUri + "/" + result[0]).search({
+            $location.path("/koodisto/" + $scope.codesUri + "/" + parseInt(result)).search({
                 forceRefresh : true
             });
         }, function(error) {
