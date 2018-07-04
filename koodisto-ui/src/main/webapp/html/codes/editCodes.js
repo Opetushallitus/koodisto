@@ -317,10 +317,10 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
                 sitovuustaso : $scope.model.validitylevelen
             });
         }
-        var codeVersion = SaveCodes.put({}, codes);
-        codeVersion.$promise.then(function() {
+        var codeVersionResponse = SaveCodes.put({}, codes);
+        codeVersionResponse.$promise.then(function() {
             Treemodel.refresh();
-            $location.path("/koodisto/" + $scope.codesUri + "/" + parseInt(codeVersion)).search({
+            $location.path("/koodisto/" + $scope.codesUri + "/" + codeVersionResponse.content).search({
                 forceRefresh : true
             });
         }, function(error) {
