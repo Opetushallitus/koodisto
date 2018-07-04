@@ -332,8 +332,9 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                 sisaltaaKoodiston : $scope.model.containscodesen
             });
         }
-        SaveCodeElement.put({}, codeelement, function(result) {
-            $location.path("/koodi/" + $scope.codeElementUri + "/" + parseInt(result)).search({
+        var codeElementVersion = SaveCodeElement.put({}, codeelement);
+        codeElementVersion.$promise.then(function() {
+            $location.path("/koodi/" + $scope.codeElementUri + "/" + parseInt(codeElementVersion)).search({
                 edited : true
             });
         }, function(error) {
