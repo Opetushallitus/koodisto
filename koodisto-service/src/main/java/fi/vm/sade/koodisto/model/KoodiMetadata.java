@@ -17,6 +17,18 @@ import javax.validation.constraints.Size;
         "lyhytnimen ja kuvauksen yhdellä kielellä.")
 @Cacheable
 @BatchSize(size = 20)
+@NamedEntityGraphs({@NamedEntityGraph(name = "koodiMetadataWithKoodiVersio",
+        attributeNodes = {
+                @NamedAttributeNode(value = "koodiVersio", subgraph = "koodiVersio")
+        },
+        subgraphs = {
+                @NamedSubgraph(name = "koodiVersio", attributeNodes = {
+                        @NamedAttributeNode(value = "metadatas"),
+                        @NamedAttributeNode(value = "koodistoVersios"),
+                        @NamedAttributeNode(value = "koodi"),
+                }),
+        }),
+})
 public class KoodiMetadata extends BaseEntity {
 
     public static final String TABLE_NAME = "koodiMetadata";

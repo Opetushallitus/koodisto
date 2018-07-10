@@ -11,12 +11,11 @@ import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.Koodisto;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
+import java.util.Set;
 
-/**
- * @author tommiha
- */
 @Repository
 public class KoodiMetadataDAOImpl extends AbstractJpaDAOImpl<KoodiMetadata, Long> implements KoodiMetadataDAO {
 
@@ -87,5 +86,20 @@ public class KoodiMetadataDAOImpl extends AbstractJpaDAOImpl<KoodiMetadata, Long
 
         query.select(cb.count(root.<String>get(NIMI))).where(cb.and(nimiEquals, koodiUriNotEquals, koodistoUriEquals));
         return em.createQuery(query).getSingleResult() > 0;
+    }
+
+    @Override
+    public void initializeByKoodiVersioIds(Set<Long> koodiVersioIdSet) {
+        EntityManager entityManager = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<KoodiMetadata> query = criteriaBuilder.createQuery(KoodiMetadata.class);
+
+        Root<KoodiMetadata> root = query.from(KoodiMetadata.class);
+        query.select(root).where(root.<KoodiVersio>get("koodiVersio").<Long>get("id").in(koodiVersioIdSet));
+        EntityGraph entityGraph = entityManager.getEntityGraph("koodiMetadataWithKoodiVersio");
+        entityManager
+                .createQuery(query)
+                .setHint("javax.persistence.fetchgraph", entityGraph)
+                .getResultList();
     }
 }

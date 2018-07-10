@@ -421,7 +421,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         selectedItems.forEach(function(codeElement) {
             var found = false;
             collectionToAddTo.forEach(function(innerCodeElement) {
-                if (codeElement.uri == innerCodeElement.uri) {
+                if (codeElement.uri === innerCodeElement.uri) {
                     found = true;
                 }
             });
@@ -449,7 +449,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         var elementUrisToRemove = [];
         unselectedItems.forEach(function(codeElement) {
             collectionToRemoveFrom.forEach(function(innerCodeElement) {
-                if (codeElement.uri == innerCodeElement.uri) {
+                if (codeElement.uri === innerCodeElement.uri) {
                     elementUrisToRemove.push(innerCodeElement.uri);
                 }
             });
@@ -463,8 +463,8 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             return;
         }
 
-        remainingElements = $.grep(collectionToRemoveFrom, function(element) {
-            return elementUrisToRemove.indexOf(element.uri) == -1;
+        var remainingElements = $.grep(collectionToRemoveFrom, function(element) {
+            return elementUrisToRemove.indexOf(element.uri) === -1;
         });
         collectionToRemoveFrom.length = 0;
         Array.prototype.push.apply(collectionToRemoveFrom, remainingElements);
@@ -505,11 +505,11 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         }, function(result2) {
             $scope.selectallcodelements = true;
             result2.forEach(function(codeElement) {
-                if(codeElement.koodiUri != $scope.codeElementUri) {
+                if(codeElement.koodiUri !== $scope.codeElementUri) {
                     var ce = {};
                     ce.uri = codeElement.koodiUri;
                     ce.checked = jQuery.grep(existingSelections, function(element) {
-                        return codeElement.koodiUri == element.uri;
+                        return codeElement.koodiUri === element.uri;
                     }).length > 0;
                     ce.value = codeElement.koodiArvo;
                     ce.name = getLanguageSpecificValueOrValidValue(codeElement.metadata, 'nimi', 'FI');
@@ -655,7 +655,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     // Refresh the page count when the model changes
     var cachedElementCount = 0;
     $scope.$watch('model.shownCodeElements', function() {
-        if ($scope.model.shownCodeElements.length != cachedElementCount) {
+        if ($scope.model.shownCodeElements.length !== cachedElementCount) {
             cachedElementCount = $scope.model.shownCodeElements.length;
             $scope.updatePaginationPage(true);
         }
