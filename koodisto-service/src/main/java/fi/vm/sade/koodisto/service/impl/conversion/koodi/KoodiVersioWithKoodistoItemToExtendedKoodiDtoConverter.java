@@ -123,7 +123,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
 
     private Optional<KoodistoVersio> getMatchingKoodistoVersio(KoodiVersio kv) {
         return kv.getKoodistoVersios().stream()
-                .filter(koodistoVersioKoodiVersio -> koodistoVersioKoodiVersio.getId().equals(kv.getId()))
+                .filter(koodistoVersioKoodiVersio -> koodistoVersioKoodiVersio.getKoodiVersio().getVersio().equals(kv.getVersio()))
                 .map(KoodistoVersioKoodiVersio::getKoodistoVersio)
                 .findFirst();
     }
