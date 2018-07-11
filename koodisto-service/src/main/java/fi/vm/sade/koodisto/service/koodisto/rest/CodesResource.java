@@ -179,7 +179,7 @@ public class CodesResource {
     @PUT
     @Path("/save")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
@@ -192,7 +192,7 @@ public class CodesResource {
             codesValidator.validate(codesDTO, ValidationType.UPDATE);
 
             KoodistoVersio koodistoVersio = koodistoBusinessService.saveKoodisto(codesDTO);
-            return Response.status(Response.Status.OK).entity(koodistoVersio.getVersio()).build();
+            return Response.status(Response.Status.OK).entity(koodistoVersio.getVersio().toString()).build();
 
         } catch (KoodistoValidationException e) {
             LOGGER.warn("Invalid parameter for rest call: save. ", e);

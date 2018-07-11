@@ -197,7 +197,10 @@ app.factory('UpdateCodes', function($resource) {
 app.factory('SaveCodes', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes/save", {}, {
         put : {
-            method : "PUT"
+            method : "PUT",
+            transformResponse: function (data, headersGetter, status) {
+                return {content: data};
+            }
         }
     });
 });
@@ -413,7 +416,10 @@ app.factory('RemoveRelationCodes', function($resource) {
 app.factory('SaveCodeElement', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/save", {}, {
         put : {
-            method : "PUT"
+            method : "PUT",
+            transformResponse: function (data, headersGetter, status) {
+                return {content: data};
+            }
         }
     });
 });

@@ -332,14 +332,15 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
                 sisaltaaKoodiston : $scope.model.containscodesen
             });
         }
-        SaveCodeElement.put({}, codeelement, function(result) {
-            $location.path("/koodi/" + $scope.codeElementUri + "/" + result[0]).search({
+        var codeElementVersionResponse = SaveCodeElement.put({}, codeelement);
+        codeElementVersionResponse.$promise.then(function() {
+            $location.path("/koodi/" + $scope.codeElementUri + "/" + codeElementVersionResponse.content).search({
                 edited : true
             });
         }, function(error) {
             var type = 'danger';
             var message = jQuery.i18n.prop(error.data);
-            if (error.status == 504) {
+            if (error.status === 504) {
                 message = jQuery.i18n.prop('error.save.timeout');
             }
             var alert = {

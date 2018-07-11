@@ -317,18 +317,19 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
                 sitovuustaso : $scope.model.validitylevelen
             });
         }
-        SaveCodes.put({}, codes, function(result) {
+        var codeVersionResponse = SaveCodes.put({}, codes);
+        codeVersionResponse.$promise.then(function() {
             Treemodel.refresh();
-            $location.path("/koodisto/" + $scope.codesUri + "/" + result[0]).search({
+            $location.path("/koodisto/" + $scope.codesUri + "/" + codeVersionResponse.content).search({
                 forceRefresh : true
             });
         }, function(error) {
             var type = 'danger';
-            if (error.data == "error.codes.has.no.codeelements") {
+            if (error.data === "error.codes.has.no.codeelements") {
                 type = 'info';
             }
             var message = jQuery.i18n.prop(error.data);
-            if (error.status == 504) {
+            if (error.status === 504) {
                 message = jQuery.i18n.prop('error.save.timeout');
             }
             var alert = {

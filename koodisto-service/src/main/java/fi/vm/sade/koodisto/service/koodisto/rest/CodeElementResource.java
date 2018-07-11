@@ -497,7 +497,7 @@ public class CodeElementResource {
     @PUT
     @Path("/save")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
@@ -510,7 +510,7 @@ public class CodeElementResource {
             extendedValidator.validate(koodiDTO, ValidationType.UPDATE);
 
             KoodiVersio koodiVersio = koodiBusinessService.saveKoodi(koodiDTO);
-            return Response.status(Response.Status.OK).entity(koodiVersio.getVersio()).build();
+            return Response.status(Response.Status.OK).entity(koodiVersio.getVersio().toString()).build();
         } catch (KoodistoValidationException e) {
             logger.warn("Invalid parameter for rest call: save. ", e);
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
