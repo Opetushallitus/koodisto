@@ -2,12 +2,15 @@ package fi.vm.sade.koodisto.service.impl.conversion.koodisto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import fi.vm.sade.koodisto.model.KoodistoMetadata;
+import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fi.vm.sade.generic.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
@@ -27,34 +30,36 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         KoodistoDto converted = new KoodistoDto();
         converted.setKoodistoUri(source.getKoodisto().getKoodistoUri());
 
-        for(KoodistonSuhde ks : source.getYlakoodistos()) {
+        for (KoodistonSuhde ks : source.getYlakoodistos()) {
             if (ks.getYlakoodistoVersio() != null) {
                 KoodistoVersio relatedKoodisto = ks.getYlakoodistoVersio();
                 switch (ks.getSuhteenTyyppi()) {
-                case RINNASTEINEN:
-                    converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive()));
-                    break;
-                case SISALTYY: 
-                    converted.getWithinCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive()));
-                    break;
+                    case RINNASTEINEN:
+                        converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(),
+                                relatedKoodisto.getVersio(),
+                                ks.isPassive(),
+                                this.getNimi(relatedKoodisto)));
+                        break;
+                    case SISALTYY:
+                        converted.getWithinCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive(), this.getNimi(relatedKoodisto)));
+                        break;
                 }
             }
         }
-        for(KoodistonSuhde ks : source.getAlakoodistos()) {
+
+        for (KoodistonSuhde ks : source.getAlakoodistos()) {
             if (ks.getAlakoodistoVersio() != null) {
                 KoodistoVersio relatedKoodisto = ks.getAlakoodistoVersio();
                 switch (ks.getSuhteenTyyppi()) {
-                case RINNASTEINEN:
-                    converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive()));
-                    break;
-                case SISALTYY: 
-                    converted.getIncludesCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive()));
-                    break;
+                    case RINNASTEINEN:
+                        converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive(), this.getNimi(relatedKoodisto)));
+                        break;
+                    case SISALTYY:
+                        converted.getIncludesCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive(), this.getNimi(relatedKoodisto)));
+                        break;
                 }
             }
         }
-
-
 
         if (StringUtils.isNotBlank(converted.getKoodistoUri())) {
             converted.setResourceUri(koodistoConfiguration.getKoodistoResourceUri(converted.getKoodistoUri()));
@@ -71,13 +76,13 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         converted.setVersion(source.getVersion());
         String uri = "";
         for (KoodistoRyhma ryhma : source.getKoodisto().getKoodistoRyhmas()) {
-            if (uri.isEmpty() || ryhma.getKoodistoRyhmaUri().indexOf("kaikki") == -1) {
+            if (uri.isEmpty() || !ryhma.getKoodistoRyhmaUri().contains("kaikki")) {
                 uri = ryhma.getKoodistoRyhmaUri();
             }
         }
         converted.setCodesGroupUri(uri);
         converted.getMetadata().addAll(source.getMetadatas());
-        List<Integer> codesVersions = new ArrayList<Integer>();
+        List<Integer> codesVersions = new ArrayList<>();
         if (source.getKoodisto().getKoodistoVersios() != null) {
             for (KoodistoVersio koodistoVersio : source.getKoodisto().getKoodistoVersios()) {
                 if (!source.getVersio().equals(koodistoVersio.getVersio())) {
@@ -88,5 +93,10 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         converted.setCodesVersions(codesVersions);
 
         return converted;
+    }
+
+    private Map<String, String> getNimi(KoodistoVersio koodistoVersio) {
+        return koodistoVersio.getMetadatas().stream()
+                .collect(Collectors.toMap(metadata -> metadata.getKieli().name(), KoodistoMetadata::getNimi));
     }
 }

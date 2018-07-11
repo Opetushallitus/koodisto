@@ -2,8 +2,7 @@ package fi.vm.sade.koodisto.dao;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import fi.vm.sade.generic.dao.GenericDAO;
-import fi.vm.sade.generic.model.BaseEntity;
+import fi.vm.sade.koodisto.model.BaseEntity;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;

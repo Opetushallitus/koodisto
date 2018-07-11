@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import fi.vm.sade.koodisto.model.*;
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -17,18 +18,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fi.vm.sade.generic.common.DateHelper;
-import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
-import fi.vm.sade.koodisto.model.KoodiVersio;
-import fi.vm.sade.koodisto.model.Koodisto;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.KoodistonSuhde;
-import fi.vm.sade.koodisto.model.SuhteenTyyppi;
-import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;

@@ -10,6 +10,7 @@ import fi.vm.sade.koodisto.service.types.common.TilaType;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
@@ -49,26 +50,26 @@ public class KoodistoVersioDAOImpl extends AbstractJpaDAOImpl<KoodistoVersio, Lo
         Root<KoodistoVersio> root = criteriaQuery.from(KoodistoVersio.class);
 
         final Join<KoodistoVersio, Koodisto> koodi = root.join(KOODISTO);
-        root.fetch(KOODISTO);
-        root.fetch("metadatas", JoinType.LEFT);
 
         List<Predicate> restrictions = createRestrictionsForKoodistoCriteria(cb, criteriaQuery, searchCriteria, koodi, root);
 
         criteriaQuery.select(root).where(cb.and(restrictions.toArray(new Predicate[restrictions.size()])));
         criteriaQuery.distinct(true);
 
-        TypedQuery<KoodistoVersio> query = em.createQuery(criteriaQuery);
+        EntityGraph entityGraph = em.getEntityGraph("koodistoWithRelations");
+        TypedQuery<KoodistoVersio> query = em.createQuery(criteriaQuery)
+                .setHint("javax.persistence.fetchgraph", entityGraph);
 
         return query.getResultList();
     }
 
     private static List<Predicate> createRestrictionsForKoodistoCriteria(CriteriaBuilder cb, CriteriaQuery<KoodistoVersio> criteriaQuery,
             SearchKoodistosCriteriaType searchCriteria, Join<KoodistoVersio, Koodisto> koodisto, Root<KoodistoVersio> koodistoVersio) {
-        List<Predicate> restrictions = new ArrayList<Predicate>();
+        List<Predicate> restrictions = new ArrayList<>();
 
         if (searchCriteria != null) {
             if (searchCriteria.getKoodistoUris() != null && searchCriteria.getKoodistoUris().size() > 0) {
-                List<Predicate> uriRestrictions = new ArrayList<Predicate>();
+                List<Predicate> uriRestrictions = new ArrayList<>();
 
                 for (String koodistoUri : searchCriteria.getKoodistoUris()) {
                     if (StringUtils.isNotBlank(koodistoUri)) {
@@ -84,19 +85,16 @@ public class KoodistoVersioDAOImpl extends AbstractJpaDAOImpl<KoodistoVersio, Lo
 
             if (searchCriteria.getKoodistoVersioSelection() != null) {
                 switch (searchCriteria.getKoodistoVersioSelection()) {
-                case SPECIFIC:
-                    restrictions.add(cb.equal(koodistoVersio.get(VERSIO), searchCriteria.getKoodistoVersio()));
-                    break;
-
-                case LATEST:
-                    restrictions.add(cb.equal(koodistoVersio.get(VERSIO), selectMaxVersionSubQuery(cb, criteriaQuery, searchCriteria, koodisto)));
-                    break;
-
-                case ALL:
-                    break;
-
-                default:
-                    break;
+                    case SPECIFIC:
+                        restrictions.add(cb.equal(koodistoVersio.get(VERSIO), searchCriteria.getKoodistoVersio()));
+                        break;
+                    case LATEST:
+                        restrictions.add(cb.equal(koodistoVersio.get(VERSIO), selectMaxVersionSubQuery(cb, criteriaQuery, searchCriteria, koodisto)));
+                        break;
+                    case ALL:
+                        break;
+                    default:
+                        break;
                 }
             }
 
@@ -108,11 +106,11 @@ public class KoodistoVersioDAOImpl extends AbstractJpaDAOImpl<KoodistoVersio, Lo
 
     private static List<Predicate> createSecondaryRestrictionsForKoodistoCriteria(CriteriaBuilder cb, SearchKoodistosCriteriaType searchCriteria,
             Root<KoodistoVersio> koodistoVersio) {
-        List<Predicate> restrictions = new ArrayList<Predicate>();
+        List<Predicate> restrictions = new ArrayList<>();
 
         if (searchCriteria != null) {
             if (searchCriteria.getKoodistoTilas() != null && searchCriteria.getKoodistoTilas().size() > 0) {
-                List<Predicate> tilaRestrictions = new ArrayList<Predicate>();
+                List<Predicate> tilaRestrictions = new ArrayList<>();
                 for (TilaType tila : searchCriteria.getKoodistoTilas()) {
                     tilaRestrictions.add(cb.equal(koodistoVersio.get("tila"), Tila.valueOf(tila.name())));
                 }
@@ -123,9 +121,9 @@ public class KoodistoVersioDAOImpl extends AbstractJpaDAOImpl<KoodistoVersio, Lo
 
             if (searchCriteria.getValidAt() != null) {
                 Date validAt = DateHelper.xmlCalToDate(searchCriteria.getValidAt());
-                Predicate conditionVoimassaAlku = cb.lessThanOrEqualTo(koodistoVersio.<Date> get("voimassaAlkuPvm"), validAt);
+                Predicate conditionVoimassaAlku = cb.lessThanOrEqualTo(koodistoVersio.get("voimassaAlkuPvm"), validAt);
                 Predicate conditionNullAlku = cb.isNull(koodistoVersio.get("voimassaAlkuPvm"));
-                Predicate conditionVoimassaLoppu = cb.greaterThanOrEqualTo(koodistoVersio.<Date> get("voimassaLoppuPvm"), validAt);
+                Predicate conditionVoimassaLoppu = cb.greaterThanOrEqualTo(koodistoVersio.get("voimassaLoppuPvm"), validAt);
                 Predicate conditionNullLoppu = cb.isNull(koodistoVersio.get("voimassaLoppuPvm"));
 
                 restrictions.add(cb.and(cb.or(conditionVoimassaAlku, conditionNullAlku), cb.or(conditionVoimassaLoppu, conditionNullLoppu)));
@@ -141,7 +139,7 @@ public class KoodistoVersioDAOImpl extends AbstractJpaDAOImpl<KoodistoVersio, Lo
         final Root<KoodistoVersio> root = subquery.from(KoodistoVersio.class);
 
         final Join<KoodistoVersio, Koodisto> koodisto = root.join(KOODISTO, JoinType.INNER);
-        final Expression<Integer> versioMax = cb.max(root.<Integer> get(VERSIO));
+        final Expression<Integer> versioMax = cb.max(root.get(VERSIO));
 
         List<Predicate> restrictions = createSecondaryRestrictionsForKoodistoCriteria(cb, searchCriteria, root);
         restrictions.add(cb.equal(koodisto.get("id"), koodistoPath.get("id")));

@@ -1,11 +1,8 @@
-/**
- *
- */
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
 
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -15,14 +12,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author tommiha
- */
 @Table(name = Koodisto.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + Koodisto.TABLE_NAME + "_01", columnNames = { Koodisto.KOODISTO_URI_COLUMN_NAME }))
 @org.hibernate.annotations.Table(appliesTo = Koodisto.TABLE_NAME, comment = "Koodiston pääentiteetti, johon eri koodistoversiot "
         + "liittyvät. Sisältää koodistoUrin.")
 @Entity
 @Cacheable
+@BatchSize(size = 100)
 public class Koodisto extends BaseEntity {
 
     private static final long serialVersionUID = -6903116815069994046L;
@@ -48,13 +43,13 @@ public class Koodisto extends BaseEntity {
     private Boolean lukittu;
 
     @ManyToMany(mappedBy = "koodistos", fetch = FetchType.LAZY)
-    private Set<KoodistoRyhma> koodistoRyhmas = new HashSet<KoodistoRyhma>();
+    private Set<KoodistoRyhma> koodistoRyhmas = new HashSet<>();
 
     @OneToMany(mappedBy = "koodisto", fetch = FetchType.LAZY)
-    private Set<KoodistoVersio> koodistoVersios = new HashSet<KoodistoVersio>();
+    private Set<KoodistoVersio> koodistoVersios = new HashSet<>();
 
     @OneToMany(mappedBy = "koodisto", fetch = FetchType.LAZY)
-    private Set<Koodi> koodis = new HashSet<Koodi>();
+    private Set<Koodi> koodis = new HashSet<>();
 
     public String getKoodistoUri() {
         return koodistoUri;

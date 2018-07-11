@@ -1,9 +1,5 @@
-/**
- *
- */
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -13,9 +9,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-/**
- * @author tommiha
- */
 @Entity
 @Table(name = KoodistoMetadata.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_"
         + KoodistoMetadata.TABLE_NAME + "_01", columnNames = { KoodistoMetadata.KIELI_COLUMN_NAME,

@@ -1,10 +1,6 @@
 package fi.vm.sade.koodisto.service.business.it;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
@@ -240,9 +236,9 @@ public class KoodistoBusinessServiceTest {
 	public void testSavingKoodisto() {
 	    String koodistoUri = "koodistonSaveTestiKoodisto0";
 	    int versio = 1;
-	    List<RelationCodes> includesCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto1", 1, false));
-	    List<RelationCodes> withinCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto2", 1, false));
-	    List<RelationCodes> levelsWithCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto3", 1, false));
+	    List<RelationCodes> includesCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto1", 1, false, new HashMap<>()));
+	    List<RelationCodes> withinCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto2", 1, false, new HashMap<>()));
+	    List<RelationCodes> levelsWithCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto3", 1, false, new HashMap<>()));
 	    KoodistoDto codesDTO = createKoodistoDtoForSave(koodistoUri, versio, includesCodes, withinCodes, levelsWithCodes);
 
 	    KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
@@ -260,9 +256,9 @@ public class KoodistoBusinessServiceTest {
 	    assertEquals(versio + 1, result.getVersio().intValue());
 	    assertEquals(Tila.LUONNOS, result.getTila());
 	    KoodistoMetadata expectedMeta = codesDTO.getMetadata().get(0);
-	    assertEquals(expectedMeta.getKieli(), result.getMetadatas().get(0).getKieli());
-	    assertEquals(expectedMeta.getNimi(), result.getMetadatas().get(0).getNimi());
-	    assertEquals(expectedMeta.getKuvaus(), result.getMetadatas().get(0).getKuvaus());
+	    assertEquals(expectedMeta.getKieli(), result.getMetadatas().iterator().next().getKieli());
+	    assertEquals(expectedMeta.getNimi(), result.getMetadatas().iterator().next().getNimi());
+	    assertEquals(expectedMeta.getKuvaus(), result.getMetadatas().iterator().next().getKuvaus());
 	}
 
 	@Test

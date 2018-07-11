@@ -1,6 +1,3 @@
-/**
- *
- */
 package fi.vm.sade.koodisto.model;
 
 import javax.persistence.Cacheable;
@@ -16,14 +13,15 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Table(name = KoodinSuhde.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodinSuhde.TABLE_NAME + "_01", columnNames = {
         KoodinSuhde.ALAKOODI_COLUMN_NAME, KoodinSuhde.YLAKOODI_COLUMN_NAME, KoodinSuhde.SUHTEEN_TYYPPI_COLUMN_NAME, KoodinSuhde.VERSION_COLUMN_NAME }))
 @org.hibernate.annotations.Table(appliesTo = KoodinSuhde.TABLE_NAME, comment = "Määrittää kahden koodin välinen suhteen. Suhteen tyyppi voi olla SISALTYY tai RINNASTEINEN.")
 @Cacheable
+@BatchSize(size = 20)
 public class KoodinSuhde extends BaseEntity {
 
     private static final long serialVersionUID = -8875747407128912635L;

@@ -204,7 +204,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
 
 function CodeElementEditorController($scope, $location, $routeParams, $filter, CodeElementEditorModel,
         CodesByUriAndVersion, SaveCodeElement, CodeElementsByCodesUriAndVersion, $modal,
-        isModalController) {
+        isModalController, loadingService) {
 
     $scope.model = CodeElementEditorModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
@@ -641,6 +641,8 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         $scope.model.modalInstance.dismiss('cancel');
     };
 
+    $scope.isCodeElementLoading = loadingService.isLoading;
+
     // Pagination
 
     // Get the filtered page count
@@ -701,7 +703,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         if ($scope.model.currentPage >= $scope.getNumberOfPages()) {
             $scope.model.currentPage = $scope.getNumberOfPages() - 1;
         }
-        if ($scope.getNumberOfPages() != 0 && $scope.model.currentPage < 0) {
+        if ($scope.getNumberOfPages() !== 0 && $scope.model.currentPage < 0) {
             $scope.model.currentPage = 0;
         }
         $scope.updatePaginationPage();

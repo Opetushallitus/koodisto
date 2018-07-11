@@ -122,7 +122,7 @@ public interface KoodiBusinessService {
 
     KoodiVersio saveKoodi(ExtendedKoodiDto koodiDTO);
 
-    Set<KoodiVersio> createNewVersions(Set<KoodistoVersioKoodiVersio> koodiVersios);
+    Set<KoodiVersio> createNewVersionsNonFlushing(Set<KoodistoVersioKoodiVersio> koodiVersios);
 
     void acceptCodeElements(KoodistoVersio latest);
 

@@ -40,7 +40,6 @@
                 <entry key="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
             </map>
         </property>
-        <!--<property name="persistenceXmlLocation" value="classpath:test-persistence.xml" />-->
         <property name="packagesToScan" value="fi.vm.sade.koodisto.model" />
     </bean>
 
@@ -59,5 +58,5 @@
     <!-- Use @Transaction annotations for managing transactions -->
     <tx:annotation-driven transaction-manager="transactionManager" />
 
-    <bean id="genericDAO" class="fi.vm.sade.generic.dao.GenericDAOImpl" />
+    <bean id="genericDAO" class="fi.vm.sade.koodisto.dao.impl.GenericDAOImpl" />
 </beans>

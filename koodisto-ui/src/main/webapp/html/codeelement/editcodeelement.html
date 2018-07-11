@@ -558,7 +558,7 @@
         </div>
 
         <div class="row-fluid navbar-fixed-bottom">
-            <button ng-disabled="!form.$valid" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-primary pull-right" type="submit">{{'codes.save'
+            <button ng-disabled="!form.$valid || isCodeElementLoading()" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-primary pull-right" type="submit">{{'codes.save'
                 | i18n}}</button>
             <button type="button" class="btn pull-right" ng-click="showCancelConfirmModal(form.$dirty)">{{'codes.cancel' | i18n}}</button>
         </div>

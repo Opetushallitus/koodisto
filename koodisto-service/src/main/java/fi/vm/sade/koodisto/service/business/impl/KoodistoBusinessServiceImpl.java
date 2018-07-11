@@ -437,19 +437,19 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     private void initializeKoodistoVersio(KoodistoVersio koodistoVersio) {
         for (KoodistonSuhde koodistonSuhde : koodistoVersio.getYlakoodistos()) {
-            Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getMetadatas());
+            koodistonSuhde.getYlakoodistoVersio().getMetadatas().size();
             Hibernate.initialize(koodistonSuhde.getYlakoodistoVersio().getKoodisto());
         }
+        koodistoVersio.getAlakoodistos().size();
         for (KoodistonSuhde koodistonSuhde : koodistoVersio.getAlakoodistos()) {
-            Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getMetadatas());
+            koodistonSuhde.getAlakoodistoVersio().getMetadatas().size();
             Hibernate.initialize(koodistonSuhde.getAlakoodistoVersio().getKoodisto());
         }
+        koodistoVersio.getKoodisto().getKoodistoRyhmas().size();
         for (KoodistoRyhma ryhma : koodistoVersio.getKoodisto().getKoodistoRyhmas()) {
-            Hibernate.initialize(ryhma);
+            ryhma.getKoodistoJoukkoMetadatas().size();
         }
-        for (KoodistoVersio versio : koodistoVersio.getKoodisto().getKoodistoVersios()) {
-            Hibernate.initialize(versio);
-        }
+        koodistoVersio.getKoodisto().getKoodistoVersios().size();
     }
 
     private List<KoodistoVersio> getLatestKoodistoVersios(String... koodistoUris) {
@@ -517,14 +517,14 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         // insert KoodistoVersio
         KoodistoVersio inserted = koodistoVersioDAO.insert(input);
 
-        copyKoodiVersiosFromOldKoodistoToNew(base, inserted);
+        this.copyKoodiVersiosFromOldKoodistoToNew(base, inserted);
         koodistonSuhdeDAO.copyRelations(base, inserted);
         return inserted;
     }
 
     private void copyKoodiVersiosFromOldKoodistoToNew(KoodistoVersio base, KoodistoVersio inserted) {
         logger.info("Copying codeElement versios to new Codes version, codes id={}, codes versio={}, new codes versio={}", base.getKoodisto().getId(), base.getVersio(), inserted.getVersio());
-        Set<KoodiVersio> newVersions = koodiBusinessService.createNewVersions(base.getKoodiVersios());
+        Set<KoodiVersio> newVersions = koodiBusinessService.createNewVersionsNonFlushing(base.getKoodiVersios());
         for (KoodiVersio koodiVersio : newVersions) {
             KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
             newRelationEntry.setKoodiVersio(koodiVersio);
@@ -532,6 +532,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             inserted.addKoodiVersio(newRelationEntry);
             logger.info("  Copied codeElement version, codes id={}, codeElement version id={}", inserted.getKoodisto().getId(), koodiVersio.getId());
         }
+        this.koodiVersioDAO.flush();
     }
 
     private KoodistoVersio createNewVersion(KoodistoVersio latest, UpdateKoodistoDataType updateKoodistoData) {

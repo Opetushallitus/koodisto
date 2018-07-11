@@ -9,7 +9,6 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
-import fi.vm.sade.generic.model.BaseEntity;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

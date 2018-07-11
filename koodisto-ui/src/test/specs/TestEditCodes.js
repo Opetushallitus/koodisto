@@ -70,7 +70,10 @@ describe("Edit codes test", function() {
         "codesVersions" : [ 1 ],
         "withinCodes" : [ {
             "codesUri": "kauniaisenkoodit",
-            "codesVersion": 2
+            "codesVersion": 2,
+            "nimi": {
+                "FI": "Kauniaisen koodit"
+            }
         } ],
         "includesCodes" : [ ],
         "levelsWithCodes" : [ ],
@@ -83,14 +86,6 @@ describe("Edit codes test", function() {
         mockBackend.expectGET(SERVICE_URL_BASE + "codes").respond([]);
         mockBackend.expectGET(SERVICE_URL_BASE + "codes/espoonoikeudet/1").respond(givenCodesWithRelationsResponse);
         mockBackend.expectGET(SERVICE_URL_BASE + "codes").respond([]); //requests this twice, but why?
-        mockBackend.expectGET(SERVICE_URL_BASE + "codes/kauniaisenkoodit").respond( {
-        "latestKoodistoVersio" : [{
-            "metadata": [{
-            "kieli" : "FI",
-            "nimi" : "Kauniaisen koodit"
-            }]
-        }]
-        });
         mockBackend.expectGET("/organisaatio-service/rest/organisaatio/1.2.246.562.10.90008375488").respond({"nimi" : {
         "fi" : "Espoon kaupunki"
         }});

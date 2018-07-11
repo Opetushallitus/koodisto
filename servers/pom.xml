@@ -29,13 +29,6 @@
                             <value>file:///${basedir}/src/main/resources/log4j.properties</value>
                         </systemProperty>
                     </systemProperties>
-                    <!--<connectors>-->
-                        <!--&lt;!&ndash; work around file locking on windows &ndash;&gt;-->
-                        <!--<connector implementation="org.eclipse.jetty.server.bio.SocketConnector">-->
-                            <!--<port>8180</port>-->
-                            <!--<maxIdleTime>30000000</maxIdleTime>-->
-                        <!--</connector>-->
-                    <!--</connectors>-->
 
                     <webAppConfig>
                         <jettyEnvXml>src/main/webapp/META-INF/jetty-env.xml</jettyEnvXml>
