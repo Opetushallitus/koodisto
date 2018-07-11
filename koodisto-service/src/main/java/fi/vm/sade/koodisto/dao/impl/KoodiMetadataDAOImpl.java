@@ -14,7 +14,10 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Repository
 public class KoodiMetadataDAOImpl extends AbstractJpaDAOImpl<KoodiMetadata, Long> implements KoodiMetadataDAO {
@@ -90,6 +93,14 @@ public class KoodiMetadataDAOImpl extends AbstractJpaDAOImpl<KoodiMetadata, Long
 
     @Override
     public void initializeByKoodiVersioIds(Set<Long> koodiVersioIdSet) {
+        int chunkSize = 2500;
+        final AtomicInteger counter = new AtomicInteger(0);
+        koodiVersioIdSet.stream().collect(Collectors.groupingBy(koodiVersioId -> counter.getAndIncrement() / chunkSize))
+                .values()
+                .forEach(this::initialize);
+    }
+
+    private void initialize(List<Long> koodiVersioIdSet) {
         EntityManager entityManager = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<KoodiMetadata> query = criteriaBuilder.createQuery(KoodiMetadata.class);
