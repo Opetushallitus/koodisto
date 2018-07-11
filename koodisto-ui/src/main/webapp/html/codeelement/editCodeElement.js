@@ -414,17 +414,15 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
          }
     };
 
-    $scope.addRelationsCodeElement = function(selectedItems, collectionToAddTo, relationTypeString, modelCodeElementIsHost) {
+    $scope.addRelationsCodeElement = function(selectedItems, collectionToAddTo) {
         var elementUrisToAdd = [];
         var addedElements = [];
 
         selectedItems.forEach(function(codeElement) {
             var found = false;
             collectionToAddTo.forEach(function(innerCodeElement) {
-                if (codeElement.uri === innerCodeElement.uri) {
+                if (codeElement.uri === innerCodeElement.uri && !innerCodeElement.passive) {
                     found = true;
-                    // Passive elements are not added.
-                    innerCodeElement.passive = false;
                 }
             });
             if (!found) {
@@ -442,12 +440,14 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         }
 
         addedElements.forEach(function(item) {
+            // Passive elements are not saved.
+            item.passive = false;
             collectionToAddTo.push(item);
         });
         $scope.model.codeelementmodalInstance.close();
     };
 
-    $scope.removeRelationsCodeElement = function(unselectedItems, collectionToRemoveFrom, relationTypeString, modelCodeElementIsHost) {
+    $scope.removeRelationsCodeElement = function(unselectedItems, collectionToRemoveFrom) {
         var elementUrisToRemove = [];
         unselectedItems.forEach(function(codeElement) {
             collectionToRemoveFrom.forEach(function(innerCodeElement) {
@@ -486,16 +486,16 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             checked : false
         });
         if ($scope.model.addToListName === 'withincodes') {
-            $scope.addRelationsCodeElement(selectedItems, $scope.model.withinCodeElements, "SISALTYY");
-            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.withinCodeElements, "SISALTYY");
+            $scope.addRelationsCodeElement(selectedItems, $scope.model.withinCodeElements);
+            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.withinCodeElements);
 
         } else if ($scope.model.addToListName === 'includescodes') {
-            $scope.addRelationsCodeElement(selectedItems, $scope.model.includesCodeElements, "SISALTYY", true);
-            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.includesCodeElements, "SISALTYY", true);
+            $scope.addRelationsCodeElement(selectedItems, $scope.model.includesCodeElements);
+            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.includesCodeElements);
 
         } else if ($scope.model.addToListName === 'levelswithcodes') {
-            $scope.addRelationsCodeElement(selectedItems, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
-            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
+            $scope.addRelationsCodeElement(selectedItems, $scope.model.levelsWithCodeElements);
+            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.levelsWithCodeElements);
         }
     };
 
