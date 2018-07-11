@@ -616,20 +616,20 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     $scope.okconfirm = function() {
         if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
             $scope.model.withinCodeElements.forEach(function(codeElement, index) {
-                if (codeElement.uri === $scope.model.withinRelationToRemove.uri) {
+                if (codeElement.uri === $scope.model.withinRelationToRemove.uri && codeElement.versio === $scope.model.withinRelationToRemove.versio) {
                     $scope.model.withinCodeElements.splice(index, 1);
                 }
             });
 
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
             $scope.model.includesCodeElements.forEach(function(codeElement, index) {
-                if (codeElement.uri === $scope.model.includesRelationToRemove.uri) {
+                if (codeElement.uri === $scope.model.includesRelationToRemove.uri && codeElement.versio === $scope.model.includesRelationToRemove.versio) {
                     $scope.model.includesCodeElements.splice(index, 1);
                 }
             });
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
             $scope.model.levelsWithCodeElements.forEach(function(codeElement, index) {
-                if (codeElement.uri === $scope.model.levelsRelationToRemove.uri) {
+                if (codeElement.uri === $scope.model.levelsRelationToRemove.uri && codeElement.versio === $scope.model.levelsRelationToRemove.versio) {
                     $scope.model.levelsWithCodeElements.splice(index, 1);
                 }
             });
