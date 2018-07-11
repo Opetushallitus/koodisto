@@ -356,7 +356,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         listToBeChanged.forEach(function(ce){
             dt = {};
             dt.codeElementUri = ce.uri;
-            dt.codeElementVersion = 1;
+            dt.codeElementVersion = 1; // This does nothing. Latest version is used.
             dt.passive = ce.passive ? ce.passive : false;
             result.push(dt);
         });
@@ -423,6 +423,8 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             collectionToAddTo.forEach(function(innerCodeElement) {
                 if (codeElement.uri === innerCodeElement.uri) {
                     found = true;
+                    // Passive elements are not added.
+                    innerCodeElement.passive = false;
                 }
             });
             if (!found) {
@@ -498,6 +500,9 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     };
 
     showCodeElementsInCodeSet = function(toBeShown, existingSelections) {
+        var existingActiveSelections = existingSelections.filter(function (existingSelection) {
+            return !existingSelection.passive;
+        });
         toBeShown = [];
         CodeElementsByCodesUriAndVersion.get({
             codesUri : $scope.model.showCode,
@@ -505,11 +510,11 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         }, function(result2) {
             $scope.selectallcodelements = true;
             result2.forEach(function(codeElement) {
-                if(codeElement.koodiUri !== $scope.codeElementUri) {
+                if (codeElement.koodiUri !== $scope.codeElementUri) {
                     var ce = {};
                     ce.uri = codeElement.koodiUri;
-                    ce.checked = jQuery.grep(existingSelections, function(element) {
-                        return codeElement.koodiUri === element.uri;
+                    ce.checked = jQuery.grep(existingActiveSelections, function(element) {
+                        return codeElement.koodiUri === element.uri && codeElement.versio === element.versio && !element.passive;
                     }).length > 0;
                     ce.value = codeElement.koodiArvo;
                     ce.name = getLanguageSpecificValueOrValidValue(codeElement.metadata, 'nimi', 'FI');

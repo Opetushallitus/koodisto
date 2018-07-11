@@ -1225,7 +1225,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private List<String> filterNewRelationUrisToSet(List<RelationCodeElement> newRelations, HashSet<String> existingUris) {
-        ArrayList<String> toBeAdded = new ArrayList<String>();
+        ArrayList<String> toBeAdded = new ArrayList<>();
         for (RelationCodeElement koodinSuhde : newRelations) {
             if (!koodinSuhde.passive && !existingUris.contains(koodinSuhde.codeElementUri)) {
                 toBeAdded.add(koodinSuhde.codeElementUri);
