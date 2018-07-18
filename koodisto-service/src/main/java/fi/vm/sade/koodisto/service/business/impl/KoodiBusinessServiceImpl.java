@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -960,11 +961,11 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void initializeRelations(Set<KoodinSuhde> relations, boolean upperRelation) {
-        for (KoodinSuhde koodinSuhde : relations) {
-            KoodiVersio koodiVersio = upperRelation ? koodinSuhde.getYlakoodiVersio() : koodinSuhde.getAlakoodiVersio();
-            Hibernate.initialize(koodiVersio.getMetadatas());
-            Hibernate.initialize(koodiVersio.getKoodi());
-        }
+        Set<Long> koodiVersioIdList = relations.stream()
+                .map(koodinSuhde -> upperRelation ? koodinSuhde.getYlakoodiVersio() : koodinSuhde.getAlakoodiVersio())
+                .map(KoodiVersio::getId)
+                .collect(Collectors.toSet());
+        this.koodiMetadataDAO.initializeByKoodiVersioIds(koodiVersioIdList);
     }
 
     @Override
@@ -1224,7 +1225,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private List<String> filterNewRelationUrisToSet(List<RelationCodeElement> newRelations, HashSet<String> existingUris) {
-        ArrayList<String> toBeAdded = new ArrayList<String>();
+        ArrayList<String> toBeAdded = new ArrayList<>();
         for (RelationCodeElement koodinSuhde : newRelations) {
             if (!koodinSuhde.passive && !existingUris.contains(koodinSuhde.codeElementUri)) {
                 toBeAdded.add(koodinSuhde.codeElementUri);

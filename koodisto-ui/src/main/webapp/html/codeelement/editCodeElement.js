@@ -356,7 +356,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         listToBeChanged.forEach(function(ce){
             dt = {};
             dt.codeElementUri = ce.uri;
-            dt.codeElementVersion = 1;
+            dt.codeElementVersion = 1; // This does nothing. Latest version is used.
             dt.passive = ce.passive ? ce.passive : false;
             result.push(dt);
         });
@@ -414,14 +414,14 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
          }
     };
 
-    $scope.addRelationsCodeElement = function(selectedItems, collectionToAddTo, relationTypeString, modelCodeElementIsHost) {
+    $scope.addRelationsCodeElement = function(selectedItems, collectionToAddTo) {
         var elementUrisToAdd = [];
         var addedElements = [];
 
         selectedItems.forEach(function(codeElement) {
             var found = false;
             collectionToAddTo.forEach(function(innerCodeElement) {
-                if (codeElement.uri == innerCodeElement.uri) {
+                if (codeElement.uri === innerCodeElement.uri && !innerCodeElement.passive) {
                     found = true;
                 }
             });
@@ -440,16 +440,18 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         }
 
         addedElements.forEach(function(item) {
+            // Passive elements are not saved.
+            item.passive = false;
             collectionToAddTo.push(item);
         });
         $scope.model.codeelementmodalInstance.close();
     };
 
-    $scope.removeRelationsCodeElement = function(unselectedItems, collectionToRemoveFrom, relationTypeString, modelCodeElementIsHost) {
+    $scope.removeRelationsCodeElement = function(unselectedItems, collectionToRemoveFrom) {
         var elementUrisToRemove = [];
         unselectedItems.forEach(function(codeElement) {
             collectionToRemoveFrom.forEach(function(innerCodeElement) {
-                if (codeElement.uri == innerCodeElement.uri) {
+                if (codeElement.uri === innerCodeElement.uri) {
                     elementUrisToRemove.push(innerCodeElement.uri);
                 }
             });
@@ -463,8 +465,8 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             return;
         }
 
-        remainingElements = $.grep(collectionToRemoveFrom, function(element) {
-            return elementUrisToRemove.indexOf(element.uri) == -1;
+        var remainingElements = $.grep(collectionToRemoveFrom, function(element) {
+            return elementUrisToRemove.indexOf(element.uri) === -1;
         });
         collectionToRemoveFrom.length = 0;
         Array.prototype.push.apply(collectionToRemoveFrom, remainingElements);
@@ -484,20 +486,23 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
             checked : false
         });
         if ($scope.model.addToListName === 'withincodes') {
-            $scope.addRelationsCodeElement(selectedItems, $scope.model.withinCodeElements, "SISALTYY");
-            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.withinCodeElements, "SISALTYY");
+            $scope.addRelationsCodeElement(selectedItems, $scope.model.withinCodeElements);
+            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.withinCodeElements);
 
         } else if ($scope.model.addToListName === 'includescodes') {
-            $scope.addRelationsCodeElement(selectedItems, $scope.model.includesCodeElements, "SISALTYY", true);
-            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.includesCodeElements, "SISALTYY", true);
+            $scope.addRelationsCodeElement(selectedItems, $scope.model.includesCodeElements);
+            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.includesCodeElements);
 
         } else if ($scope.model.addToListName === 'levelswithcodes') {
-            $scope.addRelationsCodeElement(selectedItems, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
-            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.levelsWithCodeElements, "RINNASTEINEN");
+            $scope.addRelationsCodeElement(selectedItems, $scope.model.levelsWithCodeElements);
+            $scope.removeRelationsCodeElement(unselectedItems, $scope.model.levelsWithCodeElements);
         }
     };
 
     showCodeElementsInCodeSet = function(toBeShown, existingSelections) {
+        var existingActiveSelections = existingSelections.filter(function (existingSelection) {
+            return !existingSelection.passive;
+        });
         toBeShown = [];
         CodeElementsByCodesUriAndVersion.get({
             codesUri : $scope.model.showCode,
@@ -505,11 +510,11 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         }, function(result2) {
             $scope.selectallcodelements = true;
             result2.forEach(function(codeElement) {
-                if(codeElement.koodiUri != $scope.codeElementUri) {
+                if (codeElement.koodiUri !== $scope.codeElementUri) {
                     var ce = {};
                     ce.uri = codeElement.koodiUri;
-                    ce.checked = jQuery.grep(existingSelections, function(element) {
-                        return codeElement.koodiUri == element.uri;
+                    ce.checked = jQuery.grep(existingActiveSelections, function(element) {
+                        return codeElement.koodiUri === element.uri && codeElement.versio === element.versio && !element.passive;
                     }).length > 0;
                     ce.value = codeElement.koodiArvo;
                     ce.name = getLanguageSpecificValueOrValidValue(codeElement.metadata, 'nimi', 'FI');
@@ -611,20 +616,20 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     $scope.okconfirm = function() {
         if ($scope.model.withinRelationToRemove && $scope.model.withinRelationToRemove.uri !== "") {
             $scope.model.withinCodeElements.forEach(function(codeElement, index) {
-                if (codeElement.uri === $scope.model.withinRelationToRemove.uri) {
+                if (codeElement.uri === $scope.model.withinRelationToRemove.uri && codeElement.versio === $scope.model.withinRelationToRemove.versio) {
                     $scope.model.withinCodeElements.splice(index, 1);
                 }
             });
 
         } else if ($scope.model.includesRelationToRemove && $scope.model.includesRelationToRemove.uri !== "") {
             $scope.model.includesCodeElements.forEach(function(codeElement, index) {
-                if (codeElement.uri === $scope.model.includesRelationToRemove.uri) {
+                if (codeElement.uri === $scope.model.includesRelationToRemove.uri && codeElement.versio === $scope.model.includesRelationToRemove.versio) {
                     $scope.model.includesCodeElements.splice(index, 1);
                 }
             });
         } else if ($scope.model.levelsRelationToRemove && $scope.model.levelsRelationToRemove.uri !== "") {
             $scope.model.levelsWithCodeElements.forEach(function(codeElement, index) {
-                if (codeElement.uri === $scope.model.levelsRelationToRemove.uri) {
+                if (codeElement.uri === $scope.model.levelsRelationToRemove.uri && codeElement.versio === $scope.model.levelsRelationToRemove.versio) {
                     $scope.model.levelsWithCodeElements.splice(index, 1);
                 }
             });
@@ -655,7 +660,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     // Refresh the page count when the model changes
     var cachedElementCount = 0;
     $scope.$watch('model.shownCodeElements', function() {
-        if ($scope.model.shownCodeElements.length != cachedElementCount) {
+        if ($scope.model.shownCodeElements.length !== cachedElementCount) {
             cachedElementCount = $scope.model.shownCodeElements.length;
             $scope.updatePaginationPage(true);
         }
