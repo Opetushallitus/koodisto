@@ -1,6 +1,6 @@
 "use strict";
 
-import '../css/font-awesome-4.0.3/css/font-awesome.min.css';
+import '../css/font-awesome-4.0.3/css/font-awesome.css';
 import '../css/bootstrap.css';
 import '../css/virkailija.css';
 import '../css/other.css';
@@ -14,10 +14,10 @@ import ngRoute from 'angular-route';
 import ngAnimate from 'angular-animate';
 import ngCookies from 'angular-cookies';
 import localization from './localization';
-import uiBootstrap from 'angular-ui-bootstrap';
-import uiUtils from 'angular-ui-utils';
+import uiBootstrap from 'angular-ui-bootstrap/ui-bootstrap';
+import uiUtils from 'angular-ui-utils/modules/utils';
 import uiSelect from 'ui-select';
-import ngIdle from 'ng-idle';
+import ngIdle from 'ng-idle/angular-idle';
 import pasvazBindonce from 'angular-bindonce';
 import ngUpload from 'ng-upload';
 

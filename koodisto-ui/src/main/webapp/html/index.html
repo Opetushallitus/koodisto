@@ -16,7 +16,6 @@
     <!-- app js-->
     <script type="text/javascript" src="/koodisto-ui/html/koodisto-ui-web-oph.js"></script>
     <script type="text/javascript" src="/koodisto-ui/configuration/frontProperties.js"></script>
-    <script type="text/javascript" src="/koodisto-ui/html/app.js"></script>
 
     <!--Virkailija layout script -->
     <script type="text/javascript" src="/virkailija-raamit/apply-raamit.js"></script>
@@ -27,11 +26,11 @@
 <body idle>
     <div id="application-wrapper">
         <div id="angularbox" ng-view="">
-            <div ng-include="'partials/sessionTimeout.html'"/>
+            <div ng-include="'partials/sessionTimeout.html'"></div>
         </div>
     </div>
 
-    <div ng-controller="LoadingCtrl"><div ng-show="loading" style="position: fixed; top: 0px; width: 100%; text-align: center; background: #FFF7BC none repeat scroll 0% 0%; padding: 0.3em; font-weight: bold; font-style: italic;">Käsitellään...</div></div>
+    <div ng-controller="LoadingCtrl"><div ng-show="loading" style="position: fixed; top: 0; width: 100%; text-align: center; background: #FFF7BC none repeat scroll 0% 0%; padding: 0.3em; font-weight: bold; font-style: italic;">Käsitellään...</div></div>
 </body>
 
 </html>

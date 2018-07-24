@@ -48,66 +48,83 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>-d</arguments>
+                            <arguments>--config webpack.build.js --bail -p</arguments>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
-                <groupId>com.github.klieber</groupId>
-                <artifactId>phantomjs-maven-plugin</artifactId>
-                <version>${phantomjs-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>install</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <version>${phantomjs.version}</version>
+                    <webResources>
+                        <resource>
+                            <directory>build</directory>
+                            <targetPath>html</targetPath>
+                            <!--<excludes>-->
+                                <!--<exclude>**/webapp/html</exclude>-->
+                            <!--</excludes>-->
+                        </resource>
+                    </webResources>
+                    <!--<warSourceExcludes>**/js/</warSourceExcludes>-->
+                    <warSourceIncludes>webapp/WEB-INF, webapp/META-INF, webapp/index.html</warSourceIncludes>
                 </configuration>
             </plugin>
+            <!--<plugin>-->
+                <!--<groupId>com.github.klieber</groupId>-->
+                <!--<artifactId>phantomjs-maven-plugin</artifactId>-->
+                <!--<version>${phantomjs-maven-plugin.version}</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>install</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<version>${phantomjs.version}</version>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
             
-            <plugin>
-                <groupId>com.github.searls</groupId>
-                <artifactId>jasmine-maven-plugin</artifactId>
-                <version>${jasmine-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <webDriverClassName>org.openqa.selenium.phantomjs.PhantomJSDriver</webDriverClassName>
-                    <webDriverCapabilities>
-                          <phantomjs.binary.path>${phantomjs.binary}</phantomjs.binary.path>
-                    </webDriverCapabilities>
-                    <preloadSources>
-                        <source>${project.basedir}/src/main/webapp/jslib/jquery-2.1.1.min.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-mocks.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-resource.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-route.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-sanitize.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-animate.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-cookies.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/ui-bootstrap-0.6.0.min.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/naturalSort.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-modules/angular-idle-0.3.2.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/oph_urls.js/index.js</source>
-                    </preloadSources>
-                    <jsSrcDir>${project.basedir}/src/main/webapp</jsSrcDir>
-                    <sourceExcludes>
-                        <exclude>**/jquery.mjs.*.js</exclude>
-                        <exclude>**/angular*.js</exclude>
-                        <exclude>**/ui-bootstrap*.js</exclude>
-                    </sourceExcludes>
-                    <jsTestSrcDir>${project.basedir}/src/test</jsTestSrcDir>
-                </configuration>
-            </plugin>
+            <!--<plugin>-->
+                <!--<groupId>com.github.searls</groupId>-->
+                <!--<artifactId>jasmine-maven-plugin</artifactId>-->
+                <!--<version>${jasmine-maven-plugin.version}</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>test</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<webDriverClassName>org.openqa.selenium.phantomjs.PhantomJSDriver</webDriverClassName>-->
+                    <!--<webDriverCapabilities>-->
+                          <!--<phantomjs.binary.path>${phantomjs.binary}</phantomjs.binary.path>-->
+                    <!--</webDriverCapabilities>-->
+                    <!--<preloadSources>-->
+                        <!--<source>${project.basedir}/src/main/webapp/jslib/jquery-2.1.1.min.js</source>-->
+                        <!--<source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular.js</source>-->
+                        <!--<source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-mocks.js</source>-->
+                        <!--<source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-resource.js</source>-->
+                        <!--<source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-route.js</source>-->
+                        <!--<source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-sanitize.js</source>-->
+                        <!--<source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-animate.js</source>-->
+                        <!--<source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-cookies.js</source>-->
+                        <!--<source>${project.basedir}/src/main/webapp/jslib/ui-bootstrap-0.6.0.min.js</source>-->
+                        <!--<source>${project.basedir}/src/main/webapp/jslib/naturalSort.js</source>-->
+                        <!--<source>${project.basedir}/src/main/webapp/jslib/angular-modules/angular-idle-0.3.2.js</source>-->
+                        <!--<source>${project.basedir}/src/main/webapp/jslib/oph_urls.js/index.js</source>-->
+                    <!--</preloadSources>-->
+                    <!--<jsSrcDir>${project.basedir}/src/main/webapp</jsSrcDir>-->
+                    <!--<sourceExcludes>-->
+                        <!--<exclude>**/jquery.mjs.*.js</exclude>-->
+                        <!--<exclude>**/angular*.js</exclude>-->
+                        <!--<exclude>**/ui-bootstrap*.js</exclude>-->
+                    <!--</sourceExcludes>-->
+                    <!--<jsTestSrcDir>${project.basedir}/src/test</jsTestSrcDir>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
         </plugins>
 
     </build>
