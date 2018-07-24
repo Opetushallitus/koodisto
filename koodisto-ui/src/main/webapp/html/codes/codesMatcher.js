@@ -1,3 +1,7 @@
+import angular from 'angular';
+
+const app = angular.module('koodisto');
+
 app.factory("CodesMatcher", function() {
     return {
         nameOrTunnusMatchesSearch : function(data, filter) {

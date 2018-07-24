@@ -1,3 +1,8 @@
+import angular from 'angular';
+import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue} from "../app";
+
+const app = angular.module('koodisto');
+
 app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUriAndVersion, CodesByUri, LatestCodeElementVersionsByCodeElementUri) {
     var model;
     model = new function() {
@@ -105,7 +110,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
         this.removeCodeElement = function() {
             model.deleteCodeElementModalInstance = $modal.open({
                 templateUrl : 'confirmDeleteCodeElementModalContent.html',
-                controller : ViewCodeElementController,
+                controller : 'ViewCodeElementController',
                 resolve : {}
             });
         };
@@ -115,7 +120,7 @@ app.factory('ViewCodeElementModel', function($location, $modal, CodeElementByUri
     return model;
 });
 
-function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElementModel, DeleteCodeElement, RemoveRelationCodeElement) {
+app.controller('ViewCodeElementController', function ($scope, $location, $routeParams, ViewCodeElementModel, DeleteCodeElement, RemoveRelationCodeElement) {
     $scope.model = ViewCodeElementModel;
     $scope.codeElementUri = $routeParams.codeElementUri;
     $scope.codeElementVersion = $routeParams.codeElementVersion;
@@ -162,4 +167,4 @@ function ViewCodeElementController($scope, $location, $routeParams, ViewCodeElem
 	return codeElement.active || $scope.showPassive
     }
 
-}
+});

@@ -1,5 +1,8 @@
 "use strict";
 
+import angular from 'angular';
+
+const app = angular.module('koodisto');
 app.factory("ChildOpener", function() {
     return function(data) {
     data.open = !data.open;
@@ -150,7 +153,7 @@ app.factory('OrganisaatioOPHTreeModel', function(Organizations, OrganizationByOi
 
 });
 
-function OrganisaatioTreeController($scope, AuthService, OrganisaatioTreeModel, OrganisaatioOPHTreeModel) {
+app.controller('OrganisaatioTreeController', function OrganisaatioTreeController($scope, AuthService, OrganisaatioTreeModel, OrganisaatioOPHTreeModel) {
     if (!$scope.orgTree) {
     AuthService.updateOph(SERVICE_NAME).then(function() {
         $scope.orgTree = OrganisaatioOPHTreeModel;
@@ -191,9 +194,9 @@ function OrganisaatioTreeController($scope, AuthService, OrganisaatioTreeModel, 
     $scope.orgTree.resetSearch();
     };
 
-}
+});
 
-var ModalInstanceCtrl = function ($scope, $modalInstance) {
+app.controller('ModalInstanceCtrl', function($scope, $modalInstance) {
 
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
@@ -203,4 +206,4 @@ var ModalInstanceCtrl = function ($scope, $modalInstance) {
     $scope.organisaatioSelector = function(data) {
         $modalInstance.close(data);
     };
-};
+});

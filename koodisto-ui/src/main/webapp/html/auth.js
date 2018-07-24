@@ -1,7 +1,11 @@
+import angular from 'angular';
+
 var READ = "_READ";
 var UPDATE = "_READ_UPDATE";
 var CRUD = "_CRUD";
 var OPH_ORG = "1.2.246.562.10.00000000001";
+
+const app = angular.module('koodisto');
 
 app.factory('MyRolesModel', function($q, $http) {
     var deferred = $q.defer();

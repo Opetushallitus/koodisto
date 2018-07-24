@@ -1,3 +1,8 @@
+import angular from 'angular';
+import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue} from "../app";
+
+const app = angular.module('koodisto');
+
 app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion, CodeElementVersionsByCodeElementUri,
         OrganizationByOid, CodesByUri) {
     var model;
@@ -186,7 +191,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.download = function() {
             model.downloadModalInstance = $modal.open({
                 templateUrl : 'downloadModalContent.html',
-                controller : ViewCodesController,
+                controller : 'ViewCodesController',
                 resolve : {
                     isModalController : function() {
                         return true;
@@ -198,7 +203,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.upload = function() {
             model.uploadModalInstance = $modal.open({
                 templateUrl : 'uploadModalContent.html',
-                controller : ViewCodesController,
+                controller : 'ViewCodesController',
                 resolve : {
                     isModalController : function() {
                         return true;
@@ -210,7 +215,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
         this.removeCodes = function() {
             model.deleteCodesModalInstance = $modal.open({
                 templateUrl : 'confirmDeleteCodesModalContent.html',
-                controller : ViewCodesController,
+                controller : 'ViewCodesController',
                 resolve : {
                     isModalController : function() {
                         return true;
@@ -223,7 +228,7 @@ app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, 
     return model;
 });
 
-function ViewCodesController($scope, $location, $filter, $routeParams, $window, ViewCodesModel, DownloadCodes, RemoveRelationCodes, DeleteCodes, loadingService, isModalController) {
+app.controller('ViewCodesController', function ($scope, $location, $filter, $routeParams, $window, ViewCodesModel, DownloadCodes, RemoveRelationCodes, DeleteCodes, loadingService, isModalController) {
     $scope.model = ViewCodesModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.uploadUrl = SERVICE_URL_BASE + "codes" + "/upload/" + $scope.codesUri;
@@ -469,4 +474,4 @@ function ViewCodesController($scope, $location, $filter, $routeParams, $window, 
     $scope.showRelation = function(codes) {
 	return codes.active || $scope.showPassive
     }
-}
+});

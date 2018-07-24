@@ -1,4 +1,8 @@
-var mod = angular.module('loading', []);
+"use strict";
+
+import angular from 'angular';
+
+const mod = angular.module('loading', []);
 
 mod.factory('loadingService', function () {
     var service = {
@@ -46,3 +50,5 @@ mod.controller('LoadingCtrl', function ($scope, loadingService) {
         $scope.loading = value;
     });
 });
+
+export default mod;

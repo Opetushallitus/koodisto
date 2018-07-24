@@ -1,3 +1,7 @@
+import angular from 'angular';
+
+const app = angular.module('koodisto');
+
 app.factory('CodesGroupCreatorModel', function($location) {
     var model;
     model = new function() {
@@ -14,7 +18,7 @@ app.factory('CodesGroupCreatorModel', function($location) {
     return model;
 });
 
-function CodesGroupCreatorController($scope, $location, $filter, CodesGroupCreatorModel, NewCodesGroup, Treemodel) {
+app.controller('CodesGroupCreatorController', function ($scope, $location, $filter, CodesGroupCreatorModel, NewCodesGroup, Treemodel) {
     $scope.model = CodesGroupCreatorModel;
     $scope.errorMessage = $filter('i18n')('field.required');
     CodesGroupCreatorModel.init();
@@ -78,4 +82,4 @@ function CodesGroupCreatorController($scope, $location, $filter, CodesGroupCreat
             $scope.model.nameen = $scope.model.namefi;
         }
     };
-}
+});

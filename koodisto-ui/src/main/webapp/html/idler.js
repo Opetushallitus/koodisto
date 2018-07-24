@@ -1,3 +1,6 @@
+import angular from 'angular';
+
+const app = angular.module('koodisto');
 app.directive('idle', ['$idle', '$timeout', '$interval', function($idle, $timeout, $interval){
     return {
     restrict: 'A',

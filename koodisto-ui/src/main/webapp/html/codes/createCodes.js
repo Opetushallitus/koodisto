@@ -1,3 +1,8 @@
+import angular from 'angular';
+import {getLanguageSpecificValueOrValidValue} from "../app";
+
+const app = angular.module('koodisto');
+
 app.factory('CodesCreatorModel', function($location, RootCodes, $modal) {
     var model;
     model = new function() {
@@ -51,7 +56,7 @@ app.factory('CodesCreatorModel', function($location, RootCodes, $modal) {
     return model;
 });
 
-function CodesCreatorController($scope, $location, $modal, $log, $filter, CodesCreatorModel, NewCodes, Treemodel, isModalController) {
+app.controller('CodesCreatorController', function CodesCreatorController($scope, $location, $modal, $log, $filter, CodesCreatorModel, NewCodes, Treemodel, isModalController) {
     $scope.model = CodesCreatorModel;
     $scope.errorMessage = $filter('i18n')('field.required');
     $scope.errorMessageAtLeastOneName = $filter('i18n')('field.required.at.least.one.name');
@@ -78,7 +83,7 @@ function CodesCreatorController($scope, $location, $modal, $log, $filter, CodesC
         if (formHasChanged) {
             $scope.model.cancelConfirmModal = $modal.open({
                 templateUrl : 'confirmcancel.html',
-                controller : CodesCreatorController,
+                controller : 'CodesCreatorController',
                 resolve : {
                     isModalController : function() {
                         return true;
@@ -222,4 +227,4 @@ function CodesCreatorController($scope, $location, $modal, $log, $filter, CodesC
         });
     };
 
-}
+});

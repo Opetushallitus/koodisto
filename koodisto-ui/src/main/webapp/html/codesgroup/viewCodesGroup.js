@@ -1,3 +1,7 @@
+import angular from 'angular';
+import {getLanguageSpecificValueOrValidValue} from "../app";
+
+const app = angular.module('koodisto');
 
 app.factory('ViewCodesGroupModel', function($location, $modal, CodesGroupByUri) {
     var model;
@@ -22,7 +26,7 @@ app.factory('ViewCodesGroupModel', function($location, $modal, CodesGroupByUri) 
         this.removeCodesGroup = function() {
             model.deleteCodesGroupModalInstance = $modal.open({
                 templateUrl: 'confirmDeleteCodesGroupModalContent.html',
-                controller: ViewCodesGroupController,
+                controller: 'ViewCodesGroupController',
                 resolve: {
                 }
             });
@@ -34,7 +38,7 @@ app.factory('ViewCodesGroupModel', function($location, $modal, CodesGroupByUri) 
     return model;
 });
 
-function ViewCodesGroupController($scope, $location, $routeParams, ViewCodesGroupModel, DeleteCodesGroup, Treemodel) {
+app.controller('ViewCodesGroupController', function ($scope, $location, $routeParams, ViewCodesGroupModel, DeleteCodesGroup, Treemodel) {
     $scope.model = ViewCodesGroupModel;
     ViewCodesGroupModel.init($scope, $routeParams.id);
 
@@ -62,4 +66,4 @@ function ViewCodesGroupController($scope, $location, $routeParams, ViewCodesGrou
     $scope.cancelconfirmdeletecodesgroup = function() {
         $scope.model.deleteCodesGroupModalInstance.dismiss('cancel');
     };
-}
+});

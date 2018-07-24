@@ -1,3 +1,8 @@
+import angular from 'angular';
+import {getLanguageSpecificValue} from "../app";
+
+const app = angular.module('koodisto');
+
 app.factory('CodesGroupEditorModel', function($location, CodesGroupByUri) {
     var model;
     model = new function() {
@@ -21,7 +26,7 @@ app.factory('CodesGroupEditorModel', function($location, CodesGroupByUri) {
     return model;
 });
 
-function CodesGroupEditorController($scope, $location, $routeParams, $filter, CodesGroupEditorModel, UpdateCodesGroup, Treemodel) {
+app.controlle('CodesGroupEditorController', function ($scope, $location, $routeParams, $filter, CodesGroupEditorModel, UpdateCodesGroup, Treemodel) {
     $scope.model = CodesGroupEditorModel;
     $scope.errorMessage = $filter('i18n')('field.required');
     CodesGroupEditorModel.init($scope, $routeParams.id);
@@ -74,4 +79,4 @@ function CodesGroupEditorController($scope, $location, $routeParams, $filter, Co
             $scope.model.nameen = $scope.model.namefi;
         }
     };
-}
+});

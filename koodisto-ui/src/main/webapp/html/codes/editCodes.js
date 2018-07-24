@@ -1,3 +1,8 @@
+import angular from 'angular';
+import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue} from "../app";
+
+const app = angular.module('koodisto');
+
 app.factory('CodesEditorModel', function($location, RootCodes, Organizations, CodesByUriAndVersion, OrganizationByOid, CodesByUri, AuthService, $modal) {
     var model;
     model = new function() {
@@ -193,7 +198,7 @@ app.factory('CodesEditorModel', function($location, RootCodes, Organizations, Co
     return model;
 });
 
-function CodesEditorController($scope, $location, $modal, $log, $routeParams, $filter, CodesEditorModel, Treemodel,
+app.controller('CodesEditorController', function ($scope, $location, $modal, $log, $routeParams, $filter, CodesEditorModel, Treemodel,
                                CodesMatcher, SaveCodes, isModalController, loadingService) {
     $scope.model = CodesEditorModel;
     $scope.codesUri = $routeParams.codesUri;
@@ -223,7 +228,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
         if (formHasChanged) {
             $scope.model.cancelConfirmModal = $modal.open({
                 templateUrl : 'confirmcancel.html',
-                controller : CodesEditorController,
+                controller : 'CodesEditorController',
                 resolve : {
                     isModalController : function() {
                         return true;
@@ -466,7 +471,7 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
 
         var modalInstance = $modal.open({
             templateUrl : 'organizationModalContent.html',
-            controller : ModalInstanceCtrl,
+            controller : 'ModalInstanceCtrl',
             resolve : {
                 isModalController : function() {
                     return true;
@@ -535,5 +540,5 @@ function CodesEditorController($scope, $location, $modal, $log, $routeParams, $f
 
     $scope.isCodeLoading = loadingService.isLoading;
 
-}
+});
 

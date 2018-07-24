@@ -1,3 +1,6 @@
+import angular from 'angular';
+
+const app = angular.module('koodisto');
 app.directive('auth', function($animate, $timeout, AuthService) {
     return {
         link : function($scope, element, attrs) {

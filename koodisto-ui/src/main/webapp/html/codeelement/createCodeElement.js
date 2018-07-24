@@ -1,3 +1,6 @@
+import angular from 'angular';
+
+const app = angular.module('koodisto');
 
 app.factory('CodeElementCreatorModel', function($location) {
     var model;
@@ -11,7 +14,7 @@ app.factory('CodeElementCreatorModel', function($location) {
     return model;
 });
 
-function CodeElementCreatorController($scope, $location, $routeParams, $filter, $modal,  CodeElementCreatorModel, NewCodeElement, isModalController) {
+app.controller('CodeElementCreatorController', function ($scope, $location, $routeParams, $filter, $modal,  CodeElementCreatorModel, NewCodeElement, isModalController) {
     $scope.model = CodeElementCreatorModel;
     $scope.codesUri = $routeParams.codesUri;
     $scope.codesVersion = $routeParams.codesVersion;
@@ -41,7 +44,7 @@ function CodeElementCreatorController($scope, $location, $routeParams, $filter, 
         if (formHasChanged) {
             $scope.model.cancelConfirmModal = $modal.open({
                 templateUrl : 'confirmcancel.html',
-                controller : CodeElementCreatorController,
+                controller : 'CodeElementCreatorController',
                 resolve : {
                     isModalController : function() {
                         return true;
@@ -149,4 +152,4 @@ function CodeElementCreatorController($scope, $location, $routeParams, $filter, 
         }
     };
 
-}
+});

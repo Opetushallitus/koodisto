@@ -1,3 +1,8 @@
+import angular from 'angular';
+import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue} from "../app";
+
+const app = angular.module('koodisto');
+
 app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, CodeElementByUriAndVersion, AllCodes, CodeElementsByCodesUriAndVersion,
         LatestCodeElementVersionsByCodeElementUri, AuthService) {
     var model;
@@ -202,7 +207,7 @@ app.factory('CodeElementEditorModel', function($modal, $location, RootCodes, Cod
     return model;
 });
 
-function CodeElementEditorController($scope, $location, $routeParams, $filter, CodeElementEditorModel,
+app.controller('CodeElementEditorController', function ($scope, $location, $routeParams, $filter, CodeElementEditorModel,
         CodesByUriAndVersion, SaveCodeElement, CodeElementsByCodesUriAndVersion, $modal,
         isModalController, loadingService) {
 
@@ -246,7 +251,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
         if (formHasChanged) {
             $scope.model.cancelConfirmModal = $modal.open({
                 templateUrl : 'confirmcancel.html',
-                controller : CodeElementEditorController,
+                controller : 'CodeElementEditorController',
                 resolve : {
                     isModalController : function() {
                         return true;
@@ -603,7 +608,7 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
 
             $scope.model.codeelementmodalInstance = $modal.open({
                 templateUrl : 'codeElementModalContent.html',
-                controller : CodeElementEditorController,
+                controller : 'CodeElementEditorController',
                 resolve : {
                     isModalController : function() {
                         return true;
@@ -744,4 +749,4 @@ function CodeElementEditorController($scope, $location, $routeParams, $filter, C
     };
 
     // Pagination ends
-}
+});

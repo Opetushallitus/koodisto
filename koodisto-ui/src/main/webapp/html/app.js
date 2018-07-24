@@ -1,5 +1,26 @@
 "use strict";
 
+import '../css/font-awesome-4.0.3/css/font-awesome.min.css';
+import '../css/bootstrap.css';
+import '../css/virkailija.css';
+import '../css/other.css';
+import '../css/selectize.default.css';
+import '../css/select-0.8.3.css';
+
+import angular from 'angular';
+import ngResource from 'angular-resource';
+import loading from './loading';
+import ngRoute from 'angular-route';
+import ngAnimate from 'angular-animate';
+import ngCookies from 'angular-cookies';
+import localization from './localization';
+import uiBootstrap from 'angular-ui-bootstrap';
+import uiUtils from 'angular-ui-utils';
+import uiSelect from 'ui-select';
+import ngIdle from 'ng-idle';
+import pasvazBindonce from 'angular-bindonce';
+import ngUpload from 'ng-upload';
+
 var SERVICE_NAME = "APP_KOODISTO";
 
 var app = angular.module('koodisto', [
@@ -9,28 +30,13 @@ var app = angular.module('koodisto', [
     'ngAnimate',
     'ngCookies',
     'localization',
-    'ui.bootstrap',
-    'ui.utils',
-    'ui.select',
+    'uiBootstrap',
+    'uiUtils',
+    'uiSelect',
     'ngIdle',
-    'pasvaz.bindonce',
+    'pasvazBindonce',
     'ngUpload']);
 
-// Käytössä vain suomenkieliset "käännökset"
-angular.module('localization', []).filter('i18n', [ '$rootScope', '$locale', function($rootScope, $locale) {
-    jQuery.i18n.properties({
-        name : 'messages',
-        path : '../i18n/',
-        mode : 'map',
-        language : 'fi_FI',
-        callback : function() {
-        }
-    });
-
-    return function(text) {
-        return jQuery.i18n.prop(text);
-    };
-} ]);
 
 var SERVICE_URL_BASE;
 var SESSION_KEEPALIVE_INTERVAL_IN_SECONDS = SESSION_KEEPALIVE_INTERVAL_IN_SECONDS || 30;
@@ -67,10 +73,10 @@ app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($r
     $routeProvider.
     // front page
     when('/etusivu', {
-        controller : KoodistoTreeController,
+        controller : 'KoodistoTreeController',
         templateUrl : 'codesmainpage.html'
     }).when('/lisaaKoodisto', {
-        controller : CodesCreatorController,
+        controller : 'CodesCreatorController',
         templateUrl : 'codes/createcodes.html',
         resolve : {
             isModalController : function() {
@@ -78,7 +84,7 @@ app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($r
             }
         }
     }).when('/muokkaaKoodisto/:codesUri/:codesVersion', {
-        controller : CodesEditorController,
+        controller : 'CodesEditorController',
         templateUrl : 'codes/editcodes.html',
         resolve : {
             isModalController : function() {
@@ -86,7 +92,7 @@ app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($r
             }
         }
     }).when('/koodisto/:codesUri/:codesVersion', {
-        controller : ViewCodesController,
+        controller : 'ViewCodesController',
         templateUrl : 'codes/viewcodes.html',
         resolve : {
             isModalController : function() {
@@ -94,10 +100,10 @@ app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($r
             }
         }
     }).when('/koodi/:codeElementUri/:codeElementVersion', {
-        controller : ViewCodeElementController,
+        controller : 'ViewCodeElementController',
         templateUrl : 'codeelement/viewcodeelement.html'
     }).when('/lisaaKoodi/:codesUri/:codesVersion', {
-        controller : CodeElementCreatorController,
+        controller : 'CodeElementCreatorController',
         templateUrl : 'codeelement/createcodeelement.html',
         resolve : {
             isModalController : function() {
@@ -105,7 +111,7 @@ app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($r
             }
         }
     }).when('/muokkaaKoodi/:codeElementUri/:codeElementVersion', {
-        controller : CodeElementEditorController,
+        controller : 'CodeElementEditorController',
         templateUrl : 'codeelement/editcodeelement.html',
         resolve : {
             isModalController : function() {
@@ -113,13 +119,13 @@ app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($r
             }
         }
     }).when('/lisaaKoodistoryhma', {
-        controller : CodesGroupCreatorController,
+        controller : 'CodesGroupCreatorController',
         templateUrl : 'codesgroup/createcodesgroup.html'
     }).when('/koodistoryhma/:id', {
-        controller : ViewCodesGroupController,
+        controller : 'ViewCodesGroupController',
         templateUrl : 'codesgroup/viewcodesgroup.html'
     }).when('/muokkaaKoodistoryhma/:id', {
-        controller : CodesGroupEditorController,
+        controller : 'CodesGroupEditorController',
         templateUrl : 'codesgroup/editcodesgroup.html'
     }).
     // else
@@ -479,7 +485,7 @@ app.filter('naturalSort', function() {
     };
 });
 
-function getLanguageSpecificValue(fieldArray, fieldName, language) {
+export function getLanguageSpecificValue(fieldArray, fieldName, language) {
     if (fieldArray) {
         for (var i = 0; i < fieldArray.length; i++) {
             if (fieldArray[i].kieli === language) {
@@ -491,7 +497,7 @@ function getLanguageSpecificValue(fieldArray, fieldName, language) {
     return "";
 }
 
-function getLanguageSpecificValueOrValidValue(fieldArray, fieldName, language) {
+export function getLanguageSpecificValueOrValidValue(fieldArray, fieldName, language) {
     var specificValue = getLanguageSpecificValue(fieldArray, fieldName, language);
 
     if (specificValue === "" && language !== "FI"){
@@ -535,3 +541,5 @@ app.config(function(datepickerConfig) {
 app.run(["SessionPoll", function(SessionPoll) {
     SessionPoll.get({});
 }]);
+
+export default app;

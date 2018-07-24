@@ -1,5 +1,9 @@
 'use strict';
 
+import angular from 'angular';
+import localization from './localization';
+import koodisto from './app';
+
 var modules = ['koodisto', 'localization'];
 
 modules.forEach(function(module) {

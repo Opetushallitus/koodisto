@@ -1,3 +1,7 @@
+import angular from 'angular';
+import {getLanguageSpecificValueOrValidValue} from "./app";
+
+const app = angular.module('koodisto');
 //domain .. this is both, service & domain layer
 app.factory('Treemodel', function($resource, RootCodes, MyRoles, CodesMatcher) {
     // keep model to yourself
@@ -89,7 +93,7 @@ app.factory('Treemodel', function($resource, RootCodes, MyRoles, CodesMatcher) {
     return modelInterface;
 });
 
-function KoodistoTreeController($scope, $resource, $routeParams, Treemodel) {
+app.controller('KoodistoTreeController', function ($scope, $resource, $routeParams, Treemodel) {
     $scope.predicate = 'koodistoUri';
     $scope.domain = Treemodel;
     if($routeParams.forceRefresh){
@@ -104,4 +108,4 @@ function KoodistoTreeController($scope, $resource, $routeParams, Treemodel) {
         node.isVisible = !node.isVisible;
     };
 
-}
+});

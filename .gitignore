@@ -5,6 +5,8 @@ target/
 .project
 .settings/org.eclipse.core.resources.prefs
 .settings/org.eclipse.m2e.core.prefs
+node_modules
+node
 koodisto-api/.classpath
 koodisto-api/.project
 koodisto-api/.settings/org.eclipse.core.resources.prefs
