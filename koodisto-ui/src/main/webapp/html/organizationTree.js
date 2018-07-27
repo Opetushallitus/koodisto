@@ -1,209 +1,204 @@
 "use strict";
 
-import angular from 'angular';
+import {OPH_ORG} from "./auth";
 
-const app = angular.module('koodisto');
-app.factory("ChildOpener", function() {
-    return function(data) {
-    data.open = !data.open;
-    if(data.open) {
-
-        var iter = function(children){
-        if(children) {
-            children.forEach(function(child){
-            child.open = true;
-            iter(child.children);
-            });
-        }
-        };
-
-        iter(data.children);
+export class ChildOpener {
+    constructor() {
+        "ngInject";
     }
-    };
-});
 
-app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOpener) {
-    return (function() {
+    open(data) {
+        data.open = !data.open;
+        if (data.open) {
+            var iter = function(children){
+                if(children) {
+                    children.forEach(function(child){
+                        child.open = true;
+                        iter(child.children);
+                    });
+                }
+            };
+
+            iter(data.children);
+        }
+    }
+}
+
+export class OrganisaatioTreeModel {
+    constructor(OrganizationChildrenByOid, childOpener) {
+        "ngInject";
+        this.OrganizationChildrenByOid = OrganizationChildrenByOid;
+        this.childOpener = childOpener;
         var instance = {};
         instance.model = {};
+    }
 
-        instance.init = function(organizations) {                       
-            instance.model = {};
-            instance.model.organisaatiot = [];
-            instance.model.numHits = 0;
-            instance.organizationsToInitFrom = organizations;
-            instance.searchStr = "";
-        };
-        
-        instance.resetSearch = function() {
-            if (instance.model.originalOrganizations && instance.model.originalOrganizations.length > 0){
-            instance.model.organisaatiot =  instance.model.originalOrganizations;
-            instance.model.numHits = calculateMatchingOrgs(instance.model.originalOrganizations);
-            } else {
-            instance.organizationsToInitFrom.forEach(function(organization) {
-                OrganizationChildrenByOid.get({oid: organization}, function(result) { 
-                result.organisaatiot.forEach(function(org) {
-                    instance.model.organisaatiot.push(org);
-                });
-                instance.model.numHits += result.numHits;
+    init(organizations) {
+        this.model = {};
+        this.model.organisaatiot = [];
+        this.model.numHits = 0;
+        this.organizationsToInitFrom = organizations;
+        this.searchStr = "";
+    }
+
+    resetSearch() {
+        if (this.model.originalOrganizations && this.model.originalOrganizations.length > 0){
+            this.model.organisaatiot =  this.model.originalOrganizations;
+            this.model.numHits = this.calculateMatchingOrgs(this.model.originalOrganizations);
+        } else {
+            this.organizationsToInitFrom.forEach(function(organization) {
+                this.OrganizationChildrenByOid.get({oid: organization}, function(result) {
+                    result.organisaatiot.forEach((org) => {
+                        this.model.organisaatiot.push(org);
+                    });
+                    this.model.numHits += result.numHits;
                 });
             });
-            }
-        };
-        
-        function calculateMatchingOrgs(organizations) {
-            var amount = organizations.length;
-            function calculate(children) {
+        }
+    }
+
+    calculateMatchingOrgs(organizations) {
+        var amount = organizations.length;
+        function calculate(children) {
             amount += children.length;
             children.forEach(function(child) {
                 calculate(child.children);
             });
-            }
-            organizations.forEach(function(org) {
-            calculate(org.children);
-            });
-            return amount;
         }
+        organizations.forEach(function(org) {
+            calculate(org.children);
+        });
+        return amount;
+    }
 
-        instance.search = function(searchStr) {
-            
-            var matchingOrgs = new Array();
-            
-            function matchesSearch(organization) {
+    search(searchStr) {
+
+        var matchingOrgs = new Array();
+
+        function matchesSearch(organization) {
             function matchesTranslation(organization2, language) {
                 return organization2.nimi[language] && organization2.nimi[language].toLowerCase().indexOf(searchStr) > -1;
             }
             return matchesTranslation(organization, 'fi');
-            }
-            
-            function recursivelyAddMatchingOrganizations(organization) { 
+        }
+
+        function recursivelyAddMatchingOrganizations(organization) {
             if (matchesSearch(organization)) {
                 matchingOrgs.push(organization);
             } else {
-                organization.children.forEach(function(child) {                
-                recursivelyAddMatchingOrganizations(child);
+                organization.children.forEach(function(child) {
+                    recursivelyAddMatchingOrganizations(child);
                 });
             }
-            }
-            
-            searchStr = searchStr.toLowerCase();
+        }
 
-            if (!instance.model.originalOrganizations || instance.model.originalOrganizations.length < 1) {
-            instance.model.originalOrganizations = instance.model.organisaatiot;
-            }
+        searchStr = searchStr.toLowerCase();
 
-            instance.model.originalOrganizations.forEach(function(organization) {
+        if (!this.model.originalOrganizations || this.model.originalOrganizations.length < 1) {
+            this.model.originalOrganizations = this.model.organisaatiot;
+        }
+
+        this.model.originalOrganizations.forEach(function(organization) {
             recursivelyAddMatchingOrganizations(organization);
+        });
+
+        this.model.organisaatiot = matchingOrgs;
+        this.model.numHits = this.calculateMatchingOrgs(matchingOrgs);
+
+        if (this.model.organisaatiot.length < 4) {
+            this.model.organisaatiot.forEach((data) => {
+                this.openChildren(data);
             });
+        }
+    };
 
-            instance.model.organisaatiot = matchingOrgs;
-            instance.model.numHits = calculateMatchingOrgs(matchingOrgs);
-            
-            if(instance.model.organisaatiot.length < 4) {
-            instance.model.organisaatiot.forEach(function(data){
-                instance.openChildren(data);
-            });
-            }
-        };
+    openChildren(data) {
+        this.childOpener.open(data);
+    };
+}
 
-        instance.openChildren = function(data) {
-            ChildOpener(data);
-        };
+export class OrganisaatioOPHTreeModel {
+    constructor(Organizations, OrganizationByOid, childOpener) {
+        "ngInject";
+        this.Organizations = Organizations;
+        this.OrganizationByOid = OrganizationByOid;
+        this.childOpener = childOpener;
 
-        return instance;
-    })();
+        this.model = {};
+        this.searchStr = "";
+    }
 
-});
+    init() {
+        this.model = {};
+    }
 
-app.factory('OrganisaatioOPHTreeModel', function(Organizations, OrganizationByOid, ChildOpener) {
+    resetSearch() {
+        this.OrganizationByOid.get({oid: OPH_ORG}, function(result) {
+            this.model.organisaatiot = [result];
+            this.model.numHits = 1;
+        });
+    }
 
-    return (function() {
-        var instance = {};
-        instance.model = {};
-        instance.searchStr = "";
-
-        instance.init = function() {                       
-            instance.model = {};            
-        };
-        
-        instance.resetSearch = function() {
-            OrganizationByOid.get({oid: OPH_ORG}, function(result) {
-            instance.model.organisaatiot = [result];
-            instance.model.numHits = 1;
-            });
-        };
-
-        instance.search = function(searchStr) {            
-            Organizations.get({"searchStr": searchStr, "skipparents": true}, function(result) {
-            instance.model = result;
-            if(instance.model.organisaatiot.length < 4) {
-                instance.model.organisaatiot.forEach(function(data) {
-                instance.openChildren(data);
+    search(searchStr) {
+        this.Organizations.get({"searchStr": searchStr, "skipparents": true}, (result) => {
+            this.model = result;
+            if (this.model.organisaatiot.length < 4) {
+                this.model.organisaatiot.forEach((data) => {
+                    this.openChildren(data);
                 });
             }
-            });            
-        };
-
-        instance.openChildren = function(data) {
-               ChildOpener(data);
-        };
-
-        return instance;
-    })();
-
-});
-
-app.controller('OrganisaatioTreeController', function OrganisaatioTreeController($scope, AuthService, OrganisaatioTreeModel, OrganisaatioOPHTreeModel) {
-    if (!$scope.orgTree) {
-    AuthService.updateOph(SERVICE_NAME).then(function() {
-        $scope.orgTree = OrganisaatioOPHTreeModel;
-    }, function() {
-        $scope.orgTree = OrganisaatioTreeModel;
-    });
-    
-    AuthService.getOrganizations(SERVICE_NAME).then(function(organizations) {
-        $scope.orgTree.init(organizations);
-    });
-    
-    $scope.$watch('orgTree.searchStr', function() {
-            if($scope.orgTree.searchStr.length > 2) {
-                $scope.orgTree.search($scope.orgTree.searchStr);
-            } else if ($scope.orgTree.searchStr.length < 1){
-                $scope.orgTree.resetSearch();
-            }            
-    });
-    }
-    
-    function debounce(fn, delay) {
-        var timer = null;
-        return function () {
-            var context = this, args = arguments;
-            clearTimeout(timer);
-            timer = setTimeout(function () {
-                fn.apply(context, args);
-            }, delay);
-        };
+        });
     }
 
-    $scope.openChildren = function(data) {
-    $scope.orgTree.openChildren(data);
-    };
+    openChildren(data) {
+        this.childOpener.open(data);
+    }
 
-    $scope.clear = function(){
-    $scope.orgTree.searchStr = '';
-    $scope.orgTree.resetSearch();
-    };
+}
 
-});
+export class OrganisaatioTreeController {
+    constructor($scope, AuthService, OrganisaatioTreeModel, organisaatioOPHTreeModel) {
+        "ngInject";
+        if (!$scope.orgTree) {
+            AuthService.updateOph(SERVICE_NAME).then(function() {
+                $scope.orgTree = organisaatioOPHTreeModel;
+            }, function() {
+                $scope.orgTree = OrganisaatioTreeModel;
+            });
 
-app.controller('ModalInstanceCtrl', function($scope, $modalInstance) {
+            AuthService.getOrganizations(SERVICE_NAME).then(function(organizations) {
+                $scope.orgTree.init(organizations);
+            });
 
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-    };
+            $scope.$watch('orgTree.searchStr', function() {
+                if($scope.orgTree.searchStr.length > 2) {
+                    $scope.orgTree.search($scope.orgTree.searchStr);
+                } else if ($scope.orgTree.searchStr.length < 1){
+                    $scope.orgTree.resetSearch();
+                }
+            });
+        }
 
+        $scope.openChildren = function(data) {
+            $scope.orgTree.openChildren(data);
+        };
 
-    $scope.organisaatioSelector = function(data) {
-        $modalInstance.close(data);
-    };
-});
+        $scope.clear = function(){
+            $scope.orgTree.searchStr = '';
+            $scope.orgTree.resetSearch();
+        };
+
+    }
+}
+
+export class ModalInstanceCtrl {
+    constructor($scope, $modalInstance) {
+        "ngInject";
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+        $scope.organisaatioSelector = function (data) {
+            $modalInstance.close(data);
+        };
+    }
+}

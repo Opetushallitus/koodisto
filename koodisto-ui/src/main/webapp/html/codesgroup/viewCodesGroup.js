@@ -1,69 +1,69 @@
-import angular from 'angular';
 import {getLanguageSpecificValueOrValidValue} from "../app";
 
-const app = angular.module('koodisto');
+export class ViewCodesGroupModel {
+    constructor($location, $modal, CodesGroupByUri) {
+        "ngInject";
+        this.$location = $location;
+        this.$modal = $modal;
+        this.CodesGroupByUri = CodesGroupByUri;
 
-app.factory('ViewCodesGroupModel', function($location, $modal, CodesGroupByUri) {
-    var model;
-    model = new function() {
         this.alerts = [];
         this.codesgroup = {};
         this.deleteState = "disabled";
+    }
 
-        this.init = function(scope, id) {
-            this.alerts = [];
-            this.deleteState = "disabled";
-            CodesGroupByUri.get({id: id}, function (result) {
-                model.codesgroup = result;
-                if (result.koodistos.length === 0) {
-                    model.deleteState = "";
-                }
-                model.name = getLanguageSpecificValueOrValidValue( model.codesgroup.koodistoRyhmaMetadatas , 'nimi', 'FI');
-            });
-            scope.loadingReady = true;
-        };
-
-        this.removeCodesGroup = function() {
-            model.deleteCodesGroupModalInstance = $modal.open({
-                templateUrl: 'confirmDeleteCodesGroupModalContent.html',
-                controller: 'ViewCodesGroupController',
-                resolve: {
-                }
-            });
-        };
-
-    };
-
-
-    return model;
-});
-
-app.controller('ViewCodesGroupController', function ($scope, $location, $routeParams, ViewCodesGroupModel, DeleteCodesGroup, Treemodel) {
-    $scope.model = ViewCodesGroupModel;
-    ViewCodesGroupModel.init($scope, $routeParams.id);
-
-    $scope.closeAlert = function(index) {
-        $scope.model.alerts.splice(index, 1);
-    };
-
-    $scope.cancel = function() {
-        $location.path("/");
-    };
-
-
-    $scope.okconfirmdeletecodesgroup = function() {
-        DeleteCodesGroup.post({id: $routeParams.id},function(success) {
-            Treemodel.refresh();
-            $location.path("/");
-        }, function(error) {
-            var alert = { type: 'danger', msg: 'Koodiryhm\u00E4n poisto ep\u00E4onnistui.' };
-            $scope.model.alerts.push(alert);
+    init(scope, id) {
+        this.alerts = [];
+        this.deleteState = "disabled";
+        this.CodesGroupByUri.get({id: id}, (result) => {
+            this.codesgroup = result;
+            if (result.koodistos.length === 0) {
+                this.deleteState = "";
+            }
+            this.name = getLanguageSpecificValueOrValidValue( this.codesgroup.koodistoRyhmaMetadatas , 'nimi', 'FI');
         });
+        scope.loadingReady = true;
+    }
 
-        $scope.model.deleteCodesGroupModalInstance.close();
-    };
+    removeCodesGroup() {
+        this.deleteCodesGroupModalInstance = this.$modal.open({
+            templateUrl: 'confirmDeleteCodesGroupModalContent.html',
+            controller: 'ViewCodesGroupController',
+            resolve: {
+            }
+        });
+    }
+}
 
-    $scope.cancelconfirmdeletecodesgroup = function() {
-        $scope.model.deleteCodesGroupModalInstance.dismiss('cancel');
-    };
-});
+export class ViewCodesGroupController {
+    constructor($scope, $location, $routeParams, viewCodesGroupModel, DeleteCodesGroup, treemodel) {
+        "ngInject";
+        $scope.model = viewCodesGroupModel;
+        viewCodesGroupModel.init($scope, $routeParams.id);
+
+        $scope.closeAlert = function(index) {
+            $scope.model.alerts.splice(index, 1);
+        };
+
+        $scope.cancel = function() {
+            $location.path("/");
+        };
+
+
+        $scope.okconfirmdeletecodesgroup = function() {
+            DeleteCodesGroup.post({id: $routeParams.id},function(success) {
+                treemodel.refresh();
+                $location.path("/");
+            }, function(error) {
+                var alert = { type: 'danger', msg: 'Koodiryhm\u00E4n poisto ep\u00E4onnistui.' };
+                $scope.model.alerts.push(alert);
+            });
+
+            $scope.model.deleteCodesGroupModalInstance.close();
+        };
+
+        $scope.cancelconfirmdeletecodesgroup = function() {
+            $scope.model.deleteCodesGroupModalInstance.dismiss('cancel');
+        };
+    }
+}

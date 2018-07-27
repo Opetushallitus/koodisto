@@ -27,8 +27,8 @@ public class ConfigController {
     @ResponseBody
     public String index() {
         StringBuilder b = new StringBuilder();
-        append(b, "SESSION_KEEPALIVE_INTERVAL_IN_SECONDS", Integer.toString(sessionKeepAliveIntervalInSeconds));
-        append(b, "MAX_SESSION_IDLE_TIME_IN_SECONDS", Integer.toString(maxSessionIdleTimeInSeconds));
+        append(b, "window.SESSION_KEEPALIVE_INTERVAL_IN_SECONDS", Integer.toString(sessionKeepAliveIntervalInSeconds));
+        append(b, "window.MAX_SESSION_IDLE_TIME_IN_SECONDS", Integer.toString(maxSessionIdleTimeInSeconds));
         if (!authMode.isEmpty()) {
             append(b, "AUTH_MODE", authMode);
 
@@ -39,7 +39,7 @@ public class ConfigController {
     @RequestMapping(value = "/frontProperties.js", method = RequestMethod.GET, produces = "text/javascript")
     @ResponseBody
     public String frontProperties() {
-        return "window.urls.override=" + urlProperties.frontPropertiesToJson();
+        return "window.urlProperties=" + urlProperties.frontPropertiesToJson();
     }
 
     private void append(StringBuilder b, String key, String value) {

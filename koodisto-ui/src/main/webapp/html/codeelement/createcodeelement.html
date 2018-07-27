@@ -32,7 +32,7 @@
                 <input id="name_fi" type="text" maxlength="256" class="width-30" ng-model="namefi" name="namefi" placeholder="{{'codes.finnish' | i18n}}"
                     ng-required="!namesv && !nameen || shortnamefi || descriptionfi" ng-blur="visitedName = true" />
                 <span class="text-error" ng-if="visitedName && form.namefi.$error.required"><img style="margin-right: 10px;"
-                    src="../img/alert-icon28x29.png">
+                    src="/img/alert-icon28x29.png">
                     <span ng-if="!namesv && !nameen">{{errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!namesv && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
@@ -44,7 +44,7 @@
                 <input id="name_sv" type="text" maxlength="256" class="width-30" ng-model="namesv" name="namesv" placeholder="{{'codes.swedish' | i18n}}"
                     ng-required="!namefi && !nameen || shortnamesv || descriptionsv" ng-blur="visitedName = true" />
                 <span class="text-error" ng-if="visitedName && form.namesv.$error.required"><img style="margin-right: 10px;"
-                    src="../img/alert-icon28x29.png">
+                    src="/img/alert-icon28x29.png">
                     <span ng-if="!namefi && !nameen">{{errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!namefi && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
@@ -56,7 +56,7 @@
                 <input id="name_en" type="text" maxlength="256" class="width-30" ng-model="nameen" name="nameen" placeholder="{{'codes.english' | i18n}}"
                     ng-required="!namefi && !namesv || shortnameen || descriptionen" ng-blur="visitedName = true" />
                 <span class="text-error" ng-if="visitedName && form.nameen.$error.required"><img style="margin-right: 10px;"
-                    src="../img/alert-icon28x29.png">
+                    src="/img/alert-icon28x29.png">
                     <span ng-if="!namefi && !namesv">{{errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!namefi && !namesv)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
@@ -69,7 +69,7 @@
             <div class="controls">
                 <input id="code" type="text" maxlength="256" class="width-30" ng-model="codeValue" name="codeValue" ng-blur="visitedValue = true" required />
                 <span class="text-error" ng-if="visitedValue && form.codeValue.$error.required"><img style="margin-right: 10px;"
-                    src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                    src="/img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -86,7 +86,7 @@
                 <i class="icon-calendar"></i>
 
                 <span class="text-error" ng-if="visitedDate && form.dActiveStart.$error.required"><img style="margin-right: 10px;"
-                    src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                    src="/img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -106,7 +106,7 @@
                 <input id="shortname_fi" type="text" maxlength="256" class="width-30" ng-model="shortnamefi" name="shortnamefi"
                     placeholder="{{'codes.finnish' | i18n}}" ng-blur="visitedShort = true" />
                 <span class="text-error" ng-if="visitedShort && form.shortnamefi.$error.required"><img style="margin-right: 10px;"
-                    src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                    src="/img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -115,7 +115,7 @@
                 <input id="shortname_sv" type="text" maxlength="256" class="width-30" ng-model="shortnamesv" name="shortnamesv"
                     placeholder="{{'codes.swedish' | i18n}}" ng-blur="visitedShort = true" />
                 <span class="text-error" ng-if="visitedShort && form.shortnamesv.$error.required"><img style="margin-right: 10px;"
-                    src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                    src="/img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
@@ -123,7 +123,7 @@
                 <input id="shortname_en" type="text" maxlength="256" class="width-30" ng-model="shortnameen" name="shortnameen"
                     placeholder="{{'codes.english' | i18n}}" ng-blur="visitedShort = true" />
                 <span class="text-error" ng-if="visitedShort && form.shortnameen.$error.required"><img style="margin-right: 10px;"
-                    src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                    src="/img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -141,7 +141,7 @@
                 <textarea id="description_fi" maxlength="2048" class="width-30" ng-model="descriptionfi" name="descriptionfi"
                     placeholder="{{'codes.finnish' | i18n}}" ng-blur="visitedDesc = true"></textarea>
                 <span class="text-error" ng-if="visitedDesc && form.descriptionfi.$error.required"><img style="margin-right: 10px;"
-                    src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                    src="/img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
@@ -149,7 +149,7 @@
                 <textarea id="description_sv" maxlength="2048" class="width-30" ng-model="descriptionsv" name="descriptionsv"
                     placeholder="{{'codes.swedish' | i18n}}" ng-blur="visitedDesc = true"></textarea>
                 <span class="text-error" ng-if="visitedDesc && form.descriptionsv.$error.required"><img style="margin-right: 10px;"
-                    src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                    src="/img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
@@ -157,7 +157,7 @@
                 <textarea id="description_en" maxlength="2048" class="width-30" ng-model="descriptionen" name="descriptionen"
                     placeholder="{{'codes.english' | i18n}}" ng-blur="visitedDesc = true"></textarea>
                 <span class="text-error" ng-if="visitedDesc && form.descriptionen.$error.required"><img style="margin-right: 10px;"
-                    src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+                    src="/img/alert-icon28x29.png">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -334,7 +334,7 @@
         <div class="row-fluid">
             <div class="span9">
                 <alert ng-repeat="alert in model.alerts" type="alert.type" close="closeAlert($index)"> <img style="margin-right: 10px;"
-                    src="../img/alert-icon28x29.png">{{alert.msg}}</alert>
+                    src="/img/alert-icon28x29.png">{{alert.msg}}</alert>
             </div>
         </div>
 

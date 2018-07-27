@@ -50,7 +50,7 @@ module.exports = function makeWebpackConfig(options) {
 
             // Output path from the view of the page
             // Uses webpack-dev-server in development
-            publicPath: BUILD ? '/' : 'http://localhost:8080/',
+            publicPath: BUILD ? '/koodisto-ui/html/' : 'http://localhost:8080/koodisto-ui/html/',
 
             // Filename for entry points
             // Only adds hash in build mode
@@ -106,7 +106,7 @@ module.exports = function makeWebpackConfig(options) {
             // Reference: https://github.com/webpack/raw-loader
             // Allow loading html through js
             test: /\.html$/,
-            loader: 'raw-loader'
+            loader: 'html-loader'
         }]
     };
 

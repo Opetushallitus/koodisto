@@ -1,3 +1,5 @@
+import {SERVICE_URL_BASE} from "../../main/webapp/html/app";
+
 describe("Codes Tree test", function() {
     
     var codesArray = [{
@@ -162,17 +164,17 @@ describe("Codes Tree test", function() {
       $provide.value('NoCacheInterceptor', {});
     }));
 
-    beforeEach(inject(function ($controller, $injector, $rootScope, Treemodel) {    
+    beforeEach(inject(function ($controller, $injector, $rootScope, treemodel) {
     scope = $rootScope.$new();
-    treeModel = Treemodel;
-    controller = $controller("KoodistoTreeController", {$scope: scope, Treemodel : treeModel});
+    treeModel = treemodel;
+    controller = $controller("koodistoTreeController", {$scope: scope, treemodel : treeModel});
     angular.mock.inject(function ($injector) {
             mockBackend = $injector.get('$httpBackend');
         });
     mockBackend.whenGET(SERVICE_URL_BASE + "session/maxinactiveinterval").respond(1);
     }));
     
-    it("Treemodel is defined and it is in scope", function() {
+    it("treemodel is defined and it is in scope", function() {
     expect(treeModel).toBeDefined();
     expect(scope.domain).toEqual(treeModel);
     });       

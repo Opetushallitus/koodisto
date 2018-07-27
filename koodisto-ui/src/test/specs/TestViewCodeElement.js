@@ -1,3 +1,5 @@
+import {SERVICE_URL_BASE} from "../../main/webapp/html/app";
+
 describe("Code Element View test", function() {
 
     var model, scope, mockBackend;
@@ -36,14 +38,14 @@ describe("Code Element View test", function() {
         $provide.value('NoCacheInterceptor', {});
     }));
 
-    beforeEach(inject(function($controller, $injector, $rootScope, $routeParams, ViewCodeElementModel) {
+    beforeEach(inject(function($controller, $injector, $rootScope, $routeParams, viewCodeElementModel) {
         scope = $rootScope.$new();
-        model = ViewCodeElementModel;
+        model = viewCodeElementModel;
         $routeParams.codeElementUri = "versiointitesti_uudi";
         $routeParams.codeElementVersion = 3;
-        controller = $controller("ViewCodeElementController", {
+        controller = $controller("viewCodeElementController", {
             $scope : scope,
-            ViewCodeElementModel : model
+            viewCodeElementModel : model
         });
         angular.mock.inject(function($injector) {
             mockBackend = $injector.get('$httpBackend');
@@ -51,7 +53,7 @@ describe("Code Element View test", function() {
         mockBackend.whenGET(SERVICE_URL_BASE + "session/maxinactiveinterval").respond(1);
     }));
 
-    it("ViewCodeElementModel is defined and it is in scope", function() {
+    it("viewCodeElementModel is defined and it is in scope", function() {
         expect(model).toBeDefined();
         expect(scope.model).toEqual(model);
     });

@@ -1,60 +1,75 @@
-import angular from 'angular';
+import {urls} from 'oph-urls-js';
 
-var READ = "_READ";
-var UPDATE = "_READ_UPDATE";
-var CRUD = "_CRUD";
-var OPH_ORG = "1.2.246.562.10.00000000001";
+export const READ = "_READ";
+export const UPDATE = "_READ_UPDATE";
+export const CRUD = "_CRUD";
+export const OPH_ORG = "1.2.246.562.10.00000000001";
 
-const app = angular.module('koodisto');
 
-app.factory('MyRolesModel', function($q, $http) {
-    var deferred = $q.defer();
+export class MyRolesModel {
+    constructor($q, $http) {
+        "ngInject";
+        this.$q = $q;
+        this.$http = $http;
 
-    var factory = (function() {
+        this.deferred = null;
+    }
+
+    getMyRoles() {
+        if (this.deferred) {
+            return this.deferred;
+        }
+        this.deferred= this.$q.defer();
+
         var instance = {};
         instance.myroles = [];
 
-        $http.get(window.url("cas.myroles")).success(function(result) {
+        this.$http.get(urls.url("cas.myroles")).success(function(result) {
             instance.myroles = result;
-            deferred.resolve(instance);
+            this.deferred.resolve(instance);
         });
 
-        return instance;
-    })();
+        return this.deferred.promise;
+    }
+}
 
-    return deferred.promise;
-});
-
-app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingService) {
+export class AuthService {
+    controller($q, $http, $timeout, myRolesModel) {
+        "ngInject";
+        this.$q = $q;
+        this.$http = $http;
+        this.$timeout = $timeout;
+        this.myRolesModel = myRolesModel;
+    }
 
     // organisation check
-    var readAccess = function(service,org,model) {
-        if( model.myroles.indexOf(service + READ + "_" + org) > -1 ||
+    readAccess(service,org,model) {
+        if ( model.myroles.indexOf(service + READ + "_" + org) > -1 ||
             model.myroles.indexOf(service + UPDATE + "_" + org) > -1 ||
             model.myroles.indexOf(service + CRUD + "_" + org) > -1) {
             return true;
         }
     };
 
-    var updateAccess = function(service,org,model) {
+    updateAccess(service,org,model) {
 
-        if( model.myroles.indexOf(service + UPDATE + "_" + org) > -1 ||
+        if ( model.myroles.indexOf(service + UPDATE + "_" + org) > -1 ||
             model.myroles.indexOf(service + CRUD + "_" + org) > -1) {
             return true;
         }
     };
 
-    var crudAccess = function(service,org,model) {
+    crudAccess(service,org,model) {
 
-        if( model.myroles.indexOf(service + CRUD + "_" + org) > -1) {
+        if ( model.myroles.indexOf(service + CRUD + "_" + org) > -1) {
             return true;
         }
     };
 
-    var anyUpdateAccess = function(service,model) {
+    anyUpdateAccess(service,model) {
         var found = false;
         model.myroles.forEach(function(role) {
-            if( role.indexOf(service + UPDATE) > -1 ||
+            if ( role.indexOf(service + UPDATE) > -1 ||
                 role.indexOf(service + CRUD) > -1) {
                 found = true;
             }
@@ -62,10 +77,10 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
         return found;
     };
 
-    var anyCrudAccess = function(service,model) {
+    anyCrudAccess(service,model) {
         var found = false;
         model.myroles.forEach(function(role) {
-            if( role.indexOf(service + CRUD) > -1) {
+            if ( role.indexOf(service + CRUD) > -1) {
                 found = true;
             }
         });
@@ -73,18 +88,18 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
     };
 
 
-    var accessCheck = function(service, orgOid, accessFunction) {
-        var deferred = $q.defer();
+    accessCheck(service, orgOid, accessFunction) {
+        var deferred = this.$q.defer();
 
-        MyRolesModel.then(function(model){
-            $http.get(window.url("organisaatio-service.parentoids", orgOid)).success(function(result) {
+        this.myRolesModel.getMyRoles().then(function(model){
+            this.$http.get(urls.url("organisaatio-service.parentoids", orgOid)).success((result) => {
                 var found = false;
                 result.split("/").forEach(function(org){
-                    if(accessFunction(service, org, model)){
+                    if (accessFunction(service, org, model)){
                         found = true;
                     }
                 });
-                if(found) {
+                if (found) {
                     deferred.resolve();
                 } else {
                     deferred.reject();
@@ -96,26 +111,25 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
     };
 
     // OPH check -- voidaan ohittaa organisaatioiden haku
-    var ophRead = function(service,model) {
+    ophRead(service,model) {
         return (model.myroles.indexOf(service + READ + "_" + OPH_ORG) > -1
             || model.myroles.indexOf(service + UPDATE + "_" + OPH_ORG) > -1
             || model.myroles.indexOf(service + CRUD + "_" + OPH_ORG) > -1);
-
     };
 
-    var ophUpdate = function(service,model) {
+    ophUpdate(service,model) {
         return (model.myroles.indexOf(service + UPDATE + "_" + OPH_ORG) > -1
             || model.myroles.indexOf(service + CRUD + "_" + OPH_ORG) > -1);
     };
 
-    var ophCrud = function(service,model) {
+    ophCrud(service,model) {
         return (model.myroles.indexOf(service + CRUD + "_" + OPH_ORG) > -1);
     };
 
-    var ophAccessCheck = function(service, accessFunction) {
-        var deferred = $q.defer();
+    ophAccessCheck(service, accessFunction) {
+        var deferred = this.$q.defer();
 
-        MyRolesModel.then(function(model){
+        this.myRolesModel.getMyRoles().then((model) => {
             if(accessFunction(service, model)) {
                 deferred.resolve();
             } else {
@@ -126,65 +140,62 @@ app.factory('AuthService', function($q, $http, $timeout, MyRolesModel, loadingSe
         return deferred.promise;
     };
 
-    return {
-        readOrg : function(service, orgOid) {
-            return accessCheck(service, orgOid, readAccess);
-        },
+    readOrg(service, orgOid) {
+        return this.accessCheck(service, orgOid, this.readAccess);
+    }
 
-        updateOrg : function(service, orgOid) {
-            return accessCheck(service, orgOid, updateAccess);
-        },
+    updateOrg(service, orgOid) {
+        return this.accessCheck(service, orgOid, this.updateAccess);
+    }
 
-        crudOrg : function(service, orgOid) {
-            return accessCheck(service, orgOid, crudAccess);
-        },
+    crudOrg(service, orgOid) {
+        return this.accessCheck(service, orgOid, this.crudAccess);
+    }
 
-        readOph : function(service) {
-            return ophAccessCheck(service, ophRead);
-        },
+    readOph(service) {
+        return this.ophAccessCheck(service, this.ophRead);
+    }
 
-        updateOph : function(service) {
-            return ophAccessCheck(service, ophUpdate);
-        },
+    updateOph(service) {
+        return this.ophAccessCheck(service, this.ophUpdate);
+    }
 
-        crudOph : function(service) {
-            return ophAccessCheck(service, ophCrud);
-        },
+    crudOph(service) {
+        return this.ophAccessCheck(service, this.ophCrud);
+    }
 
-        crudAny : function(service) {
-            return ophAccessCheck(service, anyCrudAccess);
-        },
+    crudAny(service) {
+        return this.ophAccessCheck(service, this.anyCrudAccess);
+    }
 
-        updateAny : function(service) {
-            return ophAccessCheck(service, anyUpdateAccess);
-        },
+    updateAny(service) {
+        return this.ophAccessCheck(service, this.anyUpdateAccess);
+    }
 
-        getOrganizations : function(service) {
-            var deferred = $q.defer();
+    getOrganizations(service) {
+        var deferred = this.$q.defer();
 
-            MyRolesModel.then(function(model){
-                organizations = [];
+        this.myRolesModel.getMyRoles().then(function(model){
+            this.organizations = [];
 
-                model.myroles.forEach(function(role) {
-                    // TODO: refaktor
-                    var org;
-                    if(role.indexOf(service + "_CRUD_") > -1) {
-                        org = role.replace(service + "_CRUD_", '');
-                    } else if(role.indexOf(service + "_READ_UPDATE_") > -1) {
-                        org = role.replace(service + "_READ_UPDATE_", '');
-                    } else if(role.indexOf(service + "_READ_UPDATE") == -1 && role.indexOf(service + "_READ_") > -1) {
-                        org = role.replace(service + "_READ_", '');
-                    }
+            model.myroles.forEach(function(role) {
+                // TODO: refaktor
+                var org;
+                if(role.indexOf(service + "_CRUD_") > -1) {
+                    org = role.replace(service + "_CRUD_", '');
+                } else if(role.indexOf(service + "_READ_UPDATE_") > -1) {
+                    org = role.replace(service + "_READ_UPDATE_", '');
+                } else if(role.indexOf(service + "_READ_UPDATE") === -1 && role.indexOf(service + "_READ_") > -1) {
+                    org = role.replace(service + "_READ_", '');
+                }
 
-                    if(org && organizations.indexOf(org) == -1) {
-                        organizations.push(org);
-                    }
-                });
-
-                deferred.resolve(organizations);
+                if(org && organizations.indexOf(org) === -1) {
+                    organizations.push(org);
+                }
             });
-            return deferred.promise;
-        }
 
-    };
-});
+            deferred.resolve(organizations);
+        });
+        return deferred.promise;
+    }
+}

@@ -7,44 +7,84 @@ import '../css/other.css';
 import '../css/selectize.default.css';
 import '../css/select-0.8.3.css';
 
+import codesMainPage from './codesmainpage.html';
+import createCodes from './codes/createcodes.html';
+import editCodes from './codes/editcodes.html';
+import viewCodes from './codes/viewcodes.html';
+import viewCodeelement from './codeelement/viewcodeelement.html';
+import createCodeelement from './codeelement/createcodeelement.html';
+import editCodeelement from './codeelement/editcodeelement.html';
+import createCodesgroup from './codesgroup/createcodesgroup.html';
+import viewCodesgroup from './codesgroup/viewcodesgroup.html';
+import editCodesgroup from './codesgroup/editcodesgroup.html';
+
 import angular from 'angular';
 import ngResource from 'angular-resource';
-import loading from './loading';
 import ngRoute from 'angular-route';
 import ngAnimate from 'angular-animate';
 import ngCookies from 'angular-cookies';
+import uiBootstrap from 'angular-ui-bootstrap';
+// import 'angular-ui-utils/modules/ie-shiv/ie-shiv';
+// import 'angular-ui-event'; // ui-utils required this
+import 'ui-select';
+import ngIdle from 'ng-idle';
+import 'angular-bindonce';
+import 'ng-upload';
+import 'jquery-i18n-properties';
+import naturalSort from 'javascript-natural-sort';
+
+import loading from './loading';
 import localization from './localization';
-import uiBootstrap from 'angular-ui-bootstrap/ui-bootstrap';
-import uiUtils from 'angular-ui-utils/modules/utils';
-import uiSelect from 'ui-select';
-import ngIdle from 'ng-idle/angular-idle';
-import pasvazBindonce from 'angular-bindonce';
-import ngUpload from 'ng-upload';
 
-var SERVICE_NAME = "APP_KOODISTO";
+import {urls} from 'oph-urls-js';
+import frontUrls from './koodisto-ui-web-oph';
+import {EventsCtrl, idleConfig, Idler, idleRun, SessionExpiresCtrl} from "./idler";
+import {CsrfHeaderInterceptor} from "./app-csrf-header";
+import {AuthService, MyRolesModel} from "./auth";
+import {KoodistoTreeController, Treemodel} from "./codesTree";
+import {Auth, IeSelectFix} from "./directives";
+import {
+    ChildOpener, ModalInstanceCtrl,
+    OrganisaatioOPHTreeModel,
+    OrganisaatioTreeController,
+    OrganisaatioTreeModel
+} from "./organizationTree";
+import {CodeElementCreatorController, CodeElementCreatorModel} from "./codeelement/createCodeElement";
+import {CodeElementEditorController, CodeElementEditorModel} from "./codeelement/editCodeElement";
+import {ViewCodeElementController, ViewCodeElementModel} from "./codeelement/viewCodeElement";
+import {CodesMatcher} from "./codes/codesMatcher";
+import {CodesCreatorController, CodesCreatorModel} from "./codes/createCodes";
+import {CodesEditorController, CodesEditorModel} from "./codes/editCodes";
+import {ViewCodesController, ViewCodesModel} from "./codes/viewCodes";
+import {CodesGroupCreatorController, CodesGroupCreatorModel} from "./codesgroup/createCodesGroup";
+import {CodesGroupEditorController, CodesGroupEditorModel} from "./codesgroup/editCodesGroup";
+import {ViewCodesGroupController, ViewCodesGroupModel} from "./codesgroup/viewCodesGroup";
 
-var app = angular.module('koodisto', [
-    'ngResource',
-    'loading',
-    'ngRoute',
-    'ngAnimate',
-    'ngCookies',
-    'localization',
-    'uiBootstrap',
-    'uiUtils',
-    'uiSelect',
-    'ngIdle',
-    'pasvazBindonce',
-    'ngUpload']);
+export const SERVICE_NAME = "APP_KOODISTO";
+
+const app = angular.module('koodisto', [
+    ngResource,
+    loading.name,
+    ngRoute,
+    ngAnimate,
+    ngCookies,
+    localization.name,
+    uiBootstrap,
+    // 'ui.utils',
+    'ui.select',
+    ngIdle,
+    'pasvaz.bindonce',
+    'ngUpload',
+]);
 
 
-var SERVICE_URL_BASE;
-var SESSION_KEEPALIVE_INTERVAL_IN_SECONDS = SESSION_KEEPALIVE_INTERVAL_IN_SECONDS || 30;
-var MAX_SESSION_IDLE_TIME_IN_SECONDS = MAX_SESSION_IDLE_TIME_IN_SECONDS || 1800;
+export let SERVICE_URL_BASE;
+export const SESSION_KEEPALIVE_INTERVAL_IN_SECONDS = window.SESSION_KEEPALIVE_INTERVAL_IN_SECONDS || 30;
+export const MAX_SESSION_IDLE_TIME_IN_SECONDS = window.MAX_SESSION_IDLE_TIME_IN_SECONDS || 1800;
 
 app.factory('NoCacheInterceptor', function() {
     return {
-        request : function(config) {
+        request: function(config) {
             if (config.method && config.method === 'GET' && config.url.indexOf('html') === -1 && config.url.indexOf("/organisaatio-service/") === -1) {
                 var separator = config.url.indexOf('?') === -1 ? '?' : '&';
                 config.url = config.url + separator + 'noCache=' + new Date().getTime();
@@ -54,79 +94,81 @@ app.factory('NoCacheInterceptor', function() {
     };
 });
 
-app.config(function($windowProvider) {
-    var $window = $windowProvider.$get();
-    SERVICE_URL_BASE = $window.url("koodisto-service.base");
-});
-
-app.run(function($http, $cookies) {
+app.run(['$http', '$cookies', function( $http, $cookies) {
     $http.defaults.headers.common['clientSubSystemCode'] = "koodisto.koodisto-ui.frontend";
     if($cookies['CSRF']) {
         $http.defaults.headers.common['CSRF'] = $cookies['CSRF'];
     }
-});
+}]);
 
 // Route configuration
-app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($routeProvider, $httpProvider, $locationProvider) {
+app.config(['$windowProvider', '$routeProvider', '$httpProvider', '$locationProvider', function($windowProvider, $routeProvider, $httpProvider, $locationProvider) {
+    // $httpProvider.interceptors.push('csrfHeaderInterceptor');
+    urls.addProperties(frontUrls);
+    if (window.urlProperties) {
+        urls.addOverrides(window.urlProperties);
+    }
+    SERVICE_URL_BASE = urls.url("koodisto-service.base");
+
     $httpProvider.interceptors.push('NoCacheInterceptor');
     $locationProvider.html5Mode(true);
     $routeProvider.
     // front page
     when('/etusivu', {
-        controller : 'KoodistoTreeController',
-        templateUrl : 'codesmainpage.html'
+        controller: 'koodistoTreeController',
+        template: codesMainPage,
     }).when('/lisaaKoodisto', {
-        controller : 'CodesCreatorController',
-        templateUrl : 'codes/createcodes.html',
-        resolve : {
+        controller: 'codesCreatorController',
+        template: createCodes,
+        resolve: {
             isModalController : function() {
                 return false;
             }
         }
     }).when('/muokkaaKoodisto/:codesUri/:codesVersion', {
-        controller : 'CodesEditorController',
-        templateUrl : 'codes/editcodes.html',
-        resolve : {
+        controller: 'codesEditorController',
+        template: editCodes,
+        resolve: {
             isModalController : function() {
                 return false;
             }
         }
     }).when('/koodisto/:codesUri/:codesVersion', {
-        controller : 'ViewCodesController',
-        templateUrl : 'codes/viewcodes.html',
-        resolve : {
+        controller: 'viewCodesController',
+        template: viewCodes,
+        resolve: {
             isModalController : function() {
                 return false;
             }
         }
     }).when('/koodi/:codeElementUri/:codeElementVersion', {
-        controller : 'ViewCodeElementController',
-        templateUrl : 'codeelement/viewcodeelement.html'
+        controller: 'viewCodeElementController',
+        template: viewCodeelement,
     }).when('/lisaaKoodi/:codesUri/:codesVersion', {
-        controller : 'CodeElementCreatorController',
-        templateUrl : 'codeelement/createcodeelement.html',
-        resolve : {
+        controller: 'codeElementCreatorController',
+        template: createCodeelement,
+        resolve: {
             isModalController : function() {
                 return false;
             }
         }
     }).when('/muokkaaKoodi/:codeElementUri/:codeElementVersion', {
-        controller : 'CodeElementEditorController',
-        templateUrl : 'codeelement/editcodeelement.html',
-        resolve : {
+        controller: 'codeElementEditorController',
+        template: editCodeelement,
+        resolve: {
             isModalController : function() {
                 return false;
             }
         }
     }).when('/lisaaKoodistoryhma', {
-        controller : 'CodesGroupCreatorController',
-        templateUrl : 'codesgroup/createcodesgroup.html'
+        controller: 'codesGroupCreatorController',
+        template: createCodesgroup,
     }).when('/koodistoryhma/:id', {
-        controller : 'ViewCodesGroupController',
-        templateUrl : 'codesgroup/viewcodesgroup.html'
+        controller: 'ViewCodesGroupController',
+        template: viewCodesgroup,
     }).when('/muokkaaKoodistoryhma/:id', {
-        controller : 'CodesGroupEditorController',
-        templateUrl : 'codesgroup/editcodesgroup.html'
+        controller: 'codesGroupEditorController',
+        template: editCodesgroup,
     }).
     // else
     otherwise({
@@ -137,7 +179,7 @@ app.config([ '$routeProvider', '$httpProvider', '$locationProvider', function($r
 // rest resources
 
 // Koodistot
-app.factory('RootCodes', function($resource) {
+app.factory('RootCodes', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes", {}, {
         get : {
             method : "GET",
@@ -145,17 +187,17 @@ app.factory('RootCodes', function($resource) {
             params : {}
         }
     });
-});
+}]);
 
-app.factory('NewCodes', function($resource) {
+app.factory('NewCodes', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes", {}, {
         post : {
             method : "POST"
         }
     });
-});
+}]);
 
-app.factory('DeleteCodes', function($resource) {
+app.factory('DeleteCodes', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes/delete/:codesUri/:codesVersion", {
         codesUri : "@codesUri",
         codesVersion : "@codesVersion"
@@ -164,17 +206,17 @@ app.factory('DeleteCodes', function($resource) {
             method : "POST"
         }
     });
-});
+}]);
 
-app.factory('NewCodesGroup', function($resource) {
-    return $resource(window.url("koodisto-service.codesgroup"), {}, {
+app.factory('NewCodesGroup', ['$resource', function($resource) {
+    return $resource(urls.url("koodisto-service.codesgroup"), {}, {
         post : {
             method : "POST"
         }
     });
-});
+}]);
 
-app.factory('DeleteCodesGroup', function($resource) {
+app.factory('DeleteCodesGroup', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codesgroup/delete/:id", {
         id : "@id"
     }, {
@@ -182,25 +224,25 @@ app.factory('DeleteCodesGroup', function($resource) {
             method : "POST"
         }
     });
-});
+}]);
 
-app.factory('UpdateCodesGroup', function($resource) {
+app.factory('UpdateCodesGroup', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codesgroup", {}, {
         put : {
             method : "PUT"
         }
     });
-});
+}]);
 
-app.factory('UpdateCodes', function($resource) {
+app.factory('UpdateCodes', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes", {}, {
         put : {
             method : "PUT"
         }
     });
-});
+}]);
 
-app.factory('SaveCodes', function($resource) {
+app.factory('SaveCodes', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes/save", {}, {
         put : {
             method : "PUT",
@@ -209,9 +251,9 @@ app.factory('SaveCodes', function($resource) {
             }
         }
     });
-});
+}]);
 
-app.factory('CodesByUri', function($resource) {
+app.factory('CodesByUri', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes/:codesUri", {
         codesUri : "@codesUri"
     }, {
@@ -219,9 +261,9 @@ app.factory('CodesByUri', function($resource) {
             method : "GET"
         }
     });
-});
+}]);
 
-app.factory('CodesByUriAndVersion', function($resource) {
+app.factory('CodesByUriAndVersion', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes/:codesUri/:codesVersion", {
         codesUri : "@codesUri",
         codesVersion : "@codesVersion"
@@ -230,9 +272,9 @@ app.factory('CodesByUriAndVersion', function($resource) {
             method : "GET"
         }
     });
-});
+}]);
 
-app.factory('CodesGroupByUri', function($resource) {
+app.factory('CodesGroupByUri', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codesgroup/:id", {
         id : "@id"
     }, {
@@ -240,16 +282,16 @@ app.factory('CodesGroupByUri', function($resource) {
             method : "GET"
         }
     });
-});
+}]);
 
-app.factory('AllCodes', function($resource) {
+app.factory('AllCodes', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes/all", {}, {
         get : {
             method : "GET",
             isArray : true
         }
     });
-});
+}]);
 
 app.factory('DownloadCodes', function() {
     return function(codesUri, codesVersion, format, encoding) {
@@ -265,16 +307,16 @@ app.factory('DownloadCodes', function() {
     };
 });
 
-app.factory('MyRoles', function($resource) {
-    return $resource(window.url("cas.myroles"), {}, {
+app.factory('MyRoles', ['$resource', function($resource) {
+    return $resource(urls.url("cas.myroles"), {}, {
         get : {
             method : "GET",
             isArray : true
         }
     });
-});
+}]);
 
-app.factory('CodeElementsByCodesUriAndVersion', function($resource) {
+app.factory('CodeElementsByCodesUriAndVersion', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/codes/:codesUri/:codesVersion", {
         codesUri : "@codesUri",
         codesVersion : "@codesVersion"
@@ -284,9 +326,9 @@ app.factory('CodeElementsByCodesUriAndVersion', function($resource) {
             isArray : true
         }
     });
-});
+}]);
 
-app.factory('CodeElementByUriAndVersion', function($resource) {
+app.factory('CodeElementByUriAndVersion', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/:codeElementUri/:codeElementVersion", {
         codeElementUri : "@codeElementUri",
         codeElementVersion : "@codeElementVersion"
@@ -296,9 +338,9 @@ app.factory('CodeElementByUriAndVersion', function($resource) {
             isArray : false
         }
     });
-});
+}]);
 
-app.factory('CodeElementByCodeElementUri', function($resource) {
+app.factory('CodeElementByCodeElementUri', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/:codesUri/:codesVersion/:codeElementUri", {
         codesUri : "@codesUri",
         codesVersion : "@codesVersion",
@@ -309,9 +351,9 @@ app.factory('CodeElementByCodeElementUri', function($resource) {
             isArray : false
         }
     });
-});
+}]);
 
-app.factory('CodeElementVersionsByCodeElementUri', function($resource) {
+app.factory('CodeElementVersionsByCodeElementUri', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/:codeElementUri", {
         codeElementUri : "@codeElementUri"
     }, {
@@ -320,9 +362,9 @@ app.factory('CodeElementVersionsByCodeElementUri', function($resource) {
             isArray : true
         }
     });
-});
+}]);
 
-app.factory('LatestCodeElementVersionsByCodeElementUri', function($resource) {
+app.factory('LatestCodeElementVersionsByCodeElementUri', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/latest/:codeElementUri", {
         codeElementUri : "@codeElementUri"
     }, {
@@ -331,17 +373,17 @@ app.factory('LatestCodeElementVersionsByCodeElementUri', function($resource) {
             isArray : false
         }
     });
-});
+}]);
 
-app.factory('NewCodeElement', function($resource) {
+app.factory('NewCodeElement', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/:codesUri", {}, {
         post : {
             method : "POST"
         }
     });
-});
+}]);
 
-app.factory('DeleteCodeElement', function($resource) {
+app.factory('DeleteCodeElement', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/delete/:codeElementUri/:codeElementVersion", {
         codeElementUri : "@codeElementUri",
         codeElementVersion : "@codeElementVersion"
@@ -350,9 +392,9 @@ app.factory('DeleteCodeElement', function($resource) {
             method : "POST"
         }
     });
-});
+}]);
 
-app.factory('RemoveRelationCodeElement', function($resource) {
+app.factory('RemoveRelationCodeElement', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/removerelation/:codeElementUri/:codeElementUriToRemove/:relationType", {
         codeElementUri : "@codeElementUri",
         codeElementUriToRemove : "@codeElementUriToRemove",
@@ -362,18 +404,18 @@ app.factory('RemoveRelationCodeElement', function($resource) {
             method : "POST"
         }
     });
-});
+}]);
 
-app.factory('MassRemoveRelationCodeElements', function($resource) {
+app.factory('MassRemoveRelationCodeElements', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/removerelations", {
     }, {
         remove : {
             method : "POST"
         }
     });
-});
+}]);
 
-app.factory('AddRelationCodeElement', function($resource) {
+app.factory('AddRelationCodeElement', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/addrelation/:codeElementUri/:codeElementUriToAdd/:relationType", {
         codeElementUri : "@codeElementUri",
         codeElementUriToAdd : "@codeElementUriToAdd",
@@ -383,9 +425,9 @@ app.factory('AddRelationCodeElement', function($resource) {
             method : "POST"
         }
     });
-});
+}]);
 
-app.factory('MassAddRelationCodeElements', function($resource) {
+app.factory('MassAddRelationCodeElements', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/addrelations", {
 
     }, {
@@ -393,9 +435,9 @@ app.factory('MassAddRelationCodeElements', function($resource) {
             method : "POST"
         }
     });
-});
+}]);
 
-app.factory('AddRelationCodes', function($resource) {
+app.factory('AddRelationCodes', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes/addrelation/:codesUri/:codesUriToAdd/:relationType", {
         codesUri : "@codesUri",
         codesUriToAdd : "@codesUriToAdd",
@@ -405,9 +447,9 @@ app.factory('AddRelationCodes', function($resource) {
             method : "POST"
         }
     });
-});
+}]);
 
-app.factory('RemoveRelationCodes', function($resource) {
+app.factory('RemoveRelationCodes', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codes/removerelation/:codesUri/:codesUriToRemove/:relationType", {
         codesUri : "@codesUri",
         codesUriToRemove : "@codesUriToRemove",
@@ -417,9 +459,9 @@ app.factory('RemoveRelationCodes', function($resource) {
             method : "POST"
         }
     });
-});
+}]);
 
-app.factory('SaveCodeElement', function($resource) {
+app.factory('SaveCodeElement', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement/save", {}, {
         put : {
             method : "PUT",
@@ -428,49 +470,49 @@ app.factory('SaveCodeElement', function($resource) {
             }
         }
     });
-});
+}]);
 
-app.factory('UpdateCodeElement', function($resource) {
+app.factory('UpdateCodeElement', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "codeelement", {}, {
         put : {
             method : "PUT"
         }
     });
-});
+}]);
 
-app.factory('Organizations', function($resource) {
-    return $resource(window.url("organisaatio-service.hae"), {}, {
+app.factory('Organizations', ['$resource', function($resource) {
+    return $resource(urls.url("organisaatio-service.hae"), {}, {
         get : {
             method : "GET"
         }
     });
-});
+}]);
 
-app.factory('OrganizationChildrenByOid', function($resource) {
-    return $resource(window.url("organisaatio-service.hae") + "?oidrestrictionlist=:oid&skipparents=true", {
+app.factory('OrganizationChildrenByOid', ['$resource', function($resource) {
+    return $resource(urls.url("organisaatio-service.hae") + "?oidrestrictionlist=:oid&skipparents=true", {
         oid : "@oid"
     }, {
         get : {
             method : "GET"
         }
     });
-});
+}]);
 
-app.factory('OrganizationByOid', function($resource) {
-    return $resource(window.url("organisaatio-service.byOid"), {
+app.factory('OrganizationByOid', ['$resource', function($resource) {
+    return $resource(urls.url("organisaatio-service.byOid"), {
         oid : "@oid"
     }, {
         get : {
             method : "GET"
         }
     });
-});
+}]);
 
-app.factory('SessionPoll', function($resource) {
+app.factory('SessionPoll', ['$resource', function($resource) {
     return $resource(SERVICE_URL_BASE + "session/maxinactiveinterval", {}, {
         get: {method:   "GET"}
     });
-});
+}]);
 
 app.filter('naturalSort', function() {
     return function(arrInput, field, reverse) {
@@ -534,12 +576,82 @@ app.filter('forLoop', function() {
 });
 
 // Konfiguroidaan DatePicker alkamaan viikon maanantaista (default = sunnuntai)
-app.config(function(datepickerConfig) {
+app.config(['datepickerConfig', function(datepickerConfig) {
     datepickerConfig.startingDay = 1;
-});
+}]);
 
 app.run(["SessionPoll", function(SessionPoll) {
     SessionPoll.get({});
 }]);
 
-export default app;
+// app.directive('idler', () => new Idler);
+
+app.controller('sessionExpiresCtrl', SessionExpiresCtrl);
+
+app.controller('eventsCtrl', EventsCtrl);
+
+app.config(idleConfig);
+
+app.run(idleRun);
+
+app.service('csrfHeaderInterceptor', CsrfHeaderInterceptor);
+
+app.service('myRolesModel', MyRolesModel);
+
+app.service('authService', AuthService);
+
+app.service('treemodel', Treemodel);
+
+app.controller('koodistoTreeController', KoodistoTreeController);
+
+// app.directive('auth', () => new Auth);
+
+// app.directive('ieSelectFix', () => new IeSelectFix);
+
+app.service('childOpener', ChildOpener);
+
+app.service('OrganisaatioTreeModel', OrganisaatioTreeModel);
+
+app.service('organisaatioOPHTreeModel', OrganisaatioOPHTreeModel);
+
+app.controller('organisaatioTreeController', OrganisaatioTreeController);
+
+app.controller('modalInstanceCtrl', ModalInstanceCtrl);
+
+app.service('codeElementCreatorModel', CodeElementCreatorModel);
+
+app.controller('codeElementCreatorController', CodeElementCreatorController);
+
+app.service('codeElementEditorModel', CodeElementEditorModel);
+
+app.controller('codeElementEditorController', CodeElementEditorController);
+
+app.service('viewCodeElementModel', ViewCodeElementModel);
+
+app.controller('viewCodeElementController', ViewCodeElementController);
+
+app.service('codesMatcher', CodesMatcher);
+
+app.service('codesCreatorModel', CodesCreatorModel);
+
+app.controller('codesCreatorController', CodesCreatorController);
+
+app.service('codesEditorModel', CodesEditorModel);
+
+app.controller('codesEditorController', CodesEditorController);
+
+app.service('viewCodesModel', ViewCodesModel);
+
+app.controller('viewCodesController', ViewCodesController);
+
+app.service('codesGroupCreatorModel', CodesGroupCreatorModel);
+
+app.controller('codesGroupCreatorController', CodesGroupCreatorController);
+
+app.service('CodesGroupEditorModel', CodesGroupEditorModel);
+
+app.controller('codesGroupEditorController', CodesGroupEditorController);
+
+app.service('viewCodesGroupModel', ViewCodesGroupModel);
+
+app.controller('ViewCodesGroupController', ViewCodesGroupController);

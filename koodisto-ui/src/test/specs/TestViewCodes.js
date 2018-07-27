@@ -1,3 +1,5 @@
+import {SERVICE_URL_BASE} from "../../main/webapp/html/app";
+
 describe("Codes View test", function() {
 
     var model, scope, mockBackend;
@@ -6,12 +8,12 @@ describe("Codes View test", function() {
         $provide.value('NoCacheInterceptor', {});
     }));
 
-    beforeEach(inject(function($controller, $injector, $rootScope, $routeParams, ViewCodesModel) {
+    beforeEach(inject(function($controller, $injector, $rootScope, $routeParams, viewCodesModel) {
         scope = $rootScope.$new();
-        model = ViewCodesModel;
+        model = viewCodesModel;
         $routeParams.codesUri = "espoonoikeudet";
         $routeParams.codesVersion = 1;
-        controller = $controller("ViewCodesController", {
+        controller = $controller("viewCodesController", {
             $scope : scope,
             ViwCodesModel : model,
             isModalController : false
@@ -22,7 +24,7 @@ describe("Codes View test", function() {
         mockBackend.whenGET(SERVICE_URL_BASE + "session/maxinactiveinterval").respond(1);
     }));
 
-    it("ViewCodesModel is defined and it is in scope", function() {
+    it("viewCodesModel is defined and it is in scope", function() {
         expect(model).toBeDefined();
         expect(scope.model).toEqual(model);
     });

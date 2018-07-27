@@ -3,7 +3,7 @@ import angular from "angular";
 import jQuery from 'jquery';
 
 export default angular.module('localization', [])
-    .filter('i18n', [ '$rootScope', '$locale', function($rootScope, $locale) {
+    .filter('i18n', [ function() {
         jQuery.i18n.properties({
             name : 'messages',
             path : '../i18n/',

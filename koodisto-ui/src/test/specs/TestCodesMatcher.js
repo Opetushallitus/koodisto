@@ -20,8 +20,8 @@ describe("Codes Matcher test", function() {
 
     beforeEach(module("koodisto"))
 
-    beforeEach(inject(function(CodesMatcher) {
-        matcher = CodesMatcher;
+    beforeEach(inject(function(codesMatcher) {
+        matcher = codesMatcher;
     }))
 
     it("returns true if filter is undefined", function() {

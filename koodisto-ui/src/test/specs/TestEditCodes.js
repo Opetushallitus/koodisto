@@ -1,3 +1,5 @@
+import {SERVICE_URL_BASE} from "../../main/webapp/html/app";
+
 describe("Edit codes test", function() {
     
     var model, scope, mockBackend, q;
@@ -13,20 +15,20 @@ describe("Edit codes test", function() {
     });
     }));
 
-    beforeEach(inject(function ($controller, $injector, $rootScope, $routeParams, CodesEditorModel, $q) {    
+    beforeEach(inject(function ($controller, $injector, $rootScope, $routeParams, codesEditorModel, $q) {
     scope = $rootScope.$new();
-    model = CodesEditorModel;
+    model = codesEditorModel;
     q = $q;
     $routeParams.codesUri = "espoonoikeudet";
     $routeParams.codesVersion = 1;
-    $controller("CodesEditorController", {$scope: scope, CodesEditorModel : model, isModalController : false});
+    $controller("codesEditorController", {$scope: scope, codesEditorModel : model, isModalController : false});
     angular.mock.inject(function ($injector) {
         mockBackend = $injector.get('$httpBackend');
     });
     mockBackend.whenGET(SERVICE_URL_BASE + "session/maxinactiveinterval").respond(1);
     }));
     
-    it("CodesEditorModel is defined and it is in scope", function() {
+    it("codesEditorModel is defined and it is in scope", function() {
     expect(model).toBeDefined();
     expect(scope.model).toEqual(model);
     });

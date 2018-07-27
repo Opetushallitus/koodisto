@@ -1,111 +1,132 @@
-import angular from 'angular';
 import {getLanguageSpecificValueOrValidValue} from "./app";
 
-const app = angular.module('koodisto');
 //domain .. this is both, service & domain layer
-app.factory('Treemodel', function($resource, RootCodes, MyRoles, CodesMatcher) {
-    // keep model to yourself
-    var model = {
-        name : "ROOT",
-        codeList : [],
-        myRoleList : []
-    };
+export class Treemodel {
+    constructor($resource, RootCodes, MyRoles, codesMatcher) {
+        "ngInject";
+        this.$resource = $resource;
+        this.RootCodes = RootCodes;
+        this.MyRoles = MyRoles;
+        this.codesMatcher = codesMatcher;
+
+        // keep model to yourself
+        this.model = {
+            name: "ROOT",
+            codeList: [],
+            myRoleList: []
+        };
+
+        this.filter = '';
+        this.search = {
+            codesfound: 0
+        };
+
+        this.refresh();
+    }
 
     // and return interface for manipulating the model
-    var modelInterface = {
-        filter : '',
-        search : {
-            codesfound : 0
-        },
-        isVisibleNode : function(data) {
-            return (CodesMatcher.nameOrTunnusMatchesSearch(data, this.filter.name)) && (!this.filter.own || this.filter.own && this.isOwnedNode(data))
-                    && (this.filter.passivated || !this.filter.passivated && !this.isPassivatedNode(data))
-                    && (this.filter.planned || !this.filter.planned && !this.isPlannedNode(data));
-        },
-        isOwnedNode : function(data) {
-            /*
-             * MyRoles.get({}, function (result) { model.myRoleList = result; });
-             */
-        },
-        isPassivatedNode : function(data) {
-            var today = new Date();
-            var endDate = Date.parse(data.latestKoodistoVersio.voimassaLoppuPvm);
-            return (!isNaN(endDate) && endDate < today);
-        },
-        isPlannedNode : function(data) {
-            var today = new Date();
-            var startDate = Date.parse(data.latestKoodistoVersio.voimassaAlkuPvm);
-            return (!isNaN(startDate) && startDate > today);
-        },
-        getKoodistos : function(data) {
-            return data.koodistos;
-        },
-        isExpanded : function(data) {
-            return data.isVisible;
-        },
-        isCollapsed : function(data) {
-            return !this.isExpanded(data);
-        },
-        getTemplate : function(data) {
-            if (data) {
-                if (data.koodistos) {
-                    return "codesgroup_node.html";
-                } else {
-                    return "codes_leaf.html";
-                }
-            }
-            return "";
-        },
-        getRootNode : function() {
-            return model.codeList;
-        },
-        expandNode : function(node) {
+    isVisibleNode(data) {
+        return (this.codesMatcher.nameOrTunnusMatchesSearch(data, this.filter.name)) && (!this.filter.own || this.filter.own && this.isOwnedNode(data))
+            && (this.filter.passivated || !this.filter.passivated && !this.isPassivatedNode(data))
+            && (this.filter.planned || !this.filter.planned && !this.isPlannedNode(data));
+    }
+    
+    isOwnedNode(data) {
+        /*
+         * MyRoles.get({}, function (result) { model.myRoleList = result; });
+         */
+    }
+    
+    isPassivatedNode(data) {
+        var today = new Date();
+        var endDate = Date.parse(data.latestKoodistoVersio.voimassaLoppuPvm);
+        return (!isNaN(endDate) && endDate < today);
+    }
+    
+    isPlannedNode(data) {
+        var today = new Date();
+        var startDate = Date.parse(data.latestKoodistoVersio.voimassaAlkuPvm);
+        return (!isNaN(startDate) && startDate > today);
+    }
 
-        },
-        refresh : function() {
-            modelInterface.search.codesfound = 0;
-            model.codeList = [];
-            // get initial listing
-            RootCodes.get({}, function(result) {
-                model.codeList = result;
-                modelInterface.update();
-            });
-        },
-        update : function() {
-            modelInterface.search.codesfound = 0;
-            for (var i = 0; i < model.codeList.length; i++) {
-                if (model.codeList[i].koodistos) {
-                    for (var j = 0; j < model.codeList[i].koodistos.length; j++) {
-                        model.codeList[i].koodistos[j].isVisible = this.isVisibleNode(model.codeList[i].koodistos[j]);
-                        model.codeList[i].isVisible = this.filter && this.filter.name && this.filter.name.length > 1;
-                        if (model.codeList[i].koodistos[j].isVisible) {
-                            modelInterface.search.codesfound++;
-                        }
+    getKoodistos(data) {
+        return data.koodistos;
+    }
+
+    isExpanded(data) {
+        return data.isVisible;
+    }
+
+    isCollapsed(data) {
+        return !this.isExpanded(data);
+    }
+
+    getTemplate(data) {
+        if (data) {
+            if (data.koodistos) {
+                return "codesgroup_node.html";
+            } else {
+                return "codes_leaf.html";
+            }
+        }
+        return "";
+    }
+
+    getRootNode() {
+        return this.model.codeList;
+    }
+
+    expandNode(node) {
+
+    }
+
+    refresh() {
+        this.search.codesfound = 0;
+        this.model.codeList = [];
+        // get initial listing
+        this.RootCodes.get({}, (result) => {
+            this.model.codeList = result;
+            this.update();
+        });
+    }
+
+    update() {
+        this.search.codesfound = 0;
+        for (var i = 0; i < this.model.codeList.length; i++) {
+            if (this.model.codeList[i].koodistos) {
+                for (var j = 0; j < this.model.codeList[i].koodistos.length; j++) {
+                    this.model.codeList[i].koodistos[j].isVisible = this.isVisibleNode(this.model.codeList[i].koodistos[j]);
+                    this.model.codeList[i].isVisible = this.filter && this.filter.name && this.filter.name.length > 1;
+                    if (this.model.codeList[i].koodistos[j].isVisible) {
+                        this.search.codesfound++;
                     }
                 }
             }
-        },
-        languageSpecificValue : function(fieldArray, fieldName, language) {
-            return getLanguageSpecificValueOrValidValue(fieldArray, fieldName, language);
         }
-    };
-    modelInterface.refresh();
-    return modelInterface;
-});
-
-app.controller('KoodistoTreeController', function ($scope, $resource, $routeParams, Treemodel) {
-    $scope.predicate = 'koodistoUri';
-    $scope.domain = Treemodel;
-    if($routeParams.forceRefresh){
-        $scope.domain.refresh();
     }
 
-    $scope.addClass = function(cssClass, ehto) {
-        return ehto ? cssClass : "";
-    };
+    languageSpecificValue(fieldArray, fieldName, language) {
+        return getLanguageSpecificValueOrValidValue(fieldArray, fieldName, language);
+    }
+}
 
-    $scope.expandNode = function(node) {
-        node.isVisible = !node.isVisible;
-    };
 
-});
+
+export class KoodistoTreeController {
+    constructor($scope, $resource, $routeParams, treemodel) {
+        "ngInject";
+        $scope.predicate = 'koodistoUri';
+        $scope.domain = treemodel;
+        if ($routeParams.forceRefresh){
+            $scope.domain.refresh();
+        }
+
+        $scope.addClass = function(cssClass, ehto) {
+            return ehto ? cssClass : "";
+        };
+
+        $scope.expandNode = function(node) {
+            node.isVisible = !node.isVisible;
+        }
+    }
+}

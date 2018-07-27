@@ -111,12 +111,6 @@ buildTtime=${maven.build.timestamp}]]>
         <artifactId>generic-common</artifactId>
         <version>${generic.version}</version>
       </dependency>
-      <dependency>
-        <groupId>fi.vm.sade.generic</groupId>
-        <artifactId>webapp-portal-decorator</artifactId>
-        <version>${generic.version}</version>
-        <type>war</type>
-      </dependency>
 
       <dependency>
         <groupId>org.springframework</groupId>

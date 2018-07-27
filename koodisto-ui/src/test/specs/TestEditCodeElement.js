@@ -1,3 +1,5 @@
+import {SERVICE_URL_BASE} from "../../main/webapp/html/app";
+
 describe(
         "Code Element Edit test",
         function() {
@@ -15,16 +17,16 @@ describe(
                 });
             }));
 
-            beforeEach(inject(function($controller, $injector, $rootScope, $routeParams, CodeElementEditorModel, $q) {
+            beforeEach(inject(function($controller, $injector, $rootScope, $routeParams, codeElementEditorModel, $q) {
                 q = $q;
                 scope = $rootScope.$new();
-                model = CodeElementEditorModel;
+                model = codeElementEditorModel;
                 model.shownCodeElements = [];
                 $routeParams.codeElementUri = "versiointitesti_uudi";
                 $routeParams.codeElementVersion = 3;
-                controller = $controller("CodeElementEditorController", {
+                controller = $controller("codeElementEditorController", {
                     $scope : scope,
-                    CodeElementEditorModel : model,
+                    codeElementEditorModel : model,
                     isModalController : false
                 });
                 angular.mock.inject(function() {
@@ -33,7 +35,7 @@ describe(
                 mockBackend.whenGET(SERVICE_URL_BASE + "session/maxinactiveinterval").respond(1);
             }));
 
-            it("CodeElementEditorModel is defined and it is in scope", function() {
+            it("codeElementEditorModel is defined and it is in scope", function() {
                 expect(model).toBeDefined();
                 expect(scope.model).toEqual(model);
             });

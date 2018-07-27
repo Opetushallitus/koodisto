@@ -1,3 +1,5 @@
+import {SERVICE_URL_BASE} from "../../main/webapp/html/app";
+
 describe("Application Test", function() {
    
     var RootCodes, NewCodes, DeleteCodes, NewCodesGroup, DeleteCodesGroup, UpdateCodesGroup, UpdateCodes, CodesByUri, CodesByUriAndVersion;
@@ -46,16 +48,16 @@ describe("Application Test", function() {
     });
     
     it("controllers are defined", function() {
-       expect(KoodistoTreeController).toBeDefined();
-       expect(CodesCreatorController).toBeDefined();
-       expect(CodesEditorController).toBeDefined();
-       expect(ViewCodesController).toBeDefined();
-       expect(ViewCodeElementController).toBeDefined();
-       expect(CodeElementCreatorController).toBeDefined();
-       expect(CodeElementEditorController).toBeDefined();
-       expect(CodesGroupCreatorController).toBeDefined();
+       expect(koodistoTreeController).toBeDefined();
+       expect(codesCreatorController).toBeDefined();
+       expect(codesEditorController).toBeDefined();
+       expect(viewCodesController).toBeDefined();
+       expect(viewCodeElementController).toBeDefined();
+       expect(codeElementCreatorController).toBeDefined();
+       expect(codeElementEditorController).toBeDefined();
+       expect(codesGroupCreatorController).toBeDefined();
        expect(ViewCodesGroupController).toBeDefined();
-       expect(CodesGroupEditorController).toBeDefined();
+       expect(codesGroupEditorController).toBeDefined();
     });
     
     it("resources are defined", function() {
