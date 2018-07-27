@@ -103,7 +103,7 @@ app.run(['$http', '$cookies', function( $http, $cookies) {
 
 // Route configuration
 app.config(['$windowProvider', '$routeProvider', '$httpProvider', '$locationProvider', function($windowProvider, $routeProvider, $httpProvider, $locationProvider) {
-    // $httpProvider.interceptors.push('csrfHeaderInterceptor');
+    $httpProvider.interceptors.push('csrfHeaderInterceptor');
     urls.addProperties(frontUrls);
     if (window.urlProperties) {
         urls.addOverrides(window.urlProperties);
