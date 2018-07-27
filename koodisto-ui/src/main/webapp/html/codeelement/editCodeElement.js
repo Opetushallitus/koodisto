@@ -1,8 +1,7 @@
 import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue, SERVICE_NAME} from "../app";
 
 export class CodeElementEditorModel {
-    constructor($modal, $location, RootCodes, CodeElementByUriAndVersion, AllCodes, CodeElementsByCodesUriAndVersion,
-                LatestCodeElementVersionsByCodeElementUri, AuthService) {
+    constructor($modal, $location, RootCodes, CodeElementByUriAndVersion, AllCodes, CodeElementsByCodesUriAndVersion, LatestCodeElementVersionsByCodeElementUri, authService) {
         "ngInject";
         this.$modal = $modal;
         this.$location = $location;
@@ -11,7 +10,7 @@ export class CodeElementEditorModel {
         this.AllCodes = AllCodes;
         this.CodeElementsByCodesUriAndVersion = CodeElementsByCodesUriAndVersion;
         this.LatestCodeElementVersionsByCodeElementUri = LatestCodeElementVersionsByCodeElementUri;
-        this.AuthService = AuthService;
+        this.authService = authService;
 
         this.states = [{
             key: 'PASSIIVINEN',
@@ -154,7 +153,7 @@ export class CodeElementEditorModel {
             var koodistos = this.allCodes[i].koodistos;
             var temp = [];
             if (koodistos) {
-                for (var j = 0; j < koodistos.length; j++) {
+                for (let j = 0; j < koodistos.length; j++) {
                     var koodisto = koodistos[j];
                     // Vain ne koodit näytetään, jotka ovat samssa organisaatiossa tämän kanssa
                     if (koodisto.organisaatioOid === this.codeElement.koodisto.organisaatioOid) {
@@ -169,7 +168,7 @@ export class CodeElementEditorModel {
     getAllCodes() {
         this.RootCodes.get({}, (result) => {
             this.allCodes = result;
-            this.AuthService.updateOph(SERVICE_NAME)
+            this.authService.updateOph(SERVICE_NAME)
                 .then(
                     () => { },
                     this.filterCodes

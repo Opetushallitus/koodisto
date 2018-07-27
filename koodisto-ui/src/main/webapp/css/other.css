@@ -209,9 +209,7 @@
     padding: 0 0 0 24px; }
 .selectlist .collapse,
 .treelist .collapse {
-    background-image: url("/img/itemtree-collapse-sprite.png");
-    background-position: left center;
-    background-repeat: no-repeat;
+    background: url("#{resource['img/itemtree-collapse-sprite.png']") no-repeat left center;
     cursor: pointer;
     height: 20px;
     left: -26px;
@@ -220,8 +218,7 @@
     width: 20px; }
 .selectlist .icon,
 .treelist .icon {
-    background-position: left center;
-    background-repeat: no-repeat;
+    background: no-repeat left center;
     cursor: pointer;
     height: 20px;
     left: -26px;
@@ -230,26 +227,24 @@
     width: 20px; }
 .selectlist .icon.folder,
 .treelist .icon.folder {
-    background-image: url("/img/18x18-ui-icons.png");
     /* Temporary image replacement */
-    background-position: 0px 0px;
-    background-repeat: no-repeat;
+    background: url("#{resource['img/18x18-ui-icons.png']") no-repeat 0 0;
     cursor: pointer;
     display: inline-block;
     height: 18px;
     left: -23px;
     position: absolute;
-    top: 0px;
+    top: 0;
     width: 18px; }
 .selectlist .icon.folder:hover,
 .treelist .icon.folder:hover {
-    background-position: 0px -18px; }
+    background-position: 0 -18px; }
 .selectlist .icon.folder:active,
 .treelist .icon.folder:active {
-    background-position: 0px -36px; }
+    background-position: 0 -36px; }
 .selectlist .icon.folder.open,
 .treelist .icon.folder.open {
-    background-position: -18px 0px; }
+    background-position: -18px 0; }
 .selectlist .icon.folder.open:hover,
 .treelist .icon.folder.open:hover {
     background-position: -18px -18px; }
@@ -258,7 +253,7 @@
     background-position: -18px -36px; }
 .selectlist .icon.file,
 .treelist .icon.file {
-    background-image: url("/img/18x18-ui-icons.png");
+    background-image: url("#{resource['img/18x18-ui-icons.png']");
     /* Temporary image replacement */
     background-position: -72px 0px;
     background-repeat: no-repeat;

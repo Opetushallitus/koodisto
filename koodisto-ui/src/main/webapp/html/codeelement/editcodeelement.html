@@ -80,10 +80,10 @@
             </tr>
         </thead>
         <tbody>
-            <tr bindonce ng-repeat="codeElement in paginationPage">
+            <tr ng-repeat="codeElement in ::paginationPage">
                 <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" value="{{codeElement.checked}}" ng-model="codeElement.checked"/></td>
-                <td class="align-center" bo-text="codeElement.value"></td>
-                <td class="align-center" bo-text="codeElement.name"></td>
+                <td class="align-center">{{:: codeElement.value}}</td>
+                <td class="align-center">{{:: codeElement.name}}</td>
             </tr>
         </tbody>
     </table>
@@ -160,7 +160,7 @@
             <div class="controls">
                 <input id="name_fi" type="text" maxlength="256" class="width-30" ng-model="model.namefi" name="namefi" placeholder="{{'codes.finnish' | i18n}}"
                     ng-required="!model.namesv && !model.nameen || model.shortnamefi || model.descriptionfi" ng-change="setSameValue('name')" />
-                <span class="text-error" ng-if="form.namefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">
+                <span class="text-error" ng-if="form.namefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">
                     <span ng-if="!model.namesv && !model.nameen">{{errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!model.namesv && !model.nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
@@ -170,7 +170,7 @@
             <div class="controls">
                 <input id="name_sv" type="text" maxlength="256" class="width-30" ng-model="model.namesv" name="namesv" placeholder="{{'codes.swedish' | i18n}}"
                     ng-required="!model.namefi && !model.nameen || model.shortnamesv || model.descriptionsv" ng-disabled="model.samename"/>
-                <span class="text-error" ng-if="form.namesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">
+                <span class="text-error" ng-if="form.namesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">
                     <span ng-if="!model.namefi && !model.nameen">{{errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!model.namefi && !model.nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
@@ -181,7 +181,7 @@
             <div class="controls">
                 <input id="name_en" type="text" maxlength="256" class="width-30" ng-model="model.nameen" name="nameen" placeholder="{{'codes.english' | i18n}}"
                     ng-required="!model.namefi && !model.namesv || model.shortnameen || model.descriptionen" ng-disabled="model.samename" />
-                <span class="text-error" ng-if="form.nameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">
+                <span class="text-error" ng-if="form.nameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">
                     <span ng-if="!model.namefi && !model.namesv">{{errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!model.namefi && !model.namesv)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
@@ -192,7 +192,7 @@
             <label for="code" class="control-label">{{'codeelement.editpage.codevalue' | i18n}}</label>
             <div class="controls">
                 <input id="code" type="text" maxlength="256" class="width-30" ng-model="model.codeValue" name="codeValue" required />
-                <span class="text-error" ng-if="form.codeValue.$error.required && loadingReady"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.codeValue.$error.required && loadingReady"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -206,7 +206,7 @@
                 <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codeElement.voimassaLoppuPvm"
                     min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" />
                 <i class="icon-calendar"></i>
-                <span class="text-error" ng-if="form.voimassaAlkuPvm.$error.required && loadingReady"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.voimassaAlkuPvm.$error.required && loadingReady"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -222,21 +222,21 @@
             <div class="controls">
                 <input id="shortname_fi" type="text" maxlength="256" class="width-30" ng-model="model.shortnamefi" name="shortnamefi"
                     placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('shortname')"/>
-                <span class="text-error" ng-if="form.shortnamefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.shortnamefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
                 <input id="shortname_sv" type="text" maxlength="256" class="width-30" ng-model="model.shortnamesv" name="shortnamesv"
                     placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.sameshortname"/>
-                <span class="text-error" ng-if="form.shortnamesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.shortnamesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">{{errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
                 <input id="shortname_en" type="text" maxlength="256" class="width-30" ng-model="model.shortnameen" name="shortnameen"
                     placeholder="{{'codes.english' | i18n}}" ng-disabled="model.sameshortname"/>
-                <span class="text-error" ng-if="form.shortnameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.shortnameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -252,7 +252,7 @@
             <div class="controls">
                 <textarea id="description_fi" maxlength="2048" class="width-30" ng-model="model.descriptionfi" name="descriptionfi"
                     placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('description')"  ></textarea>
-                <span class="text-error" ng-if="form.descriptionfi.$error.required && loadingReady"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.descriptionfi.$error.required && loadingReady"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -260,7 +260,7 @@
             <div class="controls">
                 <textarea id="description_sv" maxlength="2048" class="width-30" ng-model="model.descriptionsv" name="descriptionsv"
                     placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.samedescription" ></textarea>
-                <span class="text-error" ng-if="form.descriptionsv.$error.required && loadingReady"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.descriptionsv.$error.required && loadingReady"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -268,7 +268,7 @@
             <div class="controls">
                 <textarea id="description_en" maxlength="2048" class="width-30" ng-model="model.descriptionen" name="descriptionen"
                     placeholder="{{'codes.english' | i18n}}" ng-disabled="model.samedescription" ></textarea>
-                <span class="text-error" ng-if="form.descriptionen.$error.required && loadingReady"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.descriptionen.$error.required && loadingReady"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -293,9 +293,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr bindonce ng-repeat="codeElement in model.withinCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:model.withinListLengthLimit">
-                            <td class="align-center" bo-text="codeElement.name"></td>
-                            <td class="align-center" bo-text="codeElement.versio"></td>
+                        <tr ng-repeat="codeElement in ::model.withinCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:model.withinListLengthLimit">
+                            <td class="align-center">{{:: codeElement.name}}</td>
+                            <td class="align-center" >{{:: codeElement.versio}}</td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
                                     ng-click="removeFromWithinCodeElements(codeElement); form.$setDirty()"></i></td>
                         </tr>
@@ -331,9 +331,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr bindonce ng-repeat="codeElement in model.includesCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:model.includesListLengthLimit">
-                            <td class="align-center" bo-text="codeElement.name"></td>
-                            <td class="align-center" bo-text="codeElement.versio"></td>
+                        <tr ng-repeat="codeElement in ::model.includesCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:model.includesListLengthLimit">
+                            <td class="align-center" >{{:: codeElement.name}}</td>
+                            <td class="align-center">{{:: codeElement.versio}}</td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
                                     ng-click="removeFromIncludesCodeElements(codeElement); form.$setDirty()"></i></td>
                         </tr>
@@ -367,9 +367,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr bindonce ng-repeat="codeElement in model.levelsWithCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:model.levelsWithListLengthLimit">
-                            <td class="align-center" bo-text="codeElement.name"></td>
-                            <td class="align-center" bo-text="codeElement.versio"></td>
+                        <tr ng-repeat="codeElement in ::model.levelsWithCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:model.levelsWithListLengthLimit">
+                            <td class="align-center">{{:: codeElement.name}}</td>
+                            <td class="align-center">{{:: codeElement.versio}}</td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
                                     ng-click="removeFromLevelsWithCodeElements(codeElement); form.$setDirty()"></i></td>
                         </tr>
@@ -391,7 +391,7 @@
                 <i class="pull-left" ng-class="{'icon-chevron-down': isopen, 'icon-chevron-right': !isopen}"></i> {{'codes.createpage.showextra' | i18n}} </accordion-heading>
                 <div class="control-group">
                     <div class="controls">
-                        <label for="same_instructions" class="checkbox"> 
+                        <label for="same_instructions" class="checkbox">
                             <input id="same_instructions" type="checkbox" ng-model="model.sameinstructions" ng-change="setSameValue('instructions')" /> {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
@@ -553,7 +553,7 @@
         <div class="row-fluid">
             <div class="span9">
                 <alert ng-repeat="alert in model.alerts" type="alert.type" close="closeAlert($index)"> <img style="margin-right: 10px;"
-                    src="/img/alert-icon28x29.png">{{alert.msg}}</alert>
+                    src="#{resource['img/alert-icon28x29.png']">{{alert.msg}}</alert>
             </div>
         </div>
 

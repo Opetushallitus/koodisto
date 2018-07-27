@@ -157,16 +157,16 @@ export class OrganisaatioOPHTreeModel {
 }
 
 export class OrganisaatioTreeController {
-    constructor($scope, AuthService, OrganisaatioTreeModel, organisaatioOPHTreeModel) {
+    constructor($scope, authService, OrganisaatioTreeModel, organisaatioOPHTreeModel) {
         "ngInject";
         if (!$scope.orgTree) {
-            AuthService.updateOph(SERVICE_NAME).then(function() {
+            authService.updateOph(SERVICE_NAME).then(function() {
                 $scope.orgTree = organisaatioOPHTreeModel;
             }, function() {
                 $scope.orgTree = OrganisaatioTreeModel;
             });
 
-            AuthService.getOrganizations(SERVICE_NAME).then(function(organizations) {
+            authService.getOrganizations(SERVICE_NAME).then(function(organizations) {
                 $scope.orgTree.init(organizations);
             });
 

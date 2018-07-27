@@ -2,7 +2,7 @@ import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue, SERVICE_
 
 export class CodesEditorModel {
 
-    constructor($location, RootCodes, Organizations, CodesByUriAndVersion, OrganizationByOid, CodesByUri, AuthService, $modal) {
+    constructor($location, RootCodes, Organizations, CodesByUriAndVersion, OrganizationByOid, CodesByUri, authService, $modal) {
         "ngInject";
         this.$location = $location;
         this.RootCodes = RootCodes;
@@ -10,7 +10,7 @@ export class CodesEditorModel {
         this.CodesByUriAndVersion = CodesByUriAndVersion;
         this.OrganizationByOid = OrganizationByOid;
         this.CodesByUri = CodesByUri;
-        this.AuthService = AuthService;
+        this.authService = authService;
         this.$modal = $modal;
 
         this.withinCodes = [];
@@ -171,7 +171,7 @@ export class CodesEditorModel {
             this.allCodes = result;
             this.getPreferredNames();
             // OVT-7496 skip codes filtering for OPH user
-            this.AuthService.updateOph(SERVICE_NAME).then(function() {}, this.filterCodes);
+            this.authService.updateOph(SERVICE_NAME).then(function() {}, this.filterCodes);
         });
     }
 

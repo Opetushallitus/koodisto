@@ -43,7 +43,7 @@
             <div class="controls">
                 <input id="name_fi" type="text" maxlength="256" class="width-30" ng-model="namefi" name="namefi" placeholder="{{'codes.finnish' | i18n}}"
                     ng-required="!namesv && !nameen || descriptionfi" ng-blur="visitedName = true" />
-                <span class="text-error" ng-if="visitedName && form.namefi.$error.required"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">
+                <span class="text-error" ng-if="visitedName && form.namefi.$error.required"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">
                     <span ng-if="!namesv && !nameen">{{errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!namesv && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
@@ -54,7 +54,7 @@
             <div class="controls">
                 <input id="name_sv" type="text" maxlength="256" class="width-30" ng-model="namesv" placeholder="{{'codes.swedish' | i18n}}" name="namesv"
                     ng-required="!namefi && !nameen || descriptionsv" ng-blur="visitedName = true" />
-                <span class="text-error" ng-if="visitedName && form.namesv.$error.required"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">
+                <span class="text-error" ng-if="visitedName && form.namesv.$error.required"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">
                     <span ng-if="!namefi && !nameen">{{errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!namefi && !nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
@@ -64,7 +64,7 @@
             <div class="controls">
                 <input id="name_en" type="text" maxlength="256" class="width-30" ng-model="nameen" placeholder="{{'codes.english' | i18n}}" name="nameen"
                     ng-required="!namefi && !namesv || descriptionen" ng-blur="visitedName = true" />
-                <span class="text-error" ng-if="visitedName && form.nameen.$error.required"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">
+                <span class="text-error" ng-if="visitedName && form.nameen.$error.required"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">
                     <span ng-if="!namefi && !namesv">{{errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!namefi && !namesv)">{{errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
@@ -82,7 +82,7 @@
                 <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="dActiveEnd" min="minDate"
                     datepicker-options="dateOptions" date-disabled="disabled(date, mode)" />
                 <i class="icon-calendar"></i>
-                <span class="text-error" ng-if="visitedDate && form.dActiveStart.$error.required"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="visitedDate && form.dActiveStart.$error.required"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -98,7 +98,7 @@
             <div class="controls">
                 <textarea id="description_fi" maxlength="2048" class="width-30" name="descriptionfi" ng-model="descriptionfi" 
                     placeholder="{{'codes.finnish' | i18n}}"></textarea>
-                <span class="text-error" ng-if="form.descriptionfi.$error.required"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.descriptionfi.$error.required"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -106,7 +106,7 @@
             <div class="controls">
                 <textarea id="description_sv" maxlength="2048" class="width-30" ng-model="descriptionsv" name="descriptionsv" 
                     placeholder="{{'codes.swedish' | i18n}}"></textarea>
-                <span class="text-error" ng-if="form.descriptionsv.$error.required"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.descriptionsv.$error.required"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -114,7 +114,7 @@
             <div class="controls">
                 <textarea id="description_en" maxlength="2048" class="width-30" ng-model="descriptionen" name="descriptionen" 
                     placeholder="{{'codes.english' | i18n}}"></textarea>
-                <span class="text-error" ng-if="form.descriptionen.$error.required"><img style="margin-right: 10px;" src="/img/alert-icon28x29.png">{{errorMessage}}</span>
+                <span class="text-error" ng-if="form.descriptionen.$error.required"><img style="margin-right: 10px;" src="#{resource['img/alert-icon28x29.png']">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -137,7 +137,7 @@
                 <input id="organizationbutton" type="button" value="{{'codes.select' | i18n}}" class="btn btn-small btn-primary" ng-click="open(); visitedOrg = true"
                     ng-model="selected" />
                 <span class="text-error" ng-if="visitedOrg && form.organizationName.$error.required"><img style="margin-right: 10px;"
-                    src="/img/alert-icon28x29.png">{{errorMessage}}</span>
+                    src="#{resource['img/alert-icon28x29.png']">{{errorMessage}}</span>
             </div>
         </div>
 
@@ -376,7 +376,7 @@
         <div class="row-fluid">
             <div class="span9">
                 <alert ng-repeat="alert in model.alerts" type="alert.type" close="closeAlert($index)"> <img style="margin-right: 10px;"
-                    src="/img/alert-icon28x29.png">{{alert.msg}}</alert>
+                    src="#{resource['img/alert-icon28x29.png']">{{alert.msg}}</alert>
             </div>
         </div>
 

@@ -11,14 +11,16 @@ export class Idler {
     }
 
     link(scope, elem, attrs) {
-        var timeout;
-        var timestamp = localStorage.lastEventTime;
+        let timeout;
+        let timestamp = localStorage.lastEventTime;
 
         // Watch for the events set in ng-idle's options
         // If any of them fire (considering 500ms debounce), update localStorage.lastEventTime with a current timestamp
         elem.on(this.Idle._options().events, function(){
             if (this.Idle.running()) {
-                if (timeout) { this.$timeout.cancel(timeout); }
+                if (timeout) {
+                    this.$timeout.cancel(timeout);
+                }
                 timeout = this.$timeout(function(){
                     localStorage.setItem('lastEventTime', new Date().getTime());
                 }, 3000, false);

@@ -8,7 +8,7 @@ describe(
 
             beforeEach(module("koodisto", function($provide) {
                 $provide.value('NoCacheInterceptor', {});
-                $provide.value('AuthService', {
+                $provide.value('authService', {
                     updateOph : function(parameter) {
                         var deferred = q.defer();
                         deferred.resolve();

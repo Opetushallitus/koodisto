@@ -18,17 +18,17 @@ import createCodesgroup from './codesgroup/createcodesgroup.html';
 import viewCodesgroup from './codesgroup/viewcodesgroup.html';
 import editCodesgroup from './codesgroup/editcodesgroup.html';
 
+import sessionTimeout from './partials/sessionTimeout.html';
+
 import angular from 'angular';
 import ngResource from 'angular-resource';
 import ngRoute from 'angular-route';
 import ngAnimate from 'angular-animate';
 import ngCookies from 'angular-cookies';
 import uiBootstrap from 'angular-ui-bootstrap';
-// import 'angular-ui-utils/modules/ie-shiv/ie-shiv';
-// import 'angular-ui-event'; // ui-utils required this
 import 'ui-select';
+import 'angular-ui-utils/modules/unique/unique';
 import ngIdle from 'ng-idle';
-import 'angular-bindonce';
 import 'ng-upload';
 import 'jquery-i18n-properties';
 import naturalSort from 'javascript-natural-sort';
@@ -70,11 +70,10 @@ const app = angular.module('koodisto', [
     ngCookies,
     localization.name,
     uiBootstrap,
-    // 'ui.utils',
     'ui.select',
     ngIdle,
-    'pasvaz.bindonce',
     'ngUpload',
+    'ui.unique',
 ]);
 
 
@@ -94,9 +93,11 @@ app.factory('NoCacheInterceptor', function() {
     };
 });
 
-app.run(['$http', '$cookies', function( $http, $cookies) {
+app.run(['$http', '$cookies', '$templateCache', function( $http, $cookies, $templateCache) {
+    $templateCache.put('sessionTimeout.html', sessionTimeout);
+
     $http.defaults.headers.common['clientSubSystemCode'] = "koodisto.koodisto-ui.frontend";
-    if($cookies['CSRF']) {
+    if ($cookies['CSRF']) {
         $http.defaults.headers.common['CSRF'] = $cookies['CSRF'];
     }
 }]);
@@ -584,7 +585,7 @@ app.run(["SessionPoll", function(SessionPoll) {
     SessionPoll.get({});
 }]);
 
-// app.directive('idler', () => new Idler);
+app.directive('idler', () => new Idler);
 
 app.controller('sessionExpiresCtrl', SessionExpiresCtrl);
 
