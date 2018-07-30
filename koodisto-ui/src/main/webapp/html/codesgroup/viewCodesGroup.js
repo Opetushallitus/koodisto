@@ -27,8 +27,9 @@ export class ViewCodesGroupModel {
 
     removeCodesGroup() {
         this.deleteCodesGroupModalInstance = this.$modal.open({
+            // Included in viewcodesgroup.html
             templateUrl: 'confirmDeleteCodesGroupModalContent.html',
-            controller: 'ViewCodesGroupController',
+            controller: 'viewCodesGroupController as viewCodesGroupModal',
             resolve: {
             }
         });
@@ -38,32 +39,39 @@ export class ViewCodesGroupModel {
 export class ViewCodesGroupController {
     constructor($scope, $location, $routeParams, viewCodesGroupModel, DeleteCodesGroup, treemodel) {
         "ngInject";
-        $scope.model = viewCodesGroupModel;
-        viewCodesGroupModel.init($scope, $routeParams.id);
+        this.$scope = $scope;
+        this.$location = $location;
+        this.$routeParams = $routeParams;
+        this.viewCodesGroupModel = viewCodesGroupModel;
+        this.DeleteCodesGroup = DeleteCodesGroup;
+        this.treemodel = treemodel;
 
-        $scope.closeAlert = function(index) {
-            $scope.model.alerts.splice(index, 1);
-        };
+        this.model = viewCodesGroupModel;
+        viewCodesGroupModel.init(this, $routeParams.id);
+    }
 
-        $scope.cancel = function() {
-            $location.path("/");
-        };
+    closeAlert(index) {
+        this.model.alerts.splice(index, 1);
+    }
+
+    cancel() {
+        this.$location.path("/");
+    }
 
 
-        $scope.okconfirmdeletecodesgroup = function() {
-            DeleteCodesGroup.post({id: $routeParams.id},function(success) {
-                treemodel.refresh();
-                $location.path("/");
-            }, function(error) {
-                var alert = { type: 'danger', msg: 'Koodiryhm\u00E4n poisto ep\u00E4onnistui.' };
-                $scope.model.alerts.push(alert);
-            });
+    okconfirmdeletecodesgroup() {
+        this.DeleteCodesGroup.post({id: this.$routeParams.id}, (success) => {
+            this.treemodel.refresh();
+            this.$location.path("/");
+        }, (error) => {
+            const alert = {type: 'danger', msg: 'Koodiryhm\u00E4n poisto ep\u00E4onnistui.'};
+            this.model.alerts.push(alert);
+        });
 
-            $scope.model.deleteCodesGroupModalInstance.close();
-        };
+        this.model.deleteCodesGroupModalInstance.close();
+    }
 
-        $scope.cancelconfirmdeletecodesgroup = function() {
-            $scope.model.deleteCodesGroupModalInstance.dismiss('cancel');
-        };
+    cancelconfirmdeletecodesgroup() {
+        this.model.deleteCodesGroupModalInstance.dismiss('cancel');
     }
 }

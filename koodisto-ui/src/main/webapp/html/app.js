@@ -19,6 +19,7 @@ import viewCodesgroup from './codesgroup/viewcodesgroup.html';
 import editCodesgroup from './codesgroup/editcodesgroup.html';
 
 import sessionTimeout from './partials/sessionTimeout.html';
+import organisaatioSelector from './partials/organisaatioSelector.html';
 
 import angular from 'angular';
 import ngResource from 'angular-resource';
@@ -95,6 +96,7 @@ app.factory('NoCacheInterceptor', function() {
 
 app.run(['$http', '$cookies', '$templateCache', function( $http, $cookies, $templateCache) {
     $templateCache.put('sessionTimeout.html', sessionTimeout);
+    $templateCache.put('organisaatioSelector.html', organisaatioSelector);
 
     $http.defaults.headers.common['clientSubSystemCode'] = "koodisto.koodisto-ui.frontend";
     if ($cookies['CSRF']) {
@@ -117,58 +119,58 @@ app.config(['$windowProvider', '$routeProvider', '$httpProvider', '$locationProv
     // front page
     when('/etusivu', {
         controller: 'koodistoTreeController',
+        controllerAs: 'koodistoTree',
         template: codesMainPage,
     }).when('/lisaaKoodisto', {
         controller: 'codesCreatorController',
+        controllerAs: 'codesCreator',
         template: createCodes,
         resolve: {
-            isModalController : function() {
-                return false;
-            }
+            isModalController: () => false
         }
     }).when('/muokkaaKoodisto/:codesUri/:codesVersion', {
         controller: 'codesEditorController',
+        controllerAs: 'codesEditor',
         template: editCodes,
         resolve: {
-            isModalController : function() {
-                return false;
-            }
+            isModalController: () => false
         }
     }).when('/koodisto/:codesUri/:codesVersion', {
         controller: 'viewCodesController',
+        controllerAs: 'viewCodes',
         template: viewCodes,
         resolve: {
-            isModalController : function() {
-                return false;
-            }
+            isModalController: () => false
         }
     }).when('/koodi/:codeElementUri/:codeElementVersion', {
         controller: 'viewCodeElementController',
+        controllerAs: 'viewCodeElement',
         template: viewCodeelement,
     }).when('/lisaaKoodi/:codesUri/:codesVersion', {
         controller: 'codeElementCreatorController',
+        controllerAs: 'codeElementCreator',
         template: createCodeelement,
         resolve: {
-            isModalController : function() {
-                return false;
-            }
+            isModalController: () => false
         }
     }).when('/muokkaaKoodi/:codeElementUri/:codeElementVersion', {
         controller: 'codeElementEditorController',
+        controllerAs: 'codeElementEditor',
         template: editCodeelement,
         resolve: {
-            isModalController : function() {
-                return false;
-            }
+            isModalController: () => false
         }
     }).when('/lisaaKoodistoryhma', {
         controller: 'codesGroupCreatorController',
+        controllerAs: 'codesGroupCreator',
         template: createCodesgroup,
     }).when('/koodistoryhma/:id', {
-        controller: 'ViewCodesGroupController',
+        controller: 'viewCodesGroupController',
+        controllerAs: 'viewCodesGroup',
         template: viewCodesgroup,
     }).when('/muokkaaKoodistoryhma/:id', {
         controller: 'codesGroupEditorController',
+        controllerAs: 'codesGroupEditor',
         template: editCodesgroup,
     }).
     // else
@@ -655,4 +657,4 @@ app.controller('codesGroupEditorController', CodesGroupEditorController);
 
 app.service('viewCodesGroupModel', ViewCodesGroupModel);
 
-app.controller('ViewCodesGroupController', ViewCodesGroupController);
+app.controller('viewCodesGroupController', ViewCodesGroupController);

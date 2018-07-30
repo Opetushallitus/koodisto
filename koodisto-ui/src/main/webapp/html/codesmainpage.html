@@ -1,11 +1,11 @@
 <script type="text/ng-template" id="codesgroup_node.html">
 <div class="state-disabled label">
-    <span class="disclose icon valintaryhma folder" ng-class="{ collapse: domain.isCollapsed(data), open: domain.isExpanded(data)}" ng-click="expandNode(data)"></span>
-    <a href="koodistoryhma/{{data.id}}">{{ domain.languageSpecificValue( data.metadata , 'nimi', 'FI') }}</a>
+    <span class="disclose icon valintaryhma folder" ng-class="{ collapse: koodistoTree.domain.isCollapsed(data), open: koodistoTree.domain.isExpanded(data)}" ng-click="expandNode(data)"></span>
+    <a href="koodistoryhma/{{data.id}}">{{ koodistoTree.domain.languageSpecificValue( data.metadata , 'nimi', 'FI') }}</a>
 </div>
 <ol data-valintaryhmaoid="{{data.koodistoRyhmaUri}}">
-    <li ng-repeat="koodisto in domain.getKoodistos(data) | filter:{isVisible:true} | orderBy:predicate" data-oid="{{koodisto.koodistoUri}}"
-        ng-include="domain.getTemplate(koodisto)"></li>
+    <li ng-repeat="koodisto in koodistoTree.domain.getKoodistos(data) | filter:{isVisible:true} | orderBy:koodistoTree.predicate" data-oid="{{koodisto.koodistoUri}}"
+        ng-include="koodistoTree.domain.getTemplate(koodisto)"></li>
 
 </ol>
 </script>
@@ -14,7 +14,7 @@
     <span class="icon hakukohde file"></span>
     <div class="label">
         <a href="koodisto/{{koodisto.koodistoUri}}/{{koodisto.latestKoodistoVersio.versio}}"> {{
-            domain.languageSpecificValue(koodisto.latestKoodistoVersio.metadata , 'nimi', 'FI') }} </a>
+            koodistoTree.domain.languageSpecificValue(koodisto.latestKoodistoVersio.metadata , 'nimi', 'FI') }} </a>
     </div>
 </div>
 </script>

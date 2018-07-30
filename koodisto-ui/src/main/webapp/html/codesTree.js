@@ -115,18 +115,23 @@ export class Treemodel {
 export class KoodistoTreeController {
     constructor($scope, $resource, $routeParams, treemodel) {
         "ngInject";
-        $scope.predicate = 'koodistoUri';
-        $scope.domain = treemodel;
+        this.$scope = $scope;
+        this.$resource = $resource;
+        this.$routeParams = $routeParams;
+        this.treemodel = treemodel;
+
+        this.predicate = 'koodistoUri';
+        this.domain = treemodel;
         if ($routeParams.forceRefresh){
-            $scope.domain.refresh();
+            this.domain.refresh();
         }
+    }
 
-        $scope.addClass = function(cssClass, ehto) {
-            return ehto ? cssClass : "";
-        };
+    addClass(cssClass, ehto) {
+        return ehto ? cssClass : "";
+    }
 
-        $scope.expandNode = function(node) {
-            node.isVisible = !node.isVisible;
-        }
+    expandNode(node) {
+        node.isVisible = !node.isVisible;
     }
 }

@@ -87,14 +87,14 @@ export class IeSelectFix {
     }
 
     link(scope, element, attributes, ngModelCtrl) {
-        var isIE = document.attachEvent;
+        let isIE = document.attachEvent;
         if (!isIE)
             return;
-        var control = element[0];
+        const control = element[0];
         // to fix IE8 issue with parent and detail controller, we need to depend on the parent controller
-        scope.$watch(attributes.ieSelectFix, function() {
+        scope.$watch(attributes.ieSelectFix, () => {
             // this will add and remove the options to trigger the rendering in IE8
-            var option = document.createElement("option");
+            const option = document.createElement("option");
             control.add(option, null);
             control.remove(control.options.length - 1);
         });

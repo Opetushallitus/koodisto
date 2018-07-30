@@ -159,46 +159,55 @@ export class OrganisaatioOPHTreeModel {
 export class OrganisaatioTreeController {
     constructor($scope, authService, OrganisaatioTreeModel, organisaatioOPHTreeModel) {
         "ngInject";
-        if (!$scope.orgTree) {
-            authService.updateOph(SERVICE_NAME).then(function() {
-                $scope.orgTree = organisaatioOPHTreeModel;
-            }, function() {
-                $scope.orgTree = OrganisaatioTreeModel;
+        this.$scope = $scope;
+        this.authService = authService;
+        this.OrganisaatioTreeModel = OrganisaatioTreeModel;
+        this.organisaatioOPHTreeModel = organisaatioOPHTreeModel;
+
+        if (!this.orgTree) {
+            authService.updateOph(SERVICE_NAME).then(() => {
+                this.orgTree = organisaatioOPHTreeModel;
+            }, () => {
+                this.orgTree = OrganisaatioTreeModel;
             });
 
-            authService.getOrganizations(SERVICE_NAME).then(function(organizations) {
-                $scope.orgTree.init(organizations);
+            authService.getOrganizations(SERVICE_NAME).then((organizations) => {
+                this.orgTree.init(organizations);
             });
 
-            $scope.$watch('orgTree.searchStr', function() {
-                if($scope.orgTree.searchStr.length > 2) {
-                    $scope.orgTree.search($scope.orgTree.searchStr);
-                } else if ($scope.orgTree.searchStr.length < 1){
-                    $scope.orgTree.resetSearch();
+            $scope.$watch(() => this.orgTree.searchStr, () => {
+                if (this.orgTree.searchStr.length > 2) {
+                    this.orgTree.search(this.orgTree.searchStr);
+                }
+                else if (this.orgTree.searchStr.length < 1) {
+                    this.orgTree.resetSearch();
                 }
             });
         }
-
-        $scope.openChildren = function(data) {
-            $scope.orgTree.openChildren(data);
-        };
-
-        $scope.clear = function(){
-            $scope.orgTree.searchStr = '';
-            $scope.orgTree.resetSearch();
-        };
-
     }
+    openChildren(data) {
+        this.orgTree.openChildren(data);
+    };
+
+    clear(){
+        this.orgTree.searchStr = '';
+        this.orgTree.resetSearch();
+    };
+
 }
 
 export class ModalInstanceCtrl {
     constructor($scope, $modalInstance) {
         "ngInject";
-        $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-        };
-        $scope.organisaatioSelector = function (data) {
-            $modalInstance.close(data);
-        };
+        this.$scope = $scope;
+        this.$modalInstance = $modalInstance;
+    }
+
+    cancel() {
+        this.$modalInstance.dismiss('cancel');
+    }
+
+    organisaatioSelector(data) {
+        this.$modalInstance.close(data);
     }
 }

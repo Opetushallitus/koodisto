@@ -18,68 +18,75 @@ export class CodesGroupCreatorModel {
 export class CodesGroupCreatorController {
     constructor($scope, $location, $filter, codesGroupCreatorModel, NewCodesGroup, treemodel) {
         "ngInject";
-        $scope.model = codesGroupCreatorModel;
-        $scope.errorMessage = $filter('i18n')('field.required');
-        codesGroupCreatorModel.init();
+        this.$scope = $scope;
+        this.$location = $location;
+        this.$filter = $filter;
+        this.codesGroupCreatorModel = codesGroupCreatorModel;
+        this.NewCodesGroup = NewCodesGroup;
+        this.treemodel = treemodel;
 
-        $scope.closeAlert = function(index) {
-            $scope.model.alerts.splice(index, 1);
+        this.model = codesGroupCreatorModel;
+        this.errorMessage = $filter('i18n')('field.required');
+        this.codesGroupCreatorModel.init();
+    }
+
+    closeAlert(index) {
+        this.model.alerts.splice(index, 1);
+    }
+
+    setSameValue(name) {
+        if (name === 'name' && !this.model.samename) {
+            this.model.namesv = this.model.namefi;
+            this.model.nameen = this.model.namefi;
+        }
+    }
+
+    cancel() {
+        this.$location.path("/");
+    }
+
+    submit() {
+        this.persistCodesGroup();
+    }
+
+    persistCodesGroup() {
+        const codesgroup = {
+            koodistoRyhmaMetadatas: []
         };
-
-        $scope.setSameValue = function(name) {
-            if (name === 'name' && !$scope.model.samename) {
-                $scope.model.namesv = $scope.model.namefi;
-                $scope.model.nameen = $scope.model.namefi;
-            }
-        };
-
-        $scope.cancel = function() {
-            $location.path("/");
-        };
-
-        $scope.submit = function() {
-            $scope.persistCodesGroup();
-        };
-
-        $scope.persistCodesGroup = function() {
-            var codesgroup = {
-                koodistoRyhmaMetadatas : []
-            };
-            if ($scope.model.namefi) {
-                codesgroup.koodistoRyhmaMetadatas.push({
-                    kieli : 'FI',
-                    nimi : $scope.model.namefi
-                });
-            }
-            if ($scope.model.namesv) {
-                codesgroup.koodistoRyhmaMetadatas.push({
-                    kieli : 'SV',
-                    nimi : $scope.model.namesv
-                });
-            }
-            if ($scope.model.nameen) {
-                codesgroup.koodistoRyhmaMetadatas.push({
-                    kieli : 'EN',
-                    nimi : $scope.model.nameen
-                });
-            }
-            NewCodesGroup.post({}, codesgroup, function(result) {
-                treemodel.refresh();
-                $location.path("/koodistoryhma/" + result.id);
-            }, function(error) {
-                var alert = {
-                    type : 'danger',
-                    msg : jQuery.i18n.prop(error.data)
-                };
-                $scope.model.alerts.push(alert);
+        if (this.model.namefi) {
+            codesgroup.koodistoRyhmaMetadatas.push({
+                kieli : 'FI',
+                nimi : this.model.namefi
             });
-        };
+        }
+        if (this.model.namesv) {
+            codesgroup.koodistoRyhmaMetadatas.push({
+                kieli : 'SV',
+                nimi : this.model.namesv
+            });
+        }
+        if (this.model.nameen) {
+            codesgroup.koodistoRyhmaMetadatas.push({
+                kieli : 'EN',
+                nimi : this.model.nameen
+            });
+        }
+        this.NewCodesGroup.post({}, codesgroup, (result) => {
+            this.treemodel.refresh();
+            this.$location.path("/koodistoryhma/" + result.id);
+        }, (error) => {
+            const alert = {
+                type: 'danger',
+                msg: jQuery.i18n.prop(error.data)
+            };
+            this.model.alerts.push(alert);
+        });
+    }
 
-        $scope.setSameName = function() {
-            if ($scope.model.samename) {
-                $scope.model.namesv = $scope.model.namefi;
-                $scope.model.nameen = $scope.model.namefi;
-            }
-        };
+    setSameName() {
+        if (this.model.samename) {
+            this.model.namesv = this.model.namefi;
+            this.model.nameen = this.model.namefi;
+        }
     }
 }

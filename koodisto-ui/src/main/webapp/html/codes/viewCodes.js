@@ -21,7 +21,7 @@ export class ViewCodesModel {
         this.deleteState = "disabled";
     }
 
-    init(scope, codesUri, codesVersion) {
+    init(codesUri, codesVersion) {
         if (this.forceRefresh) {
             this.forceRefreshCodeElements = "?forceRefresh";
         } else {
@@ -29,7 +29,7 @@ export class ViewCodesModel {
         }
         // Samaa koodistoa on turha ladata uudelleen modelliin
         if (this.forceRefresh || !(this.codes && this.codes.koodistoUri === codesUri && this.codes.versio === codesVersion)) {
-            scope.showPassive = false;
+            this.showPassive = false;
             this.forceRefresh = false;
             this.codes = null;
             this.withinCodes = [];
@@ -55,11 +55,11 @@ export class ViewCodesModel {
 
             this.updatedCodeElementsCount = 0;
 
-            this.getCodes(scope, codesUri, codesVersion);
+            this.getCodes(codesUri, codesVersion);
         }
     }
 
-    getCodes(scope, codesUri, codesVersion) {
+    getCodes(codesUri, codesVersion) {
         this.CodesByUriAndVersion.get({
             codesUri : codesUri,
             codesVersion : codesVersion
@@ -135,7 +135,7 @@ export class ViewCodesModel {
                 this.codes.organizationName = result2.nimi['fi'] || result2.nimi['sv'] || result2.nimi['en'];
             });
             this.getCodeElements(codesUri, codesVersion);
-            scope.loadingReady = true;
+            this.loadingReady = true;
         });
     }
 
@@ -198,10 +198,11 @@ export class ViewCodesModel {
 
     download() {
         this.downloadModalInstance = this.$modal.open({
-            templateUrl : 'downloadModalContent.html',
-            controller : 'viewCodesController',
-            resolve : {
-                isModalController : function() {
+            // Included in viewcodes.html
+            templateUrl: 'downloadModalContent.html',
+            controller: 'viewCodesController as viewCodesDownloadModal',
+            resolve: {
+                isModalController : () => {
                     return true;
                 }
             }
@@ -210,10 +211,11 @@ export class ViewCodesModel {
 
     upload() {
         this.uploadModalInstance = this.$modal.open({
-            templateUrl : 'uploadModalContent.html',
-            controller : 'viewCodesController',
-            resolve : {
-                isModalController : function() {
+            // Included in viewcodes.html
+            templateUrl: 'uploadModalContent.html',
+            controller: 'viewCodesController as viewCodesUploadModal',
+            resolve: {
+                isModalController : () => {
                     return true;
                 }
             }
@@ -222,10 +224,11 @@ export class ViewCodesModel {
 
     removeCodes() {
         this.deleteCodesModalInstance = this.$modal.open({
-            templateUrl : 'confirmDeleteCodesModalContent.html',
-            controller : 'viewCodesController',
-            resolve : {
-                isModalController : function() {
+            // Included in viewcodes.html
+            templateUrl: 'confirmDeleteCodesModalContent.html',
+            controller: 'viewCodesController as viewCodesConfirmDeleteModal',
+            resolve: {
+                isModalController: () => {
                     return true;
                 }
             }
@@ -236,251 +239,266 @@ export class ViewCodesModel {
 export class ViewCodesController {
     constructor($scope, $location, $filter, $routeParams, $window, viewCodesModel, DownloadCodes, RemoveRelationCodes, DeleteCodes, loadingService, isModalController) {
         "ngInject";
-        $scope.model = viewCodesModel;
-        $scope.codesUri = $routeParams.codesUri;
-        $scope.uploadUrl = SERVICE_URL_BASE + "codes" + "/upload/" + $scope.codesUri;
-        $scope.codesVersion = $routeParams.codesVersion;
-        $scope.model.forceRefresh = $routeParams.forceRefresh === true;
-        $scope.identity = angular.identity;
+        this.$scope = $scope;
+        this.$location = $location;
+        this.$filter = $filter;
+        this.$routeParams = $routeParams;
+        this.$window = $window;
+        this.viewCodesModel = viewCodesModel;
+        this.DownloadCodes = DownloadCodes;
+        this.RemoveRelationCodes = RemoveRelationCodes;
+        this.DeleteCodes = DeleteCodes;
+        this.loadingService = loadingService;
+        this.isModalController = isModalController;
+
+        this.model = viewCodesModel;
+        this.codesUri = $routeParams.codesUri;
+        this.uploadUrl = SERVICE_URL_BASE + "codes" + "/upload/" + this.codesUri;
+        this.codesVersion = $routeParams.codesVersion;
+        this.model.forceRefresh = $routeParams.forceRefresh === true;
+        this.identity = angular.identity;
         if (!isModalController) {
-            viewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
+            viewCodesModel.init(this.codesUri, this.codesVersion);
         }
 
         // Alert is passed when reloading after versioning import.
         if ($routeParams.alert && $routeParams.alert.type) {
-            $scope.model.alerts.push($routeParams.alert);
+            this.model.alerts.push($routeParams.alert);
         }
 
-        $scope.sortBy1 = 'name';
-        $scope.sortBy2 = 'name';
-        $scope.sortBy3 = 'name';
+        this.sortBy1 = 'name';
+        this.sortBy2 = 'name';
+        this.sortBy3 = 'name';
 
-        $scope.closeAlert = function (index) {
-            $scope.model.alerts.splice(index, 1);
-        };
+        this.refreshPage = true;
+        this.cachedPageCount = 0;
+        this.cachedElementCount = 0;
 
-        $scope.cancel = function () {
-            $location.path("/");
-        };
-
-        $scope.addCodeElement = function () {
-            $location.path("/lisaaKoodi/" + $scope.codesUri + "/" + $scope.codesVersion);
-        };
-
-        $scope.editCodes = function () {
-            $location.path("/muokkaaKoodisto/" + $scope.codesUri + "/" + $scope.codesVersion);
-        };
-
-        $scope.okconfirmdeletecodes = function () {
-            DeleteCodes.put({
-                codesUri: $scope.codesUri,
-                codesVersion: $scope.codesVersion
-            }, (success) => {
-                $location.path("/etusivu").search({
-                    forceRefresh: true
-                });
-            }, (error) => {
-                var alert = {
-                    type: 'danger',
-                    msg: 'Koodiston poisto ep\u00E4onnistui.'
-                };
-                $scope.model.alerts.push(alert);
-            });
-
-            $scope.model.deleteCodesModalInstance.close();
-        };
-
-        $scope.cancelconfirmdeletecodes = function () {
-            $scope.model.deleteCodesModalInstance.dismiss('cancel');
-        };
-
-        $scope.search = function (item) {
-            function matchesName(name) {
-                return name && name.toLowerCase().indexOf($scope.query.toLowerCase()) > -1;
-            }
-
-            if (!$scope.query || matchesName(item.name) || matchesName(item.namesv) || matchesName(item.nameen)
-                || item.koodiArvo.toLowerCase().indexOf($scope.query.toLowerCase()) !== -1) {
-                return true;
-            }
-            return false;
-        };
-
-        $scope.okdownload = function () {
-            var url = DownloadCodes($scope.codesUri, $scope.codesVersion, $scope.model.format, $scope.model.encoding);
-            $window.open(url);
-            if ($scope.model.downloadModalInstance) {
-                $scope.model.downloadModalInstance.close();
-            }
-        };
-
-        $scope.downloadBlank = function () {
-            $scope.model.format = "XLS";
-            $scope.codesUri = "blankKoodistoDocument";
-            $scope.codesVersion = "-1";
-
-            $scope.okdownload();
-        };
-
-        $scope.formatEquals = function (s) {
-            return ($scope.model.format === s);
-        };
-
-        $scope.canceldownload = function () {
-            $scope.model.downloadModalInstance.dismiss('cancel');
-        };
-
-        $scope.loadStartFunction = function (evt) {
-            loadingService.requestCount++;
-        };
-        $scope.transferCompleteFunction = function (evt) {
-            loadingService.requestCount--;
-        };
-
-        $scope.cancelupload = function () {
-            $scope.model.uploadModalInstance.dismiss('cancel');
-        };
-
-        $scope.uploadComplete = function (evt) {
-            $scope.transferCompleteFunction();
-            var alert;
-            $scope.model.forceRefresh = true;
-            if (evt.indexOf && evt.indexOf("error") > -1) {
-                alert = {
-                    type: 'danger',
-                    msg: 'Koodiston ' + $scope.codesUri + ' tuonti ep\u00E4onnistui. Virhe tiedoston lukemisessa: ' + ($filter("i18n")(evt))
-                };
-            } else {
-                alert = {
-                    type: 'success',
-                    msg: 'Koodisto ' + $scope.codesUri + ' on tuotu onnistuneesti'
-                };
-                if (evt > $scope.codesVersion) { // Redirect to new version
-                    $location.path("/koodisto/" + $scope.codesUri + "/" + evt).search({
-                        forceRefresh: true,
-                        alert: alert
-                    });
-                    $scope.model.uploadModalInstance.close();
-                    return;
-                }
-            }
-            viewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
-            $scope.model.alerts.push(alert);
-            $scope.model.uploadModalInstance.close();
-        };
-
-        // Pagination
-
-        // Get the filtered page count
-        $scope.cachedPageCount = 0;
-        $scope.getNumberOfPages = function () {
-            if ($scope.cachedPageCount === 0 && $scope.model.codeElements.length > 0) {
-                $scope.refreshNumberOfPages();
-            }
-            return $scope.cachedPageCount;
-        };
-
-        // Refresh the page count when the model changes
-        $scope.cachedElementCount = 0;
-        $scope.$watch('model.codeElements', function () {
-            if ($scope.model.codeElements.length !== $scope.cachedElementCount) {
-                $scope.refreshNumberOfPages();
-                refreshPage = true;
-                $scope.cachedElementCount = $scope.model.codeElements.length;
+        $scope.$watch( () => this.model.codeElements, () => {
+            if (this.model.codeElements.length !== this.cachedElementCount) {
+                this.refreshNumberOfPages();
+                this.refreshPage = true;
+                this.cachedElementCount = this.model.codeElements.length;
             }
         });
 
-        // Refresh the page count (less redundant filtering)
-        $scope.refreshNumberOfPages = function () {
-            $scope.model.searchResultsLength = ($filter("filter")($scope.model.codeElements, $scope.search)).length;
-            $scope.cachedPageCount = Math.ceil($scope.model.searchResultsLength / $scope.model.pageSize);
-            return $scope.cachedPageCount;
+        this.oldValueForPageSize = 10;
+
+    }
+
+    closeAlert(index) {
+        this.model.alerts.splice(index, 1);
+    }
+
+    cancel() {
+        this.$location.path("/");
+    }
+
+    addCodeElement() {
+        this.$location.path("/lisaaKoodi/" + this.codesUri + "/" + this.codesVersion);
+    }
+
+    editCodes() {
+        this.$location.path("/muokkaaKoodisto/" + this.codesUri + "/" + this.codesVersion);
+    }
+
+    okconfirmdeletecodes() {
+        this.DeleteCodes.put({
+            codesUri: this.codesUri,
+            codesVersion: this.codesVersion
+        }, (success) => {
+            this.$location.path("/etusivu").search({
+                forceRefresh: true
+            });
+        }, (error) => {
+            var alert = {
+                type: 'danger',
+                msg: 'Koodiston poisto ep\u00E4onnistui.'
+            };
+            this.model.alerts.push(alert);
+        });
+
+        this.model.deleteCodesModalInstance.close();
+    }
+
+    cancelconfirmdeletecodes() {
+        this.model.deleteCodesModalInstance.dismiss('cancel');
+    }
+
+    search(item) {
+        const matchesName = (name) => {
+            return name && name.toLowerCase().indexOf(this.query.toLowerCase()) > -1;
         };
 
-        // Change the currentPage when the pageSize is changed.
-        var oldValueForPageSize = 10;
-        $scope.pageSizeChanged = function () {
-            var topmostCodeElement = $scope.model.currentPage * oldValueForPageSize;
-            $scope.model.currentPage = Math.floor(topmostCodeElement / $scope.model.pageSize);
-            oldValueForPageSize = $scope.model.pageSize;
-            $scope.refreshNumberOfPages();
-        };
-
-        $scope.sortOrderChanged = function (value) {
-            if (value) {
-                $scope.model.sortOrderSelection = value;
-            }
-            var selection = parseInt($scope.model.sortOrderSelection);
-            switch (selection) {
-                case 1:
-                    $scope.model.sortOrderReversed = false;
-                    $scope.model.sortOrder = "koodiArvo";
-                    break;
-                case 2:
-                    $scope.model.sortOrderReversed = true;
-                    $scope.model.sortOrder = "koodiArvo";
-                    break;
-                case 3:
-                    $scope.model.sortOrderReversed = false;
-                    $scope.model.sortOrder = "name";
-                    break;
-                case 4:
-                    $scope.model.sortOrderReversed = true;
-                    $scope.model.sortOrder = "name";
-                    break;
-                case 5:
-                    $scope.model.sortOrderReversed = false;
-                    $scope.model.sortOrder = "versio";
-                    break;
-                case 6:
-                    $scope.model.sortOrderReversed = true;
-                    $scope.model.sortOrder = "versio";
-                    break;
-
-                default:
-                    break;
-            }
-            refreshPage = true;
-        };
-
-        // When user changes the search string the page count changes and the current page must be adjusted
-        $scope.filterChangedPageCount = function () {
-            const currentNumberOfPages = $scope.refreshNumberOfPages();
-            if ($scope.model.currentPage >= currentNumberOfPages) {
-                $scope.model.currentPage = currentNumberOfPages - 1;
-            }
-            if (currentNumberOfPages !== 0 && $scope.model.currentPage < 0) {
-                $scope.model.currentPage = 0;
-            }
-        };
-
-        $scope.changePage = function (i) {
-            $scope.model.currentPage = i;
-        };
-
-        $scope.incrementPage = function (i) {
-            var newPageNumber = $scope.model.currentPage + i;
-            if (newPageNumber > -1 && newPageNumber < $scope.getNumberOfPages()) {
-                $scope.model.currentPage = newPageNumber;
-            }
-        };
-
-        var refreshPage = true;
-        $scope.getPaginationPage = function () {
-            if (refreshPage) {
-                // Only do sorting when the model has changed, heavy operation
-                refreshPage = false;
-                $scope.model.codeElements = $filter("naturalSort")($scope.model.codeElements, $scope.model.sortOrder, $scope.model.sortOrderReversed);
-            }
-            var results = $scope.model.codeElements;
-            results = $filter("filter")(results, $scope.search);
-            results = results.splice($scope.model.currentPage * $scope.model.pageSize, $scope.model.pageSize);
-            return results;
-        };
-        // Pagination ends
-
-        $scope.showRelation = function (codes) {
-            return codes.active || $scope.showPassive
+        if (!this.query || matchesName(item.name) || matchesName(item.namesv) || matchesName(item.nameen)
+            || item.koodiArvo.toLowerCase().indexOf(this.query.toLowerCase()) !== -1) {
+            return true;
         }
+        return false;
+    }
+
+    okdownload() {
+        var url = this.DownloadCodes(this.codesUri, this.codesVersion, this.model.format, this.model.encoding);
+        this.$window.open(url);
+        if (this.model.downloadModalInstance) {
+            this.model.downloadModalInstance.close();
+        }
+    }
+
+    downloadBlank() {
+        this.model.format = "XLS";
+        this.codesUri = "blankKoodistoDocument";
+        this.codesVersion = "-1";
+
+        this.okdownload();
+    }
+
+    formatEquals(s) {
+        return (this.model.format === s);
+    }
+
+    canceldownload() {
+        this.model.downloadModalInstance.dismiss('cancel');
+    }
+
+    loadStartFunction(evt) {
+        this.loadingService.requestCount++;
+    }
+    transferCompleteFunction(evt) {
+        this.loadingService.requestCount--;
+    }
+
+    cancelupload() {
+        this.model.uploadModalInstance.dismiss('cancel');
+    }
+
+    uploadComplete(evt) {
+        this.transferCompleteFunction();
+        let alert;
+        this.model.forceRefresh = true;
+        if (evt.indexOf && evt.indexOf("error") > -1) {
+            alert = {
+                type: 'danger',
+                msg: 'Koodiston ' + this.codesUri + ' tuonti ep\u00E4onnistui. Virhe tiedoston lukemisessa: ' + (this.$filter("i18n")(evt))
+            };
+        } else {
+            alert = {
+                type: 'success',
+                msg: 'Koodisto ' + this.codesUri + ' on tuotu onnistuneesti'
+            };
+            if (evt > this.codesVersion) { // Redirect to new version
+                this.$location.path("/koodisto/" + this.codesUri + "/" + evt).search({
+                    forceRefresh: true,
+                    alert: alert
+                });
+                this.model.uploadModalInstance.close();
+                return;
+            }
+        }
+        this.viewCodesModel.init(this.$scope, this.codesUri, this.codesVersion);
+        this.model.alerts.push(alert);
+        this.model.uploadModalInstance.close();
+    }
+
+    // Pagination
+
+    // Get the filtered page count
+    getNumberOfPages() {
+        if (this.cachedPageCount === 0 && this.model.codeElements.length > 0) {
+            this.refreshNumberOfPages();
+        }
+        return this.cachedPageCount;
+    };
+
+    // Refresh the page count when the model changes
+    // Refresh the page count (less redundant filtering)
+    refreshNumberOfPages() {
+        this.model.searchResultsLength = (this.$filter("filter")(this.model.codeElements, () => this.search)).length;
+        this.cachedPageCount = Math.ceil(this.model.searchResultsLength / this.model.pageSize);
+        return this.cachedPageCount;
+    }
+
+    // Change the currentPage when the pageSize is changed.
+    pageSizeChanged() {
+        const topmostCodeElement = this.model.currentPage * this.oldValueForPageSize;
+        this.model.currentPage = Math.floor(topmostCodeElement / this.model.pageSize);
+        this.oldValueForPageSize = this.model.pageSize;
+        this.refreshNumberOfPages();
+    }
+
+    sortOrderChanged(value) {
+        if (value) {
+            this.model.sortOrderSelection = value;
+        }
+        const selection = parseInt(this.model.sortOrderSelection);
+        switch (selection) {
+            case 1:
+                this.model.sortOrderReversed = false;
+                this.model.sortOrder = "koodiArvo";
+                break;
+            case 2:
+                this.model.sortOrderReversed = true;
+                this.model.sortOrder = "koodiArvo";
+                break;
+            case 3:
+                this.model.sortOrderReversed = false;
+                this.model.sortOrder = "name";
+                break;
+            case 4:
+                this.model.sortOrderReversed = true;
+                this.model.sortOrder = "name";
+                break;
+            case 5:
+                this.model.sortOrderReversed = false;
+                this.model.sortOrder = "versio";
+                break;
+            case 6:
+                this.model.sortOrderReversed = true;
+                this.model.sortOrder = "versio";
+                break;
+
+            default:
+                break;
+        }
+        this.refreshPage = true;
+    }
+
+    // When user changes the search string the page count changes and the current page must be adjusted
+    filterChangedPageCount() {
+        const currentNumberOfPages = this.refreshNumberOfPages();
+        if (this.model.currentPage >= currentNumberOfPages) {
+            this.model.currentPage = currentNumberOfPages - 1;
+        }
+        if (currentNumberOfPages !== 0 && this.model.currentPage < 0) {
+            this.model.currentPage = 0;
+        }
+    }
+
+    changePage(i) {
+        this.model.currentPage = i;
+    }
+
+    incrementPage(i) {
+        const newPageNumber = this.model.currentPage + i;
+        if (newPageNumber > -1 && newPageNumber < this.getNumberOfPages()) {
+            this.model.currentPage = newPageNumber;
+        }
+    }
+
+    getPaginationPage() {
+        if (this.refreshPage) {
+            // Only do sorting when the model has changed, heavy operation
+            this.refreshPage = false;
+            this.model.codeElements = this.$filter("naturalSort")(this.model.codeElements, this.model.sortOrder, this.model.sortOrderReversed);
+        }
+        let results = this.model.codeElements;
+        results = this.$filter("filter")(results, () => this.search);
+        results = results.splice(this.model.currentPage * this.model.pageSize, this.model.pageSize);
+        return results;
+    };
+    // Pagination ends
+
+    showRelation(codes) {
+        return codes.active || this.showPassive
     }
 }

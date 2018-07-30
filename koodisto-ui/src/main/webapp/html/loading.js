@@ -46,9 +46,7 @@ mod.run(['$http', 'onStartInterceptor', function ($http, onStartInterceptor) {
 }]);
 
 mod.controller('LoadingCtrl', ['$scope', 'loadingService', function ($scope, loadingService) {
-    $scope.$watch(function () {
-        return loadingService.isLoading();
-    }, function (value) {
+    $scope.$watch(() => loadingService.isLoading(), (value) => {
         $scope.loading = value;
     });
 }]);

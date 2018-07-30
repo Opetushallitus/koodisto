@@ -5,7 +5,7 @@
     <div class="modal-body">
         <label for="fileFormat">{{'codes.downloadmodal.format' | i18n}}</label>
         <br>
-        <select id="fileFormat" ng-model="model.format">
+        <select id="fileFormat" ng-model="viewCodesDownloadModal.model.format">
             <option value="JHS_XML">JHS_XML</option>
             <option value="CSV">CSV</option>
             <option value="XLS">XLS</option>
@@ -13,15 +13,15 @@
         <br>
         <label for="fileEncoding">{{'codes.downloadmodal.encoding' | i18n}}</label>
         <br>
-        <select id="fileEncoding" ng-model="model.encoding" ng-disabled="formatEquals('XLS')">
+        <select id="fileEncoding" ng-model="viewCodesDownloadModal.model.encoding" ng-disabled="viewCodesDownloadModal.formatEquals('XLS')">
             <option value="UTF-8">UTF8</option>
             <option value="ISO-88519-1">ISO_88519_1</option>
             <option value="ISO-88519-15">ISO_88519_15</option>
         </select>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-warning" ng-click="canceldownload()">{{'codes.cancel' | i18n}}</button>
-        <button class="btn btn-primary" ng-click="okdownload()">{{'codes.select' | i18n}}</button>
+        <button class="btn btn-warning" ng-click="viewCodesDownloadModal.canceldownload()">{{'codes.cancel' | i18n}}</button>
+        <button class="btn btn-primary" ng-click="viewCodesDownloadModal.okdownload()">{{'codes.select' | i18n}}</button>
     </div>
 </script>
 
@@ -29,11 +29,11 @@
     <div class="modal-header">
         <h3>{{'codes.uploadmodal.header' | i18n}}</h3>
     </div>
-    <form action="{{uploadUrl}}" method="post" ng-upload="uploadComplete(content)" name="uploadForm">
+    <form action="{{viewCodesUploadModal.uploadUrl}}" method="post" ng-upload="viewCodesUploadModal.uploadComplete(content)" name="uploadForm">
         <div class="modal-body">
             <label for="fileFormat2">{{'codes.downloadmodal.format' | i18n}}</label>
             <br>
-            <select id="fileFormat2" ng-model="model.format" name="fileFormat">
+            <select id="fileFormat2" ng-model="viewCodesUploadModal.model.format" name="fileFormat">
                 <option value="JHS_XML">JHS_XML</option>
                 <option value="CSV">CSV</option>
                 <option value="XLS">XLS</option>
@@ -41,19 +41,19 @@
             <br>
             <label for="fileEncoding2">{{'codes.downloadmodal.encoding' | i18n}}</label>
             <br>
-            <select id="fileEncoding2" ng-model="model.encoding" ng-disabled="formatEquals('XLS')" name="fileEncoding">
+            <select id="fileEncoding2" ng-model="viewCodesUploadModal.model.encoding" ng-disabled="viewCodesUploadModal.formatEquals('XLS')" name="fileEncoding">
                 <option value="UTF-8">UTF8</option>
                 <option value="ISO-88519-1">ISO_88519_1</option>
                 <option value="ISO-88519-15">ISO_88519_15</option>
             </select>
             <br>
             <label for="fileToUpload">{{'codes.uploadmodal.selectfile' | i18n}}</label><br />
-            <input id="fileToUpload" type="file" name="uploadedFile" ng-click="fileSelected=true"/>
+            <input id="fileToUpload" type="file" name="uploadedFile" ng-click="viewCodesUploadModal.fileSelected=true"/>
         </div>
         <div class="modal-footer">
             <span ng-if="$isUploading">{{'codes.viewpage.codeelements.saving' | i18n}}</span>
-            <button class="btn btn-warning" ng-click="cancelupload()" ng-disabled="$isUploading">{{'codes.cancel' | i18n}}</button>
-            <button class="btn btn-primary" ng-click="loadStartFunction()" ng-disabled="!fileSelected || $isUploading" upload-submit>{{'codes.select' | i18n}}</button>
+            <button class="btn btn-warning" ng-click="viewCodesUploadModal.cancelupload()" ng-disabled="$isUploading">{{'codes.cancel' | i18n}}</button>
+            <button class="btn btn-primary" ng-click="viewCodesUploadModal.loadStartFunction()" ng-disabled="!viewCodesUploadModal.fileSelected || $isUploading" upload-submit>{{'codes.select' | i18n}}</button>
         </div>
     </form>
 </script>
@@ -63,11 +63,11 @@
         <h3>{{'codeelement.editpage.modal.header' | i18n}}</h3>
     </div>
     <div class="modal-body">
-        Olet poistamassa koodistoa {{ model.name }}, haluatko jatkaa?
+        Olet poistamassa koodistoa {{ viewCodesConfirmDeleteModal.model.name }}, haluatko jatkaa?
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="okconfirmdeletecodes()">OK</button>
-        <button class="btn btn-warning" ng-click="cancelconfirmdeletecodes()">Cancel</button>
+        <button class="btn btn-primary" ng-click="viewCodesConfirmDeleteModal.okconfirmdeletecodes()">OK</button>
+        <button class="btn btn-warning" ng-click="viewCodesConfirmDeleteModal.cancelconfirmdeletecodes()">Cancel</button>
     </div>
 </script>
 
@@ -80,48 +80,47 @@
 
     <div class="row-fluid">
         <div class="offset2 span4">
-            <h3>{{ model.name }}</h3>
+            <h3>{{ viewCodes.model.name }}</h3>
         </div>
         <div class="span6">
             <button type="button" auth="update" auth-service="APP_KOODISTO"
-                auth-org="{{model.codes.organisaatioOid}}" class="btn pull-left"
-                ng-click="model.upload()">{{'codes.viewpage.uploadbutton' |
+                auth-org="{{viewCodes.model.codes.organisaatioOid}}" class="btn pull-left"
+                ng-click="viewCodes.model.upload()">{{'codes.viewpage.uploadbutton' |
                 i18n}}</button>
             <button type="button" class="btn pull-left"
-                ng-click="model.download()">{{'codes.viewpage.downloadbutton'
+                ng-click="viewCodes.model.download()">{{'codes.viewpage.downloadbutton'
                 | i18n}}</button>
             <button type="button" class="btn pull-left"
-                ng-click="downloadBlank()">{{'codes.viewpage.downloadblankbutton'
+                ng-click="viewCodes.downloadBlank()">{{'codes.viewpage.downloadblankbutton'
                 | i18n}}</button>
         </div>
-
     </div>
 
     <div class="row-fluid">
         <div class="span2">{{'codes.viewpage.state' | i18n}}</div>
-        <div class="span10 pull-left bold">{{ model.codes.tila }}</div>
+        <div class="span10 pull-left bold">{{ viewCodes.model.codes.tila }}</div>
     </div>
     <div class="row-fluid">
         <div class="span2">{{'codes.viewpage.name' | i18n}}</div>
-        <div class="span10 pull-left bold">{{ model.name }}</div>
+        <div class="span10 pull-left bold">{{ viewCodes.model.name }}</div>
     </div>
     <div class="row-fluid">
         <div class="span2">{{'codes.viewpage.uri' | i18n}}</div>
-        <div class="span10 pull-left bold"><a href="{{ model.codes.resourceUri }}">{{ model.codes.resourceUri }}</a>
+        <div class="span10 pull-left bold"><a href="{{ viewCodes.model.codes.resourceUri }}">{{ viewCodes.model.codes.resourceUri }}</a>
         </div>
     </div>
     <div class="row-fluid">
         <div class="span2">{{'codes.viewpage.codesgroup' | i18n}}</div>
-        <div class="span10 pull-left bold">{{ model.codes.codesGroupUri
+        <div class="span10 pull-left bold">{{ viewCodes.model.codes.codesGroupUri
             }}</div>
     </div>
     <div class="row-fluid">
         <div class="span2">{{'codes.viewpage.version' | i18n}}</div>
         <div class="span10 pull-left bold">
-            {{ model.codes.versio }} <span
-                ng-show="model.codes.codesVersions.length > 0"> &nbsp;(&nbsp;<a
-                href="koodisto/{{codesUri}}/{{codesVersion}}"
-                ng-repeat="codesVersion in model.codes.codesVersions | orderBy:identity:true">{{
+            {{ viewCodes.model.codes.versio }} <span
+                ng-show="viewCodes.model.codes.codesVersions.length > 0"> &nbsp;(&nbsp;<a
+                href="koodisto/{{viewCodes.codesUri}}/{{viewCodes.codesVersion}}"
+                ng-repeat="codesVersion in viewCodes.model.codes.codesVersions | orderBy:identity:true">{{
                     codesVersion }}&nbsp;</a>)
             </span>
         </div>
@@ -129,21 +128,21 @@
     <div class="row-fluid">
         <div class="span2">{{'codes.viewpage.dateactive' | i18n}}</div>
         <div class="span10 pull-left bold">{{
-            model.codes.voimassaAlkuPvm | date:'dd.MM.yyyy' }} - {{
-            model.codes.voimassaLoppuPvm | date:'dd.MM.yyyy' }}</div>
+            viewCodes.model.codes.voimassaAlkuPvm | date:'dd.MM.yyyy' }} - {{
+            viewCodes.model.codes.voimassaLoppuPvm | date:'dd.MM.yyyy' }}</div>
     </div>
     <div class="row-fluid">
         <div class="span2">{{'codes.viewpage.description' | i18n}}</div>
-        <div class="span10 pull-left bold">{{ model.description }}</div>
+        <div class="span10 pull-left bold">{{ viewCodes.model.description }}</div>
     </div>
     <div class="row-fluid">
         <div class="span2">{{'codes.viewpage.organization' | i18n}}</div>
         <div class="span10 pull-left bold">{{
-            model.codes.organizationName }}</div>
+            viewCodes.model.codes.organizationName }}</div>
     </div>
     <div class="row-fluid">
         <div class="span2">{{'codes.viewpage.updated' | i18n}}</div>
-        <div class="span10 pull-left bold">{{ model.codes.paivitysPvm |
+        <div class="span10 pull-left bold">{{ viewCodes.model.codes.paivitysPvm |
             date:'dd.MM.yyyy HH:mm' }}</div>
     </div>
 
@@ -157,49 +156,49 @@
             <div class="row-fluid">
                 <div class="span2">{{'codes.createpage.instructions' | i18n}}
                 </div>
-                <div class="span10 pull-left bold">{{ model.instructionsfi }}
+                <div class="span10 pull-left bold">{{ viewCodes.model.instructionsfi }}
                 </div>
             </div>
             <div class="row-fluid">
                 <div class="span2">{{'codes.createpage.targetarea' | i18n}}</div>
-                <div class="span10 pull-left bold">{{ model.targetareafi }}</div>
+                <div class="span10 pull-left bold">{{ viewCodes.model.targetareafi }}</div>
             </div>
             <div class="row-fluid">
                 <div class="span2">{{'codes.createpage.targetareapart' |
                     i18n}}</div>
-                <div class="span10 pull-left bold">{{ model.targetareapartfi
+                <div class="span10 pull-left bold">{{ viewCodes.model.targetareapartfi
                     }}</div>
             </div>
             <div class="row-fluid">
                 <div class="span2">{{'codes.createpage.concept' | i18n}}</div>
-                <div class="span10 pull-left bold">{{ model.conceptfi }}</div>
+                <div class="span10 pull-left bold">{{ viewCodes.model.conceptfi }}</div>
             </div>
             <div class="row-fluid">
                 <div class="span2">
                     {{'codes.createpage.operationalenvironment' | i18n}}</div>
                 <div class="span10 pull-left bold">{{
-                    model.operationalenvironmentfi }}</div>
+                    viewCodes.model.operationalenvironmentfi }}</div>
             </div>
             <div class="row-fluid">
                 <div class="span2">{{'codes.createpage.codessource' | i18n}}</div>
-                <div class="span10 pull-left bold">{{ model.codessourcefi }}</div>
+                <div class="span10 pull-left bold">{{ viewCodes.model.codessourcefi }}</div>
             </div>
             <div class="row-fluid">
                 <div class="span2">{{'codes.createpage.specifiescodes' |
                     i18n}}</div>
-                <div class="span10 pull-left bold">{{ model.specifiescodesfi
+                <div class="span10 pull-left bold">{{ viewCodes.model.specifiescodesfi
                     }}</div>
             </div>
             <div class="row-fluid">
                 <div class="span2">{{'codes.createpage.totakenoticeof' |
                     i18n}}</div>
-                <div class="span10 pull-left bold">{{ model.totakenoticeoffi
+                <div class="span10 pull-left bold">{{ viewCodes.model.totakenoticeoffi
                     }}</div>
             </div>
             <div class="row-fluid">
                 <div class="span2">{{'codes.createpage.validitylevel' | i18n}}
                 </div>
-                <div class="span10 pull-left bold">{{ model.validitylevelfi }}
+                <div class="span10 pull-left bold">{{ viewCodes.model.validitylevelfi }}
                 </div>
             </div>
             </accordion-group> </accordion>
@@ -224,7 +223,7 @@
 
             <div class="row-fluid">
                 <div id="withincodes" class="span12"
-                    ng-show="model.withinCodes.length">
+                    ng-show="viewCodes.model.withinCodes.length">
                     <table class="table">
                         <thead>
                             <tr>
@@ -233,7 +232,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="codes in model.withinCodes | orderBy:sortBy1 | filter:showRelation">
+                            <tr ng-repeat="codes in viewCodes.model.withinCodes | orderBy:sortBy1 | filter:showRelation">
                                 <td class="align-center" ng-class="codes.active ? '': 'passiveRelation'">{{codes.name}}</td>
                                 <td class="align-center" ng-class="codes.active ? '': 'passiveRelation'">{{codes.versio}}</td>
                             </tr>
@@ -255,7 +254,7 @@
 
             <div class="row-fluid">
                 <div id="includescodes" class="span12"
-                    ng-show="model.includesCodes.length">
+                    ng-show="viewCodes.model.includesCodes.length">
                     <table class="table">
                         <thead>
                             <tr>
@@ -265,7 +264,7 @@
                         </thead>
                         <tbody>
                             <tr
-                                ng-repeat="codes in model.includesCodes | orderBy:sortBy2 | filter:showRelation">
+                                ng-repeat="codes in viewCodes.model.includesCodes | orderBy:sortBy2 | filter:showRelation">
                                 <td class="align-center" ng-class="codes.active ? '': 'passiveRelation'">{{codes.name}}</td>
                                 <td class="align-center" ng-class="codes.active ? '': 'passiveRelation'">{{codes.versio}}</td>
                             </tr>
@@ -288,7 +287,7 @@
 
             <div class="row-fluid">
                 <div id="levelswithcodes" class="span12"
-                    ng-show="model.levelsWithCodes.length">
+                    ng-show="viewCodes.model.levelsWithCodes.length">
                     <table class="table">
                         <thead>
                             <tr>
@@ -297,7 +296,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="codes in model.levelsWithCodes | orderBy:sortBy3 | filter:showRelation">
+                            <tr ng-repeat="codes in viewCodes.model.levelsWithCodes | orderBy:sortBy3 | filter:showRelation">
                                 <td class="align-center" ng-class="codes.active ? '': 'passiveRelation'">{{codes.name}}</td>
                                 <td class="align-center" ng-class="codes.active ? '': 'passiveRelation'">{{codes.versio}}</td>
                             </tr>
@@ -318,9 +317,9 @@
         <div class="offset2 span10 form-inline">
             <input type="text" maxlength="50"
                 placeholder="{{'codes.viewpage.codeelements.search.placeholder' | i18n}}"
-                ng-model="query" ng-change="filterChangedPageCount()" /> <input
-                id="filter_version" type="checkbox" ng-model="model.showversion"
-                ng-click="model.getCodeElementVersions()" /> <label
+                ng-model="viewCodes.query" ng-change="viewCodes.filterChangedPageCount()" /> <input
+                id="filter_version" type="checkbox" ng-model="viewCodes.model.showversion"
+                ng-click="viewCodes.model.getCodeElementVersions()" /> <label
                 for="filter_version">{{'codes.viewpage.codeelements.showversion'
                 | i18n}}</label>
         </div>
@@ -330,68 +329,68 @@
  
  
         <div class="offset2 span6">
-        {{ model.searchResultsLength }} {{'codes.viewpage.codeelements.pagination.hakutulosta' | i18n}}
+        {{ viewCodes.model.searchResultsLength }} {{'codes.viewpage.codeelements.pagination.hakutulosta' | i18n}}
  
-             <div ng-if="model.codeElements.length > 0" >
+             <div ng-if="viewCodes.model.codeElements.length > 0" >
                 <div class="row-fluid">
     
                     <div class="pagination">
                         <ul>
-                            <li ng-click="incrementPage(-1)"><span>&#8592;</span></li>
+                            <li ng-click="viewCodes.incrementPage(-1)"><span>&#8592;</span></li>
     
-                            <li ng-if="getNumberOfPages() == 0" class="disabled"><a>0</a>
+                            <li ng-if="viewCodes.getNumberOfPages() == 0" class="disabled"><a>0</a>
     
-                            <li ng-if="getNumberOfPages() <= 9"
-                                ng-repeat="i in [] | forLoop:0:getNumberOfPages()"
-                                ng-class="{disabled: (i==model.currentPage)}"><a
-                                ng-click="changePage(i)">{{i+1}}</a>
-                            <li ng-if="getNumberOfPages() > 9 && model.currentPage < 5"
+                            <li ng-if="viewCodes.getNumberOfPages() <= 9"
+                                ng-repeat="i in [] | forLoop:0:viewCodes.getNumberOfPages()"
+                                ng-class="{disabled: (i==viewCodes.model.currentPage)}"><a
+                                ng-click="viewCodes.changePage(i)">{{i+1}}</a>
+                            <li ng-if="viewCodes.getNumberOfPages() > 9 && viewCodes.model.currentPage < 5"
                                 ng-repeat="i in [] | forLoop:0:6"
-                                ng-class="{disabled: (i==model.currentPage)}"><a
-                                ng-click="changePage(i)">{{i+1}}</a>
-                            <li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5"
+                                ng-class="{disabled: (i==viewCodes.model.currentPage)}"><a
+                                ng-click="viewCodes.changePage(i)">{{i+1}}</a>
+                            <li ng-if="viewCodes.getNumberOfPages() > 9 && viewCodes.model.currentPage >= 5"
                                 ng-repeat="i in [] | forLoop:0:3"
-                                ng-class="{disabled: (i==model.currentPage)}"><a
-                                ng-click="changePage(i)">{{i+1}}</a>
-                            <li ng-if="getNumberOfPages() > 9 && model.currentPage >= 5">
+                                ng-class="{disabled: (i==viewCodes.model.currentPage)}"><a
+                                ng-click="viewCodes.changePage(i)">{{i+1}}</a>
+                            <li ng-if="viewCodes.getNumberOfPages() > 9 && viewCodes.model.currentPage >= 5">
                                 <span>...</span></li>
                             <li
-                                ng-if="getNumberOfPages() > 9 && model.currentPage >= 5 && model.currentPage < getNumberOfPages()-5"
-                                ng-repeat="i in [] | forLoop:model.currentPage-1:model.currentPage+2"
-                                ng-class="{disabled: (i==model.currentPage)}">
-                                <a ng-click="changePage(i)">{{i+1}}</a>
+                                ng-if="viewCodes.getNumberOfPages() > 9 && viewCodes.model.currentPage >= 5 && viewCodes.model.currentPage < getNumberOfPages()-5"
+                                ng-repeat="i in [] | forLoop:viewCodes.model.currentPage-1:viewCodes.model.currentPage+2"
+                                ng-class="{disabled: (i==viewCodes.model.currentPage)}">
+                                <a ng-click="viewCodes.changePage(i)">{{i+1}}</a>
                             </li>
                             <li
-                                ng-if="getNumberOfPages() > 9 && model.currentPage < getNumberOfPages()-5">
+                                ng-if="viewCodes.getNumberOfPages() > 9 && viewCodes.model.currentPage < viewCodes.getNumberOfPages()-5">
                                 <span>...</span></li>
                             <li
-                                ng-if="getNumberOfPages() > 9 && model.currentPage > getNumberOfPages()-6"
-                                ng-repeat="i in [] | forLoop:getNumberOfPages()-6:getNumberOfPages()"
-                                ng-class="{disabled: (i==model.currentPage)}">
-                                <a ng-click="changePage(i)">{{i+1}}</a>
+                                ng-if="viewCodes.getNumberOfPages() > 9 && viewCodes.model.currentPage > viewCodes.getNumberOfPages()-6"
+                                ng-repeat="i in [] | forLoop:viewCodes.getNumberOfPages()-6:viewCodes.getNumberOfPages()"
+                                ng-class="{disabled: (i==viewCodes.model.currentPage)}">
+                                <a ng-click="viewCodes.changePage(i)">{{i+1}}</a>
                             </li>
                             <li
-                                ng-if="getNumberOfPages() > 9 && model.currentPage <= getNumberOfPages()-6"
-                                ng-repeat="i in [] | forLoop:getNumberOfPages()-3:getNumberOfPages()"
-                                ng-class="{disabled: (i==model.currentPage)}">
-                                <a ng-click="changePage(i)">{{i+1}}</a>
+                                ng-if="viewCodes.getNumberOfPages() > 9 && viewCodes.model.currentPage <= viewCodes.getNumberOfPages()-6"
+                                ng-repeat="i in [] | forLoop:viewCodes.getNumberOfPages()-3:viewCodes.getNumberOfPages()"
+                                ng-class="{disabled: (i==viewCodes.model.currentPage)}">
+                                <a ng-click="viewCodes.changePage(i)">{{i+1}}</a>
                             </li>
     
-                            <li ng-click="incrementPage(1)"><span>&#8594;</span></li>
+                            <li ng-click="viewCodes.incrementPage(1)"><span>&#8594;</span></li>
                         </ul>
                     </div>
                     <label for="page_size_select">{{'codes.viewpage.codeelements.pagination.nayta'
                     | i18n}}</label>
                     <select
-                        ng-model="model.pageSize"
-                        ng-options="n for n in model.pageSizeOptions"
-                        ng-change="pageSizeChanged()"
+                        ng-model="viewCodes.model.pageSize"
+                        ng-options="n for n in viewCodes.model.pageSizeOptions"
+                        ng-change="viewCodes.pageSizeChanged()"
                         id="page_size_select"
                         style="width:auto;">
                     </select>
                     <select
-                        ng-model="model.sortOrderSelection"
-                        ng-change="sortOrderChanged()"
+                        ng-model="viewCodes.model.sortOrderSelection"
+                        ng-change="viewCodes.sortOrderChanged()"
                         id="ordering_select"
                         style="width:auto;">
                         <option value="1">{{'codes.viewpage.codeelements.pagination.koodiarvo' | i18n}}</option>
@@ -405,17 +404,17 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th ng:click="sortOrderChanged(1)" ng-class="{'sort-true': model.sortOrderSelection=='1'}">{{'codes.viewpage.codeelements.tableheader1' | i18n}}</th>
-                            <th ng:click="sortOrderChanged(3)" ng-class="{'sort-true': model.sortOrderSelection=='3'}">{{'codes.viewpage.codeelements.tableheader2' | i18n}}</th>
-                            <th ng:click="sortOrderChanged(5)" ng-class="{'sort-true': model.sortOrderSelection=='5'}">{{'codes.viewpage.codeelements.tableheader3' | i18n}}</th>
+                            <th ng:click="viewCodes.sortOrderChanged(1)" ng-class="{'sort-true': viewCodes.model.sortOrderSelection=='1'}">{{'codes.viewpage.codeelements.tableheader1' | i18n}}</th>
+                            <th ng:click="viewCodes.sortOrderChanged(3)" ng-class="{'sort-true': viewCodes.model.sortOrderSelection=='3'}">{{'codes.viewpage.codeelements.tableheader2' | i18n}}</th>
+                            <th ng:click="viewCodes.sortOrderChanged(5)" ng-class="{'sort-true': viewCodes.model.sortOrderSelection=='5'}">{{'codes.viewpage.codeelements.tableheader3' | i18n}}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr
-                            ng-repeat="codeElement in getPaginationPage()">
+                            ng-repeat="codeElement in viewCodes.getPaginationPage()">
                             <td>{{codeElement.koodiArvo}}</td>
                             <td><a
-                                href="koodi/{{codeElement.koodiUri}}/{{codeElement.versio}}{{model.forceRefreshCodeElements}}">{{codeElement.name}}</a>
+                                href="koodi/{{codeElement.koodiUri}}/{{codeElement.versio}}{{viewCodes.model.forceRefreshCodeElements}}">{{codeElement.name}}</a>
                             </td>
                             <td>{{codeElement.versio}}</td>
                         </tr>
@@ -427,34 +426,34 @@
 
     <div class="row-fluid">
         <div class="span9">
-            <alert ng-repeat="alert in model.alerts" type="alert.type"
-                close="closeAlert($index)">{{alert.msg}}</alert>
+            <alert ng-repeat="alert in viewCodes.model.alerts" type="alert.type"
+                close="viewCodes.closeAlert($index)">{{alert.msg}}</alert>
         </div>
     </div>
 
     <div class="row-fluid navbar-fixed-bottom">
         <div class="span12">
-            <button type="button" class="btn pull-right" ng-click="cancel()">{{'codes.back'
+            <button type="button" class="btn pull-right" ng-click="viewCodes.cancel()">{{'codes.back'
                 | i18n}}</button>
             <button type="button" class="btn btn-primary pull-right"
-                ng-click="model.removeCodes()" auth="crud"
+                ng-click="viewCodes.model.removeCodes()" auth="crud"
                 auth-service="APP_KOODISTO"
-                auth-org="{{model.codes.organisaatioOid}}"
-                ng-disabled="model.deleteState">
+                auth-org="{{viewCodes.model.codes.organisaatioOid}}"
+                ng-disabled="viewCodes.model.deleteState">
                 {{'codes.viewpage.deletebutton' | i18n}}&nbsp;<i
                     class="icon-minus-sign"></i>
             </button>
-            <button type="button" ng-click="addCodeElement()" auth="crud"
+            <button type="button" ng-click="viewCodes.addCodeElement()" auth="crud"
                 auth-service="APP_KOODISTO"
-                auth-org="{{model.codes.organisaatioOid}}"
-                class="btn btn-primary pull-right" ng-disabled="model.editState">
+                auth-org="{{viewCodes.model.codes.organisaatioOid}}"
+                class="btn btn-primary pull-right" ng-disabled="viewCodes.model.editState">
                 {{'codes.viewpage.codeelements.create' | i18n}}&nbsp;<i
                     class="icon-plus-sign"></i>
             </button>
-            <button type="button" ng-click="editCodes()" auth="update"
+            <button type="button" ng-click="viewCodes.editCodes()" auth="update"
                 auth-service="APP_KOODISTO"
-                auth-org="{{model.codes.organisaatioOid}}"
-                class="btn btn-primary pull-right" ng-disabled="model.editState">
+                auth-org="{{viewCodes.model.codes.organisaatioOid}}"
+                class="btn btn-primary pull-right" ng-disabled="viewCodes.model.editState">
                 {{'codes.viewpage.editbutton' | i18n}}</button>
         </div>
     </div>

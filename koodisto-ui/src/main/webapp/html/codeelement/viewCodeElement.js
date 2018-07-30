@@ -82,7 +82,7 @@ export class ViewCodeElementModel {
             this.CodesByUri.get({
                 codesUri : result.koodisto.koodistoUri
             }, (codes) => {
-                var inLatestCodes = jQuery.inArray(codes.latestKoodistoVersio.versio, this.codeElement.koodisto.koodistoVersios) !== -1;
+                const inLatestCodes = jQuery.inArray(codes.latestKoodistoVersio.versio, this.codeElement.koodisto.koodistoVersios) !== -1;
                 this.editState = inLatestCodes ? "" : "disabled";
             });
 
@@ -100,7 +100,7 @@ export class ViewCodeElementModel {
     }
 
     extractAndPushCodeElementInformation(codeElement, list) {
-        var ce = {};
+        const ce = {};
         ce.uri = codeElement.codeElementUri;
         ce.name = getLanguageSpecificValueOrValidValue(codeElement.relationMetadata, 'nimi', 'FI');
         ce.description = getLanguageSpecificValueOrValidValue(codeElement.relationMetadata, 'kuvaus', 'FI');
@@ -112,9 +112,10 @@ export class ViewCodeElementModel {
 
     removeCodeElement() {
         this.deleteCodeElementModalInstance = this.$modal.open({
-            templateUrl : 'confirmDeleteCodeElementModalContent.html',
-            controller : 'viewCodeElementController',
-            resolve : {}
+            // Included in viewcodeelement.html
+            templateUrl: 'confirmDeleteCodeElementModalContent.html',
+            controller: 'viewCodeElementController as viewCodeElementModal',
+            resolve: {}
         });
     }
 }
@@ -122,51 +123,57 @@ export class ViewCodeElementModel {
 export class ViewCodeElementController {
     constructor($scope, $location, $routeParams, viewCodeElementModel, DeleteCodeElement, RemoveRelationCodeElement) {
         "ngInject";
-        $scope.model = viewCodeElementModel;
-        $scope.codeElementUri = $routeParams.codeElementUri;
-        $scope.codeElementVersion = $routeParams.codeElementVersion;
-        $scope.model.forceRefresh = $routeParams.forceRefresh || $routeParams.edited;
-        $scope.model.codeElementEdited = $routeParams.edited === true;
-        viewCodeElementModel.init($scope, $scope.codeElementUri, $scope.codeElementVersion);
+        this.$scope = $scope;
+        this.$location = $location;
+        this.$routeParams = $routeParams;
+        this.viewCodeElementModel = viewCodeElementModel;
+        this.DeleteCodeElement = DeleteCodeElement;
+        this.RemoveRelationCodeElement = RemoveRelationCodeElement;
 
-        $scope.closeAlert = function(index) {
-            $scope.model.alerts.splice(index, 1);
-        };
+        this.model = viewCodeElementModel;
+        this.codeElementUri = $routeParams.codeElementUri;
+        this.codeElementVersion = $routeParams.codeElementVersion;
+        this.model.forceRefresh = $routeParams.forceRefresh || $routeParams.edited;
+        this.model.codeElementEdited = $routeParams.edited === true;
+        viewCodeElementModel.init(this, this.codeElementUri, this.codeElementVersion);
+    }
 
-        $scope.cancel = function() {
-            $location.path("/koodisto/" + $scope.model.codeElement.koodisto.koodistoUri + "/"
-                + $scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length - 1]).search({forceRefresh: $scope.model.codeElementEdited});
-        };
+    closeAlert(index) {
+        this.model.alerts.splice(index, 1);
+    }
 
-        $scope.editCodeElement = function() {
-            $location.path("/muokkaaKoodi/" + $scope.codeElementUri + "/" + $scope.codeElementVersion);
-        };
+    cancel() {
+        this.$location.path("/koodisto/" + this.model.codeElement.koodisto.koodistoUri + "/"
+            + this.model.codeElement.koodisto.koodistoVersios[this.model.codeElement.koodisto.koodistoVersios.length - 1]).search({forceRefresh: this.model.codeElementEdited});
+    }
 
-        $scope.okconfirmdeletecodeelement = function() {
-            DeleteCodeElement.put({
-                codeElementUri : $scope.codeElementUri,
-                codeElementVersion : $scope.codeElementVersion
-            }, function(success) {
-                $location.path("/koodisto/" + $scope.model.codeElement.koodisto.koodistoUri + "/"
-                    + $scope.model.codeElement.koodisto.koodistoVersios[$scope.model.codeElement.koodisto.koodistoVersios.length - 1]).search({forceRefresh: true});
-            }, function(error) {
-                var alert = {
-                    type : 'danger',
-                    msg : 'Koodin poisto ep\u00E4onnistui.'
-                };
-                $scope.model.alerts.push(alert);
-            });
+    editCodeElement() {
+        this.$location.path("/muokkaaKoodi/" + this.codeElementUri + "/" + this.codeElementVersion);
+    }
 
-            $scope.model.deleteCodeElementModalInstance.close();
-        };
+    okconfirmdeletecodeelement() {
+        this.DeleteCodeElement.put({
+            codeElementUri : this.codeElementUri,
+            codeElementVersion : this.codeElementVersion
+        }, (success) => {
+            this.$location.path("/koodisto/" + this.model.codeElement.koodisto.koodistoUri + "/"
+                + this.model.codeElement.koodisto.koodistoVersios[this.model.codeElement.koodisto.koodistoVersios.length - 1]).search({forceRefresh: true});
+        }, (error) => {
+            const alert = {
+                type: 'danger',
+                msg: 'Koodin poisto ep\u00E4onnistui.'
+            };
+            this.model.alerts.push(alert);
+        });
 
-        $scope.cancelconfirmdeletecodeelement = function() {
-            $scope.model.deleteCodeElementModalInstance.dismiss('cancel');
-        };
+        this.model.deleteCodeElementModalInstance.close();
+    }
 
-        $scope.showRelation = function(codeElement) {
-            return codeElement.active || $scope.showPassive
-        }
+    cancelconfirmdeletecodeelement() {
+        this.model.deleteCodeElementModalInstance.dismiss('cancel');
+    }
 
+    showRelation(codeElement) {
+        return codeElement.active || this.showPassive
     }
 }

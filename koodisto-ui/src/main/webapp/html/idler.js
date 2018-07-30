@@ -49,21 +49,22 @@ export class SessionExpiresCtrl {
         "ngInject";
         this.Idle = Idle;
         this.$scope = $scope;
-        this.$modalInstace = $modalInstance;
+        this.$modalInstance = $modalInstance;
         this.$window = $window;
 
-        this.$scope.timeoutMessage = function() {
-            var duration = Math.floor(MAX_SESSION_IDLE_TIME_IN_SECONDS / 60);
-            return jQuery.i18n.prop('session.expired.text1.part1') + " " + duration +  " " + jQuery.i18n.prop('session.expired.text1.part2');
-        };
+    }
+    timeoutMessage() {
+        const duration = Math.floor(MAX_SESSION_IDLE_TIME_IN_SECONDS / 60);
+        return jQuery.i18n.prop('session.expired.text1.part1') + " " + duration +  " " + jQuery.i18n.prop('session.expired.text1.part2');
+    }
 
-        this.$scope.okConfirm = function() {
-            this.Idle.watch();
-            this.$modalInstance.close();
-        };
-        this.$scope.redirectToLogin = function() {
-            this.$window.location.reload();
-        };
+    okConfirm() {
+        this.Idle.watch();
+        this.$modalInstance.close();
+    }
+
+    redirectToLogin() {
+        this.$window.location.reload();
     }
 }
 
@@ -74,14 +75,16 @@ export class EventsCtrl {
         this.Idle = Idle;
         this.$modal = $modal;
 
-        this.$scope.$on('IdleWarn', () => {
+        $scope.$on('IdleWarn', () => {
             if (!this.$scope.sessionWarning || angular.element('#sessionWarning').length < 1) {
+                // No need to import. Already included in sessionTimeout.html.
                 this.$scope.sessionWarning = this.openModal('sessionWarning.html');
             }
         });
 
-        this.$scope.$on('IdleTimeout', () => {
+        $scope.$on('IdleTimeout', () => {
             this.$scope.sessionWarning.close();
+            // No need to import. Already included in sessionTimeout.html.
             this.$scope.sessionWarning = this.openModal('sessionExpired.html');
             this.Idle.unwatch();
         });
@@ -90,8 +93,8 @@ export class EventsCtrl {
 
     openModal(template) {
         return this.$modal.open({
-            templateUrl: template,
-            controller: 'sessionExpiresCtrl',
+            template: template,
+            controller: 'sessionExpiresCtrl as sessionExpires',
             keyboard: false,
             backdrop: 'static',
             windowClass: 'modal-warning'

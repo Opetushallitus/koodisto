@@ -3,16 +3,16 @@
 <script type="text/ng-template" id="organisaatio.html">
     <span class="label">
         <i class="fa fa-sitemap organisaatio"
-           ng-class="{ auki: (data.open || data.children.length == 0),
-                kiinni: (!data.open && data.children.length > 0)}"
-           ng-click="openChildren(data)"></i>
+           ng-class="{ auki: (modalInstance.data.open || modalInstance.data.children.length === 0),
+           kiinni: (!modalInstance.data.open && modalInstance.data.children.length > 0)}"
+           ng-click="modalInstance.openChildren(data)"></i>
         <label>
-            <a href="" ng-click="organisaatioSelector(data);ok()">{{data.nimi['fi'] || data.nimi['sv'] || data.nimi['en']}}</a>
-            <span ng-repeat="type in data.organisaatiotyypit">({{type}}) </span>
+            <a href="" ng-click="modalInstance.organisaatioSelector(data);ok()">{{data.nimi['fi'] || data.nimi['sv'] || data.nimi['en']}}</a>
+            <span ng-repeat="type in modalInstance.data.organisaatiotyypit">({{type}}) </span>
         </label>
     </span>
-    <ol ng-if="data.open">
-        <li ng-repeat="data in data.children" ng-include="'organisaatio.html'">
+    <ol ng-if="modalInstance.data.open">
+        <li ng-repeat="data in modalInstance.data.children" ng-include="'organisaatio.html'">
         </li>
     </ol>
 
@@ -27,17 +27,17 @@
     <div class="modal-body">
         {{'codes.createpage.organization.help' | i18n}}<br>
 
-        <div ng-controller="organisaatioTreeController">
+        <div ng-controller="organisaatioTreeController as organisaatioTree">
             <div class="orgSearch">
                 <input type="text" class="search" placeholder="Hae organisaatioita" ng-model="orgTree.searchStr"/>
-                <i class="fa fa-trash-o organisaatio" ng-click="clear()"></i>
+                <i class="fa fa-trash-o organisaatio" ng-click="organisaatioTree.clear()"></i>
                 <br />
-                <span>Hakutuloksia: {{orgTree.model.numHits || 0}}</span>
+                <span>Hakutuloksia: {{organisaatioTree.orgTree.model.numHits || 0}}</span>
             </div>
             <div class="clear"></div>
             <div class="orgSelector">
                 <ol class="treelist collapsible">
-                    <li ng-repeat="data in orgTree.model.organisaatiot" ng-include="'organisaatio.html'">
+                    <li ng-repeat="data in organisaatioTree.orgTree.model.organisaatiot" ng-include="'organisaatio.html'">
                     </li>
                 </ol>
             </div>
@@ -46,6 +46,6 @@
 
     </div>
     <div class="modal-footer">
-        <button class="btn btn-warning pull-right" ng-click="cancel()">{{'codes.createpage.organization.cancel' | i18n}}</button>
+        <button class="btn btn-warning pull-right" ng-click="modalInstance.cancel()">{{'codes.createpage.organization.cancel' | i18n}}</button>
     </div>
 </script>
