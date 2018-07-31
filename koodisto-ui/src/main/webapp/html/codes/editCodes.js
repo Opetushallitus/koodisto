@@ -24,7 +24,7 @@ export class CodesEditorModel {
 
     }
 
-    init(scope, codesUri, codesVersion) {
+    init(codesUri, codesVersion) {
         this.withinCodes = [];
         this.includesCodes = [];
         this.levelsWithCodes = [];
@@ -32,11 +32,11 @@ export class CodesEditorModel {
         this.onlyCodes = [];
         this.organizations = [];
         this.alerts = [];
-        this.getCodes(scope, codesUri, codesVersion);
+        this.getCodes(codesUri, codesVersion);
         this.getAllCodes();
     }
 
-    getCodes(scope, codesUri, codesVersion) {
+    getCodes(codesUri, codesVersion) {
         this.CodesByUriAndVersion.get({codesUri: codesUri, codesVersion: codesVersion}, (result) => {
             this.codes = result;
             if (this.codes.tila && this.codes.tila==='HYVAKSYTTY') {
@@ -228,7 +228,7 @@ export class CodesEditorController {
         this.errorMessageIfOtherInfoIsGiven = $filter('i18n')('field.required.if.other.info.is.given');
 
         if (!isModalController) {
-            codesEditorModel.init($scope, $routeParams.codesUri, $scope.codesVersion);
+            codesEditorModel.init($routeParams.codesUri, this.codesVersion);
         }
 
         this.isCodeLoading = loadingService.isLoading;
