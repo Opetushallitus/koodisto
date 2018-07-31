@@ -5,6 +5,10 @@ var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var MiniCssExtractingPlugin = require('mini-css-extract-plugin');
 
+const convert = require('koa-connect');
+const history = require('connect-history-api-fallback');
+const proxy = require('http-proxy-middleware');
+
 module.exports = function makeWebpackConfig(options) {
     /**
      * Environment type
@@ -20,6 +24,8 @@ module.exports = function makeWebpackConfig(options) {
      * This is the object where all configuration gets set
      */
     var config = {};
+
+    config.mode = process.env.WEBPACK_SERVE ? 'development' : 'production';
 
     /**
      * Entry
@@ -46,11 +52,11 @@ module.exports = function makeWebpackConfig(options) {
     } else {
         config.output = {
             // Absolute output directory
-            path: __dirname + '/koodisto-ui/build',
+            path: BUILD ? __dirname + '/koodisto-ui/build' : __dirname + '/koodisto-ui/html',
 
             // Output path from the view of the page
             // Uses webpack-dev-server in development
-            publicPath: BUILD ? '/koodisto-ui/html/' : 'http://localhost:8080/koodisto-ui/html/',
+            publicPath: BUILD ? '/koodisto-ui/html/' : 'http://localhost:3000/',
 
             // Filename for entry points
             // Only adds hash in build mode
@@ -59,6 +65,16 @@ module.exports = function makeWebpackConfig(options) {
             // Filename for non-entry points
             // Only adds hash in build mode
             chunkFilename: BUILD ? '[name].[hash].js' : '[name].bundle.js'
+        }
+    }
+
+    if (!BUILD && !TEST) {
+        config.serve = {
+            content: [__dirname],
+            add: (app, middleware, options) => {
+                app.use(convert(proxy('/koodisto-ui/configuration', { target: 'http://localhost:8081' })));
+                app.use(convert(history()));
+            },
         }
     }
 
