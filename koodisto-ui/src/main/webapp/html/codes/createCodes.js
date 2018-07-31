@@ -229,7 +229,7 @@ export class CodesCreatorController {
     open() {
         const modalInstance = this.$modal.open({
             // Included in organisaatioSelector.html
-            template: 'organizationModalContent.html',
+            templateUrl: 'organizationModalContent.html',
             controller: 'modalInstanceCtrl as modalInstance',
             resolve: {}
         });

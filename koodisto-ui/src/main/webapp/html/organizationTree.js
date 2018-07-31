@@ -1,6 +1,7 @@
 "use strict";
 
 import {OPH_ORG} from "./auth";
+import {SERVICE_NAME} from "./app";
 
 export class ChildOpener {
     constructor() {
@@ -29,8 +30,7 @@ export class OrganisaatioTreeModel {
         "ngInject";
         this.OrganizationChildrenByOid = OrganizationChildrenByOid;
         this.childOpener = childOpener;
-        var instance = {};
-        instance.model = {};
+        this.model = {};
     }
 
     init(organizations) {
@@ -46,8 +46,8 @@ export class OrganisaatioTreeModel {
             this.model.organisaatiot =  this.model.originalOrganizations;
             this.model.numHits = this.calculateMatchingOrgs(this.model.originalOrganizations);
         } else {
-            this.organizationsToInitFrom.forEach(function(organization) {
-                this.OrganizationChildrenByOid.get({oid: organization}, function(result) {
+            this.organizationsToInitFrom.forEach((organization) => {
+                this.OrganizationChildrenByOid.get({oid: organization}, (result) => {
                     result.organisaatiot.forEach((org) => {
                         this.model.organisaatiot.push(org);
                     });
@@ -133,7 +133,7 @@ export class OrganisaatioOPHTreeModel {
     }
 
     resetSearch() {
-        this.OrganizationByOid.get({oid: OPH_ORG}, function(result) {
+        this.OrganizationByOid.get({oid: OPH_ORG}, (result) => {
             this.model.organisaatiot = [result];
             this.model.numHits = 1;
         });

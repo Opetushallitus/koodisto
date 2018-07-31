@@ -186,12 +186,12 @@ export class AuthService {
                     org = role.replace(service + "_READ_", '');
                 }
 
-                if (org && organizations.indexOf(org) === -1) {
-                    organizations.push(org);
+                if (org && this.organizations.indexOf(org) === -1) {
+                    this.organizations.push(org);
                 }
             });
 
-            deferred.resolve(organizations);
+            deferred.resolve(this.organizations);
         });
         return deferred.promise;
     }
