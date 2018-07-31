@@ -9,9 +9,7 @@ class LoadingService {
     constructor() {
         "ngInject";
         this.requestCount = 0;
-        this.isLoading = () => {
-            return this.requestCount > 0;
-        }
+        this.isLoading = () => this.requestCount > 0;
     }
 }
 
@@ -45,10 +43,16 @@ mod.run(['$http', 'onStartInterceptor', function ($http, onStartInterceptor) {
     $http.defaults.transformRequest.push(onStartInterceptor);
 }]);
 
-mod.controller('LoadingCtrl', ['$scope', 'loadingService', function ($scope, loadingService) {
-    $scope.$watch(() => loadingService.isLoading(), (value) => {
-        $scope.loading = value;
-    });
-}]);
+class LoadingCtrl {
+    constructor($scope, loadingService) {
+        "ngInject";
+        this.isLoading = loadingService.isLoading();
+        $scope.$watch(() => loadingService.isLoading(), (value) => {
+            this.isLoading = value;
+        });
+    }
+}
+
+mod.controller('LoadingCtrl', LoadingCtrl);
 
 export default mod;

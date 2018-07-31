@@ -107,6 +107,12 @@ module.exports = function makeWebpackConfig(options) {
             // Allow loading html through js
             test: /\.html$/,
             loader: 'html-loader'
+        }, {
+            // expose to window
+            test: require.resolve('jquery'),
+            use: [
+                {loader: 'expose-loader', options: 'jQuery'}
+            ]
         }]
     };
 

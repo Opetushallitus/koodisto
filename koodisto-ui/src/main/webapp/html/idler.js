@@ -2,26 +2,23 @@ import angular from 'angular';
 import {MAX_SESSION_IDLE_TIME_IN_SECONDS, SERVICE_URL_BASE, SESSION_KEEPALIVE_INTERVAL_IN_SECONDS} from "./app";
 
 export class Idler {
-    constructor(Idle, $timeout, $interval) {
-        "ngInject";
-        this.Idle = Idle;
-        this.$timeout = $timeout;
-        this.$interval = $interval;
+    constructor() {
         this.restrict = 'A';
+        this.controller = IdlerController;
     }
 
-    link(scope, elem, attrs) {
+    link(scope, elem, attrs, ctrl) {
         let timeout;
         let timestamp = localStorage.lastEventTime;
 
         // Watch for the events set in ng-idle's options
         // If any of them fire (considering 500ms debounce), update localStorage.lastEventTime with a current timestamp
-        elem.on(this.Idle._options().events, function(){
-            if (this.Idle.running()) {
+        elem.on(ctrl.Idle._options().interrupt, function(){
+            if (ctrl.Idle.running()) {
                 if (timeout) {
-                    this.$timeout.cancel(timeout);
+                    ctrl.$timeout.cancel(timeout);
                 }
-                timeout = this.$timeout(function(){
+                timeout = ctrl.$timeout(() => {
                     localStorage.setItem('lastEventTime', new Date().getTime());
                 }, 3000, false);
             }
@@ -29,18 +26,32 @@ export class Idler {
 
         // Every 5s, poll localStorage.lastEventTime to see if its value is greater than the timestamp set for the last known event
         // If it is, reset the ng-idle timer and update the last known event timestamp to the value found in localStorage
-        window.setInterval(function() {
+        window.setInterval(() => {
             if (localStorage.lastEventTime > timestamp) {
-                var element = angular.element('#sessionWarning .btn');
+                // Requires jquery
+                const element = angular.element('#sessionWarning .btn');
                 if (element.length > 0) {
-                    this.$timeout(function() {
+                    ctrl.$timeout(() => {
                         element.click();
                     }, 500, false);
                 }
-                this.Idle.watch();
+                ctrl.Idle.watch();
                 timestamp = localStorage.lastEventTime;
             }
         }, 5000, false);
+    }
+
+    static directiveFactory() {
+        return new Idler;
+    }
+}
+
+class IdlerController {
+    constructor(Idle, $timeout, $interval) {
+        "ngInject";
+        this.Idle = Idle;
+        this.$timeout = $timeout;
+        this.$interval = $interval;
     }
 }
 
@@ -76,16 +87,17 @@ export class EventsCtrl {
         this.$modal = $modal;
 
         $scope.$on('IdleWarn', () => {
-            if (!this.$scope.sessionWarning || angular.element('#sessionWarning').length < 1) {
+            // Requires jquery
+            if (!this.sessionWarning || angular.element('#sessionWarning').length < 1) {
                 // No need to import. Already included in sessionTimeout.html.
-                this.$scope.sessionWarning = this.openModal('sessionWarning.html');
+                this.sessionWarning = this.openModal('sessionWarning.html');
             }
         });
 
         $scope.$on('IdleTimeout', () => {
-            this.$scope.sessionWarning.close();
+            this.sessionWarning.close();
             // No need to import. Already included in sessionTimeout.html.
-            this.$scope.sessionWarning = this.openModal('sessionExpired.html');
+            this.sessionWarning = this.openModal('sessionExpired.html');
             this.Idle.unwatch();
         });
 
@@ -104,14 +116,14 @@ export class EventsCtrl {
 
 export const idleConfig = function(IdleProvider, KeepaliveProvider) {
     "ngInject";
-    var warningDuration = 300;
+    const warningDuration = 300;
     IdleProvider.idle(MAX_SESSION_IDLE_TIME_IN_SECONDS - warningDuration);
     IdleProvider.timeout(warningDuration);
     KeepaliveProvider.interval(SESSION_KEEPALIVE_INTERVAL_IN_SECONDS);
     KeepaliveProvider.http(SERVICE_URL_BASE + "session/maxinactiveinterval");
 };
 
-export const idleRun = function(Idle){
+export const idleRun = function(Idle) {
     "ngInject";
     Idle.watch();
 };

@@ -338,7 +338,7 @@ export class ViewCodesController {
     }
 
     okdownload() {
-        var url = this.DownloadCodes(this.codesUri, this.codesVersion, this.model.format, this.model.encoding);
+        const url = this.DownloadCodes(this.codesUri, this.codesVersion, this.model.format, this.model.encoding);
         this.$window.open(url);
         if (this.model.downloadModalInstance) {
             this.model.downloadModalInstance.close();

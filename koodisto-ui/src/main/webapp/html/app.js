@@ -21,6 +21,7 @@ import editCodesgroup from './codesgroup/editcodesgroup.html';
 import sessionTimeout from './partials/sessionTimeout.html';
 import organisaatioSelector from './partials/organisaatioSelector.html';
 
+import 'jquery';
 import angular from 'angular';
 import ngResource from 'angular-resource';
 import ngRoute from 'angular-route';
@@ -43,7 +44,7 @@ import {EventsCtrl, idleConfig, Idler, idleRun, SessionExpiresCtrl} from "./idle
 import {CsrfHeaderInterceptor} from "./app-csrf-header";
 import {AuthService, MyRolesModel} from "./auth";
 import {KoodistoTreeController, Treemodel} from "./codesTree";
-import {Auth, IeSelectFix} from "./directives";
+import {Auth} from "./directives";
 import {
     ChildOpener, ModalInstanceCtrl,
     OrganisaatioOPHTreeModel,
@@ -587,7 +588,7 @@ app.run(["SessionPoll", function(SessionPoll) {
     SessionPoll.get({});
 }]);
 
-app.directive('idler', () => new Idler);
+app.directive('idler', Idler.directiveFactory);
 
 app.controller('sessionExpiresCtrl', SessionExpiresCtrl);
 
@@ -607,9 +608,7 @@ app.service('treemodel', Treemodel);
 
 app.controller('koodistoTreeController', KoodistoTreeController);
 
-// app.directive('auth', () => new Auth);
-
-// app.directive('ieSelectFix', () => new IeSelectFix);
+app.directive('auth', Auth.directiveFactory);
 
 app.service('childOpener', ChildOpener);
 
