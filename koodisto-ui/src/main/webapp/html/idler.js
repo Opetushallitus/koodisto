@@ -105,7 +105,7 @@ export class EventsCtrl {
 
     openModal(template) {
         return this.$modal.open({
-            template: template,
+            templateUrl: template,
             controller: 'sessionExpiresCtrl as sessionExpires',
             keyboard: false,
             backdrop: 'static',

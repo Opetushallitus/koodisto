@@ -80,7 +80,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="codeElement in ::$parent.codeElementEditorModal.paginationPage">
+            <tr ng-repeat="codeElement in $parent.codeElementEditorModal.paginationPage">
                 <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" value="{{codeElement.checked}}" ng-model="codeElement.checked"/></td>
                 <td class="align-center">{{:: codeElement.value}}</td>
                 <td class="align-center">{{:: codeElement.name}}</td>
@@ -293,7 +293,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="codeElement in ::codeElementEditor.model.withinCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:codeElementEditor.model.withinListLengthLimit">
+                        <tr ng-repeat="codeElement in codeElementEditor.model.withinCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:codeElementEditor.model.withinListLengthLimit">
                             <td class="align-center">{{:: codeElement.name}}</td>
                             <td class="align-center" >{{:: codeElement.versio}}</td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
@@ -331,7 +331,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="codeElement in ::codeElementEditor.model.includesCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:codeElementEditor.model.includesListLengthLimit">
+                        <tr ng-repeat="codeElement in codeElementEditor.model.includesCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:codeElementEditor.model.includesListLengthLimit">
                             <td class="align-center" >{{:: codeElement.name}}</td>
                             <td class="align-center">{{:: codeElement.versio}}</td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"
@@ -367,7 +367,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="codeElement in ::codeElementEditor.model.levelsWithCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:codeElementEditor.model.levelsWithListLengthLimit">
+                        <tr ng-repeat="codeElement in codeElementEditor.model.levelsWithCodeElements | filter:{passive:false} | orderBy:sortBy | limitTo:codeElementEditor.model.levelsWithListLengthLimit">
                             <td class="align-center">{{:: codeElement.name}}</td>
                             <td class="align-center">{{:: codeElement.versio}}</td>
                             <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO"

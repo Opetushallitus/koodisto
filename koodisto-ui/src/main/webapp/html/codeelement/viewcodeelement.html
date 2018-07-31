@@ -192,7 +192,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="codeElement in ::viewCodeElement.model.withinCodeElements | orderBy:sortBy | filter:showRelation">
+                                <tr ng-repeat="codeElement in viewCodeElement.model.withinCodeElements | orderBy:sortBy | filter:showRelation">
                                     <td ng-class="codeElement.active ? '': 'passiveRelation'">{{:: codeElement.codesname}}</td>
                                     <td ng-class="codeElement.active ? '': 'passiveRelation'">{{:: codeElement.name}}</td>
                                     <td ng-class="codeElement.active ? '': 'passiveRelation'">{{:: codeElement.versio}}</td>
@@ -227,7 +227,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="codeElement in ::viewCodeElement.model.includesCodeElements | orderBy:sortBy | filter:showRelation">
+                                <tr ng-repeat="codeElement in viewCodeElement.model.includesCodeElements | orderBy:sortBy | filter:showRelation">
                                     <td ng-class="codeElement.active ? '': 'passiveRelation'">{{:: codeElement.codesname}}</td>
                                     <td ng-class="codeElement.active ? '': 'passiveRelation'">{{:: codeElement.name}}</td>
                                     <td ng-class="codeElement.active ? '': 'passiveRelation'">{{:: codeElement.versio}}</td>
@@ -263,7 +263,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="codeElement in ::viewCodeElement.model.levelsWithCodeElements | orderBy:sortBy | filter:showRelation">
+                            <tr ng-repeat="codeElement in viewCodeElement.model.levelsWithCodeElements | orderBy:sortBy | filter:showRelation">
                                     <td ng-class="codeElement.active ? '': 'passiveRelation'">{{:: codeElement.codesname}}</td>
                                     <td ng-class="codeElement.active ? '': 'passiveRelation'">{{:: codeElement.name}}</td>
                                     <td ng-class="codeElement.active ? '': 'passiveRelation'">{{:: codeElement.versio}}</td>

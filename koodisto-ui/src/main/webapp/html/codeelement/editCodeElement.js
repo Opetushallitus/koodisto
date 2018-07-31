@@ -436,7 +436,7 @@ export class CodeElementEditorController {
     }
 
     createCodes(data) {
-        var ce = {};
+        const ce = {};
         ce.uri = data.uri;
         ce.name = data.name;
         ce.value = data.value;
@@ -456,11 +456,11 @@ export class CodeElementEditorController {
     }
 
     addRelationsCodeElement(selectedItems, collectionToAddTo) {
-        var elementUrisToAdd = [];
-        var addedElements = [];
+        const elementUrisToAdd = [];
+        const addedElements = [];
 
         selectedItems.forEach(function (codeElement) {
-            var found = false;
+            let found = false;
             collectionToAddTo.forEach(function (innerCodeElement) {
                 if (codeElement.uri === innerCodeElement.uri && !innerCodeElement.passive) {
                     found = true;
@@ -489,7 +489,7 @@ export class CodeElementEditorController {
     }
 
     removeRelationsCodeElement(unselectedItems, collectionToRemoveFrom) {
-        var elementUrisToRemove = [];
+        const elementUrisToRemove = [];
         unselectedItems.forEach(function (codeElement) {
             collectionToRemoveFrom.forEach(function (innerCodeElement) {
                 if (codeElement.uri === innerCodeElement.uri) {
@@ -506,7 +506,7 @@ export class CodeElementEditorController {
             return;
         }
 
-        var remainingElements = $.grep(collectionToRemoveFrom, function (element) {
+        const remainingElements = $.grep(collectionToRemoveFrom, function (element) {
             return elementUrisToRemove.indexOf(element.uri) === -1;
         });
         collectionToRemoveFrom.length = 0;
@@ -520,10 +520,10 @@ export class CodeElementEditorController {
     }
 
     okcodeelement() {
-        var selectedItems = this.$filter('filter')(this.model.shownCodeElements, {
+        const selectedItems = this.$filter('filter')(this.model.shownCodeElements, {
             checked: true
         });
-        var unselectedItems = this.$filter('filter')(this.model.shownCodeElements, {
+        const unselectedItems = this.$filter('filter')(this.model.shownCodeElements, {
             checked: false
         });
         if (this.model.addToListName === 'withincodes') {
@@ -541,20 +541,18 @@ export class CodeElementEditorController {
     };
 
     showCodeElementsInCodeSet(toBeShown, existingSelections) {
-        var existingActiveSelections = existingSelections.filter(function (existingSelection) {
-            return !existingSelection.passive;
-        });
+        const existingActiveSelections = existingSelections.filter((existingSelection) => !existingSelection.passive);
         toBeShown = [];
         this.CodeElementsByCodesUriAndVersion.get({
             codesUri: this.model.showCode,
             codesVersion: 0
-        }, function (result2) {
+        }, (result) => {
             this.selectallcodelements = true;
-            result2.forEach(function (codeElement) {
+            result.forEach((codeElement) => {
                 if (codeElement.koodiUri !== this.codeElementUri) {
-                    var ce = {};
+                    const ce = {};
                     ce.uri = codeElement.koodiUri;
-                    ce.checked = jQuery.grep(existingActiveSelections, function (element) {
+                    ce.checked = jQuery.grep(existingActiveSelections, (element) => {
                         return codeElement.koodiUri === element.uri && codeElement.versio === element.versio && !element.passive;
                     }).length > 0;
                     ce.value = codeElement.koodiArvo;
@@ -591,14 +589,14 @@ export class CodeElementEditorController {
     getCodeElements() {
         this.model.loadingCodeElements = true;
         this.model.currentPage = 0;
-        var name = this.model.addToListName;
+        const name = this.model.addToListName;
         this.CodesByUriAndVersion.get({
             codesUri: this.model.codeElement.koodisto.koodistoUri,
             codesVersion: 0
         }, (result) => {
 
             function getCodesUris(relationArray) {
-                var codesUris = [];
+                const codesUris = [];
                 relationArray.forEach(function (value) {
                     codesUris.push(value.codesUri);
                 });
@@ -607,7 +605,7 @@ export class CodeElementEditorController {
 
             if (name === 'withincodes') {
                 if (this.model.showCode && this.model.showCode.length > 0) {
-                    showCodeElementsInCodeSet(this.model.allWithinCodeElements, this.model.withinCodeElements);
+                    this.showCodeElementsInCodeSet(this.model.allWithinCodeElements, this.model.withinCodeElements);
                 }
                 this.model.shownCodes = getCodesUris(result.withinCodes);
                 this.model.shownCodes.unshift(this.model.codeElement.koodisto.koodistoUri);
@@ -615,7 +613,7 @@ export class CodeElementEditorController {
 
             } else if (name === 'includescodes') {
                 if (this.model.showCode && this.model.showCode.length > 0) {
-                    showCodeElementsInCodeSet(this.model.allIncludesCodeElements, this.model.includesCodeElements);
+                    this.showCodeElementsInCodeSet(this.model.allIncludesCodeElements, this.model.includesCodeElements);
                 }
                 this.model.shownCodes = getCodesUris(result.includesCodes);
                 this.model.shownCodes.unshift(this.model.codeElement.koodisto.koodistoUri);
@@ -623,7 +621,7 @@ export class CodeElementEditorController {
 
             } else if (name === 'levelswithcodes') {
                 if (this.model.showCode && this.model.showCode.length > 0) {
-                    showCodeElementsInCodeSet(this.model.allLevelsWithCodeElements, this.model.levelsWithCodeElements);
+                    this.showCodeElementsInCodeSet(this.model.allLevelsWithCodeElements, this.model.levelsWithCodeElements);
                 }
                 this.model.shownCodes = getCodesUris(result.levelsWithCodes);
                 this.model.shownCodeElements = this.model.allLevelsWithCodeElements;
@@ -697,7 +695,7 @@ export class CodeElementEditorController {
 
     // Change the currentPage when the pageSize is changed.
     pageSizeChanged() {
-        var topmostCodeElement = this.model.currentPage * this.oldValueForPageSize;
+        const topmostCodeElement = this.model.currentPage * this.oldValueForPageSize;
         this.model.currentPage = Math.floor(topmostCodeElement / this.model.pageSize);
         this.oldValueForPageSize = this.model.pageSize;
         this.updatePaginationPage();
@@ -707,7 +705,7 @@ export class CodeElementEditorController {
         if (value) {
             this.model.sortOrderSelection = value;
         }
-        var selection = parseInt(this.model.sortOrderSelection);
+        const selection = parseInt(this.model.sortOrderSelection);
         switch (selection) {
             case 1:
                 this.model.sortOrderReversed = false;
@@ -749,7 +747,7 @@ export class CodeElementEditorController {
     }
 
     incrementPage(i) {
-        var newPageNumber = this.model.currentPage + i;
+        const newPageNumber = this.model.currentPage + i;
         if (newPageNumber > -1 && newPageNumber < this.getNumberOfPages()) {
             this.model.currentPage = newPageNumber;
             this.updatePaginationPage();
