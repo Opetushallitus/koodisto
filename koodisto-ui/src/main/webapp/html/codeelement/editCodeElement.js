@@ -693,7 +693,7 @@ export class CodeElementEditorController {
     // Get the filtered page count
     getNumberOfPages() {
         return this.cachedPageCount;
-    };
+    }
 
     // Change the currentPage when the pageSize is changed.
     pageSizeChanged() {

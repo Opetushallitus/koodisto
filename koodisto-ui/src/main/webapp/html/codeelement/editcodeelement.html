@@ -2,66 +2,66 @@
 <script type="text/ng-template" id="codeelement.html">
     <div class="row-fluid">
 
-        <div ng-if="!codeElementEditor.model.loadingCodeElements">{{(codeElementEditor.model.shownCodeElements  |  filter:search ).length }} {{'codes.viewpage.codeelements.pagination.hakutulosta' | i18n}}</div>
+        <div ng-if="!$parent.codeElementEditorModal.model.loadingCodeElements">{{($parent.codeElementEditorModal.model.shownCodeElements  |  filter:search ).length }} {{'codes.viewpage.codeelements.pagination.hakutulosta' | i18n}}</div>
         <div class="pagination">
             <ul>
-                <li ng-click="codeElementEditor.incrementPage(-1)"><span>&#8592;</span></li>
-                <li ng-if="codeElementEditor.codeElementEditor.getNumberOfPages() === 0" class="disabled"><a>0</a></li>
-                <li ng-if="codeElementEditor.getNumberOfPages() <= 9"
-                    ng-repeat="i in [] | forLoop:0:codeElementEditor.getNumberOfPages()"
-                    ng-class="{disabled: (i === codeElementEditor.model.currentPage)}"><a
-                    ng-click="codeElementEditor.changePage(i)">{{i+1}}</a>
+                <li ng-click="$parent.codeElementEditorModal.incrementPage(-1)"><span>&#8592;</span></li>
+                <li ng-if="$parent.codeElementEditorModal.getNumberOfPages() === 0" class="disabled"><a>0</a></li>
+                <li ng-if="$parent.codeElementEditorModal.getNumberOfPages() <= 9"
+                    ng-repeat="i in [] | forLoop:0:$parent.codeElementEditorModal.getNumberOfPages()"
+                    ng-class="{disabled: (i === $parent.codeElementEditorModal.model.currentPage)}"><a
+                    ng-click="$parent.codeElementEditorModal.changePage(i)">{{i+1}}</a>
                 </li>
-                <li ng-if="codeElementEditor.getNumberOfPages() > 9 && codeElementEditor.model.currentPage < 5"
+                <li ng-if="$parent.codeElementEditorModal.getNumberOfPages() > 9 && $parent.codeElementEditorModal.model.currentPage < 5"
                     ng-repeat="i in [] | forLoop:0:6"
-                    ng-class="{disabled: (i === codeElementEditor.model.currentPage)}"><a
-                    ng-click="codeElementEditor.changePage(i)">{{i+1}}</a>
+                    ng-class="{disabled: (i === $parent.codeElementEditorModal.model.currentPage)}"><a
+                    ng-click="$parent.codeElementEditorModal.changePage(i)">{{i+1}}</a>
                 </li>
-                <li ng-if="codeElementEditor.getNumberOfPages() > 9 && codeElementEditor.model.currentPage >= 5"
+                <li ng-if="$parent.codeElementEditorModal.getNumberOfPages() > 9 && $parent.codeElementEditorModal.model.currentPage >= 5"
                     ng-repeat="i in [] | forLoop:0:3"
-                    ng-class="{disabled: (i === codeElementEditor.model.currentPage)}"><a
-                    ng-click="codeElementEditor.changePage(i)">{{i+1}}</a>
+                    ng-class="{disabled: (i === $parent.codeElementEditorModal.model.currentPage)}"><a
+                    ng-click="$parent.codeElementEditorModal.changePage(i)">{{i+1}}</a>
                 </li>
-                <li ng-if="codeElementEditor.getNumberOfPages() > 9 && codeElementEditor.model.currentPage >= 5">
+                <li ng-if="$parent.codeElementEditorModal.getNumberOfPages() > 9 && $parent.codeElementEditorModal.model.currentPage >= 5">
                     <span>...</span>
                 </li>
                 <li
-                    ng-if="codeElementEditor.getNumberOfPages() > 9 && codeElementEditor.model.currentPage >= 5 && codeElementEditor.model.currentPage < codeElementEditor.getNumberOfPages()-5"
-                    ng-repeat="i in [] | forLoop:codeElementEditor.model.currentPage-1:codeElementEditor.model.currentPage+2"
-                    ng-class="{disabled: (i === codeElementEditor.model.currentPage)}">
-                    <a ng-click="codeElementEditor.changePage(i)">{{i+1}}</a>
+                    ng-if="$parent.codeElementEditorModal.getNumberOfPages() > 9 && $parent.codeElementEditorModal.model.currentPage >= 5 && $parent.codeElementEditorModal.model.currentPage < $parent.codeElementEditorModal.getNumberOfPages()-5"
+                    ng-repeat="i in [] | forLoop:$parent.codeElementEditorModal.model.currentPage-1:$parent.codeElementEditorModal.model.currentPage+2"
+                    ng-class="{disabled: (i === $parent.codeElementEditorModal.model.currentPage)}">
+                    <a ng-click="$parent.codeElementEditorModal.changePage(i)">{{i+1}}</a>
                 </li>
                 <li
-                    ng-if="codeElementEditor.getNumberOfPages() > 9 && codeElementEditor.model.currentPage < codeElementEditor.getNumberOfPages()-5">
+                    ng-if="$parent.codeElementEditorModal.getNumberOfPages() > 9 && $parent.codeElementEditorModal.model.currentPage < $parent.codeElementEditorModal.getNumberOfPages()-5">
                     <span>...</span>
                 </li>
                 <li
-                    ng-if="codeElementEditor.getNumberOfPages() > 9 && codeElementEditor.model.currentPage > codeElementEditor.getNumberOfPages()-6"
-                    ng-repeat="i in [] | forLoop:codeElementEditor.getNumberOfPages()-6:codeElementEditor.getNumberOfPages()"
-                    ng-class="{disabled: (i === codeElementEditor.model.currentPage)}">
-                    <a ng-click="codeElementEditor.changePage(i)">{{i+1}}</a>
+                    ng-if="$parent.codeElementEditorModal.getNumberOfPages() > 9 && $parent.codeElementEditorModal.model.currentPage > $parent.codeElementEditorModal.getNumberOfPages()-6"
+                    ng-repeat="i in [] | forLoop:$parent.codeElementEditorModal.getNumberOfPages()-6:$parent.codeElementEditorModal.getNumberOfPages()"
+                    ng-class="{disabled: (i === $parent.codeElementEditorModal.model.currentPage)}">
+                    <a ng-click="$parent.codeElementEditorModal.changePage(i)">{{i+1}}</a>
                 </li>
                 <li
-                    ng-if="codeElementEditor.getNumberOfPages() > 9 && codeElementEditor.model.currentPage <= codeElementEditor.getNumberOfPages()-6"
-                    ng-repeat="i in [] | forLoop:codeElementEditor.getNumberOfPages()-3:codeElementEditor.getNumberOfPages()"
-                    ng-class="{disabled: (i === codeElementEditor.model.currentPage)}">
-                    <a ng-click="codeElementEditor.changePage(i)">{{i+1}}</a>
+                    ng-if="$parent.codeElementEditorModal.getNumberOfPages() > 9 && $parent.codeElementEditorModal.model.currentPage <= $parent.codeElementEditorModal.getNumberOfPages()-6"
+                    ng-repeat="i in [] | forLoop:$parent.codeElementEditorModal.getNumberOfPages()-3:$parent.codeElementEditorModal.getNumberOfPages()"
+                    ng-class="{disabled: (i === $parent.codeElementEditorModal.model.currentPage)}">
+                    <a ng-click="$parent.codeElementEditorModal.changePage(i)">{{i+1}}</a>
                 </li>
-                <li ng-click="codeElementEditor.incrementPage(1)"><span>&#8594;</span>
+                <li ng-click="$parent.codeElementEditorModal.incrementPage(1)"><span>&#8594;</span>
                 </li>
             </ul>
         </div>
         <label for="page_size_select">{{'codes.viewpage.codeelements.pagination.nayta'
         | i18n}}</label>
-        <select ng-model="codeElementEditor.model.pageSize"
-            ng-options="n for n in codeElementEditor.model.pageSizeOptions"
-            ng-change="codeElementEditor.pageSizeChanged()"
+        <select ng-model="$parent.codeElementEditorModal.model.pageSize"
+            ng-options="n for n in $parent.codeElementEditorModal.model.pageSizeOptions"
+            ng-change="$parent.codeElementEditorModal.pageSizeChanged()"
             id="page_size_select"
             style="width:auto;">
         </select>
         <select
-            ng-model="codeElementEditor.model.sortOrderSelection"
-            ng-change="codeElementEditor.sortOrderChanged()"
+            ng-model="$parent.codeElementEditorModal.model.sortOrderSelection"
+            ng-change="$parent.codeElementEditorModal.sortOrderChanged()"
             id="ordering_select"
             style="width:auto;">
             <option value="1">{{'codeelement.viewpage.pagination.koodiarvo' | i18n}}</option>
@@ -74,13 +74,13 @@
     <table class="table">
         <thead>
             <tr>
-                <th><input id="select_all_codeelements" type="checkbox" ng-model="codeElementEditor.selectallcodelements" ng-change="codeElementEditor.onMasterChange(selectallcodelements)"/></th>
-                <th ng:click="codeElementEditor.sortOrderChanged(1)" ng-class="{'sort-true': codeElementEditor.model.sortOrderSelection=='1'}">{{'codeelement.editpage.tableheader1' | i18n}}</th>
-                <th ng:click="codeElementEditor.sortOrderChanged(3)" ng-class="{'sort-true': codeElementEditor.model.sortOrderSelection=='3'}">{{'codeelement.editpage.tableheader2' | i18n}}</th>
+                <th><input id="select_all_codeelements" type="checkbox" ng-model="$parent.codeElementEditorModal.selectallcodelements" ng-change="$parent.codeElementEditorModal.onMasterChange(selectallcodelements)"/></th>
+                <th ng:click="$parent.codeElementEditorModal.sortOrderChanged(1)" ng-class="{'sort-true': $parent.codeElementEditorModal.model.sortOrderSelection=='1'}">{{'codeelement.editpage.tableheader1' | i18n}}</th>
+                <th ng:click="$parent.codeElementEditorModal.sortOrderChanged(3)" ng-class="{'sort-true': $parent.codeElementEditorModal.model.sortOrderSelection=='3'}">{{'codeelement.editpage.tableheader2' | i18n}}</th>
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="codeElement in ::codeElementEditor.paginationPage">
+            <tr ng-repeat="codeElement in ::$parent.codeElementEditorModal.paginationPage">
                 <td class="align-center"><input id="{{codeElement.name}}" name="{{codeElement.uri}}" type="checkbox" value="{{codeElement.checked}}" ng-model="codeElement.checked"/></td>
                 <td class="align-center">{{:: codeElement.value}}</td>
                 <td class="align-center">{{:: codeElement.name}}</td>
@@ -109,7 +109,7 @@
                 <td><input id="CodeElementSearchBox" type="text" maxlength="50"
                        placeholder="{{'codes.viewpage.codeelements.search.placeholder' | i18n}}" ng-model="codeElementEditorModal.model.query" ng-change="codeElementEditorModal.filterChangedPageCount()"/></td></tbody></table>
                 <div ng-if="codeElementEditorModal.model.loadingCodeElements">{{'codes.viewpage.codeelements.search.loading' | i18n}}</div>
-                <div ng-include="'codeelement.html'" /></div>
+                <div ng-include="'codeelement.html'" ></div>
             </div>
         </div>
     </div>

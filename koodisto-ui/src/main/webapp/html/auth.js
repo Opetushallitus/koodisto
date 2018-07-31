@@ -92,7 +92,7 @@ export class AuthService {
         this.myRolesModel.getMyRoles().then((model) => {
             this.$http.get(urls.url("organisaatio-service.parentoids", orgOid)).then((result) => {
                 let found = false;
-                result.split("/").forEach((org) =>{
+                result.data.split("/").forEach((org) =>{
                     if (accessFunction(service, org, model)){
                         found = true;
                     }
