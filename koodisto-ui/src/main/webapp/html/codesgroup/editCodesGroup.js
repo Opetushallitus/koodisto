@@ -13,7 +13,7 @@ export class CodesGroupEditorModel {
         this.alerts = [];
         this.CodesGroupByUri.get({
             id : id
-        }, function(result) {
+        }, (result) => {
             this.codesgroup = result;
             scope.model.namefi = getLanguageSpecificValue(result.koodistoRyhmaMetadatas, 'nimi', 'FI');
             scope.model.namesv = getLanguageSpecificValue(result.koodistoRyhmaMetadatas, 'nimi', 'SV');
@@ -36,7 +36,7 @@ export class CodesGroupEditorController {
 
         this.model = CodesGroupEditorModel;
         this.errorMessage = $filter('i18n')('field.required');
-        CodesGroupEditorModel.init($scope, $routeParams.id);
+        CodesGroupEditorModel.init(this, $routeParams.id);
     }
 
     closeAlert(index) {
