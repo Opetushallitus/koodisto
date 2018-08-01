@@ -4,13 +4,13 @@
             <h1>{{'codesgroup.createpage.header' | i18n}}</h1>
         </div>
     </div>
-    <form name="form" class="form-horizontal" ng-submit="codeElementCreator.submit()">
+    <form name="form" class="form-horizontal" ng-submit="codesGroupCreator.submit()">
 
         <div class="control-group">
 
             <div class="controls">
                 <label for="same_name" class="checkbox">
-                <input id="same_name" type="checkbox" ng-model="codesGroupCreator.model.samename" ng-change="codeElementCreator.setSameName()"/>
+                <input id="same_name" type="checkbox" ng-model="codesGroupCreator.model.samename" ng-change="codesGroupCreator.setSameName()"/>
                 {{'codes.sameinalllanguages' | i18n}}</label>
             </div>
         </div>
@@ -20,36 +20,36 @@
             <label for="name_fi" class="control-label">{{'codes.createpage.name' | i18n}}</label>
             <div class="controls">
                 <input id="name_fi" type="text" maxlength="256" class="width-30" name="codesGroupCreator.model.namefi" ng-model="codesGroupCreator.model.namefi"
-                       placeholder="{{'codes.finnish' | i18n}}" ng-required="!codesGroupCreator.model.namesv && !codesGroupCreator.model.nameen"  ng-blur="codeElementCreator.visitedName = true"  ng-change="codeElementCreator.setSameName()"/>
-                <span class="text-error" ng-if="codeElementCreator.visitedName && form.model.namefi.$error.required"><img style="margin-right:10px;" src="#{resource['img/alert-icon28x29.png']">{{codeElementCreator.errorMessage}}</span>
+                       placeholder="{{'codes.finnish' | i18n}}" ng-required="!codesGroupCreator.model.namesv && !codesGroupCreator.model.nameen"  ng-blur="codesGroupCreator.visitedName = true"  ng-change="codesGroupCreator.setSameName()"/>
+                <span class="text-error" ng-if="codesGroupCreator.visitedName && form.model.namefi.$error.required"><img style="margin-right:10px;" src="#{resource['img/alert-icon28x29.png']">{{codesGroupCreator.errorMessage}}</span>
             </div>
         </div>
 
         <div class="control-group">
             <div class="controls">
                 <input id="name_sv" type="text" maxlength="256" class="width-30" ng-model="codesGroupCreator.model.namesv" name="codesGroupCreator.model.namesv"
-                       placeholder="{{'codes.swedish' | i18n}}" ng-required="!codesGroupCreator.model.namefi && !codesGroupCreator.model.nameen" ng-blur="codeElementCreator.visitedName = true" ng-disabled="codesGroupCreator.model.samename"/>
-                <span class="text-error" ng-if="codeElementCreator.visitedName && form.model.namesv.$error.required"><img style="margin-right:10px;" src="#{resource['img/alert-icon28x29.png']">{{codeElementCreator.errorMessage}}</span>
+                       placeholder="{{'codes.swedish' | i18n}}" ng-required="!codesGroupCreator.model.namefi && !codesGroupCreator.model.nameen" ng-blur="codesGroupCreator.visitedName = true" ng-disabled="codesGroupCreator.model.samename"/>
+                <span class="text-error" ng-if="codesGroupCreator.visitedName && form.model.namesv.$error.required"><img style="margin-right:10px;" src="#{resource['img/alert-icon28x29.png']">{{codesGroupCreator.errorMessage}}</span>
             </div>
         </div>
         <div class="control-group">
             <div class="controls">
                 <input id="name_en" type="text" maxlength="256" class="width-30"  ng-model="codesGroupCreator.model.nameen" name="codesGroupCreator.model.nameen"
-                       placeholder="{{'codes.english' | i18n}}" ng-required="!codesGroupCreator.model.namefi && !codesGroupCreator.model.namesv" ng-blur="codeElementCreator.visitedName = true" ng-disabled="codesGroupCreator.model.samename"/>
-                <span class="text-error" ng-if="codeElementCreator.visitedName && form.model.nameen.$error.required"><img style="margin-right:10px;" src="#{resource['img/alert-icon28x29.png']">{{codeElementCreator.errorMessage}}</span>
+                       placeholder="{{'codes.english' | i18n}}" ng-required="!codesGroupCreator.model.namefi && !codesGroupCreator.model.namesv" ng-blur="codesGroupCreator.visitedName = true" ng-disabled="codesGroupCreator.model.samename"/>
+                <span class="text-error" ng-if="codesGroupCreator.visitedName && form.model.nameen.$error.required"><img style="margin-right:10px;" src="#{resource['img/alert-icon28x29.png']">{{codesGroupCreator.errorMessage}}</span>
             </div>
         </div>
 
         <div class="row-fluid">
             <div class="span9">
-                <alert ng-repeat="alert in codesGroupCreator.model.alerts" type="alert.type" close="codeElementCreator.closeAlert($index)">
+                <alert ng-repeat="alert in codesGroupCreator.model.alerts" type="alert.type" close="codesGroupCreator.closeAlert($index)">
                     <img style="margin-right:10px;" src="#{resource['img/alert-icon28x29.png']">{{alert.msg}}</alert>
             </div>
         </div>
 
         <div class="row-fluid navbar-fixed-bottom">
             <button ng-disabled="!form.$valid" auth="crudAny" auth-service="APP_KOODISTO" class="btn btn-primary pull-right" type="submit">{{'codes.save' | i18n}}</button>
-            <button type="button" class="btn pull-right" ng-click="codeElementCreator.cancel()">{{'codes.cancel' | i18n}}
+            <button type="button" class="btn pull-right" ng-click="codesGroupCreator.cancel()">{{'codes.cancel' | i18n}}
             </button>
         </div>
 

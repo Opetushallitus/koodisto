@@ -9,6 +9,7 @@ export class CodesGroupEditorModel {
         this.alerts = [];
         this.codesgroup = {};
     }
+
     init(scope, id) {
         this.alerts = [];
         this.CodesGroupByUri.get({
