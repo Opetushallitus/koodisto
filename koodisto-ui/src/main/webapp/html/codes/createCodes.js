@@ -100,9 +100,7 @@ export class CodesCreatorController {
                 templateUrl: 'confirmcancel.html',
                 controller: 'codesCreatorController as codesCreatorModal',
                 resolve: {
-                    isModalController: function () {
-                        return true;
-                    }
+                    isModalController: () => true
                 }
             });
         } else {
@@ -175,13 +173,13 @@ export class CodesCreatorController {
                 sitovuustaso: this.validitylevelen
             });
         }
-        this.NewCodes.post({}, codes, function (result) {
+        this.NewCodes.post({}, codes, (result) => {
             this.treemodel.refresh();
             this.$location.path("/koodisto/" + result.koodistoUri + "/" + result.versio).search({
                 forceRefresh: true
             });
-        }, function (error) {
-            var alert = {
+        }, (error) => {
+            const alert = {
                 type: 'danger',
                 msg: jQuery.i18n.prop(error.data)
             };

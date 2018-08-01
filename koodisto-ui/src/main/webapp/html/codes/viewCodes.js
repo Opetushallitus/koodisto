@@ -124,7 +124,7 @@ export class ViewCodesModel {
                 this.deleteState = "";
             }
 
-            this.codes.codesVersions.forEach(function(version) {
+            this.codes.codesVersions.forEach((version) => {
                 if (version > codesVersion)
                     this.editState = "disabled";
             });

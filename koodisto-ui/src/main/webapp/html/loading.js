@@ -15,31 +15,31 @@ class LoadingService {
 
 mod.service('loadingService', LoadingService);
 
-mod.factory('onStartInterceptor', ['loadingService', function (loadingService) {
-    return function (data, headersGetter) {
+mod.factory('onStartInterceptor', ['loadingService', (loadingService) => {
+    return (data, headersGetter) => {
         loadingService.requestCount++;
         return data;
     };
 }]);
 
-mod.factory('onCompleteInterceptor', ['loadingService', '$q', function (loadingService, $q) {
+mod.factory('onCompleteInterceptor', ['loadingService', '$q', (loadingService, $q) => {
     return {
-        response: function (response) {
+        response: (response) => {
             loadingService.requestCount--;
             return response;
         },
-        responseError: function (response) {
+        responseError: (response) => {
             loadingService.requestCount--;
             return $q.reject(response);
         },
     };
 }]);
 
-mod.config(['$httpProvider', function ($httpProvider) {
+mod.config(['$httpProvider', ($httpProvider) => {
     $httpProvider.interceptors.push('onCompleteInterceptor');
 }]);
 
-mod.run(['$http', 'onStartInterceptor', function ($http, onStartInterceptor) {
+mod.run(['$http', 'onStartInterceptor', ($http, onStartInterceptor) => {
     $http.defaults.transformRequest.push(onStartInterceptor);
 }]);
 

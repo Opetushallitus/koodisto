@@ -26,15 +26,9 @@ export class Treemodel {
 
     // and return interface for manipulating the model
     isVisibleNode(data) {
-        return (this.codesMatcher.nameOrTunnusMatchesSearch(data, this.filter.name)) && (!this.filter.own || this.filter.own && this.isOwnedNode(data))
+        return (this.codesMatcher.nameOrTunnusMatchesSearch(data, this.filter.name)) && (!this.filter.own)
             && (this.filter.passivated || !this.filter.passivated && !this.isPassivatedNode(data))
             && (this.filter.planned || !this.filter.planned && !this.isPlannedNode(data));
-    }
-    
-    isOwnedNode(data) {
-        /*
-         * MyRoles.get({}, function (result) { model.myRoleList = result; });
-         */
     }
     
     isPassivatedNode(data) {

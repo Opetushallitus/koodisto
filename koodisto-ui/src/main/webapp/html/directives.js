@@ -13,7 +13,7 @@ export class Auth {
         };
         element.addClass('ng-hide');
 
-        const success = function () {
+        const success = () => {
             if (additionalCheck()) {
                 element.removeClass('ng-hide');
             }

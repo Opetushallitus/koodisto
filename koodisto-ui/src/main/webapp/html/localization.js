@@ -4,17 +4,16 @@ import jQuery from 'jquery';
 import {urls} from 'oph-urls-js';
 
 export default angular.module('localization', [])
-    .filter('i18n', [ function() {
+    .filter('i18n', [ () => {
         jQuery.i18n.properties({
             name : 'messages',
             path : urls.url('koodisto-service.i18n'),
             mode : 'map',
             language : 'fi_FI',
-            callback : function() {
-            }
+            callback : () => { }
         });
 
-        return function(text) {
+        return (text) => {
             return jQuery.i18n.prop(text);
         };
     } ]);

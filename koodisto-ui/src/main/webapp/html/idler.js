@@ -13,7 +13,7 @@ export class Idler {
 
         // Watch for the events set in ng-idle's options
         // If any of them fire (considering 500ms debounce), update localStorage.lastEventTime with a current timestamp
-        elem.on(ctrl.Idle._options().interrupt, function(){
+        elem.on(ctrl.Idle._options().interrupt, () => {
             if (ctrl.Idle.running()) {
                 if (timeout) {
                     ctrl.$timeout.cancel(timeout);
@@ -114,7 +114,7 @@ export class EventsCtrl {
     };
 }
 
-export const idleConfig = function(IdleProvider, KeepaliveProvider) {
+export const idleConfig = (IdleProvider, KeepaliveProvider) => {
     "ngInject";
     const warningDuration = 300;
     IdleProvider.idle(MAX_SESSION_IDLE_TIME_IN_SECONDS - warningDuration);
@@ -123,7 +123,7 @@ export const idleConfig = function(IdleProvider, KeepaliveProvider) {
     KeepaliveProvider.http(SERVICE_URL_BASE + "session/maxinactiveinterval");
 };
 
-export const idleRun = function(Idle) {
+export const idleRun = (Idle) => {
     "ngInject";
     Idle.watch();
 };

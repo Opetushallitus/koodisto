@@ -11,9 +11,9 @@ export class ChildOpener {
     open(data) {
         data.open = !data.open;
         if (data.open) {
-            var iter = function(children){
-                if(children) {
-                    children.forEach(function(child){
+            const iter = (children) => {
+                if (children) {
+                    children.forEach((child) => {
                         child.open = true;
                         iter(child.children);
                     });
@@ -58,14 +58,14 @@ export class OrganisaatioTreeModel {
     }
 
     calculateMatchingOrgs(organizations) {
-        var amount = organizations.length;
-        function calculate(children) {
+        let amount = organizations.length;
+        const calculate = (children) => {
             amount += children.length;
-            children.forEach(function(child) {
+            children.forEach((child) => {
                 calculate(child.children);
             });
-        }
-        organizations.forEach(function(org) {
+        };
+        organizations.forEach((org) => {
             calculate(org.children);
         });
         return amount;
@@ -73,24 +73,24 @@ export class OrganisaatioTreeModel {
 
     search(searchStr) {
 
-        var matchingOrgs = new Array();
+        const matchingOrgs = [];
 
-        function matchesSearch(organization) {
-            function matchesTranslation(organization2, language) {
+        const matchesSearch = (organization) => {
+            const matchesTranslation = (organization2, language) => {
                 return organization2.nimi[language] && organization2.nimi[language].toLowerCase().indexOf(searchStr) > -1;
-            }
+            };
             return matchesTranslation(organization, 'fi');
-        }
+        };
 
-        function recursivelyAddMatchingOrganizations(organization) {
+        const recursivelyAddMatchingOrganizations = (organization) => {
             if (matchesSearch(organization)) {
                 matchingOrgs.push(organization);
             } else {
-                organization.children.forEach(function(child) {
+                organization.children.forEach((child) => {
                     recursivelyAddMatchingOrganizations(child);
                 });
             }
-        }
+        };
 
         searchStr = searchStr.toLowerCase();
 
@@ -98,7 +98,7 @@ export class OrganisaatioTreeModel {
             this.model.originalOrganizations = this.model.organisaatiot;
         }
 
-        this.model.originalOrganizations.forEach(function(organization) {
+        this.model.originalOrganizations.forEach((organization) => {
             recursivelyAddMatchingOrganizations(organization);
         });
 

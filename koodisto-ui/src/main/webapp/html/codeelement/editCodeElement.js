@@ -179,20 +179,19 @@ export class CodeElementEditorModel {
     openChildren(data) {
         data.open = !data.open;
         if (data.open) {
-
-            var iter = function (children) {
+            const iter = (children) => {
                 if (children) {
-                    children.forEach(function (child) {
+                    children.forEach((child) => {
                         child.open = true;
-
                     });
                 }
             };
+
             if (data.latestKoodistoVersio) {
                 this.CodeElementsByCodesUriAndVersion.get({
                     codesUri: data.koodistoUri,
                     codesVersion: data.latestKoodistoVersio.versio
-                }, function (result) {
+                }, (result) => {
                     data.children = result;
                 });
             }
@@ -289,9 +288,7 @@ export class CodeElementEditorController {
                 templateUrl: 'confirmcancel.html',
                 controller: 'codeElementEditorController as codeElementEditorModal',
                 resolve: {
-                    isModalController: function () {
-                        return true;
-                    }
+                    isModalController: () => true
                 }
             });
         } else {
@@ -373,18 +370,18 @@ export class CodeElementEditorController {
                 sisaltaaKoodiston: this.model.containscodesen
             });
         }
-        var codeElementVersionResponse = this.SaveCodeElement.put({}, codeelement);
-        codeElementVersionResponse.$promise.then(function () {
+        const codeElementVersionResponse = this.SaveCodeElement.put({}, codeelement);
+        codeElementVersionResponse.$promise.then(() => {
             this.$location.path("/koodi/" + this.codeElementUri + "/" + codeElementVersionResponse.content).search({
                 edited: true
             });
-        }, function (error) {
-            var type = 'danger';
-            var message = jQuery.i18n.prop(error.data);
+        }, (error) => {
+            const type = 'danger';
+            let message = jQuery.i18n.prop(error.data);
             if (error.status === 504) {
                 message = jQuery.i18n.prop('error.save.timeout');
             }
-            var alert = {
+            const alert = {
                 type: type,
                 msg: message
             };
@@ -394,7 +391,7 @@ export class CodeElementEditorController {
 
     changeToRelationCodeElements(listToBeChanged) {
         const result = [];
-        listToBeChanged.forEach(function (ce) {
+        listToBeChanged.forEach((ce) => {
             const dt = {};
             dt.codeElementUri = ce.uri;
             dt.codeElementVersion = 1; // This does nothing. Latest version is used.
@@ -445,7 +442,7 @@ export class CodeElementEditorController {
 
     addRelationCodeElement(codeElementToAdd, collectionToAddTo, relationTypeString, modelCodeElementIsHost) {
         var found = false;
-        collectionToAddTo.forEach(function (codeElement, index) {
+        collectionToAddTo.forEach((codeElement, index) => {
             if (codeElement.uri.indexOf(codeElementToAdd.uri) !== -1) {
                 found = true;
             }
@@ -459,9 +456,9 @@ export class CodeElementEditorController {
         const elementUrisToAdd = [];
         const addedElements = [];
 
-        selectedItems.forEach(function (codeElement) {
+        selectedItems.forEach((codeElement) => {
             let found = false;
-            collectionToAddTo.forEach(function (innerCodeElement) {
+            collectionToAddTo.forEach((innerCodeElement) => {
                 if (codeElement.uri === innerCodeElement.uri && !innerCodeElement.passive) {
                     found = true;
                 }
@@ -480,7 +477,7 @@ export class CodeElementEditorController {
             return;
         }
 
-        addedElements.forEach(function (item) {
+        addedElements.forEach((item) => {
             // Passive elements are not saved.
             item.passive = false;
             collectionToAddTo.push(item);
@@ -490,8 +487,8 @@ export class CodeElementEditorController {
 
     removeRelationsCodeElement(unselectedItems, collectionToRemoveFrom) {
         const elementUrisToRemove = [];
-        unselectedItems.forEach(function (codeElement) {
-            collectionToRemoveFrom.forEach(function (innerCodeElement) {
+        unselectedItems.forEach((codeElement) => {
+            collectionToRemoveFrom.forEach((innerCodeElement) => {
                 if (codeElement.uri === innerCodeElement.uri) {
                     elementUrisToRemove.push(innerCodeElement.uri);
                 }
@@ -506,9 +503,7 @@ export class CodeElementEditorController {
             return;
         }
 
-        const remainingElements = $.grep(collectionToRemoveFrom, function (element) {
-            return elementUrisToRemove.indexOf(element.uri) === -1;
-        });
+        const remainingElements = $.grep(collectionToRemoveFrom, (element) => elementUrisToRemove.indexOf(element.uri) === -1);
         collectionToRemoveFrom.length = 0;
         Array.prototype.push.apply(collectionToRemoveFrom, remainingElements);
 
@@ -595,13 +590,13 @@ export class CodeElementEditorController {
             codesVersion: 0
         }, (result) => {
 
-            function getCodesUris(relationArray) {
+            const getCodesUris = (relationArray) => {
                 const codesUris = [];
-                relationArray.forEach(function (value) {
+                relationArray.forEach((value) => {
                     codesUris.push(value.codesUri);
                 });
                 return codesUris;
-            }
+            };
 
             if (name === 'withincodes') {
                 if (this.model.showCode && this.model.showCode.length > 0) {
@@ -644,9 +639,7 @@ export class CodeElementEditorController {
                 templateUrl: 'codeElementModalContent.html',
                 controller: 'codeElementEditorController as codeElementEditorModal',
                 resolve: {
-                    isModalController: function () {
-                        return true;
-                    }
+                    isModalController: () => true
                 }
             });
         }
@@ -654,20 +647,20 @@ export class CodeElementEditorController {
 
     okconfirm() {
         if (this.model.withinRelationToRemove && this.model.withinRelationToRemove.uri !== "") {
-            this.model.withinCodeElements.forEach(function (codeElement, index) {
+            this.model.withinCodeElements.forEach((codeElement, index) => {
                 if (codeElement.uri === this.model.withinRelationToRemove.uri && codeElement.versio === this.model.withinRelationToRemove.versio) {
                     this.model.withinCodeElements.splice(index, 1);
                 }
             });
 
         } else if (this.model.includesRelationToRemove && this.model.includesRelationToRemove.uri !== "") {
-            this.model.includesCodeElements.forEach(function (codeElement, index) {
+            this.model.includesCodeElements.forEach((codeElement, index) => {
                 if (codeElement.uri === this.model.includesRelationToRemove.uri && codeElement.versio === this.model.includesRelationToRemove.versio) {
                     this.model.includesCodeElements.splice(index, 1);
                 }
             });
         } else if (this.model.levelsRelationToRemove && this.model.levelsRelationToRemove.uri !== "") {
-            this.model.levelsWithCodeElements.forEach(function (codeElement, index) {
+            this.model.levelsWithCodeElements.forEach((codeElement, index) => {
                 if (codeElement.uri === this.model.levelsRelationToRemove.uri && codeElement.versio === this.model.levelsRelationToRemove.versio) {
                     this.model.levelsWithCodeElements.splice(index, 1);
                 }

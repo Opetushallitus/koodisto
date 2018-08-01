@@ -5,7 +5,7 @@ export class CodesGroupCreatorModel {
         this.$location = $location;
 
         this.alerts = [];
-        this.init = function() {
+        this.init = () => {
             this.alerts = [];
             this.namefi = "";
             this.namesv = "";

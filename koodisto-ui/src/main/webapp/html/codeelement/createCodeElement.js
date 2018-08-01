@@ -54,9 +54,7 @@ export class CodeElementCreatorController {
                 templateUrl: 'confirmcancel.html',
                 controller: 'codeElementCreatorController as codeElementCreatorModal',
                 resolve: {
-                    isModalController: function() {
-                        return true;
-                    }
+                    isModalController: () => true
                 }
             });
         } else {
@@ -123,8 +121,8 @@ export class CodeElementCreatorController {
         }
         this.NewCodeElement.post({codesUri: this.codesUri}, codeelement, (result) => {
             this.$location.path("/koodi/"+result.koodiUri+"/"+result.versio).search({edited: true});
-        }, function(error) {
-            var alert = { type: 'danger', msg: jQuery.i18n.prop(error.data) };
+        }, (error) => {
+            const alert = {type: 'danger', msg: jQuery.i18n.prop(error.data)};
             this.model.alerts.push(alert);
         });
     }

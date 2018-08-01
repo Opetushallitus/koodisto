@@ -120,7 +120,7 @@ export class CodesEditorModel {
     }
 
     extractAndPushRelatedCode(codes, list) {
-        const languages = Object.keys(codes.nimi).map(function (languageCode) {
+        const languages = Object.keys(codes.nimi).map((languageCode) => {
             return {kieli: languageCode, nimi: codes.nimi[languageCode]};
         });
         const ce = {};
@@ -171,7 +171,7 @@ export class CodesEditorModel {
             this.allCodes = result;
             this.getPreferredNames();
             // OVT-7496 skip codes filtering for OPH user
-            this.authService.updateOph(SERVICE_NAME).then(function() {}, this.filterCodes);
+            this.authService.updateOph(SERVICE_NAME).then(() => {}, this.filterCodes);
         });
     }
 
@@ -189,9 +189,9 @@ export class CodesEditorModel {
         data.open = !data.open;
         if (data.open) {
 
-            var iter = function(children){
-                if(children) {
-                    children.forEach(function(child){
+            const iter = function (children) {
+                if (children) {
+                    children.forEach(function (child) {
                         child.open = true;
 
                     });
@@ -254,9 +254,7 @@ export class CodesEditorController {
                 templateUrl: 'confirmcancel.html',
                 controller: 'codesEditorController as codesEditorModal',
                 resolve: {
-                    isModalController: function () {
-                        return true;
-                    }
+                    isModalController: () => true
                 }
             });
         } else {
@@ -346,22 +344,22 @@ export class CodesEditorController {
                 sitovuustaso: this.model.validitylevelen
             });
         }
-        var codeVersionResponse = this.SaveCodes.put({}, codes);
-        codeVersionResponse.$promise.then(function () {
+        const codeVersionResponse = this.SaveCodes.put({}, codes);
+        codeVersionResponse.$promise.then(() => {
             this.treemodel.refresh();
             this.$location.path("/koodisto/" + this.codesUri + "/" + codeVersionResponse.content).search({
                 forceRefresh: true
             });
-        }, function (error) {
-            var type = 'danger';
+        }, (error) => {
+            let type = 'danger';
             if (error.data === "error.codes.has.no.codeelements") {
                 type = 'info';
             }
-            var message = jQuery.i18n.prop(error.data);
+            let message = jQuery.i18n.prop(error.data);
             if (error.status === 504) {
                 message = jQuery.i18n.prop('error.save.timeout');
             }
-            var alert = {
+            const alert = {
                 type: type,
                 msg: message
             };
@@ -370,9 +368,9 @@ export class CodesEditorController {
     };
 
     changeToRelationCodes(listToBeChanged) {
-        result = [];
-        listToBeChanged.forEach(function (ce) {
-            dt = {};
+        const result = [];
+        listToBeChanged.forEach((ce) => {
+            const dt = {};
             dt.codesUri = ce.uri;
             dt.codesVersion = 1;
             dt.passive = ce.passive ? ce.passive : false;
@@ -426,10 +424,9 @@ export class CodesEditorController {
     };
 
     addToWithinCodes(data) {
-        var ce = {};
-        ce = this.createCodes(data);
-        var found = false;
-        this.model.withinCodes.forEach(function (codes, index) {
+        const ce = this.createCodes(data);
+        let found = false;
+        this.model.withinCodes.forEach((codes, index) => {
             if (codes.uri.indexOf(data.koodistoUri) !== -1) {
                 found = true;
             }
@@ -441,10 +438,9 @@ export class CodesEditorController {
     };
 
     addToIncludesCodes(data) {
-        var ce = {};
-        ce = this.createCodes(data);
-        var found = false;
-        this.model.includesCodes.forEach(function (codes, index) {
+        const ce = this.createCodes(data);
+        let found = false;
+        this.model.includesCodes.forEach((codes, index) => {
             if (codes.uri === data.koodistoUri) {
                 found = true;
             }
@@ -458,7 +454,7 @@ export class CodesEditorController {
         var ce = {};
         ce = this.createCodes(data);
         var found = false;
-        this.model.levelsWithCodes.forEach(function (codes, index) {
+        this.model.levelsWithCodes.forEach((codes, index) => {
             if (codes.uri.indexOf(data.koodistoUri) !== -1) {
                 found = true;
             }
@@ -497,9 +493,7 @@ export class CodesEditorController {
             templateUrl: 'organizationModalContent.html',
             controller: 'modalInstanceCtrl as modalInstance',
             resolve: {
-                isModalController: function () {
-                    return true;
-                }
+                isModalController: () => true
             }
         });
 
@@ -514,21 +508,21 @@ export class CodesEditorController {
     okconfirm() {
         if (this.model.withinRelationToRemove && this.model.withinRelationToRemove.uri !== "") {
 
-            this.model.withinCodes.forEach(function (codes, index) {
+            this.model.withinCodes.forEach((codes, index) => {
                 if (codes.uri.indexOf(this.model.withinRelationToRemove.uri) !== -1) {
                     this.model.withinCodes.splice(index, 1);
                 }
             });
 
         } else if (this.model.includesRelationToRemove && this.model.includesRelationToRemove.uri !== "") {
-            this.model.includesCodes.forEach(function (codes, index) {
+            this.model.includesCodes.forEach((codes, index) => {
                 if (codes.uri.indexOf(this.model.includesRelationToRemove.uri) !== -1) {
                     this.model.includesCodes.splice(index, 1);
                 }
             });
 
         } else if (this.model.levelsRelationToRemove && this.model.levelsRelationToRemove.uri !== "") {
-            this.model.levelsWithCodes.forEach(function (codes, index) {
+            this.model.levelsWithCodes.forEach((codes, index) => {
                 if (codes.uri.indexOf(this.model.levelsRelationToRemove.uri) !== -1) {
                     this.model.levelsWithCodes.splice(index, 1);
                 }
