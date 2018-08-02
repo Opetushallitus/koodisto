@@ -238,6 +238,15 @@ export class CodesEditorController {
 
         this.isCodeLoading = () => loadingService.isLoading;
 
+        // This need to be bound here with arrow function because it's accessed from different (ng-include) scope
+        this.search = (item) => {
+            if (!this.model.query || this.codesMatcher.nameOrTunnusMatchesSearch(item, this.model.query)) {
+                item.open = true;
+                return true;
+            }
+            return false;
+        };
+
     }
     closeAlert(index) {
         this.model.alerts.splice(index, 1);
@@ -274,16 +283,6 @@ export class CodesEditorController {
     submit() {
         this.persistCodes();
     };
-
-    search(item) {
-
-        if (!this.model.query || this.codesMatcher.nameOrTunnusMatchesSearch(item, this.model.query)) {
-            item.open = true;
-            return true;
-        }
-        return false;
-    };
-
 
     persistCodes() {
         var codes = {

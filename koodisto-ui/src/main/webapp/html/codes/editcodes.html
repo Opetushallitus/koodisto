@@ -5,14 +5,14 @@
         <i class="fa fa-sitemap organisaatio"
            ng-class="{ auki: (data.open || data.koodistos.length == 0 || data.metadata[0].lyhytNimi),
                 kiinni: (!data.open && data.koodistos.length > 0 && data.metadata[0].nimi)}"
-           ng-click="openChildren(data)"></i>
+           ng-click="codesEditor.openChildren(data)"></i>
         <label>
             <a href="" ng-if="data.metadata[0].nimi">{{data.shownName}}</a>
-            <a href="" ng-click="close(data)" ng-if="data.latestKoodistoVersio.metadata[0].nimi">{{data.shownName}}</a>
+            <a href="" ng-click="codesEditor.close(data)" ng-if="data.latestKoodistoVersio.metadata[0].nimi">{{data.shownName}}</a>
         </label>
     </span>
     <ol ng-if="data.open || codesEditor.model.query && codesEditor.model.query.length!=0">
-        <li ng-if="data.latestKoodistoVersio.metadata[0].nimi" ng-repeat="data in data.koodistos | orderBy:'shownName' | filter:search" ng-include="'codes.html'">
+        <li ng-if="data.latestKoodistoVersio.metadata[0].nimi" ng-repeat="data in data.koodistos | orderBy:'shownName' | filter: codesEditor.search" ng-include="'codes.html'">
         </li>
     </ol>
 
@@ -204,7 +204,6 @@
             <div>
                 <button id="withincodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-sm" ng-model="codesEditor.codesSelector" ng-show="!codesEditor.codesSelector"
                         ng-click="codesEditor.show('withincodes'); form.$setDirty()">{{'codes.editpage.addcodes' | i18n}}</button>
-
             </div>
 
         </div>
