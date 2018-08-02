@@ -76,7 +76,6 @@ export class CodesCreatorController {
         this.errorMessage = $filter('i18n')('field.required');
         this.errorMessageAtLeastOneName = $filter('i18n')('field.required.at.least.one.name');
         this.errorMessageIfOtherInfoIsGiven = $filter('i18n')('field.required.if.other.info.is.given');
-        this.samename = false;
 
         if (!isModalController) {
             codesCreatorModel.init();

@@ -208,7 +208,7 @@
     <div class="row">
         <div class="col-md-12">
             <span class="header">{{'codes.viewpage.relations.header' | i18n}}</span>
-            <input id="show_passive_relations"" type="checkbox" ng-click="showPassive=!showPassive" />
+            <input id="show_passive_relations" type="checkbox" ng-change="showPassive = !viewCodes.model.showPassive" ng-model="viewCodes.model.showPassive" />
             <label for="filter_passive">{{'codeelement.viewpage.relations.show.passive'| i18n}}</label>
         </div>
     </div>
@@ -232,7 +232,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="codes in viewCodes.model.withinCodes | orderBy:sortBy1 | filter:showRelation">
+                            <tr ng-repeat="codes in viewCodes.model.withinCodes | orderBy:sortBy1 | filter:viewCodes.showRelation">
                                 <td class="align-center" ng-class="codes.active ? '': 'passiveRelation'">{{codes.name}}</td>
                                 <td class="align-center" ng-class="codes.active ? '': 'passiveRelation'">{{codes.versio}}</td>
                             </tr>
@@ -263,7 +263,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="codes in viewCodes.model.includesCodes | orderBy:sortBy2 | filter:showRelation">
+                            <tr ng-repeat="codes in viewCodes.model.includesCodes | orderBy:sortBy2 | filter:viewCodes.showRelation">
                                 <td class="align-center" ng-class="codes.active ? '': 'passiveRelation'">{{codes.name}}</td>
                                 <td class="align-center" ng-class="codes.active ? '': 'passiveRelation'">{{codes.versio}}</td>
                             </tr>
@@ -295,7 +295,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr ng-repeat="codes in viewCodes.model.levelsWithCodes | orderBy:sortBy3 | filter:showRelation">
+                            <tr ng-repeat="codes in viewCodes.model.levelsWithCodes | orderBy:sortBy3 | filter:viewCodes.showRelation">
                                 <td class="align-center" ng-class="codes.active ? '': 'passiveRelation'">{{codes.name}}</td>
                                 <td class="align-center" ng-class="codes.active ? '': 'passiveRelation'">{{codes.versio}}</td>
                             </tr>

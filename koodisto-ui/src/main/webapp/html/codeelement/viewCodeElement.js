@@ -14,12 +14,13 @@ export class ViewCodeElementModel {
         this.levelsWithCodeElements = [];
         this.deleteState = "disabled";
         this.alerts = [];
+        this.showPassive = false;
     }
 
     init(scope, codeElementUri, codeElementVersion) {
         if (this.forceRefresh || !(this.codeElement && this.codeElement.koodiUri === codeElementUri && this.codeElement.versio === codeElementVersion)) {
             this.codeElement = null;
-            scope.showPassive = false;
+            this.showPassive = false;
             this.withinCodeElements = [];
             this.includesCodeElements = [];
             this.levelsWithCodeElements = [];
@@ -136,6 +137,10 @@ export class ViewCodeElementController {
         this.model.forceRefresh = $routeParams.forceRefresh || $routeParams.edited;
         this.model.codeElementEdited = $routeParams.edited === true;
         viewCodeElementModel.init(this, this.codeElementUri, this.codeElementVersion);
+
+        this.showRelation = (codeElement) =>  {
+            return codeElement.active || this.model.showPassive;
+        }
     }
 
     closeAlert(index) {
@@ -173,7 +178,4 @@ export class ViewCodeElementController {
         this.model.deleteCodeElementModalInstance.dismiss('cancel');
     }
 
-    showRelation(codeElement) {
-        return codeElement.active || this.showPassive
-    }
 }

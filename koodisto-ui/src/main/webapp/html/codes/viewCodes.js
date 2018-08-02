@@ -284,6 +284,10 @@ export class ViewCodesController {
 
         this.oldValueForPageSize = 10;
 
+        this.showRelation = (codes) => {
+            return codes.active || this.model.showPassive
+        }
+
     }
 
     closeAlert(index) {
@@ -498,7 +502,4 @@ export class ViewCodesController {
     };
     // Pagination ends
 
-    showRelation(codes) {
-        return codes.active || this.showPassive
-    }
 }
