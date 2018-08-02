@@ -2,7 +2,7 @@
 <div class="state-disabled label label-default">
     <span class="disclose icon valintaryhma folder"
           ng-class="{ collapse: koodistoTree.domain.isCollapsed(data), open: koodistoTree.domain.isExpanded(data)}"
-          ng-click="expandNode(data)"></span>
+          ng-click="koodistoTree.expandNode(data)"></span>
     <a href="koodistoryhma/{{data.id}}">{{ koodistoTree.domain.languageSpecificValue( data.metadata , 'nimi', 'FI') }}</a>
 </div>
 <ol data-valintaryhmaoid="{{data.koodistoRyhmaUri}}">
