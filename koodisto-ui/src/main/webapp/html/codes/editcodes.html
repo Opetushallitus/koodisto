@@ -106,14 +106,34 @@
             <div class="form-inline col-md-12">
                 <label for="datesactivestart" class="col-md-2 control-label">{{'codes.createpage.datesactive' | i18n}}</label>
                 <div class="input-group col-md-2">
-                    <input id="datesactivestart" class="form-control" type="text" datepicker-popup="dd.MM.yyyy" name="voimassaAlkuPvm" ng-model="codesEditor.model.codes.voimassaAlkuPvm"
-                           min="minDate" datepicker-options="dateOptions" date-disabled="codesEditor.disabled(date, mode)" ng-required="true" required />
+                    <input id="datesactivestart"
+                           class="form-control"
+                           type="text"
+                           datepicker-popup="dd.MM.yyyy"
+                           name="voimassaAlkuPvm"
+                           ng-model="codesEditor.model.codes.voimassaAlkuPvm"
+                           min="minDate"
+                           date-disabled="codesEditor.disabled(date, mode)"
+                           ng-required="true"
+                           required
+                           is-open="codesEditor.datesactivestart.open"
+                           ng-click="codesEditor.datesactivestart.open = true"
+                    />
                     <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                 </div>
                 <span>-</span>
                 <div class="input-group col-md-2">
-                    <input id="datesactiveend" class="form-control" type="text" datepicker-popup="dd.MM.yyyy" ng-model="codesEditor.model.codes.voimassaLoppuPvm" min="minDate"
-                           datepicker-options="dateOptions" date-disabled="codesEditor.disabled(date, mode)" ng-required="false" />
+                    <input id="datesactiveend"
+                           class="form-control"
+                           type="text"
+                           datepicker-popup="dd.MM.yyyy"
+                           ng-model="codesEditor.model.codes.voimassaLoppuPvm"
+                           min="minDate"
+                           date-disabled="codesEditor.disabled(date, mode)"
+                           ng-required="false"
+                           is-open="codesEditor.datesactiveend.open"
+                           ng-click="codesEditor.datesactiveend.open = true"
+                    />
                     <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                 </div>
                 <span class="text-danger" ng-if="form.voimassaAlkuPvm.$error.required && codesEditor.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">{{codesEditor.errorMessage}}</span>

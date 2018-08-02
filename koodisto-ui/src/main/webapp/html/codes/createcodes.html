@@ -77,14 +77,32 @@
             <div class="form-inline col-md-12">
                 <label for="datesactivestart" class="col-md-2 control-label">{{'codes.createpage.datesactive' | i18n}}</label>
                 <div class="input-group col-md-2">
-                    <input id="datesactivestart" class="form-control" type="text" datepicker-popup="dd.MM.yyyy" name="dActiveStart" ng-model="codesCreator.dActiveStart" min="minDate"
-                           datepicker-options="dateOptions" date-disabled="codesCreator.disabled(date, mode)" ng-blur="codesCreator.visitedDate = true" required />
+                    <input id="datesactivestart"
+                           class="form-control"
+                           type="text"
+                           datepicker-popup="dd.MM.yyyy"
+                           name="dActiveStart"
+                           ng-model="codesCreator.dActiveStart"
+                           min="minDate"
+                           date-disabled="codesCreator.disabled(date, mode)"
+                           ng-blur="codesCreator.visitedDate = true"
+                           required
+                           is-open="codesCreator.datesactivestart.open"
+                           ng-click="codesCreator.datesactivestart.open = true"
+                    />
                     <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                 </div>
                 <span>-</span>
                 <div class="input-group col-md-2">
-                    <input id="datesactiveend" class="form-control" type="text" datepicker-popup="dd.MM.yyyy" ng-model="codesCreator.dActiveEnd" min="minDate"
-                           datepicker-options="dateOptions" date-disabled="codesCreator.disabled(date, mode)" />
+                    <input id="datesactiveend"
+                           class="form-control" type="text"
+                           datepicker-popup="dd.MM.yyyy"
+                           ng-model="codesCreator.dActiveEnd"
+                           min="minDate"
+                           date-disabled="codesCreator.disabled(date, mode)"
+                           is-open="codesCreator.datesactiveend.open"
+                           ng-click="codesCreator.datesactiveend.open = true"
+                    />
                     <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                 </div>
                 <span class="text-danger" ng-if="codesCreator.visitedDate && form.dActiveStart.$error.required"><img style="margin-right: 10px;" src="{{:: codesCreator.alertIcon}}">{{codesCreator.errorMessage}}</span>
