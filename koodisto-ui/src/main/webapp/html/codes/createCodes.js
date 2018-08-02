@@ -1,4 +1,5 @@
 import {getLanguageSpecificValueOrValidValue} from "../app";
+import alertIcon from '../../img/alert-icon28x29.png';
 
 export class CodesCreatorModel {
     constructor($location, RootCodes, $modal) {
@@ -68,6 +69,8 @@ export class CodesCreatorController {
         this.NewCodes = NewCodes;
         this.treemodel = treemodel;
         this.isModalController = isModalController;
+
+        this.alertIcon = alertIcon;
 
         this.model = codesCreatorModel;
         this.errorMessage = $filter('i18n')('field.required');

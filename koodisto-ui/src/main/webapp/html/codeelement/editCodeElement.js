@@ -1,4 +1,5 @@
 import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue, SERVICE_NAME} from "../app";
+import alertIcon from '../../img/alert-icon28x29.png';
 
 export class CodeElementEditorModel {
     constructor($modal, $location, RootCodes, CodeElementByUriAndVersion, AllCodes, CodeElementsByCodesUriAndVersion, LatestCodeElementVersionsByCodeElementUri, authService) {
@@ -227,6 +228,8 @@ export class CodeElementEditorController {
         this.$modal = $modal;
         this.isModalController = isModalController;
         this.loadingService = loadingService;
+
+        this.alertIcon = alertIcon;
 
         this.model = codeElementEditorModel;
         this.codeElementUri = $routeParams.codeElementUri;

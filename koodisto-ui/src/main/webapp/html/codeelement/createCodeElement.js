@@ -1,3 +1,5 @@
+import alertIcon from '../../img/alert-icon28x29.png';
+
 export class CodeElementCreatorModel {
     constructor() {
         "ngInject";
@@ -20,6 +22,8 @@ export class CodeElementCreatorController {
         this.codeElementCreatorModel = codeElementCreatorModel;
         this.NewCodeElement = NewCodeElement;
         this.isModalController = isModalController;
+
+        this.alertIcon = alertIcon;
 
         this.model = codeElementCreatorModel;
         this.codesUri = $routeParams.codesUri;

@@ -5,7 +5,7 @@ import '../css/bootstrap.css';
 import '../css/virkailija.css';
 import '../css/other.css';
 import '../css/selectize.default.css';
-import '../css/select-0.8.3.css';
+import 'ui-select/dist/select.css';
 
 import codesMainPage from './codesmainpage.html';
 import createCodes from './codes/createcodes.html';

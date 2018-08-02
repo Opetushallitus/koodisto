@@ -1,4 +1,6 @@
 import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue, SERVICE_NAME} from "../app";
+import alertIcon from '../../img/alert-icon28x29.png';
+import infoIcon from '../../img/info-icon28x29.png';
 
 export class CodesEditorModel {
 
@@ -220,6 +222,9 @@ export class CodesEditorController {
         this.isModalController = isModalController;
         this.loadingService = loadingService;
 
+        this.alertIcon = alertIcon;
+        this.infoIcon = infoIcon;
+
         this.model = codesEditorModel;
         this.codesUri = $routeParams.codesUri;
         this.codesVersion = $routeParams.codesVersion;
@@ -231,7 +236,7 @@ export class CodesEditorController {
             codesEditorModel.init($routeParams.codesUri, this.codesVersion);
         }
 
-        this.isCodeLoading = loadingService.isLoading;
+        this.isCodeLoading = () => loadingService.isLoading;
 
     }
     closeAlert(index) {

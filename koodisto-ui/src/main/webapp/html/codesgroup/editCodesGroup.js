@@ -1,4 +1,6 @@
 import {getLanguageSpecificValue} from "../app";
+import alertIcon from '../../img/alert-icon28x29.png';
+
 
 export class CodesGroupEditorModel {
     constructor($location, CodesGroupByUri) {
@@ -34,6 +36,8 @@ export class CodesGroupEditorController {
         this.CodesGroupEditorModel = CodesGroupEditorModel;
         this.UpdateCodesGroup = UpdateCodesGroup;
         this.treemodel = treemodel;
+
+        this.alertIcon = alertIcon;
 
         this.model = CodesGroupEditorModel;
         this.errorMessage = $filter('i18n')('field.required');

@@ -1,3 +1,4 @@
+import alertIcon from '../../img/alert-icon28x29.png';
 
 export class CodesGroupCreatorModel {
     constructor($location) {
@@ -24,6 +25,8 @@ export class CodesGroupCreatorController {
         this.codesGroupCreatorModel = codesGroupCreatorModel;
         this.NewCodesGroup = NewCodesGroup;
         this.treemodel = treemodel;
+
+        this.alertIcon = alertIcon;
 
         this.model = codesGroupCreatorModel;
         this.errorMessage = $filter('i18n')('field.required');

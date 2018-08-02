@@ -209,7 +209,7 @@
     padding: 0 0 0 24px; }
 .selectlist .collapse,
 .treelist .collapse {
-    background: url("#{resource['img/itemtree-collapse-sprite.png']") no-repeat left center;
+    background: url("../img/itemtree-collapse-sprite.png") no-repeat left center;
     cursor: pointer;
     height: 20px;
     left: -26px;
@@ -228,7 +228,7 @@
 .selectlist .icon.folder,
 .treelist .icon.folder {
     /* Temporary image replacement */
-    background: url("#{resource['img/18x18-ui-icons.png']") no-repeat 0 0;
+    background: url("../img/18x18-ui-icons.png") no-repeat 0 0;
     cursor: pointer;
     display: inline-block;
     height: 18px;
@@ -253,10 +253,8 @@
     background-position: -18px -36px; }
 .selectlist .icon.file,
 .treelist .icon.file {
-    background-image: url("#{resource['img/18x18-ui-icons.png']");
     /* Temporary image replacement */
-    background-position: -72px 0px;
-    background-repeat: no-repeat;
+    background: url("../img/18x18-ui-icons.png") no-repeat -72px 0;
     display: inline-block;
     height: 18px;
     left: -23px;
