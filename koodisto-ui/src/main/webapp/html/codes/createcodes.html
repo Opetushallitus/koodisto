@@ -34,7 +34,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2">
-                <label for="same_name" class="checkbox"> <input id="same_name" type="checkbox" ng-model="codesCreator.samename" ng-click="codesCreator.setSameValue('name')" />
+                <label for="same_name" class="checkbox"> <input id="same_name" type="checkbox" ng-model="codesCreator.model.samename" ng-change="codesCreator.setSameValue('name')" />
                     {{'codes.sameinalllanguages' | i18n}}
                 </label>
             </div>
@@ -111,8 +111,8 @@
 
         <div class="form-group">
             <div class="col-md-offset-2">
-                <label for="same_description" class="checkbox"> <input id="same_description" class="form-control" type="checkbox" ng-model="codesCreator.samedescription"
-                        ng-click="codesCreator.setSameValue('description')" /> {{'codes.sameinalllanguages' | i18n}}
+                <label for="same_description" class="checkbox"> <input id="same_description" class="form-control" type="checkbox" ng-model="codesCreator.model.samedescription"
+                        ng-change="codesCreator.setSameValue('description')" /> {{'codes.sameinalllanguages' | i18n}}
                 </label>
             </div>
         </div>
@@ -170,8 +170,8 @@
                     class="pull-left" ng-class="{'glyphicon glyphicon-chevron-down': isopen, 'glyphicon glyphicon-chevron-right': !isopen}"></i> {{'codes.createpage.showextra' | i18n}} </accordion-heading>
                 <div class="form-group">
                     <div class="col-md-offset-2">
-                        <label for="same_instructions" class="checkbox"> <input id="same_instructions" type="checkbox" ng-model="codesCreator.sameinstructions"
-                                ng-click="codesCreator.setSameValue('instructions')" /> {{'codes.sameinalllanguages' | i18n}}
+                        <label for="same_instructions" class="checkbox"> <input id="same_instructions" type="checkbox" ng-model="codesCreator.model.sameinstructions"
+                                ng-change="codesCreator.setSameValue('instructions')" /> {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
                 </div>
@@ -195,8 +195,8 @@
 
                 <div class="form-group">
                     <div class="col-md-offset-2">
-                        <label for="same_targetarea" class="checkbox"><input id="same_targetarea" type="checkbox" ng-model="codesCreator.sametargetarea"
-                                ng-click="codesCreator.setSameValue('targetarea')" /> {{'codes.sameinalllanguages' | i18n}}</label>
+                        <label for="same_targetarea" class="checkbox"><input id="same_targetarea" type="checkbox" ng-model="codesCreator.model.sametargetarea"
+                                ng-change="codesCreator.setSameValue('targetarea')" /> {{'codes.sameinalllanguages' | i18n}}</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -219,8 +219,8 @@
 
                 <div class="form-group">
                     <div class="col-md-offset-2">
-                        <label for="same_targetareapart" class="checkbox"> <input id="same_targetareapart" type="checkbox" ng-model="sametargetareapart"
-                                ng-click="codesCreator.setSameValue('targetareapart')" /> {{'codes.sameinalllanguages' | i18n}}
+                        <label for="same_targetareapart" class="checkbox"> <input id="same_targetareapart" type="checkbox" ng-model="codesCreator.model.sametargetareapart"
+                                ng-change="codesCreator.setSameValue('targetareapart')" /> {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
                 </div>
@@ -244,7 +244,7 @@
 
                 <div class="form-group">
                     <div class="col-md-offset-2">
-                        <label for="same_concept" class="checkbox"> <input id="same_concept" type="checkbox" ng-model="codesCreator.sameconcept" ng-click="codesCreator.setSameValue('concept')" />
+                        <label for="same_concept" class="checkbox"> <input id="same_concept" type="checkbox" ng-model="codesCreator.model.sameconcept" ng-change="codesCreator.setSameValue('concept')" />
                             {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
@@ -269,7 +269,7 @@
                 <div class="form-group">
                     <div class="col-md-offset-2">
                         <label for="same_operationalenvironment" class="checkbox"><input id="same_operationalenvironment" type="checkbox"
-                                ng-model="codesCreator.sameoperationalenvironment" ng-click="codesCreator.setSameValue('operationalenvironment')" /> {{'codes.sameinalllanguages' | i18n}}</label>
+                                ng-model="codesCreator.model.sameoperationalenvironment" ng-change="codesCreator.setSameValue('operationalenvironment')" /> {{'codes.sameinalllanguages' | i18n}}</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -294,8 +294,8 @@
 
                 <div class="form-group">
                     <div class="col-md-offset-2">
-                        <label for="same_codessource" class="checkbox"><input id="same_codessource" type="checkbox" ng-model="codesCreator.samecodessource"
-                                ng-click="codesCreator.setSameValue('codessource')" /> {{'codes.sameinalllanguages' | i18n}}</label>
+                        <label for="same_codessource" class="checkbox"><input id="same_codessource" type="checkbox" ng-model="codesCreator.model.samecodessource"
+                                ng-change="codesCreator.setSameValue('codessource')" /> {{'codes.sameinalllanguages' | i18n}}</label>
                     </div>
                 </div>
                 <div class="form-group">
@@ -317,8 +317,8 @@
 
                 <div class="form-group">
                     <div class="col-md-offset-2">
-                        <label for="same_specifiescodes" class="checkbox"> <input id="same_specifiescodes" type="checkbox" ng-model="codesCreator.samespecifiescodes"
-                                ng-click="codesCreator.setSameValue('specifiescodes')" /> {{'codes.sameinalllanguages' | i18n}}
+                        <label for="same_specifiescodes" class="checkbox"> <input id="same_specifiescodes" type="checkbox" ng-model="codesCreator.model.samespecifiescodes"
+                                ng-change="codesCreator.setSameValue('specifiescodes')" /> {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
                 </div>
@@ -341,8 +341,8 @@
 
                 <div class="form-group">
                     <div class="col-md-offset-2">
-                        <label for="same_totakenoticeof" class="checkbox"> <input id="same_totakenoticeof" type="checkbox" ng-model="codesCreator.sametotakenoticeof"
-                                ng-click="codesCreator.setSameValue('totakenoticeof')" /> {{'codes.sameinalllanguages' | i18n}}
+                        <label for="same_totakenoticeof" class="checkbox"> <input id="same_totakenoticeof" type="checkbox" ng-model="codesCreator.model.sametotakenoticeof"
+                                ng-change="codesCreator.setSameValue('totakenoticeof')" /> {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
                 </div>
@@ -365,8 +365,8 @@
 
                 <div class="form-group">
                     <div class="col-md-offset-2">
-                        <label for="same_validitylevel" class="checkbox"> <input id="same_validitylevel" type="checkbox" ng-model="codesCreator.samevaliditylevel"
-                                ng-click="codesCreator.setSameValue('validitylevel')" /> {{'codes.sameinalllanguages' | i18n}}
+                        <label for="same_validitylevel" class="checkbox"> <input id="same_validitylevel" type="checkbox" ng-model="codesCreator.model.samevaliditylevel"
+                                ng-change="codesCreator.setSameValue('validitylevel')" /> {{'codes.sameinalllanguages' | i18n}}
                         </label>
                     </div>
                 </div>
