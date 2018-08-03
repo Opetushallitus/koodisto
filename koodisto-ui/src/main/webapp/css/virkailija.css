@@ -153,6 +153,11 @@ h6 {
     border-bottom:1px solid #24a4cc;
 }
 
+.modal-header > h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
 /*dialogin tyyli*/
 .modal {
     border:1px solid #dadada;
