@@ -407,7 +407,6 @@ li.uiCollapsed.mjs-nestedSortable-hovering div {
 }
 
 label, .label {
-    line-height: 2em;
     display: inline !important;
     color: inherit !important;
     background-color: inherit !important;

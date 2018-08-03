@@ -44,16 +44,22 @@
     </div>
     <div class="row">
         <div class="col-md-3">
-            <input type="text" maxlength="50" ng-change="koodistoTree.domain.update()" placeholder="{{'codes.mainpage.search.placeholder' | i18n}}"
+            <input type="text" class="form-control input-sm" maxlength="50" ng-change="koodistoTree.domain.update()" placeholder="{{'codes.mainpage.search.placeholder' | i18n}}"
                 ng-model="koodistoTree.domain.filter.name" />
         </div>
         <div class="col-md-9 form-inline">
-            <input id="filter_own" type="checkbox" ng-model="koodistoTree.domain.filter.own" ng-change="koodistoTree.domain.update()" />
-            <label for="filter_own">{{'codes.mainpage.search.own' | i18n}}</label>
-            <input id="filter_passivated" type="checkbox" ng-model="koodistoTree.domain.filter.passivated" ng-change="koodistoTree.domain.update()" />
-            <label for="filter_passivated">{{'codes.mainpage.search.passivated' | i18n}}</label>
-            <input id="filter_planned" type="checkbox" ng-model="koodistoTree.domain.filter.planned" ng-change="koodistoTree.domain.update()" />
-            <label for="filter_planned">{{'codes.mainpage.search.planned' | i18n}}</label>
+            <div class="checkbox-inline">
+                <input id="filter_own" type="checkbox" ng-model="koodistoTree.domain.filter.own" ng-change="koodistoTree.domain.update()" />
+                <label for="filter_own">{{'codes.mainpage.search.own' | i18n}}</label>
+            </div>
+            <div class="checkbox-inline">
+                <input id="filter_passivated" type="checkbox" ng-model="koodistoTree.domain.filter.passivated" ng-change="koodistoTree.domain.update()" />
+                <label for="filter_passivated">{{'codes.mainpage.search.passivated' | i18n}}</label>
+            </div>
+            <div class="checkbox-inline">
+                <input id="filter_planned" type="checkbox" ng-model="koodistoTree.domain.filter.planned" ng-change="koodistoTree.domain.update()" />
+                <label for="filter_planned">{{'codes.mainpage.search.planned' | i18n}}</label>
+            </div>
         </div>
     </div>
 
