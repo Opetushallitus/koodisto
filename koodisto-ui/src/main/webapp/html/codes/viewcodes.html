@@ -118,11 +118,11 @@
         <div class="col-md-2">{{'codes.viewpage.version' | i18n}}</div>
         <div class="col-md-10 pull-left bold">
             {{ viewCodes.model.codes.versio }} <span
-                ng-show="viewCodes.model.codes.codesVersions.length > 0"> &nbsp;(&nbsp;<a
-                href="koodisto/{{viewCodes.codesUri}}/{{viewCodes.codesVersion}}"
-                ng-repeat="codesVersion in viewCodes.model.codes.codesVersions | orderBy:identity:true">{{
-                    codesVersion }}&nbsp;</a>)
-            </span>
+                ng-show="viewCodes.model.codes.codesVersions.length > 0">
+            &nbsp;(&nbsp;<a href="koodisto/{{viewCodes.codesUri}}/{{codesVersion}}"
+                            ng-repeat="codesVersion in viewCodes.model.codes.codesVersions | orderBy:viewCodes.identity:true">
+            {{codesVersion }}&nbsp;</a>)
+        </span>
         </div>
     </div>
     <div class="row">
