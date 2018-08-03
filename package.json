@@ -56,6 +56,8 @@
     "http-proxy-middleware": "^0.18.0"
   },
   "scripts": {
-    "start": "webpack-serve ./webpack.run.js --port 3000"
+    "start": "webpack-serve ./webpack.run.js --port 3000",
+    "build": "webpack --config webpack.build.js --bail -p",
+    "test": "webpack --config webpack.test.js"
   }
 }

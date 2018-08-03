@@ -44,11 +44,11 @@
                     <execution>
                         <id>webpack build</id>
                         <goals>
-                            <goal>webpack</goal>
+                            <goal>npm</goal>
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>--config webpack.build.js --bail -p</arguments>
+                            <arguments>run build</arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -70,22 +70,22 @@
                     <warSourceIncludes>**/WEB-INF/*,**/webapp/META-INF/*,**/webapp/index.html</warSourceIncludes>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-                <!--<groupId>com.github.klieber</groupId>-->
-                <!--<artifactId>phantomjs-maven-plugin</artifactId>-->
-                <!--<version>${phantomjs-maven-plugin.version}</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<goals>-->
-                            <!--<goal>install</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <!--<configuration>-->
-                    <!--<version>${phantomjs.version}</version>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-            <!---->
+            <plugin>
+                <groupId>com.github.klieber</groupId>
+                <artifactId>phantomjs-maven-plugin</artifactId>
+                <version>${phantomjs-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>install</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <version>${phantomjs.version}</version>
+                </configuration>
+            </plugin>
+
             <!--<plugin>-->
                 <!--<groupId>com.github.searls</groupId>-->
                 <!--<artifactId>jasmine-maven-plugin</artifactId>-->
