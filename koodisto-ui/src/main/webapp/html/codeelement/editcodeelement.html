@@ -204,7 +204,6 @@
                            datepicker-popup="dd.MM.yyyy"
                            name="voimassaAlkuPvm"
                            ng-model="codeElementEditor.model.codeElement.voimassaAlkuPvm"
-                           min="minDate"
                            date-disabled="codeElementEditor.disabled(date, mode)"
                            required
                            is-open="codeElementEditor.datesactivestart.open"
@@ -215,11 +214,11 @@
                 <span>-</span>
                 <div class="input-group col-md-2">
                     <input id="datesactiveend"
+                           name="voimassaLoppuPvm"
                            class="form-control"
                            type="text"
                            datepicker-popup="dd.MM.yyyy"
                            ng-model="codeElementEditor.model.codeElement.voimassaLoppuPvm"
-                           min="minDate"
                            date-disabled="codeElementEditor.disabled(date, mode)"
                            ng-required="false"
                            is-open="codeElementEditor.datesactiveend.open"
@@ -574,7 +573,7 @@
         </div>
 
         <div class="row navbar-fixed-bottom">
-            <button ng-disabled="!form.$valid || codeElementEditor.isCodeElementLoading()"
+            <button ng-disabled="(form.$invalid) || codeElementEditor.isCodeElementLoading()"
                     auth="updateAny" auth-service="APP_KOODISTO"
                     class="btn btn-primary pull-right"
                     type="submit">{{'codes.save' | i18n}}</button>

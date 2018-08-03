@@ -1,5 +1,7 @@
 import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue, SERVICE_NAME} from "../app";
 import alertIcon from '../../img/alert-icon28x29.png';
+import jQuery from 'jquery';
+import moment from "moment";
 
 export class CodeElementEditorModel {
     constructor($modal, $location, RootCodes, CodeElementByUriAndVersion, AllCodes, CodeElementsByCodesUriAndVersion, LatestCodeElementVersionsByCodeElementUri, authService) {
@@ -76,6 +78,12 @@ export class CodeElementEditorModel {
             codeElementVersion: codeElementVersion
         }, (result) => {
             this.codeElement = result;
+            if (this.codeElement.voimassaAlkuPvm) {
+                this.codeElement.voimassaAlkuPvm = new Date(this.codeElement.voimassaAlkuPvm);
+            }
+            if (this.codeElement.voimassaLoppuPvm) {
+                this.codeElement.voimassaLoppuPvm = new Date(this.codeElement.voimassaLoppuPvm);
+            }
             this.codeValue = result.koodiArvo;
 
             this.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
@@ -308,19 +316,19 @@ export class CodeElementEditorController {
     }
 
     search(item) {
-        if (!this.model.query || item.name.toLowerCase().indexOf(this.model.query.toLowerCase()) !== -1
-            || item.value.toLowerCase().indexOf(this.model.query.toLowerCase()) !== -1) {
-            return true;
-        }
-        return false;
+        return !this.model.query
+            || item.name.toLowerCase().indexOf(this.model.query.toLowerCase()) !== -1
+            || item.value.toLowerCase().indexOf(this.model.query.toLowerCase()) !== -1;
+
     }
 
     persistCodes() {
-        var codeelement = {
+        const format = 'YYYY-MM-DD';
+        const codeelement = {
             koodiUri: this.codeElementUri,
             versio: this.codeElementVersion,
-            voimassaAlkuPvm: this.model.codeElement.voimassaAlkuPvm,
-            voimassaLoppuPvm: this.model.codeElement.voimassaLoppuPvm,
+            voimassaAlkuPvm: moment(this.model.codeElement.voimassaAlkuPvm).format(format),
+            voimassaLoppuPvm: this.model.codeElement.voimassaLoppuPvm && moment(this.model.codeElement.voimassaLoppuPvm).format(format),
             koodiArvo: this.model.codeValue,
             tila: this.model.codeElement.tila,
             version: this.model.codeElement.version,
@@ -331,48 +339,11 @@ export class CodeElementEditorController {
 
             metadata: []
         };
-        if (this.model.namefi) {
-            codeelement.metadata.push({
-                kieli: 'FI',
-                nimi: this.model.namefi,
-                kuvaus: this.model.descriptionfi,
-                lyhytNimi: this.model.shortnamefi,
-                kayttoohje: this.model.instructionsfi,
-                kasite: this.model.conceptfi,
-                huomioitavaKoodi: this.model.totakenoticeoffi,
-                sisaltaaMerkityksen: this.model.containssignificancefi,
-                eiSisallaMerkitysta: this.model.doesnotcontainsignificancefi,
-                sisaltaaKoodiston: this.model.containscodesfi
-            });
-        }
-        if (this.model.namesv) {
-            codeelement.metadata.push({
-                kieli: 'SV',
-                nimi: this.model.namesv,
-                kuvaus: this.model.descriptionsv,
-                lyhytNimi: this.model.shortnamesv,
-                kayttoohje: this.model.instructionssv,
-                kasite: this.model.conceptsv,
-                huomioitavaKoodi: this.model.totakenoticeofsv,
-                sisaltaaMerkityksen: this.model.containssignificancesv,
-                eiSisallaMerkitysta: this.model.doesnotcontainsignificancesv,
-                sisaltaaKoodiston: this.model.containscodessv
-            });
-        }
-        if (this.model.nameen) {
-            codeelement.metadata.push({
-                kieli: 'EN',
-                nimi: this.model.nameen,
-                kuvaus: this.model.descriptionen,
-                lyhytNimi: this.model.shortnameen,
-                kayttoohje: this.model.instructionsen,
-                kasite: this.model.concepten,
-                huomioitavaKoodi: this.model.totakenoticeofen,
-                sisaltaaMerkityksen: this.model.containssignificanceen,
-                eiSisallaMerkitysta: this.model.doesnotcontainsignificanceen,
-                sisaltaaKoodiston: this.model.containscodesen
-            });
-        }
+
+        CodeElementEditorController.addMetadataByLanguage(this.model, codeelement, 'FI');
+        CodeElementEditorController.addMetadataByLanguage(this.model, codeelement, 'SV');
+        CodeElementEditorController.addMetadataByLanguage(this.model, codeelement, 'EN');
+
         const codeElementVersionResponse = this.SaveCodeElement.put({}, codeelement);
         codeElementVersionResponse.$promise.then(() => {
             this.$location.path("/koodi/" + this.codeElementUri + "/" + codeElementVersionResponse.content).search({
@@ -390,7 +361,26 @@ export class CodeElementEditorController {
             };
             this.model.alerts.push(alert);
         });
-    };
+    }
+
+    static addMetadataByLanguage(model, codeelement, lang) {
+        const langLower = lang.toLowerCase();
+        const langUpper = lang.toUpperCase();
+        if (model['name' + langLower]) {
+            codeelement.metadata.push({
+                kieli: langUpper,
+                nimi: model['name' + langLower],
+                kuvaus: model['description' + langLower],
+                lyhytNimi: model['shortname' + langLower],
+                kayttoohje: model['instructions' + langLower],
+                kasite: model['concept' + langLower],
+                huomioitavaKoodi: model['totakenoticeof' + langLower],
+                sisaltaaMerkityksen: model['containssignificance' + langLower],
+                eiSisallaMerkitysta: model['doesnotcontainsignificance' + langLower],
+                sisaltaaKoodiston: model['containscodes' + langLower],
+            });
+        }
+    }
 
     changeToRelationCodeElements(listToBeChanged) {
         const result = [];

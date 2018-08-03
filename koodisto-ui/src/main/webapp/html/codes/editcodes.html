@@ -537,7 +537,7 @@
         </div>
 
         <div class="row navbar-fixed-bottom">
-            <button ng-disabled="!form.$valid || codesEditor.isCodeLoading()"
+            <button ng-disabled="form.$invalid || codesEditor.isCodeLoading()"
                     auth="update"
                     auth-service="APP_KOODISTO"
                     auth-org="{{codesEditor.model.codes.organisaatioOid}}"

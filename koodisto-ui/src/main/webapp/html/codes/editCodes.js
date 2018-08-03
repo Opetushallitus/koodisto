@@ -1,6 +1,7 @@
 import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue, SERVICE_NAME} from "../app";
 import alertIcon from '../../img/alert-icon28x29.png';
 import infoIcon from '../../img/info-icon28x29.png';
+import jQuery from 'jquery';
 
 export class CodesEditorModel {
 
@@ -45,6 +46,12 @@ export class CodesEditorModel {
                 this.states = [{key:'PASSIIVINEN', value:'PASSIIVINEN'},{key:'HYVAKSYTTY',value:'HYVÄKSYTTY'}];
             } else {
                 this.states = [{key:'PASSIIVINEN', value:'PASSIIVINEN'},{key:'LUONNOS', value:'LUONNOS'},{key:'HYVAKSYTTY',value:'HYVÄKSYTTY'}];
+            }
+            if (this.codes.voimassaAlkuPvm) {
+                this.codes.voimassaAlkuPvm = new Date(this.codes.voimassaAlkuPvm);
+            }
+            if (this.codes.voimassaLoppuPvm) {
+                this.codes.voimassaLoppuPvm = new Date(this.codes.voimassaLoppuPvm);
             }
 
             this.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
@@ -236,7 +243,7 @@ export class CodesEditorController {
             codesEditorModel.init($routeParams.codesUri, this.codesVersion);
         }
 
-        this.isCodeLoading = () => loadingService.isLoading;
+        this.isCodeLoading = loadingService.isLoading;
 
         // This need to be bound here with arrow function because it's accessed from different (ng-include) scope
         this.search = (item) => {
@@ -285,7 +292,7 @@ export class CodesEditorController {
     };
 
     persistCodes() {
-        var codes = {
+        const codes = {
             koodistoUri: this.codesUri,
             voimassaAlkuPvm: this.model.codes.voimassaAlkuPvm,
             voimassaLoppuPvm: this.model.codes.voimassaLoppuPvm,
@@ -300,54 +307,10 @@ export class CodesEditorController {
             includesCodes: this.changeToRelationCodes(this.model.includesCodes),
             levelsWithCodes: this.changeToRelationCodes(this.model.levelsWithCodes)
         };
-        if (this.model.namefi) {
-            codes.metadata.push({
-                kieli: 'FI',
-                nimi: this.model.namefi,
-                kuvaus: this.model.descriptionfi,
-                kayttoohje: this.model.instructionsfi,
-                kohdealue: this.model.targetareafi,
-                kohdealueenOsaAlue: this.model.targetareapartfi,
-                kasite: this.model.conceptfi,
-                toimintaymparisto: this.model.operationalenvironmentfi,
-                koodistonLahde: this.model.codessourcefi,
-                tarkentaaKoodistoa: this.model.specifiescodesfi,
-                huomioitavaKoodisto: this.model.totakenoticeoffi,
-                sitovuustaso: this.model.validitylevelfi
-            });
-        }
-        if (this.model.namesv) {
-            codes.metadata.push({
-                kieli: 'SV',
-                nimi: this.model.namesv,
-                kuvaus: this.model.descriptionsv,
-                kayttoohje: this.model.instructionssv,
-                kohdealue: this.model.targetareasv,
-                kohdealueenOsaAlue: this.model.targetareapartsv,
-                kasite: this.model.conceptsv,
-                toimintaymparisto: this.model.operationalenvironmentsv,
-                koodistonLahde: this.model.codessourcesv,
-                tarkentaaKoodistoa: this.model.specifiescodessv,
-                huomioitavaKoodisto: this.model.totakenoticeofsv,
-                sitovuustaso: this.model.validitylevelsv
-            });
-        }
-        if (this.model.nameen) {
-            codes.metadata.push({
-                kieli: 'EN',
-                nimi: this.model.nameen,
-                kuvaus: this.model.descriptionen,
-                kayttoohje: this.model.instructionsen,
-                kohdealue: this.model.targetareaen,
-                kohdealueenOsaAlue: this.model.targetareaparten,
-                kasite: this.model.concepten,
-                toimintaymparisto: this.model.operationalenvironmenten,
-                koodistonLahde: this.model.codessourceen,
-                tarkentaaKoodistoa: this.model.specifiescodesen,
-                huomioitavaKoodisto: this.model.totakenoticeofen,
-                sitovuustaso: this.model.validitylevelen
-            });
-        }
+        CodesEditorController.addMetadataByLanguage(this.model, codes, 'FI');
+        CodesEditorController.addMetadataByLanguage(this.model, codes, 'SV');
+        CodesEditorController.addMetadataByLanguage(this.model, codes, 'EN');
+
         const codeVersionResponse = this.SaveCodes.put({}, codes);
         codeVersionResponse.$promise.then(() => {
             this.treemodel.refresh();
@@ -370,6 +333,28 @@ export class CodesEditorController {
             this.model.alerts.push(alert);
         });
     };
+
+    static addMetadataByLanguage(model, codes, lang) {
+        const langLower = lang.toLowerCase();
+        const langUpper = lang.toUpperCase();
+        if (model['name' + langLower]) {
+            codes.metadata.push({
+                kieli: langUpper,
+                nimi: model['name' + langLower],
+                kuvaus: model['description' + langLower],
+                kayttoohje: model['instructions' + langLower],
+                kohdealue: model['targetareafi' + langLower],
+                kohdealueenOsaAlue: model['targetareapart' + langLower],
+                kasite: model['concept' + langLower],
+                toimintaymparisto: model['operationalenvironment' + langLower],
+                koodistonLahde: model['codessource' + langLower],
+                tarkentaaKoodistoa: model['specifiescodes' + langLower],
+                huomioitavaKoodisto: model['totakenoticeof' + langLower],
+                sitovuustaso: model['validitylevel' + langLower],
+            });
+        }
+    }
+
 
     changeToRelationCodes(listToBeChanged) {
         const result = [];
