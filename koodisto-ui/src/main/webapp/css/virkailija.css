@@ -242,20 +242,6 @@ h6 {
 
 /*TEKSTIKENTÄT*/
 
-input {
-    background-color: #ffffff;
-    background-image: none;
-    border: none;
-    box-shadow: 0 1px 1px #BFBFBF inset, 0 -1px 4px rgba(0, 0, 0, 0.07) inset;
-    color: #333333;
-    padding: 0 0 0 10px;
-    border-radius: 3px 3px 3px 3px;
-    font-size: 13px;
-    height: 26px;
-    line-height: 20px;
-    vertical-align: middle;
-}
-
 input:hover, textarea:hover {
     background-color: #FFF5DA;
 }
@@ -342,20 +328,6 @@ input[disabled], select[disabled], textarea[disabled], input[readonly], select[r
     color: #333333;
     background-image:url("../img/disabled-pat.png");
     background-repeat: repeat;
-}
-
-
-/* korjaa checkboxin ympärillä olevan ikävän laatikon                                           */
-/* sekä ongelman jossa checbox, radiobutton ja label eivät asetu pystysuunnassa samaan linjaan  */
-/* testattu mac chrome,safari,firefox, w7 IE11,chrome,firefox                                   */
-input[type="checkbox"], input[type="radio"] {
-    box-shadow: none;
-    height:13px;
-    width:13px;
-    padding:0;
-    margin:0;
-    position:relative;
-    top:4px;
 }
 
 /* radiobuttonin ja labelin asemoinnin hienosäätöä */
