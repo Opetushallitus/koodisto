@@ -1,5 +1,6 @@
 import angular from 'angular';
-import {MAX_SESSION_IDLE_TIME_IN_SECONDS, SERVICE_URL_BASE, SESSION_KEEPALIVE_INTERVAL_IN_SECONDS} from "./app";
+import {MAX_SESSION_IDLE_TIME_IN_SECONDS} from "./app.utils";
+import {SERVICE_URL_BASE, SESSION_KEEPALIVE_INTERVAL_IN_SECONDS} from "./app.utils";
 
 export class Idler {
     constructor() {

@@ -1,7 +1,7 @@
 "use strict";
 
 import {OPH_ORG} from "./auth";
-import {SERVICE_NAME} from "./app";
+import {SERVICE_NAME} from "./app.utils";
 
 export class ChildOpener {
     constructor() {

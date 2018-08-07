@@ -13,10 +13,8 @@ module.exports = function makeWebpackConfig(options) {
     /**
      * Environment type
      * BUILD is for generating minified builds
-     * TEST is for generating test builds
      */
     var BUILD = !!options.BUILD;
-    var TEST = !!options.TEST;
 
     /**
      * Config
@@ -33,12 +31,8 @@ module.exports = function makeWebpackConfig(options) {
      * Should be an empty object if it's generating a test build
      * Karma will set this when it's a test build
      */
-    if (TEST) {
-        config.entry = {}
-    } else {
-        config.entry = {
-            app: './koodisto-ui/src/main/webapp/html/app.js'
-        }
+    config.entry = {
+        app: './koodisto-ui/src/main/webapp/html/app.js'
     }
 
     /**
@@ -47,9 +41,6 @@ module.exports = function makeWebpackConfig(options) {
      * Should be an empty object if it's generating a test build
      * Karma will handle setting it up for you when it's a test build
      */
-    if (TEST) {
-        config.output = {}
-    } else {
         config.output = {
             // Absolute output directory
             path: BUILD ? __dirname + '/koodisto-ui/build' : __dirname + '/koodisto-ui/html',
@@ -66,9 +57,8 @@ module.exports = function makeWebpackConfig(options) {
             // Only adds hash in build mode
             chunkFilename: BUILD ? '[name].[hash].js' : '[name].bundle.js'
         }
-    }
 
-    if (!BUILD && !TEST) {
+    if (!BUILD) {
         config.serve = {
             content: [__dirname],
             add: (app, middleware, options) => {
@@ -83,9 +73,7 @@ module.exports = function makeWebpackConfig(options) {
      * Reference: http://webpack.github.io/docs/configuration.html#devtool
      * Type of sourcemap to use per build type
      */
-    if (TEST) {
-        config.devtool = 'inline-source-map';
-    } else if (BUILD) {
+    if (BUILD) {
         config.devtool = 'source-map';
     } else {
         config.devtool = 'eval';
@@ -132,22 +120,6 @@ module.exports = function makeWebpackConfig(options) {
         }]
     };
 
-    // ISPARTA LOADER
-    // Reference: https://github.com/ColCh/isparta-instrumenter-loader
-    // Instrument JS files with Isparta for subsequent code coverage reporting
-    // Skips node_modules and files that end with .test.js
-    // if (TEST) {
-    //     config.module.rules.push({
-    //         enforce: 'pre',
-    //         test: /\.js$/,
-    //         exclude: [
-    //             /node_modules/,
-    //             /\.test\.js$/
-    //         ],
-    //         loader: 'isparta-instrumenter-loader'
-    //     })
-    // }
-
     // CSS LOADER
     // Reference: https://github.com/webpack/css-loader
     // Allow loading css through js
@@ -166,13 +138,6 @@ module.exports = function makeWebpackConfig(options) {
             "css-loader",
         ]
     };
-
-    // Skip loading css in test mode
-    if (TEST) {
-        // Reference: https://github.com/webpack/null-loader
-        // Return an empty module
-        cssLoader.loader = 'null'
-    }
 
     // Add cssLoader to the loader list
     config.module.rules.push(cssLoader);
@@ -199,7 +164,7 @@ module.exports = function makeWebpackConfig(options) {
         // Disabled when in test mode or not in build mode
         new MiniCssExtractingPlugin({
             fileName: '[name].[hash].css',
-            disable: !BUILD || TEST
+            disable: !BUILD
         }),
         new webpack.ProvidePlugin({
             $: "jquery",
@@ -208,17 +173,15 @@ module.exports = function makeWebpackConfig(options) {
     ];
 
     // Skip rendering index.html in test mode
-    if (!TEST) {
-        // Reference: https://github.com/ampedandwired/html-webpack-plugin
-        // Render index.html
-        config.plugins.push(
-            new HtmlWebpackPlugin({
-                template: './koodisto-ui/src/main/webapp/html/index.html',
-                inject: 'head',
-                minify: BUILD
-            })
-        )
-    }
+    // Reference: https://github.com/ampedandwired/html-webpack-plugin
+    // Render index.html
+    config.plugins.push(
+        new HtmlWebpackPlugin({
+            template: './koodisto-ui/src/main/webapp/html/index.html',
+            inject: 'head',
+            minify: BUILD
+        })
+    );
 
     // Add build specific plugins
     if (BUILD) {

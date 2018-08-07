@@ -1,4 +1,4 @@
-import {getLanguageSpecificValueOrValidValue} from "./app";
+import {getLanguageSpecificValueOrValidValue} from "./app.utils";
 
 //domain .. this is both, service & domain layer
 export class Treemodel {
@@ -107,10 +107,8 @@ export class Treemodel {
 
 
 export class KoodistoTreeController {
-    constructor($scope, $resource, $routeParams, treemodel) {
+    constructor($routeParams, treemodel) {
         "ngInject";
-        this.$scope = $scope;
-        this.$resource = $resource;
         this.$routeParams = $routeParams;
         this.treemodel = treemodel;
 

@@ -1,67 +1,73 @@
-import {SERVICE_URL_BASE} from "../../main/webapp/html/app";
+import {expect} from 'chai';
+import {ViewCodeElementController, ViewCodeElementModel} from "../../main/webapp/html/codeelement/viewCodeElement";
 
 describe("Code Element View test", function() {
 
-    var model, scope, mockBackend;
+    let model, controller, CodeElementByUriAndVersion, routeParams, SaveCodeElement, codesByUri;
+    const emptyCodeElement = {
+        koodisto: {
+            koodistoUri: '',
+            koodistoVersios: [],
+        },
+        withinCodeElements: [],
+        includesCodeElements: [],
+        levelsWithCodeElements: [],
 
-    var codesResponse = {
-        "koodistoUri" : "versiointitesti",
-        "resourceUri" : "http://koodistopalvelu.opintopolku.fi/versiointitesti",
-        "omistaja" : null,
-        "organisaatioOid" : "1.2.246.562.10.00000000001",
-        "lukittu" : null,
-        "latestKoodistoVersio" : {
-            "versio" : 5,
-            "paivitysPvm" : 1398346711637,
-            "voimassaAlkuPvm" : "2014-04-24",
-            "voimassaLoppuPvm" : null,
-            "tila" : "HYVAKSYTTY",
-            "version" : 2,
-            "metadata" : [ {
-                "kieli" : "FI",
-                "nimi" : "Versiointitesti",
-                "kuvaus" : "Testataan versiointia",
-                "kayttoohje" : null,
-                "kasite" : null,
-                "kohdealue" : null,
-                "sitovuustaso" : null,
-                "kohdealueenOsaAlue" : null,
-                "toimintaymparisto" : null,
-                "tarkentaaKoodistoa" : null,
-                "huomioitavaKoodisto" : null,
-                "koodistonLahde" : null
-            } ]
+    };
+
+    const codesResponse = {
+        "koodistoUri": "versiointitesti",
+        "resourceUri": "http://koodistopalvelu.opintopolku.fi/versiointitesti",
+        "omistaja": null,
+        "organisaatioOid": "1.2.246.562.10.00000000001",
+        "lukittu": null,
+        "latestKoodistoVersio": {
+            "versio": 5,
+            "paivitysPvm": 1398346711637,
+            "voimassaAlkuPvm": "2014-04-24",
+            "voimassaLoppuPvm": null,
+            "tila": "HYVAKSYTTY",
+            "version": 2,
+            "metadata": [{
+                "kieli": "FI",
+                "nimi": "Versiointitesti",
+                "kuvaus": "Testataan versiointia",
+                "kayttoohje": null,
+                "kasite": null,
+                "kohdealue": null,
+                "sitovuustaso": null,
+                "kohdealueenOsaAlue": null,
+                "toimintaymparisto": null,
+                "tarkentaaKoodistoa": null,
+                "huomioitavaKoodisto": null,
+                "koodistonLahde": null
+            }]
         }
     };
 
-    beforeEach(module("koodisto", function($provide) {
-        $provide.value('NoCacheInterceptor', {});
-    }));
+    beforeEach(function() {
+        const scope = {$watch: () => {}};
+        codesByUri = {get: ({}, fun) => {fun(codesResponse);}};
+        CodeElementByUriAndVersion = CodeElementByUriAndVersion || {get: ({}, fun) => {fun(emptyCodeElement);}};
+        SaveCodeElement = SaveCodeElement || {put: () => 'empty'};
+        model = new ViewCodeElementModel({}, {}, CodeElementByUriAndVersion, codesByUri, {});
+        model.shownCodeElements = [];
 
-    beforeEach(inject(function($controller, $injector, $rootScope, $routeParams, viewCodeElementModel) {
-        scope = $rootScope.$new();
-        model = viewCodeElementModel;
-        $routeParams.codeElementUri = "versiointitesti_uudi";
-        $routeParams.codeElementVersion = 3;
-        controller = $controller("viewCodeElementController", {
-            $scope : scope,
-            viewCodeElementModel : model
-        });
-        angular.mock.inject(function($injector) {
-            mockBackend = $injector.get('$httpBackend');
-        });
-        mockBackend.whenGET(SERVICE_URL_BASE + "session/maxinactiveinterval").respond(1);
-    }));
+        routeParams = {};
+        routeParams.codeElementUri = "versiointitesti_uudi";
+        routeParams.codeElementVersion = 3;
+        controller = new ViewCodeElementController(scope, {}, routeParams, model, {}, {});
+    });
 
     it("viewCodeElementModel is defined and it is in scope", function() {
-        expect(model).toBeDefined();
-        expect(scope.model).toEqual(model);
+        expect(model).to.not.be.undefined;
+        expect(controller.model).to.equal(model);
     });
 
     describe("Versioning", function() {
 
-        givenResponseCodeElement = function(old) {
-            mockBackend.expectGET(SERVICE_URL_BASE + "codes/versiointitesti").respond(codesResponse);
+        const givenResponseCodeElement = function(old) {
+            codesByUri = {get: ({}, fun) => {fun(codesResponse);}};
             return {
                 "koodiUri" : "versiointitesti_uudi",
                 "resourceUri" : "http://koodistopalvelu.opintopolku.fi/versiointitesti/koodi/versiointitesti_uudi",
@@ -95,28 +101,25 @@ describe("Code Element View test", function() {
             };
         };
 
-        beforeEach(function() {
+        before(function() {
             // in order to get rid of controller's initialization
-            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(givenResponseCodeElement());
-            mockBackend.flush();
+            CodeElementByUriAndVersion = {get: ({}, fun) => {fun(givenResponseCodeElement(true));}};
         });
 
         it("Editing old version of code element is prevented", function() {
-            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/2").respond(givenResponseCodeElement(true));
-            scope.model.init(scope, "versiointitesti_uudi", 2);
-            mockBackend.flush();
-            expect(scope.model.editState).toEqual("disabled");
+            CodeElementByUriAndVersion = {get: ({}, fun) => {fun(givenResponseCodeElement(false));}};
+            controller.model.init(controller, "versiointitesti_uudi", 2);
+            expect(controller.model.editState).to.equal("disabled");
         });
 
         it("Editing latest version of code element is permitted", function() {
-            expect(scope.model.editState).toEqual("");
+            expect(controller.model.editState).to.equal("");
         });
     });
 
     describe("Relations", function() {
-
-        givenResponseCodeElementWithRelation = function() {
-            mockBackend.expectGET(SERVICE_URL_BASE + "codes/versiointitesti").respond(codesResponse);
+        const givenResponseCodeElementWithRelation = function() {
+            codesByUri = {get: ({}, fun) => {fun(codesResponse);}};
             return {
                 "koodiUri" : "versiointitesti_uudi",
                 "resourceUri" : "http://koodistopalvelu.opintopolku.fi/versiointitesti/koodi/versiointitesti_uudi",
@@ -179,22 +182,21 @@ describe("Code Element View test", function() {
             };
         };
 
-        beforeEach(function() {
-            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(givenResponseCodeElementWithRelation());
-            mockBackend.flush();
+        before(function() {
+            CodeElementByUriAndVersion = {get: ({}, fun) => {fun(givenResponseCodeElementWithRelation());}};
         });
 
         it("Should contain version number of code element relation references", function() {
-            expect(model.withinCodeElements.length).toEqual(1);
-            expect(model.withinCodeElements[0].versio).toEqual(2);
-            expect(model.withinCodeElements[0].name).toEqual("2");
+            expect(model.withinCodeElements.length).to.equal(1);
+            expect(model.withinCodeElements[0].versio).to.equal(2);
+            expect(model.withinCodeElements[0].name).to.equal("2");
         });
     });
 
     describe("Caching", function() {
 
-        givenResponseCodeElementCaching = function() {
-            mockBackend.expectGET(SERVICE_URL_BASE + "codes/versiointitesti").respond(codesResponse);
+        const givenResponseCodeElementCaching = function() {
+            codesByUri = {get: ({}, fun) => {fun(codesResponse);}};
             return {
                 "koodiUri" : "versiointitesti_uudi",
                 "resourceUri" : "http://koodistopalvelu.opintopolku.fi/versiointitesti/koodi/versiointitesti_uudi",
@@ -230,23 +232,20 @@ describe("Code Element View test", function() {
 
         beforeEach(function() {
             // in order to get rid of controller's initialization
-            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(givenResponseCodeElementCaching());
-            mockBackend.flush();
+            CodeElementByUriAndVersion = {get: ({}, fun) => {fun(givenResponseCodeElementCaching());}};
         });
 
         it("Calling subsequent inits should make no calls to backend", function() {
-            scope.model.init(scope, "versiointitesti_uudi", 3);
-            scope.model.init(scope, "versiointitesti_uudi", 3);
-            scope.model.init(scope, "versiointitesti_uudi", 3);
+            controller.model.init(controller, "versiointitesti_uudi", 3);
+            controller.model.init(controller, "versiointitesti_uudi", 3);
+            controller.model.init(controller, "versiointitesti_uudi", 3);
         });
 
         it("Calling init after forcerefresh should load eveything", function() {
-            scope.model.init(scope, "versiointitesti_uudi", 3);
+            controller.model.init(controller, "versiointitesti_uudi", 3);
 
             model.forceRefresh = true; // simulates clicking the edit link
-            mockBackend.expectGET(SERVICE_URL_BASE + "codeelement/versiointitesti_uudi/3").respond(givenResponseCodeElementCaching());
-            scope.model.init(scope, "versiointitesti_uudi", 3);
-            mockBackend.flush();
+            controller.model.init(controller, "versiointitesti_uudi", 3);
         });
 
     });

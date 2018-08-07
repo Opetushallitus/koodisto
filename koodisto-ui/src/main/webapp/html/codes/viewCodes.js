@@ -1,5 +1,5 @@
-import angular from 'angular';
-import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue, SERVICE_URL_BASE} from "../app";
+import {SERVICE_URL_BASE} from "../app.utils";
+import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue} from "../app.utils";
 
 export class ViewCodesModel {
     constructor($location, $modal, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion, CodeElementVersionsByCodeElementUri,
@@ -61,8 +61,8 @@ export class ViewCodesModel {
 
     getCodes(codesUri, codesVersion) {
         this.CodesByUriAndVersion.get({
-            codesUri : codesUri,
-            codesVersion : codesVersion
+            codesUri: codesUri,
+            codesVersion: codesVersion
         }, (result) => {
             this.codes = result;
             this.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
@@ -256,7 +256,7 @@ export class ViewCodesController {
         this.uploadUrl = SERVICE_URL_BASE + "codes" + "/upload/" + this.codesUri;
         this.codesVersion = $routeParams.codesVersion;
         this.model.forceRefresh = $routeParams.forceRefresh === true;
-        this.identity = angular.identity;
+        this.identity = (value) => value;
         if (!isModalController) {
             viewCodesModel.init(this.codesUri, this.codesVersion);
         }

@@ -1,7 +1,8 @@
-import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue, SERVICE_NAME} from "../app";
+import {SERVICE_NAME} from "../app.utils";
 import alertIcon from '../../img/alert-icon28x29.png';
 import jQuery from 'jquery';
 import moment from "moment";
+import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue} from "../app.utils";
 
 export class CodeElementEditorModel {
     constructor($modal, $location, RootCodes, CodeElementByUriAndVersion, AllCodes, CodeElementsByCodesUriAndVersion, LatestCodeElementVersionsByCodeElementUri, authService) {
@@ -267,8 +268,6 @@ export class CodeElementEditorController {
         });
         this.oldValueForPageSize = 10;
         this.paginationPage = [];
-
-
     }
 
     onMasterChange(master) {
@@ -351,9 +350,9 @@ export class CodeElementEditorController {
             });
         }, (error) => {
             const type = 'danger';
-            let message = jQuery.i18n.prop(error.data);
+            let message = jQuery.i18n && jQuery.i18n.prop(error.data);
             if (error.status === 504) {
-                message = jQuery.i18n.prop('error.save.timeout');
+                message = jQuery.i18n && jQuery.i18n.prop('error.save.timeout');
             }
             const alert = {
                 type: type,
@@ -496,7 +495,7 @@ export class CodeElementEditorController {
             return;
         }
 
-        const remainingElements = $.grep(collectionToRemoveFrom, (element) => elementUrisToRemove.indexOf(element.uri) === -1);
+        const remainingElements = collectionToRemoveFrom.filter((element) => elementUrisToRemove.indexOf(element.uri) === -1);
         collectionToRemoveFrom.length = 0;
         Array.prototype.push.apply(collectionToRemoveFrom, remainingElements);
 
@@ -508,12 +507,8 @@ export class CodeElementEditorController {
     }
 
     okcodeelement() {
-        const selectedItems = this.$filter('filter')(this.model.shownCodeElements, {
-            checked: true
-        });
-        const unselectedItems = this.$filter('filter')(this.model.shownCodeElements, {
-            checked: false
-        });
+        const selectedItems = this.model.shownCodeElements.filter(shownCodeElement => shownCodeElement.checked === true);
+        const unselectedItems = this.model.shownCodeElements.filter(shownCodeElement => shownCodeElement.checked === false);
         if (this.model.addToListName === 'withincodes') {
             this.addRelationsCodeElement(selectedItems, this.model.withinCodeElements);
             this.removeRelationsCodeElement(unselectedItems, this.model.withinCodeElements);
@@ -540,9 +535,9 @@ export class CodeElementEditorController {
                 if (codeElement.koodiUri !== this.codeElementUri) {
                     const ce = {};
                     ce.uri = codeElement.koodiUri;
-                    ce.checked = jQuery.grep(existingActiveSelections, (element) => {
-                        return codeElement.koodiUri === element.uri && codeElement.versio === element.versio && !element.passive;
-                    }).length > 0;
+                    ce.checked = existingActiveSelections
+                        .filter((element) => codeElement.koodiUri === element.uri && codeElement.versio === element.versio && !element.passive)
+                        .length > 0;
                     ce.value = codeElement.koodiArvo;
                     ce.name = getLanguageSpecificValueOrValidValue(codeElement.metadata, 'nimi', 'FI');
                     if (this.selectallcodelements && !ce.checked) {
@@ -747,7 +742,7 @@ export class CodeElementEditorController {
             this.model.shownCodeElements = this.$filter("naturalSort")(this.model.shownCodeElements, this.model.sortOrder, this.model.sortOrderReversed);
         }
         let results = this.model.shownCodeElements;
-        results = this.$filter("filter")(results, () => this.search);
+        results = results.filter(this.search);
         this.cachedPageCount = Math.ceil(results.length / this.model.pageSize);
         results = results.splice(this.model.currentPage * this.model.pageSize, this.model.pageSize);
         this.cachedShownCodeElements = this.model.shownCodeElements;

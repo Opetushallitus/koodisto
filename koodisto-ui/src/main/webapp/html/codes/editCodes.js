@@ -1,7 +1,8 @@
-import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue, SERVICE_NAME} from "../app";
+import {SERVICE_NAME} from "../app.utils";
 import alertIcon from '../../img/alert-icon28x29.png';
 import infoIcon from '../../img/info-icon28x29.png';
 import jQuery from 'jquery';
+import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue} from "../app.utils";
 
 export class CodesEditorModel {
 
@@ -322,9 +323,9 @@ export class CodesEditorController {
             if (error.data === "error.codes.has.no.codeelements") {
                 type = 'info';
             }
-            let message = jQuery.i18n.prop(error.data);
+            let message = jQuery.i18n && jQuery.i18n.prop(error.data);
             if (error.status === 504) {
-                message = jQuery.i18n.prop('error.save.timeout');
+                message = jQuery.i18n && jQuery.i18n.prop('error.save.timeout');
             }
             const alert = {
                 type: type,

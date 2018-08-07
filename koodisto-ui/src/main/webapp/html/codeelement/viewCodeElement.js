@@ -1,4 +1,5 @@
-import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue} from "../app";
+import {getLanguageSpecificValueOrValidValue} from "../app.utils";
+import {getLanguageSpecificValue} from "../app.utils";
 
 export class ViewCodeElementModel {
     constructor($location, $modal, CodeElementByUriAndVersion, CodesByUri, LatestCodeElementVersionsByCodeElementUri) {
@@ -83,7 +84,7 @@ export class ViewCodeElementModel {
             this.CodesByUri.get({
                 codesUri : result.koodisto.koodistoUri
             }, (codes) => {
-                const inLatestCodes = jQuery.inArray(codes.latestKoodistoVersio.versio, this.codeElement.koodisto.koodistoVersios) !== -1;
+                const inLatestCodes = this.codeElement.koodisto.koodistoVersios.indexOf(codes.latestKoodistoVersio.versio) !== -1;
                 this.editState = inLatestCodes ? "" : "disabled";
             });
 

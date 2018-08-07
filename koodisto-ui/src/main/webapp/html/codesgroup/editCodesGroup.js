@@ -1,4 +1,4 @@
-import {getLanguageSpecificValue} from "../app";
+import {getLanguageSpecificValue} from "../app.utils";
 import alertIcon from '../../img/alert-icon28x29.png';
 
 

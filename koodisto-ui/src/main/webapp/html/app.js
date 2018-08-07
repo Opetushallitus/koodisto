@@ -33,7 +33,6 @@ import 'angular-ui-utils/modules/unique/unique';
 import ngIdle from 'ng-idle';
 import 'ng-upload';
 import 'jquery-i18n-properties';
-import naturalSort from 'javascript-natural-sort';
 
 import loading from './loading';
 import localization from './localization';
@@ -46,7 +45,8 @@ import {AuthService, MyRolesModel} from "./auth";
 import {KoodistoTreeController, Treemodel} from "./codesTree";
 import {Auth} from "./directives";
 import {
-    ChildOpener, ModalInstanceCtrl,
+    ChildOpener,
+    ModalInstanceCtrl,
     OrganisaatioOPHTreeModel,
     OrganisaatioTreeController,
     OrganisaatioTreeModel
@@ -61,8 +61,7 @@ import {ViewCodesController, ViewCodesModel} from "./codes/viewCodes";
 import {CodesGroupCreatorController, CodesGroupCreatorModel} from "./codesgroup/createCodesGroup";
 import {CodesGroupEditorController, CodesGroupEditorModel} from "./codesgroup/editCodesGroup";
 import {ViewCodesGroupController, ViewCodesGroupModel} from "./codesgroup/viewCodesGroup";
-
-export const SERVICE_NAME = "APP_KOODISTO";
+import {NaturalSortFilter, SERVICE_URL_BASE} from "./app.utils";
 
 const app = angular.module('koodisto', [
     ngResource,
@@ -78,10 +77,6 @@ const app = angular.module('koodisto', [
     'ui.unique',
 ]);
 
-
-export let SERVICE_URL_BASE;
-export const SESSION_KEEPALIVE_INTERVAL_IN_SECONDS = window.SESSION_KEEPALIVE_INTERVAL_IN_SECONDS || 30;
-export const MAX_SESSION_IDLE_TIME_IN_SECONDS = window.MAX_SESSION_IDLE_TIME_IN_SECONDS || 1800;
 
 app.factory('NoCacheInterceptor', function() {
     return {
@@ -518,45 +513,7 @@ app.factory('SessionPoll', ['$resource', function($resource) {
     });
 }]);
 
-app.filter('naturalSort', function() {
-    return function(arrInput, field, reverse) {
-        var arr = arrInput.sort(function(a, b) {
-            var valueA = field ? a[field] : a;
-            var valueB = field ? b[field] : b;
-            var aIsString = typeof valueA === 'string';
-            var bIsString = typeof valueB === 'string';
-            return naturalSort(aIsString ? valueA.trim().toLowerCase() : valueA, bIsString ? valueB.trim().toLowerCase() : valueB);
-        });
-        return reverse ? arr.reverse() : arr;
-    };
-});
-
-export function getLanguageSpecificValue(fieldArray, fieldName, language) {
-    if (fieldArray) {
-        for (var i = 0; i < fieldArray.length; i++) {
-            if (fieldArray[i].kieli === language) {
-                var result = eval("fieldArray[i]." + fieldName);
-                return result === null ? "" : result;
-            }
-        }
-    }
-    return "";
-}
-
-export function getLanguageSpecificValueOrValidValue(fieldArray, fieldName, language) {
-    var specificValue = getLanguageSpecificValue(fieldArray, fieldName, language);
-
-    if (specificValue === "" && language !== "FI"){
-        specificValue = getLanguageSpecificValue(fieldArray, fieldName, "FI");
-    }
-    if (specificValue === "" && language !== "SV"){
-        specificValue = getLanguageSpecificValue(fieldArray, fieldName, "SV");
-    }
-    if (specificValue === "" && language !== "EN"){
-        specificValue = getLanguageSpecificValue(fieldArray, fieldName, "EN");
-    }
-    return specificValue;
-}
+app.filter('naturalSort', NaturalSortFilter);
 
 // Pagination
 

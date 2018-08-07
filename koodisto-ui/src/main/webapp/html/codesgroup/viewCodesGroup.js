@@ -1,4 +1,4 @@
-import {getLanguageSpecificValueOrValidValue} from "../app";
+import {getLanguageSpecificValueOrValidValue} from "../app.utils";
 
 export class ViewCodesGroupModel {
     constructor($location, $modal, CodesGroupByUri) {
