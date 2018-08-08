@@ -37,7 +37,7 @@ export class ViewCodesModel {
             this.levelsWithCodes = [];
             this.codesUri = codesUri;
             this.codesVersion = codesVersion;
-            this.showversion = null;
+            this.showversion = false;
             this.alerts = [];
             this.format = "JHS_XML";
             this.encoding = "UTF-8";
@@ -164,18 +164,19 @@ export class ViewCodesModel {
     }
 
     getCodeElementVersions() {
-        if (!this.showversion) {
-            var elements = this.codeElements;
+        if (this.showversion) {
+            const elements = this.codeElements;
             this.codeElements = [];
-            var newElementsList = [];
+            const newElementsList = [];
             if (elements) {
                 this.updatedCodeElementsCount = 0;
                 this.searchResultsLength = 0;
-                for (var i = 0; i < elements.length; i++) {
+                for (let i = 0; i < elements.length; i++) {
                     this.getCodeElementVersionsByCodeElementUri(elements[i].koodiUri, elements.length, newElementsList);
                 }
             }
-        } else {
+        }
+        else {
             this.getCodes(this.codesUri, this.codesVersion);
         }
     }

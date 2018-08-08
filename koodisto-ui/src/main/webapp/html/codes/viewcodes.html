@@ -327,7 +327,7 @@
                    ng-model="viewCodes.query"
                    ng-change="viewCodes.filterChangedPageCount()" /> <input
                 id="filter_version" type="checkbox" ng-model="viewCodes.model.showversion"
-                ng-click="viewCodes.model.getCodeElementVersions()" /> <label
+                ng-change="viewCodes.model.getCodeElementVersions()" /> <label
                 for="filter_version">{{'codes.viewpage.codeelements.showversion'
             | i18n}}</label>
         </div>
