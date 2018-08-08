@@ -7,7 +7,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.util.StringUtils;
 
 @Configuration
-@PropertySource("file:///${user.home:''}/oph-configuration/koodisto-ui.properties")
+@PropertySource(value = "file:///${user.home:''}/oph-configuration/koodisto-ui.properties", ignoreResourceNotFound = true)
 public class UrlConfiguration extends OphProperties {
     private Environment environment;
 
