@@ -59,8 +59,6 @@ export class Treemodel {
         if (data) {
             if (data.koodistos) {
                 return "codesgroup_node.html";
-            } else {
-                return "codes_leaf.html";
             }
         }
         return "";
