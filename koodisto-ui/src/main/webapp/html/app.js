@@ -21,7 +21,7 @@ import editCodesgroup from './codesgroup/editcodesgroup.html';
 import sessionTimeout from './partials/sessionTimeout.html';
 import organisaatioSelector from './partials/organisaatioSelector.html';
 
-import 'jquery';
+import 'jquery-i18n-properties';
 import angular from 'angular';
 import ngResource from 'angular-resource';
 import ngRoute from 'angular-route';
@@ -32,7 +32,6 @@ import 'ui-select';
 import 'angular-ui-utils/modules/unique/unique';
 import ngIdle from 'ng-idle';
 import 'ng-upload';
-import 'jquery-i18n-properties';
 
 import loading from './loading';
 import localization from './localization';
@@ -61,7 +60,7 @@ import {ViewCodesController, ViewCodesModel} from "./codes/viewCodes";
 import {CodesGroupCreatorController, CodesGroupCreatorModel} from "./codesgroup/createCodesGroup";
 import {CodesGroupEditorController, CodesGroupEditorModel} from "./codesgroup/editCodesGroup";
 import {ViewCodesGroupController, ViewCodesGroupModel} from "./codesgroup/viewCodesGroup";
-import {NaturalSortFilter, SERVICE_URL_BASE} from "./app.utils";
+import {NaturalSortFilter, koodistoConfig} from "./app.utils";
 
 const app = angular.module('koodisto', [
     ngResource,
@@ -107,7 +106,7 @@ app.config(['$windowProvider', '$routeProvider', '$httpProvider', '$locationProv
     if (window.urlProperties) {
         urls.addOverrides(window.urlProperties);
     }
-    SERVICE_URL_BASE = urls.url("koodisto-service.base");
+    koodistoConfig.SERVICE_URL_BASE = urls.url("koodisto-service.base");
 
     $httpProvider.interceptors.push('NoCacheInterceptor');
     $locationProvider.html5Mode(true);
@@ -179,7 +178,7 @@ app.config(['$windowProvider', '$routeProvider', '$httpProvider', '$locationProv
 
 // Koodistot
 app.factory('RootCodes', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codes", {}, {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codes", {}, {
         get : {
             method : "GET",
             isArray : true,
@@ -189,7 +188,7 @@ app.factory('RootCodes', ['$resource', function($resource) {
 }]);
 
 app.factory('NewCodes', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codes", {}, {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codes", {}, {
         post : {
             method : "POST"
         }
@@ -197,7 +196,7 @@ app.factory('NewCodes', ['$resource', function($resource) {
 }]);
 
 app.factory('DeleteCodes', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codes/delete/:codesUri/:codesVersion", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codes/delete/:codesUri/:codesVersion", {
         codesUri : "@codesUri",
         codesVersion : "@codesVersion"
     }, {
@@ -216,7 +215,7 @@ app.factory('NewCodesGroup', ['$resource', function($resource) {
 }]);
 
 app.factory('DeleteCodesGroup', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codesgroup/delete/:id", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codesgroup/delete/:id", {
         id : "@id"
     }, {
         post : {
@@ -226,7 +225,7 @@ app.factory('DeleteCodesGroup', ['$resource', function($resource) {
 }]);
 
 app.factory('UpdateCodesGroup', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codesgroup", {}, {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codesgroup", {}, {
         put : {
             method : "PUT"
         }
@@ -234,7 +233,7 @@ app.factory('UpdateCodesGroup', ['$resource', function($resource) {
 }]);
 
 app.factory('UpdateCodes', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codes", {}, {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codes", {}, {
         put : {
             method : "PUT"
         }
@@ -242,7 +241,7 @@ app.factory('UpdateCodes', ['$resource', function($resource) {
 }]);
 
 app.factory('SaveCodes', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codes/save", {}, {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codes/save", {}, {
         put : {
             method : "PUT",
             transformResponse: function (data, headersGetter, status) {
@@ -253,7 +252,7 @@ app.factory('SaveCodes', ['$resource', function($resource) {
 }]);
 
 app.factory('CodesByUri', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codes/:codesUri", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codes/:codesUri", {
         codesUri : "@codesUri"
     }, {
         get : {
@@ -263,7 +262,7 @@ app.factory('CodesByUri', ['$resource', function($resource) {
 }]);
 
 app.factory('CodesByUriAndVersion', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codes/:codesUri/:codesVersion", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codes/:codesUri/:codesVersion", {
         codesUri : "@codesUri",
         codesVersion : "@codesVersion"
     }, {
@@ -274,7 +273,7 @@ app.factory('CodesByUriAndVersion', ['$resource', function($resource) {
 }]);
 
 app.factory('CodesGroupByUri', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codesgroup/:id", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codesgroup/:id", {
         id : "@id"
     }, {
         get : {
@@ -284,7 +283,7 @@ app.factory('CodesGroupByUri', ['$resource', function($resource) {
 }]);
 
 app.factory('AllCodes', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codes/all", {}, {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codes/all", {}, {
         get : {
             method : "GET",
             isArray : true
@@ -296,7 +295,7 @@ app.factory('DownloadCodes', function() {
     return function(codesUri, codesVersion, format, encoding) {
         var urlArray = [];
         urlArray.push(
-                SERVICE_URL_BASE + "codes/download",
+            koodistoConfig.SERVICE_URL_BASE + "codes/download",
                 codesUri,
                 codesVersion,
                 format);
@@ -316,7 +315,7 @@ app.factory('MyRoles', ['$resource', function($resource) {
 }]);
 
 app.factory('CodeElementsByCodesUriAndVersion', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/codes/:codesUri/:codesVersion", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codeelement/codes/:codesUri/:codesVersion", {
         codesUri : "@codesUri",
         codesVersion : "@codesVersion"
     }, {
@@ -328,7 +327,7 @@ app.factory('CodeElementsByCodesUriAndVersion', ['$resource', function($resource
 }]);
 
 app.factory('CodeElementByUriAndVersion', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/:codeElementUri/:codeElementVersion", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codeelement/:codeElementUri/:codeElementVersion", {
         codeElementUri : "@codeElementUri",
         codeElementVersion : "@codeElementVersion"
     }, {
@@ -340,7 +339,7 @@ app.factory('CodeElementByUriAndVersion', ['$resource', function($resource) {
 }]);
 
 app.factory('CodeElementByCodeElementUri', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/:codesUri/:codesVersion/:codeElementUri", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codeelement/:codesUri/:codesVersion/:codeElementUri", {
         codesUri : "@codesUri",
         codesVersion : "@codesVersion",
         codeElementUri : "@codeElementUri"
@@ -353,7 +352,7 @@ app.factory('CodeElementByCodeElementUri', ['$resource', function($resource) {
 }]);
 
 app.factory('CodeElementVersionsByCodeElementUri', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/:codeElementUri", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codeelement/:codeElementUri", {
         codeElementUri : "@codeElementUri"
     }, {
         get : {
@@ -364,7 +363,7 @@ app.factory('CodeElementVersionsByCodeElementUri', ['$resource', function($resou
 }]);
 
 app.factory('LatestCodeElementVersionsByCodeElementUri', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/latest/:codeElementUri", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codeelement/latest/:codeElementUri", {
         codeElementUri : "@codeElementUri"
     }, {
         get : {
@@ -375,7 +374,7 @@ app.factory('LatestCodeElementVersionsByCodeElementUri', ['$resource', function(
 }]);
 
 app.factory('NewCodeElement', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/:codesUri", {}, {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codeelement/:codesUri", {}, {
         post : {
             method : "POST"
         }
@@ -383,7 +382,7 @@ app.factory('NewCodeElement', ['$resource', function($resource) {
 }]);
 
 app.factory('DeleteCodeElement', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/delete/:codeElementUri/:codeElementVersion", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codeelement/delete/:codeElementUri/:codeElementVersion", {
         codeElementUri : "@codeElementUri",
         codeElementVersion : "@codeElementVersion"
     }, {
@@ -394,7 +393,7 @@ app.factory('DeleteCodeElement', ['$resource', function($resource) {
 }]);
 
 app.factory('RemoveRelationCodeElement', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/removerelation/:codeElementUri/:codeElementUriToRemove/:relationType", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codeelement/removerelation/:codeElementUri/:codeElementUriToRemove/:relationType", {
         codeElementUri : "@codeElementUri",
         codeElementUriToRemove : "@codeElementUriToRemove",
         relationType : "@relationType"
@@ -406,7 +405,7 @@ app.factory('RemoveRelationCodeElement', ['$resource', function($resource) {
 }]);
 
 app.factory('MassRemoveRelationCodeElements', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/removerelations", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codeelement/removerelations", {
     }, {
         remove : {
             method : "POST"
@@ -415,7 +414,7 @@ app.factory('MassRemoveRelationCodeElements', ['$resource', function($resource) 
 }]);
 
 app.factory('AddRelationCodeElement', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/addrelation/:codeElementUri/:codeElementUriToAdd/:relationType", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codeelement/addrelation/:codeElementUri/:codeElementUriToAdd/:relationType", {
         codeElementUri : "@codeElementUri",
         codeElementUriToAdd : "@codeElementUriToAdd",
         relationType : "@relationType"
@@ -427,7 +426,7 @@ app.factory('AddRelationCodeElement', ['$resource', function($resource) {
 }]);
 
 app.factory('MassAddRelationCodeElements', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/addrelations", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codeelement/addrelations", {
 
     }, {
         put : {
@@ -437,7 +436,7 @@ app.factory('MassAddRelationCodeElements', ['$resource', function($resource) {
 }]);
 
 app.factory('AddRelationCodes', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codes/addrelation/:codesUri/:codesUriToAdd/:relationType", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codes/addrelation/:codesUri/:codesUriToAdd/:relationType", {
         codesUri : "@codesUri",
         codesUriToAdd : "@codesUriToAdd",
         relationType : "@relationType"
@@ -449,7 +448,7 @@ app.factory('AddRelationCodes', ['$resource', function($resource) {
 }]);
 
 app.factory('RemoveRelationCodes', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codes/removerelation/:codesUri/:codesUriToRemove/:relationType", {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codes/removerelation/:codesUri/:codesUriToRemove/:relationType", {
         codesUri : "@codesUri",
         codesUriToRemove : "@codesUriToRemove",
         relationType : "@relationType"
@@ -461,7 +460,7 @@ app.factory('RemoveRelationCodes', ['$resource', function($resource) {
 }]);
 
 app.factory('SaveCodeElement', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement/save", {}, {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codeelement/save", {}, {
         put : {
             method : "PUT",
             transformResponse: function (data, headersGetter, status) {
@@ -472,7 +471,7 @@ app.factory('SaveCodeElement', ['$resource', function($resource) {
 }]);
 
 app.factory('UpdateCodeElement', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "codeelement", {}, {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "codeelement", {}, {
         put : {
             method : "PUT"
         }
@@ -508,7 +507,7 @@ app.factory('OrganizationByOid', ['$resource', function($resource) {
 }]);
 
 app.factory('SessionPoll', ['$resource', function($resource) {
-    return $resource(SERVICE_URL_BASE + "session/maxinactiveinterval", {}, {
+    return $resource(koodistoConfig.SERVICE_URL_BASE + "session/maxinactiveinterval", {}, {
         get: {method:   "GET"}
     });
 }]);

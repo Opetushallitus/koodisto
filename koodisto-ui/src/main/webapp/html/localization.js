@@ -1,7 +1,7 @@
 // Käytössä vain suomenkieliset "käännökset"
-import angular from "angular";
-import jQuery from 'jquery';
+import angular from 'angular';
 import {urls} from 'oph-urls-js';
+import jQuery from 'jquery';
 
 export default angular.module('localization', [])
     .filter('i18n', [ () => {
@@ -9,8 +9,7 @@ export default angular.module('localization', [])
             name : 'messages',
             path : urls.url('koodisto-service.i18n'),
             mode : 'map',
-            language : 'fi_FI',
-            callback : () => { }
+            language : 'fi_FI'
         });
 
         return (text) => {

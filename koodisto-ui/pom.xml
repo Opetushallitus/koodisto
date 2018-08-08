@@ -42,7 +42,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>webpack build</id>
+                        <id>webpack test</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>

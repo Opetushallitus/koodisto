@@ -1,4 +1,4 @@
-import {SERVICE_NAME} from "../app.utils";
+import {koodistoConfig} from "../app.utils";
 import alertIcon from '../../img/alert-icon28x29.png';
 import jQuery from 'jquery';
 import moment from "moment";
@@ -178,7 +178,7 @@ export class CodeElementEditorModel {
     getAllCodes() {
         this.RootCodes.get({}, (result) => {
             this.allCodes = result;
-            this.authService.updateOph(SERVICE_NAME)
+            this.authService.updateOph(koodistoConfig.SERVICE_NAME)
                 .then(
                     () => { },
                     this.filterCodes

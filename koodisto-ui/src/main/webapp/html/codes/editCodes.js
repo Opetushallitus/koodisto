@@ -1,4 +1,4 @@
-import {SERVICE_NAME} from "../app.utils";
+import {koodistoConfig} from "../app.utils";
 import alertIcon from '../../img/alert-icon28x29.png';
 import infoIcon from '../../img/info-icon28x29.png';
 import jQuery from 'jquery';
@@ -181,7 +181,7 @@ export class CodesEditorModel {
             this.allCodes = result;
             this.getPreferredNames();
             // OVT-7496 skip codes filtering for OPH user
-            this.authService.updateOph(SERVICE_NAME).then(() => {}, this.filterCodes);
+            this.authService.updateOph(koodistoConfig.SERVICE_NAME).then(() => {}, this.filterCodes);
         });
     }
 

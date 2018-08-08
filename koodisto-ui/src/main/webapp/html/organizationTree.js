@@ -1,7 +1,7 @@
 "use strict";
 
 import {OPH_ORG} from "./auth";
-import {SERVICE_NAME} from "./app.utils";
+import {koodistoConfig} from "./app.utils";
 
 export class ChildOpener {
     constructor() {
@@ -165,13 +165,13 @@ export class OrganisaatioTreeController {
         this.organisaatioOPHTreeModel = organisaatioOPHTreeModel;
 
         if (!this.orgTree) {
-            authService.updateOph(SERVICE_NAME).then(() => {
+            authService.updateOph(koodistoConfig.SERVICE_NAME).then(() => {
                 this.orgTree = organisaatioOPHTreeModel;
             }, () => {
                 this.orgTree = OrganisaatioTreeModel;
             });
 
-            authService.getOrganizations(SERVICE_NAME).then((organizations) => {
+            authService.getOrganizations(koodistoConfig.SERVICE_NAME).then((organizations) => {
                 this.orgTree.init(organizations);
             });
 

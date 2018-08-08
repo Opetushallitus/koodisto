@@ -1,4 +1,4 @@
-import {SERVICE_URL_BASE} from "../app.utils";
+import {koodistoConfig} from "../app.utils";
 import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue} from "../app.utils";
 
 export class ViewCodesModel {
@@ -253,7 +253,7 @@ export class ViewCodesController {
 
         this.model = viewCodesModel;
         this.codesUri = $routeParams.codesUri;
-        this.uploadUrl = SERVICE_URL_BASE + "codes" + "/upload/" + this.codesUri;
+        this.uploadUrl = koodistoConfig.SERVICE_URL_BASE + "codes" + "/upload/" + this.codesUri;
         this.codesVersion = $routeParams.codesVersion;
         this.model.forceRefresh = $routeParams.forceRefresh === true;
         this.identity = (value) => value;

@@ -1,6 +1,5 @@
 import angular from 'angular';
-import {MAX_SESSION_IDLE_TIME_IN_SECONDS} from "./app.utils";
-import {SERVICE_URL_BASE, SESSION_KEEPALIVE_INTERVAL_IN_SECONDS} from "./app.utils";
+import {koodistoConfig} from "./app.utils";
 
 export class Idler {
     constructor() {
@@ -66,7 +65,7 @@ export class SessionExpiresCtrl {
 
     }
     timeoutMessage() {
-        const duration = Math.floor(MAX_SESSION_IDLE_TIME_IN_SECONDS / 60);
+        const duration = Math.floor(koodistoConfig.MAX_SESSION_IDLE_TIME_IN_SECONDS / 60);
         return jQuery.i18n.prop('session.expired.text1.part1') + " " + duration +  " " + jQuery.i18n.prop('session.expired.text1.part2');
     }
 
@@ -118,10 +117,10 @@ export class EventsCtrl {
 export const idleConfig = (IdleProvider, KeepaliveProvider) => {
     "ngInject";
     const warningDuration = 300;
-    IdleProvider.idle(MAX_SESSION_IDLE_TIME_IN_SECONDS - warningDuration);
+    IdleProvider.idle(koodistoConfig.MAX_SESSION_IDLE_TIME_IN_SECONDS - warningDuration);
     IdleProvider.timeout(warningDuration);
-    KeepaliveProvider.interval(SESSION_KEEPALIVE_INTERVAL_IN_SECONDS);
-    KeepaliveProvider.http(SERVICE_URL_BASE + "session/maxinactiveinterval");
+    KeepaliveProvider.interval(koodistoConfig.SESSION_KEEPALIVE_INTERVAL_IN_SECONDS);
+    KeepaliveProvider.http(koodistoConfig.SERVICE_URL_BASE + "session/maxinactiveinterval");
 };
 
 export const idleRun = (Idle) => {

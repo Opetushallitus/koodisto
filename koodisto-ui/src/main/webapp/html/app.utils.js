@@ -1,10 +1,12 @@
 // Initial values that might be overriden when /configurations/* are loaded.
 import naturalSort from "javascript-natural-sort";
 
-export const SERVICE_NAME = "APP_KOODISTO";
-export let SERVICE_URL_BASE = '/';
-export const SESSION_KEEPALIVE_INTERVAL_IN_SECONDS = 30;
-export const MAX_SESSION_IDLE_TIME_IN_SECONDS = 1800;
+export const koodistoConfig = {
+    SERVICE_NAME: "APP_KOODISTO",
+    SERVICE_URL_BASE: '/',
+    SESSION_KEEPALIVE_INTERVAL_IN_SECONDS: 30,
+    MAX_SESSION_IDLE_TIME_IN_SECONDS: 1800,
+};
 
 export const getLanguageSpecificValue = (fieldArray, fieldName, language) => {
     if (fieldArray) {
