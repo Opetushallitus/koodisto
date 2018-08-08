@@ -16,9 +16,8 @@ public class ConfigControllerTest {
     private ConfigController controller;
 
     @Test
-    public void controllerShouldSetupJSVariables() throws Exception {
-        String result = controller.index();
-        assertTrue(result.contains("SESSION_KEEPALIVE_INTERVAL_IN_SECONDS ="));
-        assertTrue(result.contains("MAX_SESSION_IDLE_TIME_IN_SECONDS ="));
+    public void controllerShouldSetupJSVariables() {
+        String result = controller.frontProperties();
+        assertTrue(result.contains("window.urlProperties="));
     }
 }
