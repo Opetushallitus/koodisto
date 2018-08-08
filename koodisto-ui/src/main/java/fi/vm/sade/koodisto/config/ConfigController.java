@@ -10,31 +10,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class ConfigController {
 
+    private final UrlConfiguration urlProperties;
+
     @Autowired
-    private UrlConfiguration urlProperties;
-
-    @Value("${auth.mode:}")
-    private String authMode;
-    
-    @Value("${koodisto-ui.session-keepalive-interval.seconds}")
-    private Integer sessionKeepAliveIntervalInSeconds;
-    
-    @Value("${koodisto-ui.session-max-idle-time.seconds}")
-    private Integer maxSessionIdleTimeInSeconds;
-
-    @RequestMapping(value = "/configuration.js", method = RequestMethod.GET, produces = "text/javascript")
-    @ResponseBody
-    public String index() {
-        StringBuilder b = new StringBuilder();
-        append(b, "window.SESSION_KEEPALIVE_INTERVAL_IN_SECONDS", Integer.toString(sessionKeepAliveIntervalInSeconds));
-        append(b, "window.MAX_SESSION_IDLE_TIME_IN_SECONDS", Integer.toString(maxSessionIdleTimeInSeconds));
-        if (!authMode.isEmpty()) {
-            append(b, "AUTH_MODE", authMode);
-
-        }
-        return b.toString();
+    public ConfigController(UrlConfiguration urlProperties) {
+        this.urlProperties = urlProperties;
     }
 
+    /**
+     * Used by oph-urls-js.js
+     * @return front url properties as js object set to window
+     */
     @RequestMapping(value = "/frontProperties.js", method = RequestMethod.GET, produces = "text/javascript")
     @ResponseBody
     public String frontProperties() {
