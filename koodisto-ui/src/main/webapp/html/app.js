@@ -31,7 +31,7 @@ import uiBootstrap from 'angular-ui-bootstrap';
 import 'ui-select';
 import 'angular-ui-utils/modules/unique/unique';
 import ngIdle from 'ng-idle';
-import 'ng-upload';
+import 'ngUpload';
 
 import loading from './loading';
 import localization from './localization';
