@@ -383,9 +383,9 @@ public class CodesResource {
             notes = "",
             response = Response.class)
     public Response uploadFile(
-            @ApiParam(value = "Tiedoston koodaus") @Multipart("fileEncoding") String fileEncoding,
-            @ApiParam(value = "Tiedostotyyppi") @Multipart("fileFormat") String fileFormat,
             @ApiParam(value = "Tuotava tiedosto") @Multipart("uploadedFile") Attachment fileInputStream,
+            @ApiParam(value = "Tiedostotyyppi") @Multipart("fileFormat") String fileFormat,
+            @ApiParam(value = "Tiedoston koodaus") @Multipart("fileEncoding") String fileEncoding,
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri) {
         try {
             String[] errors = { "file", "fileformat", "codesuri" };
