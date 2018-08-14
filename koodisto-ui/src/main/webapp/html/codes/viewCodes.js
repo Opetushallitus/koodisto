@@ -497,7 +497,7 @@ export class ViewCodesController {
             this.model.codeElements = this.$filter("naturalSort")(this.model.codeElements, this.model.sortOrder, this.model.sortOrderReversed);
         }
         let results = this.model.codeElements;
-        results = this.$filter("filter")(results, () => this.search);
+        results = results.filter((item) => this.search(item));
         results = results.splice(this.model.currentPage * this.model.pageSize, this.model.pageSize);
         return results;
     };
