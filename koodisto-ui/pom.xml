@@ -76,6 +76,10 @@
                             <directory>src/main/webapp/i18n</directory>
                             <targetPath>i18n</targetPath>
                         </resource>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <include>*.html</include>
+                        </resource>
                     </webResources>
                     <warSourceIncludes>**/WEB-INF/*,**/webapp/META-INF/*,**/webapp/index.html</warSourceIncludes>
                 </configuration>
