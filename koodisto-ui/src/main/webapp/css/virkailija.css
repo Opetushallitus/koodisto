@@ -453,3 +453,8 @@ input[type="radio"] {
     padding:10px;
     border: 1px solid #dddddd;
 }
+
+/* Fix firefox input type=file button position */
+.form-control.firefox-input-type-file-fix {
+    height: auto;
+}
