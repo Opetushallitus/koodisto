@@ -742,7 +742,7 @@ export class CodeElementEditorController {
             this.model.shownCodeElements = this.$filter("naturalSort")(this.model.shownCodeElements, this.model.sortOrder, this.model.sortOrderReversed);
         }
         let results = this.model.shownCodeElements;
-        results = results.filter(this.search);
+        results = results.filter((item) => this.search(item));
         this.cachedPageCount = Math.ceil(results.length / this.model.pageSize);
         results = results.splice(this.model.currentPage * this.model.pageSize, this.model.pageSize);
         this.cachedShownCodeElements = this.model.shownCodeElements;
