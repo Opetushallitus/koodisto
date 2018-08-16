@@ -23,3 +23,18 @@ Projektin juuressa `mvn clean install`
 /servers `mvn jetty:run`
 
 Projektin juuressa `npm start`
+
+### Selain
+UI:ssa tehdään kyselyitä eri domaineihin joten selaimesta pitää poistaa käytöstä jotain suojausominaisuuksia
+
+Sulje kaikki chrome instanssit ennen seuraavan ajamista.
+
+    Linux $ google-chrome --disable-web-security
+
+    Windows chrome.exe --user-data-dir="C:/Chrome dev session" --disable-web-security
+
+    OSX $ open -a Google\ Chrome --args --disable-web-security --user-data-dir
+
+Tämän jälkeen avaa sessio haluttuihin palveluihin kirjautumalla käytettävään testiympäristöön.
+
+**Huom. ei turvallinen selailuun kehityksen aikana! Käytä tällöin rinnalla eri selainta.**
