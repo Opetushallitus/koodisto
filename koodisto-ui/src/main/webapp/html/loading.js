@@ -15,32 +15,29 @@ class LoadingService {
 
 mod.service('loadingService', LoadingService);
 
-mod.factory('onStartInterceptor', ['loadingService', (loadingService) => {
-    return (data, headersGetter) => {
-        loadingService.requestCount++;
-        return data;
-    };
-}]);
-
-mod.factory('onCompleteInterceptor', ['loadingService', '$q', (loadingService, $q) => {
+mod.factory('loadingInterceptor', ['loadingService', '$q', (loadingService, $q) => {
     return {
+        request: (config) => {
+            loadingService.requestCount++;
+            return config;
+        },
+        requestError: (rejection) => {
+            loadingService.requestCount--;
+            return $q.reject(rejection);
+        },
         response: (response) => {
             loadingService.requestCount--;
             return response;
         },
-        responseError: (response) => {
+        responseError: (rejection) => {
             loadingService.requestCount--;
-            return $q.reject(response);
+            return $q.reject(rejection);
         },
     };
 }]);
 
 mod.config(['$httpProvider', ($httpProvider) => {
-    $httpProvider.interceptors.push('onCompleteInterceptor');
-}]);
-
-mod.run(['$http', 'onStartInterceptor', ($http, onStartInterceptor) => {
-    $http.defaults.transformRequest.push(onStartInterceptor);
+    $httpProvider.interceptors.push('loadingInterceptor');
 }]);
 
 class LoadingCtrl {
