@@ -23,6 +23,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.Arrays;
@@ -235,14 +236,14 @@ public class KoodistoJsonRESTServiceTest {
         }
     }
 
-    @Test(expected = KoodiNotFoundException.class)
-    public void testGetKoodiByNonExistingUri() throws Throwable {
+    @Test
+    public void testGetKoodiByNonExistingUri() {
         try {
             final String koodistoUri = "http://koodisto17";
             final String koodiUri = "ei-ole-olemassa";
             koodistoJsonRESTService.getKoodiByUri(koodistoUri, koodiUri, null);
-        } catch (RuntimeException e) {
-            throw e.getCause();
+        } catch (Exception e) {
+            assertEquals(404, ((WebApplicationException)e.getCause()).getResponse().getStatus());
         }
     }
 
