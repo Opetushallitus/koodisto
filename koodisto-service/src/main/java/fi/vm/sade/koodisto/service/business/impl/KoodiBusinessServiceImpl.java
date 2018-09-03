@@ -1012,7 +1012,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         List<KoodiVersioWithKoodistoItem> result = searchKoodis(searchData);
         if (result.size() < 1) {
-            logger.error("No koodi found with URI " + koodiUri + " in koodisto with URI " + koodistoUri);
+            logger.warn("No koodi found with URI " + koodiUri + " in koodisto with URI " + koodistoUri);
             throw new KoodiNotFoundException();
         }
 
@@ -1029,7 +1029,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         List<KoodiVersioWithKoodistoItem> result = searchKoodis(searchData);
         if (result.size() < 1) {
-            logger.error("No koodi found with URI " + koodiUri + " in koodisto with URI " + koodistoUri + ", versio " + koodistoVersio);
+            logger.warn("No koodi found with URI " + koodiUri + " in koodisto with URI " + koodistoUri + ", versio " + koodistoVersio);
             throw new KoodiNotFoundException();
         }
 

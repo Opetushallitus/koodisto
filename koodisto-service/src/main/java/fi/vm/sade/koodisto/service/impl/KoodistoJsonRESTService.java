@@ -10,15 +10,9 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Properties;
 
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -188,10 +182,14 @@ public class KoodistoJsonRESTService {
             @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
             @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
         KoodiVersioWithKoodistoItem koodi;
-        if (koodistoVersio == null) {
-            koodi = koodiBusinessService.getKoodiByKoodisto(koodistoUri, koodiUri);
-        } else {
-            koodi = koodiBusinessService.getKoodiByKoodistoVersio(koodistoUri, koodistoVersio, koodiUri);
+        try {
+            if (koodistoVersio == null) {
+                koodi = koodiBusinessService.getKoodiByKoodisto(koodistoUri, koodiUri);
+            } else {
+                koodi = koodiBusinessService.getKoodiByKoodistoVersio(koodistoUri, koodistoVersio, koodiUri);
+            }
+        } catch (KoodiNotFoundException notfound) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
         return conversionService.convert(koodi, KoodiDto.class);

@@ -13,6 +13,7 @@ import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
@@ -102,9 +103,9 @@ public interface KoodiBusinessService {
     List<KoodiVersioWithKoodistoItem> getKoodisByKoodistoVersioWithKoodiArvo(String koodistoUri,
                                                                              Integer koodistoVersio, String koodiArvo);
 
-    KoodiVersioWithKoodistoItem getKoodiByKoodisto(String koodistoUri, String koodiUri);
+    KoodiVersioWithKoodistoItem getKoodiByKoodisto(String koodistoUri, String koodiUri) throws KoodiNotFoundException;
 
-    KoodiVersioWithKoodistoItem getKoodiByKoodistoVersio(String koodistoUri, Integer koodistoVersio, String koodiUri);
+    KoodiVersioWithKoodistoItem getKoodiByKoodistoVersio(String koodistoUri, Integer koodistoVersio, String koodiUri) throws KoodiNotFoundException;
 
     List<KoodiVersioWithKoodistoItem> listByRelation(String koodiUri, boolean child, SuhteenTyyppi suhteenTyyppi);
 

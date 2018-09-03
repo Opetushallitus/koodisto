@@ -2,14 +2,12 @@ package fi.vm.sade.koodisto.service.impl;
 
 import java.util.List;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBElement;
 
+import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -146,10 +144,14 @@ public class KoodistoRESTService {
             @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
             @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
         KoodiVersioWithKoodistoItem koodi;
-        if (koodistoVersio == null) {
-            koodi = koodiBusinessService.getKoodiByKoodisto(koodistoUri, koodiUri);
-        } else {
-            koodi = koodiBusinessService.getKoodiByKoodistoVersio(koodistoUri, koodistoVersio, koodiUri);
+        try {
+            if (koodistoVersio == null) {
+                koodi = koodiBusinessService.getKoodiByKoodisto(koodistoUri, koodiUri);
+            } else {
+                koodi = koodiBusinessService.getKoodiByKoodistoVersio(koodistoUri, koodistoVersio, koodiUri);
+            }
+        } catch (KoodiNotFoundException notfound) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
         return new ObjectFactory().createKoodi(conversionService.convert(koodi, KoodiType.class));
