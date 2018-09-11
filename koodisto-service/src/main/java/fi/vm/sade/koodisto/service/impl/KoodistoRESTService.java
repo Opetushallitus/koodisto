@@ -144,14 +144,10 @@ public class KoodistoRESTService {
             @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
             @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
         KoodiVersioWithKoodistoItem koodi;
-        try {
-            if (koodistoVersio == null) {
-                koodi = koodiBusinessService.getKoodiByKoodisto(koodistoUri, koodiUri);
-            } else {
-                koodi = koodiBusinessService.getKoodiByKoodistoVersio(koodistoUri, koodistoVersio, koodiUri);
-            }
-        } catch (KoodiNotFoundException notfound) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        if (koodistoVersio == null) {
+            koodi = koodiBusinessService.getKoodiByKoodisto(koodistoUri, koodiUri);
+        } else {
+            koodi = koodiBusinessService.getKoodiByKoodistoVersio(koodistoUri, koodistoVersio, koodiUri);
         }
 
         return new ObjectFactory().createKoodi(conversionService.convert(koodi, KoodiType.class));

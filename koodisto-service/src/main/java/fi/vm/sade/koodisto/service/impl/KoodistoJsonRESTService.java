@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import fi.vm.sade.koodisto.service.business.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -182,14 +183,10 @@ public class KoodistoJsonRESTService {
             @ApiParam(value = "Koodin URI") @PathParam(KOODI_URI) String koodiUri,
             @ApiParam(value = "Koodiston versio") @QueryParam(KOODISTO_VERSIO) Integer koodistoVersio) {
         KoodiVersioWithKoodistoItem koodi;
-        try {
-            if (koodistoVersio == null) {
-                koodi = koodiBusinessService.getKoodiByKoodisto(koodistoUri, koodiUri);
-            } else {
-                koodi = koodiBusinessService.getKoodiByKoodistoVersio(koodistoUri, koodistoVersio, koodiUri);
-            }
-        } catch (KoodiNotFoundException notfound) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        if (koodistoVersio == null) {
+            koodi = koodiBusinessService.getKoodiByKoodisto(koodistoUri, koodiUri);
+        } else {
+            koodi = koodiBusinessService.getKoodiByKoodistoVersio(koodistoUri, koodistoVersio, koodiUri);
         }
 
         return conversionService.convert(koodi, KoodiDto.class);

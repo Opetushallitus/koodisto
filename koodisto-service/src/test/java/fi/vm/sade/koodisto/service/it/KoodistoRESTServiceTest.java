@@ -228,14 +228,14 @@ public class KoodistoRESTServiceTest {
         }
     }
 
-    @Test
+    @Test(expected = KoodiNotFoundException.class)
     public void testGetKoodiByNonExistingUri() throws Throwable {
         try {
             final String koodistoUri = "http://koodisto17";
             final String koodiUri = "ei-ole-olemassa";
             koodistoRESTService.getKoodiByUri(koodistoUri, koodiUri, null);
         } catch (Exception e) {
-            assertEquals(404, ((WebApplicationException)e.getCause()).getResponse().getStatus());
+            throw e.getCause();
         }
     }
 

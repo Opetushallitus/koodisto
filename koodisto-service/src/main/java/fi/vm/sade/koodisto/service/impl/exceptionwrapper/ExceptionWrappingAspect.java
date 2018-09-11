@@ -3,21 +3,32 @@ package fi.vm.sade.koodisto.service.impl.exceptionwrapper;
 import fi.vm.sade.generic.service.exception.AbstractFaultWrapper;
 import fi.vm.sade.generic.service.exception.SadeBusinessException;
 import fi.vm.sade.koodisto.service.GenericFault;
+import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
+import fi.vm.sade.koodisto.service.business.exception.NotFoundException;
 import fi.vm.sade.koodisto.service.types.common.FieldErrorType;
 import fi.vm.sade.koodisto.service.types.common.GenericFaultInfoType;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @Aspect
-public class ExceptionWrappingAspect extends AbstractFaultWrapper<GenericFault> {
+public class ExceptionWrappingAspect {
+
+    protected static final Logger LOGGER = LoggerFactory.getLogger(ExceptionWrappingAspect.class);
 
     public ExceptionWrappingAspect() {
-        super(GenericFault.class);
     }
 
     /**
@@ -37,10 +48,28 @@ public class ExceptionWrappingAspect extends AbstractFaultWrapper<GenericFault> 
      */
     @Around("serviceMethod()")
     public Object wrapException(ProceedingJoinPoint pjp) throws GenericFault {
-        return super.wrapException(pjp);
+
+        try {
+            return pjp.proceed();
+        } catch (Throwable ex) {
+
+            LOGGER.warn("Exception wrapped.", ex);
+
+            MethodSignature sigu = (MethodSignature) pjp.getSignature();
+            Class[] types = sigu.getExceptionTypes();
+            Set<Class> classSet = new HashSet<Class>(Arrays.asList(types));
+
+            if (classSet.contains(GenericFault.class)) {
+                throw createFaultInstance(ex);
+            } else if(ex instanceof KoodiNotFoundException) {
+                throw new WebApplicationException(ex, Response.Status.NOT_FOUND);
+            } else {
+                throw new RuntimeException("Unhandled error: " + ex.getClass() + " - " + ex.getMessage(), ex);
+            }
+        }
+
     }
 
-    @Override
     protected GenericFault createFaultInstance(Throwable ex) {
         GenericFaultInfoType info = new GenericFaultInfoType();
         String message = ex.getMessage();

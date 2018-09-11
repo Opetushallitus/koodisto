@@ -236,14 +236,14 @@ public class KoodistoJsonRESTServiceTest {
         }
     }
 
-    @Test
-    public void testGetKoodiByNonExistingUri() {
+    @Test(expected = KoodiNotFoundException.class)
+    public void testGetKoodiByNonExistingUri() throws Throwable {
         try {
             final String koodistoUri = "http://koodisto17";
             final String koodiUri = "ei-ole-olemassa";
             koodistoJsonRESTService.getKoodiByUri(koodistoUri, koodiUri, null);
-        } catch (Exception e) {
-            assertEquals(404, ((WebApplicationException)e.getCause()).getResponse().getStatus());
+        } catch (RuntimeException e) {
+            throw e.getCause();
         }
     }
 
