@@ -20,6 +20,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.ws.rs.WebApplicationException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -233,7 +234,7 @@ public class KoodistoRESTServiceTest {
             final String koodistoUri = "http://koodisto17";
             final String koodiUri = "ei-ole-olemassa";
             koodistoRESTService.getKoodiByUri(koodistoUri, koodiUri, null);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             throw e.getCause();
         }
     }
