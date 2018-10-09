@@ -1,48 +1,55 @@
-var mod = angular.module('loading', []);
+"use strict";
 
-mod.factory('loadingService', function () {
-    var service = {
-        requestCount: 0,
-        isLoading: function () {
-            return service.requestCount > 0;
-        }
-    };
-    return service;
-});
+import angular from 'angular';
 
-mod.factory('onStartInterceptor', function (loadingService) {
-    return function (data, headersGetter) {
-        loadingService.requestCount++;
-        return data;
-    };
-});
+const mod = angular.module('loading', []);
 
-mod.factory('onCompleteInterceptor', function (loadingService, $q) {
-    return function (promise) {
-        var decrementRequestCountSuccess = function (response) {
+
+class LoadingService {
+    constructor() {
+        "ngInject";
+        this.requestCount = 0;
+        this.isLoading = () => this.requestCount > 0;
+    }
+}
+
+mod.service('loadingService', LoadingService);
+
+mod.factory('loadingInterceptor', ['loadingService', '$q', (loadingService, $q) => {
+    return {
+        request: (config) => {
+            loadingService.requestCount++;
+            return config;
+        },
+        requestError: (rejection) => {
+            loadingService.requestCount--;
+            return $q.reject(rejection);
+        },
+        response: (response) => {
             loadingService.requestCount--;
             return response;
-        };
-        var decrementRequestCountError = function (response) {
+        },
+        responseError: (rejection) => {
             loadingService.requestCount--;
-            return $q.reject(response);
-        };
-        return promise.then(decrementRequestCountSuccess, decrementRequestCountError);
+            return $q.reject(rejection);
+        },
     };
-});
+}]);
 
-mod.config(function ($httpProvider) {
-    $httpProvider.responseInterceptors.push('onCompleteInterceptor');
-});
+mod.config(['$httpProvider', ($httpProvider) => {
+    $httpProvider.interceptors.push('loadingInterceptor');
+}]);
 
-mod.run(function ($http, onStartInterceptor) {
-    $http.defaults.transformRequest.push(onStartInterceptor);
-});
+class LoadingCtrl {
+    constructor($scope, loadingService) {
+        "ngInject";
+        this.isLoading = loadingService.isLoading();
+        $scope.$watch(() => loadingService.isLoading(), (value) => {
+            this.isLoading = value;
+        });
+    }
+}
 
-mod.controller('LoadingCtrl', function ($scope, loadingService) {
-    $scope.$watch(function () {
-        return loadingService.isLoading();
-    }, function (value) {
-        $scope.loading = value;
-    });
-});
+mod.controller('LoadingCtrl', LoadingCtrl);
+
+export default mod;

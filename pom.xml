@@ -111,12 +111,6 @@ buildTtime=${maven.build.timestamp}]]>
         <artifactId>generic-common</artifactId>
         <version>${generic.version}</version>
       </dependency>
-      <dependency>
-        <groupId>fi.vm.sade.generic</groupId>
-        <artifactId>webapp-portal-decorator</artifactId>
-        <version>${generic.version}</version>
-        <type>war</type>
-      </dependency>
 
       <dependency>
         <groupId>org.springframework</groupId>
@@ -479,8 +473,6 @@ buildTtime=${maven.build.timestamp}]]>
 
     <jackson.2.version>2.8.8</jackson.2.version>
 
-    <jasmine-maven-plugin.version>1.3.1.3</jasmine-maven-plugin.version>
-
     <jaxb2-basics-runtime.version>${jaxb2_commons.version}</jaxb2-basics-runtime.version>
     <jaxb2-basics.version>${jaxb2_commons.version}</jaxb2-basics.version>
     <jaxb2_commons.version>0.6.4</jaxb2_commons.version>
@@ -490,8 +482,6 @@ buildTtime=${maven.build.timestamp}]]>
     <jta.version>1.1</jta.version>
     <maven-apt-plugin.version>1.0</maven-apt-plugin.version>
     <mockito.version>1.9.0</mockito.version>
-    <phantomjs-maven-plugin.version>0.3</phantomjs-maven-plugin.version>
-    <phantomjs.version>1.9.2</phantomjs.version>
     <poi.version>3.9</poi.version>
 
     <servlet.version>3.0.1</servlet.version>

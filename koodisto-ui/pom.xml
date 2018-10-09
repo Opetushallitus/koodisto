@@ -14,64 +14,90 @@
         <finalName>${project.artifactId}</finalName>
 
         <plugins>
-           
             <plugin>
-                <groupId>com.github.klieber</groupId>
-                <artifactId>phantomjs-maven-plugin</artifactId>
-                <version>${phantomjs-maven-plugin.version}</version>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.6</version>
+                <configuration>
+                    <workingDirectory>${project.basedir}/..</workingDirectory>
+                </configuration>
                 <executions>
                     <execution>
+                        <id>install node and npm</id>
                         <goals>
-                            <goal>install</goal>
+                            <goal>install-node-and-npm</goal>
                         </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <nodeVersion>v8.11.3</nodeVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>webpack test</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>run test</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>webpack build</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>run build</arguments>
+                        </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <version>${phantomjs.version}</version>
+                    <webResources>
+                        <resource>
+                            <directory>build</directory>
+                            <targetPath>html</targetPath>
+                        </resource>
+                        <resource>
+                            <directory>src/main/webapp/i18n</directory>
+                            <targetPath>i18n</targetPath>
+                        </resource>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <include>*.html</include>
+                        </resource>
+                    </webResources>
+                    <warSourceIncludes>**/WEB-INF/*,**/webapp/META-INF/*,**/webapp/index.html</warSourceIncludes>
                 </configuration>
             </plugin>
-            
+            <!-- Cleans generated files not located in /target forlder -->
             <plugin>
-                <groupId>com.github.searls</groupId>
-                <artifactId>jasmine-maven-plugin</artifactId>
-                <version>${jasmine-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
                 <configuration>
-                    <webDriverClassName>org.openqa.selenium.phantomjs.PhantomJSDriver</webDriverClassName>
-                    <webDriverCapabilities>
-                          <phantomjs.binary.path>${phantomjs.binary}</phantomjs.binary.path>
-                    </webDriverCapabilities>
-                    <preloadSources>
-                        <source>${project.basedir}/src/main/webapp/jslib/jquery-2.1.1.min.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-mocks.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-resource.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-route.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-sanitize.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-animate.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-1.2.18/angular-cookies.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/ui-bootstrap-0.6.0.min.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/naturalSort.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/angular-modules/angular-idle-0.3.2.js</source>
-                        <source>${project.basedir}/src/main/webapp/jslib/oph_urls.js/index.js</source>
-                    </preloadSources>
-                    <jsSrcDir>${project.basedir}/src/main/webapp</jsSrcDir>
-                    <sourceExcludes>
-                        <exclude>**/jquery.mjs.*.js</exclude>
-                        <exclude>**/angular*.js</exclude>
-                        <exclude>**/ui-bootstrap*.js</exclude>
-                    </sourceExcludes>
-                    <jsTestSrcDir>${project.basedir}/src/test</jsTestSrcDir>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/build</directory>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
                 </configuration>
             </plugin>
         </plugins>
-
     </build>
 
     <dependencies>
@@ -96,7 +122,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
         </dependency>
-        
+
         <!-- CAS ticket cache -->
         <dependency>
             <groupId>net.sf.ehcache</groupId>
@@ -157,12 +183,6 @@
         </dependency>
 
         <dependency>
-            <groupId>fi.vm.sade.generic</groupId>
-            <artifactId>webapp-portal-decorator</artifactId>
-            <type>war</type>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <exclusions>
@@ -176,7 +196,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc-portlet</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
@@ -198,7 +218,7 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
@@ -207,12 +227,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>fi.vm.sade.generic</groupId>
             <artifactId>generic-common</artifactId>
         </dependency>
-        
+
          <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>

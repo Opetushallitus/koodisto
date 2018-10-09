@@ -1,25 +1,18 @@
-'use strict';
+export class CsrfHeaderInterceptor {
+    constructor($cookies) {
+        "ngInject";
+        this.$cookies = $cookies;
 
-var modules = ['koodisto', 'localization'];
+        this.request = (config) => {
+            config.headers['clientSubSystemCode'] = "koodisto.koodisto-ui.frontend";
 
-modules.forEach(function(module) {
-   angular.module(module)
-       .factory('csrfHeaderInterceptor', ['$cookies', function ($cookies) {
-           return {
-               request: function (config) {
-                   config.headers['clientSubSystemCode'] = "koodisto.koodisto-ui.frontend";
+            const csrfToken = this.$cookies['CSRF'];
+            if (csrfToken) {
+                config.headers['CSRF'] = csrfToken;
+                console.debug("CSRF header '%s' set", csrfToken);
+            }
 
-                   var csrfToken = $cookies['CSRF'];
-                   if (csrfToken) {
-                       config.headers['CSRF'] = csrfToken;
-                       console.debug("CSRF header '%s' set", csrfToken);
-                   }
-
-                   return config;
-               }
-           }
-       }])
-       .config(['$httpProvider', function ($httpProvider) {
-           $httpProvider.interceptors.push('csrfHeaderInterceptor');
-       }])
-});
+            return config;
+        };
+    }
+}

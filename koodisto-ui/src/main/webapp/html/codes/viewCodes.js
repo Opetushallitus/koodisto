@@ -1,472 +1,506 @@
-app.factory('ViewCodesModel', function($location, $modal, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion, CodeElementVersionsByCodeElementUri,
-        OrganizationByOid, CodesByUri) {
-    var model;
-    model = new function() {
+import {koodistoConfig} from "../app.utils";
+import {getLanguageSpecificValue, getLanguageSpecificValueOrValidValue} from "../app.utils";
+
+export class ViewCodesModel {
+    constructor($location, $modal, CodesByUriAndVersion, CodeElementsByCodesUriAndVersion, CodeElementVersionsByCodeElementUri,
+                OrganizationByOid, CodesByUri) {
+        "ngInject";
+        this.$location = $location;
+        this.$modal = $modal;
+        this.CodesByUriAndVersion = CodesByUriAndVersion;
+        this.CodeElementsByCodesUriAndVersion = CodeElementsByCodesUriAndVersion;
+        this.CodeElementVersionsByCodeElementUri = CodeElementVersionsByCodeElementUri;
+        this.OrganizationByOid = OrganizationByOid;
+        this.CodesByUri = CodesByUri;
+
         this.codeElements = [];
         this.alerts = [];
         this.withinCodes = [];
         this.includesCodes = [];
         this.levelsWithCodes = [];
         this.deleteState = "disabled";
+    }
 
-        this.init = function(scope, codesUri, codesVersion) {
-            if (model.forceRefresh) {
-                model.forceRefreshCodeElements = "?forceRefresh";
-            } else {
-                model.forceRefreshCodeElements = "";
+    init(codesUri, codesVersion) {
+        if (this.forceRefresh) {
+            this.forceRefreshCodeElements = "?forceRefresh";
+        } else {
+            this.forceRefreshCodeElements = "";
+        }
+        // Samaa koodistoa on turha ladata uudelleen modelliin
+        if (this.forceRefresh || !(this.codes && this.codes.koodistoUri === codesUri && this.codes.versio === codesVersion)) {
+            this.showPassive = false;
+            this.forceRefresh = false;
+            this.codes = null;
+            this.withinCodes = [];
+            this.includesCodes = [];
+            this.levelsWithCodes = [];
+            this.codesUri = codesUri;
+            this.codesVersion = codesVersion;
+            this.showversion = false;
+            this.alerts = [];
+            this.format = "JHS_XML";
+            this.encoding = "UTF-8";
+            this.deleteState = "disabled";
+            this.editState = "";
+            this.codeElements = [];
+
+            this.currentPage = 0;
+            this.pageSize = 10;
+            this.pageSizeOptions = [ 10, 50, 100, 200, 500 ];
+            this.sortOrder = "koodiArvo";
+            this.sortOrderSelection = 1;
+            this.sortOrderReversed = false;
+            this.searchResultsLength = 0;
+
+            this.updatedCodeElementsCount = 0;
+
+            this.getCodes(codesUri, codesVersion);
+        }
+    }
+
+    getCodes(codesUri, codesVersion) {
+        this.CodesByUriAndVersion.get({
+            codesUri: codesUri,
+            codesVersion: codesVersion
+        }, (result) => {
+            this.codes = result;
+            this.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
+            this.namesv = getLanguageSpecificValue(result.metadata, 'nimi', 'SV');
+            this.nameen = getLanguageSpecificValue(result.metadata, 'nimi', 'EN');
+            this.name = getLanguageSpecificValueOrValidValue(result.metadata, 'nimi', 'FI');
+
+            this.descriptionfi = getLanguageSpecificValue(result.metadata, 'kuvaus', 'FI');
+            this.descriptionsv = getLanguageSpecificValue(result.metadata, 'kuvaus', 'SV');
+            this.descriptionen = getLanguageSpecificValue(result.metadata, 'kuvaus', 'EN');
+            this.description = getLanguageSpecificValueOrValidValue(result.metadata, 'kuvaus', 'FI');
+
+            this.instructionsfi = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'FI');
+            this.instructionssv = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'SV');
+            this.instructionsen = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'EN');
+
+            this.targetareafi = getLanguageSpecificValue(result.metadata, 'kohdealue', 'FI');
+            this.targetareasv = getLanguageSpecificValue(result.metadata, 'kohdealue', 'SV');
+            this.targetareaen = getLanguageSpecificValue(result.metadata, 'kohdealue', 'EN');
+
+            this.targetareapartfi = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'FI');
+            this.targetareapartsv = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'SV');
+            this.targetareaparten = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'EN');
+
+            this.conceptfi = getLanguageSpecificValue(result.metadata, 'kasite', 'FI');
+            this.conceptsv = getLanguageSpecificValue(result.metadata, 'kasite', 'SV');
+            this.concepten = getLanguageSpecificValue(result.metadata, 'kasite', 'EN');
+
+            this.operationalenvironmentfi = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'FI');
+            this.operationalenvironmentsv = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'SV');
+            this.operationalenvironmenten = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'EN');
+
+            this.codessourcefi = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'FI');
+            this.codessourcesv = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'SV');
+            this.codessourceen = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'EN');
+
+            this.specifiescodesfi = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'FI');
+            this.specifiescodessv = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'SV');
+            this.specifiescodesen = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'EN');
+
+            this.totakenoticeoffi = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'FI');
+            this.totakenoticeofsv = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'SV');
+            this.totakenoticeofen = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'EN');
+
+            this.validitylevelfi = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'FI');
+            this.validitylevelsv = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
+            this.validitylevelen = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
+
+            this.codes.withinCodes.forEach((codes) => {
+                this.extractAndPushRelatedCode(codes, this.withinCodes);
+            });
+            this.codes.includesCodes.forEach((codes) => {
+                this.extractAndPushRelatedCode(codes, this.includesCodes);
+            });
+            this.codes.levelsWithCodes.forEach((codes) => {
+                this.extractAndPushRelatedCode(codes, this.levelsWithCodes);
+            });
+            if (this.codes.tila === "PASSIIVINEN") {
+                this.deleteState = "";
             }
-            // Samaa koodistoa on turha ladata uudelleen modelliin
-            if (model.forceRefresh || !(model.codes && model.codes.koodistoUri === codesUri && model.codes.versio === codesVersion)) {
-        	scope.showPassive = false;
-                model.forceRefresh = false;
-                model.codes = null;
-                this.withinCodes = [];
-                this.includesCodes = [];
-                this.levelsWithCodes = [];
-                model.codesUri = codesUri;
-                model.codesVersion = codesVersion;
-                model.showversion = null;
-                this.alerts = [];
-                model.format = "JHS_XML";
-                model.encoding = "UTF-8";
-                this.deleteState = "disabled";
-                this.editState = "";
-                this.codeElements = [];
 
-                this.currentPage = 0;
-                this.pageSize = 10;
-                this.pageSizeOptions = [ 10, 50, 100, 200, 500 ];
-                this.sortOrder = "koodiArvo";
-                this.sortOrderSelection = 1;
-                this.sortOrderReversed = false;
+            this.codes.codesVersions.forEach((version) => {
+                if (version > codesVersion)
+                    this.editState = "disabled";
+            });
+
+            this.OrganizationByOid.get({
+                oid : this.codes.organisaatioOid
+            }, (result2) => {
+                this.codes.organizationName = result2.nimi['fi'] || result2.nimi['sv'] || result2.nimi['en'];
+            });
+            this.getCodeElements(codesUri, codesVersion);
+            this.loadingReady = true;
+        });
+    }
+
+    extractAndPushRelatedCode(codes, list) {
+        const languages = Object.keys(codes.nimi)
+            .map((languageCode) => ({kieli: languageCode, nimi: codes.nimi[languageCode]}));
+        var ce = {};
+        ce.uri = codes.codesUri;
+        ce.name = getLanguageSpecificValueOrValidValue(languages, 'nimi', 'FI');
+        ce.versio = codes.codesVersion;
+        ce.active = !codes.passive;
+        list.push(ce);
+    }
+
+    getCodeElements(codesUri, codesVersion) {
+        this.CodeElementsByCodesUriAndVersion.get({
+            codesUri : codesUri,
+            codesVersion : codesVersion
+        }, (result) => {
+            this.codeElements = result;
+            this.searchResultsLength = this.codeElements.length;
+            for (var i = 0; i < this.codeElements.length; i++) {
+                this.codeElements[i].name = getLanguageSpecificValueOrValidValue(this.codeElements[i].metadata, 'nimi', 'FI');
+            }
+        });
+    }
+
+    getCodeElementVersions() {
+        if (this.showversion) {
+            const elements = this.codeElements;
+            this.codeElements = [];
+            const newElementsList = [];
+            if (elements) {
+                this.updatedCodeElementsCount = 0;
                 this.searchResultsLength = 0;
-
-                model.getCodes(scope, codesUri, codesVersion);
+                for (let i = 0; i < elements.length; i++) {
+                    this.getCodeElementVersionsByCodeElementUri(elements[i].koodiUri, elements.length, newElementsList);
+                }
             }
-        };
-
-        this.getCodes = function(scope, codesUri, codesVersion) {
-            CodesByUriAndVersion.get({
-                codesUri : codesUri,
-                codesVersion : codesVersion
-            }, function(result) {
-                model.codes = result;
-                model.namefi = getLanguageSpecificValue(result.metadata, 'nimi', 'FI');
-                model.namesv = getLanguageSpecificValue(result.metadata, 'nimi', 'SV');
-                model.nameen = getLanguageSpecificValue(result.metadata, 'nimi', 'EN');
-                model.name = getLanguageSpecificValueOrValidValue(result.metadata, 'nimi', 'FI');
-
-                model.descriptionfi = getLanguageSpecificValue(result.metadata, 'kuvaus', 'FI');
-                model.descriptionsv = getLanguageSpecificValue(result.metadata, 'kuvaus', 'SV');
-                model.descriptionen = getLanguageSpecificValue(result.metadata, 'kuvaus', 'EN');
-                model.description = getLanguageSpecificValueOrValidValue(result.metadata, 'kuvaus', 'FI');
-
-                model.instructionsfi = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'FI');
-                model.instructionssv = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'SV');
-                model.instructionsen = getLanguageSpecificValue(result.metadata, 'kayttoohje', 'EN');
-
-                model.targetareafi = getLanguageSpecificValue(result.metadata, 'kohdealue', 'FI');
-                model.targetareasv = getLanguageSpecificValue(result.metadata, 'kohdealue', 'SV');
-                model.targetareaen = getLanguageSpecificValue(result.metadata, 'kohdealue', 'EN');
-
-                model.targetareapartfi = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'FI');
-                model.targetareapartsv = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'SV');
-                model.targetareaparten = getLanguageSpecificValue(result.metadata, 'kohdealueenOsaAlue', 'EN');
-
-                model.conceptfi = getLanguageSpecificValue(result.metadata, 'kasite', 'FI');
-                model.conceptsv = getLanguageSpecificValue(result.metadata, 'kasite', 'SV');
-                model.concepten = getLanguageSpecificValue(result.metadata, 'kasite', 'EN');
-
-                model.operationalenvironmentfi = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'FI');
-                model.operationalenvironmentsv = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'SV');
-                model.operationalenvironmenten = getLanguageSpecificValue(result.metadata, 'toimintaymparisto', 'EN');
-
-                model.codessourcefi = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'FI');
-                model.codessourcesv = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'SV');
-                model.codessourceen = getLanguageSpecificValue(result.metadata, 'koodistonLahde', 'EN');
-
-                model.specifiescodesfi = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'FI');
-                model.specifiescodessv = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'SV');
-                model.specifiescodesen = getLanguageSpecificValue(result.metadata, 'tarkentaaKoodistoa', 'EN');
-
-                model.totakenoticeoffi = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'FI');
-                model.totakenoticeofsv = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'SV');
-                model.totakenoticeofen = getLanguageSpecificValue(result.metadata, 'huomioitavaKoodisto', 'EN');
-
-                model.validitylevelfi = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'FI');
-                model.validitylevelsv = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'SV');
-                model.validitylevelen = getLanguageSpecificValue(result.metadata, 'sitovuustaso', 'EN');
-
-                model.codes.withinCodes.forEach(function(codes) {
-                    model.extractAndPushRelatedCode(codes, model.withinCodes);
-                });
-                model.codes.includesCodes.forEach(function(codes) {
-                    model.extractAndPushRelatedCode(codes, model.includesCodes);
-                });
-                model.codes.levelsWithCodes.forEach(function(codes) {
-                    model.extractAndPushRelatedCode(codes, model.levelsWithCodes);
-                });
-                if (model.codes.tila === "PASSIIVINEN") {
-                    model.deleteState = "";
-                }
-
-                model.codes.codesVersions.forEach(function(version) {
-                    if (version > codesVersion)
-                        model.editState = "disabled";
-                });
-
-                OrganizationByOid.get({
-                    oid : model.codes.organisaatioOid
-                }, function(result2) {
-                    model.codes.organizationName = result2.nimi['fi'] || result2.nimi['sv'] || result2.nimi['en'];
-                });
-                model.getCodeElements(codesUri, codesVersion);
-                scope.loadingReady = true;
-            });
-        };
-
-        this.extractAndPushRelatedCode = function(codes, list) {
-            var languages = Object.keys(codes.nimi).map(function (languageCode) {
-                return {kieli: languageCode, nimi: codes.nimi[languageCode]};
-            });
-            var ce = {};
-            ce.uri = codes.codesUri;
-            ce.name = getLanguageSpecificValueOrValidValue(languages, 'nimi', 'FI');
-            ce.versio = codes.codesVersion;
-            ce.active = !codes.passive;
-            list.push(ce);
-        };
-
-        this.getCodeElements = function(codesUri, codesVersion) {
-            CodeElementsByCodesUriAndVersion.get({
-                codesUri : codesUri,
-                codesVersion : codesVersion
-            }, function(result) {
-                model.codeElements = result;
-                model.searchResultsLength = model.codeElements.length;
-                for (var i = 0; i < model.codeElements.length; i++) {
-                    model.codeElements[i].name = getLanguageSpecificValueOrValidValue(model.codeElements[i].metadata, 'nimi', 'FI');
-                }
-            });
-
-        };
-        updatedCodeElementsCount = 0;
-        this.getCodeElementVersions = function() {
-            if (!model.showversion) {
-                var elements = model.codeElements;
-                model.codeElements = [];
-                var newElementsList = [];
-                if (elements) {
-                    updatedCodeElementsCount = 0;
-                    model.searchResultsLength = 0;
-                    for (var i = 0; i < elements.length; i++) {
-                        model.getCodeElementVersionsByCodeElementUri(elements[i].koodiUri, elements.length, newElementsList);
-                    }
-                }
-            } else {
-                model.getCodes(model.codesUri, model.codesVersion);
-            }
-        };
-        this.getCodeElementVersionsByCodeElementUri = function(codeElementUri, elementCount, list) {
-            CodeElementVersionsByCodeElementUri.get({
-                codeElementUri : codeElementUri
-            }, function(result) {
-                for (var i = 0; i < result.length; i++) {
-                    result[i].name = getLanguageSpecificValueOrValidValue(result[i].metadata, 'nimi', 'FI');
-                    list.push(result[i]);
-                    model.searchResultsLength++;
-                }
-                updatedCodeElementsCount++;
-                if (updatedCodeElementsCount == elementCount) {
-                    model.codeElements = list;
-                }
-            });
-        };
-
-        this.download = function() {
-            model.downloadModalInstance = $modal.open({
-                templateUrl : 'downloadModalContent.html',
-                controller : ViewCodesController,
-                resolve : {
-                    isModalController : function() {
-                        return true;
-                    }
-                }
-            });
-        };
-
-        this.upload = function() {
-            model.uploadModalInstance = $modal.open({
-                templateUrl : 'uploadModalContent.html',
-                controller : ViewCodesController,
-                resolve : {
-                    isModalController : function() {
-                        return true;
-                    }
-                }
-            });
-        };
-
-        this.removeCodes = function() {
-            model.deleteCodesModalInstance = $modal.open({
-                templateUrl : 'confirmDeleteCodesModalContent.html',
-                controller : ViewCodesController,
-                resolve : {
-                    isModalController : function() {
-                        return true;
-                    }
-                }
-            });
-        };
-    };
-
-    return model;
-});
-
-function ViewCodesController($scope, $location, $filter, $routeParams, $window, ViewCodesModel, DownloadCodes, RemoveRelationCodes, DeleteCodes, loadingService, isModalController) {
-    $scope.model = ViewCodesModel;
-    $scope.codesUri = $routeParams.codesUri;
-    $scope.uploadUrl = SERVICE_URL_BASE + "codes" + "/upload/" + $scope.codesUri;
-    $scope.codesVersion = $routeParams.codesVersion;
-    $scope.model.forceRefresh = $routeParams.forceRefresh == true;
-    $scope.identity = angular.identity;
-    if (!isModalController) {
-        ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
+        }
+        else {
+            this.getCodes(this.codesUri, this.codesVersion);
+        }
     }
 
-    // Alert is passed when reloading after versioning import.
-    if ($routeParams.alert && $routeParams.alert.type) {
-        $scope.model.alerts.push($routeParams.alert);
+    getCodeElementVersionsByCodeElementUri(codeElementUri, elementCount, list) {
+        this.CodeElementVersionsByCodeElementUri.get({
+            codeElementUri : codeElementUri
+        }, (result) => {
+            for (var i = 0; i < result.length; i++) {
+                result[i].name = getLanguageSpecificValueOrValidValue(result[i].metadata, 'nimi', 'FI');
+                list.push(result[i]);
+                this.searchResultsLength++;
+            }
+            this.updatedCodeElementsCount++;
+            if (this.updatedCodeElementsCount === elementCount) {
+                this.codeElements = list;
+            }
+        });
     }
 
-    $scope.sortBy1 = 'name';
-    $scope.sortBy2 = 'name';
-    $scope.sortBy3 = 'name';
+    download() {
+        this.downloadModalInstance = this.$modal.open({
+            // Included in viewcodes.html
+            templateUrl: 'downloadModalContent.html',
+            controller: 'viewCodesController as viewCodesDownloadModal',
+            resolve: {
+                isModalController : () => {
+                    return true;
+                }
+            }
+        });
+    }
 
-    $scope.closeAlert = function(index) {
-        $scope.model.alerts.splice(index, 1);
-    };
+    upload() {
+        this.uploadModalInstance = this.$modal.open({
+            // Included in viewcodes.html
+            templateUrl: 'uploadModalContent.html',
+            controller: 'viewCodesController as viewCodesUploadModal',
+            resolve: {
+                isModalController : () => {
+                    return true;
+                }
+            }
+        });
+    }
 
-    $scope.cancel = function() {
-        $location.path("/");
-    };
+    removeCodes() {
+        this.deleteCodesModalInstance = this.$modal.open({
+            // Included in viewcodes.html
+            templateUrl: 'confirmDeleteCodesModalContent.html',
+            controller: 'viewCodesController as viewCodesConfirmDeleteModal',
+            resolve: {
+                isModalController: () => {
+                    return true;
+                }
+            }
+        });
+    }
+}
 
-    $scope.addCodeElement = function() {
-        $location.path("/lisaaKoodi/" + $scope.codesUri + "/" + $scope.codesVersion);
-    };
+export class ViewCodesController {
+    constructor($scope, $location, $filter, $routeParams, $window, viewCodesModel, DownloadCodes, RemoveRelationCodes, DeleteCodes, loadingService, isModalController) {
+        "ngInject";
+        this.$scope = $scope;
+        this.$location = $location;
+        this.$filter = $filter;
+        this.$routeParams = $routeParams;
+        this.$window = $window;
+        this.viewCodesModel = viewCodesModel;
+        this.DownloadCodes = DownloadCodes;
+        this.RemoveRelationCodes = RemoveRelationCodes;
+        this.DeleteCodes = DeleteCodes;
+        this.loadingService = loadingService;
+        this.isModalController = isModalController;
 
-    $scope.editCodes = function() {
-        $location.path("/muokkaaKoodisto/" + $scope.codesUri + "/" + $scope.codesVersion);
-    };
+        this.model = viewCodesModel;
+        this.codesUri = $routeParams.codesUri;
+        this.uploadUrl = koodistoConfig.SERVICE_URL_BASE + "codes" + "/upload/" + this.codesUri;
+        this.codesVersion = $routeParams.codesVersion;
+        this.model.forceRefresh = $routeParams.forceRefresh === true;
+        this.identity = (value) => value;
+        if (!isModalController) {
+            viewCodesModel.init(this.codesUri, this.codesVersion);
+        }
 
-    $scope.okconfirmdeletecodes = function() {
-        DeleteCodes.put({
-            codesUri : $scope.codesUri,
-            codesVersion : $scope.codesVersion
-        }, function(success) {
-            $location.path("/etusivu").search({
-                forceRefresh : true
-            });
-        }, function(error) {
-            var alert = {
-                type : 'danger',
-                msg : 'Koodiston poisto ep\u00E4onnistui.'
-            };
-            $scope.model.alerts.push(alert);
+        // Alert is passed when reloading after versioning import.
+        if ($routeParams.alert && $routeParams.alert.type) {
+            this.model.alerts.push($routeParams.alert);
+        }
+
+        this.sortBy1 = 'name';
+        this.sortBy2 = 'name';
+        this.sortBy3 = 'name';
+
+        this.refreshPage = true;
+        this.cachedPageCount = 0;
+        this.cachedElementCount = 0;
+
+        $scope.$watch( () => this.model.codeElements, () => {
+            if (this.model.codeElements.length !== this.cachedElementCount) {
+                this.refreshNumberOfPages();
+                this.refreshPage = true;
+                this.cachedElementCount = this.model.codeElements.length;
+            }
         });
 
-        $scope.model.deleteCodesModalInstance.close();
-    };
+        this.oldValueForPageSize = 10;
 
-    $scope.cancelconfirmdeletecodes = function() {
-        $scope.model.deleteCodesModalInstance.dismiss('cancel');
-    };
-
-    $scope.search = function(item) {
-        function matchesName(name) {
-            return name && name.toLowerCase().indexOf($scope.query.toLowerCase()) > -1;
+        this.showRelation = (codes) => {
+            return codes.active || this.model.showPassive
         }
-        if (!$scope.query || matchesName(item.name) || matchesName(item.namesv) || matchesName(item.nameen)
-                || item.koodiArvo.toLowerCase().indexOf($scope.query.toLowerCase()) !== -1) {
+
+    }
+
+    closeAlert(index) {
+        this.model.alerts.splice(index, 1);
+    }
+
+    cancel() {
+        this.$location.path("/");
+    }
+
+    addCodeElement() {
+        this.$location.path("/lisaaKoodi/" + this.codesUri + "/" + this.codesVersion);
+    }
+
+    editCodes() {
+        this.$location.path("/muokkaaKoodisto/" + this.codesUri + "/" + this.codesVersion);
+    }
+
+    okconfirmdeletecodes() {
+        this.DeleteCodes.put({
+            codesUri: this.codesUri,
+            codesVersion: this.codesVersion
+        }, (success) => {
+            this.$location.path("/etusivu").search({
+                forceRefresh: true
+            });
+        }, (error) => {
+            var alert = {
+                type: 'danger',
+                msg: 'Koodiston poisto ep\u00E4onnistui.'
+            };
+            this.model.alerts.push(alert);
+        });
+
+        this.model.deleteCodesModalInstance.close();
+    }
+
+    cancelconfirmdeletecodes() {
+        this.model.deleteCodesModalInstance.dismiss('cancel');
+    }
+
+    search(item) {
+        const matchesName = (name) => {
+            return name && name.toLowerCase().indexOf(this.query.toLowerCase()) > -1;
+        };
+
+        if (!this.query || matchesName(item.name) || matchesName(item.namesv) || matchesName(item.nameen)
+            || item.koodiArvo.toLowerCase().indexOf(this.query.toLowerCase()) !== -1) {
             return true;
         }
         return false;
-    };
+    }
 
-    $scope.okdownload = function() {
-        var url = DownloadCodes($scope.codesUri, $scope.codesVersion, $scope.model.format, $scope.model.encoding);
-        $window.open(url);
-        if ($scope.model.downloadModalInstance) {
-            $scope.model.downloadModalInstance.close();
+    okdownload() {
+        const url = this.DownloadCodes(this.codesUri, this.codesVersion, this.model.format, this.model.encoding);
+        this.$window.open(url);
+        if (this.model.downloadModalInstance) {
+            this.model.downloadModalInstance.close();
         }
-    };
+    }
 
-    $scope.downloadBlank = function() {
-        $scope.model.format = "XLS";
-        $scope.codesUri = "blankKoodistoDocument";
-        $scope.codesVersion = "-1";
+    downloadBlank() {
+        this.model.format = "XLS";
+        this.codesUri = "blankKoodistoDocument";
+        this.codesVersion = "-1";
 
-        $scope.okdownload();
-    };
+        this.okdownload();
+    }
 
-    $scope.formatEquals = function(s) {
-        return ($scope.model.format === s);
-    };
+    formatEquals(s) {
+        return (this.model.format === s);
+    }
 
-    $scope.canceldownload = function() {
-        $scope.model.downloadModalInstance.dismiss('cancel');
-    };
+    canceldownload() {
+        this.model.downloadModalInstance.dismiss('cancel');
+    }
 
-    $scope.loadStartFunction = function(evt) {
-        loadingService.requestCount++;
-    };
-    $scope.transferCompleteFunction = function(evt) {
-        loadingService.requestCount--;
-    };
+    loadStartFunction(evt) {
+        this.loadingService.requestCount++;
+    }
+    transferCompleteFunction(evt) {
+        this.loadingService.requestCount--;
+    }
 
-    $scope.cancelupload = function() {
-        $scope.model.uploadModalInstance.dismiss('cancel');
-    };
+    cancelupload() {
+        this.model.uploadModalInstance.dismiss('cancel');
+    }
 
-    $scope.uploadComplete = function(evt) {
-        $scope.transferCompleteFunction();
-        var alert;
-        $scope.model.forceRefresh = true;
+    uploadComplete(evt) {
+        this.transferCompleteFunction();
+        let alert;
+        this.model.forceRefresh = true;
         if (evt.indexOf && evt.indexOf("error") > -1) {
             alert = {
-                type : 'danger',
-                msg : 'Koodiston ' + $scope.codesUri + ' tuonti ep\u00E4onnistui. Virhe tiedoston lukemisessa: ' + ($filter("i18n")(evt))
+                type: 'danger',
+                msg: 'Koodiston ' + this.codesUri + ' tuonti ep\u00E4onnistui. Virhe tiedoston lukemisessa: ' + (this.$filter("i18n")(evt))
             };
         } else {
             alert = {
-                type : 'success',
-                msg : 'Koodisto ' + $scope.codesUri + ' on tuotu onnistuneesti'
+                type: 'success',
+                msg: 'Koodisto ' + this.codesUri + ' on tuotu onnistuneesti'
             };
-            if (evt > $scope.codesVersion) { // Redirect to new version
-                $location.path("/koodisto/" + $scope.codesUri + "/" + evt).search({
-                    forceRefresh : true,
-                    alert : alert
+            if (evt > this.codesVersion) { // Redirect to new version
+                this.$location.path("/koodisto/" + this.codesUri + "/" + evt).search({
+                    forceRefresh: true,
+                    alert: alert
                 });
-                $scope.model.uploadModalInstance.close();
+                this.model.uploadModalInstance.close();
                 return;
             }
         }
-        ViewCodesModel.init($scope, $scope.codesUri, $scope.codesVersion);
-        $scope.model.alerts.push(alert);
-        $scope.model.uploadModalInstance.close();
-    };
+        this.viewCodesModel.init(this.$scope, this.codesUri, this.codesVersion);
+        this.model.alerts.push(alert);
+        this.model.uploadModalInstance.close();
+    }
 
     // Pagination
 
     // Get the filtered page count
-    $scope.cachedPageCount = 0;
-    $scope.getNumberOfPages = function() {
-        if ($scope.cachedPageCount == 0 && $scope.model.codeElements.length > 0) {
-            $scope.refreshNumberOfPages();
+    getNumberOfPages() {
+        if (this.cachedPageCount === 0 && this.model.codeElements.length > 0) {
+            this.refreshNumberOfPages();
         }
-        return $scope.cachedPageCount;
+        return this.cachedPageCount;
     };
 
     // Refresh the page count when the model changes
-    $scope.cachedElementCount = 0;
-    $scope.$watch('model.codeElements', function() {
-        if ($scope.model.codeElements.length != $scope.cachedElementCount) {
-            $scope.refreshNumberOfPages();
-            refreshPage = true;
-            $scope.cachedElementCount = $scope.model.codeElements.length;
-        }
-    });
-
     // Refresh the page count (less redundant filtering)
-    $scope.refreshNumberOfPages = function() {
-        $scope.model.searchResultsLength = ($filter("filter")($scope.model.codeElements, $scope.search)).length;
-        $scope.cachedPageCount = Math.ceil($scope.model.searchResultsLength / $scope.model.pageSize);
-        return $scope.cachedPageCount;
-    };
+    refreshNumberOfPages() {
+        this.model.searchResultsLength = (this.$filter("filter")(this.model.codeElements, () => this.search)).length;
+        this.cachedPageCount = Math.ceil(this.model.searchResultsLength / this.model.pageSize);
+        return this.cachedPageCount;
+    }
 
     // Change the currentPage when the pageSize is changed.
-    var oldValueForPageSize = 10;
-    $scope.pageSizeChanged = function() {
-        var topmostCodeElement = $scope.model.currentPage * oldValueForPageSize;
-        $scope.model.currentPage = Math.floor(topmostCodeElement / $scope.model.pageSize);
-        oldValueForPageSize = $scope.model.pageSize;
-        $scope.refreshNumberOfPages();
-    };
+    pageSizeChanged() {
+        const topmostCodeElement = this.model.currentPage * this.oldValueForPageSize;
+        this.model.currentPage = Math.floor(topmostCodeElement / this.model.pageSize);
+        this.oldValueForPageSize = this.model.pageSize;
+        this.refreshNumberOfPages();
+    }
 
-    $scope.sortOrderChanged = function(value) {
+    sortOrderChanged(value) {
         if (value) {
-            $scope.model.sortOrderSelection = value;
+            this.model.sortOrderSelection = value;
         }
-        var selection = parseInt($scope.model.sortOrderSelection);
+        const selection = parseInt(this.model.sortOrderSelection);
         switch (selection) {
-        case 1:
-            $scope.model.sortOrderReversed = false;
-            $scope.model.sortOrder = "koodiArvo";
-            break;
-        case 2:
-            $scope.model.sortOrderReversed = true;
-            $scope.model.sortOrder = "koodiArvo";
-            break;
-        case 3:
-            $scope.model.sortOrderReversed = false;
-            $scope.model.sortOrder = "name";
-            break;
-        case 4:
-            $scope.model.sortOrderReversed = true;
-            $scope.model.sortOrder = "name";
-            break;
-        case 5:
-            $scope.model.sortOrderReversed = false;
-            $scope.model.sortOrder = "versio";
-            break;
-        case 6:
-            $scope.model.sortOrderReversed = true;
-            $scope.model.sortOrder = "versio";
-            break;
+            case 1:
+                this.model.sortOrderReversed = false;
+                this.model.sortOrder = "koodiArvo";
+                break;
+            case 2:
+                this.model.sortOrderReversed = true;
+                this.model.sortOrder = "koodiArvo";
+                break;
+            case 3:
+                this.model.sortOrderReversed = false;
+                this.model.sortOrder = "name";
+                break;
+            case 4:
+                this.model.sortOrderReversed = true;
+                this.model.sortOrder = "name";
+                break;
+            case 5:
+                this.model.sortOrderReversed = false;
+                this.model.sortOrder = "versio";
+                break;
+            case 6:
+                this.model.sortOrderReversed = true;
+                this.model.sortOrder = "versio";
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
-        refreshPage = true;
-    };
+        this.refreshPage = true;
+    }
 
     // When user changes the search string the page count changes and the current page must be adjusted
-    $scope.filterChangedPageCount = function() {
-        currentNumberOfPages = $scope.refreshNumberOfPages();
-        if ($scope.model.currentPage >= currentNumberOfPages) {
-            $scope.model.currentPage = currentNumberOfPages - 1;
+    filterChangedPageCount() {
+        const currentNumberOfPages = this.refreshNumberOfPages();
+        if (this.model.currentPage >= currentNumberOfPages) {
+            this.model.currentPage = currentNumberOfPages - 1;
         }
-        if (currentNumberOfPages != 0 && $scope.model.currentPage < 0) {
-            $scope.model.currentPage = 0;
+        if (currentNumberOfPages !== 0 && this.model.currentPage < 0) {
+            this.model.currentPage = 0;
         }
-    };
+    }
 
-    $scope.changePage = function(i) {
-        $scope.model.currentPage = i;
-    };
+    changePage(i) {
+        this.model.currentPage = i;
+    }
 
-    $scope.incrementPage = function(i) {
-        var newPageNumber = $scope.model.currentPage + i;
-        if (newPageNumber > -1 && newPageNumber < $scope.getNumberOfPages()) {
-            $scope.model.currentPage = newPageNumber;
+    incrementPage(i) {
+        const newPageNumber = this.model.currentPage + i;
+        if (newPageNumber > -1 && newPageNumber < this.getNumberOfPages()) {
+            this.model.currentPage = newPageNumber;
         }
-    };
+    }
 
-    var refreshPage = true;
-    $scope.getPaginationPage = function() {
-        if (refreshPage) {
+    getPaginationPage() {
+        if (this.refreshPage) {
             // Only do sorting when the model has changed, heavy operation
-            refreshPage = false;
-            $scope.model.codeElements = $filter("naturalSort")($scope.model.codeElements, $scope.model.sortOrder, $scope.model.sortOrderReversed);
+            this.refreshPage = false;
+            this.model.codeElements = this.$filter("naturalSort")(this.model.codeElements, this.model.sortOrder, this.model.sortOrderReversed);
         }
-        var results = $scope.model.codeElements;
-        results = $filter("filter")(results, $scope.search);
-        results = results.splice($scope.model.currentPage * $scope.model.pageSize, $scope.model.pageSize);
+        let results = this.model.codeElements;
+        results = results.filter((item) => this.search(item));
+        results = results.splice(this.model.currentPage * this.model.pageSize, this.model.pageSize);
         return results;
     };
     // Pagination ends
-    
-    $scope.showRelation = function(codes) {
-	return codes.active || $scope.showPassive
-    }
+
 }
