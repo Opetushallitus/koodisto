@@ -50,6 +50,17 @@
         <property name="password" value="" />
     </bean>
 
+    <bean id="dataTypeFactory" class="org.dbunit.ext.hsqldb.HsqldbDataTypeFactory" />
+
+    <bean id="dbUnitDatabaseConfig" class="com.github.springtestdbunit.bean.DatabaseConfigBean">
+        <property name="datatypeFactory" ref="dataTypeFactory" />
+    </bean>
+
+    <bean id="dbUnitDatabaseConnection" class="com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean">
+        <property name="databaseConfig" ref="dbUnitDatabaseConfig"/>
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
     <!-- Add Transaction support -->
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="emf" />
