@@ -418,7 +418,7 @@ export class ViewCodesController {
     // Refresh the page count when the model changes
     // Refresh the page count (less redundant filtering)
     refreshNumberOfPages() {
-        this.model.searchResultsLength = (this.$filter("filter")(this.model.codeElements, () => this.search)).length;
+        this.model.searchResultsLength = this.model.codeElements.filter((item) => this.search(item)).length;
         this.cachedPageCount = Math.ceil(this.model.searchResultsLength / this.model.pageSize);
         return this.cachedPageCount;
     }
