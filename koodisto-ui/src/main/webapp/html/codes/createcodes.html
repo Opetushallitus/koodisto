@@ -44,7 +44,7 @@
             <label for="name_fi" class="col-md-2 control-label">{{'codes.createpage.name' | i18n}}</label>
             <div class="col-md-3">
                 <input id="name_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codesCreator.namefi" name="namefi" placeholder="{{'codes.finnish' | i18n}}"
-                    ng-required="!namesv && !nameen || descriptionfi" ng-blur="codesCreator.visitedName = true" />
+                    ng-required="!codesCreator.namesv && !codesCreator.nameen || codesCreator.descriptionfi" ng-blur="codesCreator.visitedName = true" />
                 <span class="text-danger" ng-if="visitedName && form.namefi.$error.required"><img style="margin-right: 10px;" src="{{:: codesCreator.alertIcon}}">
                     <span ng-if="!codesCreator.namesv && !codesCreator.nameen">{{codesCreator.errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!codesCreator.namesv && !codesCreator.nameen)">{{codesCreator.errorMessageIfOtherInfoIsGiven}}</span>
@@ -55,7 +55,7 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-3">
                 <input id="name_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codesCreator.namesv" placeholder="{{'codes.swedish' | i18n}}" name="namesv"
-                    ng-required="!namefi && !nameen || descriptionsv" ng-blur="codesCreator.visitedName = true" />
+                    ng-required="!codesCreator.namefi && !codesCreator.nameen || codesCreator.descriptionsv" ng-blur="codesCreator.visitedName = true" />
                 <span class="text-danger" ng-if="visitedName && form.namesv.$error.required"><img style="margin-right: 10px;" src="{{:: codesCreator.alertIcon}}">
                     <span ng-if="!codesCreator.namefi && !codesCreator.nameen">{{codesCreator.errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!codesCreator.namefi && !codesCreator.nameen)">{{codesCreator.errorMessageIfOtherInfoIsGiven}}</span>
@@ -65,7 +65,7 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-3">
                 <input id="name_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codesCreator.nameen" placeholder="{{'codes.english' | i18n}}" name="nameen"
-                    ng-required="!namefi && !namesv || descriptionen" ng-blur="codesCreator.visitedName = true" />
+                    ng-required="!codesCreator.namefi && !codesCreator.namesv || codesCreator.descriptionen" ng-blur="codesCreator.visitedName = true" />
                 <span class="text-danger" ng-if="visitedName && form.nameen.$error.required"><img style="margin-right: 10px;" src="{{:: codesCreator.alertIcon}}">
                     <span ng-if="!codesCreator.namefi && !codesCreator.namesv">{{codesCreator.errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!codesCreator.namefi && !codesCreator.namesv)">{{codesCreator.errorMessageIfOtherInfoIsGiven}}</span>
