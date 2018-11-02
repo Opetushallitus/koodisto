@@ -76,7 +76,7 @@
             <div class="col-md-3">
                 <input id="name_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.namefi" name="namefi" placeholder="{{'codes.finnish' | i18n}}"
                        ng-required="!codesEditor.model.namesv && !codesEditor.model.nameen || codesEditor.model.descriptionfi" ng-change="codesEditor.setSameValue('name')" />
-                <span class="text-danger" ng-if="form.namefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">
+                <span class="text-danger" ng-if="form.namefi.$error.required && codesEditor.model.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">
                     <span ng-if="!codesEditor.model.namesv && !codesEditor.model.nameen">{{codesEditor.errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!codesEditor.model.namesv && !codesEditor.model.nameen)">{{codesEditor.errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
@@ -86,7 +86,7 @@
             <div class="col-md-offset-2 col-md-3">
                 <input id="name_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.namesv" name="namesv" placeholder="{{'codes.swedish' | i18n}}"
                        ng-required="!codesEditor.model.namefi && !codesEditor.model.nameen || codesEditor.model.descriptionsv" ng-disabled="codesEditor.model.samename" />
-                <span class="text-danger" ng-if="form.namesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">
+                <span class="text-danger" ng-if="form.namesv.$error.required && codesEditor.model.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">
                     <span ng-if="!codesEditor.model.namefi && !codesEditor.model.nameen">{{codesEditor.errorMessageAtLeastOneName}}</span>
                     <span ng-if="!(!codesEditor.model.namefi && !codesEditor.model.nameen)">{{codesEditor.errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
@@ -96,9 +96,9 @@
             <div class="col-md-offset-2 col-md-3">
                 <input id="name_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.nameen" name="nameen" placeholder="{{'codes.english' | i18n}}"
                        ng-required="!codesEditor.model.namefi && !codesEditor.model.namesv || codesEditor.model.descriptionen" ng-disabled="codesEditor.model.samename" />
-                <span class="text-danger" ng-if="form.nameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">
-                    <span ng-if="!codesEditor.model.namefi && !codesEditor.model.namesv">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!codesEditor.model.namefi && !codesEditor.model.namesv)">{{errorMessageIfOtherInfoIsGiven}}</span>
+                <span class="text-danger" ng-if="form.nameen.$error.required && codesEditor.model.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">
+                    <span ng-if="!codesEditor.model.namefi && !codesEditor.model.namesv">{{codesEditor.errorMessageAtLeastOneName}}</span>
+                    <span ng-if="!(!codesEditor.model.namefi && !codesEditor.model.namesv)">{{codesEditor.errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
