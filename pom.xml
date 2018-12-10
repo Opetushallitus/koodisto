@@ -471,7 +471,7 @@ buildTtime=${maven.build.timestamp}]]>
     <hibernate4-maven-plugin.version>0.1.1</hibernate4-maven-plugin.version>
     <hsqldb.version>2.4.1</hsqldb.version>
 
-    <jackson.2.version>2.8.8</jackson.2.version>
+    <jackson.2.version>2.8.11</jackson.2.version>
 
     <jaxb2-basics-runtime.version>${jaxb2_commons.version}</jaxb2-basics-runtime.version>
     <jaxb2-basics.version>${jaxb2_commons.version}</jaxb2-basics.version>
