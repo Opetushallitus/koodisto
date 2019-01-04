@@ -1,6 +1,3 @@
-/**
- *
- */
 package fi.vm.sade.koodisto.service.business.impl;
 
 import java.util.ArrayList;
@@ -12,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 
@@ -86,9 +84,6 @@ import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 
-/**
- * @author tommiha
- */
 @Transactional
 @Service("koodiBusinessService")
 public class KoodiBusinessServiceImpl implements KoodiBusinessService {
@@ -187,7 +182,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         koodistoVersioRelation.setKoodiVersio(koodiVersio);
         koodistoVersioKoodiVersioDAO.insertNonFlush(koodistoVersioRelation);
 
-        Set<Integer> versio = new HashSet<Integer>();
+        Set<Integer> versio = new HashSet<>();
         versio.add(latestKoodistoVersio.getVersio());
 
         return new KoodiVersioWithKoodistoItem(koodiVersio, new KoodistoItem(koodistoUri, versio));
@@ -204,8 +199,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void checkIfCodeElementValueExistsAlready(String koodiUri,
-            String koodiArvo,
-            Set<KoodistoVersioKoodiVersio> koodiVersios) {
+                                                      String koodiArvo,
+                                                      Set<KoodistoVersioKoodiVersio> koodiVersios) {
         for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
             if (!koodiUri.equals(koodiVersio.getKoodiVersio().getKoodi().getKoodiUri()) &&
                     koodiArvo.equals(koodiVersio.getKoodiVersio().getKoodiarvo())) {
@@ -224,6 +219,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return result.get(0);
     }
 
+    @Transactional(readOnly = true)
+    @Override
     public KoodiVersio getLatestKoodiVersio(String koodiUri) {
         if (StringUtils.isBlank(koodiUri)) {
             return null;
@@ -381,7 +378,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     @Override
     @Transactional(readOnly = true)
     public List<KoodiVersioWithKoodistoItem> listByRelation(KoodiUriAndVersioType koodi, SuhteenTyyppi suhdeTyyppi, Boolean isChild) {
-        Set<KoodiVersioWithKoodistoItem> koodis = new HashSet<KoodiVersioWithKoodistoItem>();
+        Set<KoodiVersioWithKoodistoItem> koodis = new HashSet<>();
         if (SuhteenTyyppi.RINNASTEINEN.equals(suhdeTyyppi)) {
             koodis.addAll(koodiVersioDAO.listByParentRelation(koodi, suhdeTyyppi));
             koodis.addAll(koodiVersioDAO.listByChildRelation(koodi, suhdeTyyppi));
@@ -393,7 +390,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             }
         }
 
-        return new ArrayList<KoodiVersioWithKoodistoItem>(koodis);
+        return new ArrayList<>(koodis);
     }
 
     @Override
@@ -434,7 +431,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             String alakoodiUri = latest.getKoodi().getKoodiUri();
             List<KoodiVersioWithKoodistoItem> ylakoodiVersios = getLatestKoodiVersios(ylakoodiUris.toArray(new String[ylakoodiUris.size()]));
 
-            ArrayList<String> koodistos = new ArrayList<String>();
+            ArrayList<String> koodistos = new ArrayList<>();
             for (KoodiVersioWithKoodistoItem latestYlakoodi : ylakoodiVersios) {
                 String latestYlakoodiKoodisto = latestYlakoodi.getKoodistoItem().getKoodistoUri();
                 if (!koodistos.contains(latestYlakoodiKoodisto)) {
@@ -511,7 +508,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         yk.setKoodiUri(latestYlakoodi.getKoodi().getKoodiUri());
         yk.setVersio(latestYlakoodi.getVersio());
 
-        List<KoodiUriAndVersioType> aks = new ArrayList<KoodiUriAndVersioType>();
+        List<KoodiUriAndVersioType> aks = new ArrayList<>();
         for (KoodiVersioWithKoodistoItem ak : getLatestKoodiVersios(alakoodiUris.toArray(new String[alakoodiUris.size()]))) {
             KoodiUriAndVersioType a = new KoodiUriAndVersioType();
             a.setKoodiUri(ak.getKoodiVersio().getKoodi().getKoodiUri());
@@ -537,7 +534,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             return;
         }
 
-        List<KoodinSuhde> relations = new ArrayList<KoodinSuhde>();
+        List<KoodinSuhde> relations = new ArrayList<>();
         if (!isChild || st.equals(SuhteenTyyppi.RINNASTEINEN)) { // SISALTAA OR RINNASTUU
             if (SuhteenTyyppi.SISALTYY.equals(st)) {
                 String koodistoUri = latest.getKoodi().getKoodisto().getKoodistoUri();
@@ -549,7 +546,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         } else { // SISALTYY
             List<KoodiVersioWithKoodistoItem> ylakoodiVersios = getLatestKoodiVersios(relatedCodeElements.toArray(new String[relatedCodeElements.size()]));
-            ArrayList<String> koodistos = new ArrayList<String>();
+            ArrayList<String> koodistos = new ArrayList<>();
             for (KoodiVersioWithKoodistoItem string : ylakoodiVersios) {
                 String latestYlakoodiKoodisto = string.getKoodistoItem().getKoodistoUri();
                 if (!koodistos.contains(latestYlakoodiKoodisto)) {
@@ -616,7 +613,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private KoodiVersio updateOldVersion(KoodiVersio latest, UpdateKoodiDataType updateKoodiData) {
 
-        List<KoodiMetadata> latestMetadatas = new ArrayList<KoodiMetadata>(latest.getMetadatas());
+        List<KoodiMetadata> latestMetadatas = new ArrayList<>(latest.getMetadatas());
 
         outer: for (KoodiMetadataType updateMetadata : updateKoodiData.getMetadata()) {
             for (int i = 0; i < latestMetadatas.size(); ++i) {
@@ -741,15 +738,15 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private void copyRelations(KoodiVersio latest, KoodiVersio newVersio) {
         for (KoodinSuhde ks : latest.getYlakoodis()) {
-            createNewKoodinSuhde(ks, newVersio, ks.getYlakoodiVersio(), true);
+            createNewKoodinSuhde(ks, newVersio, ks.getYlakoodiVersio());
         }
         for (KoodinSuhde ks : latest.getAlakoodis()) {
-            createNewKoodinSuhde(ks, ks.getAlakoodiVersio(), newVersio, false);
+            createNewKoodinSuhde(ks, ks.getAlakoodiVersio(), newVersio);
         }
         setRelationsInPreviousVersionToPassive(latest);
     }
 
-    private void createNewKoodinSuhde(KoodinSuhde ks, KoodiVersio ala, KoodiVersio yla, boolean checkUpperCode) {
+    private void createNewKoodinSuhde(KoodinSuhde ks, KoodiVersio ala, KoodiVersio yla) {
         if (ks.isPassive()) {
             return;
         }
@@ -768,10 +765,10 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     @Override
-    public Set<KoodiVersio> createNewVersions(Set<KoodistoVersioKoodiVersio> koodiVersios) {
+    public Set<KoodiVersio> createNewVersionsNonFlushing(Set<KoodistoVersioKoodiVersio> koodiVersios) {
         HashSet<KoodiVersio> inserted = new HashSet<>();
         for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
-            inserted.add(createNewVersion(koodiVersio.getKoodiVersio(), false));
+            inserted.add(this.createNewVersion(koodiVersio.getKoodiVersio(), true));
         }
         return inserted;
     }
@@ -810,7 +807,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public void acceptCodeElements(KoodistoVersio latest) {
         List<KoodiVersio> koodis = koodiVersioDAO.getKoodiVersiosByKoodistoAndKoodiTila(latest.getId(), Tila.LUONNOS);
         if (koodis.size() > 0) {
-            ArrayList<String> koodiUris = new ArrayList<String>();
+            ArrayList<String> koodiUris = new ArrayList<>();
             for (KoodiVersio koodiVersio : koodis) {
                 koodiUris.add(koodiVersio.getKoodi().getKoodiUri());
             }
@@ -964,11 +961,11 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void initializeRelations(Set<KoodinSuhde> relations, boolean upperRelation) {
-        for (KoodinSuhde koodinSuhde : relations) {
-            KoodiVersio koodiVersio = upperRelation ? koodinSuhde.getYlakoodiVersio() : koodinSuhde.getAlakoodiVersio();
-            Hibernate.initialize(koodiVersio.getMetadatas());
-            Hibernate.initialize(koodiVersio.getKoodi());
-        }
+        Set<Long> koodiVersioIdList = relations.stream()
+                .map(koodinSuhde -> upperRelation ? koodinSuhde.getYlakoodiVersio() : koodinSuhde.getAlakoodiVersio())
+                .map(KoodiVersio::getId)
+                .collect(Collectors.toSet());
+        this.koodiMetadataDAO.initializeByKoodiVersioIds(koodiVersioIdList);
     }
 
     @Override
@@ -1015,7 +1012,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         List<KoodiVersioWithKoodistoItem> result = searchKoodis(searchData);
         if (result.size() < 1) {
-            logger.error("No koodi found with URI " + koodiUri + " in koodisto with URI " + koodistoUri);
+            logger.warn("No koodi found with URI " + koodiUri + " in koodisto with URI " + koodistoUri);
             throw new KoodiNotFoundException();
         }
 
@@ -1032,7 +1029,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         List<KoodiVersioWithKoodistoItem> result = searchKoodis(searchData);
         if (result.size() < 1) {
-            logger.error("No koodi found with URI " + koodiUri + " in koodisto with URI " + koodistoUri + ", versio " + koodistoVersio);
+            logger.warn("No koodi found with URI " + koodiUri + " in koodisto with URI " + koodistoUri + ", versio " + koodistoVersio);
             throw new KoodiNotFoundException();
         }
 
@@ -1149,10 +1146,10 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         Set<KoodinSuhde> existingAlaKoodis = latest.getAlakoodis();
         Set<KoodinSuhde> existingYlaKoodis = latest.getYlakoodis();
 
-        HashSet<String> existingIncludesUris = new HashSet<String>();
-        HashSet<String> existingLevelsWithChildUris = new HashSet<String>();
-        HashSet<String> existingLevelsWithParentUris = new HashSet<String>();
-        HashSet<String> existingWithinUris = new HashSet<String>();
+        HashSet<String> existingIncludesUris = new HashSet<>();
+        HashSet<String> existingLevelsWithChildUris = new HashSet<>();
+        HashSet<String> existingLevelsWithParentUris = new HashSet<>();
+        HashSet<String> existingWithinUris = new HashSet<>();
         separateKoodiRelationsToUriLists(existingAlaKoodis, existingIncludesUris, existingLevelsWithChildUris, true);
         separateKoodiRelationsToUriLists(existingYlaKoodis, existingWithinUris, existingLevelsWithParentUris, false);
 
@@ -1161,7 +1158,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         List<String> removedLevelsWithParentUris = filterRemovedRelationUrisToSet(koodiDTO.getLevelsWithCodeElements(), existingLevelsWithParentUris);
         List<String> removedWithinUris = filterRemovedRelationUrisToSet(koodiDTO.getWithinCodeElements(), existingWithinUris);
 
-        HashSet<String> existingLevelsWithUris = new HashSet<String>();
+        HashSet<String> existingLevelsWithUris = new HashSet<>();
         existingLevelsWithUris.addAll(existingLevelsWithChildUris);
         existingLevelsWithUris.addAll(existingLevelsWithParentUris);
         List<String> addedIncludesUris = filterNewRelationUrisToSet(koodiDTO.getIncludesCodeElements(), existingIncludesUris);
@@ -1185,7 +1182,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         addRelation(koodiUri, addedLevelsWithUris, SuhteenTyyppi.RINNASTEINEN, false);
         removeRelation(koodiUri, removedLevelsWithChildUris, SuhteenTyyppi.RINNASTEINEN, false);
 
-        List<String> koodiuriAsList = new ArrayList<String>();
+        List<String> koodiuriAsList = new ArrayList<>();
         koodiuriAsList.add(koodiUri);
         for (String parentUri : removedLevelsWithParentUris) {
             removeRelation(parentUri, koodiuriAsList, SuhteenTyyppi.RINNASTEINEN, false);
@@ -1228,7 +1225,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private List<String> filterNewRelationUrisToSet(List<RelationCodeElement> newRelations, HashSet<String> existingUris) {
-        ArrayList<String> toBeAdded = new ArrayList<String>();
+        ArrayList<String> toBeAdded = new ArrayList<>();
         for (RelationCodeElement koodinSuhde : newRelations) {
             if (!koodinSuhde.passive && !existingUris.contains(koodinSuhde.codeElementUri)) {
                 toBeAdded.add(koodinSuhde.codeElementUri);

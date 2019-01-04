@@ -4,7 +4,7 @@
     <parent>
         <artifactId>koodisto</artifactId>
         <groupId>fi.vm.sade.koodisto</groupId>
-        <version>2016-05-SNAPSHOT</version>
+        <version>2017-12-SNAPSHOT</version>
     </parent>
     <artifactId>koodisto-common</artifactId>
     <packaging>jar</packaging>
@@ -19,8 +19,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
-            <version>${junit.version}</version>
         </dependency>
     </dependencies>
 </project>

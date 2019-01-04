@@ -8,32 +8,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAnotherDateAsserter;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
@@ -45,6 +30,19 @@ import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
 @org.hibernate.annotations.Table(appliesTo = KoodistoVersio.TABLE_NAME, comment = "Koodistoversio sisältää mm. " +
         "koodiston päivityspäivämäärän, voimassaolopäivämäärät ja koodiston tilan.")
 @Cacheable
+@NamedEntityGraphs({@NamedEntityGraph(name = "koodistoWithRelations",
+        attributeNodes = {
+                @NamedAttributeNode(value = "ylakoodistos", subgraph = "ylakoodistos"),
+                @NamedAttributeNode(value = "alakoodistos", subgraph = "alakoodistos"),
+                @NamedAttributeNode("metadatas"),
+                @NamedAttributeNode(value = "koodisto", subgraph = "koodisto"),
+        },
+        subgraphs = {
+                @NamedSubgraph(name = "ylakoodistos", attributeNodes = @NamedAttributeNode("ylakoodistoVersio")),
+                @NamedSubgraph(name = "alakoodistos", attributeNodes = @NamedAttributeNode("alakoodistoVersio")),
+                @NamedSubgraph(name = "koodisto", attributeNodes = @NamedAttributeNode("koodistoRyhmas")),
+        })
+})
 public class KoodistoVersio extends BaseEntity {
 
     private static final long serialVersionUID = 7811620155498209499L;
@@ -87,18 +85,21 @@ public class KoodistoVersio extends BaseEntity {
     private Tila tila;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodistoVersio", cascade = { CascadeType.ALL })
-    private Set<KoodistoVersioKoodiVersio> koodiVersios = new HashSet<KoodistoVersioKoodiVersio>();
+    private Set<KoodistoVersioKoodiVersio> koodiVersios = new HashSet<>();
 
     @NotEmpty
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodistoVersio", cascade = { CascadeType.ALL })
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private List<KoodistoMetadata> metadatas = new ArrayList<KoodistoMetadata>();
+    @BatchSize(size = 100)
+    private Set<KoodistoMetadata> metadatas = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodistoVersio", cascade = { CascadeType.ALL })
-    private Set<KoodistonSuhde> ylakoodistos = new HashSet<KoodistonSuhde>();
+    @BatchSize(size = 100)
+    private Set<KoodistonSuhde> ylakoodistos = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "ylakoodistoVersio", cascade = { CascadeType.ALL })
-    private Set<KoodistonSuhde> alakoodistos = new HashSet<KoodistonSuhde>();
+    @BatchSize(size = 100)
+    private Set<KoodistonSuhde> alakoodistos = new HashSet<>();
 
 
     @PrePersist
@@ -186,8 +187,8 @@ public class KoodistoVersio extends BaseEntity {
         this.metadatas.remove(metadata);
     }
 
-    public List<KoodistoMetadata> getMetadatas() {
-        return Collections.unmodifiableList(metadatas);
+    public Set<KoodistoMetadata> getMetadatas() {
+        return Collections.unmodifiableSet(metadatas);
     }
 
     public void removeKoodiVersios(Collection<KoodistoVersioKoodiVersio> koodiVersios) {

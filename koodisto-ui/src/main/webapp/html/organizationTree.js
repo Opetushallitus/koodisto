@@ -1,206 +1,213 @@
 "use strict";
 
-app.factory("ChildOpener", function() {
-    return function(data) {
-    data.open = !data.open;
-    if(data.open) {
+import {OPH_ORG} from "./auth";
+import {koodistoConfig} from "./app.utils";
 
-        var iter = function(children){
-        if(children) {
-            children.forEach(function(child){
-            child.open = true;
-            iter(child.children);
+export class ChildOpener {
+    constructor() {
+        "ngInject";
+    }
+
+    open(data) {
+        data.open = !data.open;
+        if (data.open) {
+            const iter = (children) => {
+                if (children) {
+                    children.forEach((child) => {
+                        child.open = true;
+                        iter(child.children);
+                    });
+                }
+            };
+
+            iter(data.children);
+        }
+    }
+}
+
+export class OrganisaatioTreeModel {
+    constructor(OrganizationChildrenByOid, childOpener) {
+        "ngInject";
+        this.OrganizationChildrenByOid = OrganizationChildrenByOid;
+        this.childOpener = childOpener;
+        this.model = {};
+    }
+
+    init(organizations) {
+        this.model = {};
+        this.model.organisaatiot = [];
+        this.model.numHits = 0;
+        this.organizationsToInitFrom = organizations;
+        this.searchStr = "";
+    }
+
+    resetSearch() {
+        if (this.model.originalOrganizations && this.model.originalOrganizations.length > 0){
+            this.model.organisaatiot =  this.model.originalOrganizations;
+            this.model.numHits = this.calculateMatchingOrgs(this.model.originalOrganizations);
+        } else {
+            this.organizationsToInitFrom.forEach((organization) => {
+                this.OrganizationChildrenByOid.get({oid: organization}, (result) => {
+                    result.organisaatiot.forEach((org) => {
+                        this.model.organisaatiot.push(org);
+                    });
+                    this.model.numHits += result.numHits;
+                });
             });
         }
-        };
-
-        iter(data.children);
     }
-    };
-});
 
-app.factory('OrganisaatioTreeModel', function(OrganizationChildrenByOid, ChildOpener) {
-    return (function() {
-        var instance = {};
-        instance.model = {};
-
-        instance.init = function(organizations) {                       
-            instance.model = {};
-            instance.model.organisaatiot = [];
-            instance.model.numHits = 0;
-            instance.organizationsToInitFrom = organizations;
-            instance.searchStr = "";
-        };
-        
-        instance.resetSearch = function() {
-            if (instance.model.originalOrganizations && instance.model.originalOrganizations.length > 0){
-            instance.model.organisaatiot =  instance.model.originalOrganizations;
-            instance.model.numHits = calculateMatchingOrgs(instance.model.originalOrganizations);
-            } else {
-            instance.organizationsToInitFrom.forEach(function(organization) {
-                OrganizationChildrenByOid.get({oid: organization}, function(result) { 
-                result.organisaatiot.forEach(function(org) {
-                    instance.model.organisaatiot.push(org);
-                });
-                instance.model.numHits += result.numHits;
-                });
-            });
-            }
-        };
-        
-        function calculateMatchingOrgs(organizations) {
-            var amount = organizations.length;
-            function calculate(children) {
+    calculateMatchingOrgs(organizations) {
+        let amount = organizations.length;
+        const calculate = (children) => {
             amount += children.length;
-            children.forEach(function(child) {
+            children.forEach((child) => {
                 calculate(child.children);
             });
-            }
-            organizations.forEach(function(org) {
+        };
+        organizations.forEach((org) => {
             calculate(org.children);
-            });
-            return amount;
-        }
+        });
+        return amount;
+    }
 
-        instance.search = function(searchStr) {
-            
-            var matchingOrgs = new Array();
-            
-            function matchesSearch(organization) {
-            function matchesTranslation(organization2, language) {
+    search(searchStr) {
+
+        const matchingOrgs = [];
+
+        const matchesSearch = (organization) => {
+            const matchesTranslation = (organization2, language) => {
                 return organization2.nimi[language] && organization2.nimi[language].toLowerCase().indexOf(searchStr) > -1;
-            }
+            };
             return matchesTranslation(organization, 'fi');
-            }
-            
-            function recursivelyAddMatchingOrganizations(organization) { 
+        };
+
+        const recursivelyAddMatchingOrganizations = (organization) => {
             if (matchesSearch(organization)) {
                 matchingOrgs.push(organization);
             } else {
-                organization.children.forEach(function(child) {                
-                recursivelyAddMatchingOrganizations(child);
+                organization.children.forEach((child) => {
+                    recursivelyAddMatchingOrganizations(child);
                 });
             }
-            }
-            
-            searchStr = searchStr.toLowerCase();
+        };
 
-            if (!instance.model.originalOrganizations || instance.model.originalOrganizations.length < 1) {
-            instance.model.originalOrganizations = instance.model.organisaatiot;
-            }
+        searchStr = searchStr.toLowerCase();
 
-            instance.model.originalOrganizations.forEach(function(organization) {
+        if (!this.model.originalOrganizations || this.model.originalOrganizations.length < 1) {
+            this.model.originalOrganizations = this.model.organisaatiot;
+        }
+
+        this.model.originalOrganizations.forEach((organization) => {
             recursivelyAddMatchingOrganizations(organization);
+        });
+
+        this.model.organisaatiot = matchingOrgs;
+        this.model.numHits = this.calculateMatchingOrgs(matchingOrgs);
+
+        if (this.model.organisaatiot.length < 4) {
+            this.model.organisaatiot.forEach((data) => {
+                this.openChildren(data);
             });
-
-            instance.model.organisaatiot = matchingOrgs;
-            instance.model.numHits = calculateMatchingOrgs(matchingOrgs);
-            
-            if(instance.model.organisaatiot.length < 4) {
-            instance.model.organisaatiot.forEach(function(data){
-                instance.openChildren(data);
-            });
-            }
-        };
-
-        instance.openChildren = function(data) {
-            ChildOpener(data);
-        };
-
-        return instance;
-    })();
-
-});
-
-app.factory('OrganisaatioOPHTreeModel', function(Organizations, OrganizationByOid, ChildOpener) {
-
-    return (function() {
-        var instance = {};
-        instance.model = {};
-        instance.searchStr = "";
-
-        instance.init = function() {                       
-            instance.model = {};            
-        };
-        
-        instance.resetSearch = function() {
-            OrganizationByOid.get({oid: OPH_ORG}, function(result) {
-            instance.model.organisaatiot = [result];
-            instance.model.numHits = 1;
-            });
-        };
-
-        instance.search = function(searchStr) {            
-            Organizations.get({"searchStr": searchStr, "skipparents": true}, function(result) {
-            instance.model = result;
-            if(instance.model.organisaatiot.length < 4) {
-                instance.model.organisaatiot.forEach(function(data) {
-                instance.openChildren(data);
-                });
-            }
-            });            
-        };
-
-        instance.openChildren = function(data) {
-               ChildOpener(data);
-        };
-
-        return instance;
-    })();
-
-});
-
-function OrganisaatioTreeController($scope, AuthService, OrganisaatioTreeModel, OrganisaatioOPHTreeModel) {
-    if (!$scope.orgTree) {
-    AuthService.updateOph(SERVICE_NAME).then(function() {
-        $scope.orgTree = OrganisaatioOPHTreeModel;
-    }, function() {
-        $scope.orgTree = OrganisaatioTreeModel;
-    });
-    
-    AuthService.getOrganizations(SERVICE_NAME).then(function(organizations) {
-        $scope.orgTree.init(organizations);
-    });
-    
-    $scope.$watch('orgTree.searchStr', function() {
-            if($scope.orgTree.searchStr.length > 2) {
-                $scope.orgTree.search($scope.orgTree.searchStr);
-            } else if ($scope.orgTree.searchStr.length < 1){
-                $scope.orgTree.resetSearch();
-            }            
-    });
-    }
-    
-    function debounce(fn, delay) {
-        var timer = null;
-        return function () {
-            var context = this, args = arguments;
-            clearTimeout(timer);
-            timer = setTimeout(function () {
-                fn.apply(context, args);
-            }, delay);
-        };
-    }
-
-    $scope.openChildren = function(data) {
-    $scope.orgTree.openChildren(data);
+        }
     };
 
-    $scope.clear = function(){
-    $scope.orgTree.searchStr = '';
-    $scope.orgTree.resetSearch();
+    openChildren(data) {
+        this.childOpener.open(data);
+    };
+}
+
+export class OrganisaatioOPHTreeModel {
+    constructor(Organizations, OrganizationByOid, childOpener) {
+        "ngInject";
+        this.Organizations = Organizations;
+        this.OrganizationByOid = OrganizationByOid;
+        this.childOpener = childOpener;
+
+        this.model = {};
+        this.searchStr = "";
+    }
+
+    init() {
+        this.model = {};
+    }
+
+    resetSearch() {
+        this.OrganizationByOid.get({oid: OPH_ORG}, (result) => {
+            this.model.organisaatiot = [result];
+            this.model.numHits = 1;
+        });
+    }
+
+    search(searchStr) {
+        this.Organizations.get({"searchStr": searchStr, "skipparents": true}, (result) => {
+            this.model = result;
+            if (this.model.organisaatiot.length < 4) {
+                this.model.organisaatiot.forEach((data) => {
+                    this.openChildren(data);
+                });
+            }
+        });
+    }
+
+    openChildren(data) {
+        this.childOpener.open(data);
+    }
+
+}
+
+export class OrganisaatioTreeController {
+    constructor($scope, authService, OrganisaatioTreeModel, organisaatioOPHTreeModel) {
+        "ngInject";
+        this.$scope = $scope;
+        this.authService = authService;
+        this.OrganisaatioTreeModel = OrganisaatioTreeModel;
+        this.organisaatioOPHTreeModel = organisaatioOPHTreeModel;
+
+        if (!this.orgTree) {
+            authService.updateOph(koodistoConfig.SERVICE_NAME).then(() => {
+                this.orgTree = organisaatioOPHTreeModel;
+            }, () => {
+                this.orgTree = OrganisaatioTreeModel;
+            });
+
+            authService.getOrganizations(koodistoConfig.SERVICE_NAME).then((organizations) => {
+                this.orgTree.init(organizations);
+            });
+
+            $scope.$watch(() => this.orgTree.searchStr, () => {
+                if (this.orgTree.searchStr.length > 2) {
+                    this.orgTree.search(this.orgTree.searchStr);
+                }
+                else if (this.orgTree.searchStr.length < 1) {
+                    this.orgTree.resetSearch();
+                }
+            });
+        }
+    }
+    openChildren(data) {
+        this.orgTree.openChildren(data);
+    };
+
+    clear(){
+        this.orgTree.searchStr = '';
+        this.orgTree.resetSearch();
     };
 
 }
 
-var ModalInstanceCtrl = function ($scope, $modalInstance) {
+export class ModalInstanceCtrl {
+    constructor($scope, $modalInstance) {
+        "ngInject";
+        this.$scope = $scope;
+        this.$modalInstance = $modalInstance;
+    }
 
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-    };
+    cancel() {
+        this.$modalInstance.dismiss('cancel');
+    }
 
-
-    $scope.organisaatioSelector = function(data) {
-        $modalInstance.close(data);
-    };
-};
+    organisaatioSelector(data) {
+        this.$modalInstance.close(data);
+    }
+}

@@ -5,6 +5,8 @@ target/
 .project
 .settings/org.eclipse.core.resources.prefs
 .settings/org.eclipse.m2e.core.prefs
+node_modules
+node
 koodisto-api/.classpath
 koodisto-api/.project
 koodisto-api/.settings/org.eclipse.core.resources.prefs
@@ -48,6 +50,7 @@ koodisto-service/nb-configuration.xml
 koodisto-api/.settings/org.eclipse.wst.validation.prefs
 *.prefs
 koodisto-service/.settings/org.eclipse.wst.common.project.facet.core.prefs.xml
+koodisto-service/logs
 koodisto-ui/.classpath
 koodisto-ui/.settings/.jsdtscope
 koodisto-ui/.settings/org.eclipse.wst.common.component

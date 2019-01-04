@@ -3,16 +3,16 @@
 
     <span class="label">
         <i class="fa fa-sitemap organisaatio"
-           ng-class="{ auki: (data.open || data.koodistos.length == 0 || data.metadata[0].lyhytNimi),
+           ng-class="{ auki: (data.open || data.koodistos.length == 0 || data.metadata[0].lyhytNimi),
                 kiinni: (!data.open && data.koodistos.length > 0 && data.metadata[0].nimi)}"
-           ng-click="openChildren(data)"></i>
+           ng-click="codesEditor.openChildren(data)"></i>
         <label>
             <a href="" ng-if="data.metadata[0].nimi">{{data.shownName}}</a>
-            <a href="" ng-click="close(data)" ng-if="data.latestKoodistoVersio.metadata[0].nimi">{{data.shownName}}</a>
+            <a href="" ng-click="codesEditor.close(data)" ng-if="data.latestKoodistoVersio.metadata[0].nimi">{{data.shownName}}</a>
         </label>
     </span>
-    <ol ng-if="data.open || model.query && model.query.length!=0">
-        <li ng-if="data.latestKoodistoVersio.metadata[0].nimi" ng-repeat="data in data.koodistos | orderBy:'shownName' | filter:search" ng-include="'codes.html'">
+    <ol ng-if="data.open || codesEditor.model.query && codesEditor.model.query.length!=0">
+        <li ng-if="data.latestKoodistoVersio.metadata[0].nimi" ng-repeat="data in data.koodistos | orderBy:'shownName' | filter: codesEditor.search" ng-include="'codes.html'">
         </li>
     </ol>
 
@@ -24,176 +24,206 @@
     </div>
     <div class="modal-body">{{'codes.editpage.confirmcancel.text' | i18n}}</div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="cancel()">{{'codes.ok' | i18n}}</button>
-        <button class="btn btn-warning" ng-click="closeCancelConfirmModal()">{{'codes.cancel' | i18n}}</button>
+        <button class="btn btn-primary" ng-click="codesEditorModal.cancel()">{{'codes.ok' | i18n}}</button>
+        <button class="btn btn-warning" ng-click="codesEditorModal.closeCancelConfirmModal()">{{'codes.cancel' | i18n}}</button>
     </div>
 </script>
 
-<div ng-include="'partials/organisaatioSelector.html'"></div>
+<div ng-include="'organisaatioSelector.html'"></div>
 
 
 <div class="container">
-    <div class="row-fluid">
-        <div class="span12">
-            <h1>{{'codes.editpage.header' | i18n}}</h1>
-        </div>
+    <div class="col-md-12">
+        <h1>{{'codes.editpage.header' | i18n}}</h1>
     </div>
-
-    <form name="form" class="form-horizontal" ng-submit="submit()">
-        <div class="control-group">
-
-            <label for="codesstate" class="control-label">{{'codes.editpage.state' | i18n}}</label>
-            <div class="controls">
-                <select id="codesstate" name="tila" ng-model="model.codes.tila" ng-options="state.key as state.value for state in model.states" ng-required="true" required>
-                </select> <span class="text-error" ng-if="form.tila.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+    <form name="form" class="form-horizontal" ng-submit="codesEditor.submit()">
+        <div class="form-group">
+            <label for="codesstate" class="col-md-2 control-label">{{'codes.editpage.state' | i18n}}</label>
+            <div class="col-md-3">
+                <select id="codesstate"
+                        class="form-control"
+                        name="tila"
+                        ng-model="codesEditor.model.codes.tila"
+                        ng-options="state.key as state.value for state in codesEditor.model.states"
+                        ng-required="true"
+                        required>
+                </select> <span class="text-danger" ng-if="form.tila.$error.required && codesEditor.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">{{codesEditor.errorMessage}}</span>
             </div>
         </div>
-        <div class="control-group">
-            <label for="codesgroup" class="control-label">{{'codes.createpage.codesgroup' | i18n}}</label>
-            <div class="controls">
-                <select id="codesgroup" ng-model="model.codes.codesGroupUri" name="codesGroupUri" ng-required="true" required
-                    ng-options="code.koodistoRyhmaUri as code.shownName for code in model.allCodes | orderBy:'metadata[0].nimi'">
-                </select> <span class="text-error" ng-if="form.codesGroupUri.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+        <div class="form-group">
+            <label for="codesgroup" class="col-md-2 control-label">{{'codes.createpage.codesgroup' | i18n}}</label>
+            <div class="col-md-3">
+                <select id="codesgroup"
+                        class="form-control"
+                        ng-model="codesEditor.model.codes.codesGroupUri"
+                        name="codesGroupUri"
+                        ng-required="true"
+                        required
+                        ng-options="code.koodistoRyhmaUri as code.shownName for code in codesEditor.model.allCodes | orderBy:'metadata[0].nimi'">
+                </select> <span class="text-danger" ng-if="form.codesGroupUri.$error.required && codesEditor.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">{{codesEditor.errorMessage}}</span>
             </div>
         </div>
-        <div class="control-group">
-            <div class="controls">
-                <label for="same_name" class="checkbox"> <input id="same_name" type="checkbox" ng-model="model.samename" ng-change="setSameValue('name')" />{{'codes.sameinalllanguages'
+
+        <div class="form-group">
+            <div class="col-md-offset-2">
+                <label for="same_name" class="checkbox"> <input id="same_name" type="checkbox" ng-model="codesEditor.model.samename" ng-change="codesEditor.setSameValue('name')" />{{'codes.sameinalllanguages'
                     | i18n}}
                 </label>
             </div>
         </div>
-        <div class="control-group">
-
-            <label for="name_fi" class="control-label">{{'codes.createpage.name' | i18n}}</label>
-            <div class="controls">
-                <input id="name_fi" type="text" maxlength="256" class="width-30" ng-model="model.namefi" name="namefi" placeholder="{{'codes.finnish' | i18n}}"
-                    ng-required="!model.namesv && !model.nameen || model.descriptionfi" ng-change="setSameValue('name')" />
-                <span class="text-error" ng-if="form.namefi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
-                    <span ng-if="!model.namesv && !model.nameen">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!model.namesv && !model.nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
+        <div class="form-group">
+            <label for="name_fi" class="col-md-2 control-label">{{'codes.createpage.name' | i18n}}</label>
+            <div class="col-md-3">
+                <input id="name_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.namefi" name="namefi" placeholder="{{'codes.finnish' | i18n}}"
+                       ng-required="!codesEditor.model.namesv && !codesEditor.model.nameen || codesEditor.model.descriptionfi" ng-change="codesEditor.setSameValue('name')" />
+                <span class="text-danger" ng-if="form.namefi.$error.required && codesEditor.model.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">
+                    <span ng-if="!codesEditor.model.namesv && !codesEditor.model.nameen">{{codesEditor.errorMessageAtLeastOneName}}</span>
+                    <span ng-if="!(!codesEditor.model.namesv && !codesEditor.model.nameen)">{{codesEditor.errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
-        <div class="control-group">
-            <div class="controls">
-                <input id="name_sv" type="text" maxlength="256" class="width-30" ng-model="model.namesv" name="namesv" placeholder="{{'codes.swedish' | i18n}}"
-                    ng-required="!model.namefi && !model.nameen || model.descriptionsv" ng-disabled="model.samename" />
-                <span class="text-error" ng-if="form.namesv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
-                    <span ng-if="!model.namefi && !model.nameen">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!model.namefi && !model.nameen)">{{errorMessageIfOtherInfoIsGiven}}</span>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-3">
+                <input id="name_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.namesv" name="namesv" placeholder="{{'codes.swedish' | i18n}}"
+                       ng-required="!codesEditor.model.namefi && !codesEditor.model.nameen || codesEditor.model.descriptionsv" ng-disabled="codesEditor.model.samename" />
+                <span class="text-danger" ng-if="form.namesv.$error.required && codesEditor.model.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">
+                    <span ng-if="!codesEditor.model.namefi && !codesEditor.model.nameen">{{codesEditor.errorMessageAtLeastOneName}}</span>
+                    <span ng-if="!(!codesEditor.model.namefi && !codesEditor.model.nameen)">{{codesEditor.errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
-        <div class="control-group">
-            <div class="controls">
-                <input id="name_en" type="text" maxlength="256" class="width-30" ng-model="model.nameen" name="nameen" placeholder="{{'codes.english' | i18n}}"
-                    ng-required="!model.namefi && !model.namesv || model.descriptionen" ng-disabled="model.samename" />
-                <span class="text-error" ng-if="form.nameen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">
-                    <span ng-if="!model.namefi && !model.namesv">{{errorMessageAtLeastOneName}}</span>
-                    <span ng-if="!(!model.namefi && !model.namesv)">{{errorMessageIfOtherInfoIsGiven}}</span>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-3">
+                <input id="name_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.nameen" name="nameen" placeholder="{{'codes.english' | i18n}}"
+                       ng-required="!codesEditor.model.namefi && !codesEditor.model.namesv || codesEditor.model.descriptionen" ng-disabled="codesEditor.model.samename" />
+                <span class="text-danger" ng-if="form.nameen.$error.required && codesEditor.model.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">
+                    <span ng-if="!codesEditor.model.namefi && !codesEditor.model.namesv">{{codesEditor.errorMessageAtLeastOneName}}</span>
+                    <span ng-if="!(!codesEditor.model.namefi && !codesEditor.model.namesv)">{{codesEditor.errorMessageIfOtherInfoIsGiven}}</span>
                 </span>
             </div>
         </div>
-        <div class="control-group">
-            <label for="datesactivestart" class="control-label">{{'codes.createpage.datesactive' | i18n}}</label>
-
-            <div class="controls">
-                <input id="datesactivestart" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" name="voimassaAlkuPvm" ng-model="model.codes.voimassaAlkuPvm"
-                    min="minDate" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" required />
-                -
-                <input id="datesactiveend" type="text" class="input-small" datepicker-popup="dd.MM.yyyy" ng-model="model.codes.voimassaLoppuPvm" min="minDate"
-                    datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="false" />
-                <i class="icon-calendar"></i>
-                <span class="text-error" ng-if="form.voimassaAlkuPvm.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+        <div class="form-group">
+            <div class="form-inline col-md-12">
+                <label for="datesactivestart" class="col-md-2 control-label">{{'codes.createpage.datesactive' | i18n}}</label>
+                <div class="input-group col-md-2">
+                    <input id="datesactivestart"
+                           class="form-control"
+                           type="text"
+                           datepicker-popup="dd.MM.yyyy"
+                           name="voimassaAlkuPvm"
+                           ng-model="codesEditor.model.codes.voimassaAlkuPvm"
+                           min="minDate"
+                           date-disabled="codesEditor.disabled(date, mode)"
+                           ng-required="true"
+                           required
+                           is-open="codesEditor.datesactivestart.open"
+                           ng-click="codesEditor.datesactivestart.open = true"
+                    />
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                </div>
+                <span>-</span>
+                <div class="input-group col-md-2">
+                    <input id="datesactiveend"
+                           class="form-control"
+                           type="text"
+                           datepicker-popup="dd.MM.yyyy"
+                           ng-model="codesEditor.model.codes.voimassaLoppuPvm"
+                           min="minDate"
+                           date-disabled="codesEditor.disabled(date, mode)"
+                           ng-required="false"
+                           is-open="codesEditor.datesactiveend.open"
+                           ng-click="codesEditor.datesactiveend.open = true"
+                    />
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                </div>
+                <span class="text-danger" ng-if="form.voimassaAlkuPvm.$error.required && codesEditor.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">{{codesEditor.errorMessage}}</span>
             </div>
         </div>
-        <div class="control-group">
-            <div class="controls">
-                <label for="same_description" class="checkbox"> <input id="same_description" type="checkbox" ng-model="model.samedescription"
-                        ng-change="setSameValue('description')" /> {{'codes.sameinalllanguages' | i18n}}
+        <div class="form-group">
+            <div class="col-md-offset-2">
+                <label for="same_description" class="checkbox"> <input id="same_description" type="checkbox" ng-model="codesEditor.model.samedescription"
+                                                                       ng-change="codesEditor.setSameValue('description')" /> {{'codes.sameinalllanguages' | i18n}}
                 </label>
             </div>
         </div>
 
-        <div class="control-group">
-            <label for="description_fi" class="control-label">{{'codes.createpage.description' | i18n}}</label>
-            <div class="controls">
-                <textarea id="description_fi" maxlength="2048" class="width-30" ng-model="model.descriptionfi" name="descriptionfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('description')" ></textarea>
-                <span class="text-error" ng-if="form.descriptionfi.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+        <div class="form-group">
+            <label for="description_fi" class="col-md-2 control-label">{{'codes.createpage.description' | i18n}}</label>
+            <div class="col-md-3">
+                <textarea id="description_fi" maxlength="2048" class="width-30 form-control" ng-model="codesEditor.model.descriptionfi" name="descriptionfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="codesEditor.setSameValue('description')" ></textarea>
+                <span class="text-danger" ng-if="form.descriptionfi.$error.required && codesEditor.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">{{codesEditor.errorMessage}}</span>
             </div>
         </div>
-        <div class="control-group">
-            <div class="controls">
-                <textarea id="description_sv" maxlength="2048" class="width-30" ng-model="model.descriptionsv" name="descriptionsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.samedescription" ></textarea>
-                <span class="text-error" ng-if="form.descriptionsv.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-3">
+                <textarea id="description_sv" maxlength="2048" class="width-30 form-control" ng-model="codesEditor.model.descriptionsv" name="descriptionsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="codesEditor.model.samedescription" ></textarea>
+                <span class="text-danger" ng-if="form.descriptionsv.$error.required && codesEditor.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">{{codesEditor.errorMessage}}</span>
             </div>
         </div>
-        <div class="control-group">
-            <div class="controls">
-                <textarea id="description_en" maxlength="2048" class="width-30" ng-model="model.descriptionen" name="descriptionen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.samedescription" ></textarea>
-                <span class="text-error" ng-if="form.descriptionen.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label for="owner" class="control-label">{{'codes.createpage.owner' | i18n}}</label>
-            <div class="controls">
-                <input id="owner" type="text" maxlength="256" class="width-30" ng-model="model.codes.omistaja" />
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-3">
+                <textarea id="description_en" maxlength="2048" class="width-30 form-control" ng-model="codesEditor.model.descriptionen" name="descriptionen" placeholder="{{'codes.english' | i18n}}" ng-disabled="codesEditor.model.samedescription" ></textarea>
+                <span class="text-danger" ng-if="form.descriptionen.$error.required && codesEditor.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">{{codesEditor.errorMessage}}</span>
             </div>
         </div>
 
-        <div class="control-group">
-            <label for="organizationbutton" class="control-label">{{'codes.createpage.organization' | i18n}}</label>
-            <div class="controls">
-                <input id="organizationinput" type="text" class="width-30" name="organizationName" ng-model="model.codes.organizationName" ng-required="true" disabled
-                    required />
-                <input id="organizationbutton" type="button" value="{{'codes.select' | i18n}}" class="btn btn-small btn-primary" ng-click="open()" ng-model="selected" />
-                <span class="text-error" ng-if="form.organizationName.$error.required && loadingReady"><img style="margin-right: 10px;" src="../img/alert-icon28x29.png">{{errorMessage}}</span>
+        <div class="form-group">
+            <label for="owner" class="col-md-2 control-label">{{'codes.createpage.owner' | i18n}}</label>
+            <div class="col-md-3">
+                <input id="owner" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.codes.omistaja" />
             </div>
         </div>
 
+        <div class="form-group">
+            <label for="organizationbutton" class="col-md-2 control-label">{{'codes.createpage.organization' | i18n}}</label>
+            <div class="col-md-3">
+                <input id="organizationinput" type="text" class="width-30 form-control" name="organizationName" ng-model="codesEditor.model.codes.organizationName" ng-required="true" disabled
+                       required />
+            </div>
+            <input id="organizationbutton" type="button" value="{{'codes.select' | i18n}}" class="btn btn-sm btn-primary" ng-click="codesEditor.open()" ng-model="selected" />
+            <span class="text-danger" ng-if="form.organizationName.$error.required && codesEditor.loadingReady"><img style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}">{{codesEditor.errorMessage}}</span>
+        </div>
 
-        <div ng-show="codesSelector" class="span9">
-            <div class="modal-backdrop" ng-click="close()"></div>
+
+        <div ng-show="codesEditor.codesSelector" class="col-md-9">
+            <div class="modal-backdrop" ng-click="codesEditor.close()"></div>
 
             <div class="orgSelector">
-                <input type="text" maxlength="50" placeholder="{{'codes.mainpage.search.placeholder' | i18n}}" ng-model="model.query" />
+                <input type="text" maxlength="50" placeholder="{{'codes.mainpage.search.placeholder' | i18n}}" ng-model="codesEditor.model.query" />
 
                 <ol class="treelist collapsible">
-                    <li ng-repeat="data in model.allCodes" ng-include="'codes.html'"></li>
+                    <li ng-repeat="data in codesEditor.model.allCodes" ng-include="'codes.html'"></li>
                 </ol>
             </div>
 
         </div>
 
 
-        <div class="control-group">
-            <label for="withincodes" class="control-label">{{'codes.editpage.withincodes' | i18n}}</label><br>
-            <div class="controls">
-                <button id="withincodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codesSelector" ng-show="!codesSelector"
-                    ng-click="show('withincodes'); form.$setDirty()">{{'codes.editpage.addcodes' | i18n}}</button>
-
+        <div class="form-group">
+            <label for="withincodes" class="col-md-2 control-label">{{'codes.editpage.withincodes' | i18n}}</label><br>
+            <div>
+                <button id="withincodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-sm" ng-model="codesEditor.codesSelector" ng-show="!codesEditor.codesSelector"
+                        ng-click="codesEditor.show('withincodes'); form.$setDirty()">{{'codes.editpage.addcodes' | i18n}}</button>
             </div>
 
         </div>
 
-        <div class="row-fluid" ng-show="model.withinCodes.length">
-            <div class="span5 offset2">
+        <div class="row" ng-show="codesEditor.model.withinCodes.length">
+            <div class="col-md-5 col-md-offset-2">
                 <table class="table">
                     <thead>
-                        <tr>
-                            <th ng:click="sortBy1='name'" ng-class="{'sort-true': sortBy1=='name'}">{{'codes.editpage.codes' | i18n}}</th>
-                            <th ng:click="sortBy1='versio'" ng-class="{'sort-true': sortBy1=='versio'}">{{'codes.editpage.codes.version' | i18n}}</th>
-                            <th>{{'codes.delete' | i18n}}</th>
-                        </tr>
+                    <tr>
+                        <th ng:click="sortBy1='name'" ng-class="{'sort-true': sortBy1=='name'}">{{'codes.editpage.codes' | i18n}}</th>
+                        <th ng:click="sortBy1='versio'" ng-class="{'sort-true': sortBy1=='versio'}">{{'codes.editpage.codes.version' | i18n}}</th>
+                        <th>{{'codes.delete' | i18n}}</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="codes in model.withinCodes | filter:codes.passive | unique:'name' | orderBy:sortBy1">
-                            <td class="align-center">{{codes.name}}</td>
-                            <td class="align-center">{{codes.versio}}</td>
-                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromWithinCodes(codes); form.$setDirty()"></i></td>
-                        </tr>
+                    <tr ng-repeat="codes in codesEditor.model.withinCodes | filter:codes.passive | unique:'name' | orderBy:sortBy1">
+                        <td class="align-center">{{codes.name}}</td>
+                        <td class="align-center">{{codes.versio}}</td>
+                        <td class="align-center"><i class="glyphicon glyphicon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="codesEditor.removeFromWithinCodes(codes); form.$setDirty()"></i></td>
+                    </tr>
 
                     </tbody>
 
@@ -201,30 +231,30 @@
             </div>
         </div>
 
-        <div class="control-group">
-            <label for="includescodes" class="control-label">{{'codes.editpage.includescodes' | i18n}}</label><br>
-            <div class="controls">
-                <button id="includescodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codesSelector"
-                    ng-show="!codesSelector" ng-click="show('includescodes'); form.$setDirty()">{{'codes.editpage.addcodes' | i18n}}</button>
+        <div class="form-group">
+            <label for="includescodes" class="col-md-2 control-label">{{'codes.editpage.includescodes' | i18n}}</label><br>
+            <div>
+                <button id="includescodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-sm" ng-model="codesEditor.codesSelector"
+                        ng-show="!codesEditor.codesSelector" ng-click="codesEditor.show('includescodes'); form.$setDirty()">{{'codes.editpage.addcodes' | i18n}}</button>
             </div>
         </div>
 
-        <div class="row-fluid" ng-show="model.includesCodes.length">
-            <div class="span5 offset2">
+        <div class="row" ng-show="codesEditor.model.includesCodes.length">
+            <div class="col-md-5 col-md-offset-2">
                 <table class="table">
                     <thead>
-                        <tr>
-                            <th ng:click="sortBy2='name'" ng-class="{'sort-true': sortBy2=='name'}">{{'codes.editpage.codes' | i18n}}</th>
-                            <th ng:click="sortBy2='versio'" ng-class="{'sort-true': sortBy2=='versio'}">{{'codes.editpage.codes.version' | i18n}}</th>
-                            <th>{{'codes.delete' | i18n}}</th>
-                        </tr>
+                    <tr>
+                        <th ng:click="sortBy2='name'" ng-class="{'sort-true': sortBy2=='name'}">{{'codes.editpage.codes' | i18n}}</th>
+                        <th ng:click="sortBy2='versio'" ng-class="{'sort-true': sortBy2=='versio'}">{{'codes.editpage.codes.version' | i18n}}</th>
+                        <th>{{'codes.delete' | i18n}}</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="codes in model.includesCodes | filter:codes.passive | unique:'name' | orderBy:sortBy2">
-                            <td class="align-center">{{codes.name}}</td>
-                            <td class="align-center">{{codes.versio}}</td>
-                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromIncludesCodes(codes); form.$setDirty()"></i></td>
-                        </tr>
+                    <tr ng-repeat="codes in codesEditor.model.includesCodes | filter:codes.passive | unique:'name' | orderBy:sortBy2">
+                        <td class="align-center">{{codes.name}}</td>
+                        <td class="align-center">{{codes.versio}}</td>
+                        <td class="align-center"><i class="glyphicon glyphicon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="codesEditor.removeFromIncludesCodes(codes); form.$setDirty()"></i></td>
+                    </tr>
 
                     </tbody>
 
@@ -232,30 +262,30 @@
             </div>
         </div>
 
-        <div class="control-group">
-            <label for="levelswithcodes" class="control-label">{{'codes.editpage.levelswithcodes' | i18n}}</label><br>
-            <div class="controls">
-                <button id="levelswithcodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-small" ng-model="codesSelector"
-                    ng-show="!codesSelector" ng-click="show('levelswithcodes'); form.$setDirty()">{{'codes.editpage.addcodes' | i18n}}</button>
+        <div class="form-group">
+            <label for="levelswithcodes" class="col-md-2 control-label">{{'codes.editpage.levelswithcodes' | i18n}}</label><br>
+            <div>
+                <button id="levelswithcodes" type="button" auth="updateAny" auth-service="APP_KOODISTO" class="btn btn-sm" ng-model="codesEditor.codesSelector"
+                        ng-show="!codesEditor.codesSelector" ng-click="codesEditor.show('levelswithcodes'); form.$setDirty()">{{'codes.editpage.addcodes' | i18n}}</button>
             </div>
         </div>
 
-        <div class="row-fluid" ng-show="model.levelsWithCodes.length">
-            <div class="span5 offset2">
+        <div class="row" ng-show="codesEditor.model.levelsWithCodes.length">
+            <div class="col-md-5 col-md-offset-2">
                 <table class="table">
                     <thead>
-                        <tr>
-                            <th ng:click="sortBy3='name'" ng-class="{'sort-true': sortBy3=='name'}">{{'codes.editpage.codes' | i18n}}</th>
-                            <th ng:click="sortBy3='versio'" ng-class="{'sort-true': sortBy3=='versio'}">{{'codes.editpage.codes.version' | i18n}}</th>
-                            <th>{{'codes.delete' | i18n}}</th>
-                        </tr>
+                    <tr>
+                        <th ng:click="sortBy3='name'" ng-class="{'sort-true': sortBy3=='name'}">{{'codes.editpage.codes' | i18n}}</th>
+                        <th ng:click="sortBy3='versio'" ng-class="{'sort-true': sortBy3=='versio'}">{{'codes.editpage.codes.version' | i18n}}</th>
+                        <th>{{'codes.delete' | i18n}}</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="codes in model.levelsWithCodes | filter:codes.passive | unique:'name' | orderBy:sortBy3">
-                            <td class="align-center">{{codes.name}}</td>
-                            <td class="align-center">{{codes.versio}}</td>
-                            <td class="align-center"><i class="icon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="removeFromLevelsWithCodes(codes); form.$setDirty()"></i></td>
-                        </tr>
+                    <tr ng-repeat="codes in codesEditor.model.levelsWithCodes | filter:codes.passive | unique:'name' | orderBy:sortBy3">
+                        <td class="align-center">{{codes.name}}</td>
+                        <td class="align-center">{{codes.versio}}</td>
+                        <td class="align-center"><i class="glyphicon glyphicon-trash" auth="updateAny" auth-service="APP_KOODISTO" ng-click="codesEditor.removeFromLevelsWithCodes(codes); form.$setDirty()"></i></td>
+                    </tr>
 
                     </tbody>
 
@@ -265,259 +295,263 @@
 
 
 
-        <div class="control-group">
-            <div class="span12">
+        <div class="form-group">
+            <div class="col-md-12">
                 <accordion close-others="false"> <accordion-group is-open="isopen" class=""> <accordion-heading> <i
-                    class="pull-left" ng-class="{'icon-chevron-down': isopen, 'icon-chevron-right': !isopen}"></i> {{'codes.createpage.showextra' | i18n}} </accordion-heading>
-                <div class="control-group">
-                    <div class="controls">
-                        <label for="same_instructions" class="checkbox"> <input id="same_instructions" type="checkbox" ng-model="model.sameinstructions"
-                                ng-change="setSameValue('instructions')" /> {{'codes.sameinalllanguages' | i18n}}
-                        </label>
+                        class="pull-left" ng-class="{'glyphicon glyphicon-chevron-down': isopen, 'glyphicon glyphicon-chevron-right': !isopen}"></i> {{'codes.createpage.showextra' | i18n}} </accordion-heading>
+                    <div class="form-group">
+                        <div class="col-md-offset-2">
+                            <label for="same_instructions" class="checkbox"> <input id="same_instructions" type="checkbox" ng-model="codesEditor.model.sameinstructions"
+                                                                                    ng-change="codesEditor.setSameValue('instructions')" /> {{'codes.sameinalllanguages' | i18n}}
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-
-                    <label for="instructions_fi" class="control-label">{{'codes.createpage.instructions' | i18n}}</label>
-                    <div class="controls">
-                        <textarea id="instructions_fi" maxlength="2048" class="width-30" ng-model="model.instructionsfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('instructions')" ></textarea>
+                    <div class="form-group">
+                        <label for="instructions_fi" class="col-md-2 control-label">{{'codes.createpage.instructions' | i18n}}</label>
+                        <div class="col-md-3">
+                            <textarea id="instructions_fi" maxlength="2048" class="width-30 form-control" ng-model="codesEditor.model.instructionsfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="codesEditor.setSameValue('instructions')" ></textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <textarea id="instructions_sv" maxlength="2048" class="width-30" ng-model="model.instructionssv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.sameinstructions" ></textarea>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <textarea id="instructions_sv" maxlength="2048" class="width-30 form-control" ng-model="codesEditor.model.instructionssv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="codesEditor.model.sameinstructions" ></textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <textarea id="instructions_en" maxlength="2048" class="width-30" ng-model="model.instructionsen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.sameinstructions" ></textarea>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <textarea id="instructions_en" maxlength="2048" class="width-30 form-control" ng-model="codesEditor.model.instructionsen" placeholder="{{'codes.english' | i18n}}" ng-disabled="codesEditor.model.sameinstructions" ></textarea>
+                        </div>
                     </div>
-                </div>
-
-
-                <div class="control-group">
-                    <div class="controls">
-                        <label for="same_targetarea" class="checkbox"> <input id="same_targetarea" type="checkbox" ng-model="model.sametargetarea"
-                                ng-change="setSameValue('targetarea')" /> {{'codes.sameinalllanguages' | i18n}}
-                        </label>
-                    </div>
-                </div>
-                <div class="control-group">
-
-                    <label for="targetarea_fi" class="control-label">{{'codes.createpage.targetarea' | i18n}}</label>
-                    <div class="controls">
-                        <input id="targetarea_fi" type="text" maxlength="256" class="width-30" ng-model="model.targetareafi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('targetarea')" />
-                    </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="targetarea_sv" type="text" maxlength="256" class="width-30" ng-model="model.targetareasv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.sametargetarea" />
-                    </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="targetarea_en" type="text" maxlength="256" class="width-30" ng-model="model.targetareaen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.sametargetarea" />
-                    </div>
-                </div>
 
 
-                <div class="control-group">
-                    <div class="controls">
-                        <label for="same_targetareapart" class="checkbox"><input id="same_targetareapart" type="checkbox" ng-model="model.sametargetareapart"
-                                ng-change="setSameValue('targetareapart')" /> {{'codes.sameinalllanguages' | i18n}}</label>
+                    <div class="form-group">
+                        <div class="col-md-offset-2">
+                            <label for="same_targetarea" class="checkbox"> <input id="same_targetarea" type="checkbox" ng-model="codesEditor.model.sametargetarea"
+                                                                                  ng-change="codesEditor.setSameValue('targetarea')" /> {{'codes.sameinalllanguages' | i18n}}
+                            </label>
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label for="targetarea_fi" class="col-md-2 control-label">{{'codes.createpage.targetarea' | i18n}}</label>
+                        <div class="col-md-3">
+                            <input id="targetarea_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.targetareafi" placeholder="{{'codes.finnish' | i18n}}" ng-change="codesEditor.setSameValue('targetarea')" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="targetarea_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.targetareasv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="codesEditor.model.sametargetarea" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="targetarea_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.targetareaen" placeholder="{{'codes.english' | i18n}}" ng-disabled="codesEditor.model.sametargetarea" />
+                        </div>
+                    </div>
 
-                <div class="control-group">
-                    <label for="targetareapart_fi" class="control-label">{{'codes.createpage.targetareapart' | i18n}}</label>
 
-                    <div class="controls">
-                        <input id="targetareapart_fi" type="text" maxlength="256" class="width-30" ng-model="model.targetareapartfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('targetareapart')" />
+                    <div class="form-group">
+                        <div class="col-md-offset-2">
+                            <label for="same_targetareapart" class="checkbox"><input id="same_targetareapart" type="checkbox" ng-model="codesEditor.model.sametargetareapart"
+                                                                                     ng-change="codesEditor.setSameValue('targetareapart')" /> {{'codes.sameinalllanguages' | i18n}}</label>
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="targetareapart_sv" type="text" maxlength="256" class="width-30" ng-model="model.targetareapartsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.sametargetareapart" />
+
+                    <div class="form-group">
+                        <label for="targetareapart_fi" class="col-md-2 control-label">{{'codes.createpage.targetareapart' | i18n}}</label>
+                        <div class="col-md-3">
+                            <input id="targetareapart_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.targetareapartfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="codesEditor.setSameValue('targetareapart')" />
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="targetareapart_en" type="text" maxlength="256" class="width-30" ng-model="model.targetareaparten" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.sametargetareapart" />
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="targetareapart_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.targetareapartsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="codesEditor.model.sametargetareapart" />
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="targetareapart_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.targetareaparten" placeholder="{{'codes.english' | i18n}}" ng-disabled="codesEditor.model.sametargetareapart" />
+                        </div>
+                    </div>
 
 
-                <div class="control-group">
-                    <div class="controls">
-                        <label for="same_concept" class="checkbox"> <input id="same_concept" type="checkbox" ng-model="model.sameconcept" ng-change="setSameValue('concept')" />
-                            {{'codes.sameinalllanguages' | i18n}}
-                        </label>
+                    <div class="form-group">
+                        <div class="col-md-offset-2">
+                            <label for="same_concept" class="checkbox"> <input id="same_concept" type="checkbox" ng-model="codesEditor.model.sameconcept" ng-change="codesEditor.setSameValue('concept')" />
+                                {{'codes.sameinalllanguages' | i18n}}
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
+                    <div class="form-group">
+                        <label for="concept_fi" class="col-md-2 control-label">{{'codes.createpage.concept' | i18n}}</label>
+                        <div class="col-md-3">
+                            <input id="concept_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.conceptfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="codesEditor.setSameValue('concept')" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="concept_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.conceptsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="codesEditor.model.sameconcept" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="concept_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.concepten" placeholder="{{'codes.english' | i18n}}" ng-disabled="codesEditor.model.sameconcept" />
+                        </div>
+                    </div>
 
-                    <label for="concept_fi" class="control-label">{{'codes.createpage.concept' | i18n}}</label>
-                    <div class="controls">
-                        <input id="concept_fi" type="text" maxlength="256" class="width-30" ng-model="model.conceptfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('concept')" />
+                    <div class="form-group">
+                        <div class="col-md-offset-2">
+                            <label for="same_operationalenvironment" class="checkbox"> <input id="same_operationalenvironment" type="checkbox"
+                                                                                              ng-model="codesEditor.model.sameoperationalenvironment" ng-change="codesEditor.setSameValue('operationalenvironment')" /> {{'codes.sameinalllanguages' | i18n}}
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="concept_sv" type="text" maxlength="256" class="width-30" ng-model="model.conceptsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.sameconcept" />
+                    <div class="form-group">
+                        <label for="operationalenvironment_fi" class="col-md-2 control-label">{{'codes.createpage.operationalenvironment' | i18n}}</label>
+                        <div class="col-md-3">
+                            <input id="operationalenvironment_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.operationalenvironmentfi"
+                                   placeholder="{{'codes.finnish' | i18n}}" ng-change="codesEditor.setSameValue('operationalenvironment')" />
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="concept_en" type="text" maxlength="256" class="width-30" ng-model="model.concepten" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.sameconcept" />
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="operationalenvironment_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.operationalenvironmentsv"
+                                   placeholder="{{'codes.swedish' | i18n}}" ng-disabled="codesEditor.model.sameoperationalenvironment" />
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="operationalenvironment_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.operationalenvironmenten"
+                                   placeholder="{{'codes.english' | i18n}}" ng-disabled="codesEditor.model.sameoperationalenvironment" />
+                        </div>
+                    </div>
 
-                <div class="control-group">
-                    <div class="controls">
-                        <label for="same_operationalenvironment" class="checkbox"> <input id="same_operationalenvironment" type="checkbox"
-                                ng-model="model.sameoperationalenvironment" ng-change="setSameValue('operationalenvironment')" /> {{'codes.sameinalllanguages' | i18n}}
-                        </label>
+                    <div class="form-group">
+                        <div class="col-md-offset-2">
+                            <label for="same_codessource" class="checkbox"><input id="same_codessource" type="checkbox" ng-model="codesEditor.model.samecodessource"
+                                                                                  ng-change="codesEditor.setSameValue('codessource')" /> {{'codes.sameinalllanguages' | i18n}}</label>
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <label for="operationalenvironment_fi" class="control-label">{{'codes.createpage.operationalenvironment' | i18n}}</label>
+                    <div class="form-group">
+                        <label for="codessource_fi" class="col-md-2 control-label">{{'codes.createpage.codessource' | i18n}}</label>
+                        <div class="col-md-3">
+                            <input id="codessource_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.codessourcefi" placeholder="{{'codes.finnish' | i18n}}" ng-change="codesEditor.setSameValue('codessource')" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="codessource_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.codessourcesv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="codesEditor.model.samecodessource" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="codessource_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.codessourceen" placeholder="{{'codes.english' | i18n}}" ng-disabled="codesEditor.model.samecodessource" />
+                        </div>
+                    </div>
 
-                    <div class="controls">
-                        <input id="operationalenvironment_fi" type="text" maxlength="256" class="width-30" ng-model="model.operationalenvironmentfi"
-                            placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('operationalenvironment')" />
+                    <div class="form-group">
+                        <div class="col-md-offset-2">
+                            <label for="same_specifiescodes" class="checkbox"> <input id="same_specifiescodes" type="checkbox" ng-model="codesEditor.model.samespecifiescodes"
+                                                                                      ng-change="codesEditor.setSameValue('specifiescodes')" /> {{'codes.sameinalllanguages' | i18n}}
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="operationalenvironment_sv" type="text" maxlength="256" class="width-30" ng-model="model.operationalenvironmentsv"
-                            placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.sameoperationalenvironment" />
-                    </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="operationalenvironment_en" type="text" maxlength="256" class="width-30" ng-model="model.operationalenvironmenten"
-                            placeholder="{{'codes.english' | i18n}}" ng-disabled="model.sameoperationalenvironment" />
-                    </div>
-                </div>
 
-                <div class="control-group">
-                    <div class="controls">
-                        <label for="same_codessource" class="checkbox"><input id="same_codessource" type="checkbox" ng-model="model.samecodessource"
-                                ng-change="setSameValue('codessource')" /> {{'codes.sameinalllanguages' | i18n}}</label>
+                    <div class="form-group">
+                        <label for="specifiescodes_fi" class="col-md-2 control-label">{{'codes.createpage.specifiescodes' | i18n}}</label>
+                        <div class="col-md-3">
+                            <input id="specifiescodes_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.specifiescodesfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="codesEditor.setSameValue('specifiescodes')" />
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <label for="codessource_fi" class="control-label">{{'codes.createpage.codessource' | i18n}}</label>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="specifiescodes_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.specifiescodessv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="codesEditor.model.samespecifiescodes" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="specifiescodes_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.specifiescodesen" placeholder="{{'codes.english' | i18n}}" ng-disabled="codesEditor.model.samespecifiescodes" />
+                        </div>
+                    </div>
 
-                    <div class="controls">
-                        <input id="codessource_fi" type="text" maxlength="256" class="width-30" ng-model="model.codessourcefi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('codessource')" />
+                    <div class="form-group">
+                        <div class="col-md-offset-2">
+                            <label for="same_totakenoticeof" class="checkbox"> <input id="same_totakenoticeof" type="checkbox" ng-model="codesEditor.model.sametotakenoticeof"
+                                                                                      ng-change="codesEditor.setSameValue('totakenoticeof')" /> {{'codes.sameinalllanguages' | i18n}}
+                            </label>
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="codessource_sv" type="text" maxlength="256" class="width-30" ng-model="model.codessourcesv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.samecodessource" />
+                    <div class="form-group">
+                        <label for="totakenoticeof_fi" class="col-md-2 control-label">{{'codes.createpage.totakenoticeof' | i18n}}</label>
+                        <div class="col-md-3">
+                            <input id="totakenoticeof_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.totakenoticeoffi" placeholder="{{'codes.finnish' | i18n}}" ng-change="codesEditor.setSameValue('totakenoticeof')" />
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="codessource_en" type="text" maxlength="256" class="width-30" ng-model="model.codessourceen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.samecodessource" />
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="totakenoticeof_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.totakenoticeofsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="codesEditor.model.sametotakenoticeof" />
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="totakenoticeof_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.totakenoticeofen" placeholder="{{'codes.english' | i18n}}" ng-disabled="codesEditor.model.sametotakenoticeof" />
+                        </div>
+                    </div>
 
-                <div class="control-group">
-                    <div class="controls">
-                        <label for="same_specifiescodes" class="checkbox"> <input id="same_specifiescodes" type="checkbox" ng-model="model.samespecifiescodes"
-                                ng-change="setSameValue('specifiescodes')" /> {{'codes.sameinalllanguages' | i18n}}
-                        </label>
+                    <div class="form-group">
+                        <div class="col-md-offset-2">
+                            <label for="same_validitylevel" class="checkbox"> <input id="same_validitylevel" type="checkbox" ng-model="codesEditor.model.samevaliditylevel"
+                                                                                     ng-change="codesEditor.setSameValue('validitylevel')" /> {{'codes.sameinalllanguages' | i18n}}
+                            </label>
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group">
 
-                <div class="control-group">
-                    <label for="specifiescodes_fi" class="control-label">{{'codes.createpage.specifiescodes' | i18n}}</label>
-                    <div class="controls">
-                        <input id="specifiescodes_fi" type="text" maxlength="256" class="width-30" ng-model="model.specifiescodesfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('specifiescodes')" />
+                        <label for="validitylevel_fi" class="col-md-2 control-label">{{'codes.createpage.validitylevel' | i18n}}</label>
+                        <div class="col-md-3">
+                            <input id="validitylevel_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.validitylevelfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="codesEditor.setSameValue('validitylevel')" />
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="specifiescodes_sv" type="text" maxlength="256" class="width-30" ng-model="model.specifiescodessv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.samespecifiescodes" />
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="validitylevel_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.validitylevelsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="codesEditor.model.samevaliditylevel" />
+                        </div>
                     </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="specifiescodes_en" type="text" maxlength="256" class="width-30" ng-model="model.specifiescodesen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.samespecifiescodes" />
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <input id="validitylevel_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codesEditor.model.validitylevelen" placeholder="{{'codes.english' | i18n}}" ng-disabled="codesEditor.model.samevaliditylevel" />
+                        </div>
                     </div>
-                </div>
-
-                <div class="control-group">
-                    <div class="controls">
-                        <label for="same_totakenoticeof" class="checkbox"> <input id="same_totakenoticeof" type="checkbox" ng-model="model.sametotakenoticeof"
-                                ng-change="setSameValue('totakenoticeof')" /> {{'codes.sameinalllanguages' | i18n}}
-                        </label>
-                    </div>
-                </div>
-                <div class="control-group">
-
-                    <label for="totakenoticeof_fi" class="control-label">{{'codes.createpage.totakenoticeof' | i18n}}</label>
-                    <div class="controls">
-                        <input id="totakenoticeof_fi" type="text" maxlength="256" class="width-30" ng-model="model.totakenoticeoffi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('totakenoticeof')" />
-                    </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="totakenoticeof_sv" type="text" maxlength="256" class="width-30" ng-model="model.totakenoticeofsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.sametotakenoticeof" />
-                    </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="totakenoticeof_en" type="text" maxlength="256" class="width-30" ng-model="model.totakenoticeofen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.sametotakenoticeof" />
-                    </div>
-                </div>
-
-                <div class="control-group">
-                    <div class="controls">
-                        <label for="same_validitylevel" class="checkbox"> <input id="same_validitylevel" type="checkbox" ng-model="model.samevaliditylevel"
-                                ng-change="setSameValue('validitylevel')" /> {{'codes.sameinalllanguages' | i18n}}
-                        </label>
-                    </div>
-                </div>
-                <div class="control-group">
-
-                    <label for="validitylevel_fi" class="control-label">{{'codes.createpage.validitylevel' | i18n}}</label>
-                    <div class="controls">
-                        <input id="validitylevel_fi" type="text" maxlength="256" class="width-30" ng-model="model.validitylevelfi" placeholder="{{'codes.finnish' | i18n}}" ng-change="setSameValue('validitylevel')" />
-                    </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="validitylevel_sv" type="text" maxlength="256" class="width-30" ng-model="model.validitylevelsv" placeholder="{{'codes.swedish' | i18n}}" ng-disabled="model.samevaliditylevel" />
-                    </div>
-                </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <input id="validitylevel_en" type="text" maxlength="256" class="width-30" ng-model="model.validitylevelen" placeholder="{{'codes.english' | i18n}}" ng-disabled="model.samevaliditylevel" />
-                    </div>
-                </div>
 
                 </accordion-group> </accordion>
             </div>
         </div>
 
-        <div class="row-fluid">
-            <div class="span9">
-                <alert ng-repeat="alert in model.alerts" type="alert.type" close="closeAlert($index)">
-                <img ng-if="alert.type == 'danger'" style="margin-right: 10px;" src="../img/alert-icon28x29.png"></img>
-                <img ng-if="alert.type == 'info'" style="margin-right: 10px;" src="../img/info-icon28x29.png"></img>
-                {{alert.msg}}
+        <div class="row">
+            <div class="col-md-9">
+                <alert ng-repeat="alert in codesEditor.model.alerts" type="alert.type" close="codesEditor.closeAlert($index)">
+                    <img ng-if="alert.type == 'danger'" style="margin-right: 10px;" src="{{:: codesEditor.alertIcon}}"></img>
+                    <img ng-if="alert.type == 'info'" style="margin-right: 10px;" src="{{:: codesEditor.infoIcon}}"></img>
+                    {{alert.msg}}
                 </alert>
             </div>
         </div>
 
-        <div class="row-fluid navbar-fixed-bottom">
-            <button ng-disabled="!form.$valid" auth="update" auth-service="APP_KOODISTO" auth-org="{{model.codes.organisaatioOid}}" class="btn btn-primary pull-right"
-                type="submit">{{'codes.save' | i18n}}</button>
-            <button type="button" class="btn pull-right" ng-click="showCancelConfirmModal(form.$dirty)">{{'codes.cancel' | i18n}}</button>
+        <div class="row navbar-fixed-bottom">
+            <button ng-disabled="form.$invalid || codesEditor.isCodeLoading()"
+                    auth="update"
+                    auth-service="APP_KOODISTO"
+                    auth-org="{{codesEditor.model.codes.organisaatioOid}}"
+                    class="btn btn-primary pull-right"
+                    type="submit">
+                {{'codes.save' | i18n}}
+            </button>
+            <button type="button"
+                    class="btn pull-right"
+                    ng-click="codesEditor.showCancelConfirmModal(form.$dirty)">
+                {{'codes.cancel' | i18n}}
+            </button>
         </div>
 
- </form>
+    </form>
+
 </div>

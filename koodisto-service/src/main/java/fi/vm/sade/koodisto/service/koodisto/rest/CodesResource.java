@@ -1,54 +1,10 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-import java.io.File;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
-import org.codehaus.jackson.map.annotate.JsonView;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
-
-import com.sun.jersey.multipart.FormDataParam;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-
+import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.generic.service.exception.SadeBusinessException;
-import fi.vm.sade.koodisto.dto.KoodistoChangesDto;
-import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.dto.KoodistoListDto;
-import fi.vm.sade.koodisto.dto.KoodistoRyhmaListDto;
-import fi.vm.sade.koodisto.dto.KoodistoVersioListDto;
-import fi.vm.sade.koodisto.model.Format;
-import fi.vm.sade.koodisto.model.JsonViews;
-import fi.vm.sade.koodisto.model.Koodisto;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import fi.vm.sade.koodisto.dto.*;
+import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.DownloadService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UploadBusinessService;
@@ -61,8 +17,33 @@ import fi.vm.sade.koodisto.service.koodisto.rest.validator.ValidatorUtil;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang.StringUtils;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 
-@Component
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import java.io.File;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+@Controller
 @Path("/codes")
 @Api(value = "/rest/codes", description = "Koodistot")
 public class CodesResource {
@@ -179,7 +160,7 @@ public class CodesResource {
     @PUT
     @Path("/save")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     @JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @ApiOperation(
@@ -192,7 +173,7 @@ public class CodesResource {
             codesValidator.validate(codesDTO, ValidationType.UPDATE);
 
             KoodistoVersio koodistoVersio = koodistoBusinessService.saveKoodisto(codesDTO);
-            return Response.status(Response.Status.OK).entity(koodistoVersio.getVersio()).build();
+            return Response.status(Response.Status.OK).entity(koodistoVersio.getVersio().toString()).build();
 
         } catch (KoodistoValidationException e) {
             LOGGER.warn("Invalid parameter for rest call: save. ", e);
@@ -217,7 +198,7 @@ public class CodesResource {
             @ApiParam(value = "Koodisto") KoodistoDto codesDTO) {
         try {
             codesValidator.validate(codesDTO, ValidationType.INSERT);
-            List<String> codesGroupUris = new ArrayList<String>();
+            List<String> codesGroupUris = new ArrayList<>();
             codesGroupUris.add(codesDTO.getCodesGroupUri());
             KoodistoVersio koodistoVersio = koodistoBusinessService.createKoodisto(codesGroupUris, converter.convertFromDTOToCreateKoodistoDataType(codesDTO));
             return Response.status(Response.Status.CREATED).entity(conversionService.convert(koodistoVersio, KoodistoDto.class)).build();
@@ -402,9 +383,9 @@ public class CodesResource {
             notes = "",
             response = Response.class)
     public Response uploadFile(
-            @ApiParam(value = "Tuotava tiedosto") @FormDataParam("uploadedFile") InputStream fileInputStream,
-            @ApiParam(value = "Tiedostotyyppi") @FormDataParam("fileFormat") String fileFormat,
-            @ApiParam(value = "Tiedoston koodaus") @FormDataParam("fileEncoding") String fileEncoding,
+            @ApiParam(value = "Tuotava tiedosto") @Multipart(value = "uploadedFile", required = false) Attachment fileInputStream,
+            @ApiParam(value = "Tiedostotyyppi") @Multipart(value = "fileFormat", required = false) String fileFormat,
+            @ApiParam(value = "Tiedoston koodaus") @Multipart(value = "fileEncoding", required = false) String fileEncoding,
             @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri) {
         try {
             String[] errors = { "file", "fileformat", "codesuri" };
@@ -437,7 +418,7 @@ public class CodesResource {
                 break;
             }
 
-            DataSource ds = new InputStreamDataSource(fileInputStream, mime);
+            DataSource ds = new InputStreamDataSource(fileInputStream.getDataHandler().getInputStream(), mime);
             DataHandler handler = new DataHandler(ds);
             KoodistoVersio kv = uploadService.upload(codesUri, formatStr, encoding, handler);
             return Response.status(Response.Status.ACCEPTED).entity(kv.getVersio().toString()).build();

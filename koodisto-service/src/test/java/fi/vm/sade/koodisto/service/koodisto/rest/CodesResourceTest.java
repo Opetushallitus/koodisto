@@ -1,16 +1,16 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.util.Date;
-import java.util.List;
-
-import javax.ws.rs.core.Response;
-
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.koodisto.dto.*;
+import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
+import fi.vm.sade.koodisto.model.Format;
+import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
+import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import org.apache.commons.io.IOUtils;
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,30 +21,24 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
-import fi.vm.sade.koodisto.dto.KoodistoChangesDto;
-import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
-import fi.vm.sade.koodisto.dto.KoodistoListDto;
-import fi.vm.sade.koodisto.dto.KoodistoRyhmaListDto;
-import fi.vm.sade.koodisto.dto.KoodistoVersioListDto;
-import fi.vm.sade.koodisto.model.Format;
-import fi.vm.sade.koodisto.model.Tila;
-import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
-import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
-import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.ws.rs.core.Response;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionalTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-@DataSetLocation("classpath:test-data-codes-rest.xml")
+@DatabaseSetup("classpath:test-data-codes-rest.xml")
 public class CodesResourceTest {
 
     @Autowired
@@ -74,12 +68,12 @@ public class CodesResourceTest {
         
         // IE9 can not handle upload if server return 400 or 500
         assertResponse(resource.uploadFile(null, stubString, stubString, stubString), 202, "error.validation.file");
-        assertResponse(resource.uploadFile(stubInputStream, nullString, stubString, stubString), 202, "error.validation.fileformat");
-        assertResponse(resource.uploadFile(stubInputStream, blankString, stubString, stubString), 202, "error.validation.fileformat");
-        assertResponse(resource.uploadFile(stubInputStream, stubString, nullString, stubString), 202, "error.validation.fileencoding");
-        assertResponse(resource.uploadFile(stubInputStream, stubString, blankString, stubString), 202, "error.validation.fileencoding");
-        assertResponse(resource.uploadFile(stubInputStream, stubString, stubString, nullString), 202, "error.validation.codesuri");
-        assertResponse(resource.uploadFile(stubInputStream, stubString, stubString, blankString), 202, "error.validation.codesuri");
+        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), nullString, stubString, stubString), 202, "error.validation.fileformat");
+        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), blankString, stubString, stubString), 202, "error.validation.fileformat");
+        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), stubString, nullString, stubString), 202, "error.validation.fileencoding");
+        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), stubString, blankString, stubString), 202, "error.validation.fileencoding");
+        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), stubString, stubString, nullString), 202, "error.validation.codesuri");
+        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), stubString, stubString, blankString), 202, "error.validation.codesuri");
 
         assertResponse(resource.download(nullString, 0, Format.JHS_XML, stubString), 400, "error.validation.codesuri");
         assertResponse(resource.download(blankString, 0, Format.JHS_XML, stubString), 400, "error.validation.codesuri");
@@ -226,17 +220,7 @@ public class CodesResourceTest {
         String fileFormat = "CSV";
         String fileEncoding = "UTF-8";
         String codesUri = "csvfileuploaduri";
-        try {
-            is = getClass().getClassLoader().getResourceAsStream("csv_example.csv");
-            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ignore) {
-                }
-            }
-        }
+        assertResponse(resource.uploadFile(createAttachment("csv_example.csv"), fileFormat, fileEncoding, codesUri), 202);
         KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(codesUri, 0).getEntity();
         assertNotNull(codes);
         List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
@@ -249,17 +233,7 @@ public class CodesResourceTest {
         String fileFormat = "JHS_XML";
         String fileEncoding = "UTF-8";
         String codesUri = "xmlfileuploaduri";
-        try {
-            is = getClass().getClassLoader().getResourceAsStream("jhs_xml_example.xml");
-            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ignore) {
-                }
-            }
-        }
+        assertResponse(resource.uploadFile(createAttachment("jhs_xml_example.xml"), fileFormat, fileEncoding, codesUri), 202);
         KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(codesUri, 0).getEntity();
         assertNotNull(codes);
         List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
@@ -272,56 +246,30 @@ public class CodesResourceTest {
         String fileFormat = "XLS";
         String fileEncoding = "UTF-8";
         String codesUri = "xlsfileuploaduri";
-        try {
-            is = getClass().getClassLoader().getResourceAsStream("excel_example.xls");
-            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ignore) {
-                }
-            }
-        }
+        assertResponse(resource.uploadFile(createAttachment("excel_example.xls"), fileFormat, fileEncoding, codesUri), 202);
         KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(codesUri, 0).getEntity();
         assertNotNull(codes);
         List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
         assertEquals("xlsfileuploaduri_arvo", koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
     }
 
+    private Attachment createAttachment(String sourceUrl) {
+        return new Attachment("id", new DataHandler(new TestDataSource(sourceUrl)), null);
+    }
+
     @Test
     public void uploadsSameFileTwice() {
-        InputStream is = null;
         String fileFormat = "CSV";
         String fileEncoding = "UTF-8";
         String codesUri = "csvfileuploaduri";
-        try {
-            is = getClass().getClassLoader().getResourceAsStream("csv_example.csv");
-            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ignore) {
-                }
-            }
-        }
+
+        assertResponse(resource.uploadFile(createAttachment("csv_example.csv"), fileFormat, fileEncoding, codesUri), 202);
         KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(codesUri, 0).getEntity();
         assertNotNull(codes);
         List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
         assertEquals("csvfileuploaduri_arvo", koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
 
-        try {
-            is = getClass().getClassLoader().getResourceAsStream("csv_example.csv");
-            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException ignore) {
-                }
-            }
-        }
+        assertResponse(resource.uploadFile(createAttachment("csv_example.csv"), fileFormat, fileEncoding, codesUri), 202);
     }
 
     @Test
@@ -330,17 +278,32 @@ public class CodesResourceTest {
         String fileFormat = "CSV";
         String fileEncoding = "UTF-8";
         String codesUri = "csvfileuploaduri";
-        try {
-            is = new ByteArrayInputStream("Failure Of Files!".getBytes(Charset.defaultCharset()));
             // IE9 can not handle upload if server return 400 or 500
-            assertResponse(resource.uploadFile(is, fileFormat, fileEncoding, codesUri), 202, "error.codes.importing.empty.file");
-        } finally {
-            if (is != null)
-                try {
-                    is.close();
-                } catch (IOException ignore) {
-                }
-        }
+            assertResponse(resource.uploadFile(createFailureAttachment(), fileFormat, fileEncoding, codesUri), 202, "error.codes.importing.empty.file");
+    }
+
+    private Attachment createFailureAttachment() {
+        return new Attachment("id", new DataHandler(new DataSource() {
+            @Override
+            public InputStream getInputStream() throws IOException {
+                return new ByteArrayInputStream("Failure Of Files!".getBytes(Charset.defaultCharset()));
+            }
+
+            @Override
+            public OutputStream getOutputStream() throws IOException {
+                return null;
+            }
+
+            @Override
+            public String getContentType() {
+                return null;
+            }
+
+            @Override
+            public String getName() {
+                return null;
+            }
+        }), null);
     }
 
     @Test
@@ -463,9 +426,9 @@ public class CodesResourceTest {
         assertTrue(codesToBeSaved.getLevelsWithCodes().size() == 0);
 
         codesToBeSaved.getMetadata().get(0).setNimi(nimi);
-        codesToBeSaved.getIncludesCodes().add(new RelationCodes("eisuhteitaviela2", 1, false));
-        codesToBeSaved.getWithinCodes().add(new RelationCodes("eisuhteitaviela3", 1, false));
-        codesToBeSaved.getLevelsWithCodes().add(new RelationCodes("eisuhteitaviela4", 1, false));
+        codesToBeSaved.getIncludesCodes().add(new RelationCodes("eisuhteitaviela2", 1, false, new HashMap<>()));
+        codesToBeSaved.getWithinCodes().add(new RelationCodes("eisuhteitaviela3", 1, false, new HashMap<>()));
+        codesToBeSaved.getLevelsWithCodes().add(new RelationCodes("eisuhteitaviela4", 1, false, new HashMap<>()));
         assertResponse(resource.save(codesToBeSaved), 200);
 
         KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, versio+1).getEntity();
@@ -567,5 +530,33 @@ public class CodesResourceTest {
             fail();
         }
         return null;
+    }
+
+    class TestDataSource implements DataSource {
+        private final String url;
+
+        public TestDataSource(String url) {
+            this.url = url;
+        }
+
+        @Override
+        public InputStream getInputStream() throws IOException {
+            return getClass().getClassLoader().getResourceAsStream(this.url);
+        }
+
+        @Override
+        public OutputStream getOutputStream() throws IOException {
+            return null;
+        }
+
+        @Override
+        public String getContentType() {
+            return null;
+        }
+
+        @Override
+        public String getName() {
+            return null;
+        }
     }
 }

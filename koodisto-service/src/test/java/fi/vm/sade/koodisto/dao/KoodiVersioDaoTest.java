@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -16,10 +18,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
@@ -31,19 +31,18 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisVersioSelectionType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
-        DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
-        TransactionalTestExecutionListener.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
+@DatabaseSetup("classpath:test-data.xml")
 @Transactional
-@DataSetLocation("classpath:test-data.xml")
 public class KoodiVersioDaoTest {
 
     @Autowired
@@ -102,14 +101,7 @@ public class KoodiVersioDaoTest {
 
         List<KoodiVersioWithKoodistoItem> koodis = koodiVersioDAO.searchKoodis(koodistoSearchType);
         assertEquals(2, koodis.size());
-        Collections.sort(koodis, new Comparator<KoodiVersioWithKoodistoItem>() {
-
-            @Override
-            public int compare(KoodiVersioWithKoodistoItem o1, KoodiVersioWithKoodistoItem o2) {
-                return o1.getKoodiVersio().getVersio().compareTo(o2.getKoodiVersio().getVersio());
-            }
-
-        });
+        koodis.sort(Comparator.comparing(o -> o.getKoodiVersio().getVersio()));
 
         assertEquals(4, koodis.get(0).getKoodiVersio().getVersio().intValue());
         assertEquals(6, koodis.get(1).getKoodiVersio().getVersio().intValue());

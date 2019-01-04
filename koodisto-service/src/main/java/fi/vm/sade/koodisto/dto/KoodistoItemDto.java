@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.dto;
 
 import fi.vm.sade.koodisto.model.JsonViews;
-import org.codehaus.jackson.map.annotate.JsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 import java.util.List;

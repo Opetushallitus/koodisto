@@ -86,11 +86,7 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
                 updateDatas.add(updateData);
             }
             return koodiBusinessService.massCreate(koodistoUri, updateDatas);
-        } catch (IOException e) {
-            throw new KoodistoImportException(e);
-        } catch (InvalidKoodiCsvLineException e) {
-            throw new KoodistoImportException(e);
-        } catch (UnmarshallingFailureException e) {
+        } catch (IOException | InvalidKoodiCsvLineException | UnmarshallingFailureException e) {
             throw new KoodistoImportException(e);
         }
     }

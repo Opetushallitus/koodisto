@@ -16,13 +16,8 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.SuhteenTyyppiType;
+import org.springframework.stereotype.Controller;
 
-/**
- * Implementation for KoodiService interface
- * 
- * @author Eetu Blomqvist
- * 
- */
 public class KoodiServiceImpl implements KoodiService {
 
     private static Logger log = LoggerFactory.getLogger(KoodiServiceImpl.class);

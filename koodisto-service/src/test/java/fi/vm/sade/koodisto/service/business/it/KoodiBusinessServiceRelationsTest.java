@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.Assert;
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,21 +19,21 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
+
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class,
-        DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
-        TransactionalTestExecutionListener.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-@DataSetLocation("classpath:test-data.xml")
+@DatabaseSetup("classpath:test-data.xml")
+@Transactional
 public class KoodiBusinessServiceRelationsTest {
 
     private Logger logger = LoggerFactory.getLogger(KoodiBusinessServiceRelationsTest.class);
@@ -82,7 +83,7 @@ public class KoodiBusinessServiceRelationsTest {
 
         List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN,
                 false);
-        Assert.assertEquals(0L, result.size());
+        assertEquals(0L, result.size());
 
         List<String> list = new ArrayList<String>();
         list.add("371");
@@ -91,7 +92,7 @@ public class KoodiBusinessServiceRelationsTest {
 
         koodiBusinessService.addRelation(kv.getKoodiUri(), list, SuhteenTyyppi.RINNASTEINEN, false);
         result = koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, false);
-        Assert.assertEquals(3L, result.size());
+        assertEquals(3L, result.size());
     }
     
     @Test
@@ -99,9 +100,8 @@ public class KoodiBusinessServiceRelationsTest {
         koodiBusinessService.addRelation("31", Arrays.asList("33"), SuhteenTyyppi.SISALTYY, false);
         KoodiUriAndVersioType kv = givenKoodiUriAndVersioType("31", 2);
         List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.listByRelation(kv, SuhteenTyyppi.SISALTYY, false);
-        Assert.assertEquals(1, result.size());
+        assertEquals(1, result.size());
     }
-
 
     @Test
     public void testRemoveRelation() {
@@ -109,7 +109,7 @@ public class KoodiBusinessServiceRelationsTest {
 
         List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN,
                 true);
-        Assert.assertEquals(2L, result.size());
+        assertEquals(2L, result.size());
 
         List<String> list = new ArrayList<String>();
         list.add("5");
@@ -117,7 +117,7 @@ public class KoodiBusinessServiceRelationsTest {
 
         koodiBusinessService.removeRelation(kv.getKoodiUri(), list, SuhteenTyyppi.RINNASTEINEN, false);
         result = koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, true);
-        Assert.assertEquals(0L, result.size());
+        assertEquals(0L, result.size());
     }
     
     @Test

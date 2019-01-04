@@ -107,35 +107,22 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
     
     private boolean removedFromLatestCodes(KoodiVersio koodiVersio, boolean compareToLatestAccepted) {
         Koodisto koodisto = koodistoService.getKoodistoByKoodistoUri(koodiVersio.getKoodi().getKoodisto().getKoodistoUri());
-        KoodistoVersio koodistoVersio = getMatchingKoodistoVersio(new ArrayList<KoodistoVersio>(koodisto.getKoodistoVersios()), compareToLatestAccepted);
+        KoodistoVersio koodistoVersio = getMatchingKoodistoVersio(new ArrayList<>(koodisto.getKoodistoVersios()), compareToLatestAccepted);
         return !containsCodeElementVersion(koodiVersio, koodistoVersio);
     }
 
     private boolean containsCodeElementVersion(KoodiVersio koodiVersio, KoodistoVersio koodistoVersio) {
-        Collection<KoodiVersio> koodiVersios = Collections2.transform(koodistoVersio.getKoodiVersios(), new Function<KoodistoVersioKoodiVersio, KoodiVersio>() {
-
-            @Override
-            public KoodiVersio apply(@Nonnull KoodistoVersioKoodiVersio input) {
-                return input.getKoodiVersio();
-            }
-            
-        });
+        Collection<KoodiVersio> koodiVersios = Collections2.transform(koodistoVersio.getKoodiVersios(), KoodistoVersioKoodiVersio::getKoodiVersio);
         return koodiVersios.contains(koodiVersio);
     }
 
     private KoodistoVersio getMatchingKoodistoVersio(List<KoodistoVersio> koodistoVersios, boolean compareToLatestAccepted) {
         KoodistoVersio latestMatching = null;
-        Collections.sort(koodistoVersios, new Comparator<KoodistoVersio>() {
-
-            @Override
-            public int compare(KoodistoVersio arg0, KoodistoVersio arg1) {
-                return Long.compare(arg0.getId(), arg1.getId());
-            }
-            
-        });
+        koodistoVersios.sort(Comparator.comparingLong(KoodistoVersio::getVersio));
         for (KoodistoVersio kv : koodistoVersios) {
-            latestMatching = latestMatching == null || (latestMatching.getVersio() < kv.getVersio() && (!compareToLatestAccepted || Tila.HYVAKSYTTY.equals(kv.getTila()))) ? 
-                    kv : latestMatching;
+            latestMatching = latestMatching == null
+                    || (latestMatching.getVersio() < kv.getVersio() && (!compareToLatestAccepted || Tila.HYVAKSYTTY.equals(kv.getTila())))
+                    ? kv : latestMatching;
         }
         return latestMatching;
     }
@@ -148,21 +135,21 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
                 return input.isPassive();
             }
         });
-        return new ArrayList<SimpleCodeElementRelation>(Collections2.transform(passiveRelations, new KoodinSuhdeToSimpleCodeElementRelation(latestKoodiVersio.getKoodi().getKoodiUri())));
+        return new ArrayList<>(Collections2.transform(passiveRelations, new KoodinSuhdeToSimpleCodeElementRelation(latestKoodiVersio.getKoodi().getKoodiUri())));
     }
 
     private List<SimpleCodeElementRelation> removedRelations(KoodiVersio koodiVersio, KoodiVersio latestKoodiVersio) {
         final String koodiUri = latestKoodiVersio.getKoodi().getKoodiUri();
         final List<KoodinSuhde> relationsFromLatest = getRelationsFromKoodiVersio(latestKoodiVersio);
         Collection<SimpleCodeElementRelation> removedRelations = Collections2.transform(Collections2.filter(getRelationsFromKoodiVersio(koodiVersio), new KoodinSuhdeFoundNotFound(relationsFromLatest)), new KoodinSuhdeToSimpleCodeElementRelation(koodiUri));
-        return new ArrayList<SimpleCodeElementRelation>(removedRelations);
+        return new ArrayList<>(removedRelations);
     }
 
     private List<SimpleCodeElementRelation> addedRelations(KoodiVersio koodiVersio, KoodiVersio latestKoodiVersio) {
         final String koodiUri = latestKoodiVersio.getKoodi().getKoodiUri();
         final List<KoodinSuhde> relationsFromVersio = getRelationsFromKoodiVersio(koodiVersio);
         Collection<SimpleCodeElementRelation> relationsAdded = Collections2.transform(Collections2.filter(getRelationsFromKoodiVersio(latestKoodiVersio), new KoodinSuhdeFoundNotFound(relationsFromVersio)), new KoodinSuhdeToSimpleCodeElementRelation(koodiUri));
-        return new ArrayList<SimpleCodeElementRelation>(relationsAdded);
+        return new ArrayList<>(relationsAdded);
     }
 
     private List<KoodinSuhde> getRelationsFromKoodiVersio(KoodiVersio koodiVersio) {

@@ -1,6 +1,3 @@
-/**
- *
- */
 package fi.vm.sade.koodisto.service.business.it;
 
 import java.util.ArrayList;
@@ -13,6 +10,8 @@ import java.util.Set;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,10 +21,9 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
+
 import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
@@ -47,7 +45,6 @@ import fi.vm.sade.koodisto.service.types.UpdateKoodiTilaType;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -55,14 +52,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-/**
- * @author tommiha
- */
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = {JtaCleanInsertTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class})
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-@DataSetLocation("classpath:test-data.xml")
+@DatabaseSetup("classpath:test-data.xml")
+@Transactional
 public class KoodiBusinessServiceTest {
 
     @Autowired
@@ -138,7 +134,7 @@ public class KoodiBusinessServiceTest {
         assertEquals(Tila.LUONNOS, afterUpdate.getTila());
         assertEquals(koodistoVersioAfterTilaChange, afterUpdate.getVersio());
     }
-    
+
     @Test
     public void setsEndDatePreviousVersionWhenNewVersionIsSetToHyvaksytty() {
         KoodiVersio latest = koodiBusinessService.getLatestKoodiVersio("436");
@@ -150,7 +146,7 @@ public class KoodiBusinessServiceTest {
         latest = koodiVersioDAO.read(latest.getId());
         assertNotNull(latest.getVoimassaLoppuPvm());
     }
-    
+
     @Test
     public void koodiIsCopiedIntoNewVersionOfKoodistoWhenNewKoodiIsAdded() {
         CreateKoodiDataType createKoodiData = fi.vm.sade.koodisto.service.it.DataUtils.createCreateKoodiDataType("new",
@@ -161,29 +157,29 @@ public class KoodiBusinessServiceTest {
         assertNotNull(koodiBusinessService.getKoodiByKoodistoVersio("koodisiirtyykoodisto", 2, "koodisiirtyy"));
         assertNotNull(koodiBusinessService.getKoodiByKoodistoVersio("koodisiirtyykoodisto", 2, "koodisiirtyykoodisto_new"));
     }
-    
+
     @Test
     public void koodiVersioShouldNotBeLatest() {
         assertFalse(koodiBusinessService.isLatestKoodiVersio("455", 2));
     }
-    
+
     @Test
     public void koodiVersioShouldBeLatest() {
         assertTrue(koodiBusinessService.isLatestKoodiVersio("455", 4));
     }
-    
+
     @Test
     public void shouldFetchExactKoodiVersio() {
         assertEquals(2, koodiBusinessService.getKoodiVersio("455", 2).getVersio().intValue());
     }
-    
+
     @Test
     public void doesNotCopyPassiveRelationsWhenNewVersionIsCreated() {
         String koodiUri = "passiivisuhdeeikopioidu";
         koodiBusinessService.createNewVersion(koodiUri);
         assertTrue(koodiBusinessService.listByRelation(koodiUri, true, SuhteenTyyppi.SISALTYY).isEmpty());
     }
-    
+
     @Test
     public void fetchesKoodiAndInitializesKoodiVersions() {
         Koodi koodi = koodiBusinessService.getKoodi("435");
@@ -197,8 +193,7 @@ public class KoodiBusinessServiceTest {
             assertFalse(kv.getMetadatas().isEmpty());
         }
     }
-    
-    @Transactional
+
     @Test
     public void setsRelationsToPassiveWhenUpdatingTilaToPassive() throws Exception {
         KoodiVersio latest = koodiBusinessService.getLatestKoodiVersio("809suhdetahan");
@@ -207,7 +202,7 @@ public class KoodiBusinessServiceTest {
         koodiBusinessService.updateKoodi(updateData);
         assertRelationsArePassive(koodiBusinessService.getLatestKoodiVersio("809suhdetahan"), true);
     }
-    
+
     @Test
     public void deletingLatestVersionActivatesPreviousRelations() {
         koodiBusinessService.delete("wanhasuhdeaktivoituupoistossa", 2);

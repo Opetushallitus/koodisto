@@ -4,6 +4,9 @@ import java.util.HashSet;
 
 import javax.ws.rs.core.Response;
 
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,20 +15,23 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
+
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
+
 import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionalTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-@DataSetLocation("classpath:test-data-codes-rest.xml")
+@DatabaseSetup("classpath:test-data-codes-rest.xml")
 public class CodesGroupResourceTest {
 
     @Autowired
@@ -33,7 +39,7 @@ public class CodesGroupResourceTest {
 
     @Test
     public void testGetCodesByCodesUri() {
-        Response response = resource.getCodesByCodesUri(1L);
+        Response response = resource.getCodesByCodesUri(-1L);
         assertResponse(response, 200);
         KoodistoRyhmaDto dto = (KoodistoRyhmaDto) response.getEntity();
         assertEquals("relaatioidenlisaaminen", dto.getKoodistoRyhmaUri());
@@ -45,13 +51,12 @@ public class CodesGroupResourceTest {
     public void testGetCodesByCodesUriInvalid() {
         assertResponse(resource.getCodesByCodesUri(0L), 500, "error.codesgroup.not.found");
         assertResponse(resource.getCodesByCodesUri(null), 400, "error.validation.id");
-        assertResponse(resource.getCodesByCodesUri(-1L), 500, "error.codesgroup.not.found");
         assertResponse(resource.getCodesByCodesUri(99999L), 500, "error.codesgroup.not.found");
     }
 
     @Test
     public void testUpdate() {
-        Response response = resource.getCodesByCodesUri(4L);
+        Response response = resource.getCodesByCodesUri(-4L);
         assertResponse(response, 200);
         KoodistoRyhmaDto dto = (KoodistoRyhmaDto) response.getEntity();
         changename(dto, "paivitettunimi");
@@ -59,7 +64,7 @@ public class CodesGroupResourceTest {
         Response updateResponse = resource.update(dto);
         assertResponse(updateResponse, 201);
 
-        response = resource.getCodesByCodesUri(4L);
+        response = resource.getCodesByCodesUri(-4L);
         assertResponse(response, 200);
         assertDtoEquals(dto, (KoodistoRyhmaDto) response.getEntity());
 
@@ -100,16 +105,15 @@ public class CodesGroupResourceTest {
 
     @Test
     public void testDelete() {
-        assertResponse(resource.getCodesByCodesUri(3L), 200);
-        assertResponse(resource.delete(3L), 202);
-        assertResponse(resource.getCodesByCodesUri(3L), 500);
+        assertResponse(resource.getCodesByCodesUri(-3L), 200);
+        assertResponse(resource.delete(-3L), 202);
+        assertResponse(resource.getCodesByCodesUri(-3L), 500);
     }
     
     @Test
     public void testDeleteInvalid() {
         assertResponse(resource.delete(null), 400, "error.validation.id");
         assertResponse(resource.delete(0L), 500, "error.codesgroup.not.found");
-        assertResponse(resource.delete(-1L), 500, "error.codesgroup.not.found");
         assertResponse(resource.delete(99999L), 500, "error.codesgroup.not.found");
     }
 

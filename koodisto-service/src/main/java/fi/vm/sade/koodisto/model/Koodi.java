@@ -1,11 +1,8 @@
-/**
- *
- */
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.generic.model.BaseEntity;
 
-import org.codehaus.jackson.map.annotate.JsonView;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,14 +11,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * @author tommiha
- */
 @Table(name = Koodi.TABLE_NAME)
 @org.hibernate.annotations.Table(appliesTo = Koodi.TABLE_NAME, comment = "Koodin pääentiteetti, johon eri koodiversiot liittyvät.<br>" +
         "Sisältää koodiUrin.")
 @Entity
 @Cacheable
+@BatchSize(size = 100)
 public class Koodi extends BaseEntity {
 
     public static final String TABLE_NAME = "koodi";
@@ -39,7 +34,7 @@ public class Koodi extends BaseEntity {
     private String koodiUri;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodi", cascade = CascadeType.ALL)
-    private Set<KoodiVersio> koodiVersios = new HashSet<KoodiVersio>();
+    private Set<KoodiVersio> koodiVersios = new HashSet<>();
 
     public Koodisto getKoodisto() {
         return koodisto;

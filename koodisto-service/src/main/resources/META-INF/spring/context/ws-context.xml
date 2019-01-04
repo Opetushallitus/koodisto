@@ -7,7 +7,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
-
+        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <context:annotation-config/>
@@ -17,6 +17,7 @@
     <bean id="exceptionWrappingAspect"
           class="fi.vm.sade.koodisto.service.impl.exceptionwrapper.ExceptionWrappingAspect"/>
 
+    <!-- SOAP endpoint bean declarations -->
     <bean id="koodiAdminWS"
           class="fi.vm.sade.koodisto.service.impl.KoodiAdminServiceImpl"/>
     <bean id="koodistoAdminWS"
@@ -26,24 +27,7 @@
     <bean id="downloadWS" class="fi.vm.sade.koodisto.service.impl.DownloadServiceImpl"/>
     <bean id="uploadWS" class="fi.vm.sade.koodisto.service.impl.UploadServiceImpl"/>
 
-    <!--<bean id="koodiRESTService" class="fi.vm.sade.koodisto.service.impl.KoodiRESTService" />-->
-    <bean id="koodistoRESTService" class="fi.vm.sade.koodisto.service.impl.KoodistoRESTService"/>
-
     <import resource="classpath:META-INF/cxf/cxf.xml"/>
-    <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
-
-    <!-- JAX-RS servers -->
-    <!--<jaxrs:server id="koodistoREST" address="/koodisto/rest">-->
-    <!--<jaxrs:serviceBeans>-->
-    <!--<ref bean="koodistoRESTService" />-->
-    <!--</jaxrs:serviceBeans>-->
-    <!--</jaxrs:server>-->
-
-    <!--<jaxrs:server id="koodiREST" address="/koodi/rest">-->
-    <!--<jaxrs:serviceBeans>-->
-    <!--<ref bean="koodiRESTService" />-->
-    <!--</jaxrs:serviceBeans>-->
-    <!--</jaxrs:server>-->
 
     <jaxws:endpoint address="/services/koodistoAdminService" implementor="#koodistoAdminWS"/>
     <jaxws:endpoint address="/services/koodiAdminService" implementor="#koodiAdminWS"/>
@@ -52,60 +36,54 @@
     <jaxws:endpoint address="/services/downloadService" implementor="#downloadWS"/>
     <jaxws:endpoint address="/services/uploadService" implementor="#uploadWS"/>
 
-    <!-- TODO: cas todo, varmista ettei tartte olla wsdl jne kuten organisaatiossa:? -->
-    <!--<jaxws:endpoint address="/services/organisaatioService" implementor="#organisaatioWs" wsdlLocation="wsdl/organisaatioService.wsdl" serviceName="tns:OrganisaatioService" xmlns:tns="http://model.api.organisaatio.sade.vm.fi/"/>-->
-
-
-    <!-- Swagger -->
-    
-    <bean id="ObjectMapperProvider" class="fi.vm.sade.koodisto.service.provider.ObjectMapperProvider" scope="singleton"/>
-
-    <!-- Swagger API listing resource -->
-    <bean id="swaggerResourceJSON"
-        class="com.wordnik.swagger.jaxrs.listing.ApiListingResourceJSON" />
-
-    <!-- Swagger writers -->
-    <bean id="resourceWriter" class="com.wordnik.swagger.jaxrs.listing.ResourceListingProvider" scope="singleton"/>
-    <bean id="apiWriter" class="com.wordnik.swagger.jaxrs.listing.ApiDeclarationProvider" scope="singleton"/>
-
     <bean class="org.apache.cxf.jaxrs.JAXRSServerFactoryBean"
-        init-method="create">
+          init-method="create">
         <property name="address" value="/rest" />
         <property name="serviceBeans">
             <list>
-                <!-- your resources go here -->
-                <ref bean="koodistoAdminWS"/>
-                <ref bean="koodiAdminWS"/>
-                <ref bean="koodistoWS"/>
-                <ref bean="koodiWS"/>
-                <ref bean="downloadWS"/>
-                <ref bean="uploadWS"/>
-                <!-- Swagger API Listing resource -->
-                <ref bean="swaggerResourceJSON" />
+                <ref bean="koodistoRESTService" />
+                <ref bean="koodistoJsonRESTService" />
+                <ref bean="codeElementResource" />
+                <ref bean="codesGroupResource" />
+                <ref bean="codesResource" />
+                <ref bean="sessionResource" />
             </list>
         </property>
         <property name="providers">
             <list>
-                <!-- any other providers you need go here -->
-                <ref bean="ObjectMapperProvider" />
-                <!-- required for writing swagger classes -->
-                <ref bean="resourceWriter" />
-                <ref bean="apiWriter" />
+                <ref bean="objectMapperProvider" />
+                <ref bean="cacheableJaxrsFilter" />
+                <ref bean="configurableKoodistoCorsFilter" />
+            </list>
+        </property>
+        <property name="features">
+            <list>
+                <ref bean="swagger2Config" />
             </list>
         </property>
     </bean>
-    
-    <!-- this scans the classes for resources -->
-    <bean id="swaggerConfig" class="com.wordnik.swagger.jaxrs.config.BeanConfig">
-      <property name="resourcePackage" value="fi.vm.sade.koodisto.service"/>
-      <property name="version" value="1.0.0"/>
-      <property name="basePath" value="https://${host.virkailija}/koodisto-service"/>
-      <property name="title" value="Koodiston rajapinta palvelussa ${host.virkailija}"/>
-      <property name="description" value="API offered by Koodisto service."/>
-      <property name="contact" value=""/>
-      <property name="license" value="Apache 2.0 License"/>
-      <property name="licenseUrl" value="http://www.apache.org/licenses/LICENSE-2.0.html"/>
-      <property name="scan" value="true"/>
+
+    <bean id="swagger2Config" class="org.apache.cxf.jaxrs.swagger.Swagger2Feature">
+        <property name="resourcePackage" value="fi.vm.sade.koodisto.service"/>
+        <property name="version" value="1.0.0"/>
+        <property name="basePath" value="https://${host.virkailija}/koodisto-service"/>
+        <property name="title" value="Koodiston rajapinta palvelussa ${host.virkailija}"/>
+        <property name="description" value="API offered by Koodisto service."/>
+        <property name="contact" value=""/>
+        <property name="license" value="Apache 2.0 License"/>
+        <property name="licenseUrl" value="http://www.apache.org/licenses/LICENSE-2.0.html"/>
+        <property name="scan" value="true"/>
+    </bean>
+
+    <!-- This eats the default CXF root page -->
+    <bean class="org.apache.cxf.jaxrs.JAXRSServerFactoryBean"
+          init-method="create">
+        <property name="address" value="/" />
+        <property name="serviceBeans">
+            <list>
+                <ref bean="redirectResource" />
+            </list>
+        </property>
     </bean>
 
 </beans>

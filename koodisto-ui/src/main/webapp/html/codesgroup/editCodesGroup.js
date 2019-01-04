@@ -1,77 +1,95 @@
-app.factory('CodesGroupEditorModel', function($location, CodesGroupByUri) {
-    var model;
-    model = new function() {
+import {getLanguageSpecificValue} from "../app.utils";
+import alertIcon from '../../img/alert-icon28x29.png';
+
+
+export class CodesGroupEditorModel {
+    constructor($location, CodesGroupByUri) {
+        "ngInject";
+        this.$location = $location;
+        this.CodesGroupByUri = CodesGroupByUri;
+
         this.alerts = [];
         this.codesgroup = {};
-        this.init = function(scope, id) {
-            this.alerts = [];
-            CodesGroupByUri.get({
-                id : id
-            }, function(result) {
-                model.codesgroup = result;
-                scope.model.namefi = getLanguageSpecificValue(result.koodistoRyhmaMetadatas, 'nimi', 'FI');
-                scope.model.namesv = getLanguageSpecificValue(result.koodistoRyhmaMetadatas, 'nimi', 'SV');
-                scope.model.nameen = getLanguageSpecificValue(result.koodistoRyhmaMetadatas, 'nimi', 'EN');
-            });
-            scope.loadingReady = true;
-        };
+    }
 
-    };
+    init(scope, id) {
+        this.alerts = [];
+        this.CodesGroupByUri.get({
+            id : id
+        }, (result) => {
+            this.codesgroup = result;
+            scope.model.namefi = getLanguageSpecificValue(result.koodistoRyhmaMetadatas, 'nimi', 'FI');
+            scope.model.namesv = getLanguageSpecificValue(result.koodistoRyhmaMetadatas, 'nimi', 'SV');
+            scope.model.nameen = getLanguageSpecificValue(result.koodistoRyhmaMetadatas, 'nimi', 'EN');
+        });
+        scope.loadingReady = true;
+    }
+}
 
-    return model;
-});
+export class CodesGroupEditorController {
+    constructor($scope, $location, $routeParams, $filter, CodesGroupEditorModel, UpdateCodesGroup, treemodel) {
+        "ngInject";
+        this.$scope = $scope;
+        this.$location = $location;
+        this.$routeParams = $routeParams;
+        this.$filter = $filter;
+        this.CodesGroupEditorModel = CodesGroupEditorModel;
+        this.UpdateCodesGroup = UpdateCodesGroup;
+        this.treemodel = treemodel;
 
-function CodesGroupEditorController($scope, $location, $routeParams, $filter, CodesGroupEditorModel, UpdateCodesGroup, Treemodel) {
-    $scope.model = CodesGroupEditorModel;
-    $scope.errorMessage = $filter('i18n')('field.required');
-    CodesGroupEditorModel.init($scope, $routeParams.id);
+        this.alertIcon = alertIcon;
 
-    $scope.closeAlert = function(index) {
-        $scope.model.alerts.splice(index, 1);
-    };
+        this.model = CodesGroupEditorModel;
+        this.errorMessage = $filter('i18n')('field.required');
+        CodesGroupEditorModel.init(this, $routeParams.id);
+    }
 
-    $scope.cancel = function() {
-        $location.path("/koodistoryhma/" + $routeParams.id);
-    };
+    closeAlert(index) {
+        this.model.alerts.splice(index, 1);
+    }
 
-    $scope.submit = function() {
-        $scope.persistCodesGroup();
-    };
+    cancel() {
+        this.$location.path("/koodistoryhma/" + this.$routeParams.id);
+    }
 
-    $scope.persistCodesGroup = function() {
-        var codesgroup = {
-            id : $routeParams.id,
-            koodistoRyhmaUri : $scope.model.codesgroup.koodistoRyhmaUri,
-            koodistoRyhmaMetadatas : []
+    submit() {
+        this.persistCodesGroup();
+    }
+
+    persistCodesGroup() {
+        const codesgroup = {
+            id: this.$routeParams.id,
+            koodistoRyhmaUri: this.model.codesgroup.koodistoRyhmaUri,
+            koodistoRyhmaMetadatas: []
         };
         codesgroup.koodistoRyhmaMetadatas.push({
             kieli : 'FI',
-            nimi : $scope.model.namefi
+            nimi : this.model.namefi
         });
         codesgroup.koodistoRyhmaMetadatas.push({
             kieli : 'SV',
-            nimi : $scope.model.namesv
+            nimi : this.model.namesv
         });
         codesgroup.koodistoRyhmaMetadatas.push({
             kieli : 'EN',
-            nimi : $scope.model.nameen
+            nimi : this.model.nameen
         });
-        UpdateCodesGroup.put({}, codesgroup, function(result) {
-            Treemodel.refresh();
-            $location.path("/koodistoryhma/" + result.id);
-        }, function(error) {
-            var alert = {
-                type : 'danger',
-                msg : jQuery.i18n.prop(error.data)
+        this.UpdateCodesGroup.put({}, codesgroup, (result) => {
+            this.treemodel.refresh();
+            this.$location.path("/koodistoryhma/" + result.id);
+        }, (error) => {
+            const alert = {
+                type: 'danger',
+                msg: jQuery.i18n.prop(error.data)
             };
-            $scope.model.alerts.push(alert);
+            this.model.alerts.push(alert);
         });
-    };
-    
-    $scope.setSameName = function() {
-        if ($scope.model.samename) {
-            $scope.model.namesv = $scope.model.namefi;
-            $scope.model.nameen = $scope.model.namefi;
+    }
+
+    setSameName() {
+        if (this.model.samename) {
+            this.model.namesv = this.model.namefi;
+            this.model.nameen = this.model.namefi;
         }
-    };
+    }
 }

@@ -1,28 +1,21 @@
 package fi.vm.sade.koodisto.service.provider;
 
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
+
 
 @Component
 @Provider
-public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
-
-    private final ObjectMapper objectMapper;
+public class ObjectMapperProvider extends JacksonJaxbJsonProvider {
 
     public ObjectMapperProvider() {
-        objectMapper = new ObjectMapper();
-
-        objectMapper.configure(SerializationConfig.Feature.DEFAULT_VIEW_INCLUSION, false);
-        objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    }
-
-    @Override
-    public ObjectMapper getContext(Class<?> type) {
-        return objectMapper;
+        super();
+        ObjectMapper objectMapper = new ObjectMapper()
+                .configure(MapperFeature.DEFAULT_VIEW_INCLUSION, false)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        this.setMapper(objectMapper);
     }
 }

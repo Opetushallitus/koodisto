@@ -1,0 +1,46 @@
+sudo: required
+language: java
+jdk:
+  - oraclejdk8
+services:
+  - docker
+cache:
+  directories:
+    - $HOME/.m2
+env:
+  global:
+    # ARTIFACTORY_USERNAME
+    - secure: "bSRDMgIt2wllherjHSUrRg617bWAdhfiHkOgv7xx2GPx2Ek2rgOMBtc4fSG6oTRv2PbwS6gz2Jy8Mbyif+0w+Dqe/9yv2lsxPI0RpjZ9UeB/dCE632+xlIKFEHmf4NsjpN3y0YPm5pqW5v/hlWU190f7bZ1dqElbrrGqbJha0Ws="
+    # ARTIFACTORY_PASSWORD
+    - secure: "grXNv+Kq6pfb/JSuUJFYKwlDbAnHK+L4DjjKEy88XlIW89OmUT8+RV5ENxkMUuFGfcP1Vu1EU3nYi7HP8Qe2FvC263jQgNhLLb474phillii+l4/uko7DjdKoryibHDw4ShGls+3dPi+gf2Xr10rmSBAwD5rsJPmkregcecWPrY="
+    # AWS_ACCESS_KEY_ID
+    - secure: "gDt44/t6YeaSis9vccYYMBD46It8pcfd/1L5DBgFppKuMLdkJDOCzQHnPUmsC3nhOIgykU0rN9KXatOkpwZPhm6bkObg0dhiMQz5Eoz1+/raCnJ95mWcuIL46wOP7WOwnPP8MKgqm3zrffOtbYb0/1hwnX2ABRlkwofG/TIpMMI="
+    # AWS_SECRET_ACCESS_KEY
+    - secure: "i80lPDaP5WXrt+c7j8wRYjVHQoksEGkaevD60O+ZZ33u070Mcy8jTVd2ZewNuWTs3yXxUB2jNF3I2WK1MmQIfhDrwhmvANkKHCv3RlGMklAhWxnkFtabaZz3xLvYi+kloItrgRqcaMnCq+gLiB/HuOwSM7OQNg9uYCXRGAdlSf8="
+
+install:
+  - git clone https://github.com/Opetushallitus/ci-tools.git
+  - source ci-tools/common/setup-tools.sh
+  - export ARTIFACT_NAME="koodisto"
+
+script:
+  - mvn clean install -B -Dbranch=${TRAVIS_BRANCH} -Drevision=${TRAVIS_COMMIT} -DbuildNumber=${TRAVIS_BUILD_NUMBER}
+
+  - mv koodisto-service/target/koodisto-service.war $DOCKER_BUILD_DIR/artifact/koodisto-service.war
+  - mv koodisto-ui/target/koodisto-ui.war $DOCKER_BUILD_DIR/artifact/koodisto-ui.war
+  - cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
+
+  - export BASE_IMAGE="baseimage-war:master"
+  - ./ci-tools/common/pull-image.sh
+  - ./ci-tools/build/build-war.sh $ARTIFACT_NAME
+
+deploy:
+  - provider: script
+    script: mvn deploy -pl koodisto-api -DskipTests --settings ci-tools/common/maven-settings.xml
+    skip_cleanup: true
+    on:
+      branch: master
+  - provider: script
+    script: ./ci-tools/build/upload-image.sh $ARTIFACT_NAME
+    on:
+      all_branches: true

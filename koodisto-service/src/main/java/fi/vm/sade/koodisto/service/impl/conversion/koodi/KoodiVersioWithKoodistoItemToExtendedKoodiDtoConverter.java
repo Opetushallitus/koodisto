@@ -2,7 +2,10 @@ package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import fi.vm.sade.koodisto.dao.KoodiMetadataDAO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
@@ -36,6 +39,9 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
     @Autowired
     private HostAwareKoodistoConfiguration koodistoConfiguration;
 
+    @Autowired
+    private KoodiMetadataDAO koodiMetadataDAO;
+
     @Override
     public ExtendedKoodiDto convert(KoodiVersioWithKoodistoItem source) {
         ExtendedKoodiDto converted = new ExtendedKoodiDto();
@@ -48,10 +54,10 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
             KoodiVersio koodiVersio = koodinSuhde.getYlakoodiVersio();
             switch (koodinSuhde.getSuhteenTyyppi()) {
             case RINNASTEINEN:
-                converted.getLevelsWithCodeElements().add(makeRelationCodeElement(koodiVersio, koodinSuhde.isPassive()));
+                converted.getLevelsWithCodeElements().add(this.makeRelationCodeElement(koodiVersio, koodinSuhde.isPassive()));
                 break;
             case SISALTYY:
-                converted.getWithinCodeElements().add(makeRelationCodeElement(koodiVersio, koodinSuhde.isPassive()));
+                converted.getWithinCodeElements().add(this.makeRelationCodeElement(koodiVersio, koodinSuhde.isPassive()));
                 break;
             }
         }
@@ -60,10 +66,10 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
             KoodiVersio koodiVersio = koodinSuhde.getAlakoodiVersio();
             switch (koodinSuhde.getSuhteenTyyppi()) {
             case RINNASTEINEN:
-                converted.getLevelsWithCodeElements().add(makeRelationCodeElement(koodiVersio, koodinSuhde.isPassive()));
+                converted.getLevelsWithCodeElements().add(this.makeRelationCodeElement(koodiVersio, koodinSuhde.isPassive()));
                 break;
             case SISALTYY:
-                converted.getIncludesCodeElements().add(makeRelationCodeElement(koodiVersio, koodinSuhde.isPassive()));
+                converted.getIncludesCodeElements().add(this.makeRelationCodeElement(koodiVersio, koodinSuhde.isPassive()));
                 break;
             }
         }
@@ -96,44 +102,30 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
         return converted;
     }
 
+
     private RelationCodeElement makeRelationCodeElement(KoodiVersio koodiVersio, boolean passive) {
         final String koodiUri = koodiVersio.getKoodi().getKoodiUri();
         final Integer versio = koodiVersio.getVersio();
         final String koodiArvo = koodiVersio.getKoodiarvo();
-        List<SimpleMetadataDto> metadatas = new ArrayList<SimpleMetadataDto>(Collections2.transform(koodiVersio.getMetadatas(),
-                new Function<KoodiMetadata, SimpleMetadataDto>() {
-
-                    @Override
-                    public SimpleMetadataDto apply(KoodiMetadata input) {
-                        return MetadataToSimpleMetadataConverter.convert(input);
-                    }
-
-                }));
-        return new RelationCodeElement(koodiUri, versio, koodiArvo, metadatas, getKoodistoMetadatas(koodiVersio), passive);
+        List<SimpleMetadataDto> metadatas = koodiVersio.getMetadatas().stream()
+                .map(MetadataToSimpleMetadataConverter::convert)
+                .collect(Collectors.toList());
+        return new RelationCodeElement(koodiUri, versio, koodiArvo, metadatas, this.getKoodistoMetadatas(koodiVersio), passive);
     }
 
     private List<SimpleMetadataDto> getKoodistoMetadatas(KoodiVersio kv) {
-        KoodistoVersio koodistoVersio = getMatchingKoodistoVersio(kv);
-        if (koodistoVersio!=null) {
-            return new ArrayList<SimpleMetadataDto>(Collections2.transform(koodistoVersio.getMetadatas(), new Function<KoodistoMetadata, SimpleMetadataDto>() {
-
-                @Override
-                public SimpleMetadataDto apply(KoodistoMetadata input) {
-                    return MetadataToSimpleMetadataConverter.convert(input);
-                }
-            }));
-        } else {
-            return new ArrayList<SimpleMetadataDto>();
-        }
+        return this.getMatchingKoodistoVersio(kv)
+                .map(koodistoVersio -> koodistoVersio.getMetadatas().stream()
+                        .map(MetadataToSimpleMetadataConverter::convert)
+                        .collect(Collectors.toList()))
+                .orElseGet(ArrayList::new);
     }
 
-    private KoodistoVersio getMatchingKoodistoVersio(KoodiVersio kv) {
-        for (KoodistoVersioKoodiVersio kvkv : kv.getKoodistoVersios()) {
-            if(kvkv.getKoodiVersio().getVersio().equals(kv.getVersio())) {
-                return kvkv.getKoodistoVersio();
-            }
-        }
-        return null;
+    private Optional<KoodistoVersio> getMatchingKoodistoVersio(KoodiVersio kv) {
+        return kv.getKoodistoVersios().stream()
+                .filter(koodistoVersioKoodiVersio -> koodistoVersioKoodiVersio.getKoodiVersio().getVersio().equals(kv.getVersio()))
+                .map(KoodistoVersioKoodiVersio::getKoodistoVersio)
+                .findFirst();
     }
 
 }

@@ -8,6 +8,9 @@ import java.net.MalformedURLException;
 import java.text.MessageFormat;
 
 public class KoodistoConfiguration {
+    static {
+        System.setProperty("fi.vm.sade.javautils.http.HttpServletRequestUtils.HARMLESS_URLS", "/koodisto-service/buildversion.txt");
+    }
     protected Configuration configurationProperties;
 
     public KoodistoConfiguration() throws ConfigurationException, MalformedURLException {

@@ -1,27 +1,34 @@
-/**
- *
- */
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.generic.model.BaseEntity;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
 
-import org.codehaus.jackson.map.annotate.JsonView;
+import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-/**
- * @author tommiha
- */
 @Entity
 @Table(name = KoodiMetadata.TABLE_NAME, uniqueConstraints = {@UniqueConstraint(name = "UK_" + KoodiMetadata.TABLE_NAME
         + "_01", columnNames = {KoodiMetadata.KIELI_COLUMN_NAME, KoodiMetadata.KOODIVERSIO_COLUMN_NAME})})
 @org.hibernate.annotations.Table(appliesTo = KoodiMetadata.TABLE_NAME, comment = "KoodiMetadata sisältää mm. koodin nimen, " +
         "lyhytnimen ja kuvauksen yhdellä kielellä.")
 @Cacheable
+@BatchSize(size = 20)
+@NamedEntityGraphs({@NamedEntityGraph(name = "koodiMetadataWithKoodiVersio",
+        attributeNodes = {
+                @NamedAttributeNode(value = "koodiVersio", subgraph = "koodiVersio")
+        },
+        subgraphs = {
+                @NamedSubgraph(name = "koodiVersio", attributeNodes = {
+                        @NamedAttributeNode(value = "metadatas"),
+                        @NamedAttributeNode(value = "koodistoVersios"),
+                        @NamedAttributeNode(value = "koodi"),
+                }),
+        }),
+})
 public class KoodiMetadata extends BaseEntity {
 
     public static final String TABLE_NAME = "koodiMetadata";

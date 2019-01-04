@@ -3,7 +3,7 @@ package fi.vm.sade.koodisto.dto;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.codehaus.jackson.map.annotate.JsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Koodisto;

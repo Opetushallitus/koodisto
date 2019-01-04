@@ -3,9 +3,10 @@ package fi.vm.sade.koodisto.service.business.impl;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import fi.vm.sade.dbunit.annotation.DataSetLocation;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.Koodisto;
@@ -28,17 +27,20 @@ import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotEmptyExcep
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
-import fi.vm.sade.koodisto.util.JtaCleanInsertTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners(listeners = { JtaCleanInsertTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class, TransactionalTestExecutionListener.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+        DirtiesContextTestExecutionListener.class,
+        TransactionalTestExecutionListener.class,
+        DbUnitTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
-@DataSetLocation("classpath:test-data-codes-rest.xml")
+@DatabaseSetup("classpath:test-data-codes-rest.xml")
 public class KoodistoRyhmaBusinessServiceTest {
 
     @Autowired
@@ -117,7 +119,7 @@ public class KoodistoRyhmaBusinessServiceTest {
 
     @Test
     public void testUpdateKoodistoRyhmaByAddingMetadata() {
-        KoodistoRyhma group = resource.getKoodistoRyhmaById(4L);
+        KoodistoRyhma group = resource.getKoodistoRyhmaById(-4L);
         assertEquals(1, group.getKoodistoJoukkoMetadatas().size());
         KoodistoRyhmaDto dto = createRyhma(group);
         KoodistoRyhmaMetadata sv = new KoodistoRyhmaMetadata();
@@ -135,7 +137,7 @@ public class KoodistoRyhmaBusinessServiceTest {
 
     @Test
     public void testUpdateKoodistoRyhmaByChangingMetadata() {
-        KoodistoRyhma group = resource.getKoodistoRyhmaById(6L);
+        KoodistoRyhma group = resource.getKoodistoRyhmaById(-6L);
         assertEquals(3, group.getKoodistoJoukkoMetadatas().size());
 
         for (KoodistoRyhmaMetadata metadata : group.getKoodistoJoukkoMetadatas()) {
@@ -145,7 +147,7 @@ public class KoodistoRyhmaBusinessServiceTest {
         KoodistoRyhma response = resource.updateKoodistoRyhma(dto);
         assertNotNull(response);
 
-        group = resource.getKoodistoRyhmaById(6L);
+        group = resource.getKoodistoRyhmaById(-6L);
         assertEquals(3, group.getKoodistoJoukkoMetadatas().size());
         for (KoodistoRyhmaMetadata metadata : group.getKoodistoJoukkoMetadatas()) {
             assertEquals("Updated Name", metadata.getNimi());
@@ -154,7 +156,7 @@ public class KoodistoRyhmaBusinessServiceTest {
 
     @Test
     public void testUpdateKoodistoRyhmaByRemovingMetadata() {
-        KoodistoRyhma group = resource.getKoodistoRyhmaById(6L);
+        KoodistoRyhma group = resource.getKoodistoRyhmaById(-6L);
         assertEquals(3, group.getKoodistoJoukkoMetadatas().size());
 
         boolean first = true;
@@ -171,13 +173,13 @@ public class KoodistoRyhmaBusinessServiceTest {
         KoodistoRyhma response = resource.updateKoodistoRyhma(dto);
         assertNotNull(response);
 
-        group = resource.getKoodistoRyhmaById(6L);
+        group = resource.getKoodistoRyhmaById(-6L);
         assertEquals(2, group.getKoodistoJoukkoMetadatas().size());
     }
 
     @Test
     public void testInvalidUpdateKoodistoRyhmaShouldFail() {
-        KoodistoRyhma koodistoRyhma = resource.getKoodistoRyhmaById(6L);
+        KoodistoRyhma koodistoRyhma = resource.getKoodistoRyhmaById(-6L);
         KoodistoRyhmaDto dto = null;
 
         KoodistoRyhma group = null;
@@ -187,7 +189,7 @@ public class KoodistoRyhmaBusinessServiceTest {
         } catch (KoodistoRyhmaUriEmptyException e) {
         }
         assertNull(group);
-        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(6L));
+        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(-6L));
 
         try {
             dto = createRyhma(koodistoRyhma);
@@ -197,7 +199,7 @@ public class KoodistoRyhmaBusinessServiceTest {
         } catch (KoodistoRyhmaUriEmptyException e) {
         }
         assertNull(group);
-        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(6L));
+        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(-6L));
 
         try {
             dto = createRyhma(koodistoRyhma);
@@ -207,17 +209,17 @@ public class KoodistoRyhmaBusinessServiceTest {
         } catch (KoodistoRyhmaUriEmptyException e) {
         }
         assertNull(group);
-        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(6L));
+        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(-6L));
 
         try {
             dto = createRyhma(koodistoRyhma);
-            dto.setKoodistoRyhmaMetadatas(new HashSet<KoodistoRyhmaMetadata>());
+            dto.setKoodistoRyhmaMetadatas(new HashSet<>());
             group = resource.createKoodistoRyhma(dto);
             fail("Koodistoryhmä without metadata accepted.");
         } catch (MetadataEmptyException e) {
         }
         assertNull(group);
-        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(6L));
+        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(-6L));
         
         try {
             dto = createRyhma(koodistoRyhma);
@@ -232,12 +234,12 @@ public class KoodistoRyhmaBusinessServiceTest {
         } catch (KoodistoRyhmaNimiEmptyException e) {
         }
         assertNull(group);
-        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(6L));
+        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(-6L));
     }
 
     @Test
     public void testGetKoodistoRyhmaById() {
-        KoodistoRyhma group = resource.getKoodistoRyhmaById(1L);
+        KoodistoRyhma group = resource.getKoodistoRyhmaById(-1L);
         assertNotNull(group);
         assertEquals(5, group.getKoodistos().size());
         assertEquals(1, group.getKoodistoJoukkoMetadatas().size());
@@ -249,7 +251,7 @@ public class KoodistoRyhmaBusinessServiceTest {
         KoodistoRyhma group = resource.getKoodistoRyhmaById(null);
         assertNull(group);
 
-        group = resource.getKoodistoRyhmaById(987123L);
+        group = resource.getKoodistoRyhmaById(-987123L);
         assertNull(group);
 
         group = resource.getKoodistoRyhmaById(0L);
@@ -258,12 +260,12 @@ public class KoodistoRyhmaBusinessServiceTest {
 
     @Test
     public void testDelete() {
-        KoodistoRyhma group = resource.getKoodistoRyhmaById(3L);
+        KoodistoRyhma group = resource.getKoodistoRyhmaById(-3L);
         assertNotNull(group);
-        resource.delete(3L);
+        resource.delete(-3L);
         KoodistoRyhma groupAfter = null;
         try {
-            groupAfter = resource.getKoodistoRyhmaById(3L);
+            groupAfter = resource.getKoodistoRyhmaById(-3L);
             fail("Did not throw exception.");
         } catch (KoodistoRyhmaNotFoundException e) {
         }
@@ -272,14 +274,14 @@ public class KoodistoRyhmaBusinessServiceTest {
 
     @Test
     public void testNonEmptyDeleteFails() {
-        KoodistoRyhma group = resource.getKoodistoRyhmaById(1L);
+        KoodistoRyhma group = resource.getKoodistoRyhmaById(-1L);
         assertNotNull(group);
         try {
-            resource.delete(1L);
+            resource.delete(-1L);
             fail("Did not throw exception.");
         } catch (KoodistoRyhmaNotEmptyException e) {
         }
-        KoodistoRyhma groupAfter = resource.getKoodistoRyhmaById(1L);
+        KoodistoRyhma groupAfter = resource.getKoodistoRyhmaById(-1L);
         assertNotNull(groupAfter);
     }
 
@@ -289,14 +291,14 @@ public class KoodistoRyhmaBusinessServiceTest {
         KoodistoRyhmaDto dto = new KoodistoRyhmaDto();
         dto.setKoodistoRyhmaUri(koodistoRyhmaUri);
 
-        Set<KoodistoRyhmaMetadata> metadataSet = new HashSet<KoodistoRyhmaMetadata>();
+        Set<KoodistoRyhmaMetadata> metadataSet = new HashSet<>();
         KoodistoRyhmaMetadata fi = new KoodistoRyhmaMetadata();
         fi.setKieli(Kieli.FI);
         fi.setNimi(koodistoRyhmaUri);
         metadataSet.add(fi);
         dto.setKoodistoRyhmaMetadatas(metadataSet);
 
-        Set<Koodisto> emptyKoodistoSet = new HashSet<Koodisto>();
+        Set<Koodisto> emptyKoodistoSet = new HashSet<>();
         dto.setKoodistos(emptyKoodistoSet);
         return dto;
     }
