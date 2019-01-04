@@ -5,7 +5,7 @@
 
   <groupId>fi.vm.sade.koodisto</groupId>
   <artifactId>koodisto</artifactId>
-  <version>2017-12-SNAPSHOT</version>
+  <version>2019-01-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Koodisto :: Parent</name>
 
