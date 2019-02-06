@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.service.impl.conversion;
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -68,6 +69,8 @@ public class MetadataToSimpleMetadataConverterTest {
         data.setNimi(CODE_NAME);
         data.setKuvaus(CODE_DESCRIPTION);
         data.setLyhytNimi(CODE_SHORT_NAME);
+        data.setAlkuPvm(new Date());
+        data.setLoppuPvm(null);
         return data;
     }
     

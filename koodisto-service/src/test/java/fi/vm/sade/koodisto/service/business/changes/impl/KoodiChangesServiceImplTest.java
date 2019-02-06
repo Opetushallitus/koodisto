@@ -92,7 +92,7 @@ public class KoodiChangesServiceImplTest {
         String newName = "norsu";
         KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
         KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio +1, newName, SHORT_NAME, DESCRIPTION, Kieli.FI);
-        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(newName, Kieli.FI, null, null));
+        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(newName, Kieli.FI, null, null, null, null));
     }
     
     @Test
@@ -101,7 +101,7 @@ public class KoodiChangesServiceImplTest {
         String newShort = "norsu";
         KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
         KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio +1, NAME, newShort, DESCRIPTION, Kieli.FI);
-        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, null, newShort));
+        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, null, newShort, null, null));
     }
     
     @Test
@@ -110,7 +110,7 @@ public class KoodiChangesServiceImplTest {
         String newDesc = "isoin maalla liikkuva vegetaristi";
         KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
         KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(versio +1, NAME, SHORT_NAME, newDesc, Kieli.FI);
-        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, newDesc, null));
+        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, newDesc, null, null, null));
     }
     
     @Test
@@ -127,8 +127,8 @@ public class KoodiChangesServiceImplTest {
         KoodiMetadata latestSv = givenKoodiMetadata(NAME_SV, SHORT_NAME_SV, newDescSv, Kieli.SV);
         KoodiVersio original = givenKoodiVersioWithMetadata(versio, originalFi, originalEn, originalSv);        
         KoodiVersio latest = givenKoodiVersioWithMetadata(versio + 1, latestFi, latestEn, latestSv);
-        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, newDesc, null), 
-                new SimpleKoodiMetadataDto(newNameEn, Kieli.EN, null, null), new SimpleKoodiMetadataDto(null, Kieli.SV, newDescSv, null));
+        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, newDesc, null, null, null),
+                new SimpleKoodiMetadataDto(newNameEn, Kieli.EN, null, null, null, null), new SimpleKoodiMetadataDto(null, Kieli.SV, newDescSv, null, null, null));
     }
     
     @Test
@@ -138,21 +138,21 @@ public class KoodiChangesServiceImplTest {
         KoodiVersio latest = givenKoodiVersio(versio +1);
         KoodiChangesDto result = givenResult(original, latest);
         assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
-        assertTrue(result.poistuneetTiedot.contains(new SimpleKoodiMetadataDto(NAME, Kieli.FI, DESCRIPTION, SHORT_NAME)));
+        assertTrue(result.poistuneetTiedot.contains(new SimpleKoodiMetadataDto(NAME, Kieli.FI, DESCRIPTION, SHORT_NAME, null, null)));
     }
     
     @Test
     public void returnsHasChangedIfMetadataHasBeenAdded() {
         KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO + 1, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
         KoodiVersio original = givenKoodiVersio(VERSIO);
-        assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleKoodiMetadataDto(NAME, Kieli.FI, DESCRIPTION, SHORT_NAME));
+        assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleKoodiMetadataDto(NAME, Kieli.FI, DESCRIPTION, SHORT_NAME, null, null));
     }
     
     @Test
     public void metadataWhereDescriptionAndShortNameIsRemovedIsShownAsRemoved() {
         KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO + 1, NAME, null, null, Kieli.FI);
         KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);;
-        assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, ChangesService.REMOVED_METADATA_FIELD, ChangesService.REMOVED_METADATA_FIELD));
+        assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, ChangesService.REMOVED_METADATA_FIELD, ChangesService.REMOVED_METADATA_FIELD, null, null));
     }
     
     @Test
@@ -163,7 +163,7 @@ public class KoodiChangesServiceImplTest {
         KoodiChangesDto dto = givenResult(original, latest);
         assertTrue(dto.poistuneetTiedot.isEmpty());
         assertEquals(1, dto.muuttuneetTiedot.size());
-        assertEquals(new SimpleKoodiMetadataDto(newName, Kieli.FI, null, null), dto.muuttuneetTiedot.get(0));
+        assertEquals(new SimpleKoodiMetadataDto(newName, Kieli.FI, null, null, null, null), dto.muuttuneetTiedot.get(0));
     }
     
     @Test

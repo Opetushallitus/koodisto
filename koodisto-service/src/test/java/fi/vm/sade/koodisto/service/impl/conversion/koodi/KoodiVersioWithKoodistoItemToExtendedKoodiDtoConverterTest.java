@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,6 +72,8 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
         assertEquals(givenKoodiMetadata.getNimi(), data.nimi);
         assertEquals(givenKoodiMetadata.getKuvaus(), data.kuvaus);
         assertEquals(givenKoodiVersio().getKoodiarvo(), rel.codeElementValue);
+        assertEquals(givenKoodiMetadata.getAlkuPvm(), data.alkuPvm);
+        assertEquals(givenKoodiMetadata.getLoppuPvm(), data.loppuPvm);
     }
 
     @Test
@@ -119,6 +122,8 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
         data.setNimi("Name");
         data.setKuvaus("Kuvaus");
         data.setLyhytNimi("n");
+        data.setAlkuPvm(new Date());
+        data.setLoppuPvm(null);
         return data;
     }
 

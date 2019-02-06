@@ -1,10 +1,13 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
+import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component("koodiMetadataToKoodiMetadataTypeConverter")
 public class KoodiMetadataToKoodiMetadataTypeConverter extends
@@ -24,6 +27,8 @@ public class KoodiMetadataToKoodiMetadataTypeConverter extends
         dto.setNimi(k.getNimi());
         dto.setSisaltaaKoodiston(k.getSisaltaaKoodiston());
         dto.setSisaltaaMerkityksen(k.getSisaltaaMerkityksen());
+        Optional.ofNullable(k.getAlkuPvm()).ifPresent(alkuPvm -> dto.setAlkuPvm(DateHelper.DateToXmlCal(alkuPvm)));
+        Optional.ofNullable(k.getLoppuPvm()).ifPresent(loppuPvm -> dto.setLoppuPvm(DateHelper.DateToXmlCal(loppuPvm)));
 
         return dto;
     }

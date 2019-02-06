@@ -173,6 +173,8 @@ public class KoodistoConversionServiceTest {
         dto.setNimi("Nimi");
         dto.setSisaltaaKoodiston("Sisältää koodiston");
         dto.setSisaltaaMerkityksen("Sisältää merkityksen");
+        dto.setAlkuPvm(DateHelper.DateToXmlCal(new Date()));
+        dto.setLoppuPvm(DateHelper.DateToXmlCal(new Date()));
         return dto;
     }
 
@@ -189,6 +191,8 @@ public class KoodistoConversionServiceTest {
         meta.setNimi("Nimi");
         meta.setSisaltaaKoodiston("Sisältää koodiston");
         meta.setSisaltaaMerkityksen("Sisältää merkityksen");
+        meta.setAlkuPvm(new Date());
+        meta.setLoppuPvm(new Date());
         return meta;
     }
 

@@ -12,21 +12,21 @@ public class MetadataToSimpleMetadataConverter {
 
     
     public static SimpleMetadataDto convert(KoodistoMetadata metadata) {
-        return new SimpleMetadataDto(metadata.getNimi(), metadata.getKieli(), metadata.getKuvaus());
+        return new SimpleMetadataDto(metadata.getNimi(), metadata.getKieli(), metadata.getKuvaus(), null, null);
     }
     
     public static SimpleMetadataDto convert(KoodiMetadata metadata) {
-        return new SimpleMetadataDto(metadata.getNimi(), metadata.getKieli(), metadata.getKuvaus());
+        return new SimpleMetadataDto(metadata.getNimi(), metadata.getKieli(), metadata.getKuvaus(), metadata.getAlkuPvm(), metadata.getLoppuPvm());
     }
     
     public static SimpleKoodiMetadataDto convertToSimpleKoodiMetadata(KoodiMetadata metadata) {
-        return new SimpleKoodiMetadataDto(metadata.getNimi(), metadata.getKieli(), metadata.getKuvaus(), metadata.getLyhytNimi());
+        return new SimpleKoodiMetadataDto(metadata.getNimi(), metadata.getKieli(), metadata.getKuvaus(), metadata.getLyhytNimi(), metadata.getAlkuPvm(), metadata.getLoppuPvm());
     }
     
     public static List<SimpleKoodiMetadataDto> convertToSimpleKoodiMetadata(KoodiMetadata ... koodiMetadatas) {
         List<SimpleKoodiMetadataDto> metadatas = new ArrayList<>();
         for (KoodiMetadata md : koodiMetadatas) {
-            metadatas.add(new SimpleKoodiMetadataDto(md.getNimi(), md.getKieli(), md.getKuvaus(), md.getLyhytNimi()));
+            metadatas.add(new SimpleKoodiMetadataDto(md.getNimi(), md.getKieli(), md.getKuvaus(), md.getLyhytNimi(), md.getAlkuPvm(), md.getLoppuPvm()));
         }
         return metadatas;
     }

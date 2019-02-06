@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Entity
 @Table(name = KoodiMetadata.TABLE_NAME, uniqueConstraints = {@UniqueConstraint(name = "UK_" + KoodiMetadata.TABLE_NAME
@@ -94,6 +95,16 @@ public class KoodiMetadata extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = KOODIVERSIO_COLUMN_NAME, nullable = false)
     private KoodiVersio koodiVersio;
+
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+    @Temporal(TemporalType.DATE)
+    @Column(name = "alkupvm")
+    private Date alkuPvm;
+
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+    @Temporal(TemporalType.DATE)
+    @Column(name = "loppupvm")
+    private Date loppuPvm;
 
     public String getNimi() {
         return nimi;
@@ -193,4 +204,19 @@ public class KoodiMetadata extends BaseEntity {
         return super.hashCode();
     }
 
+    public Date getAlkuPvm() {
+        return alkuPvm;
+    }
+
+    public void setAlkuPvm(Date alkuPvm) {
+        this.alkuPvm = alkuPvm;
+    }
+
+    public Date getLoppuPvm() {
+        return loppuPvm;
+    }
+
+    public void setLoppuPvm(Date loppuPvm) {
+        this.loppuPvm = loppuPvm;
+    }
 }

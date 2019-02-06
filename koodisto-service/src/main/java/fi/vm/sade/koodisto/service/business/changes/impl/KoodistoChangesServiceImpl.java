@@ -202,7 +202,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
 
             @Override
             public SimpleMetadataDto apply(KoodistoMetadata input) {
-                return new SimpleMetadataDto(input.getNimi(), input.getKieli(), input.getKuvaus());
+                return new SimpleMetadataDto(input.getNimi(), input.getKieli(), input.getKuvaus(), null, null);
             }
         });
         
@@ -224,11 +224,11 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
 
     private SimpleMetadataDto getChangesForMetadata(KoodistoMetadata latestData, KoodistoMetadata metaWithMatchingKieli) {
         if (metaWithMatchingKieli == null) {
-            return new SimpleMetadataDto(latestData.getNimi(), latestData.getKieli(), latestData.getKuvaus());
+            return new SimpleMetadataDto(latestData.getNimi(), latestData.getKieli(), latestData.getKuvaus(), null, null);
         }
         String changedName = latestData.getNimi().equals(metaWithMatchingKieli.getNimi()) ? null : latestData.getNimi();
         String changedDescription = getChangeForMetadataField(latestData.getKuvaus(), metaWithMatchingKieli.getKuvaus());
-        return changedName == null && changedDescription == null? null : new SimpleMetadataDto(changedName, latestData.getKieli(), changedDescription);
+        return changedName == null && changedDescription == null? null : new SimpleMetadataDto(changedName, latestData.getKieli(), changedDescription, null, null);
     }
     
     private String getChangeForMetadataField(String latestData, String matchingData) {

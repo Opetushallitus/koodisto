@@ -67,6 +67,10 @@
                 name="huomioitavaKoodi" type="xs:string" />
             <xs:element minOccurs="0" maxOccurs="1"
                 name="sisaltaaKoodiston" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1"
+                name="alkuPvm" type="xs:dateTime" />
+            <xs:element minOccurs="0" maxOccurs="1"
+                name="loppuPvm" type="xs:dateTime" />
         </xs:sequence>
     </xs:complexType>
     <xs:simpleType name="SuhteenTyyppiType">

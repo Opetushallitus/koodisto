@@ -6,14 +6,16 @@ import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Kieli;
 
+import java.util.Date;
+
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class SimpleKoodiMetadataDto extends SimpleMetadataDto {
     
     @JsonView(JsonViews.Basic.class)
     public final String lyhytNimi;
     
-    public SimpleKoodiMetadataDto(String nimi, Kieli kieli, String kuvaus, String lyhytNimi) {
-        super(nimi, kieli, kuvaus);
+    public SimpleKoodiMetadataDto(String nimi, Kieli kieli, String kuvaus, String lyhytNimi, Date alkuPvm, Date loppuPvm) {
+        super(nimi, kieli, kuvaus, alkuPvm, loppuPvm);
         this.lyhytNimi = lyhytNimi;
     }
 

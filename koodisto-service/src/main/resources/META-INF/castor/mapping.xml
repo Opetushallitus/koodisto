@@ -12,6 +12,10 @@
                    class="fi.vm.sade.koodisto.service.business.marshaller.XMLGregorianCalendarFieldHandler"/>
     <field-handler name="paivitysPvmXmlCalendarHandler"
                    class="fi.vm.sade.koodisto.service.business.marshaller.XMLGregorianCalendarFieldHandler"/>
+    <field-handler name="metadataAlkuPvmXmlCalendarHandler"
+                   class="fi.vm.sade.koodisto.service.business.marshaller.XMLGregorianCalendarFieldHandler"/>
+    <field-handler name="metadataLoppuPvmXmlCalendarHandler"
+                   class="fi.vm.sade.koodisto.service.business.marshaller.XMLGregorianCalendarFieldHandler"/>
 
     <field-handler name="tilaTypeHandler"
                    class="fi.vm.sade.koodisto.service.business.marshaller.TilaTypeFieldHandler" />
@@ -97,6 +101,12 @@
         </field>
         <field name="sisaltaaKoodiston" type="string">
             <bind-xml name="sisaltaaKoodiston"/>
+        </field>
+        <field name="alkuPvm" type="date" handler="metadataAlkuPvmXmlCalendarHandler">
+            <bind-xml name="alkuPvm"/>
+        </field>
+        <field name="loppuPvm" type="date" handler="metadataLoppuPvmXmlCalendarHandler">
+            <bind-xml name="loppuPvm"/>
         </field>
     </class>
 

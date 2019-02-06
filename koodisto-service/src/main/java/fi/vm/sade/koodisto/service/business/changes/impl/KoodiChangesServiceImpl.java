@@ -1,11 +1,6 @@
 package fi.vm.sade.koodisto.service.business.changes.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Nonnull;
 
@@ -182,7 +177,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
 
             @Override
             public SimpleKoodiMetadataDto apply(@Nonnull KoodiMetadata input) {
-                return new SimpleKoodiMetadataDto(input.getNimi(), input.getKieli(), input.getKuvaus(), input.getLyhytNimi());
+                return new SimpleKoodiMetadataDto(input.getNimi(), input.getKieli(), input.getKuvaus(), input.getLyhytNimi(), input.getAlkuPvm(), input.getLoppuPvm());
             }
         });
         
@@ -205,7 +200,10 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         for (KoodiMetadata compare : compareToMetadatas) {
             if (compare.getKieli().equals(compareAgainst.getKieli()) && compare.getNimi().equals(compareAgainst.getNimi())
                     && ((compare.getKuvaus() == null && compareAgainst.getKuvaus() == null) || (compare.getKuvaus() != null && compare.getKuvaus().equals(compareAgainst.getKuvaus())))
-                    && ((compare.getLyhytNimi() == null && compareAgainst.getLyhytNimi() == null) || (compare.getLyhytNimi() != null && compare.getLyhytNimi().equals(compareAgainst.getLyhytNimi())))) {
+                    && ((compare.getLyhytNimi() == null && compareAgainst.getLyhytNimi() == null) || (compare.getLyhytNimi() != null && compare.getLyhytNimi().equals(compareAgainst.getLyhytNimi())))
+                    && ((compare.getAlkuPvm() == null && compareAgainst.getAlkuPvm() == null) || (compare.getAlkuPvm() != null && compare.getAlkuPvm().equals(compareAgainst.getAlkuPvm())))
+                    && ((compare.getLoppuPvm() == null && compareAgainst.getLoppuPvm() == null) || (compare.getLoppuPvm() != null && compare.getLoppuPvm().equals(compareAgainst.getLoppuPvm())))
+            ) {
                 return true;
             }
         }
@@ -214,17 +212,26 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
 
     private SimpleKoodiMetadataDto getChangesForMetadata(KoodiMetadata latestData, KoodiMetadata metaWithMatchingKieli) {
         if (metaWithMatchingKieli == null) {
-            return new SimpleKoodiMetadataDto(latestData.getNimi(), latestData.getKieli(), latestData.getKuvaus(), latestData.getLyhytNimi());
+            return new SimpleKoodiMetadataDto(latestData.getNimi(), latestData.getKieli(), latestData.getKuvaus(), latestData.getLyhytNimi(), latestData.getAlkuPvm(), latestData.getLoppuPvm());
         }
         String changedName = latestData.getNimi().equals(metaWithMatchingKieli.getNimi()) ? null : latestData.getNimi();
         String changedShortName = getChangeForMetadataField(latestData.getLyhytNimi(), metaWithMatchingKieli.getLyhytNimi());
         String changedDescription = getChangeForMetadataField(latestData.getKuvaus(), metaWithMatchingKieli.getKuvaus());
-        return new SimpleKoodiMetadataDto(changedName, latestData.getKieli(), changedDescription, changedShortName);
+        Date changedAlkuPvm = getChangeForMetadataField(latestData.getAlkuPvm(), metaWithMatchingKieli.getAlkuPvm());
+        Date changedLoppuPvm = getChangeForMetadataField(latestData.getLoppuPvm(), metaWithMatchingKieli.getLoppuPvm());
+        return new SimpleKoodiMetadataDto(changedName, latestData.getKieli(), changedDescription, changedShortName, changedAlkuPvm, changedLoppuPvm);
     }
 
     private String getChangeForMetadataField(String latestData, String matchingData) {
         if (latestData == null && matchingData != null) {
             return ChangesService.REMOVED_METADATA_FIELD;
+        }
+        return latestData != null && latestData.equals(matchingData) ? null : latestData;
+    }
+
+    private Date getChangeForMetadataField(Date latestData, Date matchingData) {
+        if (latestData == null && matchingData != null) {
+            return null;
         }
         return latestData != null && latestData.equals(matchingData) ? null : latestData;
     }

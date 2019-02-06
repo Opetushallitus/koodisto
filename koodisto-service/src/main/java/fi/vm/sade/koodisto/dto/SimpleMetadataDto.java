@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Kieli;
 
+import java.util.Date;
+
 public class SimpleMetadataDto {
     
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
@@ -16,10 +18,18 @@ public class SimpleMetadataDto {
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     public final String kuvaus;
 
-    public SimpleMetadataDto(String nimi, Kieli kieli, String kuvaus) {
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+    public final Date alkuPvm;
+
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+    public final Date loppuPvm;
+
+    public SimpleMetadataDto(String nimi, Kieli kieli, String kuvaus, Date alkuPvm, Date loppuPvm) {
         this.nimi = nimi;
         this.kieli = kieli;
         this.kuvaus = kuvaus;
+        this.alkuPvm = alkuPvm;
+        this.loppuPvm = loppuPvm;
     }
     
     @SuppressWarnings("unused")
@@ -27,6 +37,8 @@ public class SimpleMetadataDto {
         nimi = null;
         kieli = null;
         kuvaus = null;
+        this.alkuPvm = null;
+        this.loppuPvm = null;
     }
 
     @Override
@@ -60,6 +72,18 @@ public class SimpleMetadataDto {
                 return false;
         } else if (!nimi.equals(other.nimi))
             return false;
+        if (this.alkuPvm == null && other.alkuPvm != null) {
+            return false;
+        }
+        else if (this.alkuPvm != null && !this.alkuPvm.equals(other.alkuPvm)) {
+            return false;
+        }
+        if (this.loppuPvm == null && other.loppuPvm != null) {
+            return false;
+        }
+        else if (this.loppuPvm != null && !this.loppuPvm.equals(other.loppuPvm)) {
+            return false;
+        }
         return true;
     }
     

@@ -84,13 +84,13 @@ public class KoodistoChangesServiceImplTest {
     @Test
     public void returnsHasChangedIfNameHasChanged() {
         String newName = KOODI_URI;
-        assertResultHasMetadataChanges(givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithMetadata(VERSIO + 1, newName, DtoFactory.KOODISTO_DESCRIPTION)), VERSIO + 1, new SimpleMetadataDto(newName, Kieli.FI, null));
+        assertResultHasMetadataChanges(givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithMetadata(VERSIO + 1, newName, DtoFactory.KOODISTO_DESCRIPTION)), VERSIO + 1, new SimpleMetadataDto(newName, Kieli.FI, null, null, null));
     }
     
     @Test
     public void returnsHasChangedIfDescriptionHasChanged() {
         String newDescription = "parempi kuvaus";
-        assertResultHasMetadataChanges(givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithMetadata(VERSIO+1, DtoFactory.KOODISTO_NAME, newDescription)), VERSIO + 1, new SimpleMetadataDto(null, Kieli.FI, newDescription));
+        assertResultHasMetadataChanges(givenResult(givenKoodistoVersio(VERSIO), givenKoodistoVersioWithMetadata(VERSIO+1, DtoFactory.KOODISTO_NAME, newDescription)), VERSIO + 1, new SimpleMetadataDto(null, Kieli.FI, newDescription, null, null));
     }
     
     @Test
@@ -104,8 +104,8 @@ public class KoodistoChangesServiceImplTest {
         KoodistoMetadata latestEn = givenKoodistoMetadata(newNameEn, DESCRIPTION_EN, Kieli.EN);
         KoodistoVersio original = givenKoodistoVersioWithMetadata(versio, originalFi, originalEn);        
         KoodistoVersio latest = givenKoodistoVersioWithMetadata(versio + 1, latestFi, latestEn);
-        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleMetadataDto(null, Kieli.FI, newDesc), 
-                new SimpleMetadataDto(newNameEn, Kieli.EN, null));
+        assertResultHasMetadataChanges(givenResult(original, latest), versio + 1, new SimpleMetadataDto(null, Kieli.FI, newDesc, null, null),
+                new SimpleMetadataDto(newNameEn, Kieli.EN, null, null, null));
     }
     
     @Test
@@ -115,21 +115,21 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio latest = givenKoodistoVersioWithMetadata(versio + 1);
         KoodistoChangesDto result = givenResult(original, latest);
         assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
-        assertTrue(result.poistuneetTiedot.contains(new SimpleMetadataDto(NAME_EN, Kieli.EN, DESCRIPTION_EN)));
+        assertTrue(result.poistuneetTiedot.contains(new SimpleMetadataDto(NAME_EN, Kieli.EN, DESCRIPTION_EN, null, null)));
     }
     
     @Test
     public void returnsHasChangedIfMetadataHasBeenAdded() {
         KoodistoVersio latest = givenKoodistoVersioWithMetadata(VERSIO + 1, NAME, DESCRIPTION);
         KoodistoVersio original = givenKoodistoVersio(VERSIO);
-        assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleMetadataDto(NAME, Kieli.FI, DESCRIPTION));
+        assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleMetadataDto(NAME, Kieli.FI, DESCRIPTION, null, null));
     }
     
     @Test
     public void removedDescriptionIsShownAsRemoved() {
         KoodistoVersio latest = givenKoodistoVersioWithMetadata(VERSIO + 1, NAME, null);
         KoodistoVersio original = givenKoodistoVersioWithMetadata(VERSIO, NAME, DESCRIPTION);
-        assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleMetadataDto(null, Kieli.FI, ChangesService.REMOVED_METADATA_FIELD));
+        assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleMetadataDto(null, Kieli.FI, ChangesService.REMOVED_METADATA_FIELD, null, null));
     }
     
     @Test
@@ -140,7 +140,7 @@ public class KoodistoChangesServiceImplTest {
         KoodistoChangesDto dto = givenResult(original, latest);
         assertTrue(dto.poistuneetTiedot.isEmpty());
         assertEquals(1, dto.muuttuneetTiedot.size());
-        assertEquals(new SimpleMetadataDto(newName, Kieli.FI, null), dto.muuttuneetTiedot.get(0));
+        assertEquals(new SimpleMetadataDto(newName, Kieli.FI, null, null, null), dto.muuttuneetTiedot.get(0));
     }
     
     @Test
