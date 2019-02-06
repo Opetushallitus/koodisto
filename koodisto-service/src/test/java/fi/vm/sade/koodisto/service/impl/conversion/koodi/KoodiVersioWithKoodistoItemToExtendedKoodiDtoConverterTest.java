@@ -122,7 +122,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
         data.setNimi("Name");
         data.setKuvaus("Kuvaus");
         data.setLyhytNimi("n");
-        data.setAlkuPvm(new Date());
+        data.setAlkuPvm(new Date(100000));
         data.setLoppuPvm(null);
         return data;
     }
