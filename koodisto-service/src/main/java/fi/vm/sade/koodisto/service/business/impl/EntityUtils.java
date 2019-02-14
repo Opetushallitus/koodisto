@@ -1,24 +1,14 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import java.util.Date;
-
 import fi.vm.sade.generic.common.DateHelper;
-import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
-import fi.vm.sade.koodisto.model.KoodiVersio;
-import fi.vm.sade.koodisto.model.Koodisto;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.Tila;
-import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
-import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodiTilaType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
+import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
+
+import java.util.Date;
 
 public final class EntityUtils {
 
@@ -82,6 +72,7 @@ public final class EntityUtils {
         to.setVersio(from.getVersio());
         to.setVoimassaAlkuPvm(from.getVoimassaAlkuPvm());
         to.setVoimassaLoppuPvm(from.getVoimassaLoppuPvm());
+        to.setPaivittajaOid(from.getPaivittajaOid());
     }
 
     public static void copyFields(KoodistoMetadata from, KoodistoMetadata to) {
@@ -130,6 +121,7 @@ public final class EntityUtils {
         to.setKoodiarvo(from.getKoodiarvo());
         to.setVoimassaAlkuPvm(from.getVoimassaAlkuPvm());
         to.setVoimassaLoppuPvm(from.getVoimassaLoppuPvm());
+        to.setPaivittajaOid(from.getPaivittajaOid());
     }
 
     public static void copyFields(KoodiMetadata from, KoodiMetadata to) {

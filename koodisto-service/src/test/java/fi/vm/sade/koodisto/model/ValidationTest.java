@@ -1,15 +1,12 @@
 package fi.vm.sade.koodisto.model;
 
-import java.util.Calendar;
-import java.util.Date;
-
-import javax.validation.ConstraintViolationException;
-
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import fi.vm.sade.koodisto.dao.GenericDAO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -17,15 +14,22 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolationException;
+import java.util.Calendar;
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
-        TransactionDbUnitTestExecutionListener.class })
+        TransactionDbUnitTestExecutionListener.class,
+        WithSecurityContextTestExecutionListener.class
+})
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
+@WithMockUser("1.2.3.4.5")
 public class ValidationTest {
 
     @Autowired

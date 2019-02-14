@@ -23,6 +23,7 @@ public class KoodiVersioWithKoodistoVersioItemsToKoodiDtoConverter implements
         converted.setKoodiUri(source.getKoodiVersio().getKoodi().getKoodiUri());
         converted.getMetadata().addAll(source.getKoodiVersio().getMetadatas());
         converted.setPaivitysPvm(source.getKoodiVersio().getPaivitysPvm());
+        converted.setPaivittajaOid(source.getKoodiVersio().getPaivittajaOid());
         converted.setTila(source.getKoodiVersio().getTila());
         converted.setVersio(source.getKoodiVersio().getVersio());
         converted.setVoimassaAlkuPvm(source.getKoodiVersio().getVoimassaAlkuPvm());

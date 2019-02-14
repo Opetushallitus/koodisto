@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component("koodiVersioWithKoodistoVersioItemsToKoodiTypeConverter")
 public class KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter implements
@@ -40,6 +41,7 @@ public class KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter implements
         if (source.getKoodiVersio().getPaivitysPvm() != null) {
             converted.setPaivitysPvm(DateHelper.DateToXmlCal(source.getKoodiVersio().getPaivitysPvm()));
         }
+        Optional.ofNullable(source.getKoodiVersio().getPaivittajaOid()).ifPresent(converted::setPaivittajaOid);
         converted.setTila(TilaType.valueOf(source.getKoodiVersio().getTila().name()));
         converted.setVersio(source.getKoodiVersio().getVersio());
 

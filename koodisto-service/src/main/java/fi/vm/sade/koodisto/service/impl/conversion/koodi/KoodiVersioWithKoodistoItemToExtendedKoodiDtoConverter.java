@@ -1,33 +1,27 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import fi.vm.sade.koodisto.dao.KoodiMetadataDAO;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-
 import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.impl.conversion.MetadataToSimpleMetadataConverter;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component("koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter")
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
@@ -76,6 +70,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
 
         converted.getMetadata().addAll(sourceKoodiVersio.getMetadatas());
         converted.setPaivitysPvm(sourceKoodiVersio.getPaivitysPvm());
+        converted.setPaivittajaOid(sourceKoodiVersio.getPaivittajaOid());
         converted.setTila(sourceKoodiVersio.getTila());
         converted.setVersio(sourceKoodiVersio.getVersio());
         converted.setVersion(sourceKoodiVersio.getVersion());

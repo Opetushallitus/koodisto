@@ -1,22 +1,21 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodisto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import fi.vm.sade.koodisto.dto.KoodistoDto;
+import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
+import fi.vm.sade.koodisto.model.KoodistoRyhma;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistonSuhde;
+import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
-import fi.vm.sade.koodisto.model.KoodistoRyhma;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.KoodistonSuhde;
-import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component("koodistoVersioToKoodistoDtoConverter")
 public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConverter<KoodistoVersio, KoodistoDto> {
@@ -69,6 +68,7 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         converted.setLukittu(source.getKoodisto().getLukittu());
 
         converted.setPaivitysPvm(source.getPaivitysPvm());
+        converted.setPaivittajaOid(source.getPaivittajaOid());
         converted.setTila(source.getTila());
         converted.setVersio(source.getVersio());
         converted.setVoimassaAlkuPvm(source.getVoimassaAlkuPvm());
