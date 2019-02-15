@@ -148,8 +148,11 @@
     </div>
     <div class="row">
         <div class="col-md-2">{{'codes.viewpage.updated' | i18n}}</div>
-        <div class="col-md-10 pull-left bold">{{ viewCodes.model.codes.paivitysPvm |
-            date:'dd.MM.yyyy HH:mm' }}</div>
+        <div class="col-md-10 pull-left bold">
+            {{ viewCodes.model.codes.paivitysPvm | date:'dd.MM.yyyy HH:mm' }}
+            <span ng-if="!!viewCodes.model.codes.paivittajaOid">( <a href="{{'/henkilo-ui/virkailija/' + viewCodes.model.codes.paivittajaOid}}" target="_blank">{{ viewCodes.model.codes.paivittajaOid }}</a> )</span>
+            <span ng-if="!viewCodes.model.codes.paivittajaOid">{{ 'codes.viewpage.eiPaivittajaa' | i18n }}</span>
+        </div>
     </div>
 
     <div class="row">

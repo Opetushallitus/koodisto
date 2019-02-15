@@ -101,6 +101,8 @@
         </div>
         <div class="col-md-10 pull-left bold">
             {{ viewCodeElement.model.codeElement.paivitysPvm | date:'dd.MM.yyyy HH:mm' }}
+            <span ng-if="!!viewCodeElement.model.codeElement.paivittajaOid">( <a href="{{'/henkilo-ui/virkailija/' + viewCodeElement.model.codeElement.paivittajaOid}}" target="_blank">{{ viewCodeElement.model.codeElement.paivittajaOid }}</a> )</span>
+            <span ng-if="!viewCodeElement.model.codeElement.paivittajaOid">{{ 'codeelement.viewpage.eiPaivittajaa' | i18n }}</span>
         </div>
     </div>
 
