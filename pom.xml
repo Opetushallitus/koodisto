@@ -165,8 +165,8 @@ buildTtime=${maven.build.timestamp}]]>
       </dependency>
       <dependency>
         <groupId>net.sf.ehcache</groupId>
-        <artifactId>ehcache-core</artifactId>
-        <version>${ehcache-core.version}</version>
+        <artifactId>ehcache</artifactId>
+        <version>${ehcache.version}</version>
       </dependency>
       <dependency>
         <groupId>org.jasig.cas.client</groupId>
@@ -462,7 +462,7 @@ buildTtime=${maven.build.timestamp}]]>
     <cxf.version>3.1.15</cxf.version>
 
     <dbunit.version>2.5.4</dbunit.version>
-    <ehcache-core.version>2.5.0</ehcache-core.version>
+    <ehcache.version>2.10.6</ehcache.version>
 
     <dbunit-support.version>${generic.version}</dbunit-support.version>
     <dependencies-service.version>${generic.version}</dependencies-service.version>
