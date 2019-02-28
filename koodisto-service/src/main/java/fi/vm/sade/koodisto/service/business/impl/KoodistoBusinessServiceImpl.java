@@ -3,79 +3,20 @@
  */
 package fi.vm.sade.koodisto.service.business.impl;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import javax.activation.DataHandler;
-import javax.annotation.Nonnull;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.Hibernate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-
 import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.generic.service.exception.NotAuthorizedException;
-import fi.vm.sade.koodisto.dao.KoodiDAO;
-import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
-import fi.vm.sade.koodisto.dao.KoodistoDAO;
-import fi.vm.sade.koodisto.dao.KoodistoMetadataDAO;
-import fi.vm.sade.koodisto.dao.KoodistoRyhmaDAO;
-import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
-import fi.vm.sade.koodisto.dao.KoodistoVersioKoodiVersioDAO;
-import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
+import fi.vm.sade.koodisto.dao.*;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
-import fi.vm.sade.koodisto.model.Format;
-import fi.vm.sade.koodisto.model.Koodi;
-import fi.vm.sade.koodisto.model.KoodiVersio;
-import fi.vm.sade.koodisto.model.Koodisto;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
-import fi.vm.sade.koodisto.model.KoodistoRyhma;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
-import fi.vm.sade.koodisto.model.KoodistonSuhde;
-import fi.vm.sade.koodisto.model.SuhteenTyyppi;
-import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.DownloadService;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
-import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoExportException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiNotUniqueException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoOptimisticLockingException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoRelationToSelfException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoTilaException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoUriEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoVersioNotPassiivinenException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoVersionNumberEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistonSuhdeContainsKoodinSuhdeException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistosAlreadyHaveSuhdeException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistosHaveDifferentOrganizationsException;
-import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
+import fi.vm.sade.koodisto.service.business.UserDetailService;
+import fi.vm.sade.koodisto.service.business.exception.*;
 import fi.vm.sade.koodisto.service.impl.KoodistoRole;
 import fi.vm.sade.koodisto.service.koodisto.rest.CodesResourceConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
@@ -87,6 +28,23 @@ import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.activation.DataHandler;
+import javax.annotation.Nonnull;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.*;
 
 /**
  * @author tommiha
@@ -124,6 +82,9 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Autowired
     private KoodiBusinessService koodiBusinessService;
+
+    @Autowired
+    private UserDetailService userDetailService;
 
     @Autowired
     private KoodistoVersioKoodiVersioDAO koodistoVersioKoodiVersioDAO;
@@ -621,6 +582,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         // Set update date
         latest.setPaivitysPvm(new Date());
+        latest.setPaivittajaOid(this.userDetailService.getCurrentUserOid());
 
         return latest;
     }

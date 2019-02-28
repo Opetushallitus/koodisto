@@ -7,6 +7,8 @@ import fi.vm.sade.koodisto.service.conversion.AbstractToDomainConverter;
 import fi.vm.sade.koodisto.service.types.common.KoodistoType;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component("koodistoTypeToKoodistoVersioConverter")
 public class KoodistoTypeToKoodistoVersioConverter extends AbstractToDomainConverter<KoodistoType, KoodistoVersio> {
 
@@ -18,6 +20,7 @@ public class KoodistoTypeToKoodistoVersioConverter extends AbstractToDomainConve
         if (source.getPaivitysPvm() != null) {
             kv.setPaivitysPvm(DateHelper.xmlCalToDate(source.getPaivitysPvm()));
         }
+        Optional.ofNullable(source.getPaivittajaOid()).ifPresent(kv::setPaivittajaOid);
 
         kv.setTila(Tila.valueOf(source.getTila().name()));
         kv.setVersio(source.getVersio());

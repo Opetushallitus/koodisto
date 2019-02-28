@@ -1,12 +1,11 @@
 package fi.vm.sade.koodisto.dto;
 
-import java.util.*;
-
 import com.fasterxml.jackson.annotation.JsonView;
-
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.Tila;
+
+import java.util.*;
 
 public class KoodistoDto extends AbstractKoodistoDto {
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
@@ -20,6 +19,9 @@ public class KoodistoDto extends AbstractKoodistoDto {
 
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     private Date paivitysPvm;
+
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
+    private String paivittajaOid;
 
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     private Date voimassaAlkuPvm;
@@ -59,6 +61,14 @@ public class KoodistoDto extends AbstractKoodistoDto {
 
     public void setPaivitysPvm(Date paivitysPvm) {
         this.paivitysPvm = paivitysPvm;
+    }
+
+    public String getPaivittajaOid() {
+        return paivittajaOid;
+    }
+
+    public void setPaivittajaOid(String paivittajaOid) {
+        this.paivittajaOid = paivittajaOid;
     }
 
     public Date getVoimassaAlkuPvm() {

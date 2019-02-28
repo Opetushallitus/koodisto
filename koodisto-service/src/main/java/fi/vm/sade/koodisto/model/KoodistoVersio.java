@@ -1,27 +1,21 @@
 package fi.vm.sade.koodisto.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.*;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
+import fi.vm.sade.koodisto.common.util.FieldLengths;
+import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAnotherDateAsserter;
+import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import fi.vm.sade.koodisto.common.util.FieldLengths;
-import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAnotherDateAsserter;
-import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
+import javax.persistence.*;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.util.*;
+
+import static fi.vm.sade.koodisto.service.business.impl.UserDetailServiceImpl.findCurrentUserOid;
 
 @FieldAssert(field1 = "voimassaAlkuPvm", field2 = "voimassaLoppuPvm", asserter = DateIsNullOrNotBeforeAnotherDateAsserter.class, message = "{voimassaLoppuPvm.invalid}")
 @Entity
@@ -64,7 +58,10 @@ public class KoodistoVersio extends BaseEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "paivitysPvm")
     private Date paivitysPvm;
-    
+
+    @Column(name = "paivittaja_oid")
+    private String paivittajaOid;
+
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "luotu", nullable = false)
@@ -110,6 +107,7 @@ public class KoodistoVersio extends BaseEntity {
 
     @PreUpdate
     protected void onUpdate() {
+        findCurrentUserOid().ifPresent(this::setPaivittajaOid);
         this.paivitysPvm = new Date();
     }
 
@@ -240,6 +238,14 @@ public class KoodistoVersio extends BaseEntity {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    public String getPaivittajaOid() {
+        return paivittajaOid;
+    }
+
+    public void setPaivittajaOid(String paivittajaOid) {
+        this.paivittajaOid = paivittajaOid;
     }
 
 }

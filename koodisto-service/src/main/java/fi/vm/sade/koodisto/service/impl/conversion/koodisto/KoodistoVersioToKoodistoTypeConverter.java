@@ -11,6 +11,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component("koodistoVersioToKoodistoTypeConverter")
 public class KoodistoVersioToKoodistoTypeConverter extends AbstractFromDomainConverter<KoodistoVersio, KoodistoType> {
 
@@ -33,6 +35,7 @@ public class KoodistoVersioToKoodistoTypeConverter extends AbstractFromDomainCon
         if (source.getPaivitysPvm() != null) {
             converted.setPaivitysPvm(DateHelper.DateToXmlCal(source.getPaivitysPvm()));
         }
+        Optional.ofNullable(source.getPaivittajaOid()).ifPresent(converted::setPaivittajaOid);
         converted.setTila(TilaType.valueOf(source.getTila().name()));
         converted.setVersio(source.getVersio());
 

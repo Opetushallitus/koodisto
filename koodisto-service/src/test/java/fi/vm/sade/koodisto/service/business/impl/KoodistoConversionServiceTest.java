@@ -1,15 +1,11 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import java.lang.reflect.Method;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
+import fi.vm.sade.generic.common.DateHelper;
+import fi.vm.sade.generic.service.conversion.SadeConversionService;
+import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.service.types.common.*;
 import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,17 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fi.vm.sade.generic.common.DateHelper;
-import fi.vm.sade.generic.service.conversion.SadeConversionService;
-import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.service.types.common.KieliType;
-import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
-import fi.vm.sade.koodisto.service.types.common.KoodiType;
-import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
-import fi.vm.sade.koodisto.service.types.common.KoodistoType;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
+import java.lang.reflect.Method;
+import java.util.*;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -52,7 +43,7 @@ public class KoodistoConversionServiceTest {
         KoodiType dto = createKoodiType();
         KoodiVersio versio = conversionService.convert(dto, KoodiVersio.class);
         assertNotNull(versio);
-        checkConvertedFields(versio, KoodiVersio.class, "id", "version", "luotu");
+        checkConvertedFields(versio, KoodiVersio.class, "id", "version", "luotu", "paivittajaOid");
     }
 
     @Test
@@ -76,7 +67,7 @@ public class KoodistoConversionServiceTest {
         KoodistoType dto = createKoodistoType();
         KoodistoVersio versio = conversionService.convert(dto, KoodistoVersio.class);
         assertNotNull(versio);
-        checkConvertedFields(versio, KoodistoVersio.class, "id", "version", "luotu");
+        checkConvertedFields(versio, KoodistoVersio.class, "id", "version", "luotu", "paivittajaOid");
     }
 
     @Test
@@ -212,6 +203,7 @@ public class KoodistoConversionServiceTest {
         dto.setVersio(1);
         dto.setVoimassaAlkuPvm(DateHelper.DateToXmlCal(now.getTime()));
         dto.setVoimassaLoppuPvm(DateHelper.DateToXmlCal(weekLater.getTime()));
+        dto.setPaivittajaOid("oid");
 
         return dto;
     }
@@ -238,6 +230,7 @@ public class KoodistoConversionServiceTest {
         versio.setVersion(1L);
         versio.setVoimassaAlkuPvm(now.getTime());
         versio.setVoimassaLoppuPvm(weekLater.getTime());
+        versio.setPaivittajaOid("oid");
         return versio;
     }
     

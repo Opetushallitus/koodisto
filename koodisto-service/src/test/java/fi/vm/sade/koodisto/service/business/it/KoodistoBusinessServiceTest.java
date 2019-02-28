@@ -1,61 +1,48 @@
 package fi.vm.sade.koodisto.service.business.it;
 
-import java.util.*;
-
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.generic.service.conversion.SadeConversionService;
+import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
+import fi.vm.sade.koodisto.dto.KoodistoDto;
+import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
+import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
+import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.business.exception.*;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import fi.vm.sade.koodisto.service.types.*;
+import fi.vm.sade.koodisto.service.it.DataUtils;
+import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
+import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
+import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-
-import fi.vm.sade.generic.service.conversion.SadeConversionService;
-import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
-import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
-import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.KoodiVersio;
-import fi.vm.sade.koodisto.model.KoodinSuhde;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
-import fi.vm.sade.koodisto.model.KoodistoRyhma;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.KoodistonSuhde;
-import fi.vm.sade.koodisto.model.SuhteenTyyppi;
-import fi.vm.sade.koodisto.model.Tila;
-import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
-import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
-import fi.vm.sade.koodisto.service.business.exception.KoodiVersioHasRelationsException;
-import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoRelationToSelfException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoTilaException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistonSuhdeContainsKoodinSuhdeException;
-import fi.vm.sade.koodisto.service.it.DataUtils;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+        DbUnitTestExecutionListener.class,
+        WithSecurityContextTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
 @DatabaseSetup("classpath:test-data.xml")
+@WithMockUser("1.2.3.4.5")
 public class KoodistoBusinessServiceTest {
 
     private static final String CODES_WITH_RELATIONS = "809suhdetahan";

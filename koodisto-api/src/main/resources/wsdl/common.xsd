@@ -15,6 +15,7 @@
             <xs:element name="koodiArvo" type="xs:string" />
             <xs:element minOccurs="0" name="paivitysPvm"
                 type="xs:dateTime" />
+            <xs:element minOccurs="0" name="paivittajaOid" type="xs:string" />
             <xs:element minOccurs="0" name="voimassaAlkuPvm"
                 type="xs:dateTime" />
             <xs:element minOccurs="0" name="voimassaLoppuPvm"
@@ -90,6 +91,8 @@
             <xs:element name="versio" type="xs:int" />
             <xs:element minOccurs="0" name="paivitysPvm"
                 type="xs:dateTime" />
+            <xs:element minOccurs="0" name="paivittajaOid"
+                        type="xs:string" />
             <xs:element minOccurs="0" name="voimassaAlkuPvm"
                 type="xs:dateTime" />
             <xs:element minOccurs="0" name="voimassaLoppuPvm"

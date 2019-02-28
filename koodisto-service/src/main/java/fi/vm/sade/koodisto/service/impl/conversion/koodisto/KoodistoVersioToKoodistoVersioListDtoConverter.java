@@ -13,6 +13,7 @@ public class KoodistoVersioToKoodistoVersioListDtoConverter extends
     public KoodistoVersioListDto convert(KoodistoVersio source) {
         KoodistoVersioListDto converted = new KoodistoVersioListDto();
         converted.setPaivitysPvm(source.getPaivitysPvm());
+
         converted.setTila(source.getTila());
         converted.setVersio(source.getVersio());
         converted.setVersion(source.getVersion());
