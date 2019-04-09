@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd" name="koodisto">
-
-<diskStore path="java.io.tmpdir"/>
-<defaultCache
-        eternal="false"
-        maxElementsInMemory="50000"
-        maxElementsOnDisk="10000000"
-        overflowToDisk="true"
-        diskPersistent="true"
-        timeToLiveSeconds="300"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         name="koodisto"
+         maxBytesLocalHeap="1g"
+>
+        <defaultCache
+                eternal="false"
+                overflowToDisk="false"
+                diskPersistent="false"
+                timeToLiveSeconds="300"
         />
 </ehcache>
