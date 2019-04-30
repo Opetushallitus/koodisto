@@ -1,45 +1,10 @@
 package fi.vm.sade.koodisto.dao.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import javax.persistence.EntityManager;
-import javax.persistence.FlushModeType;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaBuilder.In;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.generic.dao.AbstractJpaDAOImpl;
 import fi.vm.sade.koodisto.dao.KoodiDAO;
 import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
-import fi.vm.sade.koodisto.model.Koodi;
-import fi.vm.sade.koodisto.model.KoodiVersio;
-import fi.vm.sade.koodisto.model.KoodinSuhde;
-import fi.vm.sade.koodisto.model.Koodisto;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
-import fi.vm.sade.koodisto.model.SuhteenTyyppi;
-import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
 import fi.vm.sade.koodisto.service.types.KoodiBaseSearchCriteriaType;
@@ -49,6 +14,18 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder.In;
+import java.util.*;
+import java.util.Map.Entry;
 
 @Repository
 public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> implements KoodiVersioDAO {
@@ -602,5 +579,23 @@ public class KoodiVersioDAOImpl extends AbstractJpaDAOImpl<KoodiVersio, Long> im
         }
             
         return results;
+    }
+
+    @Override
+    public List<KoodiVersio> findByKoodistoUriAndVersio(String koodistoUri, Integer versio) {
+        EntityManager em = getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<KoodiVersio> query = cb.createQuery(KoodiVersio.class);
+        Root<KoodistoVersioKoodiVersio> koodistoVersioKoodiVersio = query.from(KoodistoVersioKoodiVersio.class);
+        Join<KoodistoVersioKoodiVersio, KoodistoVersio> koodistoVersio = koodistoVersioKoodiVersio.join(KOODISTO_VERSIO);
+        Join<KoodistoVersio, Koodisto> koodisto = koodistoVersio.join(KOODISTO);
+        Join<KoodistoVersioKoodiVersio, KoodiVersio> koodiVersio = koodistoVersioKoodiVersio.join(KOODI_VERSIO);
+        koodiVersio.fetch(KOODI);
+
+        query.select(koodiVersio).distinct(true).where(cb.and(
+                cb.equal(koodisto.get(KOODISTO_URI), koodistoUri),
+                cb.equal(koodistoVersio.get(VERSIO), versio)
+        ));
+        return em.createQuery(query).getResultList();
     }
 }

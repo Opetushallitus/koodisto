@@ -38,4 +38,6 @@ public interface KoodiVersioDAO extends JpaDAO<KoodiVersio, Long> {
     void flush();
 
     Map<KoodiVersio, KoodiVersio> getPreviousKoodiVersios(List<KoodiVersio> koodis);
+
+    List<KoodiVersio> findByKoodistoUriAndVersio(String koodistoUri, Integer versio);
 }

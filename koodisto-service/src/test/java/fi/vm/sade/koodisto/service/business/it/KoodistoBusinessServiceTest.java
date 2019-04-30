@@ -89,7 +89,7 @@ public class KoodistoBusinessServiceTest {
 
         List<KoodistoVersio> currentVersions = listAllKoodistoVersions(koodistoUri);
         assertEquals(1, currentVersions.size());
-        KoodistoVersio newVersion = koodistoBusinessService.createNewVersion(koodistoUri);
+        KoodistoVersio newVersion = koodistoBusinessService.createNewVersion(koodistoUri).getData();
         assertNotSame(currentVersions.get(0).getVersio(), newVersion.getVersio());
         currentVersions = listAllKoodistoVersions(koodistoUri);
         assertEquals(2, currentVersions.size());

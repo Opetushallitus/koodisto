@@ -5,6 +5,7 @@ import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface KoodistoVersioDAO extends JpaDAO<KoodistoVersio, Long> {
 
@@ -17,4 +18,6 @@ public interface KoodistoVersioDAO extends JpaDAO<KoodistoVersio, Long> {
     boolean koodistoVersioExists(String koodistoUri, Integer koodistoVersio);
 
     void flush();
+
+    Optional<Integer> findLatestVersioByKoodistoUri(String koodistoUri);
 }

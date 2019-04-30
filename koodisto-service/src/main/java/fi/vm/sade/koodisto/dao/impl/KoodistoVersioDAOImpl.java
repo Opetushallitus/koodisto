@@ -6,7 +6,6 @@ import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
@@ -14,10 +13,12 @@ import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
+import static fi.vm.sade.koodisto.dao.impl.DaoUtils.optional;
 
 @Repository
 public class KoodistoVersioDAOImpl extends AbstractJpaDAOImpl<KoodistoVersio, Long> implements KoodistoVersioDAO {
@@ -190,5 +191,18 @@ public class KoodistoVersioDAOImpl extends AbstractJpaDAOImpl<KoodistoVersio, Lo
     @Override
     public void flush() {
         getEntityManager().flush();
+    }
+
+    @Override
+    public Optional<Integer> findLatestVersioByKoodistoUri(String koodistoUri) {
+        EntityManager em = getEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Integer> query = cb.createQuery(Integer.class);
+        Root<KoodistoVersio> root = query.from(KoodistoVersio.class);
+        Join<KoodistoVersio, Koodisto> koodisto = root.join(KOODISTO);
+
+        query.select(cb.max(root.get(VERSIO))).where(cb.equal(koodisto.get("koodistoUri"), koodistoUri));
+
+        return optional(em.createQuery(query));
     }
 }

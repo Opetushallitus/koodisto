@@ -5,7 +5,9 @@ package fi.vm.sade.koodisto.service.business;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 
+import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.Format;
 import fi.vm.sade.koodisto.model.Koodisto;
@@ -36,7 +38,13 @@ public interface KoodistoBusinessService {
      */
     void delete(String koodistoUri, Integer koodistoVersio);
 
-    KoodistoVersio createNewVersion(String koodistoUri);
+    /**
+     * Creates new version if latest version is HYVAKSYTTY, otherwise just returns latest version.
+     *
+     * @param koodistoUri koodisto uri
+     * @return latest version
+     */
+    FindOrCreateWrapper<KoodistoVersio> createNewVersion(String koodistoUri);
 
     List<KoodistoVersio> searchKoodistos(SearchKoodistosCriteriaType searchCriteria);
 
