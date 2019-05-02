@@ -390,7 +390,9 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         return getLatestKoodistoVersio(koodistoUri, true);
     }
 
-    private KoodistoVersio getLatestKoodistoVersio(String koodistoUri, boolean initialize) {
+    @Override
+    @Transactional(readOnly = true)
+    public KoodistoVersio getLatestKoodistoVersio(String koodistoUri, boolean initialize) {
         SearchKoodistosCriteriaType searchCriteria = KoodistoServiceSearchCriteriaBuilder.latestKoodistoByUri(koodistoUri);
         List<KoodistoVersio> result = koodistoVersioDAO.searchKoodistos(searchCriteria);
         if (result.size() != 1) {

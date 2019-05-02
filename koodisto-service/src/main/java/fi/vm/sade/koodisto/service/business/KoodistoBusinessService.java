@@ -50,6 +50,8 @@ public interface KoodistoBusinessService {
 
     KoodistoVersio getLatestKoodistoVersio(String koodistoUri);
 
+    KoodistoVersio getLatestKoodistoVersio(String koodistoUri, boolean initialize);
+
     KoodistoVersio getKoodistoVersio(String koodistoUri, Integer koodistoVersio);
 
     KoodistoVersio createKoodisto(List<String> koodistoRyhmaUris, CreateKoodistoDataType createKoodistoData);
