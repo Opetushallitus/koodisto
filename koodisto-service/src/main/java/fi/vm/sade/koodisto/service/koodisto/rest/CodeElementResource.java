@@ -16,6 +16,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import fi.vm.sade.koodisto.service.business.exception.SadeBusinessException;
+import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +30,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-import fi.vm.sade.generic.service.conversion.SadeConversionService;
-import fi.vm.sade.generic.service.exception.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiChangesDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;

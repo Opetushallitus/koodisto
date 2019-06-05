@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.*;

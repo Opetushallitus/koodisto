@@ -8,6 +8,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBElement;
 
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
+import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 import fi.vm.sade.generic.rest.Cacheable;
-import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;

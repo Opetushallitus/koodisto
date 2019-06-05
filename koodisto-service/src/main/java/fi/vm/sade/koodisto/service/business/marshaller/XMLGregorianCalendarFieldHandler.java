@@ -1,6 +1,6 @@
 package fi.vm.sade.koodisto.service.business.marshaller;
 
-import fi.vm.sade.generic.common.DateHelper;
+import fi.vm.sade.koodisto.util.DateHelper;
 import org.exolab.castor.mapping.GeneralizedFieldHandler;
 
 import javax.xml.datatype.XMLGregorianCalendar;

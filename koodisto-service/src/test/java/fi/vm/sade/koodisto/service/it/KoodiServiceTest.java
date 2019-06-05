@@ -3,7 +3,6 @@ package fi.vm.sade.koodisto.service.it;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.service.KoodiService;
 import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoVersioSelectionType;

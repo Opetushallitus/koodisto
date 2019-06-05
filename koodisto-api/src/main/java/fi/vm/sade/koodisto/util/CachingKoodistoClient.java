@@ -42,10 +42,12 @@ public class CachingKoodistoClient implements KoodistoClient {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public CachingKoodistoClient setClientSubSystemCode(String clientSubSystemCode) {
-        client.setClientSubSystemCode(clientSubSystemCode);
+    @Override
+    public KoodistoClient setCallerId(String callerId) {
+        client.setCallerId(callerId);
         return this;
     }
+
 
     private <T> T execute(OphHttpRequest resource, final TypeReference<T> type) {
         return resource
@@ -127,4 +129,5 @@ public class CachingKoodistoClient implements KoodistoClient {
                 , new TypeReference<List<KoodiType>>() {
                 });
     }
+
 }

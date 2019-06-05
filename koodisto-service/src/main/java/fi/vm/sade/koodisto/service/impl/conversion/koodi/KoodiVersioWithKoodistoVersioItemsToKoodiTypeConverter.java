@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
-import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
@@ -8,6 +7,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoItemType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
+import fi.vm.sade.koodisto.util.DateHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;

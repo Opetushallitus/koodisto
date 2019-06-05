@@ -28,15 +28,8 @@
       <artifactId>opintopolku-user-details-service</artifactId>
     </dependency>
     <dependency>
-      <groupId>fi.vm.sade.generic</groupId>
-      <artifactId>generic-test-support</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>fi.vm.sade.generic</groupId>
-          <artifactId>dependencies-vaadin</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>fi.vm.sade.java-utils</groupId>
+      <artifactId>opintopolku-spring-security</artifactId>
     </dependency>
 
     <dependency>
@@ -59,18 +52,6 @@
     <dependency>
       <artifactId>aspectjweaver</artifactId>
       <groupId>org.aspectj</groupId>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.vm.sade.generic</groupId>
-      <artifactId>generic-common</artifactId>
-      <version>${generic-common.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.validation</groupId>
-          <artifactId>validation-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -180,7 +161,7 @@
       <version>${cxf.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
+      <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
@@ -617,7 +598,7 @@
     </profile>
   </profiles>
 
-  <repositories>
+<!--  <repositories>
     <repository>
       <id>smartics</id>
       <url>https://www.smartics.eu/nexus/content/groups/public-group</url>
@@ -641,5 +622,6 @@
       </snapshots>
     </pluginRepository>
   </pluginRepositories>
+-->
 
 </project>

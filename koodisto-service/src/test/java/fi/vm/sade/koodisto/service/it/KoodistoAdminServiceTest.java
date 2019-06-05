@@ -2,7 +2,6 @@ package fi.vm.sade.koodisto.service.it;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.service.GenericFault;
 import fi.vm.sade.koodisto.service.KoodiService;
 import fi.vm.sade.koodisto.service.KoodistoAdminService;

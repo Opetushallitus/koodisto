@@ -3,7 +3,6 @@ package fi.vm.sade.koodisto.service.it;
 import java.util.Calendar;
 import java.util.Date;
 
-import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
