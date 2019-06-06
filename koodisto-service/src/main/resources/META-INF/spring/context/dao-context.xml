@@ -37,7 +37,7 @@
     <!-- enable spring annotation driven transactions -->
     <tx:annotation-driven transaction-manager="transactionManager" />
 
-    <bean id="genericDAO" class="fi.vm.sade.generic.dao.GenericDAOImpl" />
+    <bean id="genericDAO" class="fi.vm.sade.koodisto.dao.impl.GenericDAOImpl" />
 
     <bean id="flyway" class="com.googlecode.flyway.core.Flyway" init-method="migrate">
         <property name="initOnMigrate" value="${flyway.initOnMigrate}" />
