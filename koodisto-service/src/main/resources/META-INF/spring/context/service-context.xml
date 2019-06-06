@@ -24,7 +24,7 @@
 
     <!-- Conversion service -->
     <bean id="sadeConversionService"
-          class="fi.vm.sade.generic.service.conversion.SadeConversionServiceFactoryBean">
+          class="fi.vm.sade.koodisto.service.conversion.SadeConversionServiceFactoryBean">
         <property name="converters">
             <list>
                 <ref bean="koodiMetadataToKoodiMetadataTypeConverter"/>

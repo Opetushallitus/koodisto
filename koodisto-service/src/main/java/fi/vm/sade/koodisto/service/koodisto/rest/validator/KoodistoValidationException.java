@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
+import fi.vm.sade.generic.service.exception.SadeBusinessException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
-import fi.vm.sade.koodisto.service.business.exception.SadeBusinessException;
 
 public class KoodistoValidationException extends SadeBusinessException {
     private static final long serialVersionUID = 1L;

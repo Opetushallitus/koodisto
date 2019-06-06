@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.koodisto.util.DateHelper;
 import junit.framework.Assert;
 
 import org.junit.Test;

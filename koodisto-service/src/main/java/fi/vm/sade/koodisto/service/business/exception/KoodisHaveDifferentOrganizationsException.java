@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.service.business.exception;
 
+import fi.vm.sade.generic.service.exception.SadeBusinessException;
+
 public class KoodisHaveDifferentOrganizationsException extends SadeBusinessException {
 
     private static final long serialVersionUID = 155764709543824538L;
