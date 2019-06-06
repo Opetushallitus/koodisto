@@ -93,7 +93,7 @@ app.run(['$http', '$cookies', '$templateCache', function( $http, $cookies, $temp
     $templateCache.put('sessionTimeout.html', sessionTimeout);
     $templateCache.put('organisaatioSelector.html', organisaatioSelector);
 
-    $http.defaults.headers.common['clientSubSystemCode'] = "koodisto.koodisto-ui.frontend";
+    $http.defaults.headers.common['Caller-Id'] = "1.2.246.562.10.00000000001.koodisto.koodisto-ui.frontend";
     if ($cookies['CSRF']) {
         $http.defaults.headers.common['CSRF'] = $cookies['CSRF'];
     }

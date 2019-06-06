@@ -4,7 +4,7 @@ export class CsrfHeaderInterceptor {
         this.$cookies = $cookies;
 
         this.request = (config) => {
-            config.headers['clientSubSystemCode'] = "koodisto.koodisto-ui.frontend";
+            config.headers['Caller-Id'] = "1.2.246.562.10.00000000001.koodisto.koodisto-ui.frontend";
 
             const csrfToken = this.$cookies['CSRF'];
             if (csrfToken) {
