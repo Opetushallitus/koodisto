@@ -123,7 +123,7 @@
 
     <!--  ===== end of mappings ===== -->
 
-    <beans:bean id="casFilter" class="fi.vm.sade.security.CustomCasAuthenticationFilter">
+    <beans:bean id="casFilter" class="fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter">
         <beans:property name="authenticationManager" ref="authenticationManager"/>
         <beans:property name="serviceProperties" ref="casServiceProperties"/>
         <beans:property name="proxyGrantingTicketStorage" ref="pgtStorage"/>
