@@ -3,7 +3,7 @@
     <parent>
         <artifactId>koodisto</artifactId>
         <groupId>fi.vm.sade.koodisto</groupId>
-        <version>2019-01-SNAPSHOT</version>
+        <version>2019-06-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>koodisto-audit</artifactId>

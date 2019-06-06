@@ -4,7 +4,7 @@
   <parent>
     <artifactId>koodisto</artifactId>
     <groupId>fi.vm.sade.koodisto</groupId>
-    <version>2019-01-SNAPSHOT</version>
+    <version>2019-06-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>koodisto-service</artifactId>
@@ -53,6 +53,19 @@
       <artifactId>aspectjweaver</artifactId>
       <groupId>org.aspectj</groupId>
     </dependency>
+
+    <dependency>
+      <groupId>fi.vm.sade.generic</groupId>
+      <artifactId>generic-test-support</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>fi.vm.sade.generic</groupId>
+          <artifactId>dependencies-vaadin</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
 
     <dependency>
       <groupId>org.postgresql</groupId>
