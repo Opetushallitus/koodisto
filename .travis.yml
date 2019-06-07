@@ -39,7 +39,7 @@ deploy:
     script: mvn deploy -pl koodisto-api -am -DskipTests --settings ci-tools/common/maven-settings.xml
     skip_cleanup: true
     on:
-      branch: master
+      branch: remove-generic
   - provider: script
     script: ./ci-tools/build/upload-image.sh $ARTIFACT_NAME
     on:
