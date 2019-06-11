@@ -8,6 +8,7 @@ import com.google.common.collect.Iterables;
 import fi.vm.sade.authentication.business.service.Authorizer;
 import fi.vm.sade.generic.service.exception.NotAuthorizedException;
 import fi.vm.sade.koodisto.dao.*;
+import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.*;
@@ -386,13 +387,21 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Override
     @Transactional(readOnly = true)
     public KoodistoVersio getLatestKoodistoVersio(String koodistoUri) {
+        return getLatestKoodistoVersio(koodistoUri, true);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public KoodistoVersio getLatestKoodistoVersio(String koodistoUri, boolean initialize) {
         SearchKoodistosCriteriaType searchCriteria = KoodistoServiceSearchCriteriaBuilder.latestKoodistoByUri(koodistoUri);
         List<KoodistoVersio> result = koodistoVersioDAO.searchKoodistos(searchCriteria);
         if (result.size() != 1) {
             logger.error("No koodisto found for URI " + koodistoUri);
             throw new KoodistoNotFoundException();
         }
-        initializeKoodistoVersio(result.get(0));
+        if (initialize) {
+            initializeKoodistoVersio(result.get(0));
+        }
         return result.get(0);
     }
 
@@ -439,10 +448,10 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         return result.get(0);
     }
 
-    private KoodistoVersio createNewVersion(KoodistoVersio latest) {
+    private FindOrCreateWrapper<KoodistoVersio> createNewVersion(KoodistoVersio latest) {
         authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD, KoodistoRole.UPDATE);
         if (latest.getTila() != Tila.HYVAKSYTTY) {
-            return latest;
+            return FindOrCreateWrapper.found(latest);
         }
 
         KoodistoVersio input = new KoodistoVersio();
@@ -452,7 +461,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             EntityUtils.copyFields(md, newMd);
             input.addMetadata(newMd);
         }
-        return createNewVersion(latest, input);
+        return FindOrCreateWrapper.created(createNewVersion(latest, input));
     }
 
     private KoodistoVersio createNewVersion(KoodistoVersio base, KoodistoVersio input) {
@@ -601,8 +610,8 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     @Override
-    public KoodistoVersio createNewVersion(String koodistoUri) {
-        return createNewVersion(getLatestKoodistoVersio(koodistoUri));
+    public FindOrCreateWrapper<KoodistoVersio> createNewVersion(String koodistoUri) {
+        return createNewVersion(getLatestKoodistoVersio(koodistoUri, false));
     }
 
     @Override
