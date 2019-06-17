@@ -110,6 +110,10 @@
           <artifactId>opintopolku-user-details-service</artifactId>
         </dependency>
         <dependency>
+          <groupId>fi.vm.sade.java-utils</groupId>
+          <artifactId>opintopolku-cas-servlet-filter</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
