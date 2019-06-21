@@ -85,8 +85,7 @@ branchName=${branch}
 vcsRevision=${revision}
 buildTtime=${maven.build.timestamp}]]>
                 </echo>
-                <loadfile property="buildversiontxt"
-                          srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
+                <loadfile property="buildversiontxt" srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
                 <echo message="${buildversiontxt}"/>
                 <echo file="target/mavenversion.txt">${project.version}</echo>
               </target>
@@ -495,7 +494,7 @@ buildTtime=${maven.build.timestamp}]]>
     <slf4j.version>1.7.25</slf4j.version>
 
     <spring.version>4.3.18.RELEASE</spring.version>
-    <spring-security.version>4.2.7.RELEASE</spring-security.version>
+    <spring-security.version>4.2.13.RELEASE</spring-security.version>
     <spring-session.version>2.0.3.RELEASE</spring-session.version>
 
     <springockito-annotations.version>${springockito.version}</springockito-annotations.version>
