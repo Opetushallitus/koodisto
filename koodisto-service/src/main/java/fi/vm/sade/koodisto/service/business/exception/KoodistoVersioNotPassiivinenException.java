@@ -1,6 +1,6 @@
 package fi.vm.sade.koodisto.service.business.exception;
 
-import fi.vm.sade.generic.service.exception.SadeBusinessException;
+import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 
 public class KoodistoVersioNotPassiivinenException extends SadeBusinessException {
 

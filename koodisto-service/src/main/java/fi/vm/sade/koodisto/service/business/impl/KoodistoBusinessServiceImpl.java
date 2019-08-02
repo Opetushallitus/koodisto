@@ -5,7 +5,7 @@ package fi.vm.sade.koodisto.service.business.impl;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import fi.vm.sade.authentication.business.service.Authorizer;
+import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.authorization.NotAuthorizedException;
 import fi.vm.sade.koodisto.dao.*;
 import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;

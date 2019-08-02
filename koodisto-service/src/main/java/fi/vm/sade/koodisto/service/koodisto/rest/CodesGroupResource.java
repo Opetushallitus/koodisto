@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-import fi.vm.sade.generic.service.exception.SadeBusinessException;
+import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
