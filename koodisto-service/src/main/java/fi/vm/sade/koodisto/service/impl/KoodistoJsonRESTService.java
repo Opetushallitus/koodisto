@@ -15,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
+import fi.vm.sade.koodisto.support.rest.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
@@ -25,8 +27,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-import fi.vm.sade.generic.rest.Cacheable;
-import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.common.util.FieldLengths;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;

@@ -1,10 +1,15 @@
 package fi.vm.sade.koodisto.dao.impl;
 
-import fi.vm.sade.generic.common.DateHelper;
-import fi.vm.sade.generic.dao.AbstractJpaDAOImpl;
 import fi.vm.sade.koodisto.dao.KoodiDAO;
 import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
-import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.model.Koodi;
+import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.KoodinSuhde;
+import fi.vm.sade.koodisto.model.Koodisto;
+import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
 import fi.vm.sade.koodisto.service.types.KoodiBaseSearchCriteriaType;
@@ -13,6 +18,7 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoVersioSelectionTy
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
+import fi.vm.sade.koodisto.util.DateHelper;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +28,22 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaBuilder.In;
-import java.util.*;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 @Repository

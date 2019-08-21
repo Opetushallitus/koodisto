@@ -16,7 +16,6 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
 
-import fi.vm.sade.generic.dao.AbstractJpaDAOImpl;
 import fi.vm.sade.koodisto.dao.KoodinSuhdeDAO;
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiVersio;

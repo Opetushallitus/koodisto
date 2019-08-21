@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.util;
 
-import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosVersioSelectionType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;

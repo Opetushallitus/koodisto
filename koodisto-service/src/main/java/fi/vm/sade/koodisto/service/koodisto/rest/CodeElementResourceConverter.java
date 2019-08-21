@@ -6,12 +6,12 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 
-import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.model.KoodiMetadata;

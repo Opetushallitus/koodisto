@@ -1,10 +1,10 @@
 package fi.vm.sade.koodisto.service.impl;
 
-import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.service.GenericFault;
 import fi.vm.sade.koodisto.service.KoodiAdminService;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;

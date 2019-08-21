@@ -1,9 +1,14 @@
 package fi.vm.sade.koodisto.util;
 
+import static fi.vm.sade.javautils.httpclient.OphHttpClient.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fi.vm.sade.javautils.httpclient.*;
+
+import fi.vm.sade.javautils.httpclient.OphHttpClient;
+import fi.vm.sade.javautils.httpclient.OphHttpRequest;
+import fi.vm.sade.javautils.httpclient.OphHttpResponse;
+import fi.vm.sade.javautils.httpclient.OphHttpResponseHandler;
 import fi.vm.sade.javautils.httpclient.apache.ApacheOphHttpClient;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
@@ -15,9 +20,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
-
-import static fi.vm.sade.javautils.httpclient.OphHttpClient.JSON;
 
 /**
  * Caching koodisto REST client.
@@ -42,10 +46,12 @@ public class CachingKoodistoClient implements KoodistoClient {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public CachingKoodistoClient setClientSubSystemCode(String clientSubSystemCode) {
-        client.setClientSubSystemCode(clientSubSystemCode);
+    @Override
+    public KoodistoClient setCallerId(String callerId) {
+        client.setCallerId(callerId);
         return this;
     }
+
 
     private <T> T execute(OphHttpRequest resource, final TypeReference<T> type) {
         return resource
@@ -116,15 +122,21 @@ public class CachingKoodistoClient implements KoodistoClient {
 
     @Override
     public List<KoodiType> searchKoodis(SearchKoodisCriteriaType sc) {
-        return execute(
-                client.get("koodisto-service.searchKoodis")
-                        .param("koodiUris", sc.getKoodiUris())
-                        .param("koodiArvo", sc.getKoodiArvo())
-                        .param("koodiTilas", sc.getKoodiTilas())
-                        .param("validAt", new SimpleDateFormat("yyyy-MM-dd").format(sc.getValidAt().toGregorianCalendar().getTime()))
-                        .param("koodiVersio", sc.getKoodiVersio())
-                        .param("koodiVersioSelection", sc.getKoodiVersioSelection())
-                , new TypeReference<List<KoodiType>>() {
-                });
+        List<Object[]> paramNamesAndValues = Arrays.asList(
+            new Object[]{"koodiUris", sc.getKoodiUris()},
+            new Object[]{"koodiArvo", sc.getKoodiArvo()},
+            new Object[]{"koodiTilas", sc.getKoodiTilas()},
+            new Object[]{"validAt", sc.getValidAt() != null ? new SimpleDateFormat("yyyy-MM-dd").format(sc.getValidAt().toGregorianCalendar().getTime()) : null},
+            new Object[]{"koodiVersio", sc.getKoodiVersio()},
+            new Object[]{"koodiVersioSelection", sc.getKoodiVersioSelection()}
+        );
+        OphHttpRequest request = client.get("koodisto-service.searchKoodis");
+        for (Object[] pv : paramNamesAndValues) {
+            if (pv[1] != null) {
+                request = request.param((String) pv[0], pv[1]);
+            }
+        }
+
+        return execute(request, new TypeReference<List<KoodiType>>() {});
     }
 }

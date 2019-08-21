@@ -1,14 +1,14 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.generic.service.conversion.SadeConversionService;
-import fi.vm.sade.generic.service.exception.SadeBusinessException;
+import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.*;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.DownloadService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UploadBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodistoChangesService;
+import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.service.impl.stream.TemporaryFileInputStream;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.CodesValidator;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.KoodistoValidationException;

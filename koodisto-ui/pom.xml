@@ -4,7 +4,7 @@
     <parent>
         <artifactId>koodisto</artifactId>
         <groupId>fi.vm.sade.koodisto</groupId>
-        <version>2019-01-SNAPSHOT</version>
+        <version>2019-08-SNAPSHOT</version>
     </parent>
     <artifactId>koodisto-ui</artifactId>
     <packaging>war</packaging>
@@ -110,6 +110,10 @@
           <artifactId>opintopolku-user-details-service</artifactId>
         </dependency>
         <dependency>
+          <groupId>fi.vm.sade.java-utils</groupId>
+          <artifactId>opintopolku-cas-servlet-filter</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
@@ -164,11 +168,6 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
             <version>${aspectj.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>fi.vm.sade.generic</groupId>
-            <artifactId>generic-test-aspects</artifactId>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -226,11 +225,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>fi.vm.sade.generic</groupId>
-            <artifactId>generic-common</artifactId>
         </dependency>
 
          <dependency>

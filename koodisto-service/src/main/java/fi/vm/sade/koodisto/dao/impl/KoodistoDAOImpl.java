@@ -3,7 +3,6 @@
  */
 package fi.vm.sade.koodisto.dao.impl;
 
-import fi.vm.sade.generic.dao.AbstractJpaDAOImpl;
 import fi.vm.sade.koodisto.dao.KoodistoDAO;
 import fi.vm.sade.koodisto.model.Koodisto;
 import org.springframework.stereotype.Repository;

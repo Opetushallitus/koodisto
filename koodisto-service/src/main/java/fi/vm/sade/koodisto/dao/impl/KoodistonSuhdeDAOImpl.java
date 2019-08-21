@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import fi.vm.sade.generic.dao.AbstractJpaDAOImpl;
 import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoVersio;

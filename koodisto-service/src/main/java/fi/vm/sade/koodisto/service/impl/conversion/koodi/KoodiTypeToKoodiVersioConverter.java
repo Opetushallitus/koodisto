@@ -1,10 +1,10 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
-import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.conversion.AbstractToDomainConverter;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
+import fi.vm.sade.koodisto.util.DateHelper;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.activation.DataHandler;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import fi.vm.sade.koodisto.util.DateHelper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -30,7 +31,6 @@ import org.supercsv.io.CsvListReader;
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.prefs.CsvPreference;
 
-import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiTilaInvalidException;
 import fi.vm.sade.koodisto.service.koodisto.rest.CodesResource;

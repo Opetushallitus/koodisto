@@ -2,7 +2,6 @@ package fi.vm.sade.koodisto.service.it;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.service.GenericFault;
 import fi.vm.sade.koodisto.service.KoodiService;
 import fi.vm.sade.koodisto.service.KoodistoAdminService;
@@ -12,6 +11,7 @@ import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiNotUniqueExcep
 import fi.vm.sade.koodisto.service.business.exception.KoodistoVersioNotPassiivinenException;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.*;
+import fi.vm.sade.koodisto.util.DateHelper;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import fi.vm.sade.koodisto.util.KoodistoHelper;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.koodisto.util.DateHelper;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -20,7 +21,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;

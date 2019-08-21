@@ -1,6 +1,6 @@
 package fi.vm.sade.koodisto.filter;
 
-import fi.vm.sade.generic.rest.Cacheable;
+import fi.vm.sade.koodisto.support.rest.Cacheable;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.container.ContainerRequestContext;

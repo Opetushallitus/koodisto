@@ -2,13 +2,13 @@ package fi.vm.sade.koodisto.service.it;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.service.*;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotInKoodistoException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.*;
+import fi.vm.sade.koodisto.util.DateHelper;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import fi.vm.sade.koodisto.util.KoodistoHelper;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;

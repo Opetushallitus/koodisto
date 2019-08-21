@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.dao.impl;
 
-import fi.vm.sade.generic.dao.AbstractJpaDAOImpl;
 import fi.vm.sade.koodisto.dao.KoodistoRyhmaDAO;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;

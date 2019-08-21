@@ -2,11 +2,11 @@ package fi.vm.sade.koodisto.service.impl;
 
 import java.util.List;
 
+import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fi.vm.sade.generic.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.GenericFault;
 import fi.vm.sade.koodisto.service.KoodiService;

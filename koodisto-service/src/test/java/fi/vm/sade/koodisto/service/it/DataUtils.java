@@ -3,7 +3,6 @@ package fi.vm.sade.koodisto.service.it;
 import java.util.Calendar;
 import java.util.Date;
 
-import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
@@ -19,6 +18,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
+import fi.vm.sade.koodisto.util.DateHelper;
 
 public final class DataUtils {
 

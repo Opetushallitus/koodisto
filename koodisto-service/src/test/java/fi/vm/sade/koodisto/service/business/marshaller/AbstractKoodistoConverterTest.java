@@ -1,11 +1,11 @@
 package fi.vm.sade.koodisto.service.business.marshaller;
 
-import fi.vm.sade.generic.common.DateHelper;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.ByteArrayDataSource;
+import fi.vm.sade.koodisto.util.DateHelper;
 import fi.vm.sade.koodisto.util.KoodistoHelper;
 
 import org.apache.commons.io.IOUtils;

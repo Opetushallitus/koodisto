@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.service.impl.exceptionwrapper;
 
-import fi.vm.sade.generic.service.exception.AbstractFaultWrapper;
-import fi.vm.sade.generic.service.exception.SadeBusinessException;
+import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.service.GenericFault;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.types.common.FieldErrorType;

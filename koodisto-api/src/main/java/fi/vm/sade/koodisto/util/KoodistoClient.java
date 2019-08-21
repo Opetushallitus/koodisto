@@ -44,5 +44,5 @@ public interface KoodistoClient {
 
     List<KoodiType> searchKoodis(SearchKoodisCriteriaType sc);
 
-    KoodistoClient setClientSubSystemCode(String clientSubSystemCode);
+    KoodistoClient setCallerId(String callerId);
 }
