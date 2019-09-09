@@ -122,13 +122,19 @@ public class CachingKoodistoClient implements KoodistoClient {
 
     @Override
     public List<KoodiType> searchKoodis(SearchKoodisCriteriaType sc) {
+        OphHttpRequest request = buildSearchKoodiRequest(sc);
+        return execute(request, new TypeReference<List<KoodiType>>() {});
+    }
+
+    @Override
+    public OphHttpRequest buildSearchKoodiRequest(SearchKoodisCriteriaType sc) {
         List<Object[]> paramNamesAndValues = Arrays.asList(
-            new Object[]{"koodiUris", sc.getKoodiUris()},
-            new Object[]{"koodiArvo", sc.getKoodiArvo()},
-            new Object[]{"koodiTilas", sc.getKoodiTilas()},
-            new Object[]{"validAt", sc.getValidAt() != null ? new SimpleDateFormat("yyyy-MM-dd").format(sc.getValidAt().toGregorianCalendar().getTime()) : null},
-            new Object[]{"koodiVersio", sc.getKoodiVersio()},
-            new Object[]{"koodiVersioSelection", sc.getKoodiVersioSelection()}
+                new Object[]{"koodiUris", sc.getKoodiUris()},
+                new Object[]{"koodiArvo", sc.getKoodiArvo()},
+                new Object[]{"koodiTilas", sc.getKoodiTilas()},
+                new Object[]{"validAt", sc.getValidAt() != null ? new SimpleDateFormat("yyyy-MM-dd").format(sc.getValidAt().toGregorianCalendar().getTime()) : null},
+                new Object[]{"koodiVersio", sc.getKoodiVersio()},
+                new Object[]{"koodiVersioSelection", sc.getKoodiVersioSelection()}
         );
         OphHttpRequest request = client.get("koodisto-service.searchKoodis");
         for (Object[] pv : paramNamesAndValues) {
@@ -136,7 +142,6 @@ public class CachingKoodistoClient implements KoodistoClient {
                 request = request.param((String) pv[0], pv[1]);
             }
         }
-
-        return execute(request, new TypeReference<List<KoodiType>>() {});
+        return request;
     }
 }
