@@ -153,7 +153,7 @@ public class CachingKoodistoClient implements KoodistoClient {
         }
 
         Integer koodiVersio = sc.getKoodiVersio();
-        if (koodiArvo != null) {
+        if (koodiVersio != null) {
             request = request.param("koodiVersio", koodiVersio);
         }
 
