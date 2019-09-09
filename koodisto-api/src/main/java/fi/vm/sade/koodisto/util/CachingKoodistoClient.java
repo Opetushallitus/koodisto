@@ -134,7 +134,7 @@ public class CachingKoodistoClient implements KoodistoClient {
 
         List<String> koodiUris = sc.getKoodiUris();
         if (koodiUris != null && !koodiUris.isEmpty()) {
-            request = request.param("koodiUris", koodiUris);
+            request = request.param("koodiUris", koodiUris.toArray());
         }
 
         String koodiArvo = sc.getKoodiArvo();
@@ -144,7 +144,7 @@ public class CachingKoodistoClient implements KoodistoClient {
 
         List<TilaType> koodiTilas = sc.getKoodiTilas();
         if (koodiTilas != null && !koodiTilas.isEmpty()) {
-            request = request.param("koodiTilas", koodiTilas);
+            request = request.param("koodiTilas", koodiTilas.toArray());
         }
 
         XMLGregorianCalendar validAt = sc.getValidAt();
