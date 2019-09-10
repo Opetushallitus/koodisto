@@ -11,16 +11,18 @@ import fi.vm.sade.javautils.httpclient.OphHttpResponse;
 import fi.vm.sade.javautils.httpclient.OphHttpResponseHandler;
 import fi.vm.sade.javautils.httpclient.apache.ApacheOphHttpClient;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
+import fi.vm.sade.koodisto.service.types.SearchKoodisVersioSelectionType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoRyhmaListType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoType;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.properties.OphProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -122,21 +124,44 @@ public class CachingKoodistoClient implements KoodistoClient {
 
     @Override
     public List<KoodiType> searchKoodis(SearchKoodisCriteriaType sc) {
-        List<Object[]> paramNamesAndValues = Arrays.asList(
-            new Object[]{"koodiUris", sc.getKoodiUris()},
-            new Object[]{"koodiArvo", sc.getKoodiArvo()},
-            new Object[]{"koodiTilas", sc.getKoodiTilas()},
-            new Object[]{"validAt", sc.getValidAt() != null ? new SimpleDateFormat("yyyy-MM-dd").format(sc.getValidAt().toGregorianCalendar().getTime()) : null},
-            new Object[]{"koodiVersio", sc.getKoodiVersio()},
-            new Object[]{"koodiVersioSelection", sc.getKoodiVersioSelection()}
-        );
+        OphHttpRequest request = buildSearchKoodiRequest(sc);
+        return execute(request, new TypeReference<List<KoodiType>>() {});
+    }
+
+    @Override
+    public OphHttpRequest buildSearchKoodiRequest(SearchKoodisCriteriaType sc) {
         OphHttpRequest request = client.get("koodisto-service.searchKoodis");
-        for (Object[] pv : paramNamesAndValues) {
-            if (pv[1] != null) {
-                request = request.param((String) pv[0], pv[1]);
-            }
+
+        List<String> koodiUris = sc.getKoodiUris();
+        if (koodiUris != null && !koodiUris.isEmpty()) {
+            request = request.param("koodiUris", koodiUris.toArray());
         }
 
-        return execute(request, new TypeReference<List<KoodiType>>() {});
+        String koodiArvo = sc.getKoodiArvo();
+        if (koodiArvo != null) {
+            request = request.param("koodiArvo", koodiArvo);
+        }
+
+        List<TilaType> koodiTilas = sc.getKoodiTilas();
+        if (koodiTilas != null && !koodiTilas.isEmpty()) {
+            request = request.param("koodiTilas", koodiTilas.toArray());
+        }
+
+        XMLGregorianCalendar validAt = sc.getValidAt();
+        if (validAt != null) {
+            request = request.param("validAt", new SimpleDateFormat("yyyy-MM-dd").format(validAt.toGregorianCalendar().getTime()));
+        }
+
+        Integer koodiVersio = sc.getKoodiVersio();
+        if (koodiVersio != null) {
+            request = request.param("koodiVersio", koodiVersio);
+        }
+
+        SearchKoodisVersioSelectionType koodiVersioSelection = sc.getKoodiVersioSelection();
+        if (koodiVersioSelection != null) {
+            request = request.param("koodiVersioSelection", koodiVersioSelection);
+        }
+
+        return request;
     }
 }

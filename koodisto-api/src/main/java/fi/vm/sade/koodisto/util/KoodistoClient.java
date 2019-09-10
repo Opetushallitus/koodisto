@@ -16,6 +16,7 @@
 
 package fi.vm.sade.koodisto.util;
 
+import fi.vm.sade.javautils.httpclient.OphHttpRequest;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoRyhmaListType;
@@ -43,6 +44,8 @@ public interface KoodistoClient {
     List<KoodiType> getRinnasteiset(String koodiUri);
 
     List<KoodiType> searchKoodis(SearchKoodisCriteriaType sc);
+
+    OphHttpRequest buildSearchKoodiRequest(SearchKoodisCriteriaType sc);
 
     KoodistoClient setCallerId(String callerId);
 }

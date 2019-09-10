@@ -4,7 +4,7 @@
     <parent>
         <artifactId>koodisto</artifactId>
         <groupId>fi.vm.sade.koodisto</groupId>
-        <version>2019-08-SNAPSHOT</version>
+        <version>2019-09-SNAPSHOT</version>
     </parent>
     <artifactId>koodisto-common</artifactId>
     <packaging>jar</packaging>
