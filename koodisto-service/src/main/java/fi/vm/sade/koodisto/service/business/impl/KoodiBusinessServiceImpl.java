@@ -843,7 +843,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             for (Entry<KoodiVersio, KoodiVersio> entry : previousVersions.entrySet()) {
                 KoodiVersio latestVersion = entry.getKey();
                 KoodiVersio previousVersion = entry.getValue();
-                previousVersion.setVoimassaLoppuPvm(getValidEndDateForKoodiVersio(previousVersion, latestVersion));
+                if (previousVersion.getVoimassaLoppuPvm() == null) {
+                    previousVersion.setVoimassaLoppuPvm(getValidEndDateForKoodiVersio(previousVersion, latestVersion));
+                }
             }
         } else {
             throw new KoodistoEmptyException();

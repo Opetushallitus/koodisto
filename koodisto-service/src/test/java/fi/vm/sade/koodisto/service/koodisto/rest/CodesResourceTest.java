@@ -210,7 +210,15 @@ public class CodesResourceTest {
         assertThat(koodistoV1a)
                 .returns(1, KoodistoDto::getVersio)
                 .returns(Tila.LUONNOS, KoodistoDto::getTila);
-        helper.createKoodi(koodistoV1a.getKoodistoUri(), newKoodiDto(koodistoV1a, "koodi1", "koodiV1"));
+        KoodiDto koodiV1a = helper.createKoodi(koodistoV1a.getKoodistoUri(),
+                newKoodiDto(koodistoV1a, "koodi1", "koodiV1"));
+
+        // lisätään koodille voimassaoloaika
+        koodiV1a.setVoimassaLoppuPvm(java.sql.Date.valueOf(LocalDate.now().plusMonths(1)));
+        KoodiDto koodiV1b = helper.updateKoodi(koodiV1a);
+        assertThat(koodiV1b)
+                .returns(koodiV1a.getVersio(), KoodiDto::getVersio)
+                .returns(Tila.LUONNOS, KoodiDto::getTila);
 
         // hyväksytään ensimmäinen versio
         koodistoV1a = helper.getKoodisto(koodistoV1a.getKoodistoUri(), koodistoV1a.getVersio());
@@ -219,6 +227,10 @@ public class CodesResourceTest {
         assertThat(koodistoV1b)
                 .returns(koodistoV1a.getVersio(), KoodistoDto::getVersio)
                 .returns(Tila.HYVAKSYTTY, KoodistoDto::getTila);
+        ExtendedKoodiDto koodiV1c = helper.getKoodi(koodiV1a.getKoodiUri(), koodiV1a.getVersio());
+        assertThat(koodiV1c)
+                .returns(koodiV1a.getVersio(), ExtendedKoodiDto::getVersio)
+                .returns(Tila.HYVAKSYTTY, ExtendedKoodiDto::getTila);
 
         // muokataan koodistoa, pitäisi tulla uusi versio
         koodistoV1a = helper.getKoodisto(koodistoV1a.getKoodistoUri(), koodistoV1b.getVersio());
@@ -227,6 +239,10 @@ public class CodesResourceTest {
         assertThat(koodistoV2a)
                 .returns(2, KoodistoDto::getVersio)
                 .returns(Tila.LUONNOS, KoodistoDto::getTila);
+        ExtendedKoodiDto koodiV2a = helper.getKoodi(koodiV1c.getKoodiUri(), koodiV1c.getVersio() + 1);
+        assertThat(koodiV2a)
+                .returns(2, ExtendedKoodiDto::getVersio)
+                .returns(Tila.LUONNOS, ExtendedKoodiDto::getTila);
 
         // hyväksytään uusi versio, versio pitäisi pysyä samana
         koodistoV1a = helper.getKoodisto(koodistoV1a.getKoodistoUri(), koodistoV2a.getVersio());
@@ -245,6 +261,10 @@ public class CodesResourceTest {
         // tarkastetaan että v1 on vielä kunnossa
         KoodistoDto koodistoV1c = helper.getKoodisto(koodistoV1a.getKoodistoUri(), koodistoV1b.getVersio());
         assertThat(koodistoV1c).isEqualToIgnoringGivenFields(koodistoV1b, "codesVersions");
+        ExtendedKoodiDto koodiV1d = helper.getKoodi(koodiV1a.getKoodiUri(), koodiV1b.getVersio());
+        assertThat(koodiV1d).isEqualToIgnoringGivenFields(koodiV1b,
+                "version", "koodisto", "paivitysPvm", "tila",
+                "withinCodeElements", "includesCodeElements", "levelsWithCodeElements");
     }
 
     @Test

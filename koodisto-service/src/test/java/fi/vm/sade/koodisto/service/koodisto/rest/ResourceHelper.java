@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
+import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,18 @@ public class ResourceHelper {
 
     public KoodiDto createKoodi(String koodistoUri, KoodiDto koodi) {
         Response response = codeElementResource.insert(koodistoUri, koodi);
+        assertThat(response.getStatus()).isEqualTo(201);
+        return response.readEntity(KoodiDto.class);
+    }
+
+    public ExtendedKoodiDto getKoodi(String koodiUri, int versio) {
+        Response response = codeElementResource.getCodeElementByUriAndVersion(koodiUri, versio);
+        assertThat(response.getStatus()).isEqualTo(200);
+        return response.readEntity(ExtendedKoodiDto.class);
+    }
+
+    public KoodiDto updateKoodi(KoodiDto koodi) {
+        Response response = codeElementResource.update(koodi);
         assertThat(response.getStatus()).isEqualTo(201);
         return response.readEntity(KoodiDto.class);
     }
