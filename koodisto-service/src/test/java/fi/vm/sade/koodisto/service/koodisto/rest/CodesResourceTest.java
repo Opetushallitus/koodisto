@@ -4,8 +4,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.dto.*;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
-import fi.vm.sade.koodisto.model.Format;
-import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
@@ -28,10 +27,14 @@ import javax.activation.DataSource;
 import javax.ws.rs.core.Response;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
@@ -50,6 +53,9 @@ public class CodesResourceTest {
 
     @Autowired
     private KoodiBusinessService service;
+
+    @Autowired
+    private ResourceHelper helper;
 
     @Test
     public void returns400AndCorrectErrorCodeIfQueryParamsAreMissing() {
@@ -190,6 +196,75 @@ public class CodesResourceTest {
         codesToBeInserted.setVoimassaLoppuPvm(new Date());
         assertResponse(resource.insert(codesToBeInserted), 400);
 
+    }
+
+    @Test
+    public void uudenVersionTallennusSailyttaaVanhanVersionEnnallaan() {
+        // uusi koodisto
+        LocalDate alkuPvmV1 = LocalDate.of(2000, 1, 1);
+        LocalDate loppuPvmV1 = alkuPvmV1.with(lastDayOfYear());
+        KoodistoDto koodistoV1a = helper.createKoodisto(newKoodistoDto(
+                "koodistojenlisaaminenkoodistoryhmaan", "organisaatio1",
+                "test", "koodistoV1",
+                alkuPvmV1, loppuPvmV1));
+        assertThat(koodistoV1a)
+                .returns(1, KoodistoDto::getVersio)
+                .returns(Tila.LUONNOS, KoodistoDto::getTila);
+        KoodiDto koodiV1a = helper.createKoodi(koodistoV1a.getKoodistoUri(),
+                newKoodiDto(koodistoV1a, "koodi1", "koodiV1"));
+
+        // lisätään koodille voimassaoloaika
+        koodiV1a.setVoimassaLoppuPvm(java.sql.Date.valueOf(LocalDate.now().plusMonths(1)));
+        KoodiDto koodiV1b = helper.updateKoodi(koodiV1a);
+        assertThat(koodiV1b)
+                .returns(koodiV1a.getVersio(), KoodiDto::getVersio)
+                .returns(Tila.LUONNOS, KoodiDto::getTila);
+
+        // hyväksytään ensimmäinen versio
+        koodistoV1a = helper.getKoodisto(koodistoV1a.getKoodistoUri(), koodistoV1a.getVersio());
+        koodistoV1a.setTila(Tila.HYVAKSYTTY);
+        KoodistoDto koodistoV1b = helper.updateKoodisto(koodistoV1a);
+        assertThat(koodistoV1b)
+                .returns(koodistoV1a.getVersio(), KoodistoDto::getVersio)
+                .returns(Tila.HYVAKSYTTY, KoodistoDto::getTila);
+        ExtendedKoodiDto koodiV1c = helper.getKoodi(koodiV1a.getKoodiUri(), koodiV1a.getVersio());
+        assertThat(koodiV1c)
+                .returns(koodiV1a.getVersio(), ExtendedKoodiDto::getVersio)
+                .returns(Tila.HYVAKSYTTY, ExtendedKoodiDto::getTila);
+
+        // muokataan koodistoa, pitäisi tulla uusi versio
+        koodistoV1a = helper.getKoodisto(koodistoV1a.getKoodistoUri(), koodistoV1b.getVersio());
+        koodistoV1a.getMetadata().get(0).setNimi("koodistoV2");
+        KoodistoDto koodistoV2a = helper.updateKoodisto(koodistoV1a);
+        assertThat(koodistoV2a)
+                .returns(2, KoodistoDto::getVersio)
+                .returns(Tila.LUONNOS, KoodistoDto::getTila);
+        ExtendedKoodiDto koodiV2a = helper.getKoodi(koodiV1c.getKoodiUri(), koodiV1c.getVersio() + 1);
+        assertThat(koodiV2a)
+                .returns(2, ExtendedKoodiDto::getVersio)
+                .returns(Tila.LUONNOS, ExtendedKoodiDto::getTila);
+
+        // hyväksytään uusi versio, versio pitäisi pysyä samana
+        koodistoV1a = helper.getKoodisto(koodistoV1a.getKoodistoUri(), koodistoV2a.getVersio());
+        LocalDate alkuPvmV2 = alkuPvmV1.plusYears(1);
+        LocalDate loppuPvmV2 = alkuPvmV2.with(lastDayOfYear());
+        koodistoV1a.setVoimassaAlkuPvm(java.sql.Date.valueOf(alkuPvmV2));
+        koodistoV1a.setVoimassaLoppuPvm(java.sql.Date.valueOf(loppuPvmV2));
+        koodistoV1a.setTila(Tila.HYVAKSYTTY);
+        KoodistoDto koodistoV2b = helper.updateKoodisto(koodistoV1a);
+        assertThat(koodistoV2b)
+                .returns(koodistoV2a.getVersio(), KoodistoDto::getVersio)
+                .returns(Tila.HYVAKSYTTY, KoodistoDto::getTila)
+                .returns(java.sql.Date.valueOf(alkuPvmV2), KoodistoDto::getVoimassaAlkuPvm)
+                .returns(java.sql.Date.valueOf(loppuPvmV2), KoodistoDto::getVoimassaLoppuPvm);
+
+        // tarkastetaan että v1 on vielä kunnossa
+        KoodistoDto koodistoV1c = helper.getKoodisto(koodistoV1a.getKoodistoUri(), koodistoV1b.getVersio());
+        assertThat(koodistoV1c).isEqualToIgnoringGivenFields(koodistoV1b, "codesVersions");
+        ExtendedKoodiDto koodiV1d = helper.getKoodi(koodiV1a.getKoodiUri(), koodiV1b.getVersio());
+        assertThat(koodiV1d).isEqualToIgnoringGivenFields(koodiV1b,
+                "version", "koodisto", "paivitysPvm", "tila",
+                "withinCodeElements", "includesCodeElements", "levelsWithCodeElements");
     }
 
     @Test
@@ -513,6 +588,38 @@ public class CodesResourceTest {
         dto.setKoodistoUri(koodistoUri);
         dto.setCodesGroupUri(codesGroupUri);
         dto.getMetadata().get(0).setNimi(koodistoUri);
+        return dto;
+    }
+
+    private KoodistoDto newKoodistoDto(String koodistoRyhmaUri, String organisaatioOid,
+                                       String koodistoUri, String nimiFi,
+                                       LocalDate alkuPvm, LocalDate loppuPvm) {
+        KoodistoDto dto = new KoodistoDto();
+        dto.setCodesGroupUri(koodistoRyhmaUri);
+        dto.setOrganisaatioOid(organisaatioOid);
+        dto.setKoodistoUri(koodistoUri);
+        KoodistoMetadata metadata = new KoodistoMetadata();
+        metadata.setKieli(Kieli.FI);
+        metadata.setNimi(nimiFi);
+        dto.setMetadata(singletonList(metadata));
+        dto.setVoimassaAlkuPvm(java.sql.Date.valueOf(alkuPvm));
+        dto.setVoimassaLoppuPvm(java.sql.Date.valueOf(loppuPvm));
+        return dto;
+    }
+
+    private KoodiDto newKoodiDto(KoodistoDto koodisto, String arvo, String nimiFi) {
+        return newKoodiDto(koodisto, arvo, nimiFi, LocalDate.now());
+    }
+
+    private KoodiDto newKoodiDto(KoodistoDto koodisto, String arvo, String nimiFi, LocalDate alkuPvm) {
+        KoodiDto dto = new KoodiDto();
+        dto.setKoodiUri(String.format("%s_%s", koodisto.getKoodistoUri(), arvo));
+        dto.setKoodiArvo(arvo);
+        KoodiMetadata metadata = new KoodiMetadata();
+        metadata.setKieli(Kieli.FI);
+        metadata.setNimi(nimiFi);
+        dto.setMetadata(singletonList(metadata));
+        dto.setVoimassaAlkuPvm(java.sql.Date.valueOf(alkuPvm));
         return dto;
     }
 
