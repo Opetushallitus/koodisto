@@ -51,7 +51,7 @@ public class ExceptionWrappingAspect {
             return pjp.proceed();
         } catch (Throwable ex) {
 
-            LOGGER.warn("Exception wrapped. ", ex);
+            LOGGER.debug("Exception wrapped. ", ex);
 
             MethodSignature sigu = (MethodSignature) pjp.getSignature();
             Class[] types = sigu.getExceptionTypes();
