@@ -10,12 +10,11 @@ import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.Koodisto;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Repository
@@ -24,6 +23,7 @@ public class KoodiMetadataDAOImpl extends AbstractJpaDAOImpl<KoodiMetadata, Long
     private static final String NIMI = "nimi";
     private static final String KOODI = "koodi";
     private static final String KOODI_VERSIO = "koodiVersio";
+    private static final int INITIALIZE_KOODI_ID_BATCH_SIZE = 5000;
 
     @Override
     public boolean nimiExistsForSomeOtherKoodi(String koodiUri, String nimi) {
@@ -92,24 +92,16 @@ public class KoodiMetadataDAOImpl extends AbstractJpaDAOImpl<KoodiMetadata, Long
 
     @Override
     public void initializeByKoodiVersioIds(Set<Long> koodiVersioIdSet) {
-        int chunkSize = 2500;
-        final AtomicInteger counter = new AtomicInteger(0);
-        koodiVersioIdSet.stream().collect(Collectors.groupingBy(koodiVersioId -> counter.getAndIncrement() / chunkSize))
-                .values()
-                .forEach(this::initialize);
+        final int[] counter = new int[] { 0 };
+        koodiVersioIdSet.stream().collect(Collectors.groupingBy(
+                    koodiVersioId -> counter[0]++ / INITIALIZE_KOODI_ID_BATCH_SIZE)
+                ).values().parallelStream().forEach(this::initialize);
     }
 
-    private void initialize(List<Long> koodiVersioIdSet) {
-        EntityManager entityManager = this.getEntityManager();
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<KoodiMetadata> query = criteriaBuilder.createQuery(KoodiMetadata.class);
-
-        Root<KoodiMetadata> root = query.from(KoodiMetadata.class);
-        query.select(root).where(root.<KoodiVersio>get("koodiVersio").<Long>get("id").in(koodiVersioIdSet));
-        EntityGraph entityGraph = entityManager.getEntityGraph("koodiMetadataWithKoodiVersio");
-        entityManager
-                .createQuery(query)
-                .setHint("javax.persistence.fetchgraph", entityGraph)
-                .getResultList();
+    private void initialize(List<Long> koodiVersioIds) {
+        TypedQuery<KoodiMetadata> query = this.getEntityManager().createNamedQuery(
+                "KoodiMetadata.initializeByKoodiVersioIds", KoodiMetadata.class);
+        query.setParameter("versioIds", koodiVersioIds);
+        query.getResultList();
     }
 }
