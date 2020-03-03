@@ -1,7 +1,7 @@
 sudo: required
 language: java
 jdk:
-  - openjdk8
+  - openjdk11
 services:
   - docker
 cache:
@@ -30,7 +30,7 @@ script:
   - mv koodisto-ui/target/koodisto-ui.war $DOCKER_BUILD_DIR/artifact/koodisto-ui.war
   - cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
 
-  - export BASE_IMAGE="baseimage-war:master"
+  - export BASE_IMAGE="baseimage-war:jdk11"
   - ./ci-tools/common/pull-image.sh
   - ./ci-tools/build/build-war.sh $ARTIFACT_NAME
 
