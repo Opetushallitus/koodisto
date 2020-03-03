@@ -50,7 +50,6 @@
         </property>
         <property name="providers">
             <list>
-                <bean class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider"/>
                 <ref bean="cacheableJaxrsFilter" />
                 <ref bean="configurableKoodistoCorsFilter" />
             </list>
