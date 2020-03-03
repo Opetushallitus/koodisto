@@ -11,15 +11,22 @@
     <name>Koodisto :: Servers</name>
     <packaging>pom</packaging>
 
+    <properties>
+        <jetty.version>9.4.27.v20200227</jetty.version>
+    </properties>
+
     <build>
         <finalName>Servers</finalName>
         <plugins>
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.2.24.v20180105</version>
+                <version>${jetty.version}</version>
 
                 <configuration>
+                    <supportedPackagings>
+                        <supportedPackaging>pom</supportedPackaging>
+                    </supportedPackagings>
                     <systemProperties>
                         <systemProperty>
                             <name>log4j.configuration</name>
@@ -80,33 +87,7 @@
                     <dependency>
                         <groupId>org.eclipse.jetty</groupId>
                         <artifactId>jetty-servlets</artifactId>
-                        <version>9.2.24.v20180105</version>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>org.javassist</groupId>
-                                <artifactId>javassist</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.ow2.asm</groupId>
-                        <artifactId>asm</artifactId>
-                        <version>5.2</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.ow2.asm</groupId>
-                        <artifactId>asm-commons</artifactId>
-                        <version>5.2</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.scala-lang</groupId>
-                        <artifactId>scala-library</artifactId>
-                        <version>2.10.4</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.json4s</groupId>
-                        <artifactId>json4s-core_2.10</artifactId>
-                        <version>3.2.11</version>
+                        <version>${jetty.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>
