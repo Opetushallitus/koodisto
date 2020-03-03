@@ -3,11 +3,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
-        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+        http://cxf.apache.org/blueprint/jaxrs http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <context:annotation-config/>
@@ -35,6 +36,8 @@
     <jaxws:endpoint address="/services/downloadService" implementor="#downloadWS"/>
     <jaxws:endpoint address="/services/uploadService" implementor="#uploadWS"/>
 
+    <bean id="jacksonJaxbJsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider"/>
+
     <bean class="org.apache.cxf.jaxrs.JAXRSServerFactoryBean"
           init-method="create">
         <property name="address" value="/rest" />
@@ -50,6 +53,7 @@
         </property>
         <property name="providers">
             <list>
+                <ref bean="jacksonJaxbJsonProvider" />
                 <ref bean="cacheableJaxrsFilter" />
                 <ref bean="configurableKoodistoCorsFilter" />
             </list>
