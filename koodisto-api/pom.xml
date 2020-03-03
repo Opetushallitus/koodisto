@@ -9,15 +9,15 @@
     <name>Koodisto :: API</name>
     <packaging>jar</packaging>
 
+    <properties>
+        <jaxb2-basics.version>0.12.0</jaxb2-basics.version>
+    </properties>
+
+
     <dependencies>
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jvnet.jaxb2_commons</groupId>
-            <artifactId>jaxb2-basics-runtime</artifactId>
-            <version>${jaxb2-basics-runtime.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -63,6 +63,12 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.jvnet.jaxb2_commons</groupId>
+            <artifactId>jaxb2-basics-runtime</artifactId>
+            <version>${jaxb2-basics.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

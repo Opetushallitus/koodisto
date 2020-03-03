@@ -4,7 +4,6 @@ import fi.vm.sade.koodisto.common.util.FieldLengths;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.QueryHints;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
@@ -34,14 +33,14 @@ import javax.validation.constraints.Size;
         name = "KoodiMetadata.initializeByKoodiVersioIds",
         query = "SELECT km FROM KoodiMetadata km WHERE km.koodiVersio.id IN :versioIds",
         hints = {
-                @QueryHint(name = QueryHints.FETCHGRAPH, value = "koodiMetadataWithKoodiVersio")
+                @QueryHint(name = KoodiMetadata.FETCH_GRAPH_HINT, value = "koodiMetadataWithKoodiVersio")
         })
 public class KoodiMetadata extends BaseEntity {
 
     public static final String TABLE_NAME = "koodiMetadata";
-
     public static final String KIELI_COLUMN_NAME = "kieli";
     public static final String KOODIVERSIO_COLUMN_NAME = "koodiVersio_id";
+    public static final String FETCH_GRAPH_HINT = "javax.persistence.fetchgraph";
 
     private static final long serialVersionUID = -6996174469669634802L;
 

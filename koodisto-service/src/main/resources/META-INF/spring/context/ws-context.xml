@@ -51,7 +51,7 @@
         </property>
         <property name="providers">
             <list>
-                <ref bean="objectMapperProvider" />
+                <bean class="org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider"/>
                 <ref bean="cacheableJaxrsFilter" />
                 <ref bean="configurableKoodistoCorsFilter" />
             </list>

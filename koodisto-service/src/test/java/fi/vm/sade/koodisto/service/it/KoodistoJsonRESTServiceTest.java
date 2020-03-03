@@ -1,16 +1,13 @@
 package fi.vm.sade.koodisto.service.it;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaListDto;
-import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.impl.KoodistoJsonRESTService;
-import fi.vm.sade.koodisto.service.provider.ObjectMapperProvider;
 import fi.vm.sade.koodisto.service.types.SearchKoodisVersioSelectionType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import org.junit.Test;
@@ -23,10 +20,8 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -38,20 +33,16 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DatabaseSetup("classpath:test-data.xml")
 @Transactional
+
 public class KoodistoJsonRESTServiceTest {
 
     @Autowired
     private KoodistoJsonRESTService koodistoJsonRESTService;
 
-    private ObjectMapper mapper = new ObjectMapperProvider().locateMapper(KoodistoJsonRESTService.class, MediaType.APPLICATION_JSON_TYPE);
-
-
     @Test
-    public void testListAllKoodistoRyhmas() throws IOException {
+    public void testListAllKoodistoRyhmas() {
         List<KoodistoRyhmaListDto> ryhmas = koodistoJsonRESTService.listAllKoodistoRyhmas();
         assertEquals(4, ryhmas.size());
-
-        mapper.writerWithView(JsonViews.Basic.class).writeValueAsString(ryhmas);
     }
 
     @Test
@@ -408,7 +399,7 @@ public class KoodistoJsonRESTServiceTest {
         // all
         assertEquals(0, koodistoJsonRESTService.searchKoodis(null, null, null, null, null, null).size()); // Empty search disabled for performance reasons
         // by koodiuri
-        assertEquals(1, koodistoJsonRESTService.searchKoodis(Arrays.asList("475"), null, null, null, null, null).size());
+        assertEquals(1, koodistoJsonRESTService.searchKoodis(Collections.singletonList("475"), null, null, null, null, null).size());
         // by koodiarvo
         assertEquals(6, koodistoJsonRESTService.searchKoodis(null, "3", null, null, null, null).size());
         // by tila
@@ -422,7 +413,7 @@ public class KoodistoJsonRESTServiceTest {
     }
 
     @Test
-    public void testGetKoodisByKoodistoOnlyValidKoodis() throws Exception {
+    public void testGetKoodisByKoodistoOnlyValidKoodis() {
         // all
         assertEquals(2, koodistoJsonRESTService.getKoodisByKoodisto("http://paljon_versioita.fi/1", null, false).size());
         // only valid
