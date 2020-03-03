@@ -11,18 +11,19 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.support.rest.Cacheable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -56,7 +57,7 @@ import fi.vm.sade.koodisto.util.KoodistoHelper;
  */
 @Component
 @Path("/json")
-@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
+@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
 @Api(value = "/rest/json", description = "REST/JSON rajapinta")
 public class KoodistoJsonRESTService {
 
@@ -75,6 +76,8 @@ public class KoodistoJsonRESTService {
     private static final String KOODISTO_URI = "koodistoUri";
     public static final int ONE_HOUR = 60 * 60;
 
+    private final DatatypeFactory datatypeFactory;
+
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;
 
@@ -83,6 +86,15 @@ public class KoodistoJsonRESTService {
 
     @Autowired
     private SadeConversionService conversionService;
+
+
+    public KoodistoJsonRESTService() {
+        try {
+            datatypeFactory = DatatypeFactory.newInstance();
+        } catch (DatatypeConfigurationException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
     @JsonView(JsonViews.Basic.class)
     @GET
@@ -291,7 +303,7 @@ public class KoodistoJsonRESTService {
         if (validAtDate != null) {
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(validAtDate));
-            searchCriteria.setValidAt(new XMLGregorianCalendarImpl(cal));
+            searchCriteria.setValidAt(datatypeFactory.newXMLGregorianCalendar(cal));
         }
 
         List<KoodiVersioWithKoodistoItem> koodis = koodiBusinessService.searchKoodis(searchCriteria);
@@ -300,7 +312,7 @@ public class KoodistoJsonRESTService {
 
     @GET
     @Path("/{koodistoUri}.properties")
-    @Produces(value = MediaType.TEXT_PLAIN)
+    @Produces(value = MediaType.TEXT_PLAIN_VALUE)
     @Cacheable(maxAgeSeconds = ONE_HOUR)
     @ApiOperation(
             value = "Hae koodiston tiedot suomeksi",
@@ -314,7 +326,7 @@ public class KoodistoJsonRESTService {
 
     @GET
     @Path("/{koodistoUri}_{lang}.properties")
-    @Produces(value = MediaType.TEXT_PLAIN)
+    @Produces(value = MediaType.TEXT_PLAIN_VALUE)
     @Cacheable(maxAgeSeconds = ONE_HOUR)
     @ApiOperation(
             value = "Hae koodiston tiedot kielen perusteella",
@@ -368,7 +380,7 @@ public class KoodistoJsonRESTService {
         } catch (KoodiNotFoundException e) {
             // if koodi not exists -> try to create it with default ml nimi data
             CreateKoodiDataType createKoodiData = new CreateKoodiDataType();
-            createKoodiData.setVoimassaAlkuPvm(new XMLGregorianCalendarImpl(new GregorianCalendar()));
+            createKoodiData.setVoimassaAlkuPvm(datatypeFactory.newXMLGregorianCalendar());
             createKoodiData.setKoodiArvo(koodiUri);
             createKoodiData.getMetadata().add(createKoodiMetadata("fi", koodiUri, koodiUri));
             createKoodiData.getMetadata().add(createKoodiMetadata("sv", koodiUri, koodiUri));
