@@ -13,7 +13,6 @@
     <context:annotation-config/>
     <aop:aspectj-autoproxy/>
 
-    <context:component-scan base-package="fi.vm.sade.koodisto.service.provider"/>
     <bean id="exceptionWrappingAspect"
           class="fi.vm.sade.koodisto.service.impl.exceptionwrapper.ExceptionWrappingAspect"/>
 
