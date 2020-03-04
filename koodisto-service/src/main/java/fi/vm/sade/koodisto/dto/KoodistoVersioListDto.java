@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.Tila;
@@ -21,6 +22,7 @@ public class KoodistoVersioListDto {
     private int versio;
 
     @JsonView(JsonViews.Basic.class)
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date paivitysPvm;
 
     @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
