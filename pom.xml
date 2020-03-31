@@ -85,8 +85,7 @@ branchName=${branch}
 vcsRevision=${revision}
 buildTtime=${maven.build.timestamp}]]>
                 </echo>
-                <loadfile property="buildversiontxt"
-                          srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
+                <loadfile property="buildversiontxt" srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
                 <echo message="${buildversiontxt}"/>
                 <echo file="target/mavenversion.txt">${project.version}</echo>
               </target>
@@ -492,7 +491,7 @@ buildTtime=${maven.build.timestamp}]]>
     <jta.version>1.1</jta.version>
     <maven-apt-plugin.version>1.0</maven-apt-plugin.version>
     <mockito.version>1.9.0</mockito.version>
-    <poi.version>3.9</poi.version>
+    <poi.version>4.1.1</poi.version>
 
     <servlet.version>3.0.1</servlet.version>
 
