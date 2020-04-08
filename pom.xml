@@ -38,7 +38,7 @@
     <activemq.version>5.5.1</activemq.version>
     <aspectj.version>1.8.13</aspectj.version>
     <build-helper-maven-plugin.version>1.4</build-helper-maven-plugin.version>
-    <cas-client-support-distributed-ehcache.version>3.1.12</cas-client-support-distributed-ehcache.version>
+    <cas-client.version>3.4.1</cas-client.version>
     <castor-xml.version>1.4.1</castor-xml.version>
     <commons-configuration.version>1.9</commons-configuration.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
@@ -249,7 +249,7 @@ buildTtime=${maven.build.timestamp}]]>
       <dependency>
         <groupId>org.jasig.cas.client</groupId>
         <artifactId>cas-client-support-distributed-ehcache</artifactId>
-        <version>${cas-client-support-distributed-ehcache.version}</version>
+        <version>${cas-client.version}</version>
         <exclusions>
           <exclusion>
             <groupId>net.sf.ehcache</groupId>
@@ -263,26 +263,26 @@ buildTtime=${maven.build.timestamp}]]>
         <version>3.2.0</version>
       </dependency>
 
-         <dependency>
+      <dependency>
+        <groupId>fi.vm.sade.generic</groupId>
+        <artifactId>generic-test-support</artifactId>
+        <version>${generic-test-support.version}</version>
+        <scope>test</scope>
+        <exclusions>
+         <exclusion>
            <groupId>fi.vm.sade.generic</groupId>
-           <artifactId>generic-test-support</artifactId>
-           <version>${generic-test-support.version}</version>
-           <scope>test</scope>
-           <exclusions>
-             <exclusion>
-               <groupId>fi.vm.sade.generic</groupId>
-               <artifactId>dependencies-service</artifactId>
-              </exclusion>
-              <exclusion>
-                <groupId>commons-io</groupId>
-                 <artifactId>commons-io</artifactId>
-               </exclusion>
-               <exclusion>
-                 <groupId>fi.vm.sade.generic</groupId>
-                 <artifactId>generic-common</artifactId>
-               </exclusion>
-             </exclusions>
-           </dependency>
+           <artifactId>dependencies-service</artifactId>
+         </exclusion>
+          <exclusion>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>fi.vm.sade.generic</groupId>
+            <artifactId>generic-common</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
 
 
       <dependency>
@@ -352,7 +352,7 @@ buildTtime=${maven.build.timestamp}]]>
       <dependency>
         <groupId>org.jasig.cas.client</groupId>
         <artifactId>cas-client-core</artifactId>
-        <version>3.4.1</version>
+        <version>${cas-client.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-logging</groupId>
@@ -378,11 +378,6 @@ buildTtime=${maven.build.timestamp}]]>
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-jaxrs</artifactId>
         <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.vaadin</groupId>
-        <artifactId>vaadin</artifactId>
-        <version>6.8.12</version>
       </dependency>
       <dependency>
         <groupId>com.sun.jersey</groupId>
@@ -419,21 +414,16 @@ buildTtime=${maven.build.timestamp}]]>
         <artifactId>httpmime</artifactId>
         <version>4.5.4</version>
       </dependency>
-      <!--<dependency>
-        <artifactId>aspectjrt</artifactId>
-        <groupId>org.aspectj</groupId>
-        <version>${aspectj.version}</version>
-      </dependency>-->
       <dependency>
         <artifactId>aspectjweaver</artifactId>
         <groupId>org.aspectj</groupId>
         <version>${aspectj.version}</version>
       </dependency>
       <dependency>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-          <version>4.12</version>
-          <scope>test</scope>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.codehaus.jettison</groupId>
@@ -466,9 +456,9 @@ buildTtime=${maven.build.timestamp}]]>
         <version>1.1.0.Final</version>
       </dependency>
       <dependency>
-          <groupId>log4j</groupId>
-          <artifactId>log4j</artifactId>
-          <version>1.2.17</version>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.17</version>
       </dependency>
       <dependency>
         <groupId>commons-lang</groupId>
@@ -554,55 +544,6 @@ buildTtime=${maven.build.timestamp}]]>
       <id>oph-sade-artifactory-releases</id>
       <url>https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local</url>
     </repository>
-    <repository>
-      <id>vaadin-addons</id>
-      <name>Vaadin addons</name>
-      <url>https://artifactory.opintopolku.fi/artifactory/vaadin-addons</url>
-    </repository>
-    <repository>
-      <id>com.springsource.repository.bundles.release</id>
-      <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>
-      <url>https://artifactory.opintopolku.fi/artifactory/springsource-ebr/</url>
-    </repository>
-    <repository>
-      <id>com.springsource.repository.bundles.external</id>
-      <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>
-      <url>https://artifactory.opintopolku.fi/artifactory/spring-ebr/</url>
-    </repository>
-    <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>com.springsource.repository.maven.snapshot</id>
-      <name>SpringSource Enterprise Bundle Maven Repository - SpringSource Snapshot Releases</name>
-      <url>https://artifactory.opintopolku.fi/artifactory/com.springsource.repository.maven.snapshot/</url>
-    </repository>
-    <repository>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <id>com.springsource.repository.maven.milestone</id>
-      <name>Spring Framework Maven Milestone Releases (Maven Central Format)</name>
-      <url>https://artifactory.opintopolku.fi/artifactory/com.springsource.repository.maven.milestone/</url>
-    </repository>
-<!--    <repository>
-      <id>atomikos</id>
-      <name>Atomikos repository</name>
-      <url>https://artifactory.opintopolku.fi/artifactory/atomikos/</url>
-    </repository>
-    <repository>
-      <id>shibboleth</id>
-      <name>Shibboleth</name>
-      <url>https://artifactory.opintopolku.fi/artifactory/shibboleth/</url>
-    </repository>
--->
-
     <repository>
       <id>libs-3rd-party</id>
       <name>libs-3rd-party</name>
