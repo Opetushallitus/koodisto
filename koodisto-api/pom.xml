@@ -47,8 +47,8 @@
           <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
-            <groupId>fi.vm.sade.java-utils</groupId>
-            <artifactId>httpclient</artifactId>
+          <groupId>fi.vm.sade.java-utils</groupId>
+          <artifactId>httpclient</artifactId>
         </dependency>
 
         <dependency>

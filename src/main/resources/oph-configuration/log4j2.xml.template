@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="trace">
+    <Properties>
+        <Property name="logLevel">{{env_loglevel}}</Property>
+{# raw-endraw -välillä template engine ei tee mitään! #}
+{% raw %}
+        <Property name="logFile">${user.home}/tomcat/logs/oph-koodisto.log</Property>
+        <Property name="maxFileSize">10 MB</Property>
+        <Property name="maxFilesKept">20</Property>
+        <Property name="logPattern">%d{yyyy-MM-dd'T'HH:mm:ss.SSSX} %-5p {%X{user}} [%t] %-5p %c: %m%n</Property>
+        <Property name="auditLogFile">${user.home}/tomcat/logs/auditlog_koodisto.log</Property>
+        <Property name="auditLogMaxFileSize">20 MB</Property>
+        <Property name="auditLogMaxFilesKept">20</Property>
+        <Property name="auditLogPattern">%m%n</Property>
+    </Properties>
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="${logPattern}"/>
+            <ThresholdFilter level="error"/>
+        </Console>
+        <RollingFile name="FILE" fileName="${logFile}" append="true">
+            <PatternLayout pattern="${logPattern}"/>
+            <SizeBasedTriggeringPolicy size="${maxFileSize}"/>
+            <DefaultRolloverStrategy max="${maxFilesKept}"/>
+            <ThresholdFilter level="${logLevel}"/>
+        </RollingFile>
+        <RollingFile name="AUDIT" fileName="${auditLogFile}" append="true" immediateFlush="true">
+            <PatternLayout pattern="${auditLogPattern}" charset="UTF-8"/>
+            <SizeBasedTriggeringPolicy size="${auditLogMaxFileSize}"/>
+            <DefaultRolloverStrategy max="${auditLogMaxFilesKept}"/>
+            <ThresholdFilter level="info"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="${logLevel}">
+            <AppenderRef ref="FILE"/>
+        </Root>
+        <Logger name="log4j.logger.apache.cxf" level="error"/>
+        <Logger name="log4j.logger.org.springframework" level="error"/>
+        <Logger name="log4j.logger.org.vadin" level="error"/>
+        <Logger name="log4j.logger.javax.sql" level="error"/>
+        <Logger name="log4j.logger.org.apache.activemq" level="error"/>
+        <Logger name="log4j.logger.org.apache.activemq.spring" level="${logLevel}"/>
+        <Logger name="log4j.logger.org.jasig.cas.client.session" level="info"/>
+        <Logger name="log4j.logger.fi.vm.sade.koodisto.audit.AuditLogger" level="info" additivity="false">
+            <AppenderRef ref="AUDIT"/>
+        </Logger>
+    </Loggers>
+</Configuration>
+{% endraw %}
