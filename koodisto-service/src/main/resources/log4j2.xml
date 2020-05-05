@@ -5,7 +5,8 @@
             <PatternLayout pattern="%d{ABSOLUTE} %5p %c{1}:%L - %m%n"/>
             <ThresholdFilter level="debug"/>
         </Console>
-        <RollingFile name="AUDIT" fileName="./logs/auditlog_koodisto.log" append="true" immediateFlush="true">
+        <RollingFile name="AUDIT" fileName="./logs/auditlog_koodisto.log" filePattern="./logs/auditlog_koodisto.log.%i"
+                     append="true" immediateFlush="true">
             <PatternLayout pattern="%m%n" charset="UTF-8"/>
             <SizeBasedTriggeringPolicy size="20MB" />
             <DefaultRolloverStrategy max="20"/>
