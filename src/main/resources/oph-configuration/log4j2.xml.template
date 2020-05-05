@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="trace">
+<Configuration>
     <Properties>
         <Property name="logLevel">{{env_loglevel}}</Property>
 {# raw-endraw -välillä template engine ei tee mitään! #}
@@ -24,7 +24,7 @@
             <DefaultRolloverStrategy max="${maxFilesKept}"/>
             <ThresholdFilter level="${logLevel}"/>
         </RollingFile>
-        <RollingFile name="AUDIT" fileName="${auditLogFile}" filePattern="${auditLogFile}.%i" append="true">
+        <RollingFile name="AUDIT" fileName="${auditLogFile}" filePattern="${auditLogFile}.%i" append="true" immediateFlush="true">
             <PatternLayout pattern="${auditLogPattern}" charset="UTF-8"/>
             <SizeBasedTriggeringPolicy size="${auditLogMaxFileSize}"/>
             <DefaultRolloverStrategy max="${auditLogMaxFilesKept}"/>
