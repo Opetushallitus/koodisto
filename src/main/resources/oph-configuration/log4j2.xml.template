@@ -18,13 +18,13 @@
             <PatternLayout pattern="${logPattern}"/>
             <ThresholdFilter level="error"/>
         </Console>
-        <RollingFile name="FILE" fileName="${logFile}" append="true">
+        <RollingFile name="FILE" fileName="${logFile}" filePattern="${logFile}.%i" append="true">
             <PatternLayout pattern="${logPattern}"/>
             <SizeBasedTriggeringPolicy size="${maxFileSize}"/>
             <DefaultRolloverStrategy max="${maxFilesKept}"/>
             <ThresholdFilter level="${logLevel}"/>
         </RollingFile>
-        <RollingFile name="AUDIT" fileName="${auditLogFile}" append="true" immediateFlush="true">
+        <RollingFile name="AUDIT" fileName="${auditLogFile}" filePattern="${auditLogFile}.%i" append="true" immediateFlush="true">
             <PatternLayout pattern="${auditLogPattern}" charset="UTF-8"/>
             <SizeBasedTriggeringPolicy size="${auditLogMaxFileSize}"/>
             <DefaultRolloverStrategy max="${auditLogMaxFilesKept}"/>
