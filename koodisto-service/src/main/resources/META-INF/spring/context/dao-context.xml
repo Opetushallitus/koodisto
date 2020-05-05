@@ -27,6 +27,7 @@
             <map>
                 <entry key="hibernate.show_sql" value="${jpa.showSql}" />
                 <entry key="hibernate.hbm2ddl.auto" value="${jpa.schemaUpdate}" />
+                <entry key="hibernate.connection.handling_mode" value="DELAYED_ACQUISITION_AND_HOLD" />
             </map>
         </property>
     </bean>
