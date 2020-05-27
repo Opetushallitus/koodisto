@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="logLevel" value="{{env_loglevel}}"/>
+{# raw-endraw -välillä template engine ei tee mitään! #}
+{% raw %}
+    <property name="logFile" value="/root/logs/oph-koodisto.log"/>
+    <property name="maxFileSize" value="10MB"/>
+    <property name="maxFilesKept" value="20"/>
+    <property name="logPattern" value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSX} %-5p {%X{user}} [%t] %-5p %c: %m%n"/>
+    <property name="auditLogFile" value="/root/logs/auditlog_koodisto.log"/>
+    <property name="auditLogMaxFileSize" value="20MB"/>
+    <property name="auditLogMaxFilesKept" value="20"/>
+    <property name="auditLogPattern" value="%m%n"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${logPattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logFile}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${logFile}.%i</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>${maxFilesKept}</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>${maxFileSize}</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>${logPattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>${logLevel}</level>
+        </filter>
+    </appender>
+    <appender name="AUDIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${auditLogFile}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <fileNamePattern>${auditLogFile}.%i</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>${auditLogMaxFilesKept}</maxIndex>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>${auditLogMaxFileSize}</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <pattern>${auditLogPattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <root level="${logLevel}">
+        <appender-ref ref="FILE"/>
+    </root>
+    <logger name="org.apache.cxf" level="error"/>
+    <logger name="org.springframework" level="error"/>
+    <logger name="org.vaadin" level="error"/>
+    <logger name="javax.sql" level="error"/>
+    <logger name="org.apache.activemq" level="error"/>
+    <logger name="org.apache.activemq.spring" level="${logLevel}"/>
+    <logger name="org.jasig.cas.client.session" level="info"/>
+    <logger name="fi.vm.sade.koodisto.audit.AuditLogger" level="info" additivity="false">
+        <appender-ref ref="AUDIT"/>
+    </logger>
+
+</configuration>
+{% endraw %}

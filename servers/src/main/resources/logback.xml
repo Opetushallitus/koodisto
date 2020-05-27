@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSX} %-5p {%X{user}} [%t] %-5p %c: %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+    </root>
+    <logger name="org.springframework" level="warn"/>
+    <logger name="fi.vm" level="error"/>
+    <logger name="fi.vm.sade.javautils.cas" level="off"/>
+    <logger name="fi.vm.sade.generic" level="off"/>
+    <logger name="org.hibernate.hql.internal.ast" level="off"/>
+    <logger name="org.hibernate.SQL" level="debug"/>
+    <logger name="org.hibernate.type" level="trace"/>
+    <logger name="akka.event.slf4j" level="error"/>
+    <logger name="fi.vm.sade.koodisto.audit.AuditLogger" level="info"/>
+
+</configuration>
