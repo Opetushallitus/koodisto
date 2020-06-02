@@ -46,7 +46,7 @@
     <dbunit.version>2.5.4</dbunit.version>
     <ehcache.version>2.10.6</ehcache.version>
     <log-client.version>8.0</log-client.version>
-    <hibernate.version>5.4.5.Final</hibernate.version>
+    <hibernate.version>5.4.9.Final</hibernate.version>
     <hibernate.validator.version>5.4.3.Final</hibernate.validator.version>
     <hibernate4-maven-plugin.version>0.1.1</hibernate4-maven-plugin.version>
     <hsqldb.version>2.4.1</hsqldb.version>
@@ -63,7 +63,7 @@
 
     <servlet.version>3.0.1</servlet.version>
 
-    <slf4j.version>1.7.28</slf4j.version>
+    <slf4j.version>1.7.30</slf4j.version>
     <logback.version>1.2.3</logback.version>
 
     <spring.version>4.3.26.RELEASE</spring.version>
@@ -478,7 +478,7 @@ buildTtime=${maven.build.timestamp}]]>
       <dependency>
         <groupId>org.hibernate.javax.persistence</groupId>
         <artifactId>hibernate-jpa-2.1-api</artifactId>
-        <version>1.0.0.Final</version>
+        <version>1.0.2.Final</version>
       </dependency>
       <dependency>
         <groupId>javax.validation</groupId>
@@ -514,7 +514,7 @@ buildTtime=${maven.build.timestamp}]]>
       <dependency>
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging</artifactId>
-        <version>3.3.0.Final</version>
+        <version>3.4.1.Final</version>
       </dependency>
       <!-- dependency convergence -->
       <dependency>
