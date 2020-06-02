@@ -29,11 +29,11 @@
                     </supportedPackagings>
                     <systemProperties>
                         <systemProperty>
-                            <name>log4j.configurationFile</name>
+                            <name>logback.configurationFile</name>
                             <!-- have to use file:/// url since -->
                             <!-- Jetty is using classloader -->
                             <!-- before the webapp classloader is ready -->
-                            <value>file:///${basedir}/src/main/resources/log4j2.xml</value>
+                            <value>file:///${basedir}/src/main/resources/logback.xml</value>
                         </systemProperty>
                     </systemProperties>
 
