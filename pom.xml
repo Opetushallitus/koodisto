@@ -176,50 +176,24 @@ buildTtime=${maven.build.timestamp}]]>
 
   <dependencyManagement>
     <dependencies>
+      <!-- dependency convergence: override some spring boot dependencies -->
       <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-framework-bom</artifactId>
-        <version>${spring.version}</version>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>3.25.0-GA</version>
+      </dependency>
+      <dependency>
+        <groupId>com.squareup.okio</groupId>
+        <artifactId>okio</artifactId>
+        <version>1.17.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>2.3.0.RELEASE</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-bom</artifactId>
-        <version>${spring-security.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-core</artifactId>
-        <version>${spring-security.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-config</artifactId>
-        <version>${spring-security.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-cas</artifactId>
-        <version>${spring-security.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-web</artifactId>
-        <version>${spring-security.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-test</artifactId>
-        <version>${spring-security.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-jdbc</artifactId>
-        <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>javax.xml.ws</groupId>
@@ -236,6 +210,12 @@ buildTtime=${maven.build.timestamp}]]>
         <artifactId>jta</artifactId>
         <version>${jta.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.sun.xml.bind</groupId>
+        <artifactId>jaxb-core</artifactId>
+        <version>2.3.0</version>
+      </dependency>
+
 
       <dependency>
         <groupId>org.graylog2</groupId>
@@ -258,11 +238,6 @@ buildTtime=${maven.build.timestamp}]]>
           </exclusion>
         </exclusions>
       </dependency>
-      <dependency>
-        <groupId>com.zaxxer</groupId>
-        <artifactId>HikariCP</artifactId>
-        <version>3.2.0</version>
-      </dependency>
 
       <dependency>
         <groupId>fi.vm.sade.generic</groupId>
@@ -284,8 +259,6 @@ buildTtime=${maven.build.timestamp}]]>
           </exclusion>
         </exclusions>
       </dependency>
-
-
       <dependency>
         <groupId>fi.vm.sade.java-utils</groupId>
         <artifactId>java-properties</artifactId>
@@ -313,7 +286,6 @@ buildTtime=${maven.build.timestamp}]]>
           </exclusion>
         </exclusions>
       </dependency>
-
       <dependency>
         <groupId>fi.vm.sade.java-utils</groupId>
         <artifactId>opintopolku-spring-security</artifactId>
@@ -330,8 +302,6 @@ buildTtime=${maven.build.timestamp}]]>
           </exclusion>
         </exclusions>
       </dependency>
-
-
       <dependency>
         <groupId>fi.vm.sade.java-utils</groupId>
         <artifactId>java-cas</artifactId>
@@ -383,6 +353,7 @@ buildTtime=${maven.build.timestamp}]]>
         <artifactId>cas-client-core</artifactId>
         <version>${cas-client.version}</version>
       </dependency>
+      <!--
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
@@ -418,11 +389,7 @@ buildTtime=${maven.build.timestamp}]]>
         <artifactId>jaxb-impl</artifactId>
         <version>2.3.0</version>
       </dependency>
-      <dependency>
-        <groupId>com.sun.xml.bind</groupId>
-        <artifactId>jaxb-core</artifactId>
-        <version>2.3.0</version>
-      </dependency>
+      -->
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
@@ -475,11 +442,11 @@ buildTtime=${maven.build.timestamp}]]>
         <artifactId>paranamer</artifactId>
         <version>2.8</version>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>org.hibernate.javax.persistence</groupId>
         <artifactId>hibernate-jpa-2.1-api</artifactId>
         <version>1.0.2.Final</version>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>javax.validation</groupId>
         <artifactId>validation-api</artifactId>
@@ -495,11 +462,11 @@ buildTtime=${maven.build.timestamp}]]>
         <artifactId>commons-lang3</artifactId>
         <version>3.7</version>
       </dependency>
-      <dependency>
+      <!--<dependency>
         <groupId>xml-apis</groupId>
         <artifactId>xml-apis</artifactId>
         <version>1.4.01</version>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
