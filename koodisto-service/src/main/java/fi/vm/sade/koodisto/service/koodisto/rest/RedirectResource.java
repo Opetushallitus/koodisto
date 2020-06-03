@@ -1,23 +1,19 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-import java.net.URI;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Controller
-@Path("")
 public class RedirectResource {
-    @GET
-    @Path("/swagger/index.html")
-    public Response swaggerRedirect() {
-        return Response.temporaryRedirect(URI.create("/rest/api-docs?url=/koodisto-service/rest/swagger.json")).build();
+    @GetMapping("/swagger/index.html")
+    public void swaggerRedirect(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/rest/api-docs?url=/koodisto-service/rest/swagger.json");
     }
-    @GET
-    @Path("/swagger")
-    public Response swaggerRootRedirect() {
-        return Response.temporaryRedirect(URI.create("/rest/api-docs?url=/koodisto-service/rest/swagger.json")).build();
+    @GetMapping("/swagger")
+    public void swaggerRootRedirect(HttpServletResponse response) throws IOException {
+        response.sendRedirect("/rest/api-docs?url=/koodisto-service/rest/swagger.json");
     }
 }

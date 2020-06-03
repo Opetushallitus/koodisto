@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.dto.*;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
@@ -8,57 +7,57 @@ import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
+import fi.vm.sade.koodisto.test.support.ResponseStatusExceptionMatcher;
 import org.apache.commons.io.IOUtils;
-import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.ws.rs.core.Response;
 import java.io.*;
-import java.nio.charset.Charset;
+import java.net.URL;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import static fi.vm.sade.koodisto.test.support.Assertions.assertException;
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+/*@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class,
-        WithSecurityContextTestExecutionListener.class })
+        WithSecurityContextTestExecutionListener.class })*/
 @RunWith(SpringJUnit4ClassRunner.class)
 @DatabaseSetup("classpath:test-data-codes-rest.xml")
 @WithMockUser("1.2.3.4.5")
+@WebMvcTest(CodesResource.class)
 public class CodesResourceTest {
 
     @Autowired
     private CodesResource resource;
 
     @Autowired
-    private KoodiBusinessService service;
-
-    @Autowired
     private ResourceHelper helper;
 
+    @Autowired
+    private KoodiBusinessService service;
+
+
     @Test
-    public void returns400AndCorrectErrorCodeIfQueryParamsAreMissing() {
+    public void returns400AndCorrectErrorCodeIfQueryParamsAreMissing() throws IOException {
         String nullString = null;
         String blankString = "";
         KoodistoDto nullCodesDTO = null;
@@ -66,49 +65,61 @@ public class CodesResourceTest {
         String stubString = "uri";
         InputStream stubInputStream = IOUtils.toInputStream("stubfile");
 
-        assertResponse(resource.update(nullCodesDTO), 400, "error.validation.codes");
-        
-        assertResponse(resource.insert(nullCodesDTO), 400, "error.validation.codes");
-        
-        assertResponse(resource.getCodesByCodesUri(nullString), 400, "error.validation.codesuri");
-        assertResponse(resource.getCodesByCodesUri(blankString), 400, "error.validation.codesuri");
-        
-        assertResponse(resource.getCodesByCodesUriAndVersion(nullString, 0), 400, "error.validation.codesuri");
-        assertResponse(resource.getCodesByCodesUriAndVersion(blankString, 0), 400, "error.validation.codesuri");
-        
-        // IE9 can not handle upload if server return 400 or 500
-        assertResponse(resource.uploadFile(null, stubString, stubString, stubString), 202, "error.validation.file");
-        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), nullString, stubString, stubString), 202, "error.validation.fileformat");
-        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), blankString, stubString, stubString), 202, "error.validation.fileformat");
-        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), stubString, nullString, stubString), 202, "error.validation.fileencoding");
-        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), stubString, blankString, stubString), 202, "error.validation.fileencoding");
-        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), stubString, stubString, nullString), 202, "error.validation.codesuri");
-        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), stubString, stubString, blankString), 202, "error.validation.codesuri");
+        assertException(() -> resource.update(nullCodesDTO),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codes"));
 
-        assertResponse(resource.download(nullString, 0, Format.JHS_XML, stubString), 400, "error.validation.codesuri");
-        assertResponse(resource.download(blankString, 0, Format.JHS_XML, stubString), 400, "error.validation.codesuri");
-        assertResponse(resource.download(stubString, 0, null, stubString), 400, "error.validation.fileformat");
-        assertResponse(resource.download(stubString, 0, Format.JHS_XML, nullString), 400, "error.validation.encoding");
-        assertResponse(resource.download(stubString, 0, Format.JHS_XML, blankString), 400, "error.validation.encoding");
+        assertException(() -> resource.insert(nullCodesDTO),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codes"));
 
-        assertResponse(resource.delete(nullString, 0), 400, "error.validation.codesuri");
-        assertResponse(resource.delete(blankString, 0), 400, "error.validation.codesuri");
+        assertException(() -> resource.getCodesByCodesUri(nullString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesuri"));
+        assertException(() -> resource.getCodesByCodesUri(blankString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesuri"));
+
+        assertException(() -> resource.getCodesByCodesUriAndVersion(nullString, 0),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesuri"));
+        assertException(() -> resource.getCodesByCodesUriAndVersion(blankString, 0),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesuri"));
+
+        assertEquals("error.validation.file", resource.uploadFile(null, stubString, stubString, stubString));
+        assertEquals("error.validation.fileformat", resource.uploadFile(new MockMultipartFile("name", stubInputStream), nullString, stubString, stubString));
+        assertEquals("error.validation.fileformat", resource.uploadFile(new MockMultipartFile("name", stubInputStream), blankString, stubString, stubString));
+        assertEquals("error.validation.fileencoding", resource.uploadFile(new MockMultipartFile("name", stubInputStream), stubString, nullString, stubString));
+        assertEquals("error.validation.fileencoding", resource.uploadFile(new MockMultipartFile("name", stubInputStream), stubString, blankString, stubString));
+        assertEquals("error.validation.codesuri", resource.uploadFile(new MockMultipartFile("name", stubInputStream), stubString, stubString, nullString));
+        assertEquals("error.validation.codesuri", resource.uploadFile(new MockMultipartFile("name", stubInputStream), stubString, stubString, blankString));
+
+        assertException(() -> resource.download(nullString, 0, Format.JHS_XML, stubString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesuri"));
+        assertException(() -> resource.download(blankString, 0, Format.JHS_XML, stubString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesuri"));
+        assertException(() -> resource.download(stubString, 0, null, stubString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.fileformat"));
+        assertException(() -> resource.download(stubString, 0, Format.JHS_XML, nullString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.encoding"));
+        assertException(() -> resource.download(stubString, 0, Format.JHS_XML, blankString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.encoding"));
+
+        assertException(() -> resource.delete(nullString, 0),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesuri"));
+        assertException(() -> resource.delete(blankString, 0),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesuri"));
     }
 
     @Test
     public void addsWithinRelationBetweenExistingcodes() {
         String parentUri = "eisuhteitaviela1";
         String childUri = "eisuhteitaviela2";
-        KoodistoDto parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1).getEntity();
-        KoodistoDto childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1).getEntity();
+        KoodistoDto parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1);
+        KoodistoDto childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1);
 
         assertEquals(0, parentCodes.getIncludesCodes().size());
         assertEquals(0, childCodes.getWithinCodes().size());
 
         resource.addRelation(parentUri, childUri, "SISALTYY");
 
-        parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1).getEntity();
-        childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1).getEntity();
+        parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1);
+        childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1);
 
         assertEquals(1, parentCodes.getIncludesCodes().size());
         assertEquals(0, parentCodes.getLevelsWithCodes().size());
@@ -125,16 +136,16 @@ public class CodesResourceTest {
     public void addsLevesWithRelationBetweenExistingcodes() {
         String parentUri = "eisuhteitaviela3";
         String childUri = "eisuhteitaviela4";
-        KoodistoDto parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1).getEntity();
-        KoodistoDto childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1).getEntity();
+        KoodistoDto parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1);
+        KoodistoDto childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1);
 
         assertEquals(0, parentCodes.getLevelsWithCodes().size());
         assertEquals(0, childCodes.getLevelsWithCodes().size());
 
         resource.addRelation(parentUri, childUri, "RINNASTEINEN");
 
-        parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1).getEntity();
-        childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1).getEntity();
+        parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1);
+        childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1);
 
         assertEquals(0, parentCodes.getIncludesCodes().size());
         assertEquals(1, parentCodes.getLevelsWithCodes().size());
@@ -151,16 +162,16 @@ public class CodesResourceTest {
     public void removesRelationBetweenExistingcodes() {
         String parentUri = "sisaltyysuhde1";
         String childUri = "sisaltyysuhde2";
-        KoodistoDto parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1).getEntity();
-        KoodistoDto childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1).getEntity();
+        KoodistoDto parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1);
+        KoodistoDto childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1);
 
         assertEquals(1, parentCodes.getIncludesCodes().size());
         assertEquals(1, childCodes.getWithinCodes().size());
 
         resource.removeRelation(parentUri, childUri, "SISALTYY");
 
-        parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1).getEntity();
-        childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1).getEntity();
+        parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1);
+        childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1);
 
         assertEquals(0, parentCodes.getIncludesCodes().size());
         assertEquals(0, parentCodes.getLevelsWithCodes().size());
@@ -178,9 +189,9 @@ public class CodesResourceTest {
         String codesGroupUri = "koodistojenlisaaminenkoodistoryhmaan";
 
         KoodistoDto codesToBeInserted = createDTO(koodistoUri, codesGroupUri);
-        assertResponse(resource.insert(codesToBeInserted), 201);
+        resource.insert(codesToBeInserted);
 
-        KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, 1).getEntity();
+        KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, 1);
         assertEquals(koodistoUri, codes.getKoodistoUri());
         assertEquals(1, codes.getVersio());
         assertEquals(codesGroupUri, codes.getCodesGroupUri());
@@ -194,8 +205,8 @@ public class CodesResourceTest {
         KoodistoDto codesToBeInserted = createDTO(koodistoUri, codesGroupUri);
         codesToBeInserted.getMetadata().get(0).setKieli(null);
         codesToBeInserted.setVoimassaLoppuPvm(new Date());
-        assertResponse(resource.insert(codesToBeInserted), 400);
-
+        assertException(() -> resource.insert(codesToBeInserted),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
     }
 
     @Test
@@ -270,24 +281,23 @@ public class CodesResourceTest {
     @Test
     public void listsCodesByCodesUri() {
         String koodistoUri = "moniaversioita";
-        KoodistoListDto koodistot = (KoodistoListDto) resource.getCodesByCodesUri(koodistoUri).getEntity();
+        KoodistoListDto koodistot = resource.getCodesByCodesUri(koodistoUri);
         assertEquals(3, koodistot.getKoodistoVersios().size());
     }
 
     @Test
     public void getLatestCodeByUri() {
         String koodistoUri = "moniaversioita";
-        KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, 0).getEntity();
+        KoodistoDto codes =  resource.getCodesByCodesUriAndVersion(koodistoUri, 0);
         assertEquals(3, codes.getVersio());
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void listCodes() {
-        List<KoodistoRyhmaListDto> codes = (List<KoodistoRyhmaListDto>) resource.listAllCodesGroups().getEntity();
+        List<KoodistoRyhmaListDto> codes = resource.listAllCodesGroups();
         assertNotNull(codes);
 
-        List<KoodistoVersioListDto> codes2 = (List<KoodistoVersioListDto>) resource.listAllCodesInAllCodeGroups().getEntity();
+        List<KoodistoVersioListDto> codes2 = resource.listAllCodesInAllCodeGroups();
         assertNotNull(codes2);
 
         // TODO:tarkempi assertointi
@@ -299,8 +309,8 @@ public class CodesResourceTest {
         String fileFormat = "CSV";
         String fileEncoding = "UTF-8";
         String codesUri = "csvfileuploaduri";
-        assertResponse(resource.uploadFile(createAttachment("csv_example.csv"), fileFormat, fileEncoding, codesUri), 202);
-        KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(codesUri, 0).getEntity();
+        resource.uploadFile(createAttachment("csv_example.csv"), fileFormat, fileEncoding, codesUri);
+        KoodistoDto codes = resource.getCodesByCodesUriAndVersion(codesUri, 0);
         assertNotNull(codes);
         List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
         assertEquals("csvfileuploaduri_arvo", koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
@@ -312,8 +322,8 @@ public class CodesResourceTest {
         String fileFormat = "JHS_XML";
         String fileEncoding = "UTF-8";
         String codesUri = "xmlfileuploaduri";
-        assertResponse(resource.uploadFile(createAttachment("jhs_xml_example.xml"), fileFormat, fileEncoding, codesUri), 202);
-        KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(codesUri, 0).getEntity();
+        resource.uploadFile(createAttachment("jhs_xml_example.xml"), fileFormat, fileEncoding, codesUri);
+        KoodistoDto codes = resource.getCodesByCodesUriAndVersion(codesUri, 0);
         assertNotNull(codes);
         List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
         assertEquals("xmlfileuploaduri_arvo", koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
@@ -325,15 +335,19 @@ public class CodesResourceTest {
         String fileFormat = "XLS";
         String fileEncoding = "UTF-8";
         String codesUri = "xlsfileuploaduri";
-        assertResponse(resource.uploadFile(createAttachment("excel_example.xls"), fileFormat, fileEncoding, codesUri), 202);
-        KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(codesUri, 0).getEntity();
+        resource.uploadFile(createAttachment("excel_example.xls"), fileFormat, fileEncoding, codesUri);
+        KoodistoDto codes = resource.getCodesByCodesUriAndVersion(codesUri, 0);
         assertNotNull(codes);
         List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
         assertEquals("xlsfileuploaduri_arvo", koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
     }
 
-    private Attachment createAttachment(String sourceUrl) {
-        return new Attachment("id", new DataHandler(new TestDataSource(sourceUrl)), null);
+    private MockMultipartFile createAttachment(String sourceUrl) throws IllegalStateException {
+        try {
+            return new MockMultipartFile("name", new URL(sourceUrl).openStream());
+        } catch (IOException e) {
+            throw new IllegalStateException("Unable to open stream from: " + sourceUrl, e);
+        }
     }
 
     @Test
@@ -342,13 +356,13 @@ public class CodesResourceTest {
         String fileEncoding = "UTF-8";
         String codesUri = "csvfileuploaduri";
 
-        assertResponse(resource.uploadFile(createAttachment("csv_example.csv"), fileFormat, fileEncoding, codesUri), 202);
-        KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(codesUri, 0).getEntity();
+        resource.uploadFile(createAttachment("csv_example.csv"), fileFormat, fileEncoding, codesUri);
+        KoodistoDto codes = resource.getCodesByCodesUriAndVersion(codesUri, 0);
         assertNotNull(codes);
         List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
         assertEquals("csvfileuploaduri_arvo", koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
 
-        assertResponse(resource.uploadFile(createAttachment("csv_example.csv"), fileFormat, fileEncoding, codesUri), 202);
+        resource.uploadFile(createAttachment("csv_example.csv"), fileFormat, fileEncoding, codesUri);
     }
 
     @Test
@@ -357,44 +371,29 @@ public class CodesResourceTest {
         String fileFormat = "CSV";
         String fileEncoding = "UTF-8";
         String codesUri = "csvfileuploaduri";
-            // IE9 can not handle upload if server return 400 or 500
-            assertResponse(resource.uploadFile(createFailureAttachment(), fileFormat, fileEncoding, codesUri), 202, "error.codes.importing.empty.file");
+        // IE9 can not handle upload if server return 400 or 500
+        String result = resource.uploadFile(createFailureAttachment(), fileFormat, fileEncoding, codesUri);
+        assertEquals("error.codes.importing.empty.file", result);
     }
 
-    private Attachment createFailureAttachment() {
-        return new Attachment("id", new DataHandler(new DataSource() {
-            @Override
-            public InputStream getInputStream() throws IOException {
-                return new ByteArrayInputStream("Failure Of Files!".getBytes(Charset.defaultCharset()));
-            }
-
-            @Override
-            public OutputStream getOutputStream() throws IOException {
-                return null;
-            }
-
-            @Override
-            public String getContentType() {
-                return null;
-            }
-
-            @Override
-            public String getName() {
-                return null;
-            }
-        }), null);
+    private MockMultipartFile createFailureAttachment() throws IllegalStateException {
+        try {
+            return new MockMultipartFile("id", new ByteArrayInputStream(new byte[0]));
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     @Test
     public void updatingCodes() {
         String koodistoUri = "updatekoodisto";
 
-        KoodistoDto codes1 = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, 1).getEntity();
+        KoodistoDto codes1 = resource.getCodesByCodesUriAndVersion(koodistoUri, 1);
         codes1.getMetadata().get(0).setNimi("Päivitetty Testinimi");
-        assertResponse(resource.update(codes1), 201);
+        resource.update(codes1);
 
-        codes1 = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, 1).getEntity();
-        KoodistoDto codes2 = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, 2).getEntity();
+        codes1 = resource.getCodesByCodesUriAndVersion(koodistoUri, 1);
+        KoodistoDto codes2 = resource.getCodesByCodesUriAndVersion(koodistoUri, 2);
         assertEquals("Update testi", codes1.getMetadata().get(0).getNimi());
         assertEquals("Päivitetty Testinimi", codes2.getMetadata().get(0).getNimi());
         assertNotNull(codes2.getPaivitysPvm());
@@ -404,12 +403,12 @@ public class CodesResourceTest {
     public void invalidUpdatingCodesFails() {
         String koodistoUri = "updatekoodisto";
 
-        KoodistoDto codes1 = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, 1).getEntity();
+        final KoodistoDto codes1 = resource.getCodesByCodesUriAndVersion(koodistoUri, 1);
         codes1.getMetadata().get(0).setNimi(null); // Invalid
-        assertResponse(resource.update(codes1), 400);
+        assertException(() -> resource.update(codes1), new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
 
-        codes1 = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, 1).getEntity();
-        assertEquals("Update testi", codes1.getMetadata().get(0).getNimi());
+        KoodistoDto codes2 = resource.getCodesByCodesUriAndVersion(koodistoUri, 1);
+        assertEquals("Update testi", codes2.getMetadata().get(0).getNimi());
     }
 
     @Test
@@ -419,41 +418,28 @@ public class CodesResourceTest {
             int codesVersion = 1;
             String encoding = "Utf-8";
             Format fileFormat = Format.CSV;
-            Response response = resource.download(codesUri, codesVersion, fileFormat, encoding);
-            assertResponse(response, 200);
-            String content = inputStreamToString(response.getEntity());
+            ResponseEntity<File> response = resource.download(codesUri, codesVersion, fileFormat, encoding);
+            String content = fileToString(response.getBody());
             assertTrue(content.contains("Description of downloaded code"));
-            try {
-                ((InputStream) response.getEntity()).close();
-            } catch (IOException ignore) {
-            }
         }
         {
             String codesUri = "filedownloaduri";
             int codesVersion = 1;
             String encoding = "Utf-8";
             Format fileFormat = Format.JHS_XML;
-            Response response = resource.download(codesUri, codesVersion, fileFormat, encoding);
-            assertResponse(response, 200);
-            String content = inputStreamToString(response.getEntity());
+            ResponseEntity<File> response = resource.download(codesUri, codesVersion, fileFormat, encoding);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            String content = fileToString(response.getBody());
             assertTrue(content.contains("Description of downloaded code"));
-            try {
-                ((InputStream) response.getEntity()).close();
-            } catch (IOException ignore) {
-            }
         }
         {
             String codesUri = "filedownloaduri";
             int codesVersion = 1;
             String encoding = "Utf-8";
             Format fileFormat = Format.XLS;
-            Response response = resource.download(codesUri, codesVersion, fileFormat, encoding);
-            assertResponse(response, 200);
-            assertNotNull(response.getEntity());
-            try {
-                ((InputStream) response.getEntity()).close();
-            } catch (IOException ignore) {
-            }
+            ResponseEntity<File> response = resource.download(codesUri, codesVersion, fileFormat, encoding);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertNotNull(response.getBody());
         }
     }
 
@@ -463,14 +449,13 @@ public class CodesResourceTest {
             String codesUri = "deletethisuri";
             int codesVersion = 1;
             assertNotNull(resource.getCodesByCodesUriAndVersion(codesUri, codesVersion));
-
-            assertResponse(resource.delete(codesUri, codesVersion), 202);
+            resource.delete(codesUri, codesVersion);
         }
         {
             String codesUri = "invaliddeleteuri";
             int codesVersion = 99;
-
-            assertResponse(resource.delete(codesUri, codesVersion), 500);
+            assertException(() -> resource.delete(codesUri, codesVersion),
+                    new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR));
         }
 
     }
@@ -481,14 +466,14 @@ public class CodesResourceTest {
         String nimi = "uusinimi";
         int versio = 1;
 
-        KoodistoDto codesToBeSaved = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, versio).getEntity();
+        KoodistoDto codesToBeSaved = resource.getCodesByCodesUriAndVersion(koodistoUri, versio);
         assertEquals(Tila.HYVAKSYTTY, codesToBeSaved.getTila());
-        assertFalse(nimi.equals(codesToBeSaved.getMetadata().get(0).getNimi()));
+        assertNotEquals(nimi, codesToBeSaved.getMetadata().get(0).getNimi());
 
         codesToBeSaved.getMetadata().get(0).setNimi(nimi);
-        assertResponse(resource.save(codesToBeSaved), 200);
+        resource.save(codesToBeSaved);
 
-        KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, versio+1).getEntity();
+        KoodistoDto codes = resource.getCodesByCodesUriAndVersion(koodistoUri, versio+1);
         assertEquals(Tila.LUONNOS, codes.getTila());
         assertEquals(nimi, codes.getMetadata().get(0).getNimi());
     }
@@ -499,70 +484,70 @@ public class CodesResourceTest {
         String nimi = "uusinimi";
         int versio = 1;
 
-        KoodistoDto codesToBeSaved = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, versio).getEntity();
-        assertTrue(codesToBeSaved.getIncludesCodes().size() == 0);
-        assertTrue(codesToBeSaved.getWithinCodes().size() == 0);
-        assertTrue(codesToBeSaved.getLevelsWithCodes().size() == 0);
+        KoodistoDto codesToBeSaved = resource.getCodesByCodesUriAndVersion(koodistoUri, versio);
+        assertEquals(0, codesToBeSaved.getIncludesCodes().size());
+        assertEquals(0, codesToBeSaved.getWithinCodes().size());
+        assertEquals(0, codesToBeSaved.getLevelsWithCodes().size());
 
         codesToBeSaved.getMetadata().get(0).setNimi(nimi);
         codesToBeSaved.getIncludesCodes().add(new RelationCodes("eisuhteitaviela2", 1, false, new HashMap<>()));
         codesToBeSaved.getWithinCodes().add(new RelationCodes("eisuhteitaviela3", 1, false, new HashMap<>()));
         codesToBeSaved.getLevelsWithCodes().add(new RelationCodes("eisuhteitaviela4", 1, false, new HashMap<>()));
-        assertResponse(resource.save(codesToBeSaved), 200);
+        resource.save(codesToBeSaved);
 
-        KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, versio+1).getEntity();
-        assertTrue(codes.getIncludesCodes().size() == 1);
-        assertTrue(codes.getWithinCodes().size() == 1);
-        assertTrue(codes.getLevelsWithCodes().size() == 1);
+        KoodistoDto codes = resource.getCodesByCodesUriAndVersion(koodistoUri, versio+1);
+        assertEquals(1, codes.getIncludesCodes().size());
+        assertEquals(1, codes.getWithinCodes().size());
+        assertEquals(1, codes.getLevelsWithCodes().size());
     }
     
     @Test
     public void returnsNoChangesToCodes() {
-        assertEquals(MuutosTila.EI_MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodes("moniaversioita", 3, false).getEntity()).muutosTila);
+        assertEquals(MuutosTila.EI_MUUTOKSIA, resource.getChangesToCodes("moniaversioita", 3, false).muutosTila);
     }
     
     @Test
     public void returnsChangesToCodes() {
-        assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodes("moniaversioita", 1, false).getEntity()).muutosTila);
+        assertEquals(MuutosTila.MUUTOKSIA, resource.getChangesToCodes("moniaversioita", 1, false).muutosTila);
     }
     
     @Test
     public void returnsNoChangesToCodesUsingDate() {
-        assertEquals(MuutosTila.EI_MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2014, 0, 0, 0, false).getEntity()).muutosTila);
+        assertEquals(MuutosTila.EI_MUUTOKSIA, resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2014, 0, 0, 0, false).muutosTila);
     }
     
     @Test
     public void returnsChangesToCodesUsingDate() {
-        assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2012, 0, 0, 0, false).getEntity()).muutosTila);
-        assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2013, 0, 0, 0, false).getEntity()).muutosTila);
+        assertEquals(MuutosTila.MUUTOKSIA, resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2012, 0, 0, 0, false).muutosTila);
+        assertEquals(MuutosTila.MUUTOKSIA, resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2013, 0, 0, 0, false).muutosTila);
     }
     
     @Test
     public void returnsChangesToCodesWithLotsOfChanges() {
-        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 1, false).getEntity(), 3, 1, 2, 2, 1, 1, Tila.LUONNOS, 1, 1, 0, MuutosTila.MUUTOKSIA);
-        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 2, false).getEntity(), 3, 0, 2, 1, 1, 0, Tila.LUONNOS, 1, 1, 1, MuutosTila.MUUTOKSIA);
-        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 3, false).getEntity(), 3, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+        assertChanges(resource.getChangesToCodes("paljonmuutoksia", 1, false), 3, 1, 2, 2, 1, 1, Tila.LUONNOS, 1, 1, 0, MuutosTila.MUUTOKSIA);
+        assertChanges(resource.getChangesToCodes("paljonmuutoksia", 2, false), 3, 0, 2, 1, 1, 0, Tila.LUONNOS, 1, 1, 1, MuutosTila.MUUTOKSIA);
+        assertChanges(resource.getChangesToCodes("paljonmuutoksia", 3, false), 3, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
     }
     
     @Test
     public void returnsChangesToCodesWithLotsOfChangesComparingAgainstLatestAcceptedKoodistoVersio() {
-        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 1, true).getEntity(), 2, 1, 0, 1, 0, 1, null, 1, 1, 0, MuutosTila.MUUTOKSIA);
-        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 2, true).getEntity(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
-        assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 3, true).getEntity(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+        assertChanges(resource.getChangesToCodes("paljonmuutoksia", 1, true), 2, 1, 0, 1, 0, 1, null, 1, 1, 0, MuutosTila.MUUTOKSIA);
+        assertChanges(resource.getChangesToCodes("paljonmuutoksia", 2, true), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+        assertChanges(resource.getChangesToCodes("paljonmuutoksia", 3, true), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
     }
     
     @Test
     public void returnsChangesToCodesWithLotsOfChangesUsingDate() {
-        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2012, 0, 0, 0, false).getEntity(), 3, 1, 2, 2, 1, 1, Tila.LUONNOS, 1, 1, 0, MuutosTila.MUUTOKSIA);
-        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 5, 2014, 0, 0, 0, false).getEntity(), 3, 0, 2, 1, 1, 0, Tila.LUONNOS, 1, 1, 1, MuutosTila.MUUTOKSIA);
-        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2014, 0, 0, 0, false).getEntity(), 3, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+        assertChanges(resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2012, 0, 0, 0, false), 3, 1, 2, 2, 1, 1, Tila.LUONNOS, 1, 1, 0, MuutosTila.MUUTOKSIA);
+        assertChanges(resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 5, 2014, 0, 0, 0, false), 3, 0, 2, 1, 1, 0, Tila.LUONNOS, 1, 1, 1, MuutosTila.MUUTOKSIA);
+        assertChanges(resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2014, 0, 0, 0, false), 3, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
     }
     
     @Test
     public void returnsChangesToCodesWithLotsOfChangesComparingAgainstLatestAcceptedKoodistoVersioAndDate() {
-        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2012, 0, 0, 0, true).getEntity(), 2, 1, 0, 1, 0, 1, null, 1, 1, 0, MuutosTila.MUUTOKSIA);
-        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 5, 2014, 0, 0, 0, true).getEntity(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
-        assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2014, 0, 0, 0, true).getEntity(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+        assertChanges(resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2012, 0, 0, 0, true), 2, 1, 0, 1, 0, 1, null, 1, 1, 0, MuutosTila.MUUTOKSIA);
+        assertChanges(resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 5, 2014, 0, 0, 0, true), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
+        assertChanges(resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2014, 0, 0, 0, true), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
     }
 
     private void assertChanges(KoodistoChangesDto changes, int expectedVersio, int removedMetas, int changedMetas, int addedRelations, int passiveRelations, int removedRelations, Tila expectedTila, int addedCodeElements, int changedCodeElements, int removedCodeElements, MuutosTila muutosTila) {
@@ -584,7 +569,7 @@ public class CodesResourceTest {
 
     private KoodistoDto createDTO(String koodistoUri, String codesGroupUri) {
         // Load dummy and replace relevant information
-        KoodistoDto dto = (KoodistoDto) resource.getCodesByCodesUriAndVersion("dummy", 1).getEntity();
+        KoodistoDto dto = resource.getCodesByCodesUriAndVersion("dummy", 1);
         dto.setKoodistoUri(koodistoUri);
         dto.setCodesGroupUri(codesGroupUri);
         dto.getMetadata().get(0).setNimi(koodistoUri);
@@ -623,51 +608,12 @@ public class CodesResourceTest {
         return dto;
     }
 
-    private void assertResponse(Response response, int expectedStatus) {
-        assertEquals(expectedStatus, response.getStatus());
-    }
-
-    private void assertResponse(Response response, int expectedStatus, Object expectedEntity) {
-        assertResponse(response, expectedStatus);
-        assertEquals(expectedEntity, response.getEntity());
-    }
-
-    private String inputStreamToString(Object entity) {
+    private String fileToString(File file) throws IllegalStateException {
         try {
-            StringWriter writer = new StringWriter();
-            IOUtils.copy((InputStream) entity, writer);
-            return writer.toString();
+            return Files.readString(file.toPath());
         } catch (IOException e) {
-            fail();
-        }
-        return null;
-    }
-
-    class TestDataSource implements DataSource {
-        private final String url;
-
-        public TestDataSource(String url) {
-            this.url = url;
-        }
-
-        @Override
-        public InputStream getInputStream() throws IOException {
-            return getClass().getClassLoader().getResourceAsStream(this.url);
-        }
-
-        @Override
-        public OutputStream getOutputStream() throws IOException {
-            return null;
-        }
-
-        @Override
-        public String getContentType() {
-            return null;
-        }
-
-        @Override
-        public String getName() {
-            return null;
+            throw new IllegalStateException(e);
         }
     }
+
 }

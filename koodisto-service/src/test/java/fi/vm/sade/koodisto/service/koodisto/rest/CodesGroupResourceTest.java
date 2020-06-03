@@ -2,14 +2,14 @@ package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import java.util.HashSet;
 
-import javax.ws.rs.core.Response;
-
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.koodisto.test.support.ResponseStatusExceptionMatcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -21,15 +21,15 @@ import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
+import static fi.vm.sade.koodisto.test.support.Assertions.assertException;
 import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+/*@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+        DbUnitTestExecutionListener.class })*/
 @RunWith(SpringJUnit4ClassRunner.class)
 @DatabaseSetup("classpath:test-data-codes-rest.xml")
 public class CodesGroupResourceTest {
@@ -39,9 +39,7 @@ public class CodesGroupResourceTest {
 
     @Test
     public void testGetCodesByCodesUri() {
-        Response response = resource.getCodesByCodesUri(-1L);
-        assertResponse(response, 200);
-        KoodistoRyhmaDto dto = (KoodistoRyhmaDto) response.getEntity();
+        KoodistoRyhmaDto dto = resource.getCodesByCodesUri(-1L);
         assertEquals("relaatioidenlisaaminen", dto.getKoodistoRyhmaUri());
         assertEquals(1, dto.getKoodistoRyhmaMetadatas().size());
         assertEquals(5, dto.getKoodistos().size());
@@ -49,47 +47,44 @@ public class CodesGroupResourceTest {
 
     @Test
     public void testGetCodesByCodesUriInvalid() {
-        assertResponse(resource.getCodesByCodesUri(0L), 500, "error.codesgroup.not.found");
-        assertResponse(resource.getCodesByCodesUri(null), 400, "error.validation.id");
-        assertResponse(resource.getCodesByCodesUri(99999L), 500, "error.codesgroup.not.found");
+        assertException(() -> resource.getCodesByCodesUri(0L),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codesgroup.not.found"));
+        assertException(() -> resource.getCodesByCodesUri(null),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.id"));
+        assertException(() -> resource.getCodesByCodesUri(99999L),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codesgroup.not.found"));
     }
 
     @Test
     public void testUpdate() {
-        Response response = resource.getCodesByCodesUri(-4L);
-        assertResponse(response, 200);
-        KoodistoRyhmaDto dto = (KoodistoRyhmaDto) response.getEntity();
+        KoodistoRyhmaDto dto = resource.getCodesByCodesUri(-4L);
         changename(dto, "paivitettunimi");
 
-        Response updateResponse = resource.update(dto);
-        assertResponse(updateResponse, 201);
-
-        response = resource.getCodesByCodesUri(-4L);
-        assertResponse(response, 200);
-        assertDtoEquals(dto, (KoodistoRyhmaDto) response.getEntity());
+        resource.update(dto);
+        assertDtoEquals(dto, resource.getCodesByCodesUri(-4L));
 
     }
     
     @Test
     public void testUpdateInvalid() {
-        assertResponse(resource.update(null), 400, "error.validation.codesgroup");
-        assertResponse(resource.update(new KoodistoRyhmaDto()), 400, "error.codesgroup.uri.empty");
-        assertResponse(resource.update(createDto("totallyvaliduri", 0)), 400, "error.metadata.empty");
-        assertResponse(resource.update(createDto("", 3)), 400, "error.codesgroup.uri.empty");
+        assertException(() -> resource.update(null),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesgroup"));
+        assertException(() -> resource.update(new KoodistoRyhmaDto()),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.codesgroup.uri.empty"));
+        assertException(() -> resource.update(createDto("totallyvaliduri", 0)),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.metadata.empty"));
+        assertException(() -> resource.update(createDto("", 3)),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.codesgroup.uri.empty"));
     }
 
     @Test
     public void testInsert() {
         String newName = "newnameforcodesgroup";
         KoodistoRyhmaDto dto = createDto(newName, 1);
-        Response insert = resource.insert(dto);
-        assertResponse(insert, 201);
-        KoodistoRyhmaDto result = (KoodistoRyhmaDto) insert.getEntity();
+        KoodistoRyhmaDto result = resource.insert(dto);
         Long newId = result.getId();
 
-        Response codesByCodesUri = resource.getCodesByCodesUri(newId);
-        assertResponse(codesByCodesUri, 200);
-        KoodistoRyhmaDto insertedDto = (KoodistoRyhmaDto) codesByCodesUri.getEntity();
+        KoodistoRyhmaDto insertedDto = resource.getCodesByCodesUri(newId);
         assertEquals("http://" + newName, insertedDto.getKoodistoRyhmaUri());
         assertEquals(1, insertedDto.getKoodistoRyhmaMetadatas().size());
         assertEquals(0, insertedDto.getKoodistos().size());
@@ -97,36 +92,32 @@ public class CodesGroupResourceTest {
     
     @Test
     public void testInsertInvalid() {
-        assertResponse(resource.insert(null), 400, "error.validation.codesgroup");
-        assertResponse(resource.insert(new KoodistoRyhmaDto()), 400, "error.metadata.empty");
-        assertResponse(resource.insert(createDto("totallyvaliduri", 0)), 400, "error.metadata.empty");
-        assertResponse(resource.insert(createDto("", 3)), 400, "error.validation.metadata");
+        assertException(() -> resource.insert(null),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesgroup"));
+        assertException(() -> resource.insert(new KoodistoRyhmaDto()),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.metadata.empty"));
+        assertException(() -> resource.insert(createDto("totallyvaliduri", 0)),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.metadata.empty"));
+        assertException(() -> resource.insert(createDto("", 3)),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.metadata"));
     }
 
     @Test
     public void testDelete() {
-        assertResponse(resource.getCodesByCodesUri(-3L), 200);
-        assertResponse(resource.delete(-3L), 202);
-        assertResponse(resource.getCodesByCodesUri(-3L), 500);
+        resource.getCodesByCodesUri(-3L);
+        resource.delete(-3L);
+        assertException(() -> resource.getCodesByCodesUri(-3L),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR));
     }
     
     @Test
     public void testDeleteInvalid() {
-        assertResponse(resource.delete(null), 400, "error.validation.id");
-        assertResponse(resource.delete(0L), 500, "error.codesgroup.not.found");
-        assertResponse(resource.delete(99999L), 500, "error.codesgroup.not.found");
-    }
-
-    // UTILITIES
-    // /////////
-
-    private void assertResponse(Response response, int expectedStatus) {
-        assertEquals(expectedStatus, response.getStatus());
-    }
-    
-    private void assertResponse(Response response, int expectedStatus, Object expectedEntity) {
-        assertResponse(response, expectedStatus);
-        assertEquals(expectedEntity, response.getEntity());
+        assertException(() -> resource.delete(null),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.id"));
+        assertException(() -> resource.delete(0L),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codesgroup.not.found"));
+        assertException(() -> resource.delete(99999L),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codesgroup.not.found"));
     }
     
     private KoodistoRyhmaDto createDto(String name, int howManyMetadatas) {

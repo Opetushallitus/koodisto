@@ -1,6 +1,8 @@
 package fi.vm.sade.koodisto.service.business.exception;
 
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Exception class for situations where koodisto could not be found
@@ -8,6 +10,7 @@ import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
  * @author wuoti
  * 
  */
+@ResponseStatus(HttpStatus.NOT_FOUND)
 public class KoodistoNotFoundException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;

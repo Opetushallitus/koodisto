@@ -1,32 +1,31 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@Path("session")
+@RestController
+@RequestMapping("session")
 @Api(value = "/rest/session", description = "Sessionhallinta")
 public class SessionResource {
 
-    @GET
-    @Path("/maxinactiveinterval")
+    @GetMapping(
+            value = "/maxinactiveinterval",
+            produces = MediaType.TEXT_PLAIN_VALUE
+    )
     @PreAuthorize("isAuthenticated()")
-    @Produces(MediaType.TEXT_PLAIN)
     @ApiOperation(
             value = "Palauttaa session erääntymisen aikarajan sekunteina. Luo session jos ei ole ennestään olemassa.",
             notes = "Tarvitsee HTTP kutsun, jossa on session id",
             response = String.class)
-    public String maxInactiveInterval(@Context HttpServletRequest req) {
-        return Integer.toString(req.getSession().getMaxInactiveInterval());
+    public String maxInactiveInterval(HttpServletRequest request) {
+        return Integer.toString(request.getSession().getMaxInactiveInterval());
     }
 }

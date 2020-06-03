@@ -10,10 +10,12 @@ import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
+import fi.vm.sade.koodisto.test.support.ResponseStatusExceptionMatcher;
 import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,18 +25,18 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import javax.ws.rs.core.Response;
 import java.util.*;
 
+import static fi.vm.sade.koodisto.test.support.Assertions.assertException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+/*@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class,
-        WithSecurityContextTestExecutionListener.class})
+        WithSecurityContextTestExecutionListener.class})*/
 @RunWith(SpringJUnit4ClassRunner.class)
 @DatabaseSetup("classpath:test-data-multiple-relations.xml")
 @WithMockUser("1.2.3.4.5")
@@ -57,62 +59,98 @@ public class CodeElementResourceTest {
         String stubString = "uri";
         KoodiDto codeelementDTO = new KoodiDto();
 
-        assertResponse(resource.addRelation(nullString, stubString, stubString), 400, "error.validation.codeelementuri");
-        assertResponse(resource.addRelation(blankString, stubString, stubString), 400, "error.validation.codeelementuri");
-        assertResponse(resource.addRelation(stubString, nullString, stubString), 400, "error.validation.codeelementuritoadd");
-        assertResponse(resource.addRelation(stubString, blankString, stubString), 400, "error.validation.codeelementuritoadd");
-        assertResponse(resource.addRelation(stubString, stubString, nullString), 400, "error.validation.relationtype");
-        assertResponse(resource.addRelation(stubString, stubString, blankString), 400, "error.validation.relationtype");
+        assertException(() -> resource.addRelation(nullString, stubString, stubString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
+        assertException(() -> resource.addRelation(blankString, stubString, stubString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
+        assertException(() -> resource.addRelation(stubString, nullString, stubString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuritoadd"));
+        assertException(() -> resource.addRelation(stubString, blankString, stubString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuritoadd"));
+        assertException(() -> resource.addRelation(stubString, stubString, nullString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.relationtype"));
+        assertException(() -> resource.addRelation(stubString, stubString, blankString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.relationtype"));
 
-        assertResponse(resource.addRelations(nullRelationList), 400, "error.validation.codeelementrelationlist");
+        assertException(() -> resource.addRelations(nullRelationList),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementrelationlist"));
 
-        assertResponse(resource.delete(nullString, 0), 400, "error.validation.codeelementuri");
-        assertResponse(resource.delete(blankString, 0), 400, "error.validation.codeelementuri");
+        assertException(() -> resource.delete(nullString, 0),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
+        assertException(() -> resource.delete(blankString, 0),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
+        
+        assertException(() -> resource.getAllCodeElementsByCodesUriAndVersion(nullString, 0),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codesuri"));
+        assertException(() -> resource.getAllCodeElementsByCodesUriAndVersion(blankString, 0),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codesuri"));
 
-        assertResponse(resource.getAllCodeElementsByCodesUriAndVersion(nullString, 0), 400, "error.validation.codesuri");
-        assertResponse(resource.getAllCodeElementsByCodesUriAndVersion(blankString, 0), 400, "error.validation.codesuri");
+        assertException(() -> resource.getAllCodeElementVersionsByCodeElementUri(nullString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
+        assertException(() -> resource.getAllCodeElementVersionsByCodeElementUri(blankString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
 
-        assertResponse(resource.getAllCodeElementVersionsByCodeElementUri(nullString), 400, "error.validation.codeelementuri");
-        assertResponse(resource.getAllCodeElementVersionsByCodeElementUri(blankString), 400, "error.validation.codeelementuri");
+        assertException(() -> resource.getCodeElementByCodeElementUri(nullString, 0, stubString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codesuri"));
+        assertException(() -> resource.getCodeElementByCodeElementUri(blankString, 0, stubString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codesuri"));
+        assertException(() -> resource.getCodeElementByCodeElementUri(stubString, 0, nullString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
+        assertException(() -> resource.getCodeElementByCodeElementUri(stubString, 0, blankString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
 
-        assertResponse(resource.getCodeElementByCodeElementUri(nullString, 0, stubString), 400, "error.validation.codesuri");
-        assertResponse(resource.getCodeElementByCodeElementUri(blankString, 0, stubString), 400, "error.validation.codesuri");
-        assertResponse(resource.getCodeElementByCodeElementUri(stubString, 0, nullString), 400, "error.validation.codeelementuri");
-        assertResponse(resource.getCodeElementByCodeElementUri(stubString, 0, blankString), 400, "error.validation.codeelementuri");
+        assertException(() -> resource.getCodeElementByUriAndVersion(nullString, 0),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));;
+        assertException(() -> resource.getCodeElementByUriAndVersion(blankString, 0),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
 
-        assertResponse(resource.getCodeElementByUriAndVersion(nullString, 0), 400, "error.validation.codeelementuri");
-        assertResponse(resource.getCodeElementByUriAndVersion(blankString, 0), 400, "error.validation.codeelementuri");
+        assertException(() -> resource.getLatestCodeElementVersionsByCodeElementUri(nullString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
+        assertException(() -> resource.getLatestCodeElementVersionsByCodeElementUri(blankString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
 
-        assertResponse(resource.getLatestCodeElementVersionsByCodeElementUri(nullString), 400, "error.validation.codeelementuri");
-        assertResponse(resource.getLatestCodeElementVersionsByCodeElementUri(blankString), 400, "error.validation.codeelementuri");
+        assertException(() -> resource.insert(nullString, codeelementDTO),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesuri"));
+        assertException(() -> resource.insert(blankString, codeelementDTO),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesuri"));
+        assertException(() -> resource.insert(stubString, nullDto),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelement"));
 
-        assertResponse(resource.insert(nullString, codeelementDTO), 400, "error.validation.codesuri");
-        assertResponse(resource.insert(blankString, codeelementDTO), 400, "error.validation.codesuri");
-        assertResponse(resource.insert(stubString, nullDto), 400, "error.validation.codeelement");
+        assertException(() -> resource.removeRelation(nullString, stubString, stubString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
+        assertException(() -> resource.removeRelation(blankString, stubString, stubString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
+        assertException(() -> resource.removeRelation(stubString, nullString, stubString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuritoremove"));
+        assertException(() -> resource.removeRelation(stubString, blankString, stubString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuritoremove"));
+        assertException(() -> resource.removeRelation(stubString, stubString, nullString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.relationtype"));
+        assertException(() -> resource.removeRelation(stubString, stubString, blankString),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.relationtype"));
 
-        assertResponse(resource.removeRelation(nullString, stubString, stubString), 400, "error.validation.codeelementuri");
-        assertResponse(resource.removeRelation(blankString, stubString, stubString), 400, "error.validation.codeelementuri");
-        assertResponse(resource.removeRelation(stubString, nullString, stubString), 400, "error.validation.codeelementuritoremove");
-        assertResponse(resource.removeRelation(stubString, blankString, stubString), 400, "error.validation.codeelementuritoremove");
-        assertResponse(resource.removeRelation(stubString, stubString, nullString), 400, "error.validation.relationtype");
-        assertResponse(resource.removeRelation(stubString, stubString, blankString), 400, "error.validation.relationtype");
+        assertException(() -> resource.removeRelations(nullRelationList),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementrelationlist"));
 
-        assertResponse(resource.removeRelations(nullRelationList), 400, "error.validation.codeelementrelationlist");
-
-        assertResponse(resource.update(nullDto), 400, "error.validation.codeelement");
+        assertException(() -> resource.update(nullDto),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelement"));
 
     }
 
     @Test
     public void returns500IfErrorOccurs() {
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
-        kr.setRelations(Arrays.asList("koodi"));
-        assertResponse(this.addRelations("codeelementuri", "SISALTYY", kr), 500, "error.codeelement.not.found");
-        assertResponse(this.removeRelations("codeelementuri", "SISALTYY", kr), 500, "error.codeelement.not.found");
+        kr.setRelations(Collections.singletonList("koodi"));
+        assertException(() -> this.addRelations("codeelementuri", "SISALTYY", kr),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
+        assertException(() -> this.removeRelations("codeelementuri", "SISALTYY", kr),
+            new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
 
         kr.setRelations(Arrays.asList("rinnastuu4kanssa1", "rinnastuu4kanssa2", "rinnastuu4kanssa3"));
-        assertResponse(this.addRelations("codeelementuri", "asd", kr), 500, "error.codes.generic");
-        assertResponse(this.removeRelations("codeelementuri", "asd", kr), 500, "error.codes.generic");
+        assertException(() -> this.addRelations("codeelementuri", "asd", kr),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codes.generic"));
+        assertException(() -> this.removeRelations("codeelementuri", "asd", kr),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codes.generic"));
     }
 
     @Test
@@ -120,7 +158,7 @@ public class CodeElementResourceTest {
         String codeElementUri = "sisaltaakoodisto1koodit";
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
         kr.setRelations(Arrays.asList("rinnastuu4kanssa1", "rinnastuu4kanssa2", "rinnastuu4kanssa3"));
-        assertResponse(this.removeRelations(codeElementUri, "RINNASTEINEN", kr), 200);
+        this.removeRelations(codeElementUri, "RINNASTEINEN", kr);
         assertTrue(service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).isEmpty());
     }
 
@@ -130,7 +168,7 @@ public class CodeElementResourceTest {
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
         kr.setRelations(Arrays.asList("lisaarinnasteinen14kanssa1", "lisaarinnasteinen14kanssa2", "lisaarinnasteinen14kanssa3"));
         assertEquals(0, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
-        assertResponse(this.addRelations(codeElementUri, "RINNASTEINEN", kr), 200);
+        this.addRelations(codeElementUri, "RINNASTEINEN", kr);
         assertEquals(3, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
     }
 
@@ -139,7 +177,7 @@ public class CodeElementResourceTest {
         String codeElementUri = "sisaltaakoodisto1koodit";
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
         kr.setRelations(Arrays.asList("sisaltyysuhde4kanssa1", "sisaltyysuhde4kanssa2"));
-        assertResponse(this.removeRelations(codeElementUri, "SISALTYY", kr), 200);
+        this.removeRelations(codeElementUri, "SISALTYY", kr);
         assertEquals(1, service.listByRelation(codeElementUri, 2, false, SuhteenTyyppi.SISALTYY).size());
     }
 
@@ -150,7 +188,7 @@ public class CodeElementResourceTest {
         kr.setRelations(Arrays.asList("lisaasisaltyy18kanssa1", "lisaasisaltyy18kanssa2"));
         kr.setChild(false);
         assertEquals(0, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.SISALTYY).size());
-        assertResponse(this.addRelations(codeElementUri, "SISALTYY", kr), 200);
+        this.addRelations(codeElementUri, "SISALTYY", kr);
         assertEquals(2, service.listByRelation(codeElementUri, 2, false, SuhteenTyyppi.SISALTYY).size());
     }
 
@@ -159,7 +197,7 @@ public class CodeElementResourceTest {
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
         kr.setRelations(Arrays.asList("sisaltyysuhde4kanssa1", "sisaltyysuhde4kanssa2", "sisaltyysuhde4kanssa3"));
         kr.setChild(true);
-        assertResponse(this.removeRelations("sisaltyykoodisto1koodienkanssa", "SISALTYY", kr), 200);
+        this.removeRelations("sisaltyykoodisto1koodienkanssa", "SISALTYY", kr);
         assertEquals(0, service.listByRelation("sisaltyysuhde4kanssa1", 2, false, SuhteenTyyppi.SISALTYY).size());
         assertEquals(1, service.listByRelation("sisaltyysuhde4kanssa1", 1, false, SuhteenTyyppi.SISALTYY).size());
         assertEquals(0, service.listByRelation("sisaltyysuhde4kanssa2", 2, false, SuhteenTyyppi.SISALTYY).size());
@@ -173,7 +211,7 @@ public class CodeElementResourceTest {
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
         kr.setRelations(Arrays.asList("lisaasisaltyy18kanssa3", "lisaasisaltyy18kanssa4"));
         kr.setChild(true);
-        assertResponse(this.addRelations("lisaasisaltyy18", "SISALTYY", kr), 200);
+        this.addRelations("lisaasisaltyy18", "SISALTYY", kr);
         assertEquals(1, service.listByRelation("lisaasisaltyy18kanssa3", 2, false, SuhteenTyyppi.SISALTYY).size());
         assertEquals(0, service.listByRelation("lisaasisaltyy18kanssa3", 1, false, SuhteenTyyppi.SISALTYY).size());
         assertEquals(1, service.listByRelation("lisaasisaltyy18kanssa4", 2, false, SuhteenTyyppi.SISALTYY).size());
@@ -186,7 +224,7 @@ public class CodeElementResourceTest {
         kr.setRelations(Arrays.asList("sisaltyysuhde9kanssa1", "sisaltyysuhde9kanssa2", "sisaltyysuhde9kanssa3"));
         kr.setChild(false);
         String codeElementUri = "sisaltaakoodisto6ja7ja8koodit";
-        assertResponse(this.removeRelations(codeElementUri, "SISALTYY", kr), 200);
+        this.removeRelations(codeElementUri, "SISALTYY", kr);
         assertEquals(1, service.listByRelation(codeElementUri, 2, false, SuhteenTyyppi.SISALTYY).size());
     }
 
@@ -196,32 +234,35 @@ public class CodeElementResourceTest {
         kr.setRelations(Arrays.asList("sisaltyysuhde9kanssa1", "sisaltyysuhde9kanssa2", "sisaltyysuhde9kanssa3"));
         kr.setChild(false);
         String codeElementUri = "sisaltaakoodisto6ja7ja8koodit";
-        assertResponse(this.removeRelations(codeElementUri, "SISALTYY", kr), 200);
+        this.removeRelations(codeElementUri, "SISALTYY", kr);
         assertEquals(1, service.listByRelation(codeElementUri, 2, false, SuhteenTyyppi.SISALTYY).size());
     }
 
     @Test
     public void testGetAllCodeElementVersionsByCodeElementUri() {
-        List<SimpleKoodiDto> response = (List<SimpleKoodiDto>) resource.getAllCodeElementVersionsByCodeElementUri("sisaltyysuhde4kanssa1").getEntity();
+        List<SimpleKoodiDto> response = resource.getAllCodeElementVersionsByCodeElementUri("sisaltyysuhde4kanssa1");
         assertNotNull(response);
         assertEquals(1, response.size());
         assertEquals("sisaltyysuhde4kanssa1", response.get(0).getKoodiUri());
 
-        List<SimpleKoodiDto> response2 = (List<SimpleKoodiDto>) resource.getAllCodeElementVersionsByCodeElementUri("montaversiota").getEntity();
+        List<SimpleKoodiDto> response2 = resource.getAllCodeElementVersionsByCodeElementUri("montaversiota");
         assertNotNull(response2);
         assertEquals(3, response2.size());
     }
 
     @Test
     public void testGetAllCodeElementVersionsByCodeElementUriInvalid() {
-        assertResponse(resource.getAllCodeElementVersionsByCodeElementUri("invaliduri"), 200);
-        assertResponse(resource.getAllCodeElementVersionsByCodeElementUri(""), 400);
-        assertResponse(resource.getAllCodeElementVersionsByCodeElementUri(null), 400);
+        List<SimpleKoodiDto> results = resource.getAllCodeElementVersionsByCodeElementUri("invaliduri");
+        assertTrue(results.isEmpty());
+        assertException(() -> resource.getAllCodeElementVersionsByCodeElementUri(""),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.getAllCodeElementVersionsByCodeElementUri(null),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
     }
 
     @Test
     public void testGetCodeElementByUriAndVersion() {
-        ExtendedKoodiDto response = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", 1).getEntity();
+        ExtendedKoodiDto response = resource.getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", 1);
         assertNotNull(response);
         assertEquals("ss4k1", response.getKoodiArvo());
         assertEquals("sisaltyysuhde4kanssa1", response.getKoodiUri());
@@ -232,17 +273,23 @@ public class CodeElementResourceTest {
 
     @Test
     public void testGetCodeElementByUriAndVersionInvalid() {
-        assertResponse(resource.getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", 0), 400);
-        assertResponse(resource.getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", -1), 400);
-        assertResponse(resource.getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", 9999), 500, "error.codeelement.not.found");
-        assertResponse(resource.getCodeElementByUriAndVersion("invaliduriisnotfound", 1), 500, "error.codeelement.not.found");
-        assertResponse(resource.getCodeElementByUriAndVersion("", 1), 400);
-        assertResponse(resource.getCodeElementByUriAndVersion(null, 1), 400);
+        assertException(() -> resource.getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", 0),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", -1),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", 9999),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR,"error.codeelement.not.found"));
+        assertException(() -> resource.getCodeElementByUriAndVersion("invaliduriisnotfound", 1),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR,"error.codeelement.not.found"));
+        assertException(() -> resource.getCodeElementByUriAndVersion("", 1),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.getCodeElementByUriAndVersion(null, 1),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
     }
 
     @Test
     public void testGetCodeElementByCodeElementUri() {
-        KoodiDto response = (KoodiDto) resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, "sisaltyysuhde4kanssa1").getEntity();
+        KoodiDto response = resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, "sisaltyysuhde4kanssa1");
         assertNotNull(response);
         assertEquals("ss4k1", response.getKoodiArvo());
         assertEquals("sisaltyysuhde4kanssa1", response.getKoodiUri());
@@ -253,41 +300,54 @@ public class CodeElementResourceTest {
 
     @Test
     public void testGetCodeElementByCodeElementUriInvalid() {
-        assertResponse(resource.getCodeElementByCodeElementUri("invalidcodeelementuri", 1, "sisaltyysuhde4kanssa1"), 500, "error.codes.not.found");
-        assertResponse(resource.getCodeElementByCodeElementUri("", 1, "sisaltyysuhde4kanssa1"), 400);
-        assertResponse(resource.getCodeElementByCodeElementUri(null, 1, "sisaltyysuhde4kanssa1"), 400);
+        assertException(() -> resource.getCodeElementByCodeElementUri("invalidcodeelementuri", 1, "sisaltyysuhde4kanssa1"),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codes.not.found"));
+        assertException(() -> resource.getCodeElementByCodeElementUri("", 1, "sisaltyysuhde4kanssa1"),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.getCodeElementByCodeElementUri(null, 1, "sisaltyysuhde4kanssa1"),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
 
-        assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 0, "sisaltyysuhde4kanssa1"), 400);
-        assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", -1, "sisaltyysuhde4kanssa1"), 400, "error.validation.codesversion");
-        assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 9999, "sisaltyysuhde4kanssa1"), 500);
+        assertException(() -> resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 0, "sisaltyysuhde4kanssa1"),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", -1, "sisaltyysuhde4kanssa1"),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesversion"));
+        assertException(() -> resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 9999, "sisaltyysuhde4kanssa1"),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR));
 
-        assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, "invalidcodesuri"), 500, "error.codeelement.not.found");
-        assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, ""), 400);
-        assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, null), 400);
+        assertException(() -> resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, "invalidcodesuri"),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
+        assertException(() -> resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, ""),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, null),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
     }
 
     @Test
     public void testGetAllCodeElementsByCodesUriAndVersion() {
-        List<SimpleKoodiDto> response = (List<SimpleKoodiDto>) resource.getAllCodeElementsByCodesUriAndVersion("lisaarinnasteinen2", 1).getEntity();
+        List<SimpleKoodiDto> response = resource.getAllCodeElementsByCodesUriAndVersion("lisaarinnasteinen2", 1);
         assertNotNull(response);
         assertEquals(3, response.size());
 
         // FIXME Tämä palauttaa ilmeisesti palauttaa jotain mutta miksi? Mikä olisi toivottu toiminnallisuus?
-        List<SimpleKoodiDto> response2 = (List<SimpleKoodiDto>) resource.getAllCodeElementsByCodesUriAndVersion("lisaasisaltyy3", 0).getEntity();
+        List<SimpleKoodiDto> response2 = resource.getAllCodeElementsByCodesUriAndVersion("lisaasisaltyy3", 0);
         assertNotNull(response2);
     }
 
     @Test
     public void testGetAllCodeElementsByCodesUriAndVersionInvalid() {
-        assertResponse(resource.getAllCodeElementsByCodesUriAndVersion("lisaarinnasteinen2", -1), 400);
-        assertResponse(resource.getAllCodeElementsByCodesUriAndVersion("", 1), 400);
-        assertResponse(resource.getAllCodeElementsByCodesUriAndVersion("uridoesnotexist", 1), 500, "error.codes.not.found");
-        assertResponse(resource.getAllCodeElementsByCodesUriAndVersion(null, 1), 400);
+        assertException(() -> resource.getAllCodeElementsByCodesUriAndVersion("lisaarinnasteinen2", -1),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.getAllCodeElementsByCodesUriAndVersion("", 1),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.getAllCodeElementsByCodesUriAndVersion("uridoesnotexist", 1),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codes.not.found"));
+        assertException(() -> resource.getAllCodeElementsByCodesUriAndVersion(null, 1),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
     }
 
     @Test
     public void testGetLatestCodeElementVersionsByCodeElementUri() {
-        KoodiDto response = (KoodiDto) resource.getLatestCodeElementVersionsByCodeElementUri("montaversiota").getEntity();
+        KoodiDto response = resource.getLatestCodeElementVersionsByCodeElementUri("montaversiota");
         assertEquals(3, response.getVersio());
         assertEquals("mv3", response.getKoodiArvo());
         assertEquals("montaversiota", response.getKoodiUri());
@@ -298,18 +358,21 @@ public class CodeElementResourceTest {
 
     @Test
     public void testGetLatestCodeElementVersionsByCodeElementUriInvalid() {
-        assertResponse(resource.getLatestCodeElementVersionsByCodeElementUri("eioleolemassa"), 500, "error.codeelement.not.found");
-        assertResponse(resource.getLatestCodeElementVersionsByCodeElementUri(""), 400);
-        assertResponse(resource.getLatestCodeElementVersionsByCodeElementUri(null), 400);
+        assertException(() -> resource.getLatestCodeElementVersionsByCodeElementUri("eioleolemassa"),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
+        assertException(() -> resource.getLatestCodeElementVersionsByCodeElementUri(""),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.getLatestCodeElementVersionsByCodeElementUri(null),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
     }
 
     @Test
     public void testInsert() {
         KoodiDto validDto = createValidCodeElementDto("value", "Nimi", 3);
 
-        assertResponse(resource.insert("inserttestkoodisto", validDto), 201);
+        resource.insert("inserttestkoodisto", validDto);
 
-        KoodiDto newdto = (KoodiDto) resource.getCodeElementByCodeElementUri("inserttestkoodisto", 1, "inserttestkoodisto_value").getEntity();
+        KoodiDto newdto = resource.getCodeElementByCodeElementUri("inserttestkoodisto", 1, "inserttestkoodisto_value");
         assertEquals("value", newdto.getKoodiArvo());
 
         KoodiDto validDto2 = createValidCodeElementDto("value2", "Nimi2", 3);
@@ -321,103 +384,119 @@ public class CodeElementResourceTest {
         Date voimassaLoppuPvm = calendar.getTime();
         validDto2.setVoimassaLoppuPvm(voimassaLoppuPvm);
 
-        assertResponse(resource.insert("inserttestkoodisto", validDto2), 201);
+        resource.insert("inserttestkoodisto", validDto2);
 
-        KoodiDto newDto2 = (KoodiDto) resource.getCodeElementByCodeElementUri("inserttestkoodisto", 1, "inserttestkoodisto_value2").getEntity();
+        KoodiDto newDto2 = resource.getCodeElementByCodeElementUri("inserttestkoodisto", 1, "inserttestkoodisto_value2");
         assertEquals("value2", newDto2.getKoodiArvo());
         assertDatesEquals(voimassaLoppuPvm, newDto2.getVoimassaLoppuPvm());
     }
 
     @Test
-    public void testInsertInvalid() {
+    public void testInsertInvalid() { // TODO: parametrisoitu testi!
         KoodiDto validDto = createValidCodeElementDto("newdtouri", "Name", 3);
-        assertResponse(resource.insert(null, validDto), 400, "error.validation.codesuri");
-        assertResponse(resource.insert("", validDto), 400, "error.validation.codesuri");
-        assertResponse(resource.insert("totallyInvalidKoodistoUri", validDto), 500, "error.codes.not.found");
+        assertException(() -> resource.insert(null, validDto),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesuri"));
+        assertException(() -> resource.insert("", validDto),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.validation.codesuri"));
+        assertException(() -> resource.insert("totallyInvalidKoodistoUri", validDto),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codes.not.found"));
 
-        assertResponse(resource.insert("lisaasisaltyy3", null), 400, "error.validation.codeelement");
-        assertResponse(resource.insert("lisaasisaltyy3", new KoodiDto()), 400, "error.validation.value");
+        assertException(() -> resource.insert("lisaasisaltyy3", null),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelement"));
+        assertException(() -> resource.insert("lisaasisaltyy3", new KoodiDto()),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.value"));
 
-        KoodiDto invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
+        final KoodiDto invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
         invalidDto.setKoodiArvo("");
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400, "error.validation.value");
+        assertException(() -> resource.insert("lisaasisaltyy3", invalidDto),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.value"));
 
-        invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
-        invalidDto.setKoodiArvo(null);
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400, "error.validation.value");
+        final KoodiDto invalidDto2 = createValidCodeElementDto("newdtouri", "Name", 3);
+        invalidDto2.setKoodiArvo(null);
+        assertException(() -> resource.insert("lisaasisaltyy3", invalidDto2),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.value"));
 
-        invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
-        invalidDto.setMetadata(null);
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400, "error.validation.metadata");
+        final KoodiDto invalidDto3 = createValidCodeElementDto("newdtouri", "Name", 3);
+        invalidDto3.setMetadata(null);
+        assertException(() -> resource.insert("lisaasisaltyy3", invalidDto3),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.metadata"));
 
-        invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
-        ArrayList<KoodiMetadata> metadatas = new ArrayList<KoodiMetadata>();
-        invalidDto.setMetadata(metadatas);
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400, "error.validation.metadata");
+        final KoodiDto invalidDto4 = createValidCodeElementDto("newdtouri", "Name", 3);
+        ArrayList<KoodiMetadata> metadatas = new ArrayList<>();
+        invalidDto4.setMetadata(metadatas);
+        assertException(() -> resource.insert("lisaasisaltyy3", invalidDto4),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.metadata"));
 
-        invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
+        final KoodiDto invalidDto5 = createValidCodeElementDto("newdtouri", "Name", 3);
         invalidDto.setVoimassaLoppuPvm(new Date(0L));
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400, "error.validation.enddate");
+        assertException(() -> resource.insert("lisaasisaltyy3", invalidDto5),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.enddate"));
 
-        invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
+        final KoodiDto invalidDto6 = createValidCodeElementDto("newdtouri", "Name", 3);
         KoodiMetadata invalidMd = new KoodiMetadata();
         invalidMd.setKieli(Kieli.FI);
         invalidMd.setNimi(""); // Invalid
         invalidMd.setLyhytNimi("Name");
         invalidMd.setKuvaus("Kuvaus");
         metadatas.add(invalidMd);
-        invalidDto.setMetadata(metadatas);
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400);
+        invalidDto6.setMetadata(metadatas);
+        assertException(() -> resource.insert("lisaasisaltyy3", invalidDto6),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
 
-        invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
+        final KoodiDto invalidDto7 = createValidCodeElementDto("newdtouri", "Name", 3);
         invalidMd = new KoodiMetadata();
         invalidMd.setKieli(Kieli.FI);
         invalidMd.setNimi(null); // Invalid
         invalidMd.setLyhytNimi("Name");
         invalidMd.setKuvaus("Kuvaus");
         metadatas.add(invalidMd);
-        invalidDto.setMetadata(metadatas);
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400);
+        invalidDto7.setMetadata(metadatas);
+        assertException(() -> resource.insert("lisaasisaltyy3", invalidDto7),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
 
-        invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
+        final KoodiDto invalidDto8 = createValidCodeElementDto("newdtouri", "Name", 3);
         invalidMd = new KoodiMetadata();
         invalidMd.setKieli(Kieli.FI);
         invalidMd.setNimi("Name");
         invalidMd.setLyhytNimi(""); // Invalid
         invalidMd.setKuvaus("Kuvaus");
         metadatas.add(invalidMd);
-        invalidDto.setMetadata(metadatas);
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400);
+        invalidDto8.setMetadata(metadatas);
+        assertException(() -> resource.insert("lisaasisaltyy3", invalidDto8),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
 
-        invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
+        final KoodiDto invalidDto9 = createValidCodeElementDto("newdtouri", "Name", 3);
         invalidMd = new KoodiMetadata();
         invalidMd.setKieli(Kieli.FI);
         invalidMd.setNimi("Name");
         invalidMd.setLyhytNimi(null); // Invalid
         invalidMd.setKuvaus("Kuvaus");
         metadatas.add(invalidMd);
-        invalidDto.setMetadata(metadatas);
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400);
+        invalidDto9.setMetadata(metadatas);
+        assertException(() -> resource.insert("lisaasisaltyy3", invalidDto9),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
 
-        invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
+        final KoodiDto invalidDto10 = createValidCodeElementDto("newdtouri", "Name", 3);
         invalidMd = new KoodiMetadata();
         invalidMd.setKieli(Kieli.FI);
         invalidMd.setNimi("Name");
         invalidMd.setLyhytNimi("Name");
         invalidMd.setKuvaus(""); // Invalid
         metadatas.add(invalidMd);
-        invalidDto.setMetadata(metadatas);
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400);
+        invalidDto10.setMetadata(metadatas);
+        assertException(() -> resource.insert("lisaasisaltyy3", invalidDto10),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
 
-        invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
+        final KoodiDto invalidDto11 = createValidCodeElementDto("newdtouri", "Name", 3);
         invalidMd = new KoodiMetadata();
         invalidMd.setKieli(Kieli.FI);
         invalidMd.setNimi("Name");
         invalidMd.setLyhytNimi("Name");
         invalidMd.setKuvaus(null); // Invalid
         metadatas.add(invalidMd);
-        invalidDto.setMetadata(metadatas);
-        assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400);
+        invalidDto11.setMetadata(metadatas);
+        assertException(() -> resource.insert("lisaasisaltyy3", invalidDto11),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
 
     }
 
@@ -425,54 +504,74 @@ public class CodeElementResourceTest {
     public void testAddRelation() {
         String codeElementUri = "lisaarinnasteinen14";
         assertEquals(0, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
-        assertResponse(resource.addRelation(codeElementUri, "lisaarinnasteinen14kanssa1", "RINNASTEINEN"), 200);
+        resource.addRelation(codeElementUri, "lisaarinnasteinen14kanssa1", "RINNASTEINEN");
         assertEquals(1, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
 
         String codeElementUri2 = "lisaasisaltyy18";
         assertEquals(0, service.listByRelation(codeElementUri2, 1, false, SuhteenTyyppi.SISALTYY).size());
-        assertResponse(resource.addRelation(codeElementUri2, "lisaasisaltyy18kanssa1", "SISALTYY"), 200);
+        resource.addRelation(codeElementUri2, "lisaasisaltyy18kanssa1", "SISALTYY");
         assertEquals(1, service.listByRelation(codeElementUri2, 2, false, SuhteenTyyppi.SISALTYY).size());
     }
 
     @Test
     public void testAddRelationInvalid() {
-        String codeElementUri = "lisaarinnasteinen14";
-        String codeElementUriToAdd = "lisaarinnasteinen14kanssa1";
-        String codeElementUriToAddWithoutCodesRelation = "sisaltyysuhde4kanssa1";
-        String relationType = "RINNASTEINEN";
-        assertResponse(resource.addRelation("", codeElementUriToAdd, relationType), 400, "error.validation.codeelementuri");
-        assertResponse(resource.addRelation(null, codeElementUriToAdd, relationType), 400, "error.validation.codeelementuri");
-        assertResponse(resource.addRelation(codeElementUri, "", relationType), 400, "error.validation.codeelementuritoadd");
-        assertResponse(resource.addRelation(codeElementUri, null, relationType), 400, "error.validation.codeelementuritoadd");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, ""), 400, "error.validation.relationtype");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, null), 400, "error.validation.relationtype");
+        final String codeElementUri = "lisaarinnasteinen14";
+        final String codeElementUriToAdd = "lisaarinnasteinen14kanssa1";
+        final String codeElementUriToAddWithoutCodesRelation = "sisaltyysuhde4kanssa1";
+        final String relationType = "RINNASTEINEN";
+        assertException(() -> resource.addRelation("", codeElementUriToAdd, relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuri"));
+        assertException(() -> resource.addRelation(null, codeElementUriToAdd, relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuri"));
+        assertException(() -> resource.addRelation(codeElementUri, "", relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuritoadd"));
+        assertException(() -> resource.addRelation(codeElementUri, null, relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuritoadd"));
+        assertException(() -> resource.addRelation(codeElementUri, codeElementUriToAdd, ""),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.relationtype"));
+        assertException(() -> resource.addRelation(codeElementUri, codeElementUriToAdd, null),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.relationtype"));
 
-        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, "doenostexist"), 500, "error.codes.generic");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUri, relationType), 500, "error.codeelement.relation.to.self");
-        assertResponse(resource.addRelation("doenotexist", codeElementUriToAdd, relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.addRelation(codeElementUri, "doesnotexist", relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAddWithoutCodesRelation, relationType), 500,
-                "error.codeelement.codes.have.no.relation");
+        assertException(() -> resource.addRelation(codeElementUri, codeElementUriToAdd, "doenostexist"),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codes.generic"));
+        assertException(() -> resource.addRelation(codeElementUri, codeElementUri, relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR,"error.codeelement.relation.to.self"));
+        assertException(() -> resource.addRelation("doenotexist", codeElementUriToAdd, relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
+        assertException(() -> resource.addRelation(codeElementUri, "doesnotexist", relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
+        assertException(() -> resource.addRelation(codeElementUri, codeElementUriToAddWithoutCodesRelation, relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR,"error.codeelement.codes.have.no.relation"));
 
         assertEquals(0, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
 
-        codeElementUri = "lisaasisaltyy18";
-        codeElementUriToAdd = "lisaasisaltyy18kanssa1";
-        codeElementUriToAddWithoutCodesRelation = "sisaltyysuhde4kanssa1";
-        relationType = "SISALTYY";
-        assertResponse(resource.addRelation("", codeElementUriToAdd, relationType), 400, "error.validation.codeelementuri");
-        assertResponse(resource.addRelation(null, codeElementUriToAdd, relationType), 400, "error.validation.codeelementuri");
-        assertResponse(resource.addRelation(codeElementUri, "", relationType), 400, "error.validation.codeelementuritoadd");
-        assertResponse(resource.addRelation(codeElementUri, null, relationType), 400, "error.validation.codeelementuritoadd");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, ""), 400, "error.validation.relationtype");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, null), 400, "error.validation.relationtype");
+        final String codeElementUri2 = "lisaasisaltyy18";
+        final String codeElementUriToAdd2 = "lisaasisaltyy18kanssa1";
+        final String codeElementUriToAddWithoutCodesRelation2 = "sisaltyysuhde4kanssa1";
+        final String relationType2 = "SISALTYY";
+        assertException(() -> resource.addRelation("", codeElementUriToAdd2, relationType2),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
+        assertException(() -> resource.addRelation(null, codeElementUriToAdd2, relationType2),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuri"));
+        assertException(() -> resource.addRelation(codeElementUri2, "", relationType2),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuritoadd"));
+        assertException(() -> resource.addRelation(codeElementUri2, null, relationType2),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.codeelementuritoadd"));
+        assertException(() -> resource.addRelation(codeElementUri2, codeElementUriToAdd2, ""),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.relationtype"));
+        assertException(() -> resource.addRelation(codeElementUri2, codeElementUriToAdd2, null),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST,"error.validation.relationtype"));
 
-        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, "doenostexist"), 500, "error.codes.generic");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUri, relationType), 500, "error.codeelement.relation.to.self");
-        assertResponse(resource.addRelation("doenotexist", codeElementUriToAdd, relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.addRelation(codeElementUri, "doesnotexist", relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAddWithoutCodesRelation, relationType), 500,
-                "error.codeelement.codes.have.no.relation");
+        assertException(() -> resource.addRelation(codeElementUri2, codeElementUriToAdd2, "doenostexist"),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codes.generic"));
+        assertException(() -> resource.addRelation(codeElementUri2, codeElementUri2, relationType2),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.relation.to.self"));
+        assertException(() -> resource.addRelation("doenotexist", codeElementUriToAdd2, relationType2),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
+        assertException(() -> resource.addRelation(codeElementUri2, "doesnotexist", relationType2),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
+        assertException(() -> resource.addRelation(codeElementUri2, codeElementUriToAddWithoutCodesRelation2, relationType2),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.codes.have.no.relation"));
 
         assertEquals(0, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.SISALTYY).size());
     }
@@ -483,7 +582,7 @@ public class CodeElementResourceTest {
         String codeElementUriToAdd = "lisaasisaltyy18kanssa2";
         String relationType = "SISALTYY";
 
-        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, relationType), 200);
+        resource.addRelation(codeElementUri, codeElementUriToAdd, relationType);
 
     }
 
@@ -493,7 +592,7 @@ public class CodeElementResourceTest {
         String nimi = "uusinimi";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
         assertEquals(1, codeElementToBeSaved.getIncludesCodeElements().size());
         assertEquals("samankoodistonsisalla1", codeElementToBeSaved.getIncludesCodeElements().get(0).codeElementUri);
         assertEquals(1, codeElementToBeSaved.getWithinCodeElements().size());
@@ -504,9 +603,9 @@ public class CodeElementResourceTest {
         codeElementToBeSaved.getWithinCodeElements().clear();
         codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusisamankoodistonsisalla1", 1, false));
         codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisamankoodistonsisalla2", 1, false));
-        assertResponse(resource.save(codeElementToBeSaved), 200);
+        resource.save(codeElementToBeSaved);
 
-        ExtendedKoodiDto codeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
+        ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio + 1);
         assertEquals(nimi, codeElement.getMetadata().get(0).getNimi());
         assertEquals(2, codeElement.getIncludesCodeElements().size());
         for (RelationCodeElement relation : codeElement.getIncludesCodeElements()) {
@@ -545,9 +644,9 @@ public class CodeElementResourceTest {
 
     @Test
     public void testRemoveRelationInvalid() {
-        String codeElementUri = "sisaltaakoodisto1koodit";
-        String codeElementUriToRemove = "rinnastuu4kanssa1";
-        String relationType = "RINNASTEINEN";
+        final String codeElementUri = "sisaltaakoodisto1koodit";
+        final String codeElementUriToRemove = "rinnastuu4kanssa1";
+        final String relationType = "RINNASTEINEN";
         resource.removeRelation("", codeElementUriToRemove, relationType);
         resource.removeRelation(null, codeElementUriToRemove, relationType);
         resource.removeRelation(codeElementUri, "", relationType);
@@ -556,24 +655,28 @@ public class CodeElementResourceTest {
         resource.removeRelation(codeElementUri, codeElementUriToRemove, null);
         resource.removeRelation(codeElementUri, codeElementUriToRemove, "doenostexist");
 
-        assertResponse(resource.removeRelation("doenotexist", codeElementUriToRemove, relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.removeRelation(codeElementUri, "doesnotexist", relationType), 500, "error.codeelement.relation.list.empty");
+        assertException(() -> resource.removeRelation("doenotexist", codeElementUriToRemove, relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
+        assertException(() -> resource.removeRelation(codeElementUri, "doesnotexist", relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.relation.list.empty"));
 
         assertEquals(3, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
 
-        codeElementUri = "sisaltaakoodisto1koodit";
-        codeElementUriToRemove = "sisaltyysuhde4kanssa1";
-        relationType = "SISALTYY";
-        resource.removeRelation("", codeElementUriToRemove, relationType);
-        resource.removeRelation(null, codeElementUriToRemove, relationType);
-        resource.removeRelation(codeElementUri, "", relationType);
-        resource.removeRelation(codeElementUri, null, relationType);
-        resource.removeRelation(codeElementUri, codeElementUriToRemove, "");
-        resource.removeRelation(codeElementUri, codeElementUriToRemove, null);
-        resource.removeRelation(codeElementUri, codeElementUriToRemove, "doenostexist");
+        final String codeElementUri2 = "sisaltaakoodisto1koodit";
+        final String codeElementUriToRemove2 = "sisaltyysuhde4kanssa1";
+        final String relationType2 = "SISALTYY";
+        resource.removeRelation("", codeElementUriToRemove2, relationType2);
+        resource.removeRelation(null, codeElementUriToRemove2, relationType2);
+        resource.removeRelation(codeElementUri2, "", relationType2);
+        resource.removeRelation(codeElementUri2, null, relationType2);
+        resource.removeRelation(codeElementUri2, codeElementUriToRemove2, "");
+        resource.removeRelation(codeElementUri2, codeElementUriToRemove2, null);
+        resource.removeRelation(codeElementUri2, codeElementUriToRemove2, "doenostexist");
 
-        assertResponse(resource.removeRelation("doenotexist", codeElementUriToRemove, relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.removeRelation(codeElementUri, "doesnotexist", relationType), 500, "error.codeelement.relation.list.empty");
+        assertException(() -> resource.removeRelation("doenotexist", codeElementUriToRemove, relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
+        assertException(() -> resource.removeRelation(codeElementUri, "doesnotexist", relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.relation.list.empty"));
 
         assertEquals(3, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.SISALTYY).size());
     }
@@ -583,37 +686,44 @@ public class CodeElementResourceTest {
         String codeElementUri = "tuhottavatestikoodi";
         int codeElementVersion = 1;
         assertNotNull(resource.getCodeElementByUriAndVersion(codeElementUri, codeElementVersion));
-        assertResponse(resource.delete(codeElementUri, codeElementVersion), 202);
-        assertResponse(resource.getCodeElementByUriAndVersion(codeElementUri, codeElementVersion), 500, "error.codeelement.not.found");
+        resource.delete(codeElementUri, codeElementVersion);
+        assertException(() -> resource.getCodeElementByUriAndVersion(codeElementUri, codeElementVersion),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
     }
 
     @Test
     public void testDeleteInvalid() {
-        assertResponse(resource.delete("tuhottavatestikoodi", 0), 400);
-        assertResponse(resource.delete("tuhottavatestikoodi", -1), 400);
-        assertResponse(resource.delete("", 1), 400);
-        assertResponse(resource.delete(null, 1), 400);
-        assertResponse(resource.delete("thisisnotexistinguri", 1), 500, "error.codeelement.not.found");
-        assertResponse(resource.delete("sisaltaakoodisto1koodit", 1), 500, "error.codeelement.not.passive");
+        assertException(() -> resource.delete("tuhottavatestikoodi", 0),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.delete("tuhottavatestikoodi", -1),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.delete("", 1),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.delete(null, 1),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+        assertException(() -> resource.delete("thisisnotexistinguri", 1),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
+        assertException(() -> resource.delete("sisaltaakoodisto1koodit", 1),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.passive"));
 
         assertNotNull(resource.getCodeElementByUriAndVersion("tuhottavatestikoodi", 1));
     }
 
     @Test
     public void testUpdate() {
-        KoodiDto original = (KoodiDto) resource.getCodeElementByCodeElementUri("updatetestkoodisto", 1, "paivitettavatestikoodi").getEntity();
+        KoodiDto original = resource.getCodeElementByCodeElementUri("updatetestkoodisto", 1, "paivitettavatestikoodi");
         assertNotNull(original);
         assertEquals(1, original.getMetadata().size());
 
-        List<KoodiMetadata> koodiMetadata = new ArrayList<KoodiMetadata>();
+        List<KoodiMetadata> koodiMetadata = new ArrayList<>();
         KoodiMetadata o1 = original.getMetadata().get(0);
         o1.setNimi("Modified Name");
         koodiMetadata.add(o1);
         original.setMetadata(koodiMetadata);
 
-        assertResponse(resource.update(original), 201);
+        resource.update(original);
 
-        KoodiDto updated = (KoodiDto) resource.getCodeElementByCodeElementUri("updatetestkoodisto", 2, "paivitettavatestikoodi").getEntity();
+        KoodiDto updated = resource.getCodeElementByCodeElementUri("updatetestkoodisto", 2, "paivitettavatestikoodi");
         assertNotNull(updated);
         assertEquals(1, updated.getMetadata().size());
         assertEquals("Modified Name", updated.getMetadata().get(0).getNimi());
@@ -622,13 +732,14 @@ public class CodeElementResourceTest {
 
     @Test
     public void testUpdateInvalid() {
-        assertResponse(resource.update(null), 400);
+        assertException(() -> resource.update(null),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
         // TODO Make better test
     }
 
     @Test
     public void returnsChangesForCodeElement() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("montaversiota", 1, false).getEntity();
+        KoodiChangesDto dto = resource.getChangesToCodeElement("montaversiota", 1, false);
         assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
         assertEquals("Monta versiota 3", dto.muuttuneetTiedot.get(0).nimi);
         assertNull(dto.voimassaAlkuPvm);
@@ -637,7 +748,7 @@ public class CodeElementResourceTest {
 
     @Test
     public void returnsNoChangesForCodeElement() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("montaversiota", 3, false).getEntity();
+        KoodiChangesDto dto = resource.getChangesToCodeElement("montaversiota", 3, false);
         assertEquals(MuutosTila.EI_MUUTOKSIA, dto.muutosTila);
         assertTrue(dto.muuttuneetTiedot.isEmpty());
         assertEquals(3, dto.viimeisinVersio.intValue());
@@ -645,35 +756,35 @@ public class CodeElementResourceTest {
 
     @Test
     public void comparesAgainstLatestAcceptedCodeElementVersion() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("viimeinenonluonnos", 1, true).getEntity();
+        KoodiChangesDto dto = resource.getChangesToCodeElement("viimeinenonluonnos", 1, true);
         assertEquals(2, dto.viimeisinVersio.intValue());
         assertNull(dto.tila);
     }
 
     @Test
     public void comparesAgainstLatestCodeElementVersion() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElement("viimeinenonluonnos", 1, false).getEntity();
+        KoodiChangesDto dto = resource.getChangesToCodeElement("viimeinenonluonnos", 1, false);
         assertEquals(3, dto.viimeisinVersio.intValue());
         assertEquals(Tila.LUONNOS, dto.tila);
     }
 
     @Test
     public void comparesAgainstLatestAcceptedCodeElementVersionUsingDate() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("viimeinenonluonnos", 12, 1, 2000, 0, 0, 0, true).getEntity();
+        KoodiChangesDto dto = resource.getChangesToCodeElementWithDate("viimeinenonluonnos", 12, 1, 2000, 0, 0, 0, true);
         assertEquals(2, dto.viimeisinVersio.intValue());
         assertNull(dto.tila);
     }
 
     @Test
     public void comparesAgainstLatestCodeElementVersionUsingDate() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("viimeinenonluonnos", 12, 12, 2000, 0, 0, 0, false).getEntity();
+        KoodiChangesDto dto = resource.getChangesToCodeElementWithDate("viimeinenonluonnos", 12, 12, 2000, 0, 0, 0, false);
         assertEquals(3, dto.viimeisinVersio.intValue());
         assertEquals(Tila.LUONNOS, dto.tila);
     }
 
     @Test
     public void returnsChangesForCodeElementUsingDateFromPast() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 2000, 0, 0, 0, false).getEntity();
+        KoodiChangesDto dto = resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 2000, 0, 0, 0, false);
         assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
         assertEquals("Monta versiota 3", dto.muuttuneetTiedot.get(0).nimi);
         assertNull(dto.voimassaAlkuPvm);
@@ -682,7 +793,7 @@ public class CodeElementResourceTest {
 
     @Test
     public void returnsNoChangesForCodeElementUsingDateFromFuture() {
-        KoodiChangesDto dto = (KoodiChangesDto) resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 0, 0, 0, false).getEntity();
+        KoodiChangesDto dto = resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 0, 0, 0, false);
         assertEquals(MuutosTila.EI_MUUTOKSIA, dto.muutosTila);
         assertTrue(dto.muuttuneetTiedot.isEmpty());
         assertEquals(3, dto.viimeisinVersio.intValue());
@@ -690,22 +801,33 @@ public class CodeElementResourceTest {
 
     @Test
     public void returnsCodeElementHasBeenRemovedWhenItIsNotFoundInLatestCodesVersion() {
-        assertEquals(MuutosTila.POISTETTU, ((KoodiChangesDto) resource.getChangesToCodeElement("poistettu", 1, false).getEntity()).muutosTila);
+        assertEquals(MuutosTila.POISTETTU, resource.getChangesToCodeElement("poistettu", 1, false).muutosTila);
     }
 
     @Test
     public void returnsBadRequestWhenVersionNumberIsZeroForQueryingCodeElementChanges() {
-        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), resource.getChangesToCodeElement("poistettu", 0, false).getStatus());
+        assertException(() -> resource.getChangesToCodeElement("poistettu", 0, false),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
     }
 
     @Test
     public void returnsBadRequestForBadDateParametersWhenQueryingCodeElementChanges() {
-        int badRequest = Response.Status.BAD_REQUEST.getStatusCode();
-        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 0, 0, -1, false).getStatus());
-        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 0, -1, 0, false).getStatus());
-        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 1, 4000, 25, 0, 0, false).getStatus());
-        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 32, 1, 4000, 0, 0, 0, false).getStatus());
-        assertEquals(badRequest, resource.getChangesToCodeElementWithDate("montaversiota", 12, 15, 4000, 0, 0, 0, true).getStatus());
+        ResponseStatusExceptionMatcher matcher = new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST);
+        assertException(() -> resource.getChangesToCodeElementWithDate(
+                "montaversiota", 12, 1, 4000, 0, 0, -1, false),
+                matcher);
+        assertException(() -> resource.getChangesToCodeElementWithDate(
+                "montaversiota", 12, 1, 4000, 0, -1, 0, false),
+                matcher);
+        assertException(() -> resource.getChangesToCodeElementWithDate(
+                "montaversiota", 12, 1, 4000, 25, 0, 0, false),
+                matcher);
+        assertException(() -> resource.getChangesToCodeElementWithDate(
+                "montaversiota", 32, 1, 4000, 0, 0, 0, false),
+                matcher);
+        assertException(() -> resource.getChangesToCodeElementWithDate(
+                "montaversiota", 12, 15, 4000, 0, 0, 0, true),
+                matcher);
     }
 
     @Test
@@ -714,14 +836,14 @@ public class CodeElementResourceTest {
         String nimi = "uusinimi";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
         assertEquals(Tila.HYVAKSYTTY, codeElementToBeSaved.getTila());
-        assertFalse(nimi.equals(codeElementToBeSaved.getMetadata().get(0).getNimi()));
+        assertNotEquals(nimi, codeElementToBeSaved.getMetadata().get(0).getNimi());
 
         codeElementToBeSaved.getMetadata().get(0).setNimi(nimi);
-        assertResponse(resource.save(codeElementToBeSaved), 200);
+        resource.save(codeElementToBeSaved);
 
-        ExtendedKoodiDto codes = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
+        ExtendedKoodiDto codes = resource.getCodeElementByUriAndVersion(koodiUri, versio + 1);
         assertEquals(Tila.LUONNOS, codes.getTila());
         assertEquals(nimi, codes.getMetadata().get(0).getNimi());
     }
@@ -732,7 +854,7 @@ public class CodeElementResourceTest {
         String nimi = "uusinimi";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
         assertEquals(1, codeElementToBeSaved.getIncludesCodeElements().size());
         assertEquals(2, codeElementToBeSaved.getLevelsWithCodeElements().size());
         assertEquals(1, codeElementToBeSaved.getWithinCodeElements().size());
@@ -741,9 +863,9 @@ public class CodeElementResourceTest {
         codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde1", 1, false));
         codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde2", 1, false));
         codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde3", 1, false));
-        assertResponse(resource.save(codeElementToBeSaved), 200);
+        resource.save(codeElementToBeSaved);
 
-        ExtendedKoodiDto codeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
+        ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio + 1);
         assertEquals(2, codeElement.getIncludesCodeElements().size());
         assertEquals(3, codeElement.getLevelsWithCodeElements().size());
         assertEquals(3, codeElement.getWithinCodeElements().size());
@@ -754,12 +876,12 @@ public class CodeElementResourceTest {
         String koodiUri = "savekoodineljallasuhteella";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
 
         codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde1", 1, false));
-        assertResponse(resource.save(codeElementToBeSaved), 200);
+        resource.save(codeElementToBeSaved);
 
-        ExtendedKoodiDto codeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
+        ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio + 1);
         assertEquals(2, codeElement.getIncludesCodeElements().size());
         assertEquals(1, codeElement.getWithinCodeElements().size());
         assertEquals(2, codeElement.getLevelsWithCodeElements().size());
@@ -770,12 +892,12 @@ public class CodeElementResourceTest {
         String koodiUri = "savekoodineljallasuhteella";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
 
         codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde3", 1, false));
-        assertResponse(resource.save(codeElementToBeSaved), 200);
+        resource.save(codeElementToBeSaved);
 
-        ExtendedKoodiDto codeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
+        ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio);
         assertEquals(1, codeElement.getIncludesCodeElements().size());
         assertEquals(3, codeElement.getWithinCodeElements().size()); // Parentcodes versions, so the old relation is duplicated.
         assertEquals(2, codeElement.getLevelsWithCodeElements().size());
@@ -786,12 +908,12 @@ public class CodeElementResourceTest {
         String koodiUri = "savekoodineljallasuhteella";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
 
         codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde2", 1, false));
-        assertResponse(resource.save(codeElementToBeSaved), 200);
+        resource.save(codeElementToBeSaved);
 
-        ExtendedKoodiDto codeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
+        ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio);
         assertEquals(1, codeElement.getIncludesCodeElements().size());
         assertEquals(1, codeElement.getWithinCodeElements().size());
         assertEquals(3, codeElement.getLevelsWithCodeElements().size());
@@ -802,7 +924,7 @@ public class CodeElementResourceTest {
         String koodiUri = "savekoodineljallasuhteella";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
         assertEquals(1, codeElementToBeSaved.getIncludesCodeElements().size());
         assertEquals(2, codeElementToBeSaved.getLevelsWithCodeElements().size());
         assertEquals(1, codeElementToBeSaved.getWithinCodeElements().size());
@@ -813,11 +935,11 @@ public class CodeElementResourceTest {
         codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde1", 1, false));
         codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde2", 1, false));
         codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde3", 1, false));
-        ExtendedKoodiDto oldCodeElementBeforeSave = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
-        assertResponse(resource.save(codeElementToBeSaved), 200);
+        ExtendedKoodiDto oldCodeElementBeforeSave = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        resource.save(codeElementToBeSaved);
 
-        ExtendedKoodiDto oldCodeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
-        ExtendedKoodiDto newCodeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
+        ExtendedKoodiDto oldCodeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        ExtendedKoodiDto newCodeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio + 1);
         
         assertThat(oldCodeElementBeforeSave.getIncludesCodeElements())
                 .extracting(RelationCodeElement::getCodeElementUri)
@@ -855,16 +977,16 @@ public class CodeElementResourceTest {
         String koodiUri = "uusirelaatiovanhantilalle1";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
+        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
         assertEquals(1, codeElementToBeSaved.getIncludesCodeElements().size());
         assertTrue(codeElementToBeSaved.getIncludesCodeElements().get(0).passive);
         assertEquals(0, codeElementToBeSaved.getLevelsWithCodeElements().size());
         assertEquals(0, codeElementToBeSaved.getWithinCodeElements().size());
 
         codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusirelaatiovanhantilalle2", 1, false));
-        assertResponse(resource.save(codeElementToBeSaved), 200);
+        resource.save(codeElementToBeSaved);
 
-        ExtendedKoodiDto codeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
+        ExtendedKoodiDto codeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio + 1);
         assertEquals(1, codeElement.getIncludesCodeElements().size());
         assertEquals(0, codeElement.getLevelsWithCodeElements().size());
         assertEquals(0, codeElement.getWithinCodeElements().size());
@@ -876,25 +998,16 @@ public class CodeElementResourceTest {
     // UTILITIES
     // /////////
 
-    private void assertResponse(Response response, int expectedStatus) {
-        assertEquals(expectedStatus, response.getStatus());
-    }
-
-    private void assertResponse(Response response, int expectedStatus, Object expectedEntity) {
-        assertResponse(response, expectedStatus);
-        assertEquals(expectedEntity, response.getEntity());
-    }
-
-    private Response addRelations(String codeElementUri, String st, KoodiRelaatioListaDto kr) {
+    private void addRelations(String codeElementUri, String st, KoodiRelaatioListaDto kr) {
         kr.setCodeElementUri(codeElementUri);
         kr.setRelationType(st);
-        return resource.addRelations(kr);
+        resource.addRelations(kr);
     }
 
-    private Response removeRelations(String codeElementUri, String st, KoodiRelaatioListaDto kr) {
+    private void removeRelations(String codeElementUri, String st, KoodiRelaatioListaDto kr) {
         kr.setCodeElementUri(codeElementUri);
         kr.setRelationType(st);
-        return resource.removeRelations(kr);
+        resource.removeRelations(kr);
     }
 
     private KoodiDto createValidCodeElementDto(String value, String name, int amountOfMetadatas) {
