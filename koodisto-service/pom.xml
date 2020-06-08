@@ -15,6 +15,10 @@
     <deploy.to.server>tomcat</deploy.to.server>
     <webapp.port>8081</webapp.port>
     <skipDbDiagramGenerate>false</skipDbDiagramGenerate>
+    <!--<database.port></database.port> määritellään automaagisesti -->
+    <database.user>koodisto</database.user>
+    <database.password>koodisto</database.password>
+    <database.name>koodisto</database.name>
   </properties>
 
   <dependencies>
@@ -36,8 +40,20 @@
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.session</groupId>
+      <artifactId>spring-session-jdbc</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-oxm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.flywaydb</groupId>
@@ -129,12 +145,24 @@
       <artifactId>springockito</artifactId>
       <scope>test</scope>
       <version>${springockito.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kubek2k</groupId>
       <artifactId>springockito-annotations</artifactId>
       <scope>test</scope>
       <version>${springockito.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-all</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!--<dependency>
       <groupId>fi.vm.sade.generic</groupId>
@@ -165,11 +193,22 @@
     </dependency>-->
 
 
-    <dependency>
+    <!--<dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <scope>test</scope>
       <version>${hsqldb.version}</version>
+    </dependency>-->
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>${postgresql-driver.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>fi.vm.sade.koodisto</groupId>
@@ -242,12 +281,12 @@
     </dependency>
 
     <!-- Test -->
-    <dependency>
+    <!--<dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
       <scope>test</scope>
       <version>${mockito.version}</version>
-    </dependency>
+    </dependency>-->
     <!--<dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
@@ -345,10 +384,6 @@
       <version>${jackson.2.version}</version>
     </dependency>
 -->
-    <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-core</artifactId>
-    </dependency>
 
     <!-- CSV marshaller -->
     <dependency>
@@ -381,6 +416,14 @@
         <exclusion>
           <groupId>org.apache.cxf</groupId>
           <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.checkerframework</groupId>
+          <artifactId>checker-qual</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -418,7 +461,113 @@
               </sources>
             </configuration>
           </execution>
+          <execution>
+            <id>reserve-db-port</id>
+            <goals>
+              <goal>reserve-network-port</goal>
+            </goals>
+            <phase>pre-integration-test</phase>
+            <configuration>
+              <portNames>
+                <portName>database.port</portName>
+              </portNames>
+            </configuration>
+          </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.31.0</version>
+        <configuration>
+          <skip>true</skip>
+          <images>
+            <image>
+              <alias>database</alias>
+              <name>postgres:10-alpine</name>
+              <run>
+                <env>
+                  <POSTGRES_USER>${database.user}</POSTGRES_USER>
+                  <POSTGRES_PASSWORD>${database.password}</POSTGRES_PASSWORD>
+                  <POSTGRES_DB>${database.name}</POSTGRES_DB>
+                </env>
+                <ports>
+                  <!--suppress UnresolvedMavenProperty -->
+                  <port>${database.port}:5432</port>
+                </ports>
+                <wait>
+                  <!-- kantayhteyttä ei saa heti, pakko odotella hetki -->
+                  <time>1750</time>
+                </wait>
+              </run>
+            </image>
+          </images>
+        </configuration>
+        <executions>
+          <execution>
+            <id>start-db</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>start</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>stop-db</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.flywaydb</groupId>
+        <artifactId>flyway-maven-plugin</artifactId>
+        <version>6.4.2</version>
+        <executions>
+          <execution>
+            <id>run-migrations</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>migrate</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+              <schemas>
+                <schema>public</schema>
+              </schemas>
+              <user>${database.user}</user>
+              <password>${database.password}</password>
+              <driver>org.postgresql.Driver</driver>
+              <!--suppress UnresolvedMavenProperty -->
+              <url>jdbc:postgresql://localhost:${database.port}/${database.name}?statement_timeout=0&amp;client_encoding=UTF8</url>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.0.0-M4</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <systemPropertyVariables>
+                <spring.flyway.enabled>false</spring.flyway.enabled>
+              </systemPropertyVariables>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies><!-- TODO: JUnit 5 -->
+          <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit47</artifactId>
+            <version>3.0.0-M4</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>

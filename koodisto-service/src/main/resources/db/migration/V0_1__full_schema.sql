@@ -24,7 +24,6 @@ CREATE SEQUENCE hibernate_sequence
     CACHE 1;
 
 
-ALTER TABLE public.hibernate_sequence OWNER TO oph;
 
 --
 -- Name: hibernate_sequence; Type: SEQUENCE SET; Schema: public; Owner: oph
@@ -49,8 +48,6 @@ CREATE TABLE koodi (
 );
 
 
-ALTER TABLE public.koodi OWNER TO oph;
-
 --
 -- Name: koodimetadata; Type: TABLE; Schema: public; Owner: oph; Tablespace: 
 --
@@ -72,8 +69,6 @@ CREATE TABLE koodimetadata (
 );
 
 
-ALTER TABLE public.koodimetadata OWNER TO oph;
-
 --
 -- Name: koodinsuhde; Type: TABLE; Schema: public; Owner: oph; Tablespace: 
 --
@@ -86,8 +81,6 @@ CREATE TABLE koodinsuhde (
     ylakoodiversio_id bigint NOT NULL
 );
 
-
-ALTER TABLE public.koodinsuhde OWNER TO oph;
 
 --
 -- Name: koodisto; Type: TABLE; Schema: public; Owner: oph; Tablespace: 
@@ -103,8 +96,6 @@ CREATE TABLE koodisto (
     sitovuustaso character varying(255)
 );
 
-
-ALTER TABLE public.koodisto OWNER TO oph;
 
 --
 -- Name: koodistometadata; Type: TABLE; Schema: public; Owner: oph; Tablespace: 
@@ -129,8 +120,6 @@ CREATE TABLE koodistometadata (
 );
 
 
-ALTER TABLE public.koodistometadata OWNER TO oph;
-
 --
 -- Name: koodistoryhma; Type: TABLE; Schema: public; Owner: oph; Tablespace: 
 --
@@ -142,8 +131,6 @@ CREATE TABLE koodistoryhma (
 );
 
 
-ALTER TABLE public.koodistoryhma OWNER TO oph;
-
 --
 -- Name: koodistoryhma_koodisto; Type: TABLE; Schema: public; Owner: oph; Tablespace: 
 --
@@ -153,8 +140,6 @@ CREATE TABLE koodistoryhma_koodisto (
     koodisto_id bigint NOT NULL
 );
 
-
-ALTER TABLE public.koodistoryhma_koodisto OWNER TO oph;
 
 --
 -- Name: koodistoryhmametadata; Type: TABLE; Schema: public; Owner: oph; Tablespace: 
@@ -168,8 +153,6 @@ CREATE TABLE koodistoryhmametadata (
     koodistoryhma_id bigint NOT NULL
 );
 
-
-ALTER TABLE public.koodistoryhmametadata OWNER TO oph;
 
 --
 -- Name: koodistoversio; Type: TABLE; Schema: public; Owner: oph; Tablespace: 
@@ -190,9 +173,6 @@ CREATE TABLE koodistoversio (
     toimintaymparisto character varying(255)
 );
 
-
-ALTER TABLE public.koodistoversio OWNER TO oph;
-
 --
 -- Name: koodistoversio_koodiversio; Type: TABLE; Schema: public; Owner: oph; Tablespace: 
 --
@@ -203,9 +183,6 @@ CREATE TABLE koodistoversio_koodiversio (
     id bigint NOT NULL,
     version bigint NOT NULL
 );
-
-
-ALTER TABLE public.koodistoversio_koodiversio OWNER TO oph;
 
 --
 -- Name: koodiversio; Type: TABLE; Schema: public; Owner: oph; Tablespace: 
@@ -222,9 +199,6 @@ CREATE TABLE koodiversio (
     voimassaloppupvm date,
     koodi_id bigint NOT NULL
 );
-
-
-ALTER TABLE public.koodiversio OWNER TO oph;
 
 --
 -- Name: koodi_pkey; Type: CONSTRAINT; Schema: public; Owner: oph; Tablespace: 
@@ -472,18 +446,6 @@ ALTER TABLE ONLY koodistoryhma_koodisto
 
 ALTER TABLE ONLY koodistoryhma_koodisto
     ADD CONSTRAINT fkcc1cb206f685885c FOREIGN KEY (koodisto_id) REFERENCES koodisto(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-
---
--- Name: public; Type: ACL; Schema: -; Owner: oph
---
-
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM oph;
-GRANT ALL ON SCHEMA public TO oph;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
-
 
 --
 -- PostgreSQL database dump complete

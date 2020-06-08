@@ -6,10 +6,6 @@ CREATE TABLE koodistonsuhde (
     ylakoodistoversio_id bigint NOT NULL
 );
 
-
-ALTER TABLE public.koodistonsuhde OWNER TO oph;
-
-
 --
 -- Name: koodistonsuhde_alakoodi_id_key; Type: CONSTRAINT; Schema: public; Owner: oph; Tablespace:
 --

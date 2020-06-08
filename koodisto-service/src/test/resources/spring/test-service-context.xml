@@ -12,10 +12,6 @@
     <context:annotation-config />
     <aop:aspectj-autoproxy />
 
-    <bean id="authorizer" class="fi.vm.sade.koodisto.service.business.MockAuthorizer" />
-
-    <bean id="wrapper" class="fi.vm.sade.koodisto.service.impl.exceptionwrapper.ExceptionWrappingAspect" />
-
     <bean id="koodiAdminService"
         class="fi.vm.sade.koodisto.service.impl.KoodiAdminServiceImpl" />
     <bean id="koodistoAdminService"
