@@ -5,16 +5,19 @@ import java.util.Set;
 
 import javax.persistence.PersistenceException;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.koodisto.service.DownloadService;
+import fi.vm.sade.koodisto.service.KoodiService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.Kieli;
@@ -27,21 +30,28 @@ import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotEmptyExcep
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-@ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionalTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
-@RunWith(SpringJUnit4ClassRunner.class)
+@DataJpaTest
+@ActiveProfiles("test")
+@DatabaseSetup("classpath:test-data.xml")
 @DatabaseSetup("classpath:test-data-codes-rest.xml")
+@TestExecutionListeners({
+        DependencyInjectionTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class
+})
+@RunWith(SpringJUnit4ClassRunner.class)
 public class KoodistoRyhmaBusinessServiceIT {
+
+    @MockBean
+    private DownloadService downloadService;
+
+    @MockBean
+    private KoodiService koodiService;
 
     @Autowired
     private KoodistoRyhmaBusinessService resource;
@@ -159,16 +169,16 @@ public class KoodistoRyhmaBusinessServiceIT {
         KoodistoRyhma group = resource.getKoodistoRyhmaById(-6L);
         assertEquals(3, group.getKoodistoJoukkoMetadatas().size());
 
+        Set<KoodistoRyhmaMetadata> updated = new HashSet<>();
         boolean first = true;
-        ;
         for (KoodistoRyhmaMetadata metadata : group.getKoodistoJoukkoMetadatas()) {
             if (first) {
                 first = false;
-                metadata.setNimi(""); // First is removed
             } else {
-                metadata.setNimi("Updated Name");
+                updated.add(metadata);
             }
         }
+        group.setKoodistoRyhmaMetadatas(updated);
         KoodistoRyhmaDto dto = createRyhma(group);
         KoodistoRyhma response = resource.updateKoodistoRyhma(dto);
         assertNotNull(response);

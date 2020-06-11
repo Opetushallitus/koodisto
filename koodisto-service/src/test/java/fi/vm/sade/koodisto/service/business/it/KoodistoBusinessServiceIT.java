@@ -1,10 +1,13 @@
 package fi.vm.sade.koodisto.service.business.it;
 
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.service.DownloadService;
+import fi.vm.sade.koodisto.service.KoodiService;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.*;
@@ -20,26 +23,40 @@ import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 import static org.junit.Assert.*;
 
-@ContextConfiguration(locations = "classpath:spring/test-context.xml")
-/*@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionalTestExecutionListener.class,
-        DbUnitTestExecutionListener.class,
-        WithSecurityContextTestExecutionListener.class })*/
+@DataJpaTest
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @DatabaseSetup("classpath:test-data.xml")
+@TestExecutionListeners({
+        DependencyInjectionTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class,
+        WithSecurityContextTestExecutionListener.class
+})
+@Transactional
 @WithMockUser("1.2.3.4.5")
 public class KoodistoBusinessServiceIT {
 
     private static final String CODES_WITH_RELATIONS = "809suhdetahan";
+
+    @MockBean
+    private DownloadService downloadService;
+
+    @MockBean
+    private KoodiService koodiService;
 
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;

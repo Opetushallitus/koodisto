@@ -8,15 +8,15 @@ import org.springframework.web.server.ResponseStatusException;
 public class ResponseStatusExceptionMatcher extends BaseMatcher<Exception> {
 
     private final HttpStatus status;
-    private final String message;
+    private final String reason;
 
     public ResponseStatusExceptionMatcher(HttpStatus status) {
         this(status, null);
     }
 
-    public ResponseStatusExceptionMatcher(HttpStatus status, String message) {
+    public ResponseStatusExceptionMatcher(HttpStatus status, String reason) {
         this.status = status;
-        this.message = message;
+        this.reason = reason;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class ResponseStatusExceptionMatcher extends BaseMatcher<Exception> {
         if (o instanceof ResponseStatusException) {
             ResponseStatusException e = (ResponseStatusException) o;
             return e.getStatus() == status
-                    && (message == null || message.equals(e.getMessage()));
+                    && (reason == null || reason.equals(e.getReason()));
         }
         return false;
     }

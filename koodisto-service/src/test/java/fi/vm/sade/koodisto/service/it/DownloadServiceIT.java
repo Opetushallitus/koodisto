@@ -7,22 +7,29 @@ import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
 
 import static org.junit.Assert.assertNotNull;
-@ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionDbUnitTestExecutionListener.class })
+
+@ContextConfiguration("classpath:spring/test-context.xml")
+@TestPropertySource(locations = "classpath:application.properties")
+@DataJpaTest
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @DatabaseSetup("classpath:test-data.xml")
+@TestExecutionListeners({
+        DependencyInjectionTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class
+})
 @Transactional
 public class DownloadServiceIT {
 

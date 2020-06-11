@@ -15,10 +15,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +27,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@TestPropertySource(locations = "classpath:application.properties")
 @DataJpaTest
 @ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,7 +36,6 @@ import static org.junit.Assert.assertEquals;
         TransactionDbUnitTestExecutionListener.class
 })
 @Transactional
-@WithMockUser("1.2.3.4.5")
 public class KoodiBusinessServiceRelationsIT {
 
     @MockBean

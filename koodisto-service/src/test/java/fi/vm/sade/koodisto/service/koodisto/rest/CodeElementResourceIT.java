@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.dto.*;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
@@ -15,11 +16,14 @@ import org.assertj.core.groups.Tuple;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
@@ -32,13 +36,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-/*@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionalTestExecutionListener.class,
-        DbUnitTestExecutionListener.class,
-        WithSecurityContextTestExecutionListener.class})*/
-@RunWith(SpringJUnit4ClassRunner.class)
+@TestPropertySource(locations = "classpath:application.properties")
+@DataJpaTest
 @DatabaseSetup("classpath:test-data-multiple-relations.xml")
+@ActiveProfiles("test")
+@TestExecutionListeners({
+        DependencyInjectionTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class,
+        WithSecurityContextTestExecutionListener.class
+})
+@RunWith(SpringJUnit4ClassRunner.class)
 @WithMockUser("1.2.3.4.5")
 public class CodeElementResourceIT {
 

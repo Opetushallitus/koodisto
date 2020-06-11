@@ -5,6 +5,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.service.*;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotInKoodistoException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiOptimisticLockingException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiVersioNotPassiivinenException;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.*;
@@ -15,26 +16,32 @@ import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 import static org.junit.Assert.*;
 
-@ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionDbUnitTestExecutionListener.class,
-        WithSecurityContextTestExecutionListener.class})
+@ContextConfiguration("classpath:spring/test-context.xml")
+@TestPropertySource(locations = "classpath:application.properties")
+@DataJpaTest
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @DatabaseSetup("classpath:test-data.xml")
+@TestExecutionListeners({
+        DependencyInjectionTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class,
+        WithSecurityContextTestExecutionListener.class
+})
 @Transactional
 @WithMockUser("1.2.3.4.5")
 public class KoodiAdminServiceIT {
@@ -151,7 +158,7 @@ public class KoodiAdminServiceIT {
         assertEquals(100, listKoodisByKoodisto(koodistoUri2, 2).size());
     }
 
-    @Test
+    @Test(expected = KoodiNimiEmptyException.class)
     public void testUpdateWithInsufficientMetadataFields() {
         final String koodiUri = "435";
         KoodiType koodiToUpdate = getKoodiByUri(koodiUri);
@@ -163,19 +170,7 @@ public class KoodiAdminServiceIT {
 
         KoodiMetadataType enMeta = KoodistoHelper.getKoodiMetadataForLanguage(updateData.getMetadata(), KieliType.EN);
         enMeta.setNimi("");
-        boolean caughtOne = false;
-
-        try {
-            koodiAdminService.updateKoodi(updateData);
-        } catch (GenericFault e) {
-            caughtOne = true;
-            assertEquals(KoodiNimiEmptyException.class.getCanonicalName(), e.getFaultInfo().getErrorCode());
-        } catch (Exception e) {
-            fail();
-        }
-
-        assertTrue(caughtOne);
-
+        koodiAdminService.updateKoodi(updateData);
     }
 
     @Test
@@ -309,7 +304,7 @@ public class KoodiAdminServiceIT {
         }
     }
 
-    @Test(expected=fi.vm.sade.koodisto.service.GenericFault.class)
+    @Test(expected = KoodiOptimisticLockingException.class)
     public void testUpdateAcceptedKoodisOldVersio() {
         final String koodiUri = "436";
         final int versio = 2;
@@ -336,7 +331,7 @@ public class KoodiAdminServiceIT {
 
     }
 
-    @Test(expected=fi.vm.sade.koodisto.service.GenericFault.class)
+    @Test(expected = KoodiOptimisticLockingException.class)
     public void testUpdateDraftKoodisOldVersio() {
         final String koodiUri = "435";
         final int versio = 2;
@@ -375,7 +370,7 @@ public class KoodiAdminServiceIT {
         getKoodiByUriAndVersio(koodiUri, koodiVersio);
     }
 
-    @Test(expected = GenericFault.class)
+    @Test(expected = KoodiVersioNotPassiivinenException.class)
     public void testDeleteNonPassiveVersion() {
         final String koodiUri = "410";
         final Integer koodiVersio = 1;
@@ -384,12 +379,7 @@ public class KoodiAdminServiceIT {
         assertNotNull(koodi);
         assertFalse(TilaType.PASSIIVINEN.equals(koodi.getTila()));
 
-        try {
-            koodiAdminService.deleteKoodiVersion(koodiUri, koodiVersio);
-        } catch (GenericFault e) {
-            assertEquals(KoodiVersioNotPassiivinenException.class.getCanonicalName(), e.getFaultInfo().getErrorCode());
-            throw e;
-        }
+        koodiAdminService.deleteKoodiVersion(koodiUri, koodiVersio);
     }
 
     private KoodiUriAndVersioType createKoodiUriAndVersioType(KoodiType koodi) {
@@ -1279,7 +1269,7 @@ public class KoodiAdminServiceIT {
         return koodiService.searchKoodisByKoodisto(searchData);
     }
 
-    @Test(expected = GenericFault.class)
+    @Test(expected = KoodiNotInKoodistoException.class)
     public void testUpdateKoodiNotInLatestKoodistoVersio() {
         final String koodistoUri = "http://koodisto15";
         final String koodiUri = "470";
@@ -1305,11 +1295,6 @@ public class KoodiAdminServiceIT {
         DataUtils.copyFields(koodi, updateData);
         updateData.setKoodiArvo("newArvo");
 
-        try {
-            koodiAdminService.updateKoodi(updateData);
-        } catch (GenericFault e) {
-            assertEquals(KoodiNotInKoodistoException.ERROR_KEY, e.getFaultInfo().getErrorCode());
-            throw e;
-        }
+        koodiAdminService.updateKoodi(updateData);
     }
 }

@@ -2,36 +2,39 @@ package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import java.util.HashSet;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.test.support.ResponseStatusExceptionMatcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import static fi.vm.sade.koodisto.test.support.Assertions.assertException;
 import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-/*@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionalTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })*/
-@RunWith(SpringJUnit4ClassRunner.class)
+@TestPropertySource(locations = "classpath:application.properties")
+@DataJpaTest
 @DatabaseSetup("classpath:test-data-codes-rest.xml")
+@ActiveProfiles("test")
+@TestExecutionListeners({
+        DependencyInjectionTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class
+})
+@RunWith(SpringJUnit4ClassRunner.class)
 public class CodesGroupResourceIT {
 
     @Autowired

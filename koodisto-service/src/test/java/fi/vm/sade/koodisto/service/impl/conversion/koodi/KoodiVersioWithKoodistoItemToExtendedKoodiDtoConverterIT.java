@@ -10,7 +10,10 @@ import org.junit.runner.RunWith;
 import org.kubek2k.springockito.annotations.ReplaceWithMock;
 import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
@@ -34,16 +37,16 @@ import static org.junit.Assert.assertEquals;
 
 import static org.mockito.Mockito.when;
 
-@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "classpath:spring/test-context.xml")
+@ContextConfiguration("classpath:spring/test-context.xml")
+@TestPropertySource("classpath:application.properties")
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterIT {
 
-    @ReplaceWithMock
-    @Autowired
+    @MockBean
     private HostAwareKoodistoConfiguration koodistoConfiguration;
 
-    @ReplaceWithMock
-    @Autowired
+    @MockBean
     private KoodiVersioDAO koodiVersioDao;
     
     @Autowired

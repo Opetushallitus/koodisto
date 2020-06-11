@@ -13,8 +13,8 @@
     <context:component-scan base-package="fi.vm.sade.koodisto.service.impl.conversion.koodisto"/>
     <context:component-scan base-package="fi.vm.sade.koodisto.service.impl.conversion.koodistoryhma"/>
 
-    <bean id="koodistoConfiguration"
-          class="fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration"/>
+    <!--<bean id="koodistoConfiguration"
+          class="fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration"/>-->
 
     <oxm:jaxb2-marshaller id="marshaller" context-path="fi.vm.sade.koodisto.service.types.common"/>
 
