@@ -30,7 +30,7 @@ public class Koodi extends BaseEntity {
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     @NotNull
-    @Column(name="koodiUri", nullable =  false, unique = true)
+    @Column(name="koodiuri", nullable =  false, unique = true)
     private String koodiUri;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodi", cascade = CascadeType.ALL)

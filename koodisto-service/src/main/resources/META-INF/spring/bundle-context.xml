@@ -21,7 +21,7 @@
             </util:properties>
         </property>
     </bean>
-    <import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/>
+    <!--<import resource="file:///${user.home:''}/oph-configuration/security-context-backend.xml"/>-->
 
     <context:annotation-config />
 

@@ -25,9 +25,9 @@ public class KoodistoRyhmaMetadata extends BaseEntity {
 
     private static final long serialVersionUID = 287785307475416064L;
 
-    public static final String TABLE_NAME = "koodistoRyhmaMetadata";
+    public static final String TABLE_NAME = "koodistoryhmametadata";
     public static final String KIELI_COLUMN_NAME = "kieli";
-    public static final String KOODISTO_RYHMA_COLUMN_NAME = "koodistoRyhma_id";
+    public static final String KOODISTO_RYHMA_COLUMN_NAME = "koodistoryhma_id";
 
     @NotBlank
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)

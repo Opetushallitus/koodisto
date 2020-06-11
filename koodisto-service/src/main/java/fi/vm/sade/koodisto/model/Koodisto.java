@@ -23,7 +23,7 @@ public class Koodisto extends BaseEntity {
     private static final long serialVersionUID = -6903116815069994046L;
 
     public static final String TABLE_NAME = "koodisto";
-    public static final String KOODISTO_URI_COLUMN_NAME = "koodistoUri";
+    public static final String KOODISTO_URI_COLUMN_NAME = "koodistouri";
 
     @NotBlank
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
@@ -36,7 +36,7 @@ public class Koodisto extends BaseEntity {
 
     @NotBlank
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
-    @Column(name = "organisaatioOid", length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = false)
+    @Column(name = "organisaatiooid", length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = false)
     private String organisaatioOid;
 
     @Column(name = "lukittu")

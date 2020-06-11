@@ -18,8 +18,13 @@ public class AuthorizerConfiguration {
     }
 
     @Bean
-    public OrganisationHierarchyAuthorizer organisationHierarchyAuthorizer(OidProvider oidProvider) {
-        return new OrganisationHierarchyAuthorizer(oidProvider);
+    public OrganisationHierarchyAuthorizer organisationHierarchyAuthorizer() {
+        return new OrganisationHierarchyAuthorizer(oidProvider());
+    }
+
+    @Bean
+    public OidProvider oidProvider() {
+        return new OidProvider();
     }
 
 }

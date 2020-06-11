@@ -14,6 +14,7 @@
     <context:annotation-config />
     <context:component-scan base-package="fi.vm.sade.koodisto.dao" />
     <!-- Add JPA support -->
+    <!--
     <bean id="emf"
         class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="loadTimeWeaver">
@@ -36,16 +37,16 @@
                 <entry key="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
                 <entry key="hibernate.cache.default_cache_concurrency_strategy" value="nonstrict-read-write"/>
                 <entry key="hibernate.hbm2ddl.auto" value="create" />
-                <!--<entry key="hibernate.show_sql" value="true" />-->
                 <entry key="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
             </map>
         </property>
         <property name="packagesToScan" value="fi.vm.sade.koodisto.model" />
     </bean>
+    -->
 
     <bean name="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.h2.Driver" />
-        <property name="url" value="jdbc:h2:mem:testdb" />
+        <property name="url" value="jdbc:h2:mem:testdb;DATABASE_TO_UPPER=FALSE" />
         <property name="username" value="sa" />
         <property name="password" value="password" />
     </bean>
@@ -62,12 +63,12 @@
     </bean>
 -->
     <!-- Add Transaction support -->
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <!--<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
         <property name="entityManagerFactory" ref="emf" />
-    </bean>
+    </bean>-->
 
     <!-- Use @Transaction annotations for managing transactions -->
-    <tx:annotation-driven transaction-manager="transactionManager" />
+    <!--<tx:annotation-driven transaction-manager="transactionManager" />-->
 
     <bean id="genericDAO" class="fi.vm.sade.koodisto.dao.impl.GenericDAOImpl" />
 </beans>

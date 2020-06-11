@@ -33,7 +33,7 @@ public class KoodiVersio extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    public static final String TABLE_NAME = "koodiVersio";
+    public static final String TABLE_NAME = "koodiversio";
     public static final String VERSIO_COLUMN_NAME = "versio";
     public static final String KOODI_COLUMN_NAME = "koodi_id";
 
@@ -53,7 +53,7 @@ public class KoodiVersio extends BaseEntity {
     private Integer versio;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "paivitysPvm")
+    @Column(name = "paivityspvm")
     private Date paivitysPvm;
 
     @Column(name = "paivittaja_oid")
@@ -66,11 +66,11 @@ public class KoodiVersio extends BaseEntity {
 
     @NotNull
     @Temporal(TemporalType.DATE)
-    @Column(name = "voimassaAlkuPvm", nullable = false)
+    @Column(name = "voimassaalkupvm", nullable = false)
     private Date voimassaAlkuPvm;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "voimassaLoppuPvm")
+    @Column(name = "voimassaloppupvm")
     private Date voimassaLoppuPvm;
 
     @NotNull

@@ -41,7 +41,7 @@ public class KoodistoVersio extends BaseEntity {
 
     private static final long serialVersionUID = 7811620155498209499L;
 
-    public static final String TABLE_NAME = "koodistoVersio";
+    public static final String TABLE_NAME = "koodistoversio";
     public static final String VERSIO_COLUMN_NAME = "versio";
     public static final String KOODISTO_COLUMN_NAME = "koodisto_id";
 
@@ -56,7 +56,7 @@ public class KoodistoVersio extends BaseEntity {
     private Integer versio;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "paivitysPvm")
+    @Column(name = "paivityspvm")
     private Date paivitysPvm;
 
     @Column(name = "paivittaja_oid")
@@ -69,11 +69,11 @@ public class KoodistoVersio extends BaseEntity {
 
     @NotNull
     @Temporal(TemporalType.DATE)
-    @Column(name = "voimassaAlkuPvm", nullable = false)
+    @Column(name = "voimassaalkupvm", nullable = false)
     private Date voimassaAlkuPvm;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "voimassaLoppuPvm")
+    @Column(name = "voimassaloppupvm")
     private Date voimassaLoppuPvm;
 
     @NotNull

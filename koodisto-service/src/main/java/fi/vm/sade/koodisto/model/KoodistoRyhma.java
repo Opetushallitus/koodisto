@@ -25,11 +25,11 @@ public class KoodistoRyhma extends BaseEntity {
 
     private static final long serialVersionUID = 4137284135569188700L;
 
-    public static final String TABLE_NAME = "koodistoRyhma";
-    public static final String KOODISTO_RYHMA_URI_COLUMN_NAME = "koodistoRyhmaUri";
+    public static final String TABLE_NAME = "koodistoryhma";
+    public static final String KOODISTO_RYHMA_URI_COLUMN_NAME = "koodistoryhmauri";
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "koodistoRyhma_koodisto", joinColumns = @JoinColumn(name = "koodistoRyhma_id", referencedColumnName = BaseEntity.ID_COLUMN_NAME), inverseJoinColumns = @JoinColumn(name = "koodisto_id", referencedColumnName = BaseEntity.ID_COLUMN_NAME))
+    @JoinTable(name = "koodistoryhma_koodisto", joinColumns = @JoinColumn(name = "koodistoryhma_id", referencedColumnName = BaseEntity.ID_COLUMN_NAME), inverseJoinColumns = @JoinColumn(name = "koodisto_id", referencedColumnName = BaseEntity.ID_COLUMN_NAME))
     private Set<Koodisto> koodistos = new HashSet<>();
 
     @NotEmpty

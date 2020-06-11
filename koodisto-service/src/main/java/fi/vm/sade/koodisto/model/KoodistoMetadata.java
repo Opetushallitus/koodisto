@@ -17,9 +17,9 @@ import javax.validation.constraints.Size;
 @Cacheable
 public class KoodistoMetadata extends BaseEntity {
 
-    public static final String TABLE_NAME = "koodistoMetadata";
+    public static final String TABLE_NAME = "koodistometadata";
     public static final String KIELI_COLUMN_NAME = "kieli";
-    public static final String KOODISTO_VERSIO_COLUMN_NAME = "koodistoVersio_id";
+    public static final String KOODISTO_VERSIO_COLUMN_NAME = "koodistoversio_id";
 
     private static final long serialVersionUID = -6880293349203597691L;
 
@@ -62,27 +62,27 @@ public class KoodistoMetadata extends BaseEntity {
 
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
-    @Column(name = "kohdealueenOsaAlue", length = FieldLengths.DEFAULT_FIELD_LENGTH)
+    @Column(name = "kohdealueenosaalue", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String kohdealueenOsaAlue;
 
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
-    @Column(name = "toimintaYmparisto", length = FieldLengths.DEFAULT_FIELD_LENGTH)
+    @Column(name = "toimintaymparisto", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String toimintaymparisto;
 
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
-    @Column(name = "tarkentaaKoodistoa", length = FieldLengths.DEFAULT_FIELD_LENGTH)
+    @Column(name = "tarkentaakoodistoa", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String tarkentaaKoodistoa;
 
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
-    @Column(name = "huomioitavaKoodisto", length = FieldLengths.DEFAULT_FIELD_LENGTH)
+    @Column(name = "huomioitavakoodisto", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String huomioitavaKoodisto;
 
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
-    @Column(name = "koodistonLahde", length = FieldLengths.DEFAULT_FIELD_LENGTH)
+    @Column(name = "koodistonlahde", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String koodistonLahde;
 
     @NotNull

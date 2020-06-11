@@ -13,8 +13,6 @@
     <context:component-scan base-package="fi.vm.sade.koodisto.service.impl.conversion.koodisto"/>
     <context:component-scan base-package="fi.vm.sade.koodisto.service.impl.conversion.koodistoryhma"/>
 
-    <bean class="fi.vm.sade.javautils.opintopolku_spring_security.OidProvider"/>
-
     <bean id="koodistoConfiguration"
           class="fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration"/>
 

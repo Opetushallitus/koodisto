@@ -1,12 +1,18 @@
 package fi.vm.sade.koodisto.model;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.dao.GenericDAO;
+import fi.vm.sade.koodisto.service.DownloadService;
+import fi.vm.sade.koodisto.service.KoodiService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -21,16 +27,23 @@ import java.util.Date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-@ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionDbUnitTestExecutionListener.class,
-        WithSecurityContextTestExecutionListener.class
-})
 @RunWith(SpringJUnit4ClassRunner.class)
+@ActiveProfiles("test")
+@DataJpaTest
+@DatabaseSetup("classpath:test-data.xml")
+@TestExecutionListeners({
+        DependencyInjectionTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class
+})
 @Transactional
 @WithMockUser("1.2.3.4.5")
 public class ValidationIT {
+
+    @MockBean
+    private DownloadService downloadService;
+
+    @MockBean
+    private KoodiService koodiService;
 
     @Autowired
     private GenericDAO genericDAO;

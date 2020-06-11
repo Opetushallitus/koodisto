@@ -26,11 +26,11 @@ public class KoodinSuhde extends BaseEntity {
 
     private static final long serialVersionUID = -8875747407128912635L;
 
-    public static final String TABLE_NAME = "koodinSuhde";
+    public static final String TABLE_NAME = "koodinsuhde";
 
-    public static final String YLAKOODI_COLUMN_NAME = "ylakoodiVersio_id";
-    public static final String ALAKOODI_COLUMN_NAME = "alakoodiVersio_id";
-    public static final String SUHTEEN_TYYPPI_COLUMN_NAME = "suhteenTyyppi";
+    public static final String YLAKOODI_COLUMN_NAME = "ylakoodiversio_id";
+    public static final String ALAKOODI_COLUMN_NAME = "alakoodiversio_id";
+    public static final String SUHTEEN_TYYPPI_COLUMN_NAME = "suhteentyyppi";
     public static final String VERSIO_COLUMN_NAME = "versio";
 
     @NotNull
