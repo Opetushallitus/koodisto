@@ -10,11 +10,11 @@ import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
@@ -24,10 +24,12 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionDbUnitTestExecutionListener.class })
+@TestExecutionListeners({
+        DependencyInjectionTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class
+})
 @RunWith(SpringJUnit4ClassRunner.class)
+@DataJpaTest
 @DatabaseSetup("classpath:test-data.xml")
 @Transactional
 public class KoodistoServiceIT {

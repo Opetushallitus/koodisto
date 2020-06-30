@@ -13,11 +13,11 @@ import fi.vm.sade.koodisto.service.types.common.TilaType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
@@ -27,13 +27,14 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionDbUnitTestExecutionListener.class })
+@TestExecutionListeners({
+        DependencyInjectionTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class
+})
 @RunWith(SpringJUnit4ClassRunner.class)
+@DataJpaTest
 @DatabaseSetup("classpath:test-data.xml")
 @Transactional
-
 public class KoodistoJsonRESTServiceIT {
 
     @Autowired
@@ -64,24 +65,16 @@ public class KoodistoJsonRESTServiceIT {
     }
 
     @Test(expected = KoodistoNotFoundException.class)
-    public void testGetNonExistingKoodistoByUri() throws Throwable {
-        try {
-            final String koodistoUri = "ei-ole-olemassa";
-            koodistoJsonRESTService.getKoodistoByUri(koodistoUri, null);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetNonExistingKoodistoByUri() {
+        final String koodistoUri = "ei-ole-olemassa";
+        koodistoJsonRESTService.getKoodistoByUri(koodistoUri, null);
     }
 
     @Test(expected = KoodistoNotFoundException.class)
-    public void testGetNonExistingKoodistoByUriAndVersio() throws Throwable {
-        try {
-            final String koodistoUri = "ei-ole-olemassa";
-            final int koodistoVersio = 1;
-            koodistoJsonRESTService.getKoodistoByUri(koodistoUri, koodistoVersio);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetNonExistingKoodistoByUriAndVersio() {
+        final String koodistoUri = "ei-ole-olemassa";
+        final int koodistoVersio = 1;
+        koodistoJsonRESTService.getKoodistoByUri(koodistoUri, koodistoVersio);
     }
 
     @Test
@@ -103,24 +96,16 @@ public class KoodistoJsonRESTServiceIT {
     }
 
     @Test(expected = KoodistoNotFoundException.class)
-    public void testGetKoodisByNonExistingKoodistoUri() throws Throwable {
-        try {
-            final String koodistoUri = "ei-ole-olemassa";
-            koodistoJsonRESTService.getKoodisByKoodisto(koodistoUri, null, false);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetKoodisByNonExistingKoodistoUri() {
+        final String koodistoUri = "ei-ole-olemassa";
+        koodistoJsonRESTService.getKoodisByKoodisto(koodistoUri, null, false);
     }
 
     @Test(expected = KoodistoNotFoundException.class)
-    public void testGetKoodisByNonExistingKoodistoUriAndVersio() throws Throwable {
-        try {
-            final String koodistoUri = "ei-ole-olemassa";
-            final int koodistoVersio = 1;
-            koodistoJsonRESTService.getKoodisByKoodisto(koodistoUri, koodistoVersio, false);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetKoodisByNonExistingKoodistoUriAndVersio() {
+        final String koodistoUri = "ei-ole-olemassa";
+        final int koodistoVersio = 1;
+        koodistoJsonRESTService.getKoodisByKoodisto(koodistoUri, koodistoVersio, false);
     }
 
     @Test
@@ -159,26 +144,18 @@ public class KoodistoJsonRESTServiceIT {
     }
 
     @Test(expected = KoodistoNotFoundException.class)
-    public void testGetKoodisByArvoWithNonExistingKoodistoUri() throws Throwable {
-        try {
-            final String koodistoUri = "ei-ole-olemassa";
-            final String koodiArvo = "123";
-            koodistoJsonRESTService.getKoodisByArvo(koodistoUri, koodiArvo, null);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetKoodisByArvoWithNonExistingKoodistoUri() {
+        final String koodistoUri = "ei-ole-olemassa";
+        final String koodiArvo = "123";
+        koodistoJsonRESTService.getKoodisByArvo(koodistoUri, koodiArvo, null);
     }
 
     @Test(expected = KoodistoNotFoundException.class)
-    public void testGetKoodisByArvoWithNonExistingKoodistoUriAndVersio() throws Throwable {
-        try {
-            final String koodistoUri = "http://koodisto17";
-            final int koodistoVersio = 3;
-            final String koodiArvo = "123";
-            koodistoJsonRESTService.getKoodisByArvo(koodistoUri, koodiArvo, koodistoVersio);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetKoodisByArvoWithNonExistingKoodistoUriAndVersio() {
+        final String koodistoUri = "http://koodisto17";
+        final int koodistoVersio = 3;
+        final String koodiArvo = "123";
+        koodistoJsonRESTService.getKoodisByArvo(koodistoUri, koodiArvo, koodistoVersio);
     }
 
     @Test
@@ -205,37 +182,25 @@ public class KoodistoJsonRESTServiceIT {
     }
 
     @Test(expected = KoodistoNotFoundException.class)
-    public void testGetKoodiByUriWithNonExistingKoodistoUri() throws Throwable {
-        try {
-            final String koodistoUri = "ei-ole-olemassa";
-            final String koodiUri = "471";
-            koodistoJsonRESTService.getKoodiByUri(koodistoUri, koodiUri, null);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetKoodiByUriWithNonExistingKoodistoUri() {
+        final String koodistoUri = "ei-ole-olemassa";
+        final String koodiUri = "471";
+        koodistoJsonRESTService.getKoodiByUri(koodistoUri, koodiUri, null);
     }
 
     @Test(expected = KoodistoNotFoundException.class)
-    public void testGetKoodiByUriWithNonExistingKoodistoUriAndVersio() throws Throwable {
-        try {
-            final String koodistoUri = "http://koodisto17";
-            final int koodistoVersio = 3;
-            final String koodiUri = "471";
-            koodistoJsonRESTService.getKoodiByUri(koodistoUri, koodiUri, koodistoVersio);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetKoodiByUriWithNonExistingKoodistoUriAndVersio() {
+        final String koodistoUri = "http://koodisto17";
+        final int koodistoVersio = 3;
+        final String koodiUri = "471";
+        koodistoJsonRESTService.getKoodiByUri(koodistoUri, koodiUri, koodistoVersio);
     }
 
     @Test(expected = KoodiNotFoundException.class)
-    public void testGetKoodiByNonExistingUri() throws Throwable {
-        try {
-            final String koodistoUri = "http://koodisto17";
-            final String koodiUri = "ei-ole-olemassa";
-            koodistoJsonRESTService.getKoodiByUri(koodistoUri, koodiUri, null);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetKoodiByNonExistingUri() {
+        final String koodistoUri = "http://koodisto17";
+        final String koodiUri = "ei-ole-olemassa";
+        koodistoJsonRESTService.getKoodiByUri(koodistoUri, koodiUri, null);
     }
 
     @Test
@@ -332,66 +297,42 @@ public class KoodistoJsonRESTServiceIT {
     }
 
     @Test(expected = KoodiNotFoundException.class)
-    public void testGetAlakoodiByNonExistingKoodiUri() throws Throwable {
-        try {
-            final String koodiUri = "ei-ole-olemassa";
-            koodistoJsonRESTService.getAlakoodis(koodiUri, null);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetAlakoodiByNonExistingKoodiUri() {
+        final String koodiUri = "ei-ole-olemassa";
+        koodistoJsonRESTService.getAlakoodis(koodiUri, null);
     }
 
     @Test(expected = KoodiNotFoundException.class)
-    public void testGetAlakoodiByNonExistingKoodiUriAndVersio() throws Throwable {
-        try {
-            final String koodiUri = "475";
-            final Integer koodiVersio = 2;
-            koodistoJsonRESTService.getAlakoodis(koodiUri, koodiVersio);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetAlakoodiByNonExistingKoodiUriAndVersio() {
+        final String koodiUri = "475";
+        final Integer koodiVersio = 2;
+        koodistoJsonRESTService.getAlakoodis(koodiUri, koodiVersio);
     }
 
     @Test(expected = KoodiNotFoundException.class)
-    public void testGetYlakoodiByNonExistingKoodiUri() throws Throwable {
-        try {
-            final String koodiUri = "ei-ole-olemassa";
-            koodistoJsonRESTService.getYlakoodis(koodiUri, null);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetYlakoodiByNonExistingKoodiUri() {
+        final String koodiUri = "ei-ole-olemassa";
+        koodistoJsonRESTService.getYlakoodis(koodiUri, null);
     }
 
     @Test(expected = KoodiNotFoundException.class)
-    public void testGetYlakoodiByNonExistingKoodiUriAndVersio() throws Throwable {
-        try {
-            final String koodiUri = "475";
-            final Integer koodiVersio = 2;
-            koodistoJsonRESTService.getYlakoodis(koodiUri, koodiVersio);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetYlakoodiByNonExistingKoodiUriAndVersio() {
+        final String koodiUri = "475";
+        final Integer koodiVersio = 2;
+        koodistoJsonRESTService.getYlakoodis(koodiUri, koodiVersio);
     }
 
     @Test(expected = KoodiNotFoundException.class)
-    public void testGetRinnasteinenByNonExistingKoodiUri() throws Throwable {
-        try {
-            final String koodiUri = "ei-ole-olemassa";
-            koodistoJsonRESTService.getRinnasteinenKoodis(koodiUri, null);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetRinnasteinenByNonExistingKoodiUri() {
+        final String koodiUri = "ei-ole-olemassa";
+        koodistoJsonRESTService.getRinnasteinenKoodis(koodiUri, null);
     }
 
     @Test(expected = KoodiNotFoundException.class)
-    public void testGetRinnasteinenByNonExistingKoodiUriAndVersio() throws Throwable {
-        try {
-            final String koodiUri = "475";
-            final Integer koodiVersio = 2;
-            koodistoJsonRESTService.getRinnasteinenKoodis(koodiUri, koodiVersio);
-        } catch (RuntimeException e) {
-            throw e.getCause();
-        }
+    public void testGetRinnasteinenByNonExistingKoodiUriAndVersio() {
+        final String koodiUri = "475";
+        final Integer koodiVersio = 2;
+        koodistoJsonRESTService.getRinnasteinenKoodis(koodiUri, koodiVersio);
     }
 
     @Test

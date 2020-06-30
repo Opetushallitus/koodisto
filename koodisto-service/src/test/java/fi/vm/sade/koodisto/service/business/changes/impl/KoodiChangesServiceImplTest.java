@@ -6,14 +6,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kubek2k.springockito.annotations.ReplaceWithMock;
-import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -45,9 +42,9 @@ import static org.mockito.Matchers.any;
 
 import static org.mockito.Mockito.when;
 
-@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "classpath:spring/simple-test-context.xml")
+@ContextConfiguration(locations = "classpath:spring/simple-test-context.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
-public class KoodiChangesServiceImplIT {
+public class KoodiChangesServiceImplTest {
     
     private static final Date CURRENT_DATE = new Date();
     
@@ -60,21 +57,14 @@ public class KoodiChangesServiceImplIT {
     private static final String NAME_SV = "elefant", SHORT_NAME_SV = "kort", DESCRIPTION_SV = "stora flockdjur";
     private static final Integer VERSIO = 1;
 
-    @ReplaceWithMock
-    @Autowired
+    @MockBean
     private KoodiBusinessService koodiService;
     
-    @ReplaceWithMock
-    @Autowired
+    @MockBean
     private KoodistoBusinessService koodistoService;
     
     @Autowired
     private KoodiChangesService service;
-    
-    @Before
-    public void init() {
-        MockitoAnnotations.initMocks(this);
-    }
         
     @Test
     public void returnsNoChangesIfNothingHasChanged() {
@@ -399,7 +389,7 @@ public class KoodiChangesServiceImplIT {
         Integer versio = koodiVersio.getVersio();
         when(koodiService.getKoodiVersio(KOODI_URI, versio)).thenReturn(koodiVersio);
         when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
-        when(koodistoService.getKoodistoByKoodistoUri(any(String.class))).thenReturn(latest.getKoodi().getKoodisto());
+        when(koodistoService.getKoodistoByKoodistoUri(any())).thenReturn(latest.getKoodi().getKoodisto());
         return service.getChangesDto(KOODI_URI, versio, false);
     }
     
@@ -407,7 +397,7 @@ public class KoodiChangesServiceImplIT {
         Integer versio = koodiVersio.getVersio();
         when(koodiService.getKoodiVersio(KOODI_URI, versio)).thenReturn(koodiVersio);
         when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
-        when(koodistoService.getKoodistoByKoodistoUri(any(String.class))).thenReturn(DtoFactory.createKoodistoVersio(new Koodisto(), 999).build().getKoodisto());
+        when(koodistoService.getKoodistoByKoodistoUri(any())).thenReturn(DtoFactory.createKoodistoVersio(new Koodisto(), 999).build().getKoodisto());
         return service.getChangesDto(KOODI_URI, versio, false);
     }
     
@@ -438,7 +428,7 @@ public class KoodiChangesServiceImplIT {
         }        
         Koodisto koodisto = Mockito.mock(Koodisto.class);
         when(koodisto.getKoodistoVersios()).thenReturn(koodistoVersios);
-        when(koodistoService.getKoodistoByKoodistoUri(any(String.class))).thenReturn(koodisto);
+        when(koodistoService.getKoodistoByKoodistoUri(any())).thenReturn(koodisto);
     }
     
     private KoodiVersio getMatchingCodeElementVersion(Integer versio, KoodiVersio[] versios) {

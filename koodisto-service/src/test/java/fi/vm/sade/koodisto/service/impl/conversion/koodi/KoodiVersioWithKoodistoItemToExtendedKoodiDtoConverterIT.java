@@ -7,9 +7,8 @@ import java.util.Map;
 import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kubek2k.springockito.annotations.ReplaceWithMock;
-import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -43,8 +42,8 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterIT {
 
-    @MockBean
-    private HostAwareKoodistoConfiguration koodistoConfiguration;
+    @MockBean @Qualifier("hostAwareKoodistoConfiguration")
+    private HostAwareKoodistoConfiguration hostAwareKoodistoConfiguration;
 
     @MockBean
     private KoodiVersioDAO koodiVersioDao;

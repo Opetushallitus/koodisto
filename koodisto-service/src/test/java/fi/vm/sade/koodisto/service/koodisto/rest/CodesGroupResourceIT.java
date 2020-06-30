@@ -26,10 +26,8 @@ import static fi.vm.sade.koodisto.test.support.Assertions.assertException;
 import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestPropertySource(locations = "classpath:application.properties")
 @DataJpaTest
 @DatabaseSetup("classpath:test-data-codes-rest.xml")
-@ActiveProfiles("test")
 @TestExecutionListeners({
         DependencyInjectionTestExecutionListener.class,
         TransactionDbUnitTestExecutionListener.class

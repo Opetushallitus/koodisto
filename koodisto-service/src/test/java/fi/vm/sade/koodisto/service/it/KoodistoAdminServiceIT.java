@@ -1,6 +1,6 @@
 package fi.vm.sade.koodisto.service.it;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.service.GenericFault;
 import fi.vm.sade.koodisto.service.KoodiService;
@@ -18,29 +18,35 @@ import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 import static org.junit.Assert.*;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+@TestExecutionListeners({
+        DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
-        TransactionalTestExecutionListener.class,
-        DbUnitTestExecutionListener.class,
+        TransactionDbUnitTestExecutionListener.class,
         WithSecurityContextTestExecutionListener.class })
 @RunWith(SpringJUnit4ClassRunner.class)
+@ActiveProfiles("test")
+@DataJpaTest
 @DatabaseSetup("classpath:test-data.xml")
 @WithMockUser("1.2.3.4.5")
+@Transactional
 public class KoodistoAdminServiceIT {
+
     @Autowired
     private KoodistoAdminService koodistoAdminService;
 
@@ -96,7 +102,7 @@ public class KoodistoAdminServiceIT {
     @Test
     public void testCreate() {
         List<KoodistoRyhmaListType> ryhmas = koodistoService.listAllKoodistoRyhmas();
-        List<String> ryhmaUris = new ArrayList<String>();
+        List<String> ryhmaUris = new ArrayList<>();
         ryhmaUris.add(ryhmas.get(0).getKoodistoRyhmaUri());
 
         CreateKoodistoDataType createKoodistoDataType = DataUtils.createCreateKoodistoDataType("omistaja",
@@ -108,22 +114,16 @@ public class KoodistoAdminServiceIT {
         assertNotNull(fetched);
     }
 
-    @Test(expected = GenericFault.class)
+    @Test(expected = KoodistoNimiNotUniqueException.class)
     public void testCreateWithNonUniqueNimi() {
         List<KoodistoRyhmaListType> ryhmas = koodistoService.listAllKoodistoRyhmas();
-        List<String> ryhmaUris = new ArrayList<String>();
+        List<String> ryhmaUris = new ArrayList<>();
         ryhmaUris.add(ryhmas.get(0).getKoodistoRyhmaUri());
 
         final String nimi = "testikoodistoFI";
         CreateKoodistoDataType createKoodistoDataType = DataUtils.createCreateKoodistoDataType("omistaja",
                 "organisaatioOid", new Date(), new Date(), nimi);
-
-        try {
-            koodistoAdminService.createKoodisto(ryhmaUris, createKoodistoDataType);
-        } catch (GenericFault e) {
-            assertEquals(KoodistoNimiNotUniqueException.ERROR_KEY, e.getFaultInfo().getErrorCode());
-            throw e;
-        }
+        koodistoAdminService.createKoodisto(ryhmaUris, createKoodistoDataType);
     }
 
     @Test
@@ -201,7 +201,7 @@ public class KoodistoAdminServiceIT {
         }
     }
 
-    @Test
+    @Test(expected = KoodistoNimiEmptyException.class)
     public void testUpdateWithInsufficientMetadataFields() {
         final String koodistoUri = "http://paljon_versioita.fi/1";
         KoodistoType koodistoToUpdate = getKoodistoByUri(koodistoUri);
@@ -225,18 +225,7 @@ public class KoodistoAdminServiceIT {
         }
 
         enMeta.setNimi("");
-
-        boolean caughtOne = false;
-        try {
-            koodistoAdminService.updateKoodisto(updateData);
-        } catch (GenericFault e) {
-            caughtOne = true;
-            assertEquals(KoodistoNimiEmptyException.class.getCanonicalName(), e.getFaultInfo().getErrorCode());
-        } catch (Exception e) {
-            fail();
-        }
-
-        assertTrue(caughtOne);
+        koodistoAdminService.updateKoodisto(updateData);
     }
 
     @Test
@@ -282,21 +271,15 @@ public class KoodistoAdminServiceIT {
         getKoodistoByUriAndVersio(koodistoUri, koodistoVersio);
     }
 
-    @Test(expected = GenericFault.class)
+    @Test(expected = KoodistoVersioNotPassiivinenException.class)
     public void testDeleteNonPassiveKoodisto() {
         final String koodistoUri = "http://testikoodisto.fi";
         final int koodistoVersio = 1;
 
         KoodistoType koodisto = getKoodistoByUriAndVersio(koodistoUri, koodistoVersio);
         assertNotNull(koodisto);
-        assertFalse(TilaType.PASSIIVINEN.equals(koodisto.getTila()));
-        try {
-            koodistoAdminService.deleteKoodistoVersion(koodistoUri, koodistoVersio);
-        } catch (GenericFault e) {
-            assertEquals(KoodistoVersioNotPassiivinenException.class.getCanonicalName(), e.getFaultInfo()
-                    .getErrorCode());
-            throw e;
-        }
+        assertNotEquals(TilaType.PASSIIVINEN, koodisto.getTila());
+        koodistoAdminService.deleteKoodistoVersion(koodistoUri, koodistoVersio);
     }
 
     @Test
@@ -309,7 +292,7 @@ public class KoodistoAdminServiceIT {
         KoodistoMetadataType fiMeta = KoodistoHelper.getKoodistoMetadataForLanguage(koodisto, KieliType.FI);
 
         final String uusiNimi = "uusinimi";
-        assertTrue(!fiMeta.getNimi().equals(uusiNimi));
+        assertFalse(fiMeta.getNimi().equals(uusiNimi));
         fiMeta.setNimi(uusiNimi);
 
         UpdateKoodistoDataType updateData = new UpdateKoodistoDataType();
@@ -440,7 +423,7 @@ public class KoodistoAdminServiceIT {
 
         final String newNimi = "uusinimi";
         KoodistoMetadataType fiMeta = KoodistoHelper.getKoodistoMetadataForLanguage(koodisto, KieliType.FI);
-        assertFalse(newNimi.equals(fiMeta.getNimi()));
+        assertNotEquals(newNimi, fiMeta.getNimi());
         fiMeta.setNimi(newNimi);
 
         UpdateKoodistoDataType updateData = new UpdateKoodistoDataType();
@@ -504,7 +487,7 @@ public class KoodistoAdminServiceIT {
 
         final String newNimi = "uusinimi";
         KoodistoMetadataType fiMeta = KoodistoHelper.getKoodistoMetadataForLanguage(koodisto, KieliType.FI);
-        assertFalse(newNimi.equals(fiMeta.getNimi()));
+        assertNotEquals(newNimi, fiMeta.getNimi());
         fiMeta.setNimi(newNimi);
 
         UpdateKoodistoDataType updateData = new UpdateKoodistoDataType();
