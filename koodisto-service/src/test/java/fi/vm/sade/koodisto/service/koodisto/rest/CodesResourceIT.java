@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
@@ -28,7 +27,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import java.io.*;
-import java.net.URL;
 import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.Date;
@@ -353,7 +351,7 @@ public class CodesResourceIT {
 
     private MockMultipartFile createAttachment(String sourceUrl) throws IllegalStateException {
         try {
-            return new MockMultipartFile("name", new URL(sourceUrl).openStream());
+            return new MockMultipartFile("name", ClassLoader.getSystemResourceAsStream(sourceUrl));
         } catch (IOException e) {
             throw new IllegalStateException("Unable to open stream from: " + sourceUrl, e);
         }

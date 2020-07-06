@@ -4,8 +4,7 @@ import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.service.DownloadService;
-import fi.vm.sade.koodisto.service.KoodiService;
+import fi.vm.sade.koodisto.service.business.DownloadBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
@@ -50,10 +49,7 @@ import static org.junit.Assert.*;
 public class KoodiBusinessServiceIT {
 
     @MockBean
-    private DownloadService downloadService;
-
-    @MockBean
-    private KoodiService koodiService;
+    private DownloadBusinessService downloadBusinessService;
 
     @Autowired
     private KoodiBusinessService koodiBusinessService;

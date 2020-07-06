@@ -6,8 +6,7 @@ import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.service.DownloadService;
-import fi.vm.sade.koodisto.service.KoodiService;
+import fi.vm.sade.koodisto.service.business.DownloadBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.*;
@@ -53,10 +52,7 @@ public class KoodistoBusinessServiceIT {
     private static final String CODES_WITH_RELATIONS = "809suhdetahan";
 
     @MockBean
-    private DownloadService downloadService;
-
-    @MockBean
-    private KoodiService koodiService;
+    private DownloadBusinessService downloadBusinessService;
 
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;

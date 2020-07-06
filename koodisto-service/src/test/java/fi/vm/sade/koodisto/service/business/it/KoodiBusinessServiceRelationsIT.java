@@ -3,8 +3,7 @@ package fi.vm.sade.koodisto.service.business.it;
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
-import fi.vm.sade.koodisto.service.DownloadService;
-import fi.vm.sade.koodisto.service.KoodiService;
+import fi.vm.sade.koodisto.service.business.DownloadBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
@@ -39,10 +38,7 @@ import static org.junit.Assert.assertEquals;
 public class KoodiBusinessServiceRelationsIT {
 
     @MockBean
-    private DownloadService downloadService;
-
-    @MockBean
-    private KoodiService koodiService;
+    private DownloadBusinessService downloadBusinessService;
 
     private Logger logger = LoggerFactory.getLogger(KoodiBusinessServiceRelationsIT.class);
 

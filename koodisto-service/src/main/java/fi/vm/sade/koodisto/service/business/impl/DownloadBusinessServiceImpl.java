@@ -1,11 +1,12 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import fi.vm.sade.koodisto.service.KoodiService;
 import fi.vm.sade.koodisto.service.business.DownloadBusinessService;
+import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoExportException;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoCsvConverter;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXlsConverter;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXmlConverter;
+import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
@@ -28,6 +29,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 @Service
 public class DownloadBusinessServiceImpl implements DownloadBusinessService {
+
     @Autowired
     private KoodistoXmlConverter koodistoXmlConverter;
 
@@ -38,7 +40,10 @@ public class DownloadBusinessServiceImpl implements DownloadBusinessService {
     private KoodistoXlsConverter koodistoXlsConverter;
 
     @Autowired
-    private KoodiService koodiService;
+    private KoodiBusinessService koodiBusinessService;
+
+    @Autowired
+    private SadeConversionService conversionService;
 
     @Override
     public DataHandler download(String koodistoUri, int koodistoVersio, ExportImportFormatType exportFormat, String encoding) {
@@ -52,7 +57,8 @@ public class DownloadBusinessServiceImpl implements DownloadBusinessService {
         SearchKoodisByKoodistoCriteriaType searchData =
                 KoodiServiceSearchCriteriaBuilder.koodisByKoodistoUriAndKoodistoVersio(koodistoUri, koodistoVersio);
 
-        List<KoodiType> koodiTypes = koodiService.searchKoodisByKoodisto(searchData);
+        List<KoodiType> koodiTypes = conversionService.convertAll(
+                koodiBusinessService.searchKoodis(searchData), KoodiType.class);
         try {
             DataHandler returnValue = null;
             switch (exportFormat) {

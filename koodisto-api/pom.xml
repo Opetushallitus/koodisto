@@ -82,6 +82,28 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>2.5.0</version>
+                <executions>
+                    <execution>
+                        <id>xjc</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <sources>
+                        <source>src/main/resources/wsdl/common.xsd</source>
+                        <source>src/main/resources/wsdl/koodilistaus.xsd</source>
+                        <source>src/main/resources/wsdl/criteria.xsd</source>
+                        <source>src/main/resources/wsdl/types.xsd</source>
+                    </sources>
+                </configuration>
+            </plugin>
+            <!--<plugin>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-codegen-plugin</artifactId>
                 <version>${cxf.version}</version>
@@ -172,7 +194,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -186,7 +208,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources/java</source>
+                                <source>${project.build.directory}/generated-sources/jaxb</source>
                             </sources>
                         </configuration>
                     </execution>

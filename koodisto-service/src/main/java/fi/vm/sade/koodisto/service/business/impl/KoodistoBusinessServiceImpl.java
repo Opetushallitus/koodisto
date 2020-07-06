@@ -12,11 +12,7 @@ import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.service.DownloadService;
-import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
-import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
-import fi.vm.sade.koodisto.service.business.UriTransliterator;
-import fi.vm.sade.koodisto.service.business.UserDetailService;
+import fi.vm.sade.koodisto.service.business.*;
 import fi.vm.sade.koodisto.service.business.exception.*;
 import fi.vm.sade.koodisto.service.impl.KoodistoRole;
 import fi.vm.sade.koodisto.service.koodisto.rest.CodesResourceConverter;
@@ -88,16 +84,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private UserDetailService userDetailService;
 
     @Autowired
-    private KoodistoVersioKoodiVersioDAO koodistoVersioKoodiVersioDAO;
-
-    @Autowired
     private Authorizer authorizer;
 
     @Autowired
     private UriTransliterator uriTransliterator;
 
     @Autowired
-    private DownloadService downloadService;
+    private DownloadBusinessService downloadBusinessService;
 
     @Autowired
     private CodesResourceConverter converter;
@@ -737,7 +730,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
                 encoding = "UTF-8";
             }
 
-            DataHandler handler = downloadService.download(codesUri, codesVersion, formatStr, encoding);
+            DataHandler handler = downloadBusinessService.download(codesUri, codesVersion, formatStr, encoding);
 
             File file = createTemporaryFile(codesUri, extension, handler);
 

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema version="1.0" elementFormDefault="unqualified"
+           targetNamespace="http://skeemat.jhs-suositukset.fi/oph/2012/05/03"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:cmn="http://service.koodisto.sade.vm.fi/types/common">
+
+    <xs:import namespace="http://service.koodisto.sade.vm.fi/types/common" />
+    <xs:element name="koodilistaus" substitutionGroup="cmn:koodiCollection" />
+
+</xs:schema>

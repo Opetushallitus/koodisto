@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.*;
 import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.service.DownloadService;
+import fi.vm.sade.koodisto.service.business.DownloadBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UploadBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodistoChangesService;
@@ -60,7 +60,7 @@ public class CodesResource {
     private SadeConversionService conversionService;
 
     @Autowired
-    private DownloadService downloadService;
+    private DownloadBusinessService downloadBusinessService;
 
     @Autowired
     private CodesResourceConverter converter;

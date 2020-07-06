@@ -7,8 +7,8 @@ import javax.persistence.PersistenceException;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import fi.vm.sade.koodisto.service.DownloadService;
-import fi.vm.sade.koodisto.service.KoodiService;
+import fi.vm.sade.koodisto.service.business.DownloadBusinessService;
+import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,10 +48,10 @@ import static org.junit.Assert.fail;
 public class KoodistoRyhmaBusinessServiceIT {
 
     @MockBean
-    private DownloadService downloadService;
+    private DownloadBusinessService downloadBusinessService;
 
     @MockBean
-    private KoodiService koodiService;
+    private KoodiBusinessService koodiBusinessService;
 
     @Autowired
     private KoodistoRyhmaBusinessService resource;
