@@ -24,7 +24,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -42,7 +41,6 @@ import static org.junit.Assert.*;
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners({
         DependencyInjectionTestExecutionListener.class,
-        TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class,
         WithSecurityContextTestExecutionListener.class
 })

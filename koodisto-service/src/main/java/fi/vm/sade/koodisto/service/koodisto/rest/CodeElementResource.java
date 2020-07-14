@@ -125,8 +125,11 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getCodeElementByUriAndVersion. ", e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
             logger.error("Fetching codeElement by uri and version failed.", e);
+            if (e instanceof ResponseStatusException) {
+                throw e;
+            }
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);
         }
     }
@@ -213,8 +216,10 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getLatestCodeElementVersionsByCodeElementUri. ", e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e);
         } catch (Exception e) {
+            if (e instanceof ResponseStatusException) {
+                throw e;
+            }
             String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
-            logger.error("Fetching codeElement by uri failed.", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, message, e);
         }
     }

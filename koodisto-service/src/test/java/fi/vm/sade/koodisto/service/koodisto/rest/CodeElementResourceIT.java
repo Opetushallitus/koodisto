@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.dto.*;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
@@ -26,10 +25,9 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fi.vm.sade.koodisto.test.support.Assertions.assertException;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +40,7 @@ import static org.junit.Assert.*;
 @ActiveProfiles("test")
 @TestExecutionListeners({
         DependencyInjectionTestExecutionListener.class,
-        TransactionDbUnitTestExecutionListener.class,
+        DbUnitTestExecutionListener.class,
         WithSecurityContextTestExecutionListener.class
 })
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -368,9 +366,9 @@ public class CodeElementResourceIT {
         assertException(() -> resource.getLatestCodeElementVersionsByCodeElementUri("eioleolemassa"),
                 new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
         assertException(() -> resource.getLatestCodeElementVersionsByCodeElementUri(""),
-                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuri"));
         assertException(() -> resource.getLatestCodeElementVersionsByCodeElementUri(null),
-                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST));
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuri"));
     }
 
     @Test
@@ -404,7 +402,7 @@ public class CodeElementResourceIT {
         assertException(() -> resource.insert(null, validDto),
                 new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesuri"));
         assertException(() -> resource.insert("", validDto),
-                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.validation.codesuri"));
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codesuri"));
         assertException(() -> resource.insert("totallyInvalidKoodistoUri", validDto),
                 new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codes.not.found"));
 
@@ -599,7 +597,7 @@ public class CodeElementResourceIT {
         String nimi = "uusinimi";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        ExtendedKoodiDto codeElementToBeSaved = clone(resource.getCodeElementByUriAndVersion(koodiUri, versio));
         assertEquals(1, codeElementToBeSaved.getIncludesCodeElements().size());
         assertEquals("samankoodistonsisalla1", codeElementToBeSaved.getIncludesCodeElements().get(0).codeElementUri);
         assertEquals(1, codeElementToBeSaved.getWithinCodeElements().size());
@@ -654,31 +652,45 @@ public class CodeElementResourceIT {
         final String codeElementUri = "sisaltaakoodisto1koodit";
         final String codeElementUriToRemove = "rinnastuu4kanssa1";
         final String relationType = "RINNASTEINEN";
-        resource.removeRelation("", codeElementUriToRemove, relationType);
-        resource.removeRelation(null, codeElementUriToRemove, relationType);
-        resource.removeRelation(codeElementUri, "", relationType);
-        resource.removeRelation(codeElementUri, null, relationType);
-        resource.removeRelation(codeElementUri, codeElementUriToRemove, "");
-        resource.removeRelation(codeElementUri, codeElementUriToRemove, null);
-        resource.removeRelation(codeElementUri, codeElementUriToRemove, "doenostexist");
-
+        assertException(() -> resource.removeRelation("", codeElementUriToRemove, relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuri"));
+        assertException(() -> resource.removeRelation(null, codeElementUriToRemove, relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuri"));
         assertException(() -> resource.removeRelation("doenotexist", codeElementUriToRemove, relationType),
                 new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
+        assertException(() -> resource.removeRelation(codeElementUri, "", relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuritoremove"));
+        assertException(() -> resource.removeRelation(codeElementUri, null, relationType),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuritoremove"));
         assertException(() -> resource.removeRelation(codeElementUri, "doesnotexist", relationType),
                 new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.relation.list.empty"));
+        assertException(() -> resource.removeRelation(codeElementUri, codeElementUriToRemove, ""),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.relationtype"));
+        assertException(() -> resource.removeRelation(codeElementUri, codeElementUriToRemove, null),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.relationtype"));
+        assertException(() -> resource.removeRelation(codeElementUri, codeElementUriToRemove, "doesnotexist"),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codes.generic"));
 
         assertEquals(3, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
 
         final String codeElementUri2 = "sisaltaakoodisto1koodit";
         final String codeElementUriToRemove2 = "sisaltyysuhde4kanssa1";
         final String relationType2 = "SISALTYY";
-        resource.removeRelation("", codeElementUriToRemove2, relationType2);
-        resource.removeRelation(null, codeElementUriToRemove2, relationType2);
-        resource.removeRelation(codeElementUri2, "", relationType2);
-        resource.removeRelation(codeElementUri2, null, relationType2);
-        resource.removeRelation(codeElementUri2, codeElementUriToRemove2, "");
-        resource.removeRelation(codeElementUri2, codeElementUriToRemove2, null);
-        resource.removeRelation(codeElementUri2, codeElementUriToRemove2, "doenostexist");
+        assertException(() -> resource.removeRelation("", codeElementUriToRemove2, relationType2),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuri"));
+        assertException(() -> resource.removeRelation(null, codeElementUriToRemove2, relationType2),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuri"));
+        assertException(() -> resource.removeRelation(codeElementUri2, "", relationType2),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuritoremove"));
+        assertException(() -> resource.removeRelation(codeElementUri2, null, relationType2),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.codeelementuritoremove"));
+
+        assertException(() -> resource.removeRelation(codeElementUri2, codeElementUriToRemove2, ""),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.relationtype"));
+        assertException(() -> resource.removeRelation(codeElementUri2, codeElementUriToRemove2, null),
+                new ResponseStatusExceptionMatcher(HttpStatus.BAD_REQUEST, "error.validation.relationtype"));
+        assertException(() -> resource.removeRelation(codeElementUri2, codeElementUriToRemove2, "doesnotexist"),
+                new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codes.generic"));
 
         assertException(() -> resource.removeRelation("doenotexist", codeElementUriToRemove, relationType),
                 new ResponseStatusExceptionMatcher(HttpStatus.INTERNAL_SERVER_ERROR, "error.codeelement.not.found"));
@@ -723,7 +735,7 @@ public class CodeElementResourceIT {
         assertEquals(1, original.getMetadata().size());
 
         List<KoodiMetadata> koodiMetadata = new ArrayList<>();
-        KoodiMetadata o1 = original.getMetadata().get(0);
+        KoodiMetadata o1 = clone(original.getMetadata().get(0));
         o1.setNimi("Modified Name");
         koodiMetadata.add(o1);
         original.setMetadata(koodiMetadata);
@@ -843,14 +855,14 @@ public class CodeElementResourceIT {
         String nimi = "uusinimi";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        ExtendedKoodiDto codeElementToBeSaved = clone(resource.getCodeElementByUriAndVersion(koodiUri, versio));
         assertEquals(Tila.HYVAKSYTTY, codeElementToBeSaved.getTila());
         assertNotEquals(nimi, codeElementToBeSaved.getMetadata().get(0).getNimi());
 
         codeElementToBeSaved.getMetadata().get(0).setNimi(nimi);
-        resource.save(codeElementToBeSaved);
+        String uusiVersio = resource.save(codeElementToBeSaved);
 
-        ExtendedKoodiDto codes = resource.getCodeElementByUriAndVersion(koodiUri, versio + 1);
+        ExtendedKoodiDto codes = resource.getCodeElementByUriAndVersion(koodiUri, Integer.parseInt(uusiVersio));
         assertEquals(Tila.LUONNOS, codes.getTila());
         assertEquals(nimi, codes.getMetadata().get(0).getNimi());
     }
@@ -861,7 +873,7 @@ public class CodeElementResourceIT {
         String nimi = "uusinimi";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        ExtendedKoodiDto codeElementToBeSaved = clone(resource.getCodeElementByUriAndVersion(koodiUri, versio));
         assertEquals(1, codeElementToBeSaved.getIncludesCodeElements().size());
         assertEquals(2, codeElementToBeSaved.getLevelsWithCodeElements().size());
         assertEquals(1, codeElementToBeSaved.getWithinCodeElements().size());
@@ -883,7 +895,7 @@ public class CodeElementResourceIT {
         String koodiUri = "savekoodineljallasuhteella";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        ExtendedKoodiDto codeElementToBeSaved = clone(resource.getCodeElementByUriAndVersion(koodiUri, versio));
 
         codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde1", 1, false));
         resource.save(codeElementToBeSaved);
@@ -899,7 +911,7 @@ public class CodeElementResourceIT {
         String koodiUri = "savekoodineljallasuhteella";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        ExtendedKoodiDto codeElementToBeSaved = clone(resource.getCodeElementByUriAndVersion(koodiUri, versio));
 
         codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde3", 1, false));
         resource.save(codeElementToBeSaved);
@@ -915,7 +927,7 @@ public class CodeElementResourceIT {
         String koodiUri = "savekoodineljallasuhteella";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        ExtendedKoodiDto codeElementToBeSaved = clone(resource.getCodeElementByUriAndVersion(koodiUri, versio));
 
         codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde2", 1, false));
         resource.save(codeElementToBeSaved);
@@ -931,7 +943,7 @@ public class CodeElementResourceIT {
         String koodiUri = "savekoodineljallasuhteella";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        ExtendedKoodiDto codeElementToBeSaved = clone(resource.getCodeElementByUriAndVersion(koodiUri, versio));
         assertEquals(1, codeElementToBeSaved.getIncludesCodeElements().size());
         assertEquals(2, codeElementToBeSaved.getLevelsWithCodeElements().size());
         assertEquals(1, codeElementToBeSaved.getWithinCodeElements().size());
@@ -984,7 +996,7 @@ public class CodeElementResourceIT {
         String koodiUri = "uusirelaatiovanhantilalle1";
         int versio = 1;
 
-        ExtendedKoodiDto codeElementToBeSaved = resource.getCodeElementByUriAndVersion(koodiUri, versio);
+        ExtendedKoodiDto codeElementToBeSaved = clone(resource.getCodeElementByUriAndVersion(koodiUri, versio));
         assertEquals(1, codeElementToBeSaved.getIncludesCodeElements().size());
         assertTrue(codeElementToBeSaved.getIncludesCodeElements().get(0).passive);
         assertEquals(0, codeElementToBeSaved.getLevelsWithCodeElements().size());
@@ -1046,5 +1058,54 @@ public class CodeElementResourceIT {
         assertEquals(c1.get(Calendar.DATE), c2.get(Calendar.DATE));
         assertEquals(c1.get(Calendar.MONTH), c2.get(Calendar.MONTH));
         assertEquals(c1.get(Calendar.YEAR), c2.get(Calendar.YEAR));
+    }
+
+    private ExtendedKoodiDto clone(ExtendedKoodiDto dto) {
+        ExtendedKoodiDto cloned = new ExtendedKoodiDto();
+        cloned.setIncludesCodeElements(dto.getIncludesCodeElements().stream()
+                .map(this::clone).collect(Collectors.toList()));
+        cloned.setKoodiArvo(dto.getKoodiArvo());
+        cloned.setKoodiUri(dto.getKoodiUri());
+        cloned.setKoodisto(dto.getKoodisto());
+        cloned.setLevelsWithCodeElements(dto.getLevelsWithCodeElements().stream()
+                .map(this::clone).collect(Collectors.toList()));
+        cloned.setPaivittajaOid(dto.getPaivittajaOid());
+        cloned.setPaivitysPvm(dto.getPaivitysPvm());
+        cloned.setResourceUri(dto.getResourceUri());
+        cloned.setTila(dto.getTila());
+        cloned.setVoimassaAlkuPvm(dto.getVoimassaAlkuPvm());
+        cloned.setVoimassaLoppuPvm(dto.getVoimassaLoppuPvm());
+        cloned.setVersio(dto.getVersio());
+        cloned.setVersion(dto.getVersion());
+        cloned.setWithinCodeElements(dto.getWithinCodeElements().stream()
+                .map(this::clone).collect(Collectors.toList()));
+        cloned.setMetadata(dto.getMetadata().stream()
+                .map(this::clone).collect(Collectors.toList()));
+        return cloned;
+    }
+
+    private ExtendedKoodiDto.RelationCodeElement clone(ExtendedKoodiDto.RelationCodeElement element) {
+        return new ExtendedKoodiDto.RelationCodeElement(
+                element.codeElementUri, element.codeElementVersion, element.codeElementValue,
+                element.relationMetadata, element.parentMetadata, element.passive
+        );
+    }
+
+    private KoodiMetadata clone(KoodiMetadata meta) {
+        KoodiMetadata cloned = new KoodiMetadata();
+        cloned.setEiSisallaMerkitysta(meta.getEiSisallaMerkitysta());
+        cloned.setHuomioitavaKoodi(meta.getHuomioitavaKoodi());
+        cloned.setId(meta.getId());
+        cloned.setKasite(meta.getKasite());
+        cloned.setKayttoohje(meta.getKayttoohje());
+        cloned.setKieli(meta.getKieli());
+        cloned.setKoodiVersio(meta.getKoodiVersio());
+        cloned.setKuvaus(meta.getKuvaus());
+        cloned.setLyhytNimi(meta.getLyhytNimi());
+        cloned.setNimi(meta.getNimi());
+        cloned.setSisaltaaKoodiston(meta.getSisaltaaKoodiston());
+        cloned.setSisaltaaMerkityksen(meta.getSisaltaaMerkityksen());
+        cloned.setVersion(meta.getVersion());
+        return cloned;
     }
 }
