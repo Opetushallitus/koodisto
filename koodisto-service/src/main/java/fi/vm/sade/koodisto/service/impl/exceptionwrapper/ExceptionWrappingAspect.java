@@ -3,6 +3,7 @@ package fi.vm.sade.koodisto.service.impl.exceptionwrapper;
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.service.GenericFault;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.types.common.FieldErrorType;
 import fi.vm.sade.koodisto.service.types.common.GenericFaultInfoType;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -54,12 +55,12 @@ public class ExceptionWrappingAspect {
             LOGGER.debug("Exception wrapped. ", ex);
 
             MethodSignature sigu = (MethodSignature) pjp.getSignature();
-            Class[] types = sigu.getExceptionTypes();
-            Set<Class> classSet = new HashSet<Class>(Arrays.asList(types));
+            Class<?>[] types = sigu.getExceptionTypes();
+            Set<Class<?>> classSet = new HashSet<>(Arrays.asList(types));
 
             if (classSet.contains(GenericFault.class)) {
                 throw createFaultInstance(ex);
-            } else if(ex instanceof KoodiNotFoundException) {
+            } else if(ex instanceof KoodiNotFoundException || ex instanceof KoodistoNotFoundException) {
                 throw new WebApplicationException(ex, Response.Status.NOT_FOUND);
             } else {
                 throw new RuntimeException("Unhandled error: " + ex.getClass() + " - " + ex.getMessage(), ex);
