@@ -4,7 +4,7 @@
     <parent>
         <artifactId>koodisto</artifactId>
         <groupId>fi.vm.sade.koodisto</groupId>
-        <version>2019-09-SNAPSHOT</version>
+        <version>2020.01-SNAPSHOT</version>
     </parent>
     <artifactId>koodisto-ui</artifactId>
     <packaging>war</packaging>

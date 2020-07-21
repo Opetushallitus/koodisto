@@ -5,7 +5,7 @@
 
   <groupId>fi.vm.sade.koodisto</groupId>
   <artifactId>koodisto</artifactId>
-  <version>2019-09-SNAPSHOT</version>
+  <version>2020.01-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Koodisto :: Parent</name>
 
@@ -19,7 +19,7 @@
 
   <properties>
     <java.version>11</java.version>
-    <compiler.debu>false</compiler.debu>
+    <compiler.debug>false</compiler.debug>
 
     <!-- bamboo.data.home and sonar.jdbc.password must be given as env-properties. -->
     <clover.fullRunEvery>500</clover.fullRunEvery>
