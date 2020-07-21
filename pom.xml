@@ -19,7 +19,7 @@
 
   <properties>
     <java.version>11</java.version>
-    <compiler.debu>false</compiler.debu>
+    <compiler.debug>false</compiler.debug>
 
     <!-- bamboo.data.home and sonar.jdbc.password must be given as env-properties. -->
     <clover.fullRunEvery>500</clover.fullRunEvery>
