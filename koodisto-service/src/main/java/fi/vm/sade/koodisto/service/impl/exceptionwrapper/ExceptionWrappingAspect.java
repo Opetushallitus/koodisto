@@ -89,6 +89,8 @@ public class ExceptionWrappingAspect {
             }
             message = "Validation failed";
             explanation = "Validation failed";
+        } else {
+            LOGGER.warn("Unexpected fault, logging to preserve stack trace.", ex);
         }
 
         info.setErrorCode(key);
