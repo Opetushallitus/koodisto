@@ -12,6 +12,10 @@ import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.repository.KoodiRepository;
+import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
+import fi.vm.sade.koodisto.repository.KoodistoRepository;
+import fi.vm.sade.koodisto.repository.KoodistonSuhdeRepository;
 import fi.vm.sade.koodisto.service.business.*;
 import fi.vm.sade.koodisto.service.business.exception.*;
 import fi.vm.sade.koodisto.service.impl.KoodistoRole;
@@ -50,17 +54,17 @@ import java.util.*;
 @Service("koodistoBusinessService")
 public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(KoodistoBusinessServiceImpl.class);
     public static final String ROOT_ORG = "1.2.246.562.10.00000000001";
 
     @Autowired
-    private KoodistoDAO koodistoDAO;
+    private KoodistoRepository koodistoRepository;
 
     @Autowired
     private KoodistoRyhmaDAO koodistoJoukkoDAO;
 
     @Autowired
-    private KoodistonSuhdeDAO koodistonSuhdeDAO;
+    private KoodistonSuhdeRepository koodistonSuhdeRepository;
 
     @Autowired
     private KoodistoVersioDAO koodistoVersioDAO;
@@ -69,10 +73,10 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private KoodistoMetadataDAO koodistoMetadataDAO;
 
     @Autowired
-    private KoodiDAO koodiDAO;
+    private KoodiRepository koodiRepository;
 
     @Autowired
-    private KoodiVersioDAO koodiVersioDAO;
+    private KoodiVersioRepository koodiVersioRepository;
 
     @Autowired
     private KoodistoRyhmaDAO koodistoRyhmaDAO;
@@ -114,7 +118,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         Koodisto koodisto = new Koodisto();
         EntityUtils.copyFields(createKoodistoData, koodisto);
         koodisto.setKoodistoUri(uriTransliterator.generateKoodistoUriByMetadata(createKoodistoData.getMetadataList()));
-        koodisto = koodistoDAO.insert(koodisto);
+        koodisto = koodistoRepository.save(koodisto);
 
         KoodistoVersio koodistoVersio = new KoodistoVersio();
         EntityUtils.copyFields(createKoodistoData, koodistoVersio);
@@ -162,7 +166,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             koodistonSuhde.setAlakoodistoVersio(ala);
             koodistonSuhde.setVersio(1);
 
-            koodistonSuhdeDAO.insert(koodistonSuhde);
+            koodistonSuhdeRepository.save(koodistonSuhde);
         }
     }
 
@@ -181,7 +185,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
             aks.add(a);
         }
-        koodistonSuhdeDAO.deleteRelations(yk, aks, st);
+        koodistonSuhdeRepository.deleteRelations(yk, aks, st);
     }
 
     @Override
@@ -359,11 +363,10 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Override
     @Transactional(readOnly = true)
     public Koodisto getKoodistoByKoodistoUri(String koodistoUri) {
-        Koodisto result = koodistoDAO.readByUri(koodistoUri);
-        if (result == null) {
+        Koodisto result = koodistoRepository.findByKoodistoUri(koodistoUri).orElseThrow(() -> {
             logger.error("No koodisto found for URI " + koodistoUri);
-            throw new KoodistoNotFoundException();
-        }
+            return new KoodistoNotFoundException();
+        });
         Iterator<KoodistoVersio> itr = result.getKoodistoVersios().iterator();
         while (itr.hasNext()) {
             KoodistoVersio koodistoVersio = (KoodistoVersio) itr.next();
@@ -481,7 +484,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         KoodistoVersio inserted = koodistoVersioDAO.insert(input);
 
         this.copyKoodiVersiosFromOldKoodistoToNew(base, inserted);
-        koodistonSuhdeDAO.copyRelations(base, inserted);
+        koodistonSuhdeRepository.copyRelations(base, inserted);
         return inserted;
     }
 
@@ -495,7 +498,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             inserted.addKoodiVersio(newRelationEntry);
             logger.info("  Copied codeElement version, codes id={}, codeElement version id={}", inserted.getKoodisto().getId(), koodiVersio.getId());
         }
-        this.koodiVersioDAO.flush();
     }
 
     private KoodistoVersio createNewVersion(KoodistoVersio latest, UpdateKoodistoDataType updateKoodistoData) {
@@ -525,7 +527,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         KoodistoVersio inserted = koodistoVersioDAO.insert(newVersio);
         copyKoodiVersiosFromOldKoodistoToNew(latest, inserted);
 
-        koodistonSuhdeDAO.copyRelations(latest, inserted);
+        koodistonSuhdeRepository.copyRelations(latest, inserted);
 
         koodisto.addKoodistoVersion(inserted);
         return inserted;
@@ -609,7 +611,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Override
     public boolean koodistoExists(String koodistoUri) {
-        return koodistoDAO.koodistoUriExists(koodistoUri);
+        return koodistoRepository.findByKoodistoUri(koodistoUri).isPresent();
     }
 
     @Override
@@ -627,10 +629,10 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             throw new KoodistoVersioNotPassiivinenException();
         }
 
-        Koodisto koodisto = koodistoDAO.readByUri(koodistoUri);
+        Koodisto koodisto = koodistoRepository.findByKoodistoUri(koodistoUri).orElse(null);
         authorizer.checkOrganisationAccess(koodisto.getOrganisaatioOid(), KoodistoRole.CRUD);
 
-        List<KoodiVersio> koodiVersios = koodiVersioDAO.getKoodiVersiosIncludedOnlyInKoodistoVersio(koodistoUri, koodistoVersio);
+        List<KoodiVersio> koodiVersios = koodiVersioRepository.getKoodiVersiosIncludedOnlyInKoodistoVersio(koodistoUri, koodistoVersio);
         for (KoodiVersio kv : koodiVersios) {
             if (!Tila.PASSIIVINEN.equals(kv.getTila())) {
                 logger.error("Cannot delete koodisto version. Tila must be " + Tila.PASSIIVINEN.name() + " for all koodi versions.");
@@ -640,7 +642,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         koodisto.removeKoodistoVersion(versio);
 
-        koodisto = koodistoDAO.readByUri(koodistoUri);
+        koodisto = koodistoRepository.findByKoodistoUri(koodistoUri).orElse(null);
 
         for (KoodiVersio kv : koodiVersios) {
             logger.info("Delete " + kv.getKoodi().getId());
@@ -650,12 +652,12 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         koodistoVersioDAO.remove(versio);
         if (koodisto.getKoodistoVersios().size() == 0) {
             for (Koodi koodi : koodisto.getKoodis()) {
-                koodiDAO.remove(koodi);
+                koodiRepository.delete(koodi);
             }
             for (KoodistoRyhma kr : koodisto.getKoodistoRyhmas()) {
                 kr.removeKoodisto(koodisto);
             }
-            koodistoDAO.remove(koodisto);
+            koodistoRepository.delete(koodisto);
         } else {
             activateRelationsInLatestKoodistoVersio(koodisto);
         }
