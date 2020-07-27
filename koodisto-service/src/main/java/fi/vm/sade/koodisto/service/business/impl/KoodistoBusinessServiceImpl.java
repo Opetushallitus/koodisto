@@ -12,10 +12,7 @@ import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.repository.KoodiRepository;
-import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
-import fi.vm.sade.koodisto.repository.KoodistoRepository;
-import fi.vm.sade.koodisto.repository.KoodistonSuhdeRepository;
+import fi.vm.sade.koodisto.repository.*;
 import fi.vm.sade.koodisto.service.business.*;
 import fi.vm.sade.koodisto.service.business.exception.*;
 import fi.vm.sade.koodisto.service.impl.KoodistoRole;
@@ -67,7 +64,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private KoodistonSuhdeRepository koodistonSuhdeRepository;
 
     @Autowired
-    private KoodistoVersioDAO koodistoVersioDAO;
+    private KoodistoVersioRepository koodistoVersioRepository;
 
     @Autowired
     private KoodistoMetadataDAO koodistoMetadataDAO;
@@ -135,7 +132,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             koodistoVersio.addMetadata(meta);
         }
 
-        koodistoVersio = koodistoVersioDAO.insert(koodistoVersio);
+        koodistoVersio = koodistoVersioRepository.save(koodistoVersio);
 
         for (KoodistoRyhma kr : koodistoRyhmas) {
             kr.addKoodisto(koodisto);
@@ -357,7 +354,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             }
         }
 
-        return koodistoVersioDAO.searchKoodistos(searchCriteria);
+        return koodistoVersioRepository.searchKoodistos(searchCriteria);
     }
 
     @Override
@@ -390,7 +387,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Transactional(readOnly = true)
     public KoodistoVersio getLatestKoodistoVersio(String koodistoUri, boolean initialize) {
         SearchKoodistosCriteriaType searchCriteria = KoodistoServiceSearchCriteriaBuilder.latestKoodistoByUri(koodistoUri);
-        List<KoodistoVersio> result = koodistoVersioDAO.searchKoodistos(searchCriteria);
+        List<KoodistoVersio> result = koodistoVersioRepository.searchKoodistos(searchCriteria);
         if (result.size() != 1) {
             logger.error("No koodisto found for URI " + koodistoUri);
             throw new KoodistoNotFoundException();
@@ -420,7 +417,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     private List<KoodistoVersio> getLatestKoodistoVersios(String... koodistoUris) {
         SearchKoodistosCriteriaType searchCriteria = KoodistoServiceSearchCriteriaBuilder.latestKoodistosByUri(koodistoUris);
-        List<KoodistoVersio> result = koodistoVersioDAO.searchKoodistos(searchCriteria);
+        List<KoodistoVersio> result = koodistoVersioRepository.searchKoodistos(searchCriteria);
         if (result.size() < 1) {
             logger.error("No koodisto found for URIs");
             throw new KoodistoNotFoundException();
@@ -433,7 +430,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Transactional(readOnly = true)
     public KoodistoVersio getKoodistoVersio(String koodistoUri, Integer koodistoVersio) {
         SearchKoodistosCriteriaType searchCriteria = KoodistoServiceSearchCriteriaBuilder.koodistoByUriAndVersio(koodistoUri, koodistoVersio);
-        List<KoodistoVersio> result = koodistoVersioDAO.searchKoodistos(searchCriteria);
+        List<KoodistoVersio> result = koodistoVersioRepository.searchKoodistos(searchCriteria);
         if (result.size() != 1) {
             logger.error("No koodisto found for URI " + koodistoUri + " and version " + koodistoVersio);
             throw new KoodistoNotFoundException();
@@ -481,7 +478,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         }
 
         // insert KoodistoVersio
-        KoodistoVersio inserted = koodistoVersioDAO.insert(input);
+        KoodistoVersio inserted = koodistoVersioRepository.save(input);
 
         this.copyKoodiVersiosFromOldKoodistoToNew(base, inserted);
         koodistonSuhdeRepository.copyRelations(base, inserted);
@@ -524,7 +521,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             newVersio.addMetadata(newMetadata);
         }
 
-        KoodistoVersio inserted = koodistoVersioDAO.insert(newVersio);
+        KoodistoVersio inserted = koodistoVersioRepository.save(newVersio);
         copyKoodiVersiosFromOldKoodistoToNew(latest, inserted);
 
         koodistonSuhdeRepository.copyRelations(latest, inserted);
@@ -568,7 +565,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         // set all the koodis in this koodisto to HYVAKSYTTY
         if (!Tila.HYVAKSYTTY.equals(latest.getTila()) && updateKoodistoData.getTila().equals(TilaType.HYVAKSYTTY)) {
             koodiBusinessService.acceptCodeElements(latest);
-            KoodistoVersio previousVersion = koodistoVersioDAO.getPreviousKoodistoVersio(latest.getKoodisto().getKoodistoUri(), latest.getVersio());
+            KoodistoVersio previousVersion = koodistoVersioRepository.getPreviousKoodistoVersio(latest.getKoodisto().getKoodistoUri(), latest.getVersio());
             if (previousVersion != null && previousVersion.getVoimassaLoppuPvm() == null) {
                 previousVersion.setVoimassaLoppuPvm(new Date());
             }
@@ -616,7 +613,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Override
     public boolean koodistoExists(String koodistoUri, Integer koodistoVersio) {
-        return koodistoVersioDAO.koodistoVersioExists(koodistoUri, koodistoVersio);
+        return koodistoVersioRepository.findByKoodistoKoodistoUriAndVersio(koodistoUri, koodistoVersio).isPresent();
     }
 
     @Override
@@ -649,7 +646,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             koodiBusinessService.delete(kv.getKoodi().getKoodiUri(), kv.getVersio(), true);
         }
 
-        koodistoVersioDAO.remove(versio);
+        koodistoVersioRepository.delete(versio);
         if (koodisto.getKoodistoVersios().size() == 0) {
             for (Koodi koodi : koodisto.getKoodis()) {
                 koodiRepository.delete(koodi);
