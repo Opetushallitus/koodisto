@@ -1,8 +1,8 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import fi.vm.sade.koodisto.dao.KoodistoRyhmaMetadataDAO;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.repository.KoodistoRyhmaMetadataRepository;
 import fi.vm.sade.koodisto.repository.KoodistoRyhmaRepository;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.*;
@@ -26,7 +26,7 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     @Autowired
     private KoodistoRyhmaRepository koodistoRyhmaRepository;
     @Autowired
-    private KoodistoRyhmaMetadataDAO koodistoRyhmaMetadataDAO;
+    private KoodistoRyhmaMetadataRepository koodistoRyhmaMetadataRepository;
 
     @Override
     public KoodistoRyhma createKoodistoRyhma(final KoodistoRyhmaDto koodistoRyhmaDto) {
@@ -99,7 +99,7 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
         }
         for (KoodistoRyhmaMetadata metadata : removeKoodistoRyhmaMetadatas) {
             koodistoRyhma.removeKoodistoRyhmaMetadata(metadata);
-            koodistoRyhmaMetadataDAO.remove(metadata);
+            koodistoRyhmaMetadataRepository.delete(metadata);
         }
         return koodistoRyhma;
     }
