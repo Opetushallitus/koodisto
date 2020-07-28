@@ -4,13 +4,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import fi.vm.sade.koodisto.repository.KoodistoRyhmaRepository;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fi.vm.sade.koodisto.dao.KoodiDAO;
 import fi.vm.sade.koodisto.dao.KoodistoDAO;
-import fi.vm.sade.koodisto.dao.KoodistoRyhmaDAO;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
@@ -31,9 +31,9 @@ public class UriTransliteratorImpl implements UriTransliterator {
     private KoodistoDAO koodistoDAO;
 
     @Autowired
-    private KoodistoRyhmaDAO koodistoRyhmaDAO;
+    private KoodistoRyhmaRepository koodistoRyhmaRepository;
 
-    private static final Map<String, String> TRANSLITERATION = new HashMap<String, String>();
+    private static final Map<String, String> TRANSLITERATION = new HashMap<>();
 
     static {
         String[][] specialCharacters = new String[][] { { "å", "o" }, { "ä", "a" }, { "ö", "o" } };
@@ -135,7 +135,7 @@ public class UriTransliteratorImpl implements UriTransliterator {
         String koodistoRyhmaUri = baseKoodistoRyhmaUri;
 
         int i = 1;
-        while (koodistoRyhmaDAO.koodistoRyhmaUriExists(koodistoRyhmaUri)) {
+        while (koodistoRyhmaRepository.existsKoodistoRyhmaByKoodistoRyhmaUri(koodistoRyhmaUri)) {
             koodistoRyhmaUri = baseKoodistoRyhmaUri + "-" + i;
             ++i;
         }

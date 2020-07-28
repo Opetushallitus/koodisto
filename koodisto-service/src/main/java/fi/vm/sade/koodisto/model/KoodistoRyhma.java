@@ -21,6 +21,18 @@ import java.util.Set;
 @org.hibernate.annotations.Table(appliesTo = KoodistoRyhma.TABLE_NAME, comment = "Koodistoryhmä sisältää aina tietyn tyyppisiä koodistoja, esim. alueet. Koodisto voi kuulua useaan koodistoryhmään.")
 @Entity
 @Cacheable
+@NamedEntityGraph(
+        name = "KoodistoRyhma.withKoodistosAndVersions",
+        attributeNodes = {
+                @NamedAttributeNode("koodistoRyhmaMetadatas"),
+                @NamedAttributeNode(value = "koodistos", subgraph = "koodistos")
+        },
+        subgraphs = {
+                @NamedSubgraph(name = "koodistos", attributeNodes =
+                    @NamedAttributeNode(value = "koodistoVersios", subgraph = "versioMetadatas")),
+                @NamedSubgraph(name = "versioMetadatas", attributeNodes = @NamedAttributeNode("metadatas"))
+        }
+)
 public class KoodistoRyhma extends BaseEntity {
 
     private static final long serialVersionUID = 4137284135569188700L;
@@ -39,7 +51,7 @@ public class KoodistoRyhma extends BaseEntity {
 
     @NotBlank
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
-    @Column(name = KoodistoRyhma.KOODISTO_RYHMA_URI_COLUMN_NAME, length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = false)
+    @Column(name = KoodistoRyhma.KOODISTO_RYHMA_URI_COLUMN_NAME, length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = false, unique = true)
     private String koodistoRyhmaUri;
 
     public Set<Koodisto> getKoodistos() {

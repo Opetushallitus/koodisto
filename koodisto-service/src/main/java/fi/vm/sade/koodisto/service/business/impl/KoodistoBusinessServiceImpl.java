@@ -58,7 +58,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private KoodistoRepository koodistoRepository;
 
     @Autowired
-    private KoodistoRyhmaDAO koodistoJoukkoDAO;
+    private KoodistoRyhmaRepository koodistoRyhmaRepository;
 
     @Autowired
     private KoodistonSuhdeRepository koodistonSuhdeRepository;
@@ -74,9 +74,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Autowired
     private KoodiVersioRepository koodiVersioRepository;
-
-    @Autowired
-    private KoodistoRyhmaDAO koodistoRyhmaDAO;
 
     @Autowired
     private KoodiBusinessService koodiBusinessService;
@@ -104,7 +101,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         checkMetadatas(createKoodistoData.getMetadataList());
 
-        List<KoodistoRyhma> koodistoRyhmas = koodistoRyhmaDAO.findByUri(koodistoRyhmaUris);
+        List<KoodistoRyhma> koodistoRyhmas = koodistoRyhmaRepository.findByKoodistoRyhmaUriIn(koodistoRyhmaUris);
         if (koodistoRyhmas.isEmpty()) {
             throw new KoodistoRyhmaNotFoundException();
         }
@@ -293,7 +290,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Override
     @Transactional(readOnly = true)
     public List<KoodistoRyhma> listAllKoodistoRyhmas() {
-        return koodistoJoukkoDAO.listAllKoodistoRyhmas();
+        return koodistoRyhmaRepository.findAll();
     }
 
     @Override
@@ -301,7 +298,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     public KoodistoRyhma getKoodistoGroup(String koodistoGroupUri) {
         List<String> koodistoGroupUris = new ArrayList<String>();
         koodistoGroupUris.add(koodistoGroupUri);
-        List<KoodistoRyhma> koodistoGroups = koodistoRyhmaDAO.findByUri(koodistoGroupUris);
+        List<KoodistoRyhma> koodistoGroups = koodistoRyhmaRepository.findByKoodistoRyhmaUriIn(koodistoGroupUris);
 
         if (koodistoGroups.isEmpty()) {
             throw new KoodistoRyhmaNotFoundException();

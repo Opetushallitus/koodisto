@@ -1,9 +1,9 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import fi.vm.sade.koodisto.dao.KoodistoRyhmaDAO;
 import fi.vm.sade.koodisto.dao.KoodistoRyhmaMetadataDAO;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.repository.KoodistoRyhmaRepository;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.*;
 
@@ -14,29 +14,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-
-import javax.persistence.NoResultException;
 
 @Transactional
 @Service("koodistoRyhmaBusinessService")
 public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(KoodistoRyhmaBusinessServiceImpl.class);
+
     @Autowired
-    private KoodistoRyhmaDAO koodistoRyhmaDAO;
+    private KoodistoRyhmaRepository koodistoRyhmaRepository;
     @Autowired
     private KoodistoRyhmaMetadataDAO koodistoRyhmaMetadataDAO;
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public KoodistoRyhma createKoodistoRyhma(final KoodistoRyhmaDto koodistoRyhmaDto) {
         if (koodistoRyhmaDto == null || StringUtils.isBlank(koodistoRyhmaDto.getKoodistoRyhmaUri())) {
             throw new KoodistoRyhmaUriEmptyException();
         }
-        checkMetadatas(new ArrayList<>(koodistoRyhmaDto.getKoodistoRyhmaMetadatas()));
+        if (koodistoRyhmaDto.getId() != null) {
+            throw new IllegalArgumentException("Trying to use createKoodistoRyhma() to update KoodistoRyhma, id: " +
+                    koodistoRyhmaDto.getId());
+        }
+        if (koodistoRyhmaRepository.existsKoodistoRyhmaByKoodistoRyhmaUri(koodistoRyhmaDto.getKoodistoRyhmaUri())) {
+            throw new IllegalArgumentException("Trying to use createKoodistoRyhma() to update KoodistoRyhma, uri: " +
+                    koodistoRyhmaDto.getKoodistoRyhmaUri());
+        }
+        checkMetadatas(koodistoRyhmaDto.getKoodistoRyhmaMetadatas());
 
         KoodistoRyhma koodistoRyhma = new KoodistoRyhma();
         koodistoRyhma.setKoodistoRyhmaUri(koodistoRyhmaDto.getKoodistoRyhmaUri());
@@ -44,20 +49,20 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
         for (KoodistoRyhmaMetadata koodistoRyhmaMetadata : koodistoRyhmaDto.getKoodistoRyhmaMetadatas()) {
             koodistoRyhma.addKoodistoRyhmaMetadata(koodistoRyhmaMetadata);
         }
-        koodistoRyhma = koodistoRyhmaDAO.insert(koodistoRyhma);
+        koodistoRyhma = koodistoRyhmaRepository.save(koodistoRyhma);
         return koodistoRyhma;
     }
 
-    private void checkRequiredMetadataFields(List<KoodistoRyhmaMetadata> metadatas) {
+    private void checkRequiredMetadataFields(Set<KoodistoRyhmaMetadata> metadatas) {
         for (KoodistoRyhmaMetadata md : metadatas) {
             if (StringUtils.isBlank(md.getNimi())) {
-                logger.error("No koodistoryhmä nimi defined for language " + md.getKieli().name());
+                LOGGER.error("No koodistoryhmä nimi defined for language " + md.getKieli().name());
                 throw new KoodistoRyhmaNimiEmptyException();
             }
         }
     }
 
-    private void checkMetadatas(List<KoodistoRyhmaMetadata> metadatas) {
+    private void checkMetadatas(Set<KoodistoRyhmaMetadata> metadatas) {
         if (metadatas == null || metadatas.isEmpty()) {
             throw new MetadataEmptyException();
         } else {
@@ -74,7 +79,7 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
         KoodistoRyhma koodistoRyhma = getKoodistoRyhmaById(koodistoRyhmaDto.getId());
         Set<KoodistoRyhmaMetadata> koodistoRyhmaDtoMetadatas = koodistoRyhmaDto.getKoodistoRyhmaMetadatas();
         Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = koodistoRyhma.getKoodistoJoukkoMetadatas();
-        Set<KoodistoRyhmaMetadata> removeKoodistoRyhmaMetadatas = new HashSet<KoodistoRyhmaMetadata>();
+        Set<KoodistoRyhmaMetadata> removeKoodistoRyhmaMetadatas = new HashSet<>();
         koodistoRyhma.setKoodistoRyhmaUri(koodistoRyhmaDto.getKoodistoRyhmaUri());
         for (KoodistoRyhmaMetadata updatedMetadata : koodistoRyhmaDtoMetadatas) {
             boolean found = false;
@@ -101,24 +106,17 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
 
     @Override
     public KoodistoRyhma getKoodistoRyhmaById(final Long id) {
-        try {
-            return koodistoRyhmaDAO.findById(id);
-        } catch (NoResultException e) {
-            throw new KoodistoRyhmaNotFoundException();
-        }
+        return koodistoRyhmaRepository.getById(id).orElseThrow(KoodistoRyhmaNotFoundException::new);
     }
 
     @Override
     public void delete(final Long id) {
-        try {
-            KoodistoRyhma koodistoRyhma = koodistoRyhmaDAO.findById(id);
-            if (koodistoRyhma.getKoodistos().isEmpty()) {
-                koodistoRyhmaDAO.remove(koodistoRyhma);
-            } else {
-                throw new KoodistoRyhmaNotEmptyException();
-            }
-        } catch (NoResultException e) {
-            throw new KoodistoRyhmaNotFoundException();
+        KoodistoRyhma koodistoRyhma = koodistoRyhmaRepository.getById(id)
+                .orElseThrow(KoodistoRyhmaNotFoundException::new);
+        if (koodistoRyhma.getKoodistos().isEmpty()) {
+            koodistoRyhmaRepository.delete(koodistoRyhma);
+        } else {
+            throw new KoodistoRyhmaNotEmptyException();
         }
     }
 }
