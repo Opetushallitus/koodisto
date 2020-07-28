@@ -2,10 +2,10 @@ package fi.vm.sade.koodisto.service.business.it;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.repository.KoodistonSuhdeRepository;
 import fi.vm.sade.koodisto.service.business.DownloadBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
@@ -61,7 +61,7 @@ public class KoodistoBusinessServiceIT {
     private KoodiBusinessService koodiBusinessService;
 
     @Autowired
-    private KoodistonSuhdeDAO suhdeDAO;
+    private KoodistonSuhdeRepository koodistonSuhdeRepository;
     
     @Autowired
     private SadeConversionService conversionService;
@@ -173,9 +173,9 @@ public class KoodistoBusinessServiceIT {
 
     @Test
     public void removeRelation() {
-        assertNotNull(suhdeDAO.read(KOODISTON_SUHDE));
+        assertTrue(koodistonSuhdeRepository.findById(KOODISTON_SUHDE).isPresent());
         koodistoBusinessService.removeRelation("suhde502kanssa", Arrays.asList("suhde501kanssa"), SuhteenTyyppi.SISALTYY);
-        assertNull(suhdeDAO.read(KOODISTON_SUHDE));
+        assertTrue(koodistonSuhdeRepository.findById(KOODISTON_SUHDE).isEmpty());
     }
 
     @Test
@@ -188,15 +188,15 @@ public class KoodistoBusinessServiceIT {
     public void preventsAddingSameRelationMoreThanOnce() {
         KoodistoVersio latest = koodistoBusinessService.getLatestKoodistoVersio("suhde502kanssa");
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.SISALTYY);
-        assertEquals(1, suhdeDAO.findBy("ylakoodistoVersio", latest).size());
+        assertTrue(koodistonSuhdeRepository.findByYlakoodistoVersio(latest).isPresent());
     }
 
     @Test
     public void preventsAddingSameRelationMoreThanOnceDespiteRelationType() {
         KoodistoVersio latest = koodistoBusinessService.getLatestKoodistoVersio("suhde502kanssa");
         koodistoBusinessService.addRelation("suhde502kanssa", "suhde501kanssa", SuhteenTyyppi.RINNASTEINEN);
-        assertEquals(1, suhdeDAO.findBy("ylakoodistoVersio", latest).size());
-        assertTrue(suhdeDAO.findBy("alakoodistoVersio", latest).isEmpty());
+        assertTrue(koodistonSuhdeRepository.findByYlakoodistoVersio(latest).isPresent());
+        assertTrue(koodistonSuhdeRepository.findByAlakoodistoVersio(latest).isEmpty());
     }
 
     @Test(expected = KoodistoRelationToSelfException.class)

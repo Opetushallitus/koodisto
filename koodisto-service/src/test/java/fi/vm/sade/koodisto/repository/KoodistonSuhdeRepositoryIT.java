@@ -1,9 +1,7 @@
-package fi.vm.sade.koodisto.dao.impl;
+package fi.vm.sade.koodisto.repository;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
-import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistonSuhde;
@@ -35,55 +33,55 @@ import static org.junit.Assert.*;
 @DatabaseSetup("classpath:test-data.xml")
 @Transactional
 @WithMockUser("1.2.3.4.5")
-public class KoodistonSuhdeDAOImplIT {
+public class KoodistonSuhdeRepositoryIT {
 
     @Autowired
-    private KoodistonSuhdeDAO suhdeDAO;
+    private KoodistonSuhdeRepository koodistonSuhdeRepository;
 
     @Autowired
-    private KoodistoVersioDAO versionDAO;
+    private KoodistoVersioRepository koodistoVersioRepository;
 
     @Test
     public void copiesRelationsFromOldKoodistonVersioToNewOne() {
-        KoodistoVersio original = versionDAO.read(-1L);
+        KoodistoVersio original = koodistoVersioRepository.findById(-1L).orElseThrow();
         KoodistoVersio newVersion = givenNewKoodistoVersio(original);
-        suhdeDAO.copyRelations(original, newVersion);
+        koodistonSuhdeRepository.copyRelations(original, newVersion);
         assertRelations(original, newVersion);
     }
 
     @Test
     public void copiedRelationsAreActuallyStoredInDb() {
-        KoodistoVersio original = versionDAO.read(-1L);
+        KoodistoVersio original = koodistoVersioRepository.findById(-1L).orElseThrow();
         KoodistoVersio newVersion = givenNewKoodistoVersio(original);
-        suhdeDAO.copyRelations(original, newVersion);
+        koodistonSuhdeRepository.copyRelations(original, newVersion);
         assertRelations(original, newVersion);
     }
 
     @Test
     public void doesNotCopyPassiveRelations() {
-        KoodistoVersio original = versionDAO.read(-911L);
+        KoodistoVersio original = koodistoVersioRepository.findById(-911L).orElseThrow();
         KoodistoVersio newVersion = givenNewKoodistoVersio(original);
-        suhdeDAO.copyRelations(original, newVersion);
-        newVersion = versionDAO.read(newVersion.getId());
+        koodistonSuhdeRepository.copyRelations(original, newVersion);
+        newVersion = koodistoVersioRepository.findById(newVersion.getId()).orElseThrow();
         assertTrue(newVersion.getAlakoodistos().isEmpty());
         assertTrue(newVersion.getYlakoodistos().isEmpty());
     }
     
     @Test
     public void oldRelationsAreSetToPassiveWhenCopying() {
-        KoodistoVersio original = versionDAO.read(-1L);
+        KoodistoVersio original = koodistoVersioRepository.findById(-1L).orElseThrow();
         KoodistoVersio newVersion = givenNewKoodistoVersio(original);
-        suhdeDAO.copyRelations(original, newVersion);
+        koodistonSuhdeRepository.copyRelations(original, newVersion);
         assertOldRelationsArePassive(original, newVersion);
     }
 
     @Test
     public void deleRelations() {
-        KoodistonSuhde toBeDeleted = suhdeDAO.read(-5L);
-        KoodistoUriAndVersioType yla = getKoodistoUriAndVersioType(versionDAO.read(toBeDeleted.getYlakoodistoVersio().getId()));
-        KoodistoUriAndVersioType ala = getKoodistoUriAndVersioType(versionDAO.read(toBeDeleted.getAlakoodistoVersio().getId()));
-        suhdeDAO.deleteRelations(yla, Arrays.asList(ala), toBeDeleted.getSuhteenTyyppi());
-        assertNull(suhdeDAO.read(toBeDeleted.getId()));
+        KoodistonSuhde toBeDeleted = koodistonSuhdeRepository.findById(-5L).orElseThrow();
+        KoodistoUriAndVersioType yla = getKoodistoUriAndVersioType(koodistoVersioRepository.findById(toBeDeleted.getYlakoodistoVersio().getId()).orElseThrow());
+        KoodistoUriAndVersioType ala = getKoodistoUriAndVersioType(koodistoVersioRepository.findById(toBeDeleted.getAlakoodistoVersio().getId()).orElseThrow());
+        koodistonSuhdeRepository.deleteRelations(yla, Arrays.asList(ala), toBeDeleted.getSuhteenTyyppi());
+        assertTrue(koodistonSuhdeRepository.findById(toBeDeleted.getId()).isEmpty());
     }
 
     private KoodistoUriAndVersioType getKoodistoUriAndVersioType(KoodistoVersio versio) {
@@ -122,7 +120,7 @@ public class KoodistonSuhdeDAOImplIT {
         for ( KoodistoMetadata data : original.getMetadatas()) {
             newVersion.addMetadata(data);
         }
-        return versionDAO.insert(newVersion);
+        return koodistoVersioRepository.save(newVersion);
     }
     
 }
