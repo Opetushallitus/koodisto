@@ -7,7 +7,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.authorization.NotAuthorizedException;
-import fi.vm.sade.koodisto.dao.*;
 import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
@@ -67,7 +66,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private KoodistoVersioRepository koodistoVersioRepository;
 
     @Autowired
-    private KoodistoMetadataDAO koodistoMetadataDAO;
+    private KoodistoMetadataRepository koodistoMetadataRepository;
 
     @Autowired
     private KoodiRepository koodiRepository;
@@ -205,13 +204,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
      * if the nimi is not unique.
      */
     private void checkNimiIsUnique(String koodistoUri, String nimi) {
-        if (koodistoMetadataDAO.nimiExistsForSomeOtherKoodisto(koodistoUri, nimi)) {
+        if (koodistoMetadataRepository.existsByKoodistoVersioKoodistoKoodistoUriIsNotAndNimi(koodistoUri, nimi)) {
             throw new KoodistoNimiNotUniqueException();
         }
     }
 
     private void checkNimiIsUnique(String nimi) {
-        if (koodistoMetadataDAO.nimiExists(nimi)) {
+        if (koodistoMetadataRepository.existsByNimi(nimi)) {
             throw new KoodistoNimiNotUniqueException();
         }
     }
@@ -548,13 +547,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             EntityUtils.copyFields(updateMetadata, newMetadata);
             newMetadata.setKoodistoVersio(latest);
             latest.addMetadata(newMetadata);
-            koodistoMetadataDAO.insert(newMetadata);
+            koodistoMetadataRepository.save(newMetadata);
         }
 
         // Delete old metadatas
         for (KoodistoMetadata oldMd : latestMetadatas) {
             latest.removeMetadata(oldMd);
-            koodistoMetadataDAO.remove(oldMd);
+            koodistoMetadataRepository.delete(oldMd);
         }
 
         // If the latest version is in LUONNOS state and we are updating it to

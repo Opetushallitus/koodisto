@@ -1,4 +1,4 @@
-package fi.vm.sade.koodisto.dao;
+package fi.vm.sade.koodisto.repository;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -26,16 +26,16 @@ import static org.junit.Assert.*;
 @DataJpaTest
 @DatabaseSetup("classpath:test-data.xml")
 @Transactional
-public class KoodistoMetadataDaoIT {
+public class KoodistoMetadataRepositoryIT {
 
     @Autowired
-    KoodistoMetadataDAO koodistoMetadataDAO;
+    KoodistoMetadataRepository koodistoMetadataRepository;
 
     @Test
     public void testListAllByKoodisto() {
 
-        List<KoodistoMetadata> koodistoMetadataList = koodistoMetadataDAO
-                .listAllByKoodisto("http://www.avi.fi/aluevirasto");
+        List<KoodistoMetadata> koodistoMetadataList = koodistoMetadataRepository
+                .findByKoodistoVersioKoodistoKoodistoUri("http://www.avi.fi/aluevirasto");
         assertNotNull(koodistoMetadataList);
     }
 
@@ -44,10 +44,10 @@ public class KoodistoMetadataDaoIT {
         final String koodistoUri = "http://paljon_versioita.fi/1";
         final String nimi = "paljon versioita koodistossa";
 
-        assertFalse(koodistoMetadataDAO.nimiExistsForSomeOtherKoodisto(koodistoUri, nimi));
+        assertFalse(koodistoMetadataRepository.existsByKoodistoVersioKoodistoKoodistoUriIsNotAndNimi(koodistoUri, nimi));
 
         final String anotherKoodistoUri = "http://testikoodisto.fi";
-        assertTrue(koodistoMetadataDAO.nimiExistsForSomeOtherKoodisto(anotherKoodistoUri, nimi));
+        assertTrue(koodistoMetadataRepository.existsByKoodistoVersioKoodistoKoodistoUriIsNotAndNimi(anotherKoodistoUri, nimi));
     }
 
 }
