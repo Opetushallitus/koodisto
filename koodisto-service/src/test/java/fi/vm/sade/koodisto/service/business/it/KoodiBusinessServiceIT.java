@@ -2,8 +2,8 @@ package fi.vm.sade.koodisto.service.business.it;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
 import fi.vm.sade.koodisto.service.business.DownloadBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
@@ -58,7 +58,7 @@ public class KoodiBusinessServiceIT {
     private KoodistoBusinessService koodistoBusinessService;
     
     @Autowired
-    private KoodiVersioDAO koodiVersioDAO;
+    private KoodiVersioRepository koodiVersioRepository;
 
     @Test
     public void testCreate() {
@@ -133,7 +133,7 @@ public class KoodiBusinessServiceIT {
         assertNull(latest.getVoimassaLoppuPvm());
         assertEquals(Tila.LUONNOS, updated.getTila());
         koodiBusinessService.setKoodiTila(updated.getKoodi().getKoodiUri(), TilaType.HYVAKSYTTY);
-        latest = koodiVersioDAO.read(latest.getId());
+        latest = koodiVersioRepository.findById(latest.getId()).orElseThrow();
         assertNotNull(latest.getVoimassaLoppuPvm());
     }
 

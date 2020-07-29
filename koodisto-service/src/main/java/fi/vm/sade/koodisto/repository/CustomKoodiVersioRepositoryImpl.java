@@ -7,8 +7,10 @@ import fi.vm.sade.koodisto.service.types.KoodiBaseSearchCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoVersioSelectionType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
+import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.DateHelper;
+import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
 
@@ -17,10 +19,15 @@ import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Repository
 public class CustomKoodiVersioRepositoryImpl implements CustomKoodiVersioRepository {
 
+    private static final String SUHTEEN_TYYPPI = "suhteenTyyppi";
+    private static final String YLAKOODI_VERSIO = "ylakoodiVersio";
+    private static final String ALAKOODI_VERSIO = "alakoodiVersio";
     private static final String METADATAS = "metadatas";
     private static final String ORGANISAATIO_OID = "organisaatioOid";
     private static final String KOODI_VERSIOS = "koodiVersios";
@@ -65,6 +72,111 @@ public class CustomKoodiVersioRepositoryImpl implements CustomKoodiVersioReposit
         query.distinct(true);
         query.select(root).where(condition, conditionVersio, condSize);
 
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    @Override
+    public List<KoodiVersio> getKoodiVersios(KoodiUriAndVersioType... koodis) {
+        if (koodis.length == 0) {
+            return new ArrayList<>();
+        }
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<KoodiVersio> criteriaQuery = cb.createQuery(KoodiVersio.class);
+        Root<KoodiVersio> root = criteriaQuery.from(KoodiVersio.class);
+
+        final Join<KoodiVersio, Koodi> koodi = root.join(KOODI);
+        root.fetch(KOODI);
+        root.fetch(METADATAS, JoinType.LEFT);
+
+        List<Predicate> restrictions = new ArrayList<>();
+        for (KoodiUriAndVersioType kv : koodis) {
+            restrictions.add(
+                    cb.and(
+                        cb.equal(koodi.get(KOODI_URI), kv.getKoodiUri()),
+                        cb.equal(root.get(VERSIO), kv.getVersio())
+                    )
+            );
+        }
+
+        Predicate connectedRestrictions;
+        if (restrictions.size() == 1) {
+            connectedRestrictions = restrictions.get(0);
+        } else {
+            connectedRestrictions = cb.or(restrictions.toArray(new Predicate[restrictions.size()]));
+        }
+
+        criteriaQuery.distinct(true);
+        criteriaQuery.select(root).where(connectedRestrictions);
+        return entityManager.createQuery(criteriaQuery).getResultList();
+    }
+
+    @Override
+    public Optional<KoodiVersio> getPreviousKoodiVersio(String koodiUri, Integer koodiVersio) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<KoodiVersio> query = cb.createQuery(KoodiVersio.class);
+        Root<KoodiVersio> root = query.from(KoodiVersio.class);
+        Join<KoodiVersio, Koodi> koodi = root.join(KOODI);
+
+        Predicate koodiUriEqual = cb.equal(koodi.get(KOODI_URI), koodiUri);
+        Predicate koodiVersioLessThan = cb.lessThan(root.get(VERSIO), koodiVersio);
+
+        query.select(root).where(
+                cb.and(koodiUriEqual, koodiVersioLessThan)
+        ).orderBy(cb.desc(root.get(VERSIO)));
+
+        List<KoodiVersio> resultList = entityManager.createQuery(query).setMaxResults(1).getResultList();
+
+        if (resultList.size() == 1) {
+            return Optional.of(resultList.get(0));
+        }
+        return Optional.empty();
+    }
+
+    private Optional<KoodiVersio> getPreviousKoodiVersio(KoodiVersio koodiVersio) {
+        return getPreviousKoodiVersio(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio());
+    }
+
+    @Override
+    public Map<KoodiVersio, Optional<KoodiVersio>> getPreviousKoodiVersios(List<KoodiVersio> koodiVersios) {
+        return koodiVersios.stream()
+                .collect(Collectors.toMap(
+                        Function.identity(),
+                        this::getPreviousKoodiVersio
+                ));
+    }
+
+    @Override
+    public boolean isLatestKoodiVersio(String koodiUri, Integer versio) {
+        SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(koodiUri);
+        TypedQuery<KoodiVersio> query = createKoodiVersioQueryFromSearchCriteria(searchCriteria);
+        return query.getSingleResult().getVersio().equals(versio);
+    }
+
+    @Override
+    public Map<String, Integer> getLatestVersionNumbersForUris(String... koodiUris) {
+        if (koodiUris == null || koodiUris.length == 0){
+            return new HashMap<>();
+        }
+        SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(koodiUris);
+        TypedQuery<KoodiVersio> query = createKoodiVersioQueryFromSearchCriteria(searchCriteria);
+        return query.getResultList().stream().collect(Collectors.toMap(
+                koodiVersio -> koodiVersio.getKoodi().getKoodiUri(), KoodiVersio::getVersio));
+    }
+
+    @Override
+    public List<KoodiVersio> findByKoodistoUriAndVersio(String koodistoUri, Integer versio) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<KoodiVersio> query = cb.createQuery(KoodiVersio.class);
+        Root<KoodistoVersioKoodiVersio> koodistoVersioKoodiVersio = query.from(KoodistoVersioKoodiVersio.class);
+        Join<KoodistoVersioKoodiVersio, KoodistoVersio> koodistoVersio = koodistoVersioKoodiVersio.join(KOODISTO_VERSIO);
+        Join<KoodistoVersio, Koodisto> koodisto = koodistoVersio.join(KOODISTO);
+        Join<KoodistoVersioKoodiVersio, KoodiVersio> koodiVersio = koodistoVersioKoodiVersio.join(KOODI_VERSIO);
+        koodiVersio.fetch(KOODI);
+
+        query.select(koodiVersio).distinct(true).where(cb.and(
+                cb.equal(koodisto.get(KOODISTO_URI), koodistoUri),
+                cb.equal(koodistoVersio.get(VERSIO), versio)
+        ));
         return entityManager.createQuery(query).getResultList();
     }
 
@@ -134,6 +246,67 @@ public class CustomKoodiVersioRepositoryImpl implements CustomKoodiVersioReposit
 
         List<Tuple> result = query.getResultList();
         return convertSearchResultSet(result);
+    }
+    @Override
+    public List<KoodiVersioWithKoodistoItem> listByParentRelation(KoodiUriAndVersioType parent, SuhteenTyyppi suhdeTyyppi) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tuple> criteriaQuery = cb.createTupleQuery();
+        Root<KoodinSuhde> root = criteriaQuery.from(KoodinSuhde.class);
+        Join<KoodinSuhde, KoodiVersio> ylakoodiVersioJoin = root.join(YLAKOODI_VERSIO);
+        Join<KoodiVersio, Koodi> koodi = ylakoodiVersioJoin.join(KOODI);
+
+        Join<KoodinSuhde, KoodiVersio> alakoodiVersioJoin = root.join(ALAKOODI_VERSIO);
+        Join<KoodiVersio, Koodi> alakoodiJoin = alakoodiVersioJoin.join(KOODI);
+        Join<KoodistoVersioKoodiVersio, KoodistoVersio> koodistoVersio = alakoodiVersioJoin
+                .join(KOODISTO_VERSIOS)
+                .join(KOODISTO_VERSIO);
+        Join<KoodistoVersio, Koodisto> koodisto = alakoodiJoin.join(KOODISTO, JoinType.LEFT);
+
+        alakoodiVersioJoin.fetch(KOODI);
+        alakoodiVersioJoin.fetch(METADATAS);
+
+        criteriaQuery.distinct(true);
+        criteriaQuery.multiselect(
+                alakoodiVersioJoin, koodisto.get(KOODISTO_URI), koodisto.get(ORGANISAATIO_OID), koodistoVersio.get(VERSIO)
+        ).where(
+                cb.and(
+                        cb.equal(root.get(SUHTEEN_TYYPPI), suhdeTyyppi),
+                        createKoodiRelationRestriction(cb, koodi, ylakoodiVersioJoin, parent)
+                )
+        );
+
+        return convertSearchResultSet(entityManager.createQuery(criteriaQuery).getResultList());
+    }
+
+    @Override
+    public List<KoodiVersioWithKoodistoItem> listByChildRelation(KoodiUriAndVersioType child, SuhteenTyyppi suhdeTyyppi) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tuple> criteriaQuery = cb.createTupleQuery();
+        Root<KoodinSuhde> root = criteriaQuery.from(KoodinSuhde.class);
+        Join<KoodinSuhde, KoodiVersio> alakoodiVersioJoin = root.join(ALAKOODI_VERSIO);
+        Join<KoodiVersio, Koodi> koodi = alakoodiVersioJoin.join(KOODI);
+
+        Join<KoodinSuhde, KoodiVersio> ylakoodiVersioJoin = root.join(YLAKOODI_VERSIO);
+        Join<KoodiVersio, Koodi> ylakoodiJoin = ylakoodiVersioJoin.join(KOODI);
+        Join<KoodistoVersioKoodiVersio, KoodistoVersio> koodistoVersio = ylakoodiVersioJoin
+                .join(KOODISTO_VERSIOS)
+                .join(KOODISTO_VERSIO);
+        Join<KoodiVersio, Koodi> koodisto = ylakoodiJoin.join(KOODISTO, JoinType.LEFT);
+
+        ylakoodiVersioJoin.fetch(KOODI);
+        ylakoodiVersioJoin.fetch(METADATAS);
+
+        criteriaQuery.distinct(true);
+        criteriaQuery.multiselect(
+                ylakoodiVersioJoin, koodisto.get(KOODISTO_URI), koodisto.get(ORGANISAATIO_OID), koodistoVersio.get(VERSIO)
+        ).where(
+                cb.and(
+                        cb.equal(root.get(SUHTEEN_TYYPPI), suhdeTyyppi),
+                        createKoodiRelationRestriction(cb, koodi, alakoodiVersioJoin, child)
+                )
+        );
+
+        return convertSearchResultSet(entityManager.createQuery(criteriaQuery).getResultList());
     }
 
     private static boolean searchCriteriaIsBlank(SearchKoodisCriteriaType searchCriteria) {
@@ -312,6 +485,26 @@ public class CustomKoodiVersioRepositoryImpl implements CustomKoodiVersioReposit
         restrictions.add(cb.equal(koodi.get(ID), koodiPath.get(ID)));
 
         return subquery.select(versioMax).where(cb.and(restrictions.toArray(new Predicate[restrictions.size()])));
+    }
+
+    private static Predicate createKoodiRelationRestriction(CriteriaBuilder cb,
+                                                            Path<Koodi> koodiPath,
+                                                            Path<KoodiVersio> koodiVersioPath,
+                                                            KoodiUriAndVersioType koodi) {
+        return cb.and(cb.equal(koodiPath.get(KOODI_URI), koodi.getKoodiUri()), cb.equal(koodiVersioPath.get(VERSIO), koodi.getVersio()));
+    }
+
+    private TypedQuery<KoodiVersio> createKoodiVersioQueryFromSearchCriteria(SearchKoodisCriteriaType searchCriteria) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<KoodiVersio> criteriaQuery = cb.createQuery(KoodiVersio.class);
+        Root<KoodiVersio> root = criteriaQuery.from(KoodiVersio.class);
+        final Join<KoodiVersio, Koodi> koodi = root.join(KOODI);
+        root.fetch(KOODI);
+        List<Predicate> restrictions = createRestrictionsForKoodiCriteria(cb, criteriaQuery, searchCriteria, koodi, root);
+        criteriaQuery.select(root).where(cb.and(restrictions.toArray(new Predicate[restrictions.size()])));
+        criteriaQuery.distinct(true);
+        TypedQuery<KoodiVersio> query = entityManager.createQuery(criteriaQuery);
+        return query;
     }
 
     /**

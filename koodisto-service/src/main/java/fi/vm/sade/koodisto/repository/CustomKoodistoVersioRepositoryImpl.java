@@ -15,6 +15,7 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class CustomKoodistoVersioRepositoryImpl implements CustomKoodistoVersioRepository {
 
@@ -48,7 +49,7 @@ public class CustomKoodistoVersioRepositoryImpl implements CustomKoodistoVersioR
     }
 
     @Override
-    public KoodistoVersio getPreviousKoodistoVersio(String koodistoUri, Integer koodistoVersio) {
+    public Optional<KoodistoVersio> getPreviousKoodistoVersio(String koodistoUri, Integer koodistoVersio) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<KoodistoVersio> query = cb.createQuery(KoodistoVersio.class);
         Root<KoodistoVersio> root = query.from(KoodistoVersio.class);
@@ -60,13 +61,11 @@ public class CustomKoodistoVersioRepositoryImpl implements CustomKoodistoVersioR
         query.select(root).where(cb.and(koodistoUriEqual, koodistoVersioLessThan)).orderBy(cb.desc(root.get(VERSIO)));
 
         List<KoodistoVersio> resultList = entityManager.createQuery(query).setMaxResults(1).getResultList();
-
-        KoodistoVersio result = null;
-        if (resultList.size() != 0) {
-            result = resultList.get(0);
+        if (resultList.size() == 1) {
+            return Optional.of(resultList.get(0));
         }
 
-        return result;
+        return Optional.empty();
     }
 
     private static List<Predicate> createRestrictionsForKoodistoCriteria(CriteriaBuilder cb,

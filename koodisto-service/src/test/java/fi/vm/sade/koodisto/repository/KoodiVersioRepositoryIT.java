@@ -1,10 +1,6 @@
-package fi.vm.sade.koodisto.dao;
+package fi.vm.sade.koodisto.repository;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -43,23 +39,36 @@ import static org.junit.Assert.assertTrue;
 @DataJpaTest
 @DatabaseSetup("classpath:test-data.xml")
 @Transactional
-public class KoodiVersioDaoIT {
+public class KoodiVersioRepositoryIT {
 
     @Autowired
-    private KoodiVersioDAO koodiVersioDAO;
+    private KoodiVersioRepository koodiVersioRepository;
+
+    @Test
+    public void findsByKoodistoAndTila() {
+        final Long koodistoId = -1L;
+        final Tila tila = Tila.HYVAKSYTTY;
+        List<KoodiVersio> koodiVersios = koodiVersioRepository.findByKoodiKoodistoIdAndTila(koodistoId, tila);
+        assertFalse(koodiVersios.isEmpty());
+        assertEquals(100, koodiVersios.size());
+        for (KoodiVersio versio : koodiVersios) {
+            assertEquals(koodistoId, versio.getKoodi().getKoodisto().getId());
+            assertEquals(tila, versio.getTila());
+        }
+    }
 
     @Test
     public void searchSingleKoodiByUri() {
         final String notExistsUri = "ei-ole-olemassa";
 
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(notExistsUri);
-        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioDAO.searchKoodis(searchType);
+        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(0, koodis.size());
 
         final String uri = "410";
         searchType = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(uri);
 
-        koodis = koodiVersioDAO.searchKoodis(searchType);
+        koodis = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(1, koodis.size());
         assertEquals(2, koodis.get(0).getKoodiVersio().getVersio().intValue());
         assertEquals(uri, koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
@@ -70,11 +79,11 @@ public class KoodiVersioDaoIT {
         final String uri = "410";
         // version 150 does not exist
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(uri, 150);
-        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioDAO.searchKoodis(searchType);
+        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(0, koodis.size());
 
         searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(uri, 1);
-        koodis = koodiVersioDAO.searchKoodis(searchType);
+        koodis = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(1, koodis.size());
         assertEquals(1, koodis.get(0).getKoodiVersio().getVersio().intValue());
         assertEquals(uri, koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
@@ -86,7 +95,7 @@ public class KoodiVersioDaoIT {
         SearchKoodisByKoodistoCriteriaType koodistoSearchType = KoodiServiceSearchCriteriaBuilder
                 .koodisByKoodistoUri(koodistoUri);
 
-        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioDAO.searchKoodis(koodistoSearchType);
+        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioRepository.searchKoodis(koodistoSearchType);
         assertEquals(2, koodis.size());
         for (KoodiVersioWithKoodistoItem k : koodis) {
             assertEquals(11, k.getKoodiVersio().getVersio().intValue());
@@ -99,7 +108,7 @@ public class KoodiVersioDaoIT {
         SearchKoodisByKoodistoCriteriaType koodistoSearchType = KoodiServiceSearchCriteriaBuilder
                 .koodisByKoodistoUriAndKoodistoVersio(koodistoUri, 1);
 
-        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioDAO.searchKoodis(koodistoSearchType);
+        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioRepository.searchKoodis(koodistoSearchType);
         assertEquals(2, koodis.size());
         koodis.sort(Comparator.comparing(o -> o.getKoodiVersio().getVersio()));
 
@@ -112,14 +121,14 @@ public class KoodiVersioDaoIT {
         final String notExistsArvo = "ei-ole-olemassa";
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUriAndArvo(null,
                 notExistsArvo);
-        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioDAO.searchKoodis(searchType);
+        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(0, koodis.size());
 
         final String arvo = "ekakOOdi vEr 1";
         searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUriAndArvo(null, arvo);
 
         final String uri = "410";
-        koodis = koodiVersioDAO.searchKoodis(searchType);
+        koodis = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(1, koodis.size());
         assertEquals(uri, koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
         assertEquals(1, koodis.get(0).getKoodiVersio().getVersio().intValue());
@@ -130,11 +139,11 @@ public class KoodiVersioDaoIT {
         final String arvo = "veRSio";
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUriAndArvo(null, arvo);
         searchType.setKoodiVersioSelection(SearchKoodisVersioSelectionType.LATEST);
-        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioDAO.searchKoodis(searchType);
+        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(2, koodis.size());
 
         searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUriAndArvo(null, arvo);
-        koodis = koodiVersioDAO.searchKoodis(searchType);
+        koodis = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(22, koodis.size());
     }
 
@@ -145,14 +154,14 @@ public class KoodiVersioDaoIT {
 
         SearchKoodisByKoodistoCriteriaType koodistoSearchType = KoodiServiceSearchCriteriaBuilder
                 .koodisByArvoAndKoodistoUri(notExistsArvo, koodistoUri);
-        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioDAO.searchKoodis(koodistoSearchType);
+        List<KoodiVersioWithKoodistoItem> koodis = koodiVersioRepository.searchKoodis(koodistoSearchType);
         assertEquals(0, koodis.size());
 
         final String uri = "181";
         final String existsArvo = "235";
         koodistoSearchType = KoodiServiceSearchCriteriaBuilder.koodisByArvoAndKoodistoUri(existsArvo, koodistoUri);
 
-        koodis = koodiVersioDAO.searchKoodis(koodistoSearchType);
+        koodis = koodiVersioRepository.searchKoodis(koodistoSearchType);
         assertEquals(1, koodis.size());
         assertEquals(uri, koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
     }
@@ -163,15 +172,9 @@ public class KoodiVersioDaoIT {
 
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(koodiUri);
 
-        List<KoodiVersioWithKoodistoItem> versios = koodiVersioDAO.searchKoodis(searchType);
+        List<KoodiVersioWithKoodistoItem> versios = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(11, versios.size());
-        Collections.sort(versios, new Comparator<KoodiVersioWithKoodistoItem>() {
-
-            @Override
-            public int compare(KoodiVersioWithKoodistoItem o1, KoodiVersioWithKoodistoItem o2) {
-                return o1.getKoodiVersio().getVersio().compareTo(o2.getKoodiVersio().getVersio());
-            }
-        });
+        Collections.sort(versios, Comparator.comparing(o -> o.getKoodiVersio().getVersio()));
 
         int lastVersio = Integer.MIN_VALUE;
         for (KoodiVersioWithKoodistoItem koodi : versios) {
@@ -191,14 +194,14 @@ public class KoodiVersioDaoIT {
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUriAndTila(koodiUri,
                 TilaType.valueOf(luonnosTila.name()));
 
-        List<KoodiVersioWithKoodistoItem> versios = koodiVersioDAO.searchKoodis(searchType);
+        List<KoodiVersioWithKoodistoItem> versios = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(1, versios.size());
         assertEquals(luonnosTila, versios.get(0).getKoodiVersio().getTila());
 
         searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUriAndTila(koodiUri,
                 TilaType.valueOf(hyvaksyttyTila.name()));
 
-        versios = koodiVersioDAO.searchKoodis(searchType);
+        versios = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(10, versios.size());
         for (KoodiVersioWithKoodistoItem k : versios) {
             assertEquals(hyvaksyttyTila, k.getKoodiVersio().getTila());
@@ -206,12 +209,12 @@ public class KoodiVersioDaoIT {
 
         searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUriAndTila(koodiUri,
                 TilaType.valueOf(passiivinenTila.name()));
-        versios = koodiVersioDAO.searchKoodis(searchType);
+        versios = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(0, versios.size());
 
         searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUriAndTila(koodiUri,
                 TilaType.valueOf(hyvaksyttyTila.name()), TilaType.valueOf(luonnosTila.name()));
-        versios = koodiVersioDAO.searchKoodis(searchType);
+        versios = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(11, versios.size());
     }
 
@@ -229,7 +232,7 @@ public class KoodiVersioDaoIT {
         calendar.set(Calendar.DAY_OF_MONTH, 22);
         searchType.setValidAt(DateHelper.DateToXmlCal(calendar.getTime()));
 
-        List<KoodiVersioWithKoodistoItem> versios = koodiVersioDAO.searchKoodis(searchType);
+        List<KoodiVersioWithKoodistoItem> versios = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(1, versios.size());
 
         KoodiVersio k = versios.get(0).getKoodiVersio();
@@ -244,7 +247,7 @@ public class KoodiVersioDaoIT {
         searchType.getKoodiUris().add(koodiUri);
         searchType.setValidAt(DateHelper.DateToXmlCal(calendar.getTime()));
 
-        versios = koodiVersioDAO.searchKoodis(searchType);
+        versios = koodiVersioRepository.searchKoodis(searchType);
         assertEquals(0, versios.size());
     }
 
@@ -261,16 +264,9 @@ public class KoodiVersioDaoIT {
         koodistoSearchType.setValidAt(DateHelper.DateToXmlCal(calendar.getTime()));
         koodistoSearchType.setKoodistoVersioSelection(SearchKoodisByKoodistoVersioSelectionType.LATEST);
 
-        List<KoodiVersioWithKoodistoItem> versios = koodiVersioDAO.searchKoodis(koodistoSearchType);
+        List<KoodiVersioWithKoodistoItem> versios = koodiVersioRepository.searchKoodis(koodistoSearchType);
         assertEquals(2, versios.size());
-        Collections.sort(versios, new Comparator<KoodiVersioWithKoodistoItem>() {
-
-            @Override
-            public int compare(KoodiVersioWithKoodistoItem o1, KoodiVersioWithKoodistoItem o2) {
-                return o1.getKoodiVersio().getVersio().compareTo(o2.getKoodiVersio().getVersio());
-            }
-
-        });
+        Collections.sort(versios, Comparator.comparing(o -> o.getKoodiVersio().getVersio()));
         assertEquals(4, versios.get(0).getKoodiVersio().getVersio().intValue());
         assertEquals(6, versios.get(1).getKoodiVersio().getVersio().intValue());
 
@@ -279,7 +275,7 @@ public class KoodiVersioDaoIT {
         koodistoSearchType.setKoodistoUri(koodistoUri);
         koodistoSearchType.setValidAt(DateHelper.DateToXmlCal(calendar.getTime()));
         koodistoSearchType.setKoodistoVersioSelection(SearchKoodisByKoodistoVersioSelectionType.LATEST);
-        versios = koodiVersioDAO.searchKoodis(koodistoSearchType);
+        versios = koodiVersioRepository.searchKoodis(koodistoSearchType);
         assertEquals(2, versios.size());
         for (KoodiVersioWithKoodistoItem k : versios) {
             assertEquals(11, k.getKoodiVersio().getVersio().intValue());
@@ -292,7 +288,7 @@ public class KoodiVersioDaoIT {
         kv.setKoodiUri("3");
         kv.setVersio(1);
 
-        List<KoodiVersioWithKoodistoItem> k = koodiVersioDAO.listByParentRelation(kv, SuhteenTyyppi.RINNASTEINEN);
+        List<KoodiVersioWithKoodistoItem> k = koodiVersioRepository.listByParentRelation(kv, SuhteenTyyppi.RINNASTEINEN);
         assertEquals(1, k.size());
         assertEquals("009", k.get(0).getKoodiVersio().getKoodiarvo());
     }
@@ -303,7 +299,7 @@ public class KoodiVersioDaoIT {
         kv.setKoodiUri("3");
         kv.setVersio(1);
 
-        List<KoodiVersioWithKoodistoItem> k = koodiVersioDAO.listByChildRelation(kv, SuhteenTyyppi.RINNASTEINEN);
+        List<KoodiVersioWithKoodistoItem> k = koodiVersioRepository.listByChildRelation(kv, SuhteenTyyppi.RINNASTEINEN);
         assertEquals("010", k.get(0).getKoodiVersio().getKoodiarvo());
         assertEquals(1, k.size());
     }
@@ -318,7 +314,7 @@ public class KoodiVersioDaoIT {
         kv2.setKoodiUri("181");
         kv2.setVersio(1);
         
-        List<KoodiVersio> koodiVersios = koodiVersioDAO.getKoodiVersios(kv1, kv2);
+        List<KoodiVersio> koodiVersios = koodiVersioRepository.getKoodiVersios(kv1, kv2);
         assertEquals(2, koodiVersios.size());
     }
 
@@ -328,7 +324,7 @@ public class KoodiVersioDaoIT {
         final Integer koodiVersio = 4;
 
         final Integer previousVersio = 2;
-        KoodiVersio previous = koodiVersioDAO.getPreviousKoodiVersio(koodiUri, koodiVersio);
+        KoodiVersio previous = koodiVersioRepository.getPreviousKoodiVersio(koodiUri, koodiVersio).orElseThrow();
         assertEquals(previousVersio, previous.getVersio());
         assertEquals(koodiUri, previous.getKoodi().getKoodiUri());
 
@@ -336,17 +332,17 @@ public class KoodiVersioDaoIT {
     
     @Test
     public void shouldNotBeLatestKoodiVersio() {
-        assertFalse(koodiVersioDAO.isLatestKoodiVersio("436", 3));
+        assertFalse(koodiVersioRepository.isLatestKoodiVersio("436", 3));
     }
     
     @Test
     public void shouldBeLatestKoodiVersio() {
-        assertTrue(koodiVersioDAO.isLatestKoodiVersio("436", 11));
+        assertTrue(koodiVersioRepository.isLatestKoodiVersio("436", 11));
     }
     
     @Test
     public void fetchesLatestKoodiVersios() {
-        Map<String, Integer> map = koodiVersioDAO.getLatestVersionNumbersForUris("436", "455");
+        Map<String, Integer> map = koodiVersioRepository.getLatestVersionNumbersForUris("436", "455");
         assertEquals(2, map.size());
         assertEquals(Integer.valueOf(11), map.get("436"));
         assertEquals(Integer.valueOf(4), map.get("455"));
@@ -354,7 +350,7 @@ public class KoodiVersioDaoIT {
 
     @Test
     public void fetchesNothingForEmptyUriList() {
-        Map<String, Integer> map = koodiVersioDAO.getLatestVersionNumbersForUris();
+        Map<String, Integer> map = koodiVersioRepository.getLatestVersionNumbersForUris();
         assertEquals(0, map.size());
     }    
 

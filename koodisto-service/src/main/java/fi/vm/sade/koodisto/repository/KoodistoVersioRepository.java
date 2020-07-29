@@ -9,4 +9,6 @@ public interface KoodistoVersioRepository extends CrudRepository<KoodistoVersio,
 
     Optional<KoodistoVersio> findByKoodistoKoodistoUriAndVersio(String koodistoUri, Integer versio);
 
+    boolean existsByKoodistoKoodistoUriAndVersio(String koodistoUri, Integer versio);
+
 }

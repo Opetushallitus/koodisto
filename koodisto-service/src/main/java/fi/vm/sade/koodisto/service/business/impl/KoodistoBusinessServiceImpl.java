@@ -562,7 +562,8 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         // set all the koodis in this koodisto to HYVAKSYTTY
         if (!Tila.HYVAKSYTTY.equals(latest.getTila()) && updateKoodistoData.getTila().equals(TilaType.HYVAKSYTTY)) {
             koodiBusinessService.acceptCodeElements(latest);
-            KoodistoVersio previousVersion = koodistoVersioRepository.getPreviousKoodistoVersio(latest.getKoodisto().getKoodistoUri(), latest.getVersio());
+            KoodistoVersio previousVersion = koodistoVersioRepository.getPreviousKoodistoVersio(
+                    latest.getKoodisto().getKoodistoUri(), latest.getVersio()).orElse(null);
             if (previousVersion != null && previousVersion.getVoimassaLoppuPvm() == null) {
                 previousVersion.setVoimassaLoppuPvm(new Date());
             }

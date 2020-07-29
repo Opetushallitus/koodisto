@@ -1,8 +1,6 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
 import org.junit.Test;
@@ -15,7 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
@@ -34,8 +31,6 @@ import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import static org.junit.Assert.assertEquals;
 
-import static org.mockito.Mockito.when;
-
 @ContextConfiguration("classpath:spring/test-context.xml")
 @TestPropertySource("classpath:application.properties")
 @ActiveProfiles("test")
@@ -44,9 +39,6 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterIT {
 
     @MockBean @Qualifier("hostAwareKoodistoConfiguration")
     private HostAwareKoodistoConfiguration hostAwareKoodistoConfiguration;
-
-    @MockBean
-    private KoodiVersioDAO koodiVersioDao;
     
     @Autowired
     private SadeConversionService conversionService;
@@ -86,10 +78,6 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterIT {
     public void converterProvidesRelationCodeElementForLatestCodeVersionWhenRelationRelatesToLatestCodeVersion() {
         KoodiVersio parent = DtoFactory.createKoodiVersioWithUriAndVersio("penaali", 1).build();
         KoodiVersio child = DtoFactory.createKoodiVersioWithUriAndVersioAndRelation("kynä", 1, parent, SuhteenTyyppi.SISALTYY);
-        Map<String, Integer> dummyResponse = new HashMap<String, Integer>();
-        dummyResponse.put("penaali", 1);
-        when(koodiVersioDao.getLatestVersionNumbersForUris("penaali")).thenReturn(dummyResponse);
-        when(koodiVersioDao.isLatestKoodiVersio("kynä", 1)).thenReturn(true);
         ExtendedKoodiDto dto = conversionService.convert(new KoodiVersioWithKoodistoItem(child, new KoodistoItem()), ExtendedKoodiDto.class);
         assertEquals(1, dto.getWithinCodeElements().size());
     }
@@ -116,7 +104,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterIT {
 
     private KoodiMetadata givenKoodiMetadata() {
         KoodiMetadata data = new KoodiMetadata();
-        data.setId(1l);
+        data.setId(1L);
         data.setKieli(Kieli.FI);
         data.setNimi("Name");
         data.setKuvaus("Kuvaus");

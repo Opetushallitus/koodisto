@@ -1,7 +1,5 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
-import fi.vm.sade.koodisto.dao.KoodiMetadataDAO;
-import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
@@ -28,13 +26,8 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
         Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
 
     @Autowired
-    private KoodiVersioDAO koodiVersioDAO;
-
-    @Autowired
     private HostAwareKoodistoConfiguration koodistoConfiguration;
 
-    @Autowired
-    private KoodiMetadataDAO koodiMetadataDAO;
 
     @Override
     public ExtendedKoodiDto convert(KoodiVersioWithKoodistoItem source) {
