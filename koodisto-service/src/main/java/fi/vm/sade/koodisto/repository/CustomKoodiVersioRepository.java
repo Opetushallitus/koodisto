@@ -2,6 +2,7 @@ package fi.vm.sade.koodisto.repository;
 
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
@@ -18,6 +19,8 @@ public interface CustomKoodiVersioRepository {
     List<KoodiVersio> getKoodiVersios(KoodiUriAndVersioType... koodis);
 
     List<KoodiVersio> findByKoodistoUriAndVersio(String koodistoUri, Integer versio);
+
+    List<KoodiVersio> findLatestByKoodiUrisAndTila(List<String> koodiUris, Tila tila);
 
     Optional<KoodiVersio> getPreviousKoodiVersio(String koodiUri, Integer versio);
 

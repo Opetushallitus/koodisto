@@ -4,13 +4,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import fi.vm.sade.koodisto.repository.KoodiRepository;
+import fi.vm.sade.koodisto.repository.KoodistoRepository;
 import fi.vm.sade.koodisto.repository.KoodistoRyhmaRepository;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fi.vm.sade.koodisto.dao.KoodiDAO;
-import fi.vm.sade.koodisto.dao.KoodistoDAO;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
@@ -24,14 +23,17 @@ import fi.vm.sade.koodisto.util.KoodistoHelper;
 @Component
 public class UriTransliteratorImpl implements UriTransliterator {
 
-    @Autowired
-    private KoodiDAO koodiDAO;
+    private final KoodiRepository koodiRepository;
+    private final KoodistoRepository koodistoRepository;
+    private final KoodistoRyhmaRepository koodistoRyhmaRepository;
 
-    @Autowired
-    private KoodistoDAO koodistoDAO;
-
-    @Autowired
-    private KoodistoRyhmaRepository koodistoRyhmaRepository;
+    public UriTransliteratorImpl(KoodiRepository koodiRepository,
+                                 KoodistoRepository koodistoRepository,
+                                 KoodistoRyhmaRepository koodistoRyhmaRepository) {
+        this.koodiRepository = koodiRepository;
+        this.koodistoRepository = koodistoRepository;
+        this.koodistoRyhmaRepository = koodistoRyhmaRepository;
+    }
 
     private static final Map<String, String> TRANSLITERATION = new HashMap<>();
 
@@ -90,7 +92,7 @@ public class UriTransliteratorImpl implements UriTransliterator {
         String koodistoUri = baseKoodistoUri;
 
         int i = 1;
-        while (koodistoDAO.koodistoUriExists(koodistoUri)) {
+        while (koodistoRepository.koodistoUriExists(koodistoUri)) {
             koodistoUri = baseKoodistoUri + "-" + i;
             ++i;
         }
@@ -156,7 +158,7 @@ public class UriTransliteratorImpl implements UriTransliterator {
         String koodiUri = baseKoodiUri;
 
         int i = 1;
-        while (koodiDAO.koodiUriExists(koodiUri)) {
+        while (koodiRepository.existsByKoodiUri(koodiUri)) {
             koodiUri = baseKoodiUri + "-" + i;
             ++i;
         }

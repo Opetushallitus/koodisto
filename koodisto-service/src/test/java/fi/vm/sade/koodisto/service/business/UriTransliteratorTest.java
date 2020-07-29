@@ -1,14 +1,19 @@
 package fi.vm.sade.koodisto.service.business;
 
-import fi.vm.sade.koodisto.dao.KoodiDAO;
-import fi.vm.sade.koodisto.dao.KoodistoDAO;
+import fi.vm.sade.koodisto.repository.KoodiRepository;
+import fi.vm.sade.koodisto.repository.KoodistoRepository;
+import fi.vm.sade.koodisto.repository.KoodistoRyhmaRepository;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 import fi.vm.sade.koodisto.service.business.impl.UriTransliteratorImpl;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.*;
 
@@ -19,21 +24,26 @@ import static org.mockito.Mockito.*;
 /**
  * User: kwuoti Date: 22.3.2013 Time: 6.41
  */
+@RunWith(SpringJUnit4ClassRunner.class)
 public class UriTransliteratorTest {
 
-    private KoodiDAO koodiDAO;
-    private KoodistoDAO koodistoDAO;
-
+    @MockBean
+    private KoodiRepository koodiRepository;
+    @MockBean
+    private KoodistoRepository koodistoRepository;
+    @MockBean @SuppressWarnings("unused")
+    private KoodistoRyhmaRepository koodistoRyhmaRepository;
+    @Autowired
     private UriTransliterator uriTransliterator;
 
-    @Before
-    public void setUp() {
-        koodiDAO = mock(KoodiDAO.class);
-        koodistoDAO = mock(KoodistoDAO.class);
-
-        uriTransliterator = new UriTransliteratorImpl();
-        ReflectionTestUtils.setField(uriTransliterator, "koodiDAO", koodiDAO);
-        ReflectionTestUtils.setField(uriTransliterator, "koodistoDAO", koodistoDAO);
+    @TestConfiguration
+    public static class BeanConfiguration {
+        @Bean
+        public UriTransliterator uriTransliterator(KoodiRepository koodiRepository,
+                                                   KoodistoRepository koodistoRepository,
+                                                   KoodistoRyhmaRepository koodistoRyhmaRepository) {
+            return new UriTransliteratorImpl(koodiRepository, koodistoRepository, koodistoRyhmaRepository);
+        }
     }
 
     private static Collection<KoodistoMetadataType> generateMetadataByNimi(Map<KieliType, String> nimiByKieli) {
@@ -59,12 +69,12 @@ public class UriTransliteratorTest {
         final String nimi = "!#€%&&/%öösåyNÄväFi123!#€%&/()=";
         final String expectedUri = "oosoynavafi123";
 
-        when(koodistoDAO.koodistoUriExists(anyString())).thenReturn(false);
+        when(koodistoRepository.koodistoUriExists(anyString())).thenReturn(false);
         Map<KieliType, String> nimiByKieli = new HashMap<KieliType, String>();
         nimiByKieli.put(KieliType.FI, nimi);
 
         String generatedUri = uriTransliterator.generateKoodistoUriByMetadata(generateMetadataByNimi(nimiByKieli));
-        verify(koodistoDAO, times(1)).koodistoUriExists(anyString());
+        verify(koodistoRepository, times(1)).koodistoUriExists(anyString());
         assertEquals(expectedUri, generatedUri);
     }
 
@@ -72,12 +82,12 @@ public class UriTransliteratorTest {
     public void testGenerateNonUniqueKoodistoUri() {
         final String nimi = "!#€%&&/%säyNÄväFi123!#€%&/()=";
         final String expectedUri = "saynavafi123-2";
-        when(koodistoDAO.koodistoUriExists(anyString())).thenReturn(true, true, false);
+        when(koodistoRepository.koodistoUriExists(anyString())).thenReturn(true, true, false);
         Map<KieliType, String> nimiByKieli = new HashMap<KieliType, String>();
         nimiByKieli.put(KieliType.FI, nimi);
 
         String generatedUri = uriTransliterator.generateKoodistoUriByMetadata(generateMetadataByNimi(nimiByKieli));
-        verify(koodistoDAO, times(3)).koodistoUriExists(anyString());
+        verify(koodistoRepository, times(3)).koodistoUriExists(anyString());
         assertEquals(expectedUri, generatedUri);
     }
 
@@ -91,7 +101,7 @@ public class UriTransliteratorTest {
         final String expectedUriSV = "saynavasv123";
         final String expectedUriEN = "saynavaen123";
 
-        when(koodistoDAO.koodistoUriExists(anyString())).thenReturn(false, false, false);
+        when(koodistoRepository.koodistoUriExists(anyString())).thenReturn(false, false, false);
         Map<KieliType, String> nimiByKieli = new HashMap<KieliType, String>();
         nimiByKieli.put(KieliType.FI, nimiFI);
         nimiByKieli.put(KieliType.SV, nimiSV);
@@ -108,7 +118,7 @@ public class UriTransliteratorTest {
         String generatedUriEN = uriTransliterator.generateKoodistoUriByMetadata(generateMetadataByNimi(nimiByKieli));
         assertEquals(expectedUriEN, generatedUriEN);
 
-        verify(koodistoDAO, times(3)).koodistoUriExists(anyString());
+        verify(koodistoRepository, times(3)).koodistoUriExists(anyString());
     }
 
     @Test(expected = MetadataEmptyException.class)
@@ -121,11 +131,11 @@ public class UriTransliteratorTest {
         final String nimi = "!#€%&€&()=%(#?^_--*'";
         final String expectedUri = "-";
 
-        when(koodistoDAO.koodistoUriExists(anyString())).thenReturn(false);
+        when(koodistoRepository.koodistoUriExists(anyString())).thenReturn(false);
         String generatedUri = uriTransliterator.generateKoodistoUriByMetadata(
                 Arrays.asList(new KoodistoMetadataType[]{createMetadata(KieliType.FI, nimi)}));
 
-        verify(koodistoDAO, times(1)).koodistoUriExists(anyString());
+        verify(koodistoRepository, times(1)).koodistoUriExists(anyString());
         assertEquals(expectedUri, generatedUri);
     }
 
@@ -135,11 +145,11 @@ public class UriTransliteratorTest {
         final String arvo = "/€%&)#öösoyNÄväFi123#€#%€%*'";
         final String expectedUri = koodistoUri + "_" + "oosoynavafi123";
 
-        when(koodiDAO.koodiUriExists(anyString())).thenReturn(false);
+        when(koodiRepository.existsByKoodiUri(anyString())).thenReturn(false);
 
         String generatedUri = uriTransliterator.generateKoodiUriByKoodistoUriAndKoodiArvo(koodistoUri, arvo);
 
-        verify(koodiDAO, times(1)).koodiUriExists(anyString());
+        verify(koodiRepository, times(1)).existsByKoodiUri(anyString());
         assertEquals(expectedUri, generatedUri);
     }
 
@@ -149,11 +159,11 @@ public class UriTransliteratorTest {
         final String arvo = "/€%&)#öösoyNÄväFi123#€#%€%*'";
         final String expectedUri = koodistoUri + "_" + "oosoynavafi123-2";
 
-        when(koodiDAO.koodiUriExists(anyString())).thenReturn(true, true, false);
+        when(koodiRepository.existsByKoodiUri(anyString())).thenReturn(true, true, false);
 
         String generatedUri = uriTransliterator.generateKoodiUriByKoodistoUriAndKoodiArvo(koodistoUri, arvo);
 
-        verify(koodiDAO, times(3)).koodiUriExists(anyString());
+        verify(koodiRepository, times(3)).existsByKoodiUri(anyString());
         assertEquals(expectedUri, generatedUri);
     }
 
@@ -163,11 +173,11 @@ public class UriTransliteratorTest {
         final String arvo = "/€%&)!\"#%€&€%*'";
         final String expectedUri = koodistoUri + "_" + "-";
 
-        when(koodiDAO.koodiUriExists(anyString())).thenReturn(false);
+        when(koodiRepository.existsByKoodiUri(anyString())).thenReturn(false);
 
         String generatedUri = uriTransliterator.generateKoodiUriByKoodistoUriAndKoodiArvo(koodistoUri, arvo);
 
-        verify(koodiDAO, times(1)).koodiUriExists(anyString());
+        verify(koodiRepository, times(1)).existsByKoodiUri(anyString());
         assertEquals(expectedUri, generatedUri);
     }
 

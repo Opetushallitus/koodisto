@@ -10,4 +10,5 @@ public interface KoodiVersioRepository extends CrudRepository<KoodiVersio, Long>
 
     List<KoodiVersio> findByKoodiKoodistoIdAndTila(Long koodistoId, Tila tila);
 
+
 }

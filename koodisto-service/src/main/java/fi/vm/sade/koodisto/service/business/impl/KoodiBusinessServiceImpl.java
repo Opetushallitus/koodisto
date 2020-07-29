@@ -5,7 +5,6 @@ import com.google.common.collect.Iterables;
 
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.authorization.NotAuthorizedException;
-import fi.vm.sade.koodisto.dao.KoodiDAO;
 import fi.vm.sade.koodisto.dao.KoodiMetadataDAO;
 import fi.vm.sade.koodisto.dao.KoodinSuhdeDAO;
 import fi.vm.sade.koodisto.dao.KoodistoDAO;
@@ -24,6 +23,7 @@ import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.repository.KoodiRepository;
 import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
 import fi.vm.sade.koodisto.repository.KoodistonSuhdeRepository;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
@@ -85,7 +85,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public static final String ROOT_ORG = "1.2.246.562.10.00000000001";
 
     @Autowired
-    private KoodiDAO koodiDAO;
+    private KoodiRepository koodiRepository;
 
     @Autowired
     private KoodiMetadataDAO koodiMetadataDAO;
@@ -154,7 +154,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         Koodi koodi = new Koodi();
         koodi.setKoodisto(latestKoodistoVersio.getKoodisto());
         koodi.setKoodiUri(uriTransliterator.generateKoodiUriByKoodistoUriAndKoodiArvo(koodistoUri, createKoodiData.getKoodiArvo()));
-        koodi = koodiDAO.insertNonFlush(koodi);
+        koodi = koodiRepository.save(koodi);
 
         KoodiVersio koodiVersio = new KoodiVersio();
         // versioning begins from 1
@@ -185,7 +185,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void flushAfterCreation() {
-        koodiDAO.flush();
         koodistoDAO.flush();
         koodistoVersioDAO.flush();
         koodinSuhdeDAO.flush();
@@ -825,7 +824,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             for (KoodiVersio koodiVersio : koodis) {
                 koodiUris.add(koodiVersio.getKoodi().getKoodiUri());
             }
-            List<KoodiVersio> latestKoodis = koodiDAO.getLatestCodeElementVersiosByUrisAndTila(koodiUris, Tila.HYVAKSYTTY);
+            List<KoodiVersio> latestKoodis = koodiVersioRepository.findLatestByKoodiUrisAndTila(koodiUris, Tila.HYVAKSYTTY);
             Map<KoodiVersio, Optional<KoodiVersio>> previousVersions = koodiVersioRepository.getPreviousKoodiVersios(koodis);
             for (KoodiVersio latestVersio : latestKoodis) {
                 latestVersio.setTila(Tila.HYVAKSYTTY);
@@ -881,12 +880,12 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                 kv.removeKoodiVersio(koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(kv.getId(), versio.getId()));
             }
 
-            Koodi koodi = koodiDAO.readByUri(koodiUri);
+            Koodi koodi = koodiRepository.findByKoodiUri(koodiUri).orElseThrow(KoodiNotFoundException::new);
             koodi.removeKoodiVersion(versio);
 
             koodiVersioRepository.delete(versio);
             if (koodi.getKoodiVersios().size() == 0) {
-                koodiDAO.remove(koodi);
+                koodiRepository.delete(koodi);
             } else {
                 activateRelationsInLatestKoodiVersio(koodi);
             }
@@ -1144,7 +1143,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     @Transactional(readOnly = true)
     @Override
     public Koodi getKoodi(String koodiUri) {
-        Koodi koodi = koodiDAO.readByUri(koodiUri);
+        Koodi koodi = koodiRepository.findByKoodiUri(koodiUri).orElseThrow(KoodiNotFoundException::new);
         Hibernate.initialize(koodi);
         for (KoodiVersio kv : koodi.getKoodiVersios()) {
             Hibernate.initialize(kv.getMetadatas());

@@ -1,4 +1,4 @@
-package fi.vm.sade.koodisto.dao;
+package fi.vm.sade.koodisto.repository;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -14,9 +14,8 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.NoResultException;
-
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners({
@@ -28,22 +27,20 @@ import static org.junit.Assert.assertNotNull;
 @DataJpaTest
 @DatabaseSetup("classpath:test-data.xml")
 @Transactional
-public class KoodiDaoIT {
+public class KoodiRepositoryIT {
 
     @Autowired
-    private KoodiDAO koodiDAO;
+    private KoodiRepository koodiRepository;
 
-    @Test(expected = NoResultException.class)
+    @Test
     public void testDelete() {
-        Koodi k = koodiDAO.readByUri("381");
-        koodiDAO.delete(k.getKoodiUri());
-        koodiDAO.flush();
-        koodiDAO.readByUri(k.getKoodiUri());
+        Koodi k = koodiRepository.findByKoodiUri("381").orElseThrow();
+        assertTrue(koodiRepository.deleteByKoodiUri(k.getKoodiUri()).isPresent());
+        assertFalse(koodiRepository.existsByKoodiUri(k.getKoodiUri()));
     }
 
     @Test
     public void testReadByUri() {
-        Koodi k = koodiDAO.readByUri("3");
-        assertNotNull(k);
+        assertTrue(koodiRepository.findByKoodiUri("3").isPresent());
     }
 }

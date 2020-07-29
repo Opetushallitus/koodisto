@@ -181,6 +181,24 @@ public class CustomKoodiVersioRepositoryImpl implements CustomKoodiVersioReposit
     }
 
     @Override
+    public List<KoodiVersio> findLatestByKoodiUrisAndTila(List<String> koodiUris, Tila tila) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<KoodiVersio> cquery = cb.createQuery(KoodiVersio.class);
+        Root<KoodiVersio> versio = cquery.from(KoodiVersio.class);
+        Join<Koodi, KoodiVersio> join = versio.join("koodi", JoinType.LEFT);
+
+        Predicate uriRestriction = join.get("koodiUri").in(koodiUris);
+        Predicate tilaRestriction = cb.equal(versio.get("tila"), Tila.LUONNOS);
+
+        Predicate restrictions = cb.and(uriRestriction, tilaRestriction);
+        cquery.distinct(true);
+
+        cquery.select(versio).where(restrictions);
+        return entityManager.createQuery(cquery).getResultList();
+    }
+
+    @Override
     public List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisByKoodistoCriteriaType searchCriteria) {
         // Find the latest version of koodisto
         if (SearchKoodisByKoodistoVersioSelectionType.LATEST.equals(searchCriteria.getKoodistoVersioSelection())) {
