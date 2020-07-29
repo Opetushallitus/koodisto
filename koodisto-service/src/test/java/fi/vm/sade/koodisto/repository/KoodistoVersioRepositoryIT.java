@@ -1,9 +1,10 @@
-package fi.vm.sade.koodisto.dao;
+package fi.vm.sade.koodisto.repository;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.repository.KoodistoVersioRepository;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
@@ -17,7 +18,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -31,10 +31,10 @@ import static org.junit.Assert.assertEquals;
 @DataJpaTest
 @DatabaseSetup("classpath:test-data.xml")
 @Transactional
-public class KoodistoVersioDaoIT {
+public class KoodistoVersioRepositoryIT {
 
     @Autowired
-    KoodistoVersioDAO koodistoVersioDAO;
+    private KoodistoVersioRepository koodistoVersioRepository;
 
     @Test
     public void searchLatestAccepted() {
@@ -43,7 +43,7 @@ public class KoodistoVersioDaoIT {
 
         SearchKoodistosCriteriaType criteriaType = KoodistoServiceSearchCriteriaBuilder.latestAcceptedKoodistoByUri(koodistoUri);
 
-        List<KoodistoVersio> koodistos = koodistoVersioDAO.searchKoodistos(criteriaType);
+        List<KoodistoVersio> koodistos = koodistoVersioRepository.searchKoodistos(criteriaType);
         assertEquals(1, koodistos.size());
         assertEquals(koodistoUri, koodistos.get(0).getKoodisto().getKoodistoUri());
         assertEquals(Integer.valueOf(1), koodistos.get(0).getVersio());
@@ -53,7 +53,7 @@ public class KoodistoVersioDaoIT {
         criteriaType.getKoodistoTilas().clear();
         criteriaType.getKoodistoTilas().add(TilaType.valueOf(passiivinenTila.name()));
 
-        koodistos = koodistoVersioDAO.searchKoodistos(criteriaType);
+        koodistos = koodistoVersioRepository.searchKoodistos(criteriaType);
         assertEquals(1, koodistos.size());
         assertEquals(koodistoUri, koodistos.get(0).getKoodisto().getKoodistoUri());
         assertEquals(Integer.valueOf(2), koodistos.get(0).getVersio());
@@ -66,16 +66,10 @@ public class KoodistoVersioDaoIT {
 
         SearchKoodistosCriteriaType criteriaType = KoodistoServiceSearchCriteriaBuilder.koodistoVersiosByUri(koodistoUri);
 
-        List<KoodistoVersio> koodistos = koodistoVersioDAO.searchKoodistos(criteriaType);
+        List<KoodistoVersio> koodistos = koodistoVersioRepository.searchKoodistos(criteriaType);
         assertEquals(2, koodistos.size());
 
-        Collections.sort(koodistos, new Comparator<KoodistoVersio>() {
-
-            @Override
-            public int compare(KoodistoVersio o1, KoodistoVersio o2) {
-                return o1.getVersio().compareTo(o2.getVersio());
-            }
-        });
+        koodistos.sort(Comparator.comparing(KoodistoVersio::getVersio));
 
         assertEquals(koodistoUri, koodistos.get(0).getKoodisto().getKoodistoUri());
         assertEquals(koodistoUri, koodistos.get(1).getKoodisto().getKoodistoUri());
@@ -88,7 +82,7 @@ public class KoodistoVersioDaoIT {
         final String koodistoUri = "http://testikoodisto.fi";
         SearchKoodistosCriteriaType criteriaType = KoodistoServiceSearchCriteriaBuilder.latestKoodistoByUri(koodistoUri);
 
-        List<KoodistoVersio> koodistos = koodistoVersioDAO.searchKoodistos(criteriaType);
+        List<KoodistoVersio> koodistos = koodistoVersioRepository.searchKoodistos(criteriaType);
         assertEquals(1, koodistos.size());
         assertEquals(koodistoUri, koodistos.get(0).getKoodisto().getKoodistoUri());
         assertEquals(Integer.valueOf(2), koodistos.get(0).getVersio());
@@ -100,7 +94,7 @@ public class KoodistoVersioDaoIT {
         final Integer koodistoVersio = 1;
         SearchKoodistosCriteriaType criteriaType = KoodistoServiceSearchCriteriaBuilder.koodistoByUriAndVersio(koodistoUri, koodistoVersio);
 
-        List<KoodistoVersio> koodistos = koodistoVersioDAO.searchKoodistos(criteriaType);
+        List<KoodistoVersio> koodistos = koodistoVersioRepository.searchKoodistos(criteriaType);
         assertEquals(1, koodistos.size());
         assertEquals(koodistoUri, koodistos.get(0).getKoodisto().getKoodistoUri());
         assertEquals(koodistoVersio, koodistos.get(0).getVersio());
@@ -112,7 +106,7 @@ public class KoodistoVersioDaoIT {
         final Integer koodistoVersio = 4;
 
         final Integer previousVersio = 2;
-        KoodistoVersio previous = koodistoVersioDAO.getPreviousKoodistoVersio(koodistoUri, koodistoVersio);
+        KoodistoVersio previous = koodistoVersioRepository.getPreviousKoodistoVersio(koodistoUri, koodistoVersio).orElseThrow();
         assertEquals(previousVersio, previous.getVersio());
         assertEquals(koodistoUri, previous.getKoodisto().getKoodistoUri());
     }

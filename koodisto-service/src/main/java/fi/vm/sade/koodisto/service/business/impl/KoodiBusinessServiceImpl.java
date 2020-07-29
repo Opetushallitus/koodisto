@@ -7,7 +7,6 @@ import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.authorization.NotAuthorizedException;
 import fi.vm.sade.koodisto.dao.KoodiMetadataDAO;
 import fi.vm.sade.koodisto.dao.KoodinSuhdeDAO;
-import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
 import fi.vm.sade.koodisto.dao.KoodistoVersioKoodiVersioDAO;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
@@ -25,6 +24,7 @@ import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.repository.KoodiRepository;
 import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
 import fi.vm.sade.koodisto.repository.KoodistoRepository;
+import fi.vm.sade.koodisto.repository.KoodistoVersioRepository;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
@@ -93,7 +93,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     private KoodiVersioRepository koodiVersioRepository;
 
     @Autowired
-    private KoodistoVersioDAO koodistoVersioDAO;
+    private KoodistoVersioRepository koodistoVersioRepository;
 
     @Autowired
     private KoodinSuhdeDAO koodinSuhdeDAO;
@@ -181,7 +181,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void flushAfterCreation() {
-        koodistoVersioDAO.flush();
         koodinSuhdeDAO.flush();
         koodistoVersioKoodiVersioDAO.flush();
     }
@@ -280,9 +279,10 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
 
         String koodistoUri = latestKoodiVersion.getKoodi().getKoodisto().getKoodistoUri();
-        int latestKoodistoVersio = koodistoVersioDAO.findLatestVersioByKoodistoUri(koodistoUri)
-                .orElseThrow(() -> new KoodistoNotFoundException());
-        List<KoodiVersio> koodiVersios = koodiVersioRepository.findByKoodistoUriAndVersio(koodistoUri, latestKoodistoVersio);
+        Integer latestKoodistoVersio = koodistoVersioRepository.getLatestKoodistoVersio(koodistoUri)
+                .orElseThrow(KoodistoNotFoundException::new);
+        List<KoodiVersio> koodiVersios = koodiVersioRepository.findByKoodistoUriAndVersio(
+                koodistoUri, latestKoodistoVersio);
 
         if (!latest.getKoodistoItem().getVersios().contains(latestKoodistoVersio)) {
             throw new KoodiNotInKoodistoException();
@@ -870,7 +870,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         } else {
 
-            List<KoodistoVersio> koodistoVersios = koodistoVersioDAO.getKoodistoVersiosForKoodiVersio(koodiUri, koodiVersio);
+            List<KoodistoVersio> koodistoVersios = koodistoVersioRepository.findByKoodiUriAndVersio(koodiUri, koodiVersio);
             for (KoodistoVersio kv : koodistoVersios) {
                 kv.removeKoodiVersio(koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(kv.getId(), versio.getId()));
             }

@@ -1,8 +1,6 @@
 package fi.vm.sade.koodisto.repository;
 
-import fi.vm.sade.koodisto.model.Koodisto;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.DateHelper;
@@ -49,6 +47,22 @@ public class CustomKoodistoVersioRepositoryImpl implements CustomKoodistoVersioR
     }
 
     @Override
+    public List<KoodistoVersio> findByKoodiUriAndVersio(String koodiUri, Integer koodiVersio) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<KoodistoVersio> query = cb.createQuery(KoodistoVersio.class);
+        Root<KoodistoVersio> root = query.from(KoodistoVersio.class);
+        Join<KoodistoVersioKoodiVersio, KoodiVersio> koodiVersioJoin = root.join("koodiVersios").join("koodiVersio");
+        Join<KoodiVersio, Koodi> koodiJoin = koodiVersioJoin.join("koodi");
+
+        Predicate uriCondition = cb.equal(koodiJoin.<String> get("koodiUri"), koodiUri);
+        Predicate versioCondition = cb.equal(koodiVersioJoin.get(VERSIO), koodiVersio);
+
+        query.select(root).where(uriCondition, versioCondition);
+
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    @Override
     public Optional<KoodistoVersio> getPreviousKoodistoVersio(String koodistoUri, Integer koodistoVersio) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<KoodistoVersio> query = cb.createQuery(KoodistoVersio.class);
@@ -66,6 +80,17 @@ public class CustomKoodistoVersioRepositoryImpl implements CustomKoodistoVersioR
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<Integer> getLatestKoodistoVersio(String koodistoUri) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Integer> query = cb.createQuery(Integer.class);
+        Root<KoodistoVersio> root = query.from(KoodistoVersio.class);
+        Join<KoodistoVersio, Koodisto> koodisto = root.join(KOODISTO);
+
+        query.select(cb.max(root.get(VERSIO))).where(cb.equal(koodisto.get("koodistoUri"), koodistoUri));
+        return Optional.of(entityManager.createQuery(query).getSingleResult());
     }
 
     private static List<Predicate> createRestrictionsForKoodistoCriteria(CriteriaBuilder cb,

@@ -10,5 +10,9 @@ public interface CustomKoodistoVersioRepository {
 
     List<KoodistoVersio> searchKoodistos(SearchKoodistosCriteriaType searchCriteria);
 
-    Optional<KoodistoVersio> getPreviousKoodistoVersio(String koodistUri, Integer versio);
+    List<KoodistoVersio> findByKoodiUriAndVersio(String koodiUri, Integer versio);
+
+    Optional<KoodistoVersio> getPreviousKoodistoVersio(String koodistoUri, Integer versio);
+
+    Optional<Integer> getLatestKoodistoVersio(String koodistoUri);
 }
