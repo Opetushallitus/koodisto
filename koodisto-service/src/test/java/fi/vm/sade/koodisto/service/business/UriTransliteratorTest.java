@@ -17,8 +17,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.*;
 
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.anyString;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 /**
@@ -69,12 +69,12 @@ public class UriTransliteratorTest {
         final String nimi = "!#€%&&/%öösåyNÄväFi123!#€%&/()=";
         final String expectedUri = "oosoynavafi123";
 
-        when(koodistoRepository.koodistoUriExists(anyString())).thenReturn(false);
+        when(koodistoRepository.existsByKoodistoUri(anyString())).thenReturn(false);
         Map<KieliType, String> nimiByKieli = new HashMap<KieliType, String>();
         nimiByKieli.put(KieliType.FI, nimi);
 
         String generatedUri = uriTransliterator.generateKoodistoUriByMetadata(generateMetadataByNimi(nimiByKieli));
-        verify(koodistoRepository, times(1)).koodistoUriExists(anyString());
+        verify(koodistoRepository, times(1)).existsByKoodistoUri(anyString());
         assertEquals(expectedUri, generatedUri);
     }
 
@@ -82,12 +82,12 @@ public class UriTransliteratorTest {
     public void testGenerateNonUniqueKoodistoUri() {
         final String nimi = "!#€%&&/%säyNÄväFi123!#€%&/()=";
         final String expectedUri = "saynavafi123-2";
-        when(koodistoRepository.koodistoUriExists(anyString())).thenReturn(true, true, false);
+        when(koodistoRepository.existsByKoodistoUri(anyString())).thenReturn(true, true, false);
         Map<KieliType, String> nimiByKieli = new HashMap<KieliType, String>();
         nimiByKieli.put(KieliType.FI, nimi);
 
         String generatedUri = uriTransliterator.generateKoodistoUriByMetadata(generateMetadataByNimi(nimiByKieli));
-        verify(koodistoRepository, times(3)).koodistoUriExists(anyString());
+        verify(koodistoRepository, times(3)).existsByKoodistoUri(anyString());
         assertEquals(expectedUri, generatedUri);
     }
 
@@ -101,7 +101,7 @@ public class UriTransliteratorTest {
         final String expectedUriSV = "saynavasv123";
         final String expectedUriEN = "saynavaen123";
 
-        when(koodistoRepository.koodistoUriExists(anyString())).thenReturn(false, false, false);
+        when(koodistoRepository.existsByKoodistoUri(anyString())).thenReturn(false, false, false);
         Map<KieliType, String> nimiByKieli = new HashMap<KieliType, String>();
         nimiByKieli.put(KieliType.FI, nimiFI);
         nimiByKieli.put(KieliType.SV, nimiSV);
@@ -118,7 +118,7 @@ public class UriTransliteratorTest {
         String generatedUriEN = uriTransliterator.generateKoodistoUriByMetadata(generateMetadataByNimi(nimiByKieli));
         assertEquals(expectedUriEN, generatedUriEN);
 
-        verify(koodistoRepository, times(3)).koodistoUriExists(anyString());
+        verify(koodistoRepository, times(3)).existsByKoodistoUri(anyString());
     }
 
     @Test(expected = MetadataEmptyException.class)
@@ -131,11 +131,11 @@ public class UriTransliteratorTest {
         final String nimi = "!#€%&€&()=%(#?^_--*'";
         final String expectedUri = "-";
 
-        when(koodistoRepository.koodistoUriExists(anyString())).thenReturn(false);
+        when(koodistoRepository.existsByKoodistoUri(anyString())).thenReturn(false);
         String generatedUri = uriTransliterator.generateKoodistoUriByMetadata(
                 Arrays.asList(new KoodistoMetadataType[]{createMetadata(KieliType.FI, nimi)}));
 
-        verify(koodistoRepository, times(1)).koodistoUriExists(anyString());
+        verify(koodistoRepository, times(1)).existsByKoodistoUri(anyString());
         assertEquals(expectedUri, generatedUri);
     }
 

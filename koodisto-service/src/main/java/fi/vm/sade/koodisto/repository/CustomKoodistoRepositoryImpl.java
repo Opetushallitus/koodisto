@@ -28,16 +28,9 @@ public class CustomKoodistoRepositoryImpl implements CustomKoodistoRepository {
     private static final String KOODISTO = "koodisto";
 
     private final EntityManager entityManager;
-    private final KoodistoRepository koodistoRepository;
 
-    public CustomKoodistoRepositoryImpl(EntityManager entityManager, KoodistoRepository koodistoRepository) {
+    public CustomKoodistoRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
-        this.koodistoRepository = koodistoRepository;
-    }
-
-    @Override
-    public boolean koodistoUriExists(String koodistoUri) {
-        return koodistoRepository.findByKoodistoUri(koodistoUri).isPresent();
     }
 
     @Override

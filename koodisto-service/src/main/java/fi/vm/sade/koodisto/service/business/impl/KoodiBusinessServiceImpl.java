@@ -7,7 +7,6 @@ import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.authorization.NotAuthorizedException;
 import fi.vm.sade.koodisto.dao.KoodiMetadataDAO;
 import fi.vm.sade.koodisto.dao.KoodinSuhdeDAO;
-import fi.vm.sade.koodisto.dao.KoodistoDAO;
 import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
 import fi.vm.sade.koodisto.dao.KoodistoVersioKoodiVersioDAO;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
@@ -25,7 +24,7 @@ import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.repository.KoodiRepository;
 import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
-import fi.vm.sade.koodisto.repository.KoodistonSuhdeRepository;
+import fi.vm.sade.koodisto.repository.KoodistoRepository;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
@@ -100,10 +99,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     private KoodinSuhdeDAO koodinSuhdeDAO;
 
     @Autowired
-    private KoodistoDAO koodistoDAO;
-
-    @Autowired
-    private KoodistonSuhdeRepository koodistonSuhdeRepository;
+    private KoodistoRepository koodistoRepository;
 
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;
@@ -185,7 +181,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void flushAfterCreation() {
-        koodistoDAO.flush();
         koodistoVersioDAO.flush();
         koodinSuhdeDAO.flush();
         koodistoVersioKoodiVersioDAO.flush();
@@ -916,7 +911,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             throw new SearchCriteriaEmptyException();
         }
 
-        if (!koodistoDAO.koodistoUriExists(searchCriteria.getKoodistoUri())) {
+        if (!koodistoRepository.existsByKoodistoUri(searchCriteria.getKoodistoUri())) {
             logger.error("No koodisto found for URI " + searchCriteria.getKoodistoUri());
             throw new KoodistoNotFoundException();
         }

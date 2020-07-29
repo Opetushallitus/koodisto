@@ -92,7 +92,7 @@ public class UriTransliteratorImpl implements UriTransliterator {
         String koodistoUri = baseKoodistoUri;
 
         int i = 1;
-        while (koodistoRepository.koodistoUriExists(koodistoUri)) {
+        while (koodistoRepository.existsByKoodistoUri(koodistoUri)) {
             koodistoUri = baseKoodistoUri + "-" + i;
             ++i;
         }

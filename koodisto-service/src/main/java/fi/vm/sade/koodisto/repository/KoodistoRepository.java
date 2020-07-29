@@ -9,4 +9,6 @@ public interface KoodistoRepository extends CrudRepository<Koodisto, Long>, Cust
 
     Optional<Koodisto> findByKoodistoUri(String koodistoUri);
 
+    boolean existsByKoodistoUri(String koodistoUri);
+
 }
