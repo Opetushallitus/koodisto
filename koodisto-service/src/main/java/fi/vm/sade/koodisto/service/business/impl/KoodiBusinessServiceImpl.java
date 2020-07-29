@@ -813,7 +813,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     @Override
     public void acceptCodeElements(KoodistoVersio latest) {
-        List<KoodiVersio> koodis = koodiVersioRepository.findByKoodiKoodistoIdAndTila(latest.getId(), Tila.LUONNOS);
+        List<KoodiVersio> koodis = koodiVersioRepository.findByKoodiKoodistoIdAndTila(latest.getKoodisto().getId(), Tila.LUONNOS);
         if (koodis.size() > 0) {
             ArrayList<String> koodiUris = new ArrayList<>();
             for (KoodiVersio koodiVersio : koodis) {
