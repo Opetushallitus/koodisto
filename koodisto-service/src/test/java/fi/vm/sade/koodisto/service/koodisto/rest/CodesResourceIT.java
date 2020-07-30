@@ -167,16 +167,16 @@ public class CodesResourceIT {
     public void removesRelationBetweenExistingcodes() {
         String parentUri = "sisaltyysuhde1";
         String childUri = "sisaltyysuhde2";
-        KoodistoDto parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1);
-        KoodistoDto childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1);
+        KoodistoDto parentCodes = resource.getCodesByCodesUriAndVersion(parentUri, 1);
+        KoodistoDto childCodes = resource.getCodesByCodesUriAndVersion(childUri, 1);
 
         assertEquals(1, parentCodes.getIncludesCodes().size());
         assertEquals(1, childCodes.getWithinCodes().size());
 
         resource.removeRelation(parentUri, childUri, "SISALTYY");
 
-        parentCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(parentUri, 1);
-        childCodes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(childUri, 1);
+        parentCodes = resource.getCodesByCodesUriAndVersion(parentUri, 1);
+        childCodes = resource.getCodesByCodesUriAndVersion(childUri, 1);
 
         assertEquals(0, parentCodes.getIncludesCodes().size());
         assertEquals(0, parentCodes.getLevelsWithCodes().size());

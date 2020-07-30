@@ -1,7 +1,8 @@
-package fi.vm.sade.koodisto.dao;
+package fi.vm.sade.koodisto.repository;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.koodisto.dao.GenericDAO;
 import fi.vm.sade.koodisto.model.BaseEntity;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
@@ -14,16 +15,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolationException;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners({
@@ -32,11 +31,10 @@ import static org.junit.Assert.assertNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 @DataJpaTest
 @DatabaseSetup("classpath:test-data.xml")
-@Transactional
-public class KoodistoVersioKoodiVersioDaoIT {
+public class KoodistoVersioKoodiVersioRepositoryIT {
 
     @Autowired
-    private KoodistoVersioKoodiVersioDAO dao;
+    private KoodistoVersioKoodiVersioRepository repository;
 
     @Autowired
     private GenericDAO genericDao;
@@ -46,21 +44,23 @@ public class KoodistoVersioKoodiVersioDaoIT {
         final Long koodistoVersioId = -303L;
         final Long koodiVersioId = -305L;
 
-        KoodistoVersioKoodiVersio result = dao.findByKoodistoVersioAndKoodiVersio(koodistoVersioId, koodiVersioId);
+        KoodistoVersioKoodiVersio result = repository
+                .findByKoodistoVersioIdAndKoodiVersioId(koodistoVersioId, koodiVersioId)
+                .orElse(null);
         assertNotNull(result);
         assertEquals(koodistoVersioId, result.getKoodistoVersio().getId());
         assertEquals(koodiVersioId, result.getKoodiVersio().getId());
 
-        result = dao.findByKoodistoVersioAndKoodiVersio(-1L, -2L);
-        assertNull(result);
+        Optional<KoodistoVersioKoodiVersio> notFoundResult = repository.findByKoodistoVersioIdAndKoodiVersioId(-1L, -2L);
+        assertTrue(notFoundResult.isEmpty());
     }
 
     @Test
-    public void testGetByKoodistoVersioAndKoodi() {
+    public void testFindByKoodistoVersioIdAndKoodiVersioKoodiId() {
         final Long koodistoVersioId = -481L;
         final Long koodiId = -435L;
 
-        List<KoodistoVersioKoodiVersio> result = dao.getByKoodistoVersioAndKoodi(koodistoVersioId, koodiId);
+        List<KoodistoVersioKoodiVersio> result = repository.findByKoodistoVersioIdAndKoodiVersioKoodiId(koodistoVersioId, koodiId);
 
         assertEquals(1, result.size());
         final Long koodiVersioId = -447L;
@@ -70,9 +70,9 @@ public class KoodistoVersioKoodiVersioDaoIT {
     }
 
     @Test
-    public void testGetByKoodiVersio() {
+    public void testFindByKoodiVersioId() {
         final Long koodiVersioId = -447L;
-        List<KoodistoVersioKoodiVersio> result = dao.getByKoodiVersio(koodiVersioId);
+        List<KoodistoVersioKoodiVersio> result = repository.findByKoodiVersioId(koodiVersioId);
         assertEquals(1, result.size());
 
         final Long koodistoVersioId = -481L;
@@ -81,10 +81,10 @@ public class KoodistoVersioKoodiVersioDaoIT {
     }
 
     @Test
-    public void testGetByKoodistoVersio() {
+    public void testFindByKoodistoVersioId() {
         final Long koodistoVersioId = -481L;
 
-        List<KoodistoVersioKoodiVersio> result = dao.getByKoodistoVersio(koodistoVersioId);
+        List<KoodistoVersioKoodiVersio> result = repository.findByKoodistoVersioId(koodistoVersioId);
         assertEquals(2, result.size());
 
         result.sort(Comparator.comparing(BaseEntity::getId));
@@ -112,6 +112,8 @@ public class KoodistoVersioKoodiVersioDaoIT {
         newRelation.setKoodistoVersio(koodistoVersio);
         newRelation.setKoodiVersio(koodiVersio);
 
-        dao.insert(newRelation);
+        newRelation = repository.save(newRelation);
+        // ilman transaktiota vasta lukuoperaatio flushaa ja aiheuttaa poikkeuksen
+        assertFalse(repository.existsById(newRelation.getId()));
     }
 }

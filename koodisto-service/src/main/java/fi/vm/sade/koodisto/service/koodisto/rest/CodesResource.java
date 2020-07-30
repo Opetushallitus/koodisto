@@ -275,7 +275,7 @@ public class CodesResource {
             response = KoodistoDto.class)
     public KoodistoDto getCodesByCodesUriAndVersion(
             @ApiParam(value = "Koodiston URI") @PathVariable("codesUri") String codesUri,
-            @ApiParam(value = "Koodiston vesio") @PathVariable("codesVersion") int codesVersion) {
+            @ApiParam(value = "Koodiston versio") @PathVariable("codesVersion") int codesVersion) {
         try {
             String[] errors = { "codesuri", "codesversion" };
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
