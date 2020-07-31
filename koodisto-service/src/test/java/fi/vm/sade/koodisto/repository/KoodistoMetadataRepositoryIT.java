@@ -32,22 +32,22 @@ public class KoodistoMetadataRepositoryIT {
     KoodistoMetadataRepository koodistoMetadataRepository;
 
     @Test
-    public void testListAllByKoodisto() {
+    public void testFindByKoodistoUri() {
 
         List<KoodistoMetadata> koodistoMetadataList = koodistoMetadataRepository
-                .findByKoodistoVersioKoodistoKoodistoUri("http://www.avi.fi/aluevirasto");
+                .findByKoodistoUri("http://www.avi.fi/aluevirasto");
         assertNotNull(koodistoMetadataList);
     }
 
     @Test
-    public void testNimiExistsForSomeOtherKoodisto() {
+    public void testExistsByKoodistoUriOtherThanAndNimi() {
         final String koodistoUri = "http://paljon_versioita.fi/1";
         final String nimi = "paljon versioita koodistossa";
 
-        assertFalse(koodistoMetadataRepository.existsByKoodistoVersioKoodistoKoodistoUriIsNotAndNimi(koodistoUri, nimi));
+        assertFalse(koodistoMetadataRepository.existsByKoodistoUriOtherThanAndNimi(koodistoUri, nimi));
 
         final String anotherKoodistoUri = "http://testikoodisto.fi";
-        assertTrue(koodistoMetadataRepository.existsByKoodistoVersioKoodistoKoodistoUriIsNotAndNimi(anotherKoodistoUri, nimi));
+        assertTrue(koodistoMetadataRepository.existsByKoodistoUriOtherThanAndNimi(anotherKoodistoUri, nimi));
     }
 
 }

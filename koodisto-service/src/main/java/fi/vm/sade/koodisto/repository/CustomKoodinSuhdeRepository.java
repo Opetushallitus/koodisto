@@ -1,25 +1,25 @@
-package fi.vm.sade.koodisto.dao;
+package fi.vm.sade.koodisto.repository;
 
-import fi.vm.sade.koodisto.dao.impl.JpaDAO;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 
 import java.util.List;
 
-public interface KoodinSuhdeDAO extends JpaDAO<KoodinSuhde, Long> {
+public interface CustomKoodinSuhdeRepository {
+
+    /*
+    TODO: nimeä metodit paremmin
+          - paremmin CrudRepositoryn nimeämiskäytäntöjen mukaisesti
+          - käyttäen samoja nimityksiä, kuin luokassa ja kannassa
+     */
+
     List<KoodinSuhde> getRelations(KoodiUriAndVersioType ylaKoodi, List<KoodiUriAndVersioType> alaKoodis,
-            SuhteenTyyppi st);
+                                   SuhteenTyyppi st);
 
     Long getRelationsCount(KoodiUriAndVersioType ylaKoodi, List<KoodiUriAndVersioType> alaKoodis,
                            SuhteenTyyppi st);
 
-    List<KoodinSuhde> getRelations(String ylakoodiUri);
-    
-    void massRemove(List<KoodinSuhde> entityList);
-
-    KoodinSuhde insertNonFlush(KoodinSuhde koodinSuhde);
-    void flush();
-
     List<KoodinSuhde> getWithinRelations(KoodiUriAndVersioType ylaKoodi, List<KoodiUriAndVersioType> alaKoodis, SuhteenTyyppi st);
+
 }

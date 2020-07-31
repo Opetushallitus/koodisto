@@ -13,4 +13,12 @@ public interface KoodistoMetadataRepository extends CrudRepository<KoodistoMetad
 
     boolean existsByKoodistoVersioKoodistoKoodistoUriIsNotAndNimi(String koodistoUri, String nimi);
 
+    default List<KoodistoMetadata> findByKoodistoUri(String koodistoUri) {
+        return findByKoodistoVersioKoodistoKoodistoUri(koodistoUri);
+    }
+
+    default boolean existsByKoodistoUriOtherThanAndNimi(String koodistoUri, String nimi) {
+        return existsByKoodistoVersioKoodistoKoodistoUriIsNotAndNimi(koodistoUri, nimi);
+    }
+
 }

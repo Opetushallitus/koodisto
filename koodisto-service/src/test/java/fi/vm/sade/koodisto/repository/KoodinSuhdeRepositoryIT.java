@@ -1,4 +1,4 @@
-package fi.vm.sade.koodisto.dao;
+package fi.vm.sade.koodisto.repository;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners({
@@ -31,10 +31,10 @@ import static junit.framework.Assert.assertEquals;
 @DataJpaTest
 @DatabaseSetup(value = "classpath:test-data.xml", type = DatabaseOperation.CLEAN_INSERT)
 @Transactional
-public class KoodinSuhdeDAOIT {
+public class KoodinSuhdeRepositoryIT {
 
     @Autowired
-    private KoodinSuhdeDAO koodinSuhdeDAO;
+    private KoodinSuhdeRepository koodinSuhdeRepository;
 
     @Test
     public void testGetRelations() {
@@ -55,7 +55,7 @@ public class KoodinSuhdeDAOIT {
         kv.setKoodiUri("7");
         kv.setVersio(1);
 
-        List<KoodinSuhde> l = koodinSuhdeDAO.getRelations(kv, list, SuhteenTyyppi.RINNASTEINEN);
+        List<KoodinSuhde> l = koodinSuhdeRepository.getRelations(kv, list, SuhteenTyyppi.RINNASTEINEN);
         Assert.assertEquals(2, l.size());
     }
 
@@ -71,7 +71,7 @@ public class KoodinSuhdeDAOIT {
         kv.setKoodiUri("3");
         kv.setVersio(1);
 
-        List<KoodinSuhde> l = koodinSuhdeDAO.getRelations(kv, list, SuhteenTyyppi.SISALTYY);
+        List<KoodinSuhde> l = koodinSuhdeRepository.getRelations(kv, list, SuhteenTyyppi.SISALTYY);
         assertEquals(1, l.size());
         assertEquals(l.get(0).getSuhteenTyyppi(), SuhteenTyyppi.SISALTYY);
     }
@@ -95,12 +95,12 @@ public class KoodinSuhdeDAOIT {
 
         SuhteenTyyppi st = SuhteenTyyppi.SISALTYY;
 
-        List<KoodinSuhde> relations = koodinSuhdeDAO.getRelations(koodi1, alakoodis, st);
+        List<KoodinSuhde> relations = koodinSuhdeRepository.getRelations(koodi1, alakoodis, st);
         assertEquals(2, relations.size());
 
-        koodinSuhdeDAO.massRemove(relations);
+        koodinSuhdeRepository.deleteAll(relations);
 
-        List<KoodinSuhde> relationsAfter = koodinSuhdeDAO.getRelations(koodi1, alakoodis, st);
+        List<KoodinSuhde> relationsAfter = koodinSuhdeRepository.getRelations(koodi1, alakoodis, st);
         assertEquals(0, relationsAfter.size());
     }
     
@@ -130,18 +130,18 @@ public class KoodinSuhdeDAOIT {
         
         SuhteenTyyppi st = SuhteenTyyppi.RINNASTEINEN;
 
-        List<KoodinSuhde> relations1 = koodinSuhdeDAO.getRelations(koodi1, alakoodis1, st);
-        List<KoodinSuhde> relations2 = koodinSuhdeDAO.getRelations(koodi2, alakoodis2, st);
-        List<KoodinSuhde> relations3 = koodinSuhdeDAO.getRelations(koodi3, alakoodis3, st);
+        List<KoodinSuhde> relations1 = koodinSuhdeRepository.getRelations(koodi1, alakoodis1, st);
+        List<KoodinSuhde> relations2 = koodinSuhdeRepository.getRelations(koodi2, alakoodis2, st);
+        List<KoodinSuhde> relations3 = koodinSuhdeRepository.getRelations(koodi3, alakoodis3, st);
         assertEquals(2, relations1.size());
         assertEquals(2, relations2.size());
         assertEquals(2, relations3.size());
 
-        koodinSuhdeDAO.massRemove(relations1);
+        koodinSuhdeRepository.deleteAll(relations1);
         
-        List<KoodinSuhde> relationsAfter1 = koodinSuhdeDAO.getRelations(koodi1, alakoodis1, st);
-        List<KoodinSuhde> relationsAfter2 = koodinSuhdeDAO.getRelations(koodi2, alakoodis2, st);
-        List<KoodinSuhde> relationsAfter3 = koodinSuhdeDAO.getRelations(koodi3, alakoodis3, st);
+        List<KoodinSuhde> relationsAfter1 = koodinSuhdeRepository.getRelations(koodi1, alakoodis1, st);
+        List<KoodinSuhde> relationsAfter2 = koodinSuhdeRepository.getRelations(koodi2, alakoodis2, st);
+        List<KoodinSuhde> relationsAfter3 = koodinSuhdeRepository.getRelations(koodi3, alakoodis3, st);
         assertEquals(0, relationsAfter1.size());
         assertEquals(1, relationsAfter2.size());
         assertEquals(1, relationsAfter3.size());

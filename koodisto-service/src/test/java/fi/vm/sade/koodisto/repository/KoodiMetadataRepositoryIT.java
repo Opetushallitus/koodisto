@@ -1,4 +1,4 @@
-package fi.vm.sade.koodisto.dao;
+package fi.vm.sade.koodisto.repository;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
@@ -23,43 +23,46 @@ import static org.junit.Assert.assertTrue;
 @DataJpaTest
 @DatabaseSetup("classpath:test-data.xml")
 @Transactional
-public class KoodiMetadataDaoIT {
+public class KoodiMetadataRepositoryIT {
 
     @Autowired
-    private KoodiMetadataDAO koodiMetadataDAO;
+    private KoodiMetadataRepository koodiMetadataRepository;
 
     @Test
-    public void testNimiExistsForSomeOtherKoodi() {
+    public void testExistsByNimiAndKoodiUriOtherThan() {
         final String koodiUri = "435";
         final String nimi = "koodi 1 versio 1";
 
-        assertFalse(koodiMetadataDAO.nimiExistsForSomeOtherKoodi(koodiUri, nimi));
+        assertFalse(koodiMetadataRepository.existsByNimiAndKoodiUriOtherThan(nimi, koodiUri));
 
         final String anotherKoodiUri = "436";
-        assertTrue(koodiMetadataDAO.nimiExistsForSomeOtherKoodi(anotherKoodiUri, nimi));
+        assertTrue(koodiMetadataRepository.existsByNimiAndKoodiUriOtherThan(nimi, anotherKoodiUri));
     }
 
     @Test
-    public void testNimiExistsInKoodisto() {
+    public void testExistsByNimiAndKoodistoUri() {
         final String koodistoUri = "http://www.kunnat.fi/kunta";
         final String nimi = "haapavesi";
-        assertTrue(koodiMetadataDAO.nimiExistsInKoodisto(koodistoUri, nimi));
+        assertTrue(koodiMetadataRepository.existsByNimiAndKoodistoUri(nimi, koodistoUri));
 
         final String anotherKoodistoUri = "http://www.kunnat.fi/maakunta";
-        assertFalse(koodiMetadataDAO.nimiExistsInKoodisto(anotherKoodistoUri, nimi));
+        assertFalse(koodiMetadataRepository.existsByNimiAndKoodistoUri(nimi, anotherKoodistoUri));
     }
 
     @Test
-    public void testNimiExistsInKoodistoForSomeOtherKoodi() {
+    public void testExistsByNimiAndKoodistoUriAndKoodiUriOtherThan() {
         final String koodistoUri = "http://www.kunnat.fi/kunta";
         final String koodiUri = "43";
         final String nimi = "haapavesi";
-        assertFalse(koodiMetadataDAO.nimiExistsInKoodistoForSomeOtherKoodi(koodistoUri, koodiUri, nimi));
+        assertFalse(koodiMetadataRepository.existsByNimiAndKoodistoUriAndKoodiUriOtherThan(
+                nimi, koodistoUri, koodiUri));
 
         final String anotherKoodiUri = "44";
-        assertTrue(koodiMetadataDAO.nimiExistsInKoodistoForSomeOtherKoodi(koodistoUri, anotherKoodiUri, nimi));
+        assertTrue(koodiMetadataRepository.existsByNimiAndKoodistoUriAndKoodiUriOtherThan(
+                nimi, koodistoUri, anotherKoodiUri));
 
         final String anotherKoodistoUri = "http://www.kunnat.fi/maakunta";
-        assertFalse(koodiMetadataDAO.nimiExistsInKoodistoForSomeOtherKoodi(anotherKoodistoUri, anotherKoodiUri, nimi));
+        assertFalse(koodiMetadataRepository.existsByNimiAndKoodistoUriAndKoodiUriOtherThan(
+                nimi, anotherKoodistoUri, anotherKoodiUri));
     }
 }

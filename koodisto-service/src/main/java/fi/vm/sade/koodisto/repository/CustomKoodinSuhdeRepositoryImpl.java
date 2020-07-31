@@ -1,44 +1,35 @@
-/**
- *
- */
-package fi.vm.sade.koodisto.dao.impl;
+package fi.vm.sade.koodisto.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import org.springframework.stereotype.Repository;
-
-import fi.vm.sade.koodisto.dao.KoodinSuhdeDAO;
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
+import org.springframework.stereotype.Repository;
 
-/**
- * @author tommiha
- */
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.List;
+
 @Repository
-public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> implements KoodinSuhdeDAO {
+public class CustomKoodinSuhdeRepositoryImpl implements CustomKoodinSuhdeRepository {
 
     private static final String VERSIO = "versio";
     private static final String KOODI_URI = "koodiUri";
     private static final String SEPARATOR = "$%$";
 
+    private final EntityManager entityManager;
+
+    public CustomKoodinSuhdeRepositoryImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
     @Override
     public Long getRelationsCount(KoodiUriAndVersioType ylaKoodi, List<KoodiUriAndVersioType> alaKoodis,
-            SuhteenTyyppi st) {
-        EntityManager em = getEntityManager();
-        CriteriaBuilder cb = em.getCriteriaBuilder();
+                                  SuhteenTyyppi st) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<Long> cquery = cb.createQuery(Long.class);
         Root<KoodinSuhde> root = cquery.from(KoodinSuhde.class);
@@ -46,11 +37,11 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
         Predicate restrictions = addRestrictions(cquery, cb, root, ylaKoodi, alaKoodis, st);
         cquery.select(cb.count(root)).where(restrictions);
 
-        return em.createQuery(cquery).getSingleResult();
+        return entityManager.createQuery(cquery).getSingleResult();
     }
 
     private static Predicate addRestrictions(CriteriaQuery<?> cquery, CriteriaBuilder cb, Root<KoodinSuhde> root, KoodiUriAndVersioType ylaKoodi,
-            List<KoodiUriAndVersioType> alaKoodis, SuhteenTyyppi st) {
+                                             List<KoodiUriAndVersioType> alaKoodis, SuhteenTyyppi st) {
 
         Join<KoodinSuhde, KoodiVersio> ylakoodiVersioJoin = root.join("ylakoodiVersio");
         Join<KoodinSuhde, KoodiVersio> alakoodiVersioJoin = root.join("alakoodiVersio");
@@ -109,7 +100,7 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
     }
 
     private static Predicate addWithinRestrictions(CriteriaQuery<?> cquery, CriteriaBuilder cb, Root<KoodinSuhde> root, KoodiUriAndVersioType alaKoodi,
-            List<KoodiUriAndVersioType> ylaKoodis, SuhteenTyyppi st) {
+                                                   List<KoodiUriAndVersioType> ylaKoodis, SuhteenTyyppi st) {
 
         Join<KoodinSuhde, KoodiVersio> ylakoodiVersioJoin = root.join("ylakoodiVersio");
         Join<KoodinSuhde, KoodiVersio> alakoodiVersioJoin = root.join("alakoodiVersio");
@@ -143,21 +134,19 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
 
     @Override
     public List<KoodinSuhde> getRelations(KoodiUriAndVersioType ylaKoodi, List<KoodiUriAndVersioType> alaKoodis,
-            SuhteenTyyppi st) {
+                                          SuhteenTyyppi st) {
         return privateGetRelations(ylaKoodi, alaKoodis, st, false);
     }
 
     @Override
     public List<KoodinSuhde> getWithinRelations(KoodiUriAndVersioType ylaKoodi, List<KoodiUriAndVersioType> alaKoodis,
-            SuhteenTyyppi st) {
+                                                SuhteenTyyppi st) {
         return privateGetRelations(ylaKoodi, alaKoodis, st, true);
     }
 
     private List<KoodinSuhde> privateGetRelations(KoodiUriAndVersioType singleKoodi, List<KoodiUriAndVersioType> multipleKoodis, SuhteenTyyppi st,
-            boolean isChild) {
-
-        EntityManager em = getEntityManager();
-        CriteriaBuilder cb = em.getCriteriaBuilder();
+                                                  boolean isChild) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
         CriteriaQuery<KoodinSuhde> cquery = cb.createQuery(KoodinSuhde.class);
         Root<KoodinSuhde> root = cquery.from(KoodinSuhde.class);
@@ -169,56 +158,6 @@ public class KoodinSuhdeDAOImpl extends AbstractJpaDAOImpl<KoodinSuhde, Long> im
                 singleKoodi, multipleKoodis, st);
         cquery.select(root).where(restrictions);
 
-        return em.createQuery(cquery).getResultList();
-    }
-
-    @Override
-    public void remove(KoodinSuhde entity) {
-        EntityManager em = getEntityManager();
-
-        // FIXME: This is kinda ugly but it works
-        em.createQuery("delete from KoodinSuhde k where k.id = :id").setParameter("id", entity.getId()).executeUpdate();
-        em.flush();
-    }
-
-    @Override
-    public void massRemove(List<KoodinSuhde> entityList) {
-        if (entityList.isEmpty())
-            throw new IllegalArgumentException("EntityList was empty.");
-        ArrayList<Long> idList = new ArrayList<Long>();
-        for (KoodinSuhde entity : entityList) {
-            idList.add(entity.getId());
-        }
-        EntityManager em = getEntityManager();
-        em.createQuery("delete from KoodinSuhde k where k.id in (:idList)").setParameter("idList", idList).executeUpdate();
-        em.flush();
-    }
-
-    @Override
-    public List<KoodinSuhde> getRelations(String ylakoodiUri) {
-        EntityManager em = getEntityManager();
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-
-        CriteriaQuery<KoodinSuhde> cquery = cb.createQuery(KoodinSuhde.class);
-        Root<KoodinSuhde> root = cquery.from(KoodinSuhde.class);
-        Join<KoodinSuhde, KoodiVersio> ylakoodiVersio = root.join("ylakoodiVersio", JoinType.LEFT);
-        Join<Object, Object> ylakoodi = ylakoodiVersio.join("koodi", JoinType.LEFT);
-
-        cquery.select(root).where(cb.equal(ylakoodi.get(KOODI_URI), ylakoodiUri));
-
-        return em.createQuery(cquery).getResultList();
-    }
-
-    public KoodinSuhde insertNonFlush(KoodinSuhde entity) {
-        validate(entity);
-        EntityManager entityManager = getEntityManager();
-        entityManager.persist(entity);
-        // Database must be synchronized at after this by flushing!
-        return entity;
-    }
-
-    public void flush() {
-        EntityManager entityManager = getEntityManager();
-        entityManager.flush();
+        return entityManager.createQuery(cquery).getResultList();
     }
 }

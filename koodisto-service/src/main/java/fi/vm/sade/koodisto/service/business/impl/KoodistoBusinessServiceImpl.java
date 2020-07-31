@@ -3,7 +3,6 @@
  */
 package fi.vm.sade.koodisto.service.business.impl;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.authorization.NotAuthorizedException;
@@ -35,7 +34,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -204,7 +202,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
      * if the nimi is not unique.
      */
     private void checkNimiIsUnique(String koodistoUri, String nimi) {
-        if (koodistoMetadataRepository.existsByKoodistoVersioKoodistoKoodistoUriIsNotAndNimi(koodistoUri, nimi)) {
+        if (koodistoMetadataRepository.existsByKoodistoUriOtherThanAndNimi(koodistoUri, nimi)) {
             throw new KoodistoNimiNotUniqueException();
         }
     }
@@ -673,21 +671,11 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         List<KoodistonSuhde> relations = new ArrayList<KoodistonSuhde>(koodistoVersio.getAlakoodistos());
         relations.addAll(koodistoVersio.getYlakoodistos());
         if (koodistoUri.equalsIgnoreCase(anotherKoodistoUri)) {
-            return Iterables.tryFind(relations, new Predicate<KoodistonSuhde>() {
-                @Override
-                public boolean apply(KoodistonSuhde input) {
-                    return input.getAlakoodistoVersio().equals(input.getYlakoodistoVersio());
-                }
-            }).isPresent();
+            return Iterables.tryFind(relations, input ->
+                    input.getAlakoodistoVersio().equals(input.getYlakoodistoVersio())).isPresent();
         }
-        return Iterables.tryFind(relations, new Predicate<KoodistonSuhde>() {
-
-            @Override
-            public boolean apply(@Nonnull KoodistonSuhde input) {
-                return input.getAlakoodistoVersio().equals(koodistoVersio2) || input.getYlakoodistoVersio().equals(koodistoVersio2);
-            }
-
-        }).isPresent();
+        return Iterables.tryFind(relations, input ->
+                input.getAlakoodistoVersio().equals(koodistoVersio2) || input.getYlakoodistoVersio().equals(koodistoVersio2)).isPresent();
     }
 
     private boolean koodistosHaveSameOrganisaatio(String koodistoUri, String anotherKoodistoUri) {
