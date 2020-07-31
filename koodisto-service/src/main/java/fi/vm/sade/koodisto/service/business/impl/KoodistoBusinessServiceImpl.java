@@ -632,16 +632,15 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             }
         }
 
-        koodisto.removeKoodistoVersion(versio);
-
-        koodisto = koodistoRepository.findByKoodistoUri(koodistoUri).orElse(null);
-
         for (KoodiVersio kv : koodiVersios) {
             logger.info("Delete " + kv.getKoodi().getId());
             koodiBusinessService.delete(kv.getKoodi().getKoodiUri(), kv.getVersio(), true);
         }
 
+        koodisto.removeKoodistoVersion(versio);
+        koodistonSuhdeRepository.deleteByKoodistoVersio(versio);
         koodistoVersioRepository.delete(versio);
+
         if (koodisto.getKoodistoVersios().size() == 0) {
             for (Koodi koodi : koodisto.getKoodis()) {
                 koodiRepository.delete(koodi);

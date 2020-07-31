@@ -19,4 +19,6 @@ public interface CustomKoodistonSuhdeRepository {
                          List<KoodistoUriAndVersioType> alaKoodistos,
                          SuhteenTyyppi st);
 
+    int deleteByKoodistoVersio(KoodistoVersio koodistoVersio);
+
 }

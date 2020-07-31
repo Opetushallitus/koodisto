@@ -159,4 +159,16 @@ public class CustomKoodistonSuhdeRepositoryImpl implements CustomKoodistonSuhdeR
 
         return and;
     }
+
+    @Override
+    public int deleteByKoodistoVersio(KoodistoVersio koodistoVersio) {
+        CriteriaBuilder criteria = entityManager.getCriteriaBuilder();
+        CriteriaDelete<KoodistonSuhde> delete = criteria.createCriteriaDelete(KoodistonSuhde.class);
+        Root<KoodistonSuhde> root = delete.from(KoodistonSuhde.class);
+        delete.where(criteria.or(
+                criteria.equal(root.get("ylakoodistoVersio"), koodistoVersio),
+                criteria.equal(root.get("alakoodistoVersio"), koodistoVersio)
+        ));
+        return entityManager.createQuery(delete).executeUpdate();
+    }
 }
