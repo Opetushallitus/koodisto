@@ -38,7 +38,7 @@
     <activemq.version>5.5.1</activemq.version>
     <aspectj.version>1.8.13</aspectj.version>
     <build-helper-maven-plugin.version>1.4</build-helper-maven-plugin.version>
-    <cas-client.version>3.4.1</cas-client.version>
+    <cas-client.version>3.6.0</cas-client.version>
     <castor-xml.version>1.4.1</castor-xml.version>
     <commons-configuration.version>1.9</commons-configuration.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
@@ -154,8 +154,7 @@ branchName=${branch}
 vcsRevision=${revision}
 buildTtime=${maven.build.timestamp}]]>
                 </echo>
-                <loadfile property="buildversiontxt"
-                          srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
+                <loadfile property="buildversiontxt" srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
                 <echo message="${buildversiontxt}"/>
                 <echo file="target/mavenversion.txt">${project.version}</echo>
               </target>
