@@ -258,12 +258,15 @@ public class KoodistoBusinessServiceIT {
 	@Test
 	public void savesKoodistoWithoutCopyingPassiveRelations() {
 	    String koodistoUri = "passiivisuhdeeikopioidu";
-        KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
-        KoodistoDto dto = conversionService.convert(result, KoodistoDto.class);
+        KoodistoVersio original = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+        KoodistoDto dto = conversionService.convert(original, KoodistoDto.class);
         assertEquals(1, dto.getWithinCodes().size());
-        dto.getMetadata().get(0).setNimi("Uusi");
+        KoodistoMetadata metadata = clone(dto.getMetadata().get(0));
+        metadata.setNimi("Uusi");
+        dto.getMetadata().set(0, metadata);
         koodistoBusinessService.saveKoodisto(dto);
-        result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+        KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+        assertNotEquals(original.getVersio(), result.getVersio());
         assertTrue(result.getYlakoodistos().isEmpty());
     }
 
@@ -393,5 +396,23 @@ public class KoodistoBusinessServiceIT {
         d.setWithinCodes(withinCodes);
         
         return d;
+    }
+
+    private KoodistoMetadata clone(KoodistoMetadata original) {
+        KoodistoMetadata cloned = new KoodistoMetadata();
+        cloned.setHuomioitavaKoodisto(original.getHuomioitavaKoodisto());
+        cloned.setKasite(original.getKasite());
+        cloned.setKayttoohje(original.getKayttoohje());
+        cloned.setKieli(original.getKieli());
+        cloned.setKohdealue(original.getKohdealue());
+        cloned.setKohdealueenOsaAlue(original.getKohdealueenOsaAlue());
+        cloned.setKoodistonLahde(original.getKoodistonLahde());
+        cloned.setKoodistoVersio(original.getKoodistoVersio());
+        cloned.setKuvaus(original.getKuvaus());
+        cloned.setNimi(original.getNimi());
+        cloned.setSitovuustaso(original.getSitovuustaso());
+        cloned.setTarkentaaKoodistoa(original.getTarkentaaKoodistoa());
+        cloned.setToimintaymparisto(original.getToimintaymparisto());
+        return cloned;
     }
 }

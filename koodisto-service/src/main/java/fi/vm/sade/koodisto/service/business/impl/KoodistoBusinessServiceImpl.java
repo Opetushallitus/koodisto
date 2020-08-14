@@ -154,9 +154,10 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             KoodistonSuhde koodistonSuhde = new KoodistonSuhde();
             koodistonSuhde.setSuhteenTyyppi(suhteenTyyppi);
             koodistonSuhde.setYlakoodistoVersio(yla);
+            yla.getAlakoodistos().add(koodistonSuhde);
             koodistonSuhde.setAlakoodistoVersio(ala);
+            ala.getYlakoodistos().add(koodistonSuhde);
             koodistonSuhde.setVersio(1);
-
             koodistonSuhdeRepository.save(koodistonSuhde);
         }
     }
@@ -305,13 +306,14 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     private KoodistoVersio createNewVersionIfNeeded(KoodistoVersio latest, UpdateKoodistoDataType updateKoodistoData) {
+        KoodistoVersio newest;
         if (Tila.HYVAKSYTTY.equals(latest.getTila()) && newVersionIsRequired(latest, updateKoodistoData)) {
-            latest = createNewVersion(latest, updateKoodistoData);
+            newest = createNewVersion(latest, updateKoodistoData);
         } else {
-            latest = updateOldVersion(latest, updateKoodistoData);
+            newest = updateOldVersion(latest, updateKoodistoData);
         }
 
-        return latest;
+        return newest;
     }
 
     private boolean newVersionIsRequired(KoodistoVersio latest, UpdateKoodistoDataType updateKoodistoData) {

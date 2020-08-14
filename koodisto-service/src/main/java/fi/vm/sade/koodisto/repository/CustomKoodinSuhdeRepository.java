@@ -22,4 +22,5 @@ public interface CustomKoodinSuhdeRepository {
 
     List<KoodinSuhde> getWithinRelations(KoodiUriAndVersioType ylaKoodi, List<KoodiUriAndVersioType> alaKoodis, SuhteenTyyppi st);
 
+
 }
