@@ -62,6 +62,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -356,7 +357,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<KoodiVersioWithKoodistoItem> listByRelation(KoodiUriAndVersioType koodi, SuhteenTyyppi suhdeTyyppi, Boolean isChild) {
         Set<KoodiVersioWithKoodistoItem> koodis = new HashSet<>();
         if (SuhteenTyyppi.RINNASTEINEN.equals(suhdeTyyppi)) {
@@ -529,7 +530,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             }
             relations.addAll(getRelations(latest, relatedCodeElements, st, true));
         }
-        koodinSuhdeRepository.deleteAll(relations);
+        koodinSuhdeRepository.massRemove(relations.stream().map(KoodinSuhde::getId).collect(Collectors.toList()));
     }
 
     @Override
@@ -1015,6 +1016,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     @Override
+    @Transactional(readOnly = true, isolation = Isolation.READ_COMMITTED)
     public List<KoodiVersioWithKoodistoItem> listByRelation(String koodiUri, boolean isChild, SuhteenTyyppi suhteenTyyppi) {
         KoodiVersio koodi = getLatestKoodiVersio(koodiUri);
 
@@ -1109,7 +1111,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     @Override
-    @Transactional
     public KoodiVersio saveKoodi(ExtendedKoodiDto koodiDTO) {
 
         String koodiUri = koodiDTO.getKoodiUri();
@@ -1164,7 +1165,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private KoodiVersio createNewKoodistoVersionIfNeeded(KoodiVersio latest) {
         if (koodistoBusinessService.createNewVersion(latest.getKoodi().getKoodisto().getKoodistoUri()).isCreated()) {
-            latest = getLatestKoodiVersio(latest.getKoodi().getKoodiUri());
+            return getLatestKoodiVersio(latest.getKoodi().getKoodiUri());
         }
         return latest;
     }

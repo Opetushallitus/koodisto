@@ -389,7 +389,6 @@ public class CodeElementResource {
             ) {
         try {
             relationValidator.validate(koodiRelaatioDto, ValidationType.UPDATE);
-
             koodiBusinessService.removeRelation(koodiRelaatioDto);
         } catch (KoodistoValidationException e) {
             logger.warn("Invalid parameter for rest call: removeRelations. ", e);

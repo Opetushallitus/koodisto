@@ -235,6 +235,7 @@ public class CodeElementResourceIT {
 
     @Test
     public void addsMultipleCodeElementRelationsThatBelongToDifferentCodes() {
+        // TODO: nimeäminen / toinen testi, eihän tämä tee mitään nimen implikoimaa?
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
         kr.setRelations(Arrays.asList("sisaltyysuhde9kanssa1", "sisaltyysuhde9kanssa2", "sisaltyysuhde9kanssa3"));
         kr.setChild(false);
@@ -944,22 +945,10 @@ public class CodeElementResourceIT {
         int versio = 1;
 
         ExtendedKoodiDto codeElementToBeSaved = clone(resource.getCodeElementByUriAndVersion(koodiUri, versio));
+        ExtendedKoodiDto oldCodeElementBeforeSave = clone(codeElementToBeSaved);
         assertEquals(1, codeElementToBeSaved.getIncludesCodeElements().size());
         assertEquals(2, codeElementToBeSaved.getLevelsWithCodeElements().size());
         assertEquals(1, codeElementToBeSaved.getWithinCodeElements().size());
-
-        codeElementToBeSaved.getIncludesCodeElements().clear();
-        codeElementToBeSaved.getWithinCodeElements().clear();
-        codeElementToBeSaved.getLevelsWithCodeElements().clear();
-        codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde1", 1, false));
-        codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde2", 1, false));
-        codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde3", 1, false));
-        ExtendedKoodiDto oldCodeElementBeforeSave = resource.getCodeElementByUriAndVersion(koodiUri, versio);
-        resource.save(codeElementToBeSaved);
-
-        ExtendedKoodiDto oldCodeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio);
-        ExtendedKoodiDto newCodeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio + 1);
-        
         assertThat(oldCodeElementBeforeSave.getIncludesCodeElements())
                 .extracting(RelationCodeElement::getCodeElementUri)
                 .containsExactlyInAnyOrder("savekoodinsuhde1");
@@ -970,6 +959,16 @@ public class CodeElementResourceIT {
                 .extracting(RelationCodeElement::getCodeElementUri)
                 .containsExactlyInAnyOrder("savekoodinsuhde4");
 
+        codeElementToBeSaved.getIncludesCodeElements().clear();
+        codeElementToBeSaved.getWithinCodeElements().clear();
+        codeElementToBeSaved.getLevelsWithCodeElements().clear();
+        codeElementToBeSaved.getIncludesCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde1", 1, false));
+        codeElementToBeSaved.getLevelsWithCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde2", 1, false));
+        codeElementToBeSaved.getWithinCodeElements().add(new RelationCodeElement("uusisavekoodinsuhde3", 1, false));
+        String uusiVersio = resource.save(codeElementToBeSaved);
+        assertThat(uusiVersio).isNotEqualTo(versio);
+
+        ExtendedKoodiDto oldCodeElement = resource.getCodeElementByUriAndVersion(koodiUri, versio);
         assertThat(oldCodeElement.getIncludesCodeElements())
                 .extracting(RelationCodeElement::getCodeElementUri)
                 .containsExactlyInAnyOrder("savekoodinsuhde1");
@@ -980,6 +979,7 @@ public class CodeElementResourceIT {
                 .extracting(RelationCodeElement::getCodeElementUri)
                 .containsExactlyInAnyOrder("savekoodinsuhde4");
 
+        ExtendedKoodiDto newCodeElement = resource.getCodeElementByUriAndVersion(koodiUri, Integer.parseInt(uusiVersio));
         assertThat(newCodeElement.getIncludesCodeElements())
                 .extracting(RelationCodeElement::getCodeElementUri)
                 .containsExactlyInAnyOrder("uusisavekoodinsuhde1");
