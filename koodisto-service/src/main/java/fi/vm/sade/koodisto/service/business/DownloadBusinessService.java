@@ -1,8 +1,7 @@
 package fi.vm.sade.koodisto.service.business;
 
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
-
-import javax.activation.DataHandler;
+import org.springframework.core.io.Resource;
 
 /**
  * User: kwuoti
@@ -10,5 +9,5 @@ import javax.activation.DataHandler;
  * Time: 11.54
  */
 public interface DownloadBusinessService {
-    DataHandler download(String koodistoUri, int koodistoVersio, ExportImportFormatType exportFormat, String encoding);
+    Resource download(String koodistoUri, int koodistoVersio, ExportImportFormatType exportFormat, String encoding);
 }

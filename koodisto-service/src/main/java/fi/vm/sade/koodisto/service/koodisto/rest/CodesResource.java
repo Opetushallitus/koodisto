@@ -24,6 +24,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -396,11 +397,9 @@ public class CodesResource {
                     break;
             }
 
-            /*DataSource ds = new ByteArrayData;
-            DataHandler handler = new DataHandler(ds);
-            KoodistoVersio kv = uploadService.upload(codesUri, formatStr, encoding, handler);
-            return kv.getVersio().toString();*/
-            return null;
+            ByteArrayResource resource = new ByteArrayResource(uploadedFile.getBytes());
+            KoodistoVersio kv = uploadService.upload(codesUri, formatStr, encoding, resource);
+            return kv.getVersio().toString();
 
             // IE9 ei osaa käsitellä iframeja nätisti, jos palvelimelta tulee 500. ngUpload direktiivi kaatuu Access Denied virheeseen. Siksi tallennus
             // palauttaa myös virhetilanteissa 200.

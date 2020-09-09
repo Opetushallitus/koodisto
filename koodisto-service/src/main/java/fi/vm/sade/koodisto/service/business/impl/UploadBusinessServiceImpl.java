@@ -6,13 +6,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.activation.DataHandler;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.oxm.UnmarshallingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,19 +55,19 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
     private KoodiBusinessService koodiBusinessService;
 
     @Override
-    public KoodistoVersio upload(String koodistoUri, ExportImportFormatType format, String encoding, DataHandler file) {
+    public KoodistoVersio upload(String koodistoUri, ExportImportFormatType format, String encoding, Resource resource) {
         try {
             List<KoodiType> koodis = null;
             switch (format) {
 
             case JHS_XML:
-                koodis = koodistoXmlConverter.unmarshal(file, encoding);
+                koodis = koodistoXmlConverter.unmarshal(resource, encoding);
                 break;
             case CSV:
-                koodis = koodistoCsvConverter.unmarshal(file, encoding);
+                koodis = koodistoCsvConverter.unmarshal(resource, encoding);
                 break;
             case XLS:
-                koodis = koodistoXlsConverter.unmarshal(file, encoding);
+                koodis = koodistoXlsConverter.unmarshal(resource, encoding);
                 break;
             default:
                 throw new KoodistoImportException();

@@ -2,13 +2,13 @@ package fi.vm.sade.koodisto.service.business.marshaller;
 
 
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
-import fi.vm.sade.koodisto.util.ByteArrayDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Component;
 
-import javax.activation.DataHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
@@ -29,40 +29,27 @@ public class KoodistoXmlConverter extends KoodistoConverter {
     private Unmarshaller unmarshaller;
 
     @Override
-    public DataHandler marshal(List<KoodiType> koodis, String encoding) throws IOException {
+    public Resource marshal(List<KoodiType> koodis, String encoding) throws IOException {
 
-        ByteArrayOutputStream outputStream = null;
-        BufferedWriter writer = null;
-        try {
-            outputStream = new ByteArrayOutputStream();
-            writer = new BufferedWriter(new OutputStreamWriter(outputStream, getCharset(encoding)));
-
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, getCharset(encoding)))) {
             marshaller.marshal(koodis, new StreamResult(writer));
             outputStream.flush();
             writer.flush();
-            return new DataHandler(new ByteArrayDataSource(outputStream.toByteArray(), "application/octet-stream"));
-        } finally {
-            if (outputStream != null) {
-                outputStream.close();
-            }
-            if (writer != null) {
-                writer.close();
-            }
+            return new ByteArrayResource(outputStream.toByteArray(), "application/octet-stream");
         }
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<KoodiType> unmarshal(DataHandler handler, String encoding) throws IOException {
+    public List<KoodiType> unmarshal(Resource resource, String encoding) throws IOException {
 
         try {
-            StreamSource source = new StreamSource(new BufferedReader(new InputStreamReader(handler.getInputStream(),
+            StreamSource source = new StreamSource(new BufferedReader(new InputStreamReader(resource.getInputStream(),
                     getCharset(encoding))));
             return (List<KoodiType>) unmarshaller.unmarshal(source);
         } finally {
-            if (handler.getInputStream() != null) {
-                handler.getInputStream().close();
-            }
+            resource.getInputStream().close();
         }
     }
 

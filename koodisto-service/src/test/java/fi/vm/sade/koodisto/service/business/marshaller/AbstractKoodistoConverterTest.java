@@ -4,15 +4,14 @@ import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.koodisto.util.ByteArrayDataSource;
 import fi.vm.sade.koodisto.util.DateHelper;
 import fi.vm.sade.koodisto.util.KoodistoHelper;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
-
-import javax.activation.DataHandler;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -33,10 +32,10 @@ public abstract class AbstractKoodistoConverterTest {
     @Test
     public void testUnmarshall() throws IOException {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(getTestFile());
-//        DataHandler handler = new DataHandler(new ByteArrayDataSource(convertStreamToString(inputStream).getBytes()));
-        DataHandler handler = new DataHandler(new ByteArrayDataSource(IOUtils.toByteArray(inputStream)));
+        assert inputStream != null;
+        Resource resource = new ByteArrayResource(IOUtils.toByteArray(inputStream));
 
-        List<KoodiType> koodis = getConverter().unmarshal(handler, "UTF-8");
+        List<KoodiType> koodis = getConverter().unmarshal(resource, "UTF-8");
         assertEquals(1, koodis.size());
 
         KoodiType koodi = koodis.get(0);
@@ -94,12 +93,12 @@ public abstract class AbstractKoodistoConverterTest {
             koodi.getMetadata().add(meta);
         }
 
-        List<KoodiType> toMarshalling = new ArrayList<KoodiType>();
+        List<KoodiType> toMarshalling = new ArrayList<>();
         toMarshalling.add(koodi);
 
-        DataHandler handler = getConverter().marshal(toMarshalling, encoding);
+        Resource resource = getConverter().marshal(toMarshalling, encoding);
 
-        List<KoodiType> koodis = getConverter().unmarshal(handler, encoding);
+        List<KoodiType> koodis = getConverter().unmarshal(resource, encoding);
         assertEquals(1, koodis.size());
 
         KoodiType unmarshalled = koodis.get(0);
@@ -128,23 +127,4 @@ public abstract class AbstractKoodistoConverterTest {
         }
     }
 
-    public static final String convertStreamToString(InputStream is) throws IOException {
-        if (is != null) {
-            Writer writer = new StringWriter();
-
-            char[] buffer = new char[1024];
-            try {
-                Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                int n;
-                while ((n = reader.read(buffer)) != -1) {
-                    writer.write(buffer, 0, n);
-                }
-            } finally {
-                is.close();
-            }
-            return writer.toString();
-        } else {
-            return "";
-        }
-    }
 }

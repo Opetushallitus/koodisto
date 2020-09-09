@@ -26,6 +26,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.io.CsvListWriter;
@@ -33,7 +35,6 @@ import org.supercsv.prefs.CsvPreference;
 
 import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiTilaInvalidException;
-import fi.vm.sade.koodisto.service.koodisto.rest.CodesResource;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
@@ -142,7 +143,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     @Override
-    public DataHandler marshal(List<KoodiType> koodis, String encoding) throws IOException {
+    public Resource marshal(List<KoodiType> koodis, String encoding) throws IOException {
         CsvListWriter csvWriter = null;
         ByteArrayOutputStream outputStream = null;
         BufferedWriter writer = null;
@@ -164,7 +165,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
             writer.flush();
             outputStream.flush();
 
-            return new DataHandler(new ByteArrayDataSource(outputStream.toByteArray()));
+            return new ByteArrayResource(outputStream.toByteArray());
         } finally {
             if (outputStream != null) {
                 outputStream.close();
@@ -181,7 +182,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     @Override
-    public List<KoodiType> unmarshal(DataHandler handler, String encoding) throws IOException {
+    public List<KoodiType> unmarshal(Resource resource, String encoding) throws IOException {
 
         BufferedReader reader = null;
         CsvListReader csvReader = null;
@@ -189,7 +190,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
 
             // Kopioidaan DataHandlerin inputStream, jotta voidaan iteroida se läpi kahdesti
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            IOUtils.copy(handler.getInputStream(), baos);
+            IOUtils.copy(resource.getInputStream(), baos);
             byte[] bytes = baos.toByteArray();
             ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
 

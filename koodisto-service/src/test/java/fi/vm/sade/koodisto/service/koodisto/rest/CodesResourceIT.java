@@ -372,7 +372,6 @@ public class CodesResourceIT {
 
     @Test
     public void failsToUploadInvalidFile() {
-        InputStream is = null;
         String fileFormat = "CSV";
         String fileEncoding = "UTF-8";
         String codesUri = "csvfileuploaduri";

@@ -9,19 +9,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.activation.DataHandler;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
-import fi.vm.sade.koodisto.util.ByteArrayDataSource;
 
 /**
  * User: Turtiainen Date: 26.2.2014
@@ -53,7 +52,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
 
 
     @Override
-    public DataHandler marshal(List<KoodiType> koodis, String encoding) throws IOException {
+    public Resource marshal(List<KoodiType> koodis, String encoding) throws IOException {
         ByteArrayOutputStream outputStream = null;
 
         HSSFWorkbook book = new HSSFWorkbook();
@@ -66,7 +65,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
         try {
             book.write(outputStream);
             outputStream.flush();
-            return new DataHandler(new ByteArrayDataSource(outputStream.toByteArray()));
+            return new ByteArrayResource(outputStream.toByteArray());
         } finally {
             if (outputStream != null) {
                 outputStream.close();
@@ -103,9 +102,9 @@ public class KoodistoXlsConverter extends KoodistoConverter {
     }
 
     @Override
-    public List<KoodiType> unmarshal(DataHandler handler, String encoding) throws IOException {
+    public List<KoodiType> unmarshal(Resource resource, String encoding) throws IOException {
         HSSFWorkbook workbook = null;
-        workbook = new HSSFWorkbook(handler.getInputStream());
+        workbook = new HSSFWorkbook(resource.getInputStream());
         List<KoodiType> koodis = new ArrayList<KoodiType>();
         HSSFRow firstRow = workbook.getSheetAt(0).getRow(0);
         List<String> firstRowAsList = convertRowToStringArray(firstRow);
@@ -193,8 +192,8 @@ public class KoodistoXlsConverter extends KoodistoConverter {
         }
     }
 
-    public DataHandler getBlancDocument() throws IOException {
-        ByteArrayOutputStream outputStream = null;
+    public Resource getBlankDocument() throws IOException {
+        ByteArrayOutputStream outputStream;
 
         HSSFWorkbook book = new HSSFWorkbook();
         HSSFSheet sheet = book.createSheet("Koodisto");
@@ -205,11 +204,9 @@ public class KoodistoXlsConverter extends KoodistoConverter {
         try {
             book.write(outputStream);
             outputStream.flush();
-            return new DataHandler(new ByteArrayDataSource(outputStream.toByteArray()));
+            return new ByteArrayResource(outputStream.toByteArray());
         } finally {
-            if (outputStream != null) {
-                outputStream.close();
-            }
+            outputStream.close();
         }
     }
 

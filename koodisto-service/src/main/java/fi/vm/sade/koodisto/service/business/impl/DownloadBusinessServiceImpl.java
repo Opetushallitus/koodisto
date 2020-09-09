@@ -13,10 +13,9 @@ import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.activation.DataHandler;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,10 +45,10 @@ public class DownloadBusinessServiceImpl implements DownloadBusinessService {
     private SadeConversionService conversionService;
 
     @Override
-    public DataHandler download(String koodistoUri, int koodistoVersio, ExportImportFormatType exportFormat, String encoding) {
+    public Resource download(String koodistoUri, int koodistoVersio, ExportImportFormatType exportFormat, String encoding) {
         if(koodistoUri.equals("blankKoodistoDocument") && koodistoVersio == -1){
             try {
-                return koodistoXlsConverter.getBlancDocument();
+                return koodistoXlsConverter.getBlankDocument();
             } catch (IOException e) {
                 throw new KoodistoExportException(e);
             }
@@ -60,7 +59,7 @@ public class DownloadBusinessServiceImpl implements DownloadBusinessService {
         List<KoodiType> koodiTypes = conversionService.convertAll(
                 koodiBusinessService.searchKoodis(searchData), KoodiType.class);
         try {
-            DataHandler returnValue = null;
+            Resource returnValue;
             switch (exportFormat) {
 
                 case JHS_XML:

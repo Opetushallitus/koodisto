@@ -30,10 +30,10 @@ import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.activation.DataHandler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -715,24 +715,22 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
                 encoding = "UTF-8";
             }
 
-            DataHandler handler = downloadBusinessService.download(codesUri, codesVersion, formatStr, encoding);
+            Resource resource = downloadBusinessService.download(codesUri, codesVersion, formatStr, encoding);
 
-            File file = createTemporaryFile(codesUri, extension, handler);
-
-            return file;
+            return createTemporaryFile(codesUri, extension, resource);
         } catch (IOException e) {
             logger.error("Writing Codes to file failed:\n" + e);
             throw new KoodistoExportException();
         }
     }
 
-    private File createTemporaryFile(String codesUri, String extension, DataHandler handler) throws IOException, FileNotFoundException {
+    private File createTemporaryFile(String codesUri, String extension, Resource resource) throws IOException, FileNotFoundException {
         FileOutputStream fos = null;
         try {
             File file = File.createTempFile(codesUri, extension);
             logger.debug("Created temporary file " + file.getAbsolutePath());
             fos = new FileOutputStream(file);
-            IOUtils.copy(handler.getInputStream(), fos);
+            IOUtils.copy(resource.getInputStream(), fos);
             fos.close();
             file.deleteOnExit(); // Delete file when VM is closed
             return file;
