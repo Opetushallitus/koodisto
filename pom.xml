@@ -154,8 +154,7 @@ branchName=${branch}
 vcsRevision=${revision}
 buildTtime=${maven.build.timestamp}]]>
                 </echo>
-                <loadfile property="buildversiontxt"
-                          srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
+                <loadfile property="buildversiontxt" srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
                 <echo message="${buildversiontxt}"/>
                 <echo file="target/mavenversion.txt">${project.version}</echo>
               </target>
@@ -441,7 +440,7 @@ buildTtime=${maven.build.timestamp}]]>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.5.4</version>
+        <version>4.5.13</version>
         <exclusions>
           <exclusion>
             <groupId>commons-logging</groupId>
