@@ -42,7 +42,7 @@
     <castor-xml.version>1.4.1</castor-xml.version>
     <commons-configuration.version>1.9</commons-configuration.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
-    <cxf.version>3.3.5</cxf.version>
+    <cxf.version>3.3.8</cxf.version>
     <dbunit.version>2.5.4</dbunit.version>
     <ehcache.version>2.10.6</ehcache.version>
     <log-client.version>8.0</log-client.version>
@@ -154,8 +154,7 @@ branchName=${branch}
 vcsRevision=${revision}
 buildTtime=${maven.build.timestamp}]]>
                 </echo>
-                <loadfile property="buildversiontxt"
-                          srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
+                <loadfile property="buildversiontxt" srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
                 <echo message="${buildversiontxt}"/>
                 <echo file="target/mavenversion.txt">${project.version}</echo>
               </target>
