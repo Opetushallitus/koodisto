@@ -67,7 +67,7 @@
     <log4j.version>2.13.2</log4j.version>
 
     <spring.version>4.3.26.RELEASE</spring.version>
-    <spring-security.version>4.2.14.RELEASE</spring-security.version>
+    <spring-security.version>5.2.9.RELEASE</spring-security.version>
     <spring-session.version>2.1.10.RELEASE</spring-session.version>
 
     <springockito-annotations.version>${springockito.version}</springockito-annotations.version>
@@ -154,8 +154,7 @@ branchName=${branch}
 vcsRevision=${revision}
 buildTtime=${maven.build.timestamp}]]>
                 </echo>
-                <loadfile property="buildversiontxt"
-                          srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
+                <loadfile property="buildversiontxt" srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
                 <echo message="${buildversiontxt}"/>
                 <echo file="target/mavenversion.txt">${project.version}</echo>
               </target>
