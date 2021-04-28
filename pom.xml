@@ -154,8 +154,7 @@ branchName=${branch}
 vcsRevision=${revision}
 buildTtime=${maven.build.timestamp}]]>
                 </echo>
-                <loadfile property="buildversiontxt"
-                          srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
+                <loadfile property="buildversiontxt" srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
                 <echo message="${buildversiontxt}"/>
                 <echo file="target/mavenversion.txt">${project.version}</echo>
               </target>
@@ -478,7 +477,7 @@ buildTtime=${maven.build.timestamp}]]>
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.5</version>
+        <version>2.7</version>
       </dependency>
       <dependency>
         <groupId>com.thoughtworks.paranamer</groupId>
