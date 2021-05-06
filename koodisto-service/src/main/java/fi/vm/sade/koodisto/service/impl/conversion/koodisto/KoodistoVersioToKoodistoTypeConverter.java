@@ -33,18 +33,18 @@ public class KoodistoVersioToKoodistoTypeConverter extends AbstractFromDomainCon
         converted.setLukittu(source.getKoodisto().getLukittu());
 
         if (source.getPaivitysPvm() != null) {
-            converted.setPaivitysPvm(DateHelper.DateToXmlCal(source.getPaivitysPvm()));
+            converted.setPaivitysPvm(DateHelper.dateToXmlCal(source.getPaivitysPvm()));
         }
         Optional.ofNullable(source.getPaivittajaOid()).ifPresent(converted::setPaivittajaOid);
         converted.setTila(TilaType.valueOf(source.getTila().name()));
         converted.setVersio(source.getVersio());
 
         if (source.getVoimassaAlkuPvm() != null) {
-            converted.setVoimassaAlkuPvm(DateHelper.DateToXmlCal(source.getVoimassaAlkuPvm()));
+            converted.setVoimassaAlkuPvm(DateHelper.dateToXmlCal(source.getVoimassaAlkuPvm()));
         }
 
         if (source.getVoimassaLoppuPvm() != null) {
-            converted.setVoimassaLoppuPvm(DateHelper.DateToXmlCal(source.getVoimassaLoppuPvm()));
+            converted.setVoimassaLoppuPvm(DateHelper.dateToXmlCal(source.getVoimassaLoppuPvm()));
         }
 
         KoodistoMetadataToKoodistoMetadataTypeConverter mdConv = new KoodistoMetadataToKoodistoMetadataTypeConverter();

@@ -73,11 +73,11 @@ public abstract class AbstractKoodistoConverterTest {
 
         koodi.setKoodiArvo("arvo");
         koodi.setKoodiUri("koodiuri");
-        koodi.setPaivitysPvm(DateHelper.DateToXmlCal(new Date()));
+        koodi.setPaivitysPvm(DateHelper.dateToXmlCal(new Date()));
         koodi.setTila(TilaType.HYVAKSYTTY);
         koodi.setVersio(1);
-        koodi.setVoimassaAlkuPvm(DateHelper.DateToXmlCal(new Date()));
-        koodi.setVoimassaLoppuPvm(DateHelper.DateToXmlCal(new Date()));
+        koodi.setVoimassaAlkuPvm(DateHelper.dateToXmlCal(new Date()));
+        koodi.setVoimassaLoppuPvm(DateHelper.dateToXmlCal(new Date()));
 
         for (KieliType k : KieliType.values()) {
             KoodiMetadataType meta = new KoodiMetadataType();

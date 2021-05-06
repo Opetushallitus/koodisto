@@ -152,11 +152,11 @@ public class KoodistoConversionServiceTest {
         dto.setVersio(1);
         dto.setKoodiArvo("arvo");
         dto.setKoodiUri("http://foo.fi");
-        dto.setPaivitysPvm(DateHelper.DateToXmlCal(new Date()));
+        dto.setPaivitysPvm(DateHelper.dateToXmlCal(new Date()));
         dto.setTila(TilaType.HYVAKSYTTY);
         dto.setVersio(1);
-        dto.setVoimassaAlkuPvm(DateHelper.DateToXmlCal(new Date()));
-        dto.setVoimassaLoppuPvm(DateHelper.DateToXmlCal(new Date()));
+        dto.setVoimassaAlkuPvm(DateHelper.dateToXmlCal(new Date()));
+        dto.setVoimassaLoppuPvm(DateHelper.dateToXmlCal(new Date()));
 
         return dto;
     }
@@ -198,11 +198,11 @@ public class KoodistoConversionServiceTest {
         dto.setLukittu(false);
         dto.setOmistaja("Omistaja");
         dto.setOrganisaatioOid("organisaatioOid");
-        dto.setPaivitysPvm(DateHelper.DateToXmlCal(now.getTime()));
+        dto.setPaivitysPvm(DateHelper.dateToXmlCal(now.getTime()));
         dto.setTila(TilaType.HYVAKSYTTY);
         dto.setVersio(1);
-        dto.setVoimassaAlkuPvm(DateHelper.DateToXmlCal(now.getTime()));
-        dto.setVoimassaLoppuPvm(DateHelper.DateToXmlCal(weekLater.getTime()));
+        dto.setVoimassaAlkuPvm(DateHelper.dateToXmlCal(now.getTime()));
+        dto.setVoimassaLoppuPvm(DateHelper.dateToXmlCal(weekLater.getTime()));
         dto.setPaivittajaOid("oid");
 
         return dto;

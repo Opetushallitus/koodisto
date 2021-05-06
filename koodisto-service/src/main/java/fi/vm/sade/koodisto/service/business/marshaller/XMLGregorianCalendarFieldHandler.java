@@ -1,44 +1,21 @@
 package fi.vm.sade.koodisto.service.business.marshaller;
 
 import fi.vm.sade.koodisto.util.DateHelper;
-import org.exolab.castor.mapping.GeneralizedFieldHandler;
 
+import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.Date;
 
-/**
- * User: kwuoti
- * Date: 8.4.2013
- * Time: 12.08
- */
-public class XMLGregorianCalendarFieldHandler extends GeneralizedFieldHandler {
+public class XMLGregorianCalendarFieldHandler extends XmlAdapter<XMLGregorianCalendar, Date> {
 
-    public XMLGregorianCalendarFieldHandler() {
-        super();
+    @Override
+    public Date unmarshal(XMLGregorianCalendar xmlGregorianCalendar) {
+        return DateHelper.xmlCalToDate(xmlGregorianCalendar);
     }
 
     @Override
-    public Object convertUponGet(Object value) {
-
-        if (value == null) {
-            return null;
-        }
-
-        return DateHelper.xmlCalToDate((XMLGregorianCalendar) value);
+    public XMLGregorianCalendar marshal(Date date) {
+        return DateHelper.dateToXmlCal(date);
     }
 
-    @Override
-    public Object convertUponSet(Object value) {
-        if (value == null) {
-            return null;
-        }
-
-        return DateHelper.DateToXmlCal((Date) value);
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Override
-    public Class getFieldType() {
-        return XMLGregorianCalendar.class;
-    }
 }

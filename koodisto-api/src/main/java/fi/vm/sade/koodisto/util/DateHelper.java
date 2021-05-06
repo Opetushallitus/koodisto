@@ -41,7 +41,7 @@ public final class DateHelper {
         return null;
     }
 
-    public static XMLGregorianCalendar DateToXmlCal(Date date) {
+    public static XMLGregorianCalendar dateToXmlCal(Date date) {
         try {
             GregorianCalendar gcal = new GregorianCalendar();
             gcal.setTime(date);

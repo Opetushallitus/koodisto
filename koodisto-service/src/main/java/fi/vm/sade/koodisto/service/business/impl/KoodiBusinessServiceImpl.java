@@ -1104,7 +1104,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         if (searchData.getKoodiSearchCriteria() == null) {
             searchData.setKoodiSearchCriteria(new SearchKoodisCriteriaType());
         }
-        searchData.getKoodiSearchCriteria().setValidAt(DateHelper.DateToXmlCal(new Date()));
+        searchData.getKoodiSearchCriteria().setValidAt(DateHelper.dateToXmlCal(new Date()));
     }
 
     @Override

@@ -253,7 +253,7 @@ public class KoodiServiceTest {
         calendar.set(Calendar.YEAR, 2012);
         calendar.set(Calendar.MONTH, 3);
         calendar.set(Calendar.DAY_OF_MONTH, 22);
-        searchType.setValidAt(DateHelper.DateToXmlCal(calendar.getTime()));
+        searchType.setValidAt(DateHelper.dateToXmlCal(calendar.getTime()));
 
         List<KoodiType> versios = koodiService.searchKoodis(searchType);
         assertEquals(1, versios.size());
@@ -268,7 +268,7 @@ public class KoodiServiceTest {
         searchType.setKoodiVersioSelection(SearchKoodisVersioSelectionType.SPECIFIC);
         searchType.setKoodiVersio(11);
         searchType.getKoodiUris().add(koodiUri);
-        searchType.setValidAt(DateHelper.DateToXmlCal(calendar.getTime()));
+        searchType.setValidAt(DateHelper.dateToXmlCal(calendar.getTime()));
 
         versios = koodiService.searchKoodis(searchType);
         assertEquals(0, versios.size());
@@ -284,7 +284,7 @@ public class KoodiServiceTest {
 
         SearchKoodisByKoodistoCriteriaType koodistoSearchType = new SearchKoodisByKoodistoCriteriaType();
         koodistoSearchType.setKoodistoUri(koodistoUri);
-        koodistoSearchType.setValidAt(DateHelper.DateToXmlCal(calendar.getTime()));
+        koodistoSearchType.setValidAt(DateHelper.dateToXmlCal(calendar.getTime()));
         koodistoSearchType.setKoodistoVersioSelection(SearchKoodisByKoodistoVersioSelectionType.LATEST);
 
         List<KoodiType> versios = koodiService.searchKoodisByKoodisto(koodistoSearchType);
@@ -303,7 +303,7 @@ public class KoodiServiceTest {
         calendar.set(Calendar.DAY_OF_MONTH, 5);
         koodistoSearchType = new SearchKoodisByKoodistoCriteriaType();
         koodistoSearchType.setKoodistoUri(koodistoUri);
-        koodistoSearchType.setValidAt(DateHelper.DateToXmlCal(calendar.getTime()));
+        koodistoSearchType.setValidAt(DateHelper.dateToXmlCal(calendar.getTime()));
         koodistoSearchType.setKoodistoVersioSelection(SearchKoodisByKoodistoVersioSelectionType.LATEST);
         versios = koodiService.searchKoodisByKoodisto(koodistoSearchType);
         assertEquals(2, versios.size());
@@ -394,7 +394,7 @@ public class KoodiServiceTest {
 
         SearchKoodisByKoodistoCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder
                 .validAcceptedKoodisByKoodistoUriAndKoodistoVersio(koodistoUri, koodistoVersio);
-        searchCriteria.getKoodiSearchCriteria().setValidAt(DateHelper.DateToXmlCal(calendar.getTime()));
+        searchCriteria.getKoodiSearchCriteria().setValidAt(DateHelper.dateToXmlCal(calendar.getTime()));
 
         List<KoodiType> koodis = koodiService.searchKoodisByKoodisto(searchCriteria);
         assertEquals(1, koodis.size());

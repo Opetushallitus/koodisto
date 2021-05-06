@@ -16,13 +16,13 @@ public class KoodistoVersioToKoodistoVersioListTypeConverter extends
     public KoodistoVersioListType convert(KoodistoVersio source) {
         KoodistoVersioListType converted = new KoodistoVersioListType();
         converted.setKoodistoUri(source.getKoodisto().getKoodistoUri());
-        converted.setPaivitysPvm(source.getPaivitysPvm() != null ? DateHelper.DateToXmlCal(source.getPaivitysPvm())
+        converted.setPaivitysPvm(source.getPaivitysPvm() != null ? DateHelper.dateToXmlCal(source.getPaivitysPvm())
                 : null);
         converted.setTila(TilaType.valueOf(source.getTila().name()));
         converted.setVersio(source.getVersio());
-        converted.setVoimassaAlkuPvm(source.getVoimassaAlkuPvm() != null ? DateHelper.DateToXmlCal(source
+        converted.setVoimassaAlkuPvm(source.getVoimassaAlkuPvm() != null ? DateHelper.dateToXmlCal(source
                 .getVoimassaAlkuPvm()) : null);
-        converted.setVoimassaLoppuPvm(source.getVoimassaLoppuPvm() != null ? DateHelper.DateToXmlCal(source
+        converted.setVoimassaLoppuPvm(source.getVoimassaLoppuPvm() != null ? DateHelper.dateToXmlCal(source
                 .getVoimassaLoppuPvm()) : null);
 
         KoodistoMetadataToKoodistoMetadataTypeConverter metaConverter = new KoodistoMetadataToKoodistoMetadataTypeConverter();

@@ -72,31 +72,6 @@
     </dependency>
 
     <dependency>
-      <groupId>fi.vm.sade.generic</groupId>
-      <artifactId>generic-test-support</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>fi.vm.sade.generic</groupId>
-          <artifactId>dependencies-vaadin</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>fi.vm.sade.generic</groupId>
-          <artifactId>generic-common</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-
-    <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>42.2.2</version>
@@ -183,10 +158,6 @@
       <artifactId>javax.jws-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.transaction</groupId>
-      <artifactId>jta</artifactId>
-    </dependency>
-    <dependency>
       <groupId>fi.vm.sade.koodisto</groupId>
       <artifactId>koodisto-api</artifactId>
       <version>${project.version}</version>
@@ -244,9 +215,31 @@
       <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.transaction</groupId>
+      <artifactId>jakarta.transaction-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>${hibernate.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.persistence</groupId>
+          <artifactId>javax.persistence-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.transaction</groupId>
+          <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.transaction</groupId>
+          <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -346,19 +339,6 @@
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
       <version>${commons-httpclient.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <!-- Castor XML marshaller -->
-    <dependency>
-      <groupId>org.codehaus.castor</groupId>
-      <artifactId>castor-xml</artifactId>
-      <version>${castor-xml.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>

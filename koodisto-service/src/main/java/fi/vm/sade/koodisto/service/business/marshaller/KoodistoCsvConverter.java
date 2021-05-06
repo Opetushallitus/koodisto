@@ -33,7 +33,6 @@ import org.supercsv.prefs.CsvPreference;
 
 import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiTilaInvalidException;
-import fi.vm.sade.koodisto.service.koodisto.rest.CodesResource;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
@@ -362,7 +361,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
             return null;
         }
         try {
-            date = DateHelper.DateToXmlCal(getCSVDateFormat().parse(paivamaaraString));
+            date = DateHelper.dateToXmlCal(getCSVDateFormat().parse(paivamaaraString));
         } catch (ParseException e) {
             return null;
         }

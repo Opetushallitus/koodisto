@@ -31,8 +31,8 @@ public final class DataUtils {
         CreateKoodistoDataType type = new CreateKoodistoDataType();
         type.setOmistaja(omistaja);
         type.setOrganisaatioOid(organisaatioOid);
-        type.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? DateHelper.DateToXmlCal(voimassaAlkuPvm) : null);
-        type.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? DateHelper.DateToXmlCal(voimassaLoppuPvm) : null);
+        type.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? DateHelper.dateToXmlCal(voimassaAlkuPvm) : null);
+        type.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? DateHelper.dateToXmlCal(voimassaLoppuPvm) : null);
 
         for (KieliType k : KieliType.values()) {
             KoodistoMetadataType m = new KoodistoMetadataType();
@@ -52,8 +52,8 @@ public final class DataUtils {
         type.setOmistaja(omistaja);
         type.setTila(tila);
         type.setOrganisaatioOid(organisaatioOid);
-        type.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? DateHelper.DateToXmlCal(voimassaAlkuPvm) : null);
-        type.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? DateHelper.DateToXmlCal(voimassaLoppuPvm) : null);
+        type.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? DateHelper.dateToXmlCal(voimassaAlkuPvm) : null);
+        type.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? DateHelper.dateToXmlCal(voimassaLoppuPvm) : null);
 
         for (KieliType k : KieliType.values()) {
             KoodistoMetadataType m = new KoodistoMetadataType();
@@ -89,8 +89,8 @@ public final class DataUtils {
                                                                 String nimi) {
         CreateKoodiDataType koodiDataType = new CreateKoodiDataType();
         koodiDataType.setKoodiArvo(koodiArvo);
-        koodiDataType.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? DateHelper.DateToXmlCal(voimassaAlkuPvm) : null);
-        koodiDataType.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? DateHelper.DateToXmlCal(voimassaLoppuPvm) : null);
+        koodiDataType.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? DateHelper.dateToXmlCal(voimassaAlkuPvm) : null);
+        koodiDataType.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? DateHelper.dateToXmlCal(voimassaLoppuPvm) : null);
         for (KieliType k : KieliType.values()) {
             KoodiMetadataType metadataType = new KoodiMetadataType();
             metadataType.setNimi(nimi);
@@ -110,8 +110,8 @@ public final class DataUtils {
         koodiDataType.setKoodiUri(koodiUri);
         koodiDataType.setKoodiArvo(koodiArvo);
         koodiDataType.setTila(tila);
-        koodiDataType.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? DateHelper.DateToXmlCal(voimassaAlkuPvm) : null);
-        koodiDataType.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? DateHelper.DateToXmlCal(voimassaLoppuPvm) : null);
+        koodiDataType.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? DateHelper.dateToXmlCal(voimassaAlkuPvm) : null);
+        koodiDataType.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? DateHelper.dateToXmlCal(voimassaLoppuPvm) : null);
         for (KieliType k : KieliType.values()) {
             KoodiMetadataType metadataType = new KoodiMetadataType();
             metadataType.setNimi(nimi);
@@ -134,8 +134,8 @@ public final class DataUtils {
         to.setLukittu(koodisto.getLukittu());
         to.setOmistaja(koodisto.getOmistaja());
         to.setOrganisaatioOid(koodisto.getOrganisaatioOid());
-        to.setVoimassaAlkuPvm(DateHelper.DateToXmlCal(from.getVoimassaAlkuPvm()));
-        if (from.getVoimassaLoppuPvm() != null) to.setVoimassaLoppuPvm(DateHelper.DateToXmlCal(from.getVoimassaLoppuPvm()));
+        to.setVoimassaAlkuPvm(DateHelper.dateToXmlCal(from.getVoimassaAlkuPvm()));
+        if (from.getVoimassaLoppuPvm() != null) to.setVoimassaLoppuPvm(DateHelper.dateToXmlCal(from.getVoimassaLoppuPvm()));
         KoodistoMetadataToKoodistoMetadataTypeConverter converter = new KoodistoMetadataToKoodistoMetadataTypeConverter();
         for (KoodistoMetadata metaData : from.getMetadatas()) {
             to.getMetadataList().add(converter.convert(metaData));

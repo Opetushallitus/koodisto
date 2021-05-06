@@ -55,7 +55,7 @@ public abstract class KoodistoServiceSearchCriteriaBuilder {
 
     public static SearchKoodistosCriteriaType latestValidAcceptedKoodistoByUri(final String koodistoUri) {
         SearchKoodistosCriteriaType searchType = latestAcceptedKoodistoByUri(koodistoUri);
-        searchType.setValidAt(DateHelper.DateToXmlCal(new Date()));
+        searchType.setValidAt(DateHelper.dateToXmlCal(new Date()));
         return searchType;
     }
 

@@ -39,18 +39,18 @@ public class KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter implements
         converted.getMetadata().addAll(metas);
 
         if (source.getKoodiVersio().getPaivitysPvm() != null) {
-            converted.setPaivitysPvm(DateHelper.DateToXmlCal(source.getKoodiVersio().getPaivitysPvm()));
+            converted.setPaivitysPvm(DateHelper.dateToXmlCal(source.getKoodiVersio().getPaivitysPvm()));
         }
         Optional.ofNullable(source.getKoodiVersio().getPaivittajaOid()).ifPresent(converted::setPaivittajaOid);
         converted.setTila(TilaType.valueOf(source.getKoodiVersio().getTila().name()));
         converted.setVersio(source.getKoodiVersio().getVersio());
 
         if (source.getKoodiVersio().getVoimassaAlkuPvm() != null) {
-            converted.setVoimassaAlkuPvm(DateHelper.DateToXmlCal(source.getKoodiVersio().getVoimassaAlkuPvm()));
+            converted.setVoimassaAlkuPvm(DateHelper.dateToXmlCal(source.getKoodiVersio().getVoimassaAlkuPvm()));
         }
 
         if (source.getKoodiVersio().getVoimassaLoppuPvm() != null) {
-            converted.setVoimassaLoppuPvm(DateHelper.DateToXmlCal(source.getKoodiVersio().getVoimassaLoppuPvm()));
+            converted.setVoimassaLoppuPvm(DateHelper.dateToXmlCal(source.getKoodiVersio().getVoimassaLoppuPvm()));
         }
 
         if (source.getKoodistoItem() != null) {

@@ -1,34 +1,19 @@
 package fi.vm.sade.koodisto.service.business.marshaller;
 
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import org.exolab.castor.mapping.GeneralizedFieldHandler;
 
-/**
- * User: kwuoti
- * Date: 8.4.2013
- * Time: 15.04
- */
-public class TilaTypeFieldHandler extends GeneralizedFieldHandler {
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+
+public class TilaTypeFieldHandler extends XmlAdapter<TilaType, String> {
+
     @Override
-    public Object convertUponGet(Object o) {
-        if (o == null) {
-            return null;
-        }
-
-        return ((TilaType) o).name();
+    public String unmarshal(TilaType tilaType) {
+        return tilaType != null ? tilaType.name() : null;
     }
 
     @Override
-    public Object convertUponSet(Object o) {
-        if (o == null) {
-            return null;
-        }
-
-        return TilaType.valueOf((String) o);
+    public TilaType marshal(String s) {
+        return s != null ? TilaType.valueOf(s) : null;
     }
 
-    @Override
-    public Class getFieldType() {
-        return TilaType.class;
-    }
 }
