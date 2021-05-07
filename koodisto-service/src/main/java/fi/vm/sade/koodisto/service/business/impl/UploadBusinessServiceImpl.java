@@ -61,13 +61,13 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
             switch (format) {
 
             case JHS_XML:
-                koodis = koodistoXmlConverter.unmarshal(file, encoding);
+                koodis = koodistoXmlConverter.unmarshal(file, encoding).getKoodi();
                 break;
             case CSV:
-                koodis = koodistoCsvConverter.unmarshal(file, encoding);
+                koodis = koodistoCsvConverter.unmarshal(file, encoding).getKoodi();
                 break;
             case XLS:
-                koodis = koodistoXlsConverter.unmarshal(file, encoding);
+                koodis = koodistoXlsConverter.unmarshal(file, encoding).getKoodi();
                 break;
             default:
                 throw new KoodistoImportException();

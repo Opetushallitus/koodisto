@@ -232,7 +232,8 @@ public class KoodiAdminServiceTest {
 
         List<KoodiType> koodis = listKoodisByKoodisto(koodistoUri, koodistoVersio);
         assertEquals(1, koodis.size());
-        assertEquals(koodi, koodis.get(0));
+        assertEquals(koodi.getKoodiUri(), koodis.get(0).getKoodiUri());
+        assertEquals(koodi.getVersio(), koodis.get(0).getVersio());
     }
 
     private List<KoodiType> listKoodisByKoodisto(String koodistoUri, Integer koodistoVersio) {

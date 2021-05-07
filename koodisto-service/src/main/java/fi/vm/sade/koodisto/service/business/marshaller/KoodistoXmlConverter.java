@@ -1,64 +1,56 @@
 package fi.vm.sade.koodisto.service.business.marshaller;
 
 
-import fi.vm.sade.koodisto.service.types.common.KoodiType;
+import fi.jhs_suositukset.skeemat.oph._2012._05._03.KoodiListaus;
 import fi.vm.sade.koodisto.util.ByteArrayDataSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.oxm.Marshaller;
-import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Component;
 
 import javax.activation.DataHandler;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
-import java.util.List;
 
-/**
- * User: kwuoti
- * Date: 8.4.2013
- * Time: 12.12
- */
 @Component
 public class KoodistoXmlConverter extends KoodistoConverter {
 
-    @Autowired
-    private Marshaller marshaller;
+    private final Marshaller marshaller;
+    private final Unmarshaller unmarshaller;
 
-    @Autowired
-    private Unmarshaller unmarshaller;
-
-    @Override
-    public DataHandler marshal(List<KoodiType> koodis, String encoding) throws IOException {
-
-        ByteArrayOutputStream outputStream = null;
-        BufferedWriter writer = null;
+    public KoodistoXmlConverter() {
         try {
-            outputStream = new ByteArrayOutputStream();
-            writer = new BufferedWriter(new OutputStreamWriter(outputStream, getCharset(encoding)));
-
-            marshaller.marshal(koodis, new StreamResult(writer));
-            outputStream.flush();
-            writer.flush();
-            return new DataHandler(new ByteArrayDataSource(outputStream.toByteArray(), "application/octet-stream"));
-        } finally {
-            if (outputStream != null) {
-                outputStream.close();
-            }
-            if (writer != null) {
-                writer.close();
-            }
+            JAXBContext context = JAXBContext.newInstance(KoodiListaus.class);
+            marshaller = context.createMarshaller();
+            unmarshaller = context.createUnmarshaller();
+        } catch (JAXBException e) {
+            throw new IllegalStateException(e);
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public List<KoodiType> unmarshal(DataHandler handler, String encoding) throws IOException {
+    public DataHandler marshal(KoodiListaus koodis, String encoding) throws IOException {
+        try (
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(outputStream, getCharset(encoding)))) {
+            marshaller.marshal(koodis, new StreamResult(writer));
+            writer.flush();
+            return new DataHandler(new ByteArrayDataSource(outputStream.toByteArray(), "application/octet-stream"));
+        } catch (JAXBException e) {
+            throw new IOException(e);
+        }
+    }
 
+    @Override
+    public KoodiListaus unmarshal(DataHandler handler, String encoding) throws IOException {
         try {
             StreamSource source = new StreamSource(new BufferedReader(new InputStreamReader(handler.getInputStream(),
                     getCharset(encoding))));
-            return (List<KoodiType>) unmarshaller.unmarshal(source);
+            return (KoodiListaus) unmarshaller.unmarshal(source);
+        } catch (JAXBException e) {
+            throw new IOException(e);
         } finally {
             if (handler.getInputStream() != null) {
                 handler.getInputStream().close();

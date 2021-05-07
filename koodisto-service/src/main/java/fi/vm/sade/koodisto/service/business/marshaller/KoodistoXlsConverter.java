@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.activation.DataHandler;
 
+import fi.jhs_suositukset.skeemat.oph._2012._05._03.KoodiListaus;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -53,13 +54,13 @@ public class KoodistoXlsConverter extends KoodistoConverter {
 
 
     @Override
-    public DataHandler marshal(List<KoodiType> koodis, String encoding) throws IOException {
+    public DataHandler marshal(KoodiListaus koodis, String encoding) throws IOException {
         ByteArrayOutputStream outputStream = null;
 
         HSSFWorkbook book = new HSSFWorkbook();
         HSSFSheet sheet = book.createSheet("Koodisto");
         writeHeader(sheet);
-        writeCodeelements(sheet, koodis);
+        writeCodeelements(sheet, koodis.getKoodi());
         postprocess(sheet);
 
         outputStream = new ByteArrayOutputStream();
@@ -103,7 +104,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
     }
 
     @Override
-    public List<KoodiType> unmarshal(DataHandler handler, String encoding) throws IOException {
+    public KoodiListaus unmarshal(DataHandler handler, String encoding) throws IOException {
         HSSFWorkbook workbook = null;
         workbook = new HSSFWorkbook(handler.getInputStream());
         List<KoodiType> koodis = new ArrayList<KoodiType>();
@@ -122,7 +123,9 @@ public class KoodistoXlsConverter extends KoodistoConverter {
             }
         }
 
-        return koodis;
+        KoodiListaus listaus = new KoodiListaus();
+        listaus.getKoodi().addAll(koodis);
+        return listaus;
     }
 
     private List<String> convertRowToStringArray(Row row) {

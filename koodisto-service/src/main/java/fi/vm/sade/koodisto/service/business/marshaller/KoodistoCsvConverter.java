@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.activation.DataHandler;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import fi.jhs_suositukset.skeemat.oph._2012._05._03.KoodiListaus;
 import fi.vm.sade.koodisto.util.DateHelper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -141,7 +142,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     @Override
-    public DataHandler marshal(List<KoodiType> koodis, String encoding) throws IOException {
+    public DataHandler marshal(KoodiListaus koodis, String encoding) throws IOException {
         CsvListWriter csvWriter = null;
         ByteArrayOutputStream outputStream = null;
         BufferedWriter writer = null;
@@ -180,7 +181,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     @Override
-    public List<KoodiType> unmarshal(DataHandler handler, String encoding) throws IOException {
+    public KoodiListaus unmarshal(DataHandler handler, String encoding) throws IOException {
 
         BufferedReader reader = null;
         CsvListReader csvReader = null;
@@ -214,7 +215,9 @@ public class KoodistoCsvConverter extends KoodistoConverter {
                 }
             }
 
-            return koodis;
+            KoodiListaus listaus = new KoodiListaus();
+            listaus.getKoodi().addAll(koodis);
+            return listaus;
 
         } finally {
             if (reader != null) {
@@ -368,10 +371,10 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         return date;
     }
 
-    protected void writeKoodis(List<KoodiType> koodis, Charset encoding, CsvListWriter writer) throws IOException {
+    protected void writeKoodis(KoodiListaus koodis, Charset encoding, CsvListWriter writer) throws IOException {
         writer.write(HEADER_FIELDS);
 
-        for (KoodiType koodi : koodis) {
+        for (KoodiType koodi : koodis.getKoodi()) {
             List<String> converted = convert(koodi, encoding);
             writer.write(converted);
         }

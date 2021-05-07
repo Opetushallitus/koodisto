@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
+import fi.jhs_suositukset.skeemat.oph._2012._05._03.KoodiListaus;
 import fi.vm.sade.koodisto.service.KoodiService;
 import fi.vm.sade.koodisto.service.business.DownloadBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoExportException;
@@ -52,19 +53,20 @@ public class DownloadBusinessServiceImpl implements DownloadBusinessService {
         SearchKoodisByKoodistoCriteriaType searchData =
                 KoodiServiceSearchCriteriaBuilder.koodisByKoodistoUriAndKoodistoVersio(koodistoUri, koodistoVersio);
 
-        List<KoodiType> koodiTypes = koodiService.searchKoodisByKoodisto(searchData);
+        List<KoodiType> koodis = koodiService.searchKoodisByKoodisto(searchData);
+        KoodiListaus listaus = new KoodiListaus();
+        listaus.getKoodi().addAll(koodis);
         try {
-            DataHandler returnValue = null;
+            DataHandler returnValue;
             switch (exportFormat) {
-
                 case JHS_XML:
-                    returnValue = koodistoXmlConverter.marshal(koodiTypes, encoding);
+                    returnValue = koodistoXmlConverter.marshal(listaus, encoding);
                     break;
                 case CSV:
-                    returnValue = koodistoCsvConverter.marshal(koodiTypes, encoding);
+                    returnValue = koodistoCsvConverter.marshal(listaus, encoding);
                     break;
                 case XLS:
-                    returnValue = koodistoXlsConverter.marshal(koodiTypes, encoding);
+                    returnValue = koodistoXlsConverter.marshal(listaus, encoding);
                     break;
                 default:
                     throw new KoodistoExportException("error.codes.exporting.unknown.format");
