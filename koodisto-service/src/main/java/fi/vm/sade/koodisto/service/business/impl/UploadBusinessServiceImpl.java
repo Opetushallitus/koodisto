@@ -11,6 +11,8 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import fi.vm.sade.koodisto.service.types.common.KoodiType;
+import fi.vm.sade.koodisto.util.KoodistoHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.oxm.UnmarshallingFailureException;
@@ -31,7 +33,6 @@ import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXmlConverter;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.ValidatorUtil;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
-import fi.vm.sade.koodisto.service.types.common.KoodiType;
 
 /**
  * User: kwuoti
@@ -80,7 +81,7 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
             for (KoodiType k : koodis) {
                 checkIfKoodiHasAllFields(k, koodistoUri);
                 UpdateKoodiDataType updateData = new UpdateKoodiDataType();
-                EntityUtils.copyFields(k, updateData);
+                KoodistoHelper.copyFields(k, updateData);
 
                 updateData.getMetadata().addAll(k.getMetadata());
                 updateDatas.add(updateData);
@@ -123,4 +124,5 @@ public class UploadBusinessServiceImpl implements UploadBusinessService {
     private String trimKoodiArvo(String value) {
         return value.replaceAll("[^A-Za-z0-9]", "").toLowerCase();
     }
+
 }

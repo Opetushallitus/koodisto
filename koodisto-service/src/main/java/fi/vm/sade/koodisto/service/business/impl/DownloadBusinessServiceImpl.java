@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import fi.jhs_suositukset.skeemat.oph._2012._05._03.KoodiListaus;
 import fi.vm.sade.koodisto.service.KoodiService;
 import fi.vm.sade.koodisto.service.business.DownloadBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoExportException;
@@ -9,6 +8,7 @@ import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXlsConverter;
 import fi.vm.sade.koodisto.service.business.marshaller.KoodistoXmlConverter;
 import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
+import fi.vm.sade.koodisto.service.types.common.KoodiCollectionType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 
@@ -54,7 +54,7 @@ public class DownloadBusinessServiceImpl implements DownloadBusinessService {
                 KoodiServiceSearchCriteriaBuilder.koodisByKoodistoUriAndKoodistoVersio(koodistoUri, koodistoVersio);
 
         List<KoodiType> koodis = koodiService.searchKoodisByKoodisto(searchData);
-        KoodiListaus listaus = new KoodiListaus();
+        KoodiCollectionType listaus = new KoodiCollectionType();
         listaus.getKoodi().addAll(koodis);
         try {
             DataHandler returnValue;

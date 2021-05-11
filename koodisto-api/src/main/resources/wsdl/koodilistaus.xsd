@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xs:schema version="1.0"
+           targetNamespace="http://skeemat.jhs-suositukset.fi/oph/2012/05/03"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://skeemat.jhs-suositukset.fi/oph/2012/05/03">
+
+    <xs:complexType name="KoodistoItemType">
+        <xs:sequence>
+            <xs:element name="koodistoUri" minOccurs="1"
+                        maxOccurs="1" type="xs:string" />
+            <xs:element name="organisaatioOid" minOccurs="1"
+                        maxOccurs="1" type="xs:string" />
+            <xs:element name="koodistoVersio" minOccurs="1"
+                        maxOccurs="unbounded" type="xs:int" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="TilaType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="PASSIIVINEN" />
+            <xs:enumeration value="LUONNOS" />
+            <xs:enumeration value="HYVAKSYTTY" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="KieliType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="FI" />
+            <xs:enumeration value="SV" />
+            <xs:enumeration value="EN" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="KoodiMetadataType">
+        <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="kieli"
+                        type="tns:KieliType" />
+            <xs:element minOccurs="1" maxOccurs="1" name="nimi"
+                        type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="kuvaus"
+                        type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="lyhytNimi"
+                        type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="kayttoohje"
+                        type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="kasite"
+                        type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1"
+                        name="sisaltaaMerkityksen" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1"
+                        name="eiSisallaMerkitysta" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1"
+                        name="huomioitavaKoodi" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1"
+                        name="sisaltaaKoodiston" type="xs:string" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="KoodiType">
+        <xs:sequence>
+            <xs:element name="koodiUri" type="xs:string"
+                        maxOccurs="1" minOccurs="1" />
+            <xs:element name="resourceUri" type="xs:string"
+                        maxOccurs="1" minOccurs="1" />
+            <xs:element minOccurs="0" maxOccurs="1" name="koodisto"
+                        type="tns:KoodistoItemType" />
+            <xs:element name="versio" type="xs:int" />
+            <xs:element name="koodiArvo" type="xs:string" />
+            <xs:element minOccurs="0" name="paivitysPvm"
+                        type="xs:dateTime" />
+            <xs:element minOccurs="0" name="paivittajaOid" type="xs:string" />
+            <xs:element minOccurs="0" name="voimassaAlkuPvm"
+                        type="xs:dateTime" />
+            <xs:element minOccurs="0" name="voimassaLoppuPvm"
+                        type="xs:dateTime" />
+            <xs:element minOccurs="0" name="tila" type="tns:TilaType" />
+            <xs:element maxOccurs="unbounded" minOccurs="0"
+                        name="metadata" nillable="true" type="tns:KoodiMetadataType" />
+            <xs:element name="lockingVersion" type="xs:long" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="koodilistaus">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="koodi" type="tns:KoodiType" maxOccurs="unbounded" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

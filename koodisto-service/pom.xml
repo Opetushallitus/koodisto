@@ -437,6 +437,16 @@
       <version>2.9.9</version>
     </dependency>
 
+    <!--
+    Käytetään muuntamaan web servicejen ja koodisto-XML:n luokkien välillä.
+    Voidaan poistaa, kunhan web serviceistä päästään eroon!
+     -->
+    <dependency>
+      <groupId>org.modelmapper</groupId>
+      <artifactId>modelmapper</artifactId>
+      <version>2.3.6</version>
+    </dependency>
+
   </dependencies>
 
   <build>

@@ -11,7 +11,9 @@ import java.util.Map;
 
 import javax.activation.DataHandler;
 
-import fi.jhs_suositukset.skeemat.oph._2012._05._03.KoodiListaus;
+import fi.vm.sade.koodisto.service.types.common.KieliType;
+import fi.vm.sade.koodisto.service.types.common.KoodiCollectionType;
+import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -20,8 +22,6 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.springframework.stereotype.Component;
 
-import fi.vm.sade.koodisto.service.types.common.KieliType;
-import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.util.ByteArrayDataSource;
 
 /**
@@ -41,7 +41,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
             KoodistoCsvConverter.LYHYTNIMI_COLUMN };
 
     static {
-        blankDocumentHeaderFields = new LinkedList<String>();
+        blankDocumentHeaderFields = new LinkedList<>();
         blankDocumentHeaderFields.add(KoodistoCsvConverter.KOODIARVO_COLUMN);
         for (KieliType kieli : KoodistoCsvConverter.kielet) {
             for (String metadataField : metadataFields) {
@@ -54,7 +54,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
 
 
     @Override
-    public DataHandler marshal(KoodiListaus koodis, String encoding) throws IOException {
+    public DataHandler marshal(KoodiCollectionType koodis, String encoding) throws IOException {
         ByteArrayOutputStream outputStream = null;
 
         HSSFWorkbook book = new HSSFWorkbook();
@@ -104,7 +104,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
     }
 
     @Override
-    public KoodiListaus unmarshal(DataHandler handler, String encoding) throws IOException {
+    public KoodiCollectionType unmarshal(DataHandler handler, String encoding) throws IOException {
         HSSFWorkbook workbook = null;
         workbook = new HSSFWorkbook(handler.getInputStream());
         List<KoodiType> koodis = new ArrayList<KoodiType>();
@@ -123,7 +123,7 @@ public class KoodistoXlsConverter extends KoodistoConverter {
             }
         }
 
-        KoodiListaus listaus = new KoodiListaus();
+        KoodiCollectionType listaus = new KoodiCollectionType();
         listaus.getKoodi().addAll(koodis);
         return listaus;
     }

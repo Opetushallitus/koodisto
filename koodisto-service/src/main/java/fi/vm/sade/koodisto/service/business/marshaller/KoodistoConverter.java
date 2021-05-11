@@ -1,15 +1,12 @@
 package fi.vm.sade.koodisto.service.business.marshaller;
 
-import fi.jhs_suositukset.skeemat.oph._2012._05._03.KoodiListaus;
 import fi.vm.sade.koodisto.service.types.common.KoodiCollectionType;
-import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import org.apache.commons.lang.StringUtils;
 
 import javax.activation.DataHandler;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 /**
  * User: kwuoti
@@ -33,7 +30,7 @@ public abstract class KoodistoConverter {
         return charset;
     }
 
-    public abstract DataHandler marshal(KoodiListaus koodis, String encoding) throws IOException;
+    public abstract DataHandler marshal(KoodiCollectionType koodis, String encoding) throws IOException;
 
-    public abstract KoodiListaus unmarshal(DataHandler handler, String encoding) throws IOException;
+    public abstract KoodiCollectionType unmarshal(DataHandler handler, String encoding) throws IOException;
 }

@@ -21,7 +21,11 @@ import java.util.Map;
 import javax.activation.DataHandler;
 import javax.xml.datatype.XMLGregorianCalendar;
 
-import fi.jhs_suositukset.skeemat.oph._2012._05._03.KoodiListaus;
+import fi.vm.sade.koodisto.service.types.common.KieliType;
+import fi.vm.sade.koodisto.service.types.common.KoodiCollectionType;
+import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
+import fi.vm.sade.koodisto.service.types.common.KoodiType;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.DateHelper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -34,12 +38,7 @@ import org.supercsv.prefs.CsvPreference;
 
 import fi.vm.sade.koodisto.service.business.exception.InvalidKoodiCsvLineException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiTilaInvalidException;
-import fi.vm.sade.koodisto.service.types.common.KieliType;
-import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
-import fi.vm.sade.koodisto.service.types.common.KoodiType;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.ByteArrayDataSource;
-import fi.vm.sade.koodisto.util.KoodistoHelper;
 
 /**
  * User: kwuoti Date: 8.4.2013 Time: 15.23
@@ -142,7 +141,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     @Override
-    public DataHandler marshal(KoodiListaus koodis, String encoding) throws IOException {
+    public DataHandler marshal(KoodiCollectionType koodis, String encoding) throws IOException {
         CsvListWriter csvWriter = null;
         ByteArrayOutputStream outputStream = null;
         BufferedWriter writer = null;
@@ -181,7 +180,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
     }
 
     @Override
-    public KoodiListaus unmarshal(DataHandler handler, String encoding) throws IOException {
+    public KoodiCollectionType unmarshal(DataHandler handler, String encoding) throws IOException {
 
         BufferedReader reader = null;
         CsvListReader csvReader = null;
@@ -203,7 +202,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
 
             Map<Integer, String> fieldNameToIndex = createFieldNameToIndexMap();
 
-            List<KoodiType> koodis = new ArrayList<KoodiType>();
+            List<KoodiType> koodis = new ArrayList<>();
 
             boolean first = true;
             while ((row = csvReader.read()) != null) {
@@ -215,7 +214,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
                 }
             }
 
-            KoodiListaus listaus = new KoodiListaus();
+            KoodiCollectionType listaus = new KoodiCollectionType();
             listaus.getKoodi().addAll(koodis);
             return listaus;
 
@@ -371,7 +370,7 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         return date;
     }
 
-    protected void writeKoodis(KoodiListaus koodis, Charset encoding, CsvListWriter writer) throws IOException {
+    protected void writeKoodis(KoodiCollectionType koodis, Charset encoding, CsvListWriter writer) throws IOException {
         writer.write(HEADER_FIELDS);
 
         for (KoodiType koodi : koodis.getKoodi()) {
@@ -390,18 +389,18 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         list.add(convertFromDate(DateHelper.xmlCalToDate(koodi.getVoimassaLoppuPvm()), encoding));
         list.add(koodi.getTila().name());
 
-        KoodiMetadataType fiMetadata = KoodistoHelper.getKoodiMetadataForLanguage(koodi, KieliType.FI);
+        KoodiMetadataType fiMetadata = getKoodiMetadataForLanguage(koodi, KieliType.FI);
         // Check that language really matches
         if (fiMetadata != null && !KieliType.FI.equals(fiMetadata.getKieli())) {
             fiMetadata = null;
         }
         list.addAll(convert(fiMetadata, encoding));
-        KoodiMetadataType svMetadata = KoodistoHelper.getKoodiMetadataForLanguage(koodi, KieliType.SV);
+        KoodiMetadataType svMetadata = getKoodiMetadataForLanguage(koodi, KieliType.SV);
         if (svMetadata != null && !KieliType.SV.equals(svMetadata.getKieli())) {
             svMetadata = null;
         }
         list.addAll(convert(svMetadata, encoding));
-        KoodiMetadataType enMetadata = KoodistoHelper.getKoodiMetadataForLanguage(koodi, KieliType.EN);
+        KoodiMetadataType enMetadata = getKoodiMetadataForLanguage(koodi, KieliType.EN);
         if (enMetadata != null && !KieliType.EN.equals(enMetadata.getKieli())) {
             enMetadata = null;
         }
@@ -451,5 +450,16 @@ public class KoodistoCsvConverter extends KoodistoConverter {
         } else {
             return new String(getCSVDateFormat().format(date).getBytes(Charset.defaultCharset()), UTF8ENCODING);
         }
+    }
+
+    private static KoodiMetadataType getKoodiMetadataForLanguage(KoodiType koodi, KieliType kieli) {
+        if (koodi != null) {
+            for (KoodiMetadataType m : koodi.getMetadata()) {
+                if (m.getKieli().equals(kieli)) {
+                    return m;
+                }
+            }
+        }
+        return null;
     }
 }

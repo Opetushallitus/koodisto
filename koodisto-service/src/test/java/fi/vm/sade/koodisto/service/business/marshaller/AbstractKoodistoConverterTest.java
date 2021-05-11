@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.service.business.marshaller;
 
-import fi.jhs_suositukset.skeemat.oph._2012._05._03.KoodiListaus;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
+import fi.vm.sade.koodisto.service.types.common.KoodiCollectionType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
@@ -36,8 +36,8 @@ public abstract class AbstractKoodistoConverterTest {
 //        DataHandler handler = new DataHandler(new ByteArrayDataSource(convertStreamToString(inputStream).getBytes()));
         DataHandler handler = new DataHandler(new ByteArrayDataSource(IOUtils.toByteArray(inputStream)));
 
-        KoodiListaus listaus = getConverter().unmarshal(handler, "UTF-8");
-        List<KoodiType> koodis = listaus.getKoodi();
+        KoodiCollectionType collection = getConverter().unmarshal(handler, "UTF-8");
+        List<KoodiType> koodis = collection.getKoodi();
         assertEquals(1, koodis.size());
 
         KoodiType koodi = koodis.get(0);
@@ -95,7 +95,7 @@ public abstract class AbstractKoodistoConverterTest {
             koodi.getMetadata().add(meta);
         }
 
-        KoodiListaus toMarshalling = new KoodiListaus();
+        KoodiCollectionType toMarshalling = new KoodiCollectionType();
         toMarshalling.getKoodi().add(koodi);
 
         DataHandler handler = getConverter().marshal(toMarshalling, encoding);
