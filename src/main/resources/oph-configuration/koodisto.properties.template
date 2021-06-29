@@ -39,3 +39,6 @@ cas.service.organisaatio-service=https://{{host_organisaatio | default("${host.v
 root.organisaatio.oid=1.2.246.562.10.00000000001
 common.corsfilter.mode={{corsfilter_mode | default('PRODUCTION')}}
 common.corsfilter.allowed-domains={{corsfilter_allowed_domains | default('')}}
+kayttooikeus-service.login=https://${host.virkailija}/kayttooikeus-service/j_spring_cas_security_check
+koodisto.service.username={{ koodisto_service_username | default("koodisto") }}
+koodisto.service.password={{ koodisto_service_password | default("koodisto") }}
