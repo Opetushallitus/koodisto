@@ -3,7 +3,7 @@
     <parent>
         <artifactId>koodisto</artifactId>
         <groupId>fi.vm.sade.koodisto</groupId>
-        <version>2020.01-SNAPSHOT</version>
+        <version>2021.01-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
     <artifactId>koodisto-audit</artifactId>
@@ -47,6 +47,10 @@
         <dependency>
             <groupId>fi.vm.sade.java-utils</groupId>
             <artifactId>java-http</artifactId>
+        </dependency>
+        <dependency><!-- dependency convergence -->
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient-cache</artifactId>
         </dependency>
     </dependencies>
 
