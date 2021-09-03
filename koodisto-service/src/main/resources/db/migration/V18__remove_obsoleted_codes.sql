@@ -2,25 +2,51 @@
 -- KH-297: Tutkinnonosajärjestyskoodistojen ja suhteiden poisto koodistopalvelusta.
 --
 
--- 1. Drop koodiversio-koodinsuhde foreign keys
+-- 1. Drop foreign keys with no cascade rule
+ALTER TABLE koodi DROP CONSTRAINT fk617f550f685885c;
+ALTER TABLE koodistonsuhde DROP CONSTRAINT fk77fc2ec94e4f9547;
+ALTER TABLE koodistonsuhde DROP CONSTRAINT fk77fc2ec958ded328;
 ALTER TABLE koodinsuhde DROP CONSTRAINT fk77fc2ec94e4f9546;
 ALTER TABLE koodinsuhde DROP CONSTRAINT fk77fc2ec958ded32e;
 
--- 2. Recreate with cascade
+-- 2. Recreate aforementioned foreign keys with cascade
+ALTER TABLE ONLY koodi
+    ADD CONSTRAINT fk617f550f685885c FOREIGN KEY (koodisto_id) REFERENCES koodisto(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY koodistonsuhde
+    ADD CONSTRAINT fk77fc2ec94e4f9547 FOREIGN KEY (ylakoodistoversio_id) REFERENCES koodistoversio(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY koodistonsuhde
+    ADD CONSTRAINT fk77fc2ec958ded328 FOREIGN KEY (alakoodistoversio_id) REFERENCES koodistoversio(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY koodinsuhde
     ADD CONSTRAINT fk77fc2ec94e4f9546 FOREIGN KEY (ylakoodiversio_id) REFERENCES koodiversio(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY koodinsuhde
     ADD CONSTRAINT fk77fc2ec958ded32e FOREIGN KEY (alakoodiversio_id) REFERENCES koodiversio(id) ON DELETE CASCADE;
 
--- 3. Drop obsoleted codes (should cascade to remove completely)
-DELETE FROM koodi WHERE koodi.koodiuri = 'koulutustyyppi_12';
+-- 3. Drop obsoleted codecs (should cascade to remove completely)
+delete from koodisto where id in
+    (select distinct koodisto_id from koodistoversio where id in
+        (select koodistoversio_id from koodistometadata where lower(nimi) like '%at järjestys'));
 
--- 4. Drop koodiversio-koodinsuhde foreign keys
+-- 4. Drop foreign keys modified in step 2
+ALTER TABLE koodi DROP CONSTRAINT fk617f550f685885c;
+ALTER TABLE koodistonsuhde DROP CONSTRAINT fk77fc2ec94e4f9547;
+ALTER TABLE koodistonsuhde DROP CONSTRAINT fk77fc2ec958ded328;
 ALTER TABLE koodinsuhde DROP CONSTRAINT fk77fc2ec94e4f9546;
 ALTER TABLE koodinsuhde DROP CONSTRAINT fk77fc2ec958ded32e;
 
--- 5. Recreate in original form
+-- 5. Recreate foreign keys in original form
+ALTER TABLE ONLY koodi
+    ADD CONSTRAINT fk617f550f685885c FOREIGN KEY (koodisto_id) REFERENCES koodisto(id);
+
+ALTER TABLE ONLY koodistonsuhde
+    ADD CONSTRAINT fk77fc2ec94e4f9547 FOREIGN KEY (ylakoodistoversio_id) REFERENCES koodistoversio(id);
+
+ALTER TABLE ONLY koodistonsuhde
+    ADD CONSTRAINT fk77fc2ec958ded328 FOREIGN KEY (alakoodistoversio_id) REFERENCES koodistoversio(id);
+
 ALTER TABLE ONLY koodinsuhde
     ADD CONSTRAINT fk77fc2ec94e4f9546 FOREIGN KEY (ylakoodiversio_id) REFERENCES koodiversio(id);
 
