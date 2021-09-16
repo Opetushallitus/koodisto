@@ -46,8 +46,8 @@ public class KoodiMetadata extends BaseEntity {
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     @NotBlank
-    @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
-    @Column(name = "nimi", length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = false)
+    @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH * 2)
+    @Column(name = "nimi", length = FieldLengths.DEFAULT_FIELD_LENGTH * 2, nullable = false)
     private String nimi;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})

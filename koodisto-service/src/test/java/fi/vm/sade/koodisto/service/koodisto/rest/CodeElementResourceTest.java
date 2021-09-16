@@ -2,6 +2,7 @@ package fi.vm.sade.koodisto.service.koodisto.rest;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.koodisto.common.util.FieldLengths;
 import fi.vm.sade.koodisto.dto.*;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.model.Kieli;
@@ -30,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
         DbUnitTestExecutionListener.class,
@@ -304,8 +305,15 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    public void testInsertFailNameLengthValidation() {
+        KoodiDto validDto = createValidCodeElementDto("value", "*".repeat(FieldLengths.DEFAULT_FIELD_LENGTH * 2 + 1), "*".repeat(FieldLengths.DEFAULT_FIELD_LENGTH), 3);
+
+        assertResponse(resource.insert("inserttestkoodisto", validDto), 500);
+    }
+
+    @Test
     public void testInsert() {
-        KoodiDto validDto = createValidCodeElementDto("value", "Nimi", 3);
+        KoodiDto validDto = createValidCodeElementDto("value", "*".repeat(FieldLengths.DEFAULT_FIELD_LENGTH * 2), "*".repeat(FieldLengths.DEFAULT_FIELD_LENGTH), 3);
 
         assertResponse(resource.insert("inserttestkoodisto", validDto), 201);
 
@@ -818,7 +826,7 @@ public class CodeElementResourceTest {
 
         ExtendedKoodiDto oldCodeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getEntity();
         ExtendedKoodiDto newCodeElement = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio + 1).getEntity();
-        
+
         assertThat(oldCodeElementBeforeSave.getIncludesCodeElements())
                 .extracting(RelationCodeElement::getCodeElementUri)
                 .containsExactlyInAnyOrder("savekoodinsuhde1");
@@ -898,7 +906,10 @@ public class CodeElementResourceTest {
     }
 
     private KoodiDto createValidCodeElementDto(String value, String name, int amountOfMetadatas) {
+        return createValidCodeElementDto(value, name, name, amountOfMetadatas);
+    }
 
+    private KoodiDto createValidCodeElementDto(String value, String name, String shortName, int amountOfMetadatas) {
         KoodiDto dto = new KoodiDto();
 
         dto.setVoimassaAlkuPvm(new Date());
@@ -909,7 +920,7 @@ public class CodeElementResourceTest {
             KoodiMetadata md = new KoodiMetadata();
             md.setKieli(Kieli.values()[i % Kieli.values().length]);
             md.setNimi(name);
-            md.setLyhytNimi(name);
+            md.setLyhytNimi(shortName);
             md.setKuvaus("Kuvaus");
             mds.add(md);
         }
