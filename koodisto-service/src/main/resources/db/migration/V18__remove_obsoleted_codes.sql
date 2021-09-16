@@ -28,7 +28,7 @@ ALTER TABLE ONLY koodinsuhde
 -- 3. Drop obsoleted codecs (should cascade to remove completely)
 delete from koodisto where id in
     (select distinct koodisto_id from koodistoversio where id in
-        (select koodistoversio_id from koodistometadata where lower(nimi) like '%at järjestys'));
+        (select koodistoversio_id from koodistometadata where lower(nimi) like '%at järjestys' or lower(nimi) like '% pt järjestys'));
 
 -- 4. Drop foreign keys modified in step 2
 ALTER TABLE koodi DROP CONSTRAINT fk617f550f685885c;
