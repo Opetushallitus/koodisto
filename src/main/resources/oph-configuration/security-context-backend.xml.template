@@ -109,6 +109,8 @@
     <http entry-point-ref="casEntryPoint" use-expressions="true" request-matcher="regex">
         <intercept-url pattern="(/.*)?/secured(/.*)?" access="isAuthenticated()"/>
         <intercept-url pattern="/public(/.*)?" access="permitAll"/>
+        <intercept-url pattern="/html(/.*)?" access="permitAll"/>
+        <intercept-url pattern="/i18n(/.*)?" access="permitAll"/>
         <intercept-url pattern="/.*\.js" access="permitAll"/>
         <intercept-url pattern="/**" access="${spring_security_default_access}"/>
         <custom-filter ref="casFilter" position="CAS_FILTER"/>
