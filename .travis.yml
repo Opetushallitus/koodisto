@@ -10,13 +10,13 @@ cache:
 env:
   global:
     # ARTIFACTORY_USERNAME
-    - secure: "bSRDMgIt2wllherjHSUrRg617bWAdhfiHkOgv7xx2GPx2Ek2rgOMBtc4fSG6oTRv2PbwS6gz2Jy8Mbyif+0w+Dqe/9yv2lsxPI0RpjZ9UeB/dCE632+xlIKFEHmf4NsjpN3y0YPm5pqW5v/hlWU190f7bZ1dqElbrrGqbJha0Ws="
+    - secure: "oxZe+DVpeVs30ztBLC7i1e2TMLLXkioN/jGhFFvDCYTc2Wlvek2CjEciUxzU8kDHQW5Op5ac95EuhuxCKZ8sAk71V5BcMoeUuPHMBAy50RNI9p5v7PQV82rFyhrfHbFQVaIXyPa9ryXdbPVkIQR/QWGBKrd6UgTW8/Yl5tWPer8="
     # ARTIFACTORY_PASSWORD
-    - secure: "grXNv+Kq6pfb/JSuUJFYKwlDbAnHK+L4DjjKEy88XlIW89OmUT8+RV5ENxkMUuFGfcP1Vu1EU3nYi7HP8Qe2FvC263jQgNhLLb474phillii+l4/uko7DjdKoryibHDw4ShGls+3dPi+gf2Xr10rmSBAwD5rsJPmkregcecWPrY="
+    - secure: "aojROPLndGO4ERdTh7L6D4G3WLAPlIxe2LIxnT8HWIwYtFbMKICKiRq0Dd9gjT/slUbJhtcO7dAuprCVFpAcblJQEMGPthdxAQbYvoI+U7SyoWQ/beceaV2BdiKJgEQaNHY79JGq9gMIg7rM4GdHfdZMHNWQyrGDOs0LKZKKqWg="
     # AWS_ACCESS_KEY_ID
-    - secure: "gDt44/t6YeaSis9vccYYMBD46It8pcfd/1L5DBgFppKuMLdkJDOCzQHnPUmsC3nhOIgykU0rN9KXatOkpwZPhm6bkObg0dhiMQz5Eoz1+/raCnJ95mWcuIL46wOP7WOwnPP8MKgqm3zrffOtbYb0/1hwnX2ABRlkwofG/TIpMMI="
+    - secure: "EArASj44Fg0JYQW0lSh/tYdOYvyYKJu/wSiTmir/Dj3vBjzNo/dzkuHxPD6bUiLPLnYWgp9E60wYC+1YuBzcv/SjPLrcdfjxRlrQdcnK2LyRV7eLNt6cRJiL9B5YKoae+W/83jGx7qooF/2EzPBbWv5tfnOGukQ8UaZ0KwDSzfA="
     # AWS_SECRET_ACCESS_KEY
-    - secure: "i80lPDaP5WXrt+c7j8wRYjVHQoksEGkaevD60O+ZZ33u070Mcy8jTVd2ZewNuWTs3yXxUB2jNF3I2WK1MmQIfhDrwhmvANkKHCv3RlGMklAhWxnkFtabaZz3xLvYi+kloItrgRqcaMnCq+gLiB/HuOwSM7OQNg9uYCXRGAdlSf8="
+    - secure: "YEzSt/5cVG92lm6Tk5nBxJJDUSYRieM5wXV9eoQtkXuf5kDmF0x78+9QFlbKCG/Mda/PNnjWjoCVZag/OL4UBib14dnsLwE3hVEzKMYDTWC8ttgtk3FRtstKmLlqPX9TV5sO1j3niZUTGMcbS2CBsjHnWPlEF+9uGoAL7m+IshM="
 
 install:
   - git clone https://github.com/Opetushallitus/ci-tools.git
