@@ -30,6 +30,7 @@ cas.user-search-filter=(|(mail\={0})(uid\={0}))
 cas.service.koodisto-service=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-service
 cas.service.koodisto-ui=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-ui
 flyway.initOnMigrate=true
+flyway.outOfOrder=true
 jpa.schemaUpdate=validate
 jpa.showSql=false
 web.url.cas=https\://${host.cas}/cas
