@@ -74,6 +74,7 @@
         <revision/>
         <buildversiontxt/>
         <buildversion_prefix/>
+        <sonar.coverage.jacoco.xmlReportPaths>**/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <build>
