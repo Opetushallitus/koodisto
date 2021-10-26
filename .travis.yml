@@ -22,6 +22,9 @@ addons:
     organization: "opetushallitus"
     token:
       secure: "SGrBqpGlzOEnNM0Ro4UIVobFONGD2UP1ckGUmgbXTBvF1yhzW0OAsc7d0W7OEQ8YCfX4vScovSqHZCD6dXQc5tu11cN0bNhsNlnBzfas78AeIi8jL0Tg6sVs449vpv8M2RfCCjGFkcWG2aiA+epGuFjFc97UhoLg64HF/ieWe8g="
+before_install:
+  - nvm install 12.18.1
+  - nvm use 12.18.1
 install:
   - git clone https://github.com/Opetushallitus/ci-tools.git
   - source ci-tools/common/setup-tools.sh
