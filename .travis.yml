@@ -17,14 +17,18 @@ env:
     - secure: "EArASj44Fg0JYQW0lSh/tYdOYvyYKJu/wSiTmir/Dj3vBjzNo/dzkuHxPD6bUiLPLnYWgp9E60wYC+1YuBzcv/SjPLrcdfjxRlrQdcnK2LyRV7eLNt6cRJiL9B5YKoae+W/83jGx7qooF/2EzPBbWv5tfnOGukQ8UaZ0KwDSzfA="
     # AWS_SECRET_ACCESS_KEY
     - secure: "YEzSt/5cVG92lm6Tk5nBxJJDUSYRieM5wXV9eoQtkXuf5kDmF0x78+9QFlbKCG/Mda/PNnjWjoCVZag/OL4UBib14dnsLwE3hVEzKMYDTWC8ttgtk3FRtstKmLlqPX9TV5sO1j3niZUTGMcbS2CBsjHnWPlEF+9uGoAL7m+IshM="
-
+addons:
+  sonarcloud:
+    organization: "opetushallitus"
+    token:
+      secure: "SGrBqpGlzOEnNM0Ro4UIVobFONGD2UP1ckGUmgbXTBvF1yhzW0OAsc7d0W7OEQ8YCfX4vScovSqHZCD6dXQc5tu11cN0bNhsNlnBzfas78AeIi8jL0Tg6sVs449vpv8M2RfCCjGFkcWG2aiA+epGuFjFc97UhoLg64HF/ieWe8g="
 install:
   - git clone https://github.com/Opetushallitus/ci-tools.git
   - source ci-tools/common/setup-tools.sh
   - export ARTIFACT_NAME="koodisto"
 
 script:
-  - mvn clean install -B -Dbranch=${TRAVIS_BRANCH} -Drevision=${TRAVIS_COMMIT} -DbuildNumber=${TRAVIS_BUILD_NUMBER}
+  - mvn clean install sonar:sonar -Dsonar.projectKey=Opetushallitus_koodisto -B -Dbranch=${TRAVIS_BRANCH} -Drevision=${TRAVIS_COMMIT} -DbuildNumber=${TRAVIS_BUILD_NUMBER}
 
   - mv koodisto-service/target/koodisto-service.war $DOCKER_BUILD_DIR/artifact/koodisto-service.war
   - mv koodisto-ui/target/koodisto-ui.war $DOCKER_BUILD_DIR/artifact/koodisto-ui.war
