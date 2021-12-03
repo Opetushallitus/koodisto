@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.dao.impl;
 
-import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.koodisto.dao.DaoTest;
 import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
 import fi.vm.sade.koodisto.dao.KoodistonSuhdeDAO;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
@@ -10,31 +10,14 @@ import fi.vm.sade.koodisto.model.KoodistonSuhde;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
-@ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionDbUnitTestExecutionListener.class,
-        WithSecurityContextTestExecutionListener.class})
-@RunWith(SpringJUnit4ClassRunner.class)
 @DatabaseSetup("classpath:test-data.xml")
-@Transactional
-@WithMockUser("1.2.3.4.5")
-public class KoodistonSuhdeDAOImplTest {
+public class KoodistonSuhdeDAOImplTest extends DaoTest {
 
     @Autowired
     private KoodistonSuhdeDAO suhdeDAO;
@@ -67,7 +50,7 @@ public class KoodistonSuhdeDAOImplTest {
         assertTrue(newVersion.getAlakoodistos().isEmpty());
         assertTrue(newVersion.getYlakoodistos().isEmpty());
     }
-    
+
     @Test
     public void oldRelationsAreSetToPassiveWhenCopying() {
         KoodistoVersio original = versionDAO.read(-1L);
@@ -111,17 +94,17 @@ public class KoodistonSuhdeDAOImplTest {
             assertFalse(ks.isPassive());
         }
     }
-    
+
     private KoodistoVersio givenNewKoodistoVersio(KoodistoVersio original) {
         KoodistoVersio newVersion = new KoodistoVersio();
         newVersion.setKoodisto(original.getKoodisto());
         newVersion.setTila(Tila.HYVAKSYTTY);
         newVersion.setVoimassaAlkuPvm(original.getVoimassaAlkuPvm());
         newVersion.setVersio(2);
-        for ( KoodistoMetadata data : original.getMetadatas()) {
+        for (KoodistoMetadata data : original.getMetadatas()) {
             newVersion.addMetadata(data);
         }
         return versionDAO.insert(newVersion);
     }
-    
+
 }

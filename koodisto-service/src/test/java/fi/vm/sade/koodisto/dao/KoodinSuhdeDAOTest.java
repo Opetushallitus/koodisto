@@ -1,35 +1,20 @@
 package fi.vm.sade.koodisto.dao;
 
-import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import junit.framework.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
-@ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionDbUnitTestExecutionListener.class })
-@RunWith(SpringJUnit4ClassRunner.class)
-@DatabaseSetup(value = "classpath:test-data.xml",type = DatabaseOperation.CLEAN_INSERT)
-@Transactional
-public class KoodinSuhdeDAOTest {
+@DatabaseSetup(value = "classpath:test-data.xml")
+public class KoodinSuhdeDAOTest extends DaoTest {
 
     @Autowired
     private KoodinSuhdeDAO koodinSuhdeDAO;
@@ -101,7 +86,7 @@ public class KoodinSuhdeDAOTest {
         List<KoodinSuhde> relationsAfter = koodinSuhdeDAO.getRelations(koodi1, alakoodis, st);
         assertEquals(0, relationsAfter.size());
     }
-    
+
     @Test
     public void testGetAndDeleteMultipleRelationsLevelsWith() {
 
@@ -125,7 +110,7 @@ public class KoodinSuhdeDAOTest {
         alakoodis3.add(koodi1);
         alakoodis3.add(koodi2);
 
-        
+
         SuhteenTyyppi st = SuhteenTyyppi.RINNASTEINEN;
 
         List<KoodinSuhde> relations1 = koodinSuhdeDAO.getRelations(koodi1, alakoodis1, st);
@@ -136,7 +121,7 @@ public class KoodinSuhdeDAOTest {
         assertEquals(2, relations3.size());
 
         koodinSuhdeDAO.massRemove(relations1);
-        
+
         List<KoodinSuhde> relationsAfter1 = koodinSuhdeDAO.getRelations(koodi1, alakoodis1, st);
         List<KoodinSuhde> relationsAfter2 = koodinSuhdeDAO.getRelations(koodi2, alakoodis2, st);
         List<KoodinSuhde> relationsAfter3 = koodinSuhdeDAO.getRelations(koodi3, alakoodis3, st);

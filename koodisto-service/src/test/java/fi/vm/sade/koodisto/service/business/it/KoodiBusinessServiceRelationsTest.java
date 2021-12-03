@@ -1,24 +1,15 @@
 package fi.vm.sade.koodisto.service.business.it;
 
-import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.koodisto.dao.DaoTest;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,18 +17,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionDbUnitTestExecutionListener.class,
-        WithSecurityContextTestExecutionListener.class })
-@RunWith(SpringJUnit4ClassRunner.class)
 @DatabaseSetup("classpath:test-data.xml")
-@Transactional
-@WithMockUser("1.2.3.4.5")
-public class KoodiBusinessServiceRelationsTest {
+public class KoodiBusinessServiceRelationsTest extends DaoTest {
 
-    private Logger logger = LoggerFactory.getLogger(KoodiBusinessServiceRelationsTest.class);
+    private final Logger logger = LoggerFactory.getLogger(KoodiBusinessServiceRelationsTest.class);
 
     @Autowired
     private KoodiBusinessService koodiBusinessService;
@@ -95,7 +78,7 @@ public class KoodiBusinessServiceRelationsTest {
         result = koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, false);
         assertEquals(3L, result.size());
     }
-    
+
     @Test
     public void savedRelationBetweenCodeElementsInSameCodes() {
         koodiBusinessService.addRelation("31", Arrays.asList("33"), SuhteenTyyppi.SISALTYY, false);
@@ -120,12 +103,12 @@ public class KoodiBusinessServiceRelationsTest {
         result = koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, true);
         assertEquals(0L, result.size());
     }
-    
+
     @Test
     public void updatingKoodiVersioDoesNotRemoveOldRelations() {
         KoodiUriAndVersioType kv = givenKoodiUriAndVersioType("7", 1);
         koodiBusinessService.createNewVersion(kv.getKoodiUri());
-         List<KoodiVersioWithKoodistoItem> newItems = koodiBusinessService.listByRelation(givenKoodiUriAndVersioType("7", 2), SuhteenTyyppi.RINNASTEINEN, true);
+        List<KoodiVersioWithKoodistoItem> newItems = koodiBusinessService.listByRelation(givenKoodiUriAndVersioType("7", 2), SuhteenTyyppi.RINNASTEINEN, true);
         assertEquals(2, newItems.size());
         assertEquals(2, koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, true).size());
     }
@@ -136,7 +119,6 @@ public class KoodiBusinessServiceRelationsTest {
         kv.setVersio(versio);
         return kv;
     }
-    
-    
+
 
 }

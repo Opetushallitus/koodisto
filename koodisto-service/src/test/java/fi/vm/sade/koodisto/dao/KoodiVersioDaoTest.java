@@ -1,26 +1,6 @@
 package fi.vm.sade.koodisto.dao;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-
-import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import fi.vm.sade.koodisto.util.DateHelper;
-import junit.framework.Assert;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
-
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
@@ -31,19 +11,18 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisVersioSelectionType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
+import fi.vm.sade.koodisto.util.DateHelper;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import junit.framework.Assert;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionDbUnitTestExecutionListener.class })
-@RunWith(SpringJUnit4ClassRunner.class)
+import java.util.*;
+
+import static org.junit.Assert.*;
+
 @DatabaseSetup("classpath:test-data.xml")
-@Transactional
-public class KoodiVersioDaoTest {
+public class KoodiVersioDaoTest extends DaoTest {
 
     @Autowired
     private KoodiVersioDAO koodiVersioDAO;
@@ -307,17 +286,17 @@ public class KoodiVersioDaoTest {
         Assert.assertEquals("010", k.get(0).getKoodiVersio().getKoodiarvo());
         assertEquals(1, k.size());
     }
-    
+
     @Test
     public void testgetKoodiVersios() {
         KoodiUriAndVersioType kv1 = new KoodiUriAndVersioType();
         kv1.setKoodiUri("3");
         kv1.setVersio(1);
-        
+
         KoodiUriAndVersioType kv2 = new KoodiUriAndVersioType();
         kv2.setKoodiUri("181");
         kv2.setVersio(1);
-        
+
         List<KoodiVersio> koodiVersios = koodiVersioDAO.getKoodiVersios(kv1, kv2);
         assertEquals(2, koodiVersios.size());
     }
@@ -333,29 +312,29 @@ public class KoodiVersioDaoTest {
         assertEquals(koodiUri, previous.getKoodi().getKoodiUri());
 
     }
-    
+
     @Test
     public void shouldNotBeLatestKoodiVersio() {
         assertFalse(koodiVersioDAO.isLatestKoodiVersio("436", 3));
     }
-    
+
     @Test
     public void shouldBeLatestKoodiVersio() {
         assertTrue(koodiVersioDAO.isLatestKoodiVersio("436", 11));
     }
-    
+
     @Test
     public void fetchesLatestKoodiVersios() {
         Map<String, Integer> map = koodiVersioDAO.getLatestVersionNumbersForUris("436", "455");
         assertEquals(2, map.size());
         assertEquals(Integer.valueOf(11), map.get("436"));
         assertEquals(Integer.valueOf(4), map.get("455"));
-    }    
+    }
 
     @Test
     public void fetchesNothingForEmptyUriList() {
         Map<String, Integer> map = koodiVersioDAO.getLatestVersionNumbersForUris();
         assertEquals(0, map.size());
-    }    
+    }
 
 }

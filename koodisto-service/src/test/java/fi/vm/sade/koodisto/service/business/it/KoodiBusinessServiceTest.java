@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.service.business.it;
 
-import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.koodisto.dao.DaoTest;
 import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
@@ -14,16 +14,8 @@ import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import org.hibernate.Hibernate;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -31,25 +23,71 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-@ContextConfiguration(locations = "classpath:spring/test-context.xml")
-@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
-        DirtiesContextTestExecutionListener.class,
-        TransactionDbUnitTestExecutionListener.class,
-        WithSecurityContextTestExecutionListener.class})
-@RunWith(SpringJUnit4ClassRunner.class)
 @DatabaseSetup("classpath:test-data.xml")
-@Transactional
 @WithMockUser("1.2.3.4.5")
-public class KoodiBusinessServiceTest {
+public class KoodiBusinessServiceTest extends DaoTest {
 
     @Autowired
     private KoodiBusinessService koodiBusinessService;
 
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;
-    
+
     @Autowired
     private KoodiVersioDAO koodiVersioDAO;
+
+    private static UpdateKoodiDataType convert(KoodiVersio koodiVersio) throws Exception {
+
+        UpdateKoodiDataType updateKoodiDataType = new UpdateKoodiDataType();
+
+        updateKoodiDataType.setKoodiArvo(koodiVersio.getKoodiarvo());
+        updateKoodiDataType.setKoodiUri(koodiVersio.getKoodi().getKoodiUri());
+        updateKoodiDataType.setVoimassaAlkuPvm(convert(koodiVersio.getVoimassaAlkuPvm()));
+        updateKoodiDataType.setVoimassaLoppuPvm(convert(koodiVersio.getVoimassaLoppuPvm()));
+        updateKoodiDataType.getMetadata().clear();
+        updateKoodiDataType.getMetadata().addAll(convert(koodiVersio.getMetadatas()));
+        updateKoodiDataType.setVersio(koodiVersio.getVersio());
+        updateKoodiDataType.setLockingVersion(koodiVersio.getVersion());
+
+        return updateKoodiDataType;
+    }
+
+    private static XMLGregorianCalendar convert(Date date) throws Exception {
+
+        if (date == null) return null;
+
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        gregorianCalendar.setTime(date);
+
+        return DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
+
+    }
+
+    private static Set<KoodiMetadataType> convert(Set<KoodiMetadata> koodiMetadataSet) {
+
+        Set<KoodiMetadataType> koodiMetadataTypeSet = new HashSet<KoodiMetadataType>();
+
+        for (KoodiMetadata koodiMetadata : koodiMetadataSet) {
+
+            KoodiMetadataType koodiMetadataType = new KoodiMetadataType();
+
+            koodiMetadataType.setKieli(KieliType.valueOf(koodiMetadata.getKieli().name()));
+            koodiMetadataType.setNimi(koodiMetadata.getNimi());
+            koodiMetadataType.setLyhytNimi(koodiMetadata.getLyhytNimi());
+            koodiMetadataType.setKuvaus(koodiMetadata.getKuvaus());
+
+            koodiMetadataType.setKayttoohje(koodiMetadata.getKayttoohje());
+            koodiMetadataType.setKasite(koodiMetadata.getKasite());
+            koodiMetadataType.setHuomioitavaKoodi(koodiMetadata.getHuomioitavaKoodi());
+            koodiMetadataType.setSisaltaaMerkityksen(koodiMetadata.getSisaltaaMerkityksen());
+            koodiMetadataType.setEiSisallaMerkitysta(koodiMetadata.getEiSisallaMerkitysta());
+            koodiMetadataType.setSisaltaaKoodiston(koodiMetadata.getSisaltaaKoodiston());
+
+            koodiMetadataTypeSet.add(koodiMetadataType);
+        }
+
+        return koodiMetadataTypeSet;
+    }
 
     @Test
     public void testCreate() {
@@ -92,25 +130,25 @@ public class KoodiBusinessServiceTest {
 
     @Test
     public void changeTilaFromHyvaksyttyToLuonnos() throws Exception {
-        
+
         final String koodistoUri = "http://koodisto19";
         final Integer koodistoVersioBeforeTilaChange = 1;
         final Integer koodistoVersioAfterTilaChange = 2;
-        
-        
+
+
         KoodistoVersio beforeUpdate = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
         assertEquals(koodistoVersioBeforeTilaChange, beforeUpdate.getVersio());
         assertEquals(Tila.HYVAKSYTTY, beforeUpdate.getTila());
-        
-        List<KoodiVersioWithKoodistoItem> koodiVersioWithKoodistoItems =  koodiBusinessService.getKoodisByKoodisto("http://koodisto19", true);
-        for(KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem : koodiVersioWithKoodistoItems) {
-            if(Tila.HYVAKSYTTY.equals(koodiVersioWithKoodistoItem.getKoodiVersio().getTila())) {
-                UpdateKoodiDataType updateKoodiDataType = convert(koodiVersioWithKoodistoItem.getKoodiVersio());;
+
+        List<KoodiVersioWithKoodistoItem> koodiVersioWithKoodistoItems = koodiBusinessService.getKoodisByKoodisto("http://koodisto19", true);
+        for (KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem : koodiVersioWithKoodistoItems) {
+            if (Tila.HYVAKSYTTY.equals(koodiVersioWithKoodistoItem.getKoodiVersio().getTila())) {
+                UpdateKoodiDataType updateKoodiDataType = convert(koodiVersioWithKoodistoItem.getKoodiVersio());
                 updateKoodiDataType.setTila(UpdateKoodiTilaType.LUONNOS);
                 koodiBusinessService.updateKoodi(updateKoodiDataType);
             }
         }
-        
+
         KoodistoVersio afterUpdate = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
         assertEquals(Tila.LUONNOS, afterUpdate.getTila());
         assertEquals(koodistoVersioAfterTilaChange, afterUpdate.getVersio());
@@ -208,7 +246,7 @@ public class KoodiBusinessServiceTest {
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(koodiUri);
         return koodiBusinessService.searchKoodis(searchType);
     }
-    
+
     private KoodiVersioWithKoodistoItem createKoodi(KoodistoVersio koodisto, String koodiArvo, String nimi) {
         CreateKoodiDataType createKoodiData = fi.vm.sade.koodisto.service.it.DataUtils.createCreateKoodiDataType(koodiArvo,
                 new Date(), null, nimi);
@@ -226,59 +264,6 @@ public class KoodiBusinessServiceTest {
                 omistaja, organisaatioOid, voimassaAlkuPvm, voimassaLoppuPvm, nimi);
         KoodistoVersio koodisto = koodistoBusinessService.createKoodisto(ryhmaUris, createKoodistoDataType);
         return koodisto;
-    }
-
-    private static UpdateKoodiDataType convert(KoodiVersio koodiVersio) throws Exception {
-
-        UpdateKoodiDataType updateKoodiDataType = new UpdateKoodiDataType();
-
-        updateKoodiDataType.setKoodiArvo(koodiVersio.getKoodiarvo());
-        updateKoodiDataType.setKoodiUri(koodiVersio.getKoodi().getKoodiUri());
-        updateKoodiDataType.setVoimassaAlkuPvm(convert(koodiVersio.getVoimassaAlkuPvm()));
-        updateKoodiDataType.setVoimassaLoppuPvm(convert(koodiVersio.getVoimassaLoppuPvm()));
-        updateKoodiDataType.getMetadata().clear();
-        updateKoodiDataType.getMetadata().addAll(convert(koodiVersio.getMetadatas()));
-        updateKoodiDataType.setVersio(koodiVersio.getVersio());
-        updateKoodiDataType.setLockingVersion(koodiVersio.getVersion());
-
-        return updateKoodiDataType;
-    }
-
-    private static XMLGregorianCalendar convert(Date date) throws Exception {
-
-        if(date == null) return null;
-
-        GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        gregorianCalendar.setTime(date);
-
-        return DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
-
-    }
-
-    private static Set<KoodiMetadataType> convert(Set<KoodiMetadata> koodiMetadataSet) {
-
-        Set<KoodiMetadataType> koodiMetadataTypeSet = new HashSet<KoodiMetadataType>();
-
-        for(KoodiMetadata koodiMetadata : koodiMetadataSet) {
-
-            KoodiMetadataType koodiMetadataType = new KoodiMetadataType();
-
-            koodiMetadataType.setKieli(KieliType.valueOf(koodiMetadata.getKieli().name()));
-            koodiMetadataType.setNimi(koodiMetadata.getNimi());
-            koodiMetadataType.setLyhytNimi(koodiMetadata.getLyhytNimi());
-            koodiMetadataType.setKuvaus(koodiMetadata.getKuvaus());
-
-            koodiMetadataType.setKayttoohje(koodiMetadata.getKayttoohje());
-            koodiMetadataType.setKasite(koodiMetadata.getKasite());
-            koodiMetadataType.setHuomioitavaKoodi(koodiMetadata.getHuomioitavaKoodi());
-            koodiMetadataType.setSisaltaaMerkityksen(koodiMetadata.getSisaltaaMerkityksen());
-            koodiMetadataType.setEiSisallaMerkitysta(koodiMetadata.getEiSisallaMerkitysta());
-            koodiMetadataType.setSisaltaaKoodiston(koodiMetadata.getSisaltaaKoodiston());
-
-            koodiMetadataTypeSet.add(koodiMetadataType);
-        }
-
-        return koodiMetadataTypeSet;
     }
 
 }
