@@ -31,8 +31,8 @@ install:
   - export ARTIFACT_NAME="koodisto"
 
 script:
+  - mvn -version
   - mvn clean install sonar:sonar -Dsonar.projectKey=Opetushallitus_koodisto -B -Dbranch=${TRAVIS_BRANCH} -Drevision=${TRAVIS_COMMIT} -DbuildNumber=${TRAVIS_BUILD_NUMBER}
-
   - mv koodisto-service/target/koodisto-service.war $DOCKER_BUILD_DIR/artifact/koodisto-service.war
   - mv koodisto-ui/target/koodisto-ui.war $DOCKER_BUILD_DIR/artifact/koodisto-ui.war
   - cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
