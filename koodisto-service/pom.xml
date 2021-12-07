@@ -5,7 +5,7 @@
     <artifactId>koodisto</artifactId>
     <groupId>fi.vm.sade.koodisto</groupId>
     <version>2020.01-SNAPSHOT</version>
-    <relativePath>..</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>koodisto-service</artifactId>
   <name>Koodisto :: Service</name>
@@ -265,24 +265,6 @@
       </exclusions>
     </dependency>
 
-    <!-- ActiveMQ -->
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-core</artifactId>
-      <version>${activemq-core.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.activemq</groupId>
-      <artifactId>activemq-pool</artifactId>
-      <version>${activemq-pool.version}</version>
-    </dependency>
-
     <!-- CAS ticket cache -->
     <dependency>
       <groupId>net.sf.ehcache</groupId>
@@ -465,7 +447,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.7</version>
+        <version>${build-helper-maven-plugin.version}</version>
         <executions>
           <execution>
             <id>add-sources</id>
@@ -479,13 +461,6 @@
               </sources>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
           <execution>
             <id>reserve-db-port</id>
             <goals>
