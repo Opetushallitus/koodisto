@@ -31,7 +31,7 @@
         <commons-configuration.version>1.9</commons-configuration.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <cxf.version>3.3.5</cxf.version>
-        <dbunit.version>2.5.4</dbunit.version>
+        <dbunit.version>2.7.2</dbunit.version>
         <ehcache.version>2.10.6</ehcache.version>
         <log-client.version>8.0</log-client.version>
         <hibernate.version>5.4.32.Final</hibernate.version>
