@@ -26,7 +26,6 @@ public class KoodiBusinessServiceRelationsTest extends DaoTest {
     @Autowired
     private KoodiBusinessService koodiBusinessService;
 
-    @Ignore("Try running ONLY the failing one")
     @Test
     public void testListByRelation() {
         KoodiUriAndVersioType kv = givenKoodiUriAndVersioType("3", 1);
@@ -48,7 +47,6 @@ public class KoodiBusinessServiceRelationsTest extends DaoTest {
 
     }
 
-    @Ignore("Try running ONLY the failing one")
     @Test
     public void testAddRelation1() {
         KoodiUriAndVersioType ylakoodi = givenKoodiUriAndVersioType("3", 1);
@@ -64,7 +62,6 @@ public class KoodiBusinessServiceRelationsTest extends DaoTest {
         assertEquals(3, rinnastuvat.size());
     }
 
-    @Ignore("Try running ONLY the failing one")
     @Test
     public void testAddRelation2() {
         KoodiUriAndVersioType kv = givenKoodiUriAndVersioType("369", 1);
@@ -91,7 +88,6 @@ public class KoodiBusinessServiceRelationsTest extends DaoTest {
         assertEquals(1, result.size());
     }
 
-    @Ignore("Try running ONLY the failing one")
     @Test
     public void testRemoveRelation() {
         KoodiUriAndVersioType kv = givenKoodiUriAndVersioType("7", 1);
@@ -109,7 +105,6 @@ public class KoodiBusinessServiceRelationsTest extends DaoTest {
         assertEquals(0L, result.size());
     }
 
-    @Ignore("Try running ONLY the failing one")
     @Test
     public void updatingKoodiVersioDoesNotRemoveOldRelations() {
         KoodiUriAndVersioType kv = givenKoodiUriAndVersioType("7", 1);
@@ -125,6 +120,4 @@ public class KoodiBusinessServiceRelationsTest extends DaoTest {
         kv.setVersio(versio);
         return kv;
     }
-
-
 }
