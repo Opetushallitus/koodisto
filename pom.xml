@@ -6,7 +6,14 @@
 	<groupId>fi.vm.sade.koodisto</groupId>
 	<artifactId>koodisto</artifactId>
 	<packaging>pom</packaging>
+	<version>0.0.1-SNAPSHOT</version>
 	<name>Koodisto :: Parent</name>
+
+	<properties>
+		<java.version>11</java.version>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+	</properties>
 
 	<modules>
 		<!-- <module>koodisto-api</module> -->
@@ -15,5 +22,17 @@
 		<module>koodisto-service</module>
 		<!-- <module>koodisto-ui</module> -->
 	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<type>pom</type>
+				<version>2.6.3</version>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 </project>
