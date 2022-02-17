@@ -1,3 +1,0 @@
-ALTER TABLE koodimetadata ALTER COLUMN kuvaus DROP NOT NULL;
-ALTER TABLE koodimetadata ALTER COLUMN lyhytnimi DROP NOT NULL;
-ALTER TABLE koodistometadata ALTER COLUMN kuvaus DROP NOT NULL;
