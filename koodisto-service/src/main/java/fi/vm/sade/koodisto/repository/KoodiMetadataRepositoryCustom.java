@@ -1,12 +1,10 @@
-package fi.vm.sade.koodisto.dao;
+package fi.vm.sade.koodisto.repository;
 
-import fi.vm.sade.koodisto.dao.impl.JpaDAO;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 
 import java.util.Set;
 
-public interface KoodiMetadataDAO extends JpaDAO<KoodiMetadata, Long> {
-
+public interface KoodiMetadataRepositoryCustom {
     boolean nimiExistsForSomeOtherKoodi(String koodiUri, String nimi);
 
     boolean nimiExistsInKoodisto(String koodistoUri, String nimi);

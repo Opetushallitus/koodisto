@@ -1,6 +1,5 @@
-package fi.vm.sade.koodisto.dao;
+package fi.vm.sade.koodisto.repository;
 
-import fi.vm.sade.koodisto.dao.impl.JpaDAO;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
@@ -12,7 +11,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import java.util.List;
 import java.util.Map;
 
-public interface KoodiVersioDAO extends JpaDAO<KoodiVersio, Long> {
+public interface KoodiVersioRepositoryCustom {
     List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisByKoodistoCriteriaType searchCriteria);
 
     List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisCriteriaType searchCriteria);
@@ -28,16 +27,14 @@ public interface KoodiVersioDAO extends JpaDAO<KoodiVersio, Long> {
     List<KoodiVersio> getKoodiVersiosByKoodistoAndKoodiTila(Long koodistoVersioId, Tila koodiTila);
 
     KoodiVersio getPreviousKoodiVersio(String koodiUri, Integer koodiVersio);
-    
+
     boolean isLatestKoodiVersio(String koodiUri, Integer versio);
 
     Map<String, Integer> getLatestVersionNumbersForUris(String... koodiUris);
 
-    KoodiVersio insertNonFlush(KoodiVersio koodiVersio);
+    // TODO SAve? KoodiVersio insertNonFlush(KoodiVersio koodiVersio);
 
-    void flush();
+    // void flush();
 
     Map<KoodiVersio, KoodiVersio> getPreviousKoodiVersios(List<KoodiVersio> koodis);
-
-    List<KoodiVersio> findByKoodistoUriAndVersio(String koodistoUri, Integer versio);
 }

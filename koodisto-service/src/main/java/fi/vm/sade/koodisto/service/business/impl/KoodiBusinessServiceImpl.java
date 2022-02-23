@@ -1,13 +1,14 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
+import com.google.guava.*;
 import fi.vm.sade.authorization.NotAuthorizedException;
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
-import fi.vm.sade.koodisto.dao.*;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.repository.*;
 import fi.vm.sade.koodisto.resource.CodeElementResourceConverter;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
@@ -42,25 +43,25 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public static final String ROOT_ORG = "1.2.246.562.10.00000000001";
 
     @Autowired
-    private KoodiDAO koodiDAO;
+    private KoodiRepository koodiRepository;
 
     @Autowired
-    private KoodiMetadataDAO koodiMetadataDAO;
+    private KoodiMetadataRepository koodiMetadataRepository;
 
     @Autowired
-    private KoodiVersioDAO koodiVersioDAO;
+    private KoodiVersioRepository koodiVersioRepository;
 
     @Autowired
-    private KoodistoVersioDAO koodistoVersioDAO;
+    private KoodistoVersioRepository koodistoVersioRepository;
 
     @Autowired
-    private KoodinSuhdeDAO koodinSuhdeDAO;
+    private KoodinSuhdeRepository koodinSuhdeRepository;
 
     @Autowired
-    private KoodistoDAO koodistoDAO;
+    private KoodistoRepository koodistoRepository;
 
     @Autowired
-    private KoodistonSuhdeDAO koodistonSuhdeDAO;
+    private KoodistonSuhdeRepository koodistonSuhdeRepository;
 
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;
@@ -72,7 +73,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     private Authorizer authorizer;
 
     @Autowired
-    private KoodistoVersioKoodiVersioDAO koodistoVersioKoodiVersioDAO;
+    private KoodistoVersioKoodiVersioRepository koodistoVersioKoodiVersioRepository;
 
     @Autowired
     private UriTransliterator uriTransliterator;
@@ -83,7 +84,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     @Override
     public KoodiVersioWithKoodistoItem createKoodi(String koodistoUri, CreateKoodiDataType createKoodiData) {
         KoodiVersioWithKoodistoItem createKoodiNonFlush = createKoodiNonFlush(koodistoUri, createKoodiData);
-        flushAfterCreation();
+        // TODO flush flushAfterCreation();
         return createKoodiNonFlush;
     }
 
@@ -111,7 +112,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         Koodi koodi = new Koodi();
         koodi.setKoodisto(latestKoodistoVersio.getKoodisto());
         koodi.setKoodiUri(uriTransliterator.generateKoodiUriByKoodistoUriAndKoodiArvo(koodistoUri, createKoodiData.getKoodiArvo()));
-        koodi = koodiDAO.insertNonFlush(koodi);
+        koodi = koodiRepository.save(koodi);
 
         KoodiVersio koodiVersio = new KoodiVersio();
         // versioning begins from 1
@@ -128,28 +129,30 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             koodiVersio.addMetadata(metadata);
         }
 
-        koodiVersio = koodiVersioDAO.insertNonFlush(koodiVersio);
+        koodiVersio = koodiVersioRepository.save(koodiVersio);
 
         KoodistoVersioKoodiVersio koodistoVersioRelation = new KoodistoVersioKoodiVersio();
         koodistoVersioRelation.setKoodistoVersio(latestKoodistoVersio);
         koodistoVersioRelation.setKoodiVersio(koodiVersio);
-        koodistoVersioKoodiVersioDAO.insertNonFlush(koodistoVersioRelation);
+        koodistoVersioKoodiVersioRepository.save(koodistoVersioRelation);
 
         Set<Integer> versio = new HashSet<>();
         versio.add(latestKoodistoVersio.getVersio());
 
         return new KoodiVersioWithKoodistoItem(koodiVersio, new KoodistoItem(koodistoUri, versio));
     }
-
+    /*
     private void flushAfterCreation() {
         koodiDAO.flush();
         koodistoDAO.flush();
         koodiVersioDAO.flush();
         koodistoVersioDAO.flush();
-        koodinSuhdeDAO.flush();
+        koodinSuhdeRepository.flush();
         koodistonSuhdeDAO.flush();
         koodistoVersioKoodiVersioDAO.flush();
     }
+
+     */
 
     private void checkIfCodeElementValueExistsAlready(String koodiUri,
                                                       String koodiArvo,
@@ -173,7 +176,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private KoodiVersioWithKoodistoItem getLatestKoodiVersioWithKoodistoVersioItems(String koodiUri) {
         SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(koodiUri);
-        List<KoodiVersioWithKoodistoItem> result = koodiVersioDAO.searchKoodis(searchCriteria);
+        List<KoodiVersioWithKoodistoItem> result = koodiVersioRepository.searchKoodis(searchCriteria);
         if (result.size() != 1) {
             throw new KoodiNotFoundException();
         }
@@ -197,7 +200,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private KoodiVersioWithKoodistoItem getKoodiVersioWithKoodistoVersioItems(String koodiUri, Integer koodiVersio) {
         SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(koodiUri, koodiVersio);
-        List<KoodiVersioWithKoodistoItem> result = koodiVersioDAO.searchKoodis(searchCriteria);
+        List<KoodiVersioWithKoodistoItem> result = koodiVersioRepository.searchKoodis(searchCriteria);
         if (result.size() != 1) {
             throw new KoodiNotFoundException();
         }
@@ -245,9 +248,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
 
         String koodistoUri = latestKoodiVersion.getKoodi().getKoodisto().getKoodistoUri();
-        int latestKoodistoVersio = koodistoVersioDAO.findLatestVersioByKoodistoUri(koodistoUri)
+        int latestKoodistoVersio = koodistoVersioRepository.findLatestVersioByKoodistoUri(koodistoUri)
                 .orElseThrow(() -> new KoodistoNotFoundException());
-        List<KoodiVersio> koodiVersios = koodiVersioDAO.findByKoodistoUriAndVersio(koodistoUri, latestKoodistoVersio);
+        List<KoodiVersio> koodiVersios = koodiVersioRepository.findByKoodistoUriAndVersio(koodistoUri, latestKoodistoVersio);
 
         if (!latest.getKoodistoItem().getVersios().contains(latestKoodistoVersio)) {
             throw new KoodiNotInKoodistoException();
@@ -285,7 +288,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             koodiArvosInThisKoodisto.add(versio.getKoodiVersio().getKoodiarvo());
         }
 
-        Map<String, Integer> latestKoodiversios = koodiVersioDAO.getLatestVersionNumbersForUris(koodiUris.toArray(new String[koodiUris.size()]));
+        Map<String, Integer> latestKoodiversios = koodiVersioRepository.getLatestVersionNumbersForUris(koodiUris.toArray(new String[koodiUris.size()]));
         for (UpdateKoodiDataType updateData : koodiList) {
             String uri = updateData.getKoodiUri();
             if (!uri.isBlank()) {
@@ -306,14 +309,14 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         for (UpdateKoodiDataType data : koodisToBeUpdated) {
             KoodiVersioWithKoodistoItem updated = updateKoodi(data, true);
-            KoodistoVersioKoodiVersio result = koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(koodisto.getId(), updated
+            KoodistoVersioKoodiVersio result = koodistoVersioKoodiVersioRepository.findByKoodistoVersioAndKoodiVersio(koodisto.getId(), updated
                     .getKoodiVersio()
                     .getId());
             if (result == null) {
                 KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
                 newRelationEntry.setKoodistoVersio(koodisto);
                 newRelationEntry.setKoodiVersio(updated.getKoodiVersio());
-                koodistoVersioKoodiVersioDAO.insert(newRelationEntry);
+                koodistoVersioKoodiVersioRepository.save(newRelationEntry); // TODO check flushhing is it necessary?
             }
         }
 
@@ -334,7 +337,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         for (CreateKoodiDataType createData : createKoodiList) {
             createKoodiNonFlush(koodistoUri, createData, newKoodistoVersio);
         }
-        flushAfterCreation();
+        // flushAfterCreation();
 
         koodisto.setPaivitysPvm(new Date());
         koodisto.setPaivittajaOid(this.userDetailService.getCurrentUserOid());
@@ -346,13 +349,13 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public List<KoodiVersioWithKoodistoItem> listByRelation(KoodiUriAndVersioType koodi, SuhteenTyyppi suhdeTyyppi, Boolean isChild) {
         Set<KoodiVersioWithKoodistoItem> koodis = new HashSet<>();
         if (SuhteenTyyppi.RINNASTEINEN.equals(suhdeTyyppi)) {
-            koodis.addAll(koodiVersioDAO.listByParentRelation(koodi, suhdeTyyppi));
-            koodis.addAll(koodiVersioDAO.listByChildRelation(koodi, suhdeTyyppi));
+            koodis.addAll(koodiVersioRepository.listByParentRelation(koodi, suhdeTyyppi));
+            koodis.addAll(koodiVersioRepository.listByChildRelation(koodi, suhdeTyyppi));
         } else {
             if (isChild) {
-                koodis.addAll(koodiVersioDAO.listByChildRelation(koodi, suhdeTyyppi));
+                koodis.addAll(koodiVersioRepository.listByChildRelation(koodi, suhdeTyyppi));
             } else {
-                koodis.addAll(koodiVersioDAO.listByParentRelation(koodi, suhdeTyyppi));
+                koodis.addAll(koodiVersioRepository.listByParentRelation(koodi, suhdeTyyppi));
             }
         }
 
@@ -381,7 +384,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                 latest = createNewKoodistoVersionIfNeeded(latest, false);
                 FindOrCreateWrapper<KoodiVersio> wrapper = createNewVersion(latest, false);
                 if (wrapper.isCreated()) {
-                    flushAfterCreation();
+                    // TODO flushAfterCreation();
                 }
                 latest = wrapper.getData();
             }
@@ -394,7 +397,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             for (KoodiVersioWithKoodistoItem alakoodi : alakoodiVersios) {
                 insertRelation(latest, alakoodi, st, true);
             }
-            koodinSuhdeDAO.flush();
+            // TODO flush koodinSuhdeRepository.flush();
         } else { // SISALTYY
             List<String> ylakoodiUris = relatedCodeElements;
             String alakoodiUri = latest.getKoodi().getKoodiUri();
@@ -412,7 +415,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                 createdNewKoodistoVersion |= koodistoBusinessService.createNewVersion(koodistoUri).isCreated();
             }
             if (createdNewKoodistoVersion) {
-                flushAfterCreation();
+                // TODO flushAfterCreation();
             }
             ylakoodiVersios = getLatestKoodiVersios(ylakoodiUris.toArray(new String[ylakoodiUris.size()]));
             boolean createdNewKoodiVersion = false;
@@ -420,14 +423,14 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                 createdNewKoodiVersion |= createNewVersion(latestYlakoodi.getKoodiVersio(), false).isCreated();
             }
             if (createdNewKoodiVersion) {
-                flushAfterCreation();
+                // TODO flushAfterCreation();
             }
             ylakoodiVersios = getLatestKoodiVersios(ylakoodiUris.toArray(new String[ylakoodiUris.size()]));
             KoodiVersio latestAlakoodi = getLatestKoodiVersio(alakoodiUri);
             for (KoodiVersioWithKoodistoItem latestYlakoodi : ylakoodiVersios) {
                 insertRelation(latestAlakoodi, latestYlakoodi, st, false);
             }
-            koodinSuhdeDAO.flush();
+            // TODO flush koodinSuhdeRepository.flush();
         }
     }
 
@@ -450,7 +453,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         koodinSuhde.setYlakoodiVersio(isChildRelation ? codeElementVersion : toBeAdded.getKoodiVersio());
         koodinSuhde.setAlakoodiVersio(isChildRelation ? toBeAdded.getKoodiVersio() : codeElementVersion);
         koodinSuhde.setVersio(1);
-        koodinSuhdeDAO.insertNonFlush(koodinSuhde);
+        koodinSuhdeRepository.save(koodinSuhde);
     }
 
     private void checkCodesHaveRelation(String codesUri, Set<KoodistonSuhde> existingRelations, String codesUriToBeFound, SuhteenTyyppi st) {
@@ -493,9 +496,9 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
 
         if (isChild) {
-            return koodinSuhdeDAO.getWithinRelations(yk, aks, st);
+            return koodinSuhdeRepository.getWithinRelations(yk, aks, st);
         } else {
-            return koodinSuhdeDAO.getRelations(yk, aks, st);
+            return koodinSuhdeRepository.getRelations(yk, aks, st);
         }
     }
 
@@ -524,14 +527,14 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                 if (!koodistos.contains(latestYlakoodiKoodisto)) {
                     koodistos.add(latestYlakoodiKoodisto);
                     if (koodistoBusinessService.createNewVersion(latestYlakoodiKoodisto).isCreated()) {
-                        flushAfterCreation();
+                        // TODO flushAfterCreation();
                     }
                 }
             }
             relations.addAll(getRelations(latest, relatedCodeElements, st, true));
         }
-        koodinSuhdeDAO.massRemove(relations);
-        flushAfterCreation();
+        koodinSuhdeRepository.deleteAll(relations);
+        // TODO flushAfterCreation();
     }
 
     @Override
@@ -605,13 +608,13 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             EntityUtils.copyFields(updateMetadata, newMetadata);
             newMetadata.setKoodiVersio(latest);
             latest.addMetadata(newMetadata);
-            koodiMetadataDAO.insert(newMetadata);
+            koodiMetadataRepository.save(newMetadata); // TODO check flushing
         }
 
         // Delete old metadatas
         for (KoodiMetadata oldMd : latestMetadatas) {
             latest.removeMetadata(oldMd);
-            koodiMetadataDAO.remove(oldMd);
+            koodiMetadataRepository.delete(oldMd);
         }
 
         // Update the version itself by copying all the fields
@@ -664,21 +667,21 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
 
         // insert new version
-        KoodiVersio inserted = koodiVersioDAO.insert(newVersio);
+        KoodiVersio inserted = koodiVersioRepository.save(newVersio);
         copyRelations(latest, inserted);
 
-        KoodistoVersioKoodiVersio relation = koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(newKoodistoVersio.getId(), latest.getId());
+        KoodistoVersioKoodiVersio relation = koodistoVersioKoodiVersioRepository.findByKoodistoVersioAndKoodiVersio(newKoodistoVersio.getId(), latest.getId());
         if (relation != null) {
             latest.removeKoodistoVersio(relation);
             newKoodistoVersio.removeKoodiVersio(relation);
-            koodistoVersioKoodiVersioDAO.remove(relation);
+            koodistoVersioKoodiVersioRepository.delete(relation);
         }
 
         KoodistoVersioKoodiVersio newRelation = new KoodistoVersioKoodiVersio();
         newRelation.setKoodistoVersio(newKoodistoVersio);
         newRelation.setKoodiVersio(inserted);
         inserted.addKoodistoVersio(newRelation);
-        koodistoVersioKoodiVersioDAO.insert(newRelation);
+        koodistoVersioKoodiVersioRepository.saveAndFlush(newRelation); // TODO check flush
 
         return inserted;
     }
@@ -704,7 +707,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         input.setTila(Tila.LUONNOS);
 
         input.setKoodi(base.getKoodi());
-        KoodiVersio inserted = doNonFlushingInsert ? koodiVersioDAO.insertNonFlush(input) : koodiVersioDAO.insert(input);
+        KoodiVersio inserted = doNonFlushingInsert ? koodiVersioRepository.save(input) : koodiVersioRepository.saveAndFlush(input);
         copyRelations(base, inserted);
 
         return inserted;
@@ -756,7 +759,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void setPreviousVersionEndDateToNowOrKeepFutureDate(KoodiVersio latest) {
-        KoodiVersio previousVersion = koodiVersioDAO.getPreviousKoodiVersio(latest.getKoodi().getKoodiUri(), latest.getVersio());
+        KoodiVersio previousVersion = koodiVersioRepository.getPreviousKoodiVersio(latest.getKoodi().getKoodiUri(), latest.getVersio());
         if (previousVersion != null) {
             previousVersion.setVoimassaLoppuPvm(getValidEndDateForKoodiVersio(previousVersion, latest));
         }
@@ -779,14 +782,14 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     @Override
     public void acceptCodeElements(KoodistoVersio latest) {
-        List<KoodiVersio> koodis = koodiVersioDAO.getKoodiVersiosByKoodistoAndKoodiTila(latest.getId(), Tila.LUONNOS);
+        List<KoodiVersio> koodis = koodiVersioRepository.getKoodiVersiosByKoodistoAndKoodiTila(latest.getId(), Tila.LUONNOS);
         if (koodis.size() > 0) {
             ArrayList<String> koodiUris = new ArrayList<>();
             for (KoodiVersio koodiVersio : koodis) {
                 koodiUris.add(koodiVersio.getKoodi().getKoodiUri());
             }
-            List<KoodiVersio> latestKoodis = koodiDAO.getLatestCodeElementVersiosByUrisAndTila(koodiUris, Tila.HYVAKSYTTY);
-            Map<KoodiVersio, KoodiVersio> previousVersions = koodiVersioDAO.getPreviousKoodiVersios(koodis);
+            List<KoodiVersio> latestKoodis = koodiRepository.getLatestCodeElementVersiosByUrisAndTila(koodiUris, Tila.HYVAKSYTTY);
+            Map<KoodiVersio, KoodiVersio> previousVersions = koodiVersioRepository.getPreviousKoodiVersios(koodis);
             for (KoodiVersio latestVersio : latestKoodis) {
                 latestVersio.setTila(Tila.HYVAKSYTTY);
             }
@@ -828,24 +831,24 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         if (kvkoodisto.getKoodistoItem().getVersios().contains(latestKoodistoVersio.getVersio()) && latestKoodistoVersio.getTila().equals(Tila.HYVAKSYTTY)) {
 
             KoodistoVersio newKoodistoVersio = koodistoBusinessService.createNewVersion(latestKoodistoVersio.getKoodisto().getKoodistoUri()).getData();
-            koodistoVersioKoodiVersioDAO.flush();
-            KoodistoVersioKoodiVersio koodistoVersioKoodiVersio = koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(newKoodistoVersio.getId(),
+            // TODO flushkoodistoVersioKoodiVersioDAO.flush();
+            KoodistoVersioKoodiVersio koodistoVersioKoodiVersio = koodistoVersioKoodiVersioRepository.findByKoodistoVersioAndKoodiVersio(newKoodistoVersio.getId(),
                     versio.getId());
-            koodistoVersioKoodiVersioDAO.remove(koodistoVersioKoodiVersio);
+            koodistoVersioKoodiVersioRepository.delete(koodistoVersioKoodiVersio);
 
         } else {
 
-            List<KoodistoVersio> koodistoVersios = koodistoVersioDAO.getKoodistoVersiosForKoodiVersio(koodiUri, koodiVersio);
+            List<KoodistoVersio> koodistoVersios = koodistoVersioRepository.findByKoodiUriAndVersio(koodiUri, koodiVersio);
             for (KoodistoVersio kv : koodistoVersios) {
-                kv.removeKoodiVersio(koodistoVersioKoodiVersioDAO.findByKoodistoVersioAndKoodiVersio(kv.getId(), versio.getId()));
+                kv.removeKoodiVersio(koodistoVersioKoodiVersioRepository.findByKoodistoVersioAndKoodiVersio(kv.getId(), versio.getId()));
             }
 
-            Koodi koodi = koodiDAO.readByUri(koodiUri);
+            Koodi koodi = koodiRepository.findByByKoodiUri(koodiUri);
             koodi.removeKoodiVersion(versio);
 
-            koodiVersioDAO.remove(versio);
+            koodiVersioRepository.delete(versio);
             if (koodi.getKoodiVersios().size() == 0) {
-                koodiDAO.remove(koodi);
+                koodiRepository.delete(koodi);
             } else {
                 activateRelationsInLatestKoodiVersio(koodi);
             }
@@ -876,7 +879,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             throw new SearchCriteriaEmptyException();
         }
 
-        if (!koodistoDAO.koodistoUriExists(searchCriteria.getKoodistoUri())) {
+        if (!koodistoRepository.koodistoUriExists(searchCriteria.getKoodistoUri())) {
             logger.error("No koodisto found for URI " + searchCriteria.getKoodistoUri());
             throw new KoodistoNotFoundException();
         }
@@ -893,7 +896,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             throw new KoodistoVersionNumberEmptyException();
         }
 
-        List<KoodiVersioWithKoodistoItem> list = koodiVersioDAO.searchKoodis(searchCriteria);
+        List<KoodiVersioWithKoodistoItem> list = koodiVersioRepository.searchKoodis(searchCriteria);
 
         return list;
     }
@@ -937,7 +940,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             }
         }
 
-        return koodiVersioDAO.searchKoodis(searchCriteria);
+        return koodiVersioRepository.searchKoodis(searchCriteria);
     }
 
     private void initializeRelations(Set<KoodinSuhde> relations, boolean upperRelation) {
@@ -945,7 +948,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                 .map(koodinSuhde -> upperRelation ? koodinSuhde.getYlakoodiVersio() : koodinSuhde.getAlakoodiVersio())
                 .map(KoodiVersio::getId)
                 .collect(Collectors.toSet());
-        this.koodiMetadataDAO.initializeByKoodiVersioIds(koodiVersioIdList);
+        this.koodiMetadataRepository.initializeByKoodiVersioIds(koodiVersioIdList);
     }
 
     @Override
