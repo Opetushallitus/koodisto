@@ -67,7 +67,7 @@ public interface KoodistoBusinessService {
 
     boolean hasAnyRelation(String koodistoUri, String anotherKoodistoUri);
 
-    File downloadFile(String codesUri, int codesVersion, Format fileFormat, String encoding);
+    // TODO File downloadFile(String codesUri, int codesVersion, Format fileFormat, String encoding);
 
     KoodistoVersio saveKoodisto(KoodistoDto codesDTO);
 

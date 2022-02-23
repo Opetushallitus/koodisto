@@ -16,6 +16,4 @@ public interface KoodistonSuhdeRepositoryCustom {
     // TODO Save KoodistonSuhde insertNonFlushing(KoodistonSuhde koodistonSuhde);
 
     void deleteRelations(KoodistoUriAndVersioType ylaKoodisto, List<KoodistoUriAndVersioType> alaKoodistos, SuhteenTyyppi st);
-
-    void flush();
 }

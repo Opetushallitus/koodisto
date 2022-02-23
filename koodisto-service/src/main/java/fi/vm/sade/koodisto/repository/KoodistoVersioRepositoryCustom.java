@@ -11,9 +11,9 @@ public interface KoodistoVersioRepositoryCustom {
 
     KoodistoVersio getPreviousKoodistoVersio(String koodistoUri, Integer koodistoVersio);
 
-    boolean koodistoVersioExists(String koodistoUri, Integer koodistoVersio);
-
-    void flush();
+    // boolean koodistoVersioExists(String koodistoUri, Integer koodistoVersio);
 
     Optional<Integer> findLatestVersioByKoodistoUri(String koodistoUri);
+
+    List<KoodistoVersio> getKoodistoVersiosForKoodiVersio(String koodiUri, Integer koodiVersio);
 }

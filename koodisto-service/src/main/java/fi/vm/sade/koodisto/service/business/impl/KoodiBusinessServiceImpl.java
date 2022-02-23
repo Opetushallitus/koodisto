@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import com.google.guava.*;
+import com.google.common.collect.Iterables;
+
 import fi.vm.sade.authorization.NotAuthorizedException;
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
@@ -31,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -1063,14 +1065,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     @Override
     public boolean hasRelationBetweenCodeElements(KoodiVersio ylaKoodiVersio, final KoodiVersio alaKoodiVersio) {
-        return Iterables.tryFind(ylaKoodiVersio.getAlakoodis(), new Predicate<KoodinSuhde>() {
-
-            @Override // TODO @Nonnull ?
-            public boolean apply(KoodinSuhde input) {
-                return input.getAlakoodiVersio().equals(alaKoodiVersio);
-            }
-
-        }).isPresent();
+        return Iterables.tryFind(ylaKoodiVersio.getAlakoodis(), input -> input.getAlakoodiVersio().equals(alaKoodiVersio)).isPresent();
     }
 
     private boolean koodisHaveSameOrganisaatio(String ylakoodiUri, List<String> alakoodiUris) {
@@ -1101,13 +1096,13 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     @Override
     public boolean isLatestKoodiVersio(String koodiUri, Integer versio) {
-        return koodiVersioDAO.isLatestKoodiVersio(koodiUri, versio);
+        return koodiVersioRepository.isLatestKoodiVersio(koodiUri, versio);
     }
 
     @Transactional(readOnly = true)
     @Override
     public Koodi getKoodi(String koodiUri) {
-        Koodi koodi = koodiDAO.readByUri(koodiUri);
+        Koodi koodi = koodiRepository.findByByKoodiUri(koodiUri);
         Hibernate.initialize(koodi);
         for (KoodiVersio kv : koodi.getKoodiVersios()) {
             Hibernate.initialize(kv.getMetadatas());
@@ -1177,7 +1172,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     private KoodiVersio createNewKoodistoVersionIfNeeded(KoodiVersio latest, boolean flushAfterCreation) {
         if (koodistoBusinessService.createNewVersion(latest.getKoodi().getKoodisto().getKoodistoUri()).isCreated()) {
             if (flushAfterCreation) {
-                flushAfterCreation();
+                // TODO flush flushAfterCreation();
             }
             latest = getLatestKoodiVersio(latest.getKoodi().getKoodiUri());
         }
@@ -1189,7 +1184,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         for (KoodinSuhde koodinSuhde : koodiRelations) {
             if (!koodinSuhde.isPassive()) {
                 KoodiVersio koodiVersio = isAlaKoodis ? koodinSuhde.getAlakoodiVersio() : koodinSuhde.getYlakoodiVersio();
-                if (koodiVersioDAO.isLatestKoodiVersio(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio())) {
+                if (koodiVersioRepository.isLatestKoodiVersio(koodiVersio.getKoodi().getKoodiUri(), koodiVersio.getVersio())) {
                     if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY)) {
                         sisaltyyUris.add(koodiVersio.getKoodi().getKoodiUri());
                     } else if (koodinSuhde.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)) {

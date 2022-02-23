@@ -11,5 +11,8 @@ import java.util.List;
 
 @Repository
 public interface KoodistoMetadataRepository extends CrudRepository<KoodistoMetadata, Integer>, KoodistoMetadataRepositoryCustom {
+
     List<KoodistoMetadata> findAllByKoodistoUri(String koodistoUri);
+
+    boolean existsByNimi(String nimi);
 }

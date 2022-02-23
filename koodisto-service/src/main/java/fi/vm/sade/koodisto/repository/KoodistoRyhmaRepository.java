@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface KoodistoRyhmaRepository extends CrudRepository<KoodistoRyhma, Long>, KoodistoRyhmaRepositoryCustom{
 
-    List<KoodistoRyhma> findAllBy(); // TODO palauttaa kaikki
+    List<KoodistoRyhma> findAll(); // TODO palauttaa kaikki
 
     KoodistoRyhma findByKoodistoRyhmaUri(String koodistoRyhmaUri);
 
