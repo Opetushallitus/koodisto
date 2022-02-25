@@ -14,7 +14,6 @@ import fi.vm.sade.koodisto.resource.CodeElementResourceConverter;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
-import fi.vm.sade.koodisto.service.business.UserDetailService;
 import fi.vm.sade.koodisto.service.business.exception.*;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
@@ -29,6 +28,8 @@ import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,8 +69,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;
 
-    @Autowired
-    private UserDetailService userDetailService;
 
     @Autowired
     private Authorizer authorizer;
@@ -82,6 +81,10 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     @Autowired
     private CodeElementResourceConverter converter;
+
+    protected String getCurrentUserOid() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 
     @Override
     public KoodiVersioWithKoodistoItem createKoodi(String koodistoUri, CreateKoodiDataType createKoodiData) {
@@ -342,7 +345,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         // flushAfterCreation();
 
         koodisto.setPaivitysPvm(new Date());
-        koodisto.setPaivittajaOid(this.userDetailService.getCurrentUserOid());
+        koodisto.setPaivittajaOid(getCurrentUserOid());
         return newKoodistoVersio;
     }
 
@@ -627,7 +630,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         // Set update information
         latest.setPaivitysPvm(new Date());
-        latest.setPaivittajaOid(this.userDetailService.getCurrentUserOid());
+        latest.setPaivittajaOid(getCurrentUserOid());
         return latest;
     }
 
@@ -840,12 +843,12 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         } else {
 
-            List<KoodistoVersio> koodistoVersios = koodistoVersioRepository.findByKoodiUriAndVersio(koodiUri, koodiVersio);
+            List<KoodistoVersio> koodistoVersios = koodistoVersioRepository.getKoodistoVersiosForKoodiVersio(koodiUri, koodiVersio);
             for (KoodistoVersio kv : koodistoVersios) {
                 kv.removeKoodiVersio(koodistoVersioKoodiVersioRepository.findByKoodistoVersioAndKoodiVersio(kv.getId(), versio.getId()));
             }
 
-            Koodi koodi = koodiRepository.findByByKoodiUri(koodiUri);
+            Koodi koodi = koodiRepository.findByKoodiUri(koodiUri);
             koodi.removeKoodiVersion(versio);
 
             koodiVersioRepository.delete(versio);
@@ -881,7 +884,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             throw new SearchCriteriaEmptyException();
         }
 
-        if (!koodistoRepository.koodistoUriExists(searchCriteria.getKoodistoUri())) {
+        if (!koodistoRepository.existsByKoodistoUri(searchCriteria.getKoodistoUri())) {
             logger.error("No koodisto found for URI " + searchCriteria.getKoodistoUri());
             throw new KoodistoNotFoundException();
         }
@@ -1102,7 +1105,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     @Transactional(readOnly = true)
     @Override
     public Koodi getKoodi(String koodiUri) {
-        Koodi koodi = koodiRepository.findByByKoodiUri(koodiUri);
+        Koodi koodi = koodiRepository.findByKoodiUri(koodiUri);
         Hibernate.initialize(koodi);
         for (KoodiVersio kv : koodi.getKoodiVersios()) {
             Hibernate.initialize(kv.getMetadatas());

@@ -1,18 +1,39 @@
 package fi.vm.sade.koodisto.configuration;
 
+import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
+import fi.vm.sade.javautils.opintopolku_spring_security.OidProvider;
+import fi.vm.sade.javautils.opintopolku_spring_security.ThreadLocalAuthorizer;
+import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
+import fi.vm.sade.koodisto.service.conversion.impl.KoodistoConversionServiceImpl;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.TypeDescriptor;
 
 import java.net.MalformedURLException;
 import java.text.MessageFormat;
+import java.util.List;
+import java.util.Set;
 
 @Configuration
-public class KoodistoConfiguration {
-    static {
+public class ApplicationConfiguration {
+
+    @Bean
+    public OidProvider oidProvider() {
+        return new OidProvider();
+    }
+
+    @Bean
+    public Authorizer authorizer() { return new ThreadLocalAuthorizer();} // TODO onko oikein?
+
+    @Bean
+    public KoodistoConversionService conversionService() { return new KoodistoConversionServiceImpl(); }
+
+    /*static {
         System.setProperty("fi.vm.sade.javautils.http.HttpServletRequestUtils.HARMLESS_URLS", "/koodisto-service/buildversion.txt");
     }
-    protected Configuration configurationProperties;
+    protected Configuration configurationPr operties;
 
-    public KoodistoConfiguration() throws ConfigurationException, MalformedURLException {
+    public ApplicationConfiguration() throws ConfigurationException, MalformedURLException {
         configurationProperties = new PropertiesConfiguration(getClass().getClassLoader().getResource(
                 "config/config.properties"));
     }
@@ -32,4 +53,6 @@ public class KoodistoConfiguration {
     public String getProperty(String key, Object... args) {
         return MessageFormat.format(configurationProperties.getString(key), args);
     }
+
+     */
 }

@@ -1,6 +1,6 @@
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.koodisto.common.util.FieldLengths;
+import fi.vm.sade.koodisto.util.FieldLengths;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;

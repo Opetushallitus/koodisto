@@ -12,7 +12,6 @@ import fi.vm.sade.koodisto.repository.*;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
-import fi.vm.sade.koodisto.service.business.UserDetailService;
 import fi.vm.sade.koodisto.service.business.exception.*;
 import fi.vm.sade.koodisto.service.impl.KoodistoRole;
 import fi.vm.sade.koodisto.resource.CodesResourceConverter;
@@ -31,6 +30,7 @@ import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,9 +75,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private KoodiBusinessService koodiBusinessService;
 
     @Autowired
-    private UserDetailService userDetailService;
-
-    @Autowired
     private KoodistoVersioKoodiVersioRepository koodistoVersioKoodiVersioRepository;
 
     @Autowired
@@ -91,6 +88,10 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Autowired
     private CodesResourceConverter converter;
+
+    protected String getCurrentUserOid() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 
     @Override
     public KoodistoVersio createKoodisto(List<String> koodistoRyhmaUris, CreateKoodistoDataType createKoodistoData) {
@@ -582,7 +583,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         // Set update date
         latest.setPaivitysPvm(new Date());
-        latest.setPaivittajaOid(this.userDetailService.getCurrentUserOid());
+        latest.setPaivittajaOid(getCurrentUserOid());
 
         return latest;
     }

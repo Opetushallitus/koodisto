@@ -4,7 +4,7 @@
 package fi.vm.sade.koodisto.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.koodisto.common.util.FieldLengths;
+import fi.vm.sade.koodisto.util.FieldLengths;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;

@@ -8,9 +8,9 @@ import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
-import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
+import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
+import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
 import fi.vm.sade.koodisto.validator.*;
 import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
@@ -37,10 +37,7 @@ public class CodeElementResource {
     private KoodiBusinessService koodiBusinessService;
 
     @Autowired
-    private SadeConversionService conversionService;
-
-    @Autowired
-    private HostAwareKoodistoConfiguration koodistoConfiguration;
+    private KoodistoConversionService conversionService;
 
     @Autowired
     private KoodiChangesService changesService;
@@ -277,8 +274,6 @@ public class CodeElementResource {
             KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem = koodiBusinessService.createKoodi(codesUri,
                     converter.convertFromDTOToCreateKoodiDataType(codeelementDTO));
             KoodiVersioWithKoodistoItemToKoodiDtoConverter koodiVersioWithKoodistoItemToKoodiDtoConverter = new KoodiVersioWithKoodistoItemToKoodiDtoConverter();
-            koodiVersioWithKoodistoItemToKoodiDtoConverter.setKoodistoConfiguration(koodistoConfiguration);
-
             return koodiVersioWithKoodistoItemToKoodiDtoConverter.convert(koodiVersioWithKoodistoItem);
        /* } catch (KoodistoValidationException e) {
             logger.warn("Invalid parameter for rest call: insert. ", e);

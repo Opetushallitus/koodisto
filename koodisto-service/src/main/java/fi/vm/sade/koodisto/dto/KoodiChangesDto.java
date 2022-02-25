@@ -6,55 +6,37 @@ import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
-import fi.vm.sade.koodisto.service.serializer.FinnishJsonDateSerializer;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
 public class KoodiChangesDto {
     
-    @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
     public final String koodiUri;
     
-    @JsonView(JsonViews.Extended.class)
     public final MuutosTila muutosTila;
     
-    @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
     public final Integer viimeisinVersio;
     
-    @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
     public final List<SimpleKoodiMetadataDto> muuttuneetTiedot;
     
-    @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
     public final List<SimpleKoodiMetadataDto> poistuneetTiedot;
     
-    @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
     public final List<SimpleCodeElementRelation> lisatytKoodinSuhteet;
     
-    @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
     public final List<SimpleCodeElementRelation> poistetutKoodinSuhteet;
     
-    @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
     public final List<SimpleCodeElementRelation> passivoidutKoodinSuhteet;
-    
-    @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY, using=FinnishJsonDateSerializer.class)
-    @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
+
     public final Date viimeksiPaivitetty;
-    
-    @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY, using=FinnishJsonDateSerializer.class)
-    @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
+
     public final Date voimassaAlkuPvm;
-    
-    @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY, using=FinnishJsonDateSerializer.class)
-    @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
+
     public final Date voimassaLoppuPvm;
     
-    @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
     public final Boolean poistettuVoimassaLoppuPvm;
     
-    @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
     public final Tila tila;
 
     public KoodiChangesDto(String koodiUri, MuutosTila muutosTila, Integer viimeisinVersio,
@@ -77,23 +59,19 @@ public class KoodiChangesDto {
     }
     
     public KoodiChangesDto(String koodiUri, MuutosTila muutosTila, Integer viimeisinVersio, Date viimeksiPaivitetty) {
-        this(koodiUri, muutosTila, viimeisinVersio, new ArrayList<SimpleKoodiMetadataDto>(), new ArrayList<SimpleKoodiMetadataDto>(), 
-                new ArrayList<SimpleCodeElementRelation>(), new ArrayList<SimpleCodeElementRelation>(), new ArrayList<SimpleCodeElementRelation>(), 
+        this(koodiUri, muutosTila, viimeisinVersio, new ArrayList<SimpleKoodiMetadataDto>(), new ArrayList<SimpleKoodiMetadataDto>(),
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
                 viimeksiPaivitetty, null, null, null, null);
     }
 
     public static class SimpleCodeElementRelation {
         
-        @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
         public final String koodiUri;
 
-        @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
         public final Integer versio;
 
-        @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
         public final SuhteenTyyppi suhteenTyyppi;
 
-        @JsonView({JsonViews.Basic.class, JsonViews.Extended.class})
         public final boolean lapsiKoodi;
         
         public SimpleCodeElementRelation(String koodiUri, Integer versio, SuhteenTyyppi suhteenTyyppi, boolean lapsiKoodi) {

@@ -13,9 +13,6 @@ import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import java.io.File;
 import java.util.List;
 
-/**
- * @author tommiha
- */
 public interface KoodistoBusinessService {
     /**
      * Lists all koodisto joukko objects by kieli.

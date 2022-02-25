@@ -5,7 +5,7 @@ import org.springframework.core.convert.ConversionService;
 import java.util.List;
 import java.util.Set;
 
-public interface SadeConversionService extends ConversionService {
+public interface KoodistoConversionService extends ConversionService {
 
     /**
      * Convert the source collection to List of targetType.

@@ -1,7 +1,5 @@
 package fi.vm.sade.koodisto.service.conversion.impl.koodi;
 
-import fi.vm.sade.koodisto.dao.KoodiMetadataDAO;
-import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
@@ -10,31 +8,31 @@ import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
-import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
+import fi.vm.sade.koodisto.repository.KoodiMetadataRepository;
+import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import fi.vm.sade.koodisto.service.impl.conversion.MetadataToSimpleMetadataConverter;
-import org.apache.commons.lang.StringUtils;
+import fi.vm.sade.koodisto.service.conversion.impl.MetadataToSimpleMetadataConverter;
+import fi.vm.sade.properties.OphProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Component("koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter")
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
         Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
 
     @Autowired
-    private KoodiVersioDAO koodiVersioDAO;
+    private KoodiVersioRepository koodiVersioRepository;
 
     @Autowired
-    private HostAwareKoodistoConfiguration koodistoConfiguration;
+    private KoodiMetadataRepository koodiMetadataRepository;
 
     @Autowired
-    private KoodiMetadataDAO koodiMetadataDAO;
+    OphProperties ophProperties;
 
     @Override
     public ExtendedKoodiDto convert(KoodiVersioWithKoodistoItem source) {
@@ -88,10 +86,11 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
             converted.setKoodisto(item);
         }
 
-        if (StringUtils.isNotBlank(converted.getKoodiUri()) && converted.getKoodisto() != null
-                && StringUtils.isNotBlank(converted.getKoodisto().getKoodistoUri())) {
-            converted.setResourceUri(koodistoConfiguration.getKoodiResourceUri(
-                    converted.getKoodisto().getKoodistoUri(), converted.getKoodiUri()));
+        if (!converted.getKoodiUri().isBlank() && converted.getKoodisto() != null
+                && !converted.getKoodisto().getKoodistoUri().isBlank()) {
+            // TODO tsekkaa toimiiko oikein
+            String resourceUri = MessageFormat.format(ophProperties.url("koodiUri"), converted.getKoodisto().getKoodistoUri(), converted.getKoodiUri());
+            converted.setResourceUri(resourceUri);
         }
 
         return converted;

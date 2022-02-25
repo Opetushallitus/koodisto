@@ -1,28 +1,26 @@
 package fi.vm.sade.koodisto.service.conversion.impl.koodi;
 
 import fi.vm.sade.koodisto.model.KoodiMetadata;
-import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoItemType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-//import fi.vm.sade.koodisto.util.DateHelper;
+import fi.vm.sade.properties.OphProperties;
 import org.springframework.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Component("koodiVersioWithKoodistoVersioItemsToKoodiTypeConverter")
 public class KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter implements
         Converter<KoodiVersioWithKoodistoItem, KoodiType> {
 
     @Autowired
-    private HostAwareKoodistoConfiguration koodistoConfiguration;
+    OphProperties ophProperties;
 
     public KoodiType convert(KoodiVersioWithKoodistoItem source) {
         KoodiType converted = new KoodiType();
@@ -65,8 +63,9 @@ public class KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter implements
 
         if (StringUtils.hasLength(converted.getKoodiUri()) && converted.getKoodisto() != null
                 && StringUtils.hasLength(converted.getKoodisto().getKoodistoUri())) {
-            converted.setResourceUri(koodistoConfiguration.getKoodiResourceUri(
-                    converted.getKoodisto().getKoodistoUri(), converted.getKoodiUri()));
+            // TODO tsekkaa
+            String resourceUri = MessageFormat.format(ophProperties.url("koodiUri"), converted.getKoodiUri(), converted.getKoodisto().getKoodistoUri());
+            converted.setResourceUri(resourceUri);
         }
 
         converted.setLockingVersion(source.getKoodiVersio().getVersion());

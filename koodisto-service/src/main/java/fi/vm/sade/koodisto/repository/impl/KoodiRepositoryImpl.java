@@ -56,7 +56,7 @@ public class KoodiRepositoryImpl implements KoodiRepositoryCustom {
 
     @Override
     public void deleteIncludingRelations(String koodiUri) {
-        Koodi koodi = koodiRepository.findByByKoodiUri(koodiUri);
+        Koodi koodi = koodiRepository.findByKoodiUri(koodiUri);
         delete(koodi);
     }
 

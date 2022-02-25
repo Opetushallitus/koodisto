@@ -5,11 +5,10 @@ import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.conversion.AbstractToDomainConverter;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 // TODO import fi.vm.sade.koodisto.util.DateHelper;
-import org.springframework.stereotype.Component;
+import org.springframework.core.convert.converter.Converter;
 
 import java.util.Optional;
 //TODO tsekkaa nämä konvertterit että tartteeko jos ei ole xml
-@Component("koodiTypeToKoodiVersioConverter")
 public class KoodiTypeToKoodiVersioConverter extends AbstractToDomainConverter<KoodiType, KoodiVersio> {
 
     @Override

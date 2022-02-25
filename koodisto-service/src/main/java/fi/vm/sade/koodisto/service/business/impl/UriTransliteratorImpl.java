@@ -1,9 +1,9 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import fi.vm.sade.koodisto.dao.KoodiDAO;
-import fi.vm.sade.koodisto.dao.KoodistoDAO;
-import fi.vm.sade.koodisto.dao.KoodistoRyhmaDAO;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
+import fi.vm.sade.koodisto.repository.KoodiRepository;
+import fi.vm.sade.koodisto.repository.KoodistoRepository;
+import fi.vm.sade.koodisto.repository.KoodistoRyhmaRepository;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
@@ -14,19 +14,20 @@ import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Component
 public class UriTransliteratorImpl implements UriTransliterator {
 
     @Autowired
-    private KoodiDAO koodiDAO;
+    private KoodiRepository koodiRepository;
 
     @Autowired
-    private KoodistoDAO koodistoDAO;
+    private KoodistoRepository koodistoRepository;
 
     @Autowired
-    private KoodistoRyhmaDAO koodistoRyhmaDAO;
+    private KoodistoRyhmaRepository koodistoRyhmaRepository;
 
     private static final Map<String, String> TRANSLITERATION = new HashMap<String, String>();
 
@@ -78,14 +79,14 @@ public class UriTransliteratorImpl implements UriTransliterator {
         }
 
         String baseKoodistoUri = transliterate(meta.getNimi());
-        if (StringUtils.isBlank(baseKoodistoUri)) {
+        if (baseKoodistoUri.isBlank()) {
             baseKoodistoUri = "-";
         }
 
         String koodistoUri = baseKoodistoUri;
 
         int i = 1;
-        while (koodistoDAO.koodistoUriExists(koodistoUri)) {
+        while (koodistoRepository.existsByKoodistoUri(koodistoUri)) {
             koodistoUri = baseKoodistoUri + "-" + i;
             ++i;
         }
@@ -111,7 +112,7 @@ public class UriTransliteratorImpl implements UriTransliterator {
         KoodistoRyhmaMetadata meta = null;
         for (KieliType k : PREFERRED_ORDER) {
             meta = getKoodistoRyhmaMetadataForLanguage(metadatas, k);
-            if (meta != null && StringUtils.isNotBlank(meta.getNimi())) {
+            if (meta != null && !meta.getNimi().isBlank()) {
                 break;
             }
         }
@@ -121,16 +122,16 @@ public class UriTransliteratorImpl implements UriTransliterator {
         }
 
         String baseKoodistoRyhmaUri = transliterate(meta.getNimi());
-        if (StringUtils.isBlank(baseKoodistoRyhmaUri)) {
+        if (baseKoodistoRyhmaUri.isBlank()) {
             baseKoodistoRyhmaUri = "-";
         }
-        if (!StringUtils.containsIgnoreCase(baseKoodistoRyhmaUri, "http://")) {
+        if (!baseKoodistoRyhmaUri.toLowerCase(Locale.ROOT).contains("http://")) {
             baseKoodistoRyhmaUri = "http://" + baseKoodistoRyhmaUri;
         }
         String koodistoRyhmaUri = baseKoodistoRyhmaUri;
 
         int i = 1;
-        while (koodistoRyhmaDAO.koodistoRyhmaUriExists(koodistoRyhmaUri)) {
+        while (koodistoRyhmaRepository.existsByKoodistoRyhmaUri(koodistoRyhmaUri)) {
             koodistoRyhmaUri = baseKoodistoRyhmaUri + "-" + i;
             ++i;
         }
@@ -143,7 +144,7 @@ public class UriTransliteratorImpl implements UriTransliterator {
     @Override
     public String generateKoodiUriByKoodistoUriAndKoodiArvo(String koodistoUri, String koodiArvo) {
         String arvoTransliterated = transliterate(koodiArvo);
-        if (StringUtils.isBlank(arvoTransliterated)) {
+        if (arvoTransliterated.isBlank()) {
             arvoTransliterated = "-";
         }
 
@@ -151,7 +152,7 @@ public class UriTransliteratorImpl implements UriTransliterator {
         String koodiUri = baseKoodiUri;
 
         int i = 1;
-        while (koodiDAO.koodiUriExists(koodiUri)) {
+        while (koodiRepository.koodiUriExists(koodiUri)) {
             koodiUri = baseKoodiUri + "-" + i;
             ++i;
         }

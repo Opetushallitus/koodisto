@@ -2,19 +2,18 @@ package fi.vm.sade.koodisto.service.conversion.impl.koodi;
 
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
-import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import org.apache.commons.lang.StringUtils;
+import fi.vm.sade.properties.OphProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-@Component("koodiVersioWithKoodistoVersioItemsToKoodiDtoConverter")
+import java.text.MessageFormat;
+
 public class KoodiVersioWithKoodistoVersioItemsToKoodiDtoConverter implements
         Converter<KoodiVersioWithKoodistoItem, KoodiDto> {
-
     @Autowired
-    private HostAwareKoodistoConfiguration koodistoConfiguration;
+    OphProperties ophProperties;
 
     public KoodiDto convert(KoodiVersioWithKoodistoItem source) {
         KoodiDto converted = new KoodiDto();
@@ -40,10 +39,11 @@ public class KoodiVersioWithKoodistoVersioItemsToKoodiDtoConverter implements
             converted.setKoodisto(item);
         }
 
-        if (StringUtils.isNotBlank(converted.getKoodiUri()) && converted.getKoodisto() != null
-                && StringUtils.isNotBlank(converted.getKoodisto().getKoodistoUri())) {
-            converted.setResourceUri(koodistoConfiguration.getKoodiResourceUri(
-                    converted.getKoodisto().getKoodistoUri(), converted.getKoodiUri()));
+        if (!converted.getKoodiUri().isBlank() && converted.getKoodisto() != null
+                && !converted.getKoodisto().getKoodistoUri().isBlank()) {
+            // TODO tsekkaa
+            String resourceUri = MessageFormat.format(ophProperties.url("koodiUri"), converted.getKoodiUri(), converted.getKoodisto().getKoodistoUri());
+            converted.setResourceUri(resourceUri);
         }
 
         return converted;

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface KoodistoRyhmaRepository extends CrudRepository<KoodistoRyhma, Long>, KoodistoRyhmaRepositoryCustom{
+public interface KoodistoRyhmaRepository extends CrudRepository<KoodistoRyhma, Long> {
 
     List<KoodistoRyhma> findAll(); // TODO palauttaa kaikki
 
@@ -17,5 +17,7 @@ public interface KoodistoRyhmaRepository extends CrudRepository<KoodistoRyhma, L
     List<KoodistoRyhma> findAllByKoodistoRyhmaUri(List<String> koodistoRyhmaUris);
 
     Optional<KoodistoRyhma> findById(Long id);
+
+    boolean existsByKoodistoRyhmaUri(String koodistoRyhmaUri);
 
 }

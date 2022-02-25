@@ -4,8 +4,7 @@ import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
-import fi.vm.sade.koodisto.service.koodisto.rest.validator.Validatable.ValidationType;
-import org.apache.commons.lang.StringUtils;
+import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
 
 import java.util.Collection;
 
@@ -45,7 +44,7 @@ public class CodesGroupValidator implements RestValidator<KoodistoRyhmaDto> {
         boolean atLeastOneFieldIsValid = false;
         for (KoodistoRyhmaMetadata md : metadatas) {
             ValidatorUtil.checkForNull(md.getKieli(), new KoodistoValidationException("error.validation.metadata"));
-            if(StringUtils.isNotBlank(md.getNimi())){
+            if(!md.getNimi().isBlank()){
                 atLeastOneFieldIsValid = true;
             }
         }

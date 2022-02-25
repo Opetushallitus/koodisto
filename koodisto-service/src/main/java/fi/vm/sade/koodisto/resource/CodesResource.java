@@ -8,7 +8,7 @@ import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UploadBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodistoChangesService;
-import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
+import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
 //import fi.vm.sade.koodisto.service.impl.stream.TemporaryFileInputStream;
 import fi.vm.sade.koodisto.validator.CodesValidator;
 import fi.vm.sade.koodisto.validator.KoodistoValidationException;
@@ -41,11 +41,11 @@ public class CodesResource {
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;
 
-    @Autowired
-    private UploadBusinessService uploadService;
+    /*@Autowired
+    private UploadBusinessService uploadService;*/
 
     @Autowired
-    private SadeConversionService conversionService;
+    private KoodistoConversionService conversionService;
 
    /* TODO download @Autowired
     private DownloadService downloadService;*/

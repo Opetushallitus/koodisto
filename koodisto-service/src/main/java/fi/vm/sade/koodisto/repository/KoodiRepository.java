@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface KoodiRepository extends CrudRepository<Koodi, Long>, KoodiRepositoryCustom {
-    Koodi findByByKoodiUri(String koodiUri);
+    Koodi findByKoodiUri(String koodiUri);
 }

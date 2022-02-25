@@ -4,9 +4,7 @@ import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
-import org.springframework.stereotype.Component;
 
-@Component("koodiMetadataToKoodiMetadataTypeConverter")
 public class KoodiMetadataToKoodiMetadataTypeConverter extends
         AbstractFromDomainConverter<KoodiMetadata, KoodiMetadataType> {
 

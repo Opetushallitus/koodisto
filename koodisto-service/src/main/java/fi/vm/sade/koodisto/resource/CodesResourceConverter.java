@@ -2,7 +2,7 @@ package fi.vm.sade.koodisto.resource;
 
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
-import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
+import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
@@ -10,41 +10,35 @@ import fi.vm.sade.koodisto.service.types.common.TilaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.GregorianCalendar;
+import java.util.Date;
+
+// TODO commenting
 
 @Component
 public class CodesResourceConverter {
 
     @Autowired
-    private SadeConversionService conversionService;
+    private KoodistoConversionService conversionService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CodesResource.class);
 
-    public ConversionService getConversionService() {
-        return conversionService;
-    }
-
     public UpdateKoodistoDataType convertFromDTOToUpdateKoodistoDataType(KoodistoDto koodistoDto) {
         UpdateKoodistoDataType updateKoodistoDataType = new UpdateKoodistoDataType();
-        GregorianCalendar c = new GregorianCalendar();
-        c.setTime(koodistoDto.getVoimassaAlkuPvm());
-        XMLGregorianCalendar startDate = null;
-        XMLGregorianCalendar endDate = null;
-        try {
-            startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+        //GregorianCalendar c = new GregorianCalendar();
+        // c.setTime(koodistoDto.getVoimassaAlkuPvm());
+        Date startDate = koodistoDto.getVoimassaAlkuPvm();
+        Date endDate = null;
+        //try {
+            //startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
             if (koodistoDto.getVoimassaLoppuPvm() != null) {
-                c.setTime(koodistoDto.getVoimassaLoppuPvm());
-                endDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+               // c.setTime(koodistoDto.getVoimassaLoppuPvm());
+                endDate = koodistoDto.getVoimassaLoppuPvm();// DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
             }
-        } catch (DatatypeConfigurationException e) {
-            LOGGER.warn("Date couldn't be parsed: ", e);
-        }
+       // } catch (DatatypeConfigurationException e) {
+       //     LOGGER.warn("Date couldn't be parsed: ", e);
+       // }
         updateKoodistoDataType.setCodesGroupUri(koodistoDto.getCodesGroupUri());
         updateKoodistoDataType.setVoimassaAlkuPvm(startDate);
         updateKoodistoDataType.setVoimassaLoppuPvm(endDate);
@@ -63,19 +57,19 @@ public class CodesResourceConverter {
 
     public CreateKoodistoDataType convertFromDTOToCreateKoodistoDataType(KoodistoDto koodistoDto) {
         CreateKoodistoDataType createKoodistoDataType = new CreateKoodistoDataType();
-        GregorianCalendar c = new GregorianCalendar();
-        c.setTime(koodistoDto.getVoimassaAlkuPvm());
-        XMLGregorianCalendar startDate = null;
-        XMLGregorianCalendar endDate = null;
-        try {
-            startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+        //GregorianCalendar c = new GregorianCalendar();
+        //c.setTime(koodistoDto.getVoimassaAlkuPvm());
+        Date startDate = koodistoDto.getVoimassaAlkuPvm();
+        Date endDate = null;
+        //try {
+            //startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
             if (koodistoDto.getVoimassaLoppuPvm() != null) {
-                c.setTime(koodistoDto.getVoimassaLoppuPvm());
-                endDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+                // c.setTime(koodistoDto.getVoimassaLoppuPvm());
+                endDate = koodistoDto.getVoimassaLoppuPvm(); //DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
             }
-        } catch (DatatypeConfigurationException e) {
-            LOGGER.warn("Date couldn't be parsed: ", e);
-        }
+        //} catch (DatatypeConfigurationException e) {
+        //    LOGGER.warn("Date couldn't be parsed: ", e);
+        //}
         createKoodistoDataType.setVoimassaAlkuPvm(startDate);
         createKoodistoDataType.setVoimassaLoppuPvm(endDate);
         createKoodistoDataType.setOmistaja(koodistoDto.getOmistaja());

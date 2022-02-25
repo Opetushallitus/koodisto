@@ -8,43 +8,30 @@ import fi.vm.sade.koodisto.model.Tila;
 import java.util.*;
 
 public class KoodistoDto extends AbstractKoodistoDto {
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     private String codesGroupUri;
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     private Long version;
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
     private int versio;
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     private Date paivitysPvm;
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     private String paivittajaOid;
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     private Date voimassaAlkuPvm;
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     private Date voimassaLoppuPvm;
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     private Tila tila;
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
     private List<KoodistoMetadata> metadata = new ArrayList<KoodistoMetadata>();
 
-    @JsonView(JsonViews.Extended.class)
     private List<Integer> codesVersions;
 
-    @JsonView({ JsonViews.Extended.class })
     protected List<RelationCodes> withinCodes = new ArrayList<RelationCodes>();
 
-    @JsonView({ JsonViews.Extended.class })
     protected List<RelationCodes> includesCodes = new ArrayList<RelationCodes>();
 
-    @JsonView({ JsonViews.Extended.class })
     protected List<RelationCodes> levelsWithCodes = new ArrayList<RelationCodes>();
 
     public int getVersio() {
@@ -152,13 +139,9 @@ public class KoodistoDto extends AbstractKoodistoDto {
     }
 
     public static class RelationCodes {
-        @JsonView({ JsonViews.Extended.class })
         public final String codesUri;
-        @JsonView({ JsonViews.Extended.class })
         public final Integer codesVersion;
-        @JsonView({JsonViews.Extended.class})
         public final boolean passive;
-        @JsonView({JsonViews.Extended.class})
         public final Map<String, String> nimi;
 
         public RelationCodes() {
