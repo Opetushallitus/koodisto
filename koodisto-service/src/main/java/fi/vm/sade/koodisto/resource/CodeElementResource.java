@@ -34,16 +34,16 @@ public class CodeElementResource {
     private final static Logger logger = LoggerFactory.getLogger(CodeElementResource.class);
 
     @Autowired
-    private KoodiBusinessService koodiBusinessService;
+    KoodiBusinessService koodiBusinessService;
 
     @Autowired
-    private KoodistoConversionService conversionService;
+    KoodistoConversionService conversionService;
 
     @Autowired
-    private KoodiChangesService changesService;
+    KoodiChangesService changesService;
     
     @Autowired
-    private CodeElementResourceConverter converter;
+    CodeElementResourceConverter converter;
 
     private CodeElementValidator codesValidator = new CodeElementValidator();
     private CodeElementRelationListValidator relationValidator = new CodeElementRelationListValidator();

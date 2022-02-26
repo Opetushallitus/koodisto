@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.repository;
 
-import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.Tila;
 

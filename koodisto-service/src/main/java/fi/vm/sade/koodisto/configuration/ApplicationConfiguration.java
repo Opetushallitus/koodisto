@@ -2,6 +2,7 @@ package fi.vm.sade.koodisto.configuration;
 
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.javautils.opintopolku_spring_security.OidProvider;
+import fi.vm.sade.javautils.opintopolku_spring_security.OrganisationHierarchyAuthorizer;
 import fi.vm.sade.javautils.opintopolku_spring_security.ThreadLocalAuthorizer;
 import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
 import fi.vm.sade.koodisto.service.conversion.impl.KoodistoConversionServiceImpl;
@@ -24,6 +25,9 @@ public class ApplicationConfiguration {
 
     @Bean
     public Authorizer authorizer() { return new ThreadLocalAuthorizer();} // TODO onko oikein?
+
+    @Bean
+    OrganisationHierarchyAuthorizer hierarchyAuthorizer() { return new OrganisationHierarchyAuthorizer();}
 
     @Bean
     public KoodistoConversionService conversionService() { return new KoodistoConversionServiceImpl(); }

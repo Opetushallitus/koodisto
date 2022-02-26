@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface KoodiRepository extends CrudRepository<Koodi, Long>, KoodiRepositoryCustom {
     Koodi findByKoodiUri(String koodiUri);
+    void deleteById(Long id);
 }

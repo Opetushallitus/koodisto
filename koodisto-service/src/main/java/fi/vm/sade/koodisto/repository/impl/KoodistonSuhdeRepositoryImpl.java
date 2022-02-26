@@ -14,6 +14,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodistoUriAndVersioType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -23,7 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@Repository
 public class KoodistonSuhdeRepositoryImpl implements KoodistonSuhdeRepositoryCustom {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -35,6 +35,7 @@ public class KoodistonSuhdeRepositoryImpl implements KoodistonSuhdeRepositoryCus
     EntityManager em;
 
     @Autowired
+    @Lazy
     private KoodistonSuhdeRepository koodistonSuhdeRepository;
 
     private static Predicate addRestrictions(CriteriaQuery<?> cquery, CriteriaBuilder cb, Root<KoodistonSuhde> root,

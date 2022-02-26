@@ -18,7 +18,6 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
 public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
 
     private static final String VERSIO = "versio";

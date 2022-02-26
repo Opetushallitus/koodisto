@@ -75,7 +75,6 @@
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
-			<version>8.5.1</version>
 		</dependency>
 	</dependencies>
 
@@ -88,10 +87,6 @@
 			<plugin>
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
-				<configuration>
-					<user>app</user>
-					<password>ophoph</password>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>

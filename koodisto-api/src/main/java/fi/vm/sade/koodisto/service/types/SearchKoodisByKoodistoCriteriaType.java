@@ -3,9 +3,9 @@ package fi.vm.sade.koodisto.service.types;
 
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class SearchKoodisByKoodistoCriteriaType implements Serializable
@@ -19,7 +19,7 @@ public class SearchKoodisByKoodistoCriteriaType implements Serializable
 
     protected List<TilaType> koodistoTilas;
 
-    protected XMLGregorianCalendar validAt;
+    protected Date validAt;
     protected KoodiBaseSearchCriteriaType koodiSearchCriteria;
 
     /**
@@ -101,11 +101,11 @@ public class SearchKoodisByKoodistoCriteriaType implements Serializable
         return this.koodistoTilas;
     }
 
-    public XMLGregorianCalendar getValidAt() {
+    public Date getValidAt() {
         return validAt;
     }
 
-    public void setValidAt(XMLGregorianCalendar value) {
+    public void setValidAt(Date value) {
         this.validAt = value;
     }
 

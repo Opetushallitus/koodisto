@@ -30,6 +30,7 @@ import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +58,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private KoodistoRyhmaRepository koodistoRyhmaRepository;
 
     @Autowired
+    @Lazy
     private KoodistonSuhdeRepository koodistonSuhdeRepository;
 
     @Autowired
@@ -66,6 +68,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private KoodistoMetadataRepository koodistoMetadataRepository;
 
     @Autowired
+    @Lazy
     private KoodiRepository koodiRepository;
 
     @Autowired
@@ -101,7 +104,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         checkMetadatas(createKoodistoData.getMetadataList());
 
-        List<KoodistoRyhma> koodistoRyhmas = koodistoRyhmaRepository.findAllByKoodistoRyhmaUri(koodistoRyhmaUris);
+        List<KoodistoRyhma> koodistoRyhmas = (List<KoodistoRyhma>) koodistoRyhmaRepository.findAllByKoodistoRyhmaUriIn(koodistoRyhmaUris);
         if (koodistoRyhmas.isEmpty()) {
             throw new KoodistoRyhmaNotFoundException();
         }
@@ -299,7 +302,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     public KoodistoRyhma getKoodistoGroup(String koodistoGroupUri) {
         List<String> koodistoGroupUris = new ArrayList<String>();
         koodistoGroupUris.add(koodistoGroupUri);
-        List<KoodistoRyhma> koodistoGroups = koodistoRyhmaRepository.findAllByKoodistoRyhmaUri(koodistoGroupUris);
+        List<KoodistoRyhma> koodistoGroups = (List<KoodistoRyhma>) koodistoRyhmaRepository.findAllByKoodistoRyhmaUriIn(koodistoGroupUris);
 
         if (koodistoGroups.isEmpty()) {
             throw new KoodistoRyhmaNotFoundException();

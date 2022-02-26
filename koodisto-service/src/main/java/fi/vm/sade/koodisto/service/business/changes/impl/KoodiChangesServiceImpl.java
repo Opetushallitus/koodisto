@@ -14,6 +14,7 @@ import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +26,11 @@ import java.util.*;
 public class KoodiChangesServiceImpl implements KoodiChangesService {
     
     @Autowired
-    private KoodiBusinessService service;
+    KoodiBusinessService service;
     
     @Autowired
-    private KoodistoBusinessService koodistoService;
+    @Lazy
+    KoodistoBusinessService koodistoService;
 
     @Override
     public KoodiChangesDto getChangesDto(String uri, Integer versio, boolean compareToLatestAccepted) {

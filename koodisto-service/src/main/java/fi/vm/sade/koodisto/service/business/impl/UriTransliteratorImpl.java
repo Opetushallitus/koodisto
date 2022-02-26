@@ -10,6 +10,7 @@ import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import fi.vm.sade.koodisto.util.KoodistoHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class UriTransliteratorImpl implements UriTransliterator {
 
     @Autowired
+    @Lazy
     private KoodiRepository koodiRepository;
 
     @Autowired

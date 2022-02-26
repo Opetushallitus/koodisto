@@ -28,6 +28,7 @@ import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -46,27 +47,27 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public static final String ROOT_ORG = "1.2.246.562.10.00000000001";
 
     @Autowired
-    private KoodiRepository koodiRepository;
+    @Lazy
+    KoodiRepository koodiRepository;
 
     @Autowired
-    private KoodiMetadataRepository koodiMetadataRepository;
+    KoodiMetadataRepository koodiMetadataRepository;
 
     @Autowired
-    private KoodiVersioRepository koodiVersioRepository;
+    KoodiVersioRepository koodiVersioRepository;
 
     @Autowired
-    private KoodistoVersioRepository koodistoVersioRepository;
+    KoodistoVersioRepository koodistoVersioRepository;
 
     @Autowired
-    private KoodinSuhdeRepository koodinSuhdeRepository;
+    @Lazy
+    KoodinSuhdeRepository koodinSuhdeRepository;
 
     @Autowired
-    private KoodistoRepository koodistoRepository;
+    KoodistoRepository koodistoRepository;
 
     @Autowired
-    private KoodistonSuhdeRepository koodistonSuhdeRepository;
-
-    @Autowired
+    @Lazy
     private KoodistoBusinessService koodistoBusinessService;
 
 

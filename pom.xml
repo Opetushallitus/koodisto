@@ -13,6 +13,10 @@
 		<java.version>11</java.version>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<flyway.user>app</flyway.user>
+		<flyway.password>ophoph</flyway.password>
+		<flyway.url>jdbc:postgresql://localhost:5432/koodisto</flyway.url>
+		<flyway.baselineOnMigrate>true</flyway.baselineOnMigrate>
 	</properties>
 
 	<modules>
@@ -31,6 +35,11 @@
 				<type>pom</type>
 				<version>2.6.3</version>
 				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-core</artifactId>
+				<version>8.5.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -32,9 +32,7 @@ public interface KoodiVersioRepositoryCustom {
 
     Map<String, Integer> getLatestVersionNumbersForUris(String... koodiUris);
 
-    // TODO SAve? KoodiVersio insertNonFlush(KoodiVersio koodiVersio);
-
-    // void flush();
-
     Map<KoodiVersio, KoodiVersio> getPreviousKoodiVersios(List<KoodiVersio> koodis);
+    List<KoodiVersio> findByKoodistoUriAndVersio(String koodistoUri, Integer versio);
+
 }

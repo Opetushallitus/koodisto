@@ -10,5 +10,4 @@ import java.util.List;
 
 @Repository
 public interface KoodinSuhdeRepository extends CrudRepository<KoodinSuhde, Long>, KoodinSuhdeRepositoryCustom {
-    void deleteAllBy(List<KoodinSuhde> entityList);
 }

@@ -11,23 +11,24 @@ import fi.vm.sade.koodisto.repository.KoodiRepository;
 import fi.vm.sade.koodisto.repository.KoodiRepositoryCustom;
 import fi.vm.sade.koodisto.repository.KoodistoVersioKoodiVersioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import java.util.List;
 
-@Repository
 public class KoodiRepositoryImpl implements KoodiRepositoryCustom {
 
     @Autowired
     EntityManager em;
 
     @Autowired
-    private KoodistoVersioKoodiVersioRepository koodistoVersioKoodiVersioRepository;
+    KoodistoVersioKoodiVersioRepository koodistoVersioKoodiVersioRepository;
 
     @Autowired
-    private KoodiRepository koodiRepository;
+    @Lazy
+    KoodiRepository koodiRepository;
 
     protected void delete(Koodi koodi) {
         for (KoodiVersio koodiVersio : koodi.getKoodiVersios()) {
@@ -36,7 +37,7 @@ public class KoodiRepositoryImpl implements KoodiRepositoryCustom {
             }
 
         }
-        koodiRepository.deleteById(koodi.getId());
+        this.koodiRepository.deleteById(koodi.getId());
     }
 
     /*@Override

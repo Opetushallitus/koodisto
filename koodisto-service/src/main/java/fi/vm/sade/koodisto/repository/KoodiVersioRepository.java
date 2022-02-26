@@ -15,6 +15,4 @@ import java.util.Map;
 
 @Repository
 public interface KoodiVersioRepository extends JpaRepository<KoodiVersio, Long>, KoodiVersioRepositoryCustom {
-
-    List<KoodiVersio> findByKoodistoUriAndVersio(String koodistoUri, Integer versio);
 }
