@@ -1,0 +1,62 @@
+git:
+  depth: false
+branches:
+  only:
+    - master
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.npm
+    - $HOME/.cache
+    - node_modules
+env:
+  global:
+    # AWS_ACCESS_KEY_ID
+    - secure: "kJYET7ilzSWoYscPNhLC+jFJEo9Y6n59x9WH4xLMfNRB74gphEn5/7F04pKoFg/zqMan42RPEUqhuoudeDM+uOwf6AY+p2lunjKbM+pRscBO219Xx2aEX8NbORAwfuzIiEavXUq5x+O13F8olj6RSvuODdkqHBTBYaM0XlpeScpBfr0E0Jyubx9FKhWowH01lGmoBOCNG2atVfIr7Q6rhtZ28U/hVZXyrLEnIYe4weEntMOLgMnzaeWeSr96qToljV8oVcOdqQyON0QjsvdtvBBW9a2dKGj81oXxMy5BpPFw/E1XMXMUYZ14lY2k/6fic3EKsuolGvK7t7QtvAHe/q1+vV/ylZevmoqbxTuAoo8fV/IP0ltSHOPiHrn9gTHJUmM20AHbap0/PpN5RjUenzqUpTG7ojSVw6IqnkZhr89ZclHFePNfcJ0uYwh+TBe+6ghOn3j8WIQS1XPSRFX7tAXUvhbN9LoNJp8GIRJUXaDqSeOi4lMnRZV3C2F1AHiAuyUZKkRNy6EEvqjjyTNo6CbWxDwZgkaxVOJTzZ1mA50dJuWTGQk8Mvw/N0rXbniRjI0EelUYE5Z365wjAv3LHxcdcq9IVUi32MrQuLYjY4oGhg6vz+ag5z7/K56okWAmgR00eNOCypf6smXWbDtQGEOQPFpk0fNbv1y3BfsH+CQ="
+    # AWS_SECRET_ACCESS_KEY
+    - secure: "l2Mr1XQSlm4HJZZOlf46K8jVouEcM5ARL45u1szWe53cgrV/uqwHD9pLr2Zwh6gNPGdmX1l9VmyLVqUliUoWE9ad6XCkrdRNd4PtVDYhFYKcB/jfvq0VDac0brV0fvm4vmYoGlUdXjxuZ3dk8cfgU+9JC9d9VMWpJyMkzImRSVMY7pGsbZkJH8lG844JBNTxRZ9eFA2xeJZQVlOUuwDVYgioBWSDJw/gFIdrJvI/pWlFWHgT/cnpZBbDNOUnlt5SlzVYHbkpEnk/etfkDV0aFAQw1XezjAFt4mji8orkTkQbnCBkEAl4JHIhh9aPvz8cz+GrMbcOPNxhuVr477pjDuMZlvZvWVE9c/L8ljsj/uWgqdHo9oeY7Nxb63tqn7DX9kON33x7HfNxQZQvSSsyns3Rb2oNLUCk2Rt82GxkWU3Qr3e0Uzec8YkLoYok/Rgku/S9L/A7JveWHChERtSSu5KRkQt1s9iXZyxeDX0/RKOFglrtHe7bKXPi1BNLRZQgC3FL9FG5VER889JEg9bjHInPhNHNPHkrCjhYIOuehRldVSKY9wg+EDcuzBZjSm+rCMAQDN+de2e2y0Z1aSj/bt+O3fWSNmSgMWuAvAzXMFqE0UQfV9sQX0Zsc1h6VNzuyICnv1TQ6J6NuI+TMNUZYL1NDdVDf9Yj2JI6z33BqlM="
+    # S3 bucket used to share build files between jobs
+    - s3bucket: "opintopolku-utility-travis-artifacts/artifacts/Opetushallitus/koodisto-ui"
+before_install:
+  - pyenv versions
+  - pyenv global 3.6.7
+  - pip install -U pip
+  - pip install awscli
+  - mkdir -p ~/$TRAVIS_BUILD_NUMBER
+  - aws s3 sync s3://$s3bucket/$TRAVIS_BUILD_NUMBER ~/$TRAVIS_BUILD_NUMBER
+  - touch ~/$TRAVIS_BUILD_NUMBER/$TRAVIS_BUILD_NUMBER.$TRAVIS_BRANCH
+  - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://$s3bucket/$TRAVIS_BUILD_NUMBER
+jobs:
+  include:
+    - stage: "Build UI"
+      name: "React Production Build"
+      language: node_js
+      node_js:
+        - 14.17.5
+      install:
+        - npm install
+      script:
+        - npm run build
+        - npm run cypress:ci
+        - cp -R $TRAVIS_BUILD_DIR/build ~/$TRAVIS_BUILD_NUMBER/
+      after_success:
+        - aws s3 sync ~/$TRAVIS_BUILD_NUMBER s3://$s3bucket/$TRAVIS_BUILD_NUMBER
+    - stage: "Build Server & Deploy"
+      name: "To ECR"
+      language: java
+      jdk:
+        - openjdk11
+      services:
+        - docker
+      install:
+        - git clone https://github.com/Opetushallitus/ci-tools.git
+        - export BASE_IMAGE="baseimage-fatjar-openjdk11:master"
+        - export ARTIFACT_NAME="koodisto-ui"
+        - source ci-tools/common/setup-tools.sh
+        - cp -R ~/$TRAVIS_BUILD_NUMBER/build $TRAVIS_BUILD_DIR/
+        - cd server && mvn clean install && cd -
+        - cp server/target/koodisto-ui.jar $DOCKER_BUILD_DIR/artifact/$ARTIFACT_NAME.jar
+      script:
+        - ./ci-tools/common/pull-image.sh
+        - ./ci-tools/build/build-fatjar.sh $ARTIFACT_NAME
+        - ./ci-tools/build/upload-image.sh $ARTIFACT_NAME

@@ -1,0 +1,8 @@
+.idea/
+build/
+src/react-app-env.d.ts
+coverage/
+cypress/videos
+cypress/screenshots
+cypress-coverage
+node_modules/
