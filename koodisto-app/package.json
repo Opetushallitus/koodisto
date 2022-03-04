@@ -38,7 +38,9 @@
         "wait-on": "^6.0.1"
     },
     "scripts": {
-        "start": "BROWSER=none react-scripts start",
+        "start": "concurrently  --success first --kill-others 'npm run mock-api' 'BROWSER=none react-scripts start'",
+        "mock-api": "cd mock-api && npm run mock-api",
+        "server": "cd server && mvn spring-boot:run",
         "build": "npm run lint && react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
@@ -46,7 +48,7 @@
         "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
         "cypress:open": "cypress open",
         "cypress:run": "cypress run",
-        "cypress:ci": "START_SERVER_AND_TEST_INSECURE=1 concurrently  --success first --kill-others 'wait-on http://localhost:3000/koodisto-app && npm run cypress:run' 'npm run start'",
+        "cypress:ci": "START_SERVER_AND_TEST_INSECURE=1 concurrently  --success first --kill-others 'wait-on http://localhost:3000/koodisto-app && npm run cypress:run' 'npm run mock-api' 'BROWSER=none react-scripts start'",
         "prepare": "husky install"
     },
     "browserslist": {
@@ -61,5 +63,5 @@
             "last 1 safari version"
         ]
     },
-    "proxy": "http://localhost:8080"
+    "proxy": "http://localhost:9000"
 }

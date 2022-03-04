@@ -4,10 +4,10 @@ import axios from 'axios';
 import Cookies from 'universal-cookie';
 import App from './App';
 import { Provider } from 'jotai';
-import Raamit from './Raamit/Raamit';
 import { ROOT_OID } from './context/constants';
 import ErrorPage from './components/pages/ErrorPage/ErrorPage';
 import Loading from './components/pages/Loading/Loading';
+import Raamit from './components/Raamit/Raamit';
 
 const cookies = new Cookies();
 axios.interceptors.request.use((config) => {

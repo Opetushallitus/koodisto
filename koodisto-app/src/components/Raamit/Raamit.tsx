@@ -1,13 +1,13 @@
 import React from 'react';
-import { healthCheckAtom } from '../api/healthCheck';
 import { useAtom } from 'jotai';
+import { casMeAtom } from '../../api/kayttooikeus';
 
 const VIRKAILIJA_RAAMIT_PROD_URL = '/virkailija-raamit/apply-raamit.js';
 const VIRKAILIJA_RAAMIT_DEV_URL = '/koodisto-app/dev-raamit.js';
 const SCRIPT_ELEMENT_ID = 'virkailija-raamit-script';
 
 const Raamit: React.FC = ({ children }) => {
-    const [health] = useAtom(healthCheckAtom);
+    const [health] = useAtom(casMeAtom);
     if (process.env.NODE_ENV === 'development' && !document.getElementById(SCRIPT_ELEMENT_ID)) {
         console.log(health);
         const scriptElement = document.createElement('script');

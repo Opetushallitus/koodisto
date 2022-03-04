@@ -1,4 +1,5 @@
 .idea/
+*.iml
 build/
 src/react-app-env.d.ts
 coverage/
