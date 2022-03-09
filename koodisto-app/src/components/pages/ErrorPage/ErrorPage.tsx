@@ -23,7 +23,7 @@ const ErrorBackground = styled.div`
     align-items: center;
     justify-content: space-evenly;
 `;
-export default function ErrorPage(props: Props) {
+const ErrorPage = (props: Props) => {
     return (
         <ErrorContainer>
             <ErrorBackground>
@@ -34,4 +34,5 @@ export default function ErrorPage(props: Props) {
             </ErrorBackground>
         </ErrorContainer>
     );
-}
+};
+export default ErrorPage;

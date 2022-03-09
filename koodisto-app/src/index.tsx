@@ -5,6 +5,7 @@ import Cookies from 'universal-cookie';
 import App from './App';
 import { Provider } from 'jotai';
 import { ROOT_OID } from './context/constants';
+import './index.css';
 import ErrorPage from './components/pages/ErrorPage/ErrorPage';
 import Loading from './components/pages/Loading/Loading';
 import Raamit from './components/Raamit/Raamit';
