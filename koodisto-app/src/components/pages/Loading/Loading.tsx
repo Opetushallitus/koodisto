@@ -9,10 +9,11 @@ const LoadingDiv = styled.div`
     align-items: center;
 `;
 
-const Loading = () => {
+const Loading: React.FC = ({ children }) => {
     return (
         <LoadingDiv>
             <Spin />
+            {children}
         </LoadingDiv>
     );
 };
