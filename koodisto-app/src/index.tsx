@@ -8,7 +8,9 @@ import { ROOT_OID } from './context/constants';
 import ErrorPage from './components/pages/ErrorPage/ErrorPage';
 import Loading from './components/pages/Loading/Loading';
 import Raamit from './components/Raamit/Raamit';
-
+import createTheme from '@opetushallitus/virkailija-ui-components/createTheme';
+import { ThemeProvider } from 'styled-components';
+const theme = createTheme();
 const cookies = new Cookies();
 axios.interceptors.request.use((config) => {
     if (config?.headers) {
@@ -38,15 +40,17 @@ export class ErrorBoundary extends React.Component<unknown, { hasError: boolean 
 }
 ReactDOM.render(
     <React.StrictMode>
-        <Provider>
-            <ErrorBoundary>
-                <React.Suspense fallback={<Loading />}>
-                    <Raamit>
-                        <App />
-                    </Raamit>
-                </React.Suspense>
-            </ErrorBoundary>
-        </Provider>
+        <ThemeProvider theme={theme}>
+            <Provider>
+                <ErrorBoundary>
+                    <React.Suspense fallback={<Loading />}>
+                        <Raamit>
+                            <App />
+                        </Raamit>
+                    </React.Suspense>
+                </ErrorBoundary>
+            </Provider>
+        </ThemeProvider>
     </React.StrictMode>,
     document.getElementById('root')
 );
