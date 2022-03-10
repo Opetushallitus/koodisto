@@ -9,7 +9,48 @@ on:
     paths-ignore:
       - '**.md'
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      - name: Checkout source
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+          cache: 'maven'
+      - name: Maven version
+        run: mvn --version
+      - name: Build UI
+        run: cd koodisto-ui && mvn clean install && cd -
+      - name: Upload koodisto-ui-war
+        uses: actions/upload-artifact@v2
+        with:
+          name: koodisto-ui-war
+          path: koodisto-ui/target/koodisto-ui.war
+  deploy-container:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download koodisto-app-spring-boot
+        uses: actions/download-artifact@v2
+        with:
+          name: koodisto-ui-war
+      - name: Build Docker Conainer
+        shell: bash
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          git clone https://github.com/Opetushallitus/ci-tools.git
+          source ci-tools/common/setup-tools.sh
+          export BASE_IMAGE="baseimage-war-openjdk11:master"
+          export ARTIFACT_NAME="koodisto-ui"
+          mv koodisto-ui.war $DOCKER_BUILD_DIR/artifact/$ARTIFACT_NAME.jar
+          cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
+          ./ci-tools/common/pull-image.sh
+          ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME
+          ./ci-tools/github-build/upload-image.sh $ARTIFACT_NAME
