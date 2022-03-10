@@ -28,12 +28,17 @@ jobs:
       - name: Maven version
         run: mvn --version
       - name: Build UI
-        run: cd koodisto-ui && mvn clean install && cd -
+        run: cd mvn clean install
       - name: Upload koodisto-ui-war
         uses: actions/upload-artifact@v2
         with:
           name: koodisto-ui-war
           path: koodisto-ui/target/koodisto-ui.war
+      - name: Upload koodisto-service-war
+        uses: actions/upload-artifact@v2
+        with:
+          name: koodisto-service-war
+          path: koodisto-service/target/koodisto-service.war
   deploy-container:
     needs: [build]
     runs-on: ubuntu-latest
@@ -44,6 +49,10 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: koodisto-ui-war
+      - name: Download koodisto-service-war
+        uses: actions/download-artifact@v2
+        with:
+          name: koodisto-service-war
       - name: Build Docker Conainer
         shell: bash
         env:
@@ -54,7 +63,8 @@ jobs:
           source ci-tools/common/setup-tools.sh
           export BASE_IMAGE="baseimage-war-openjdk11:master"
           export ARTIFACT_NAME="koodisto-ui"
-          mv koodisto-ui.war $DOCKER_BUILD_DIR/artifact/$ARTIFACT_NAME.jar
+          cp koodisto-service.war $DOCKER_BUILD_DIR/artifact/koodisto-service.war
+          cp koodisto-ui.war $DOCKER_BUILD_DIR/artifact/koodisto-ui.war
           cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
           cp $DOCKER_BUILD_DIR/config/oph-configuration/koodisto.properties.template $DOCKER_BUILD_DIR/config/oph-configuration/koodisto-ui.properties.template
           ./ci-tools/common/pull-image.sh
