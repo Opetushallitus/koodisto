@@ -28,31 +28,22 @@ jobs:
       - name: Maven version
         run: mvn --version
       - name: Build UI
-        run: mvn clean install
-      - name: Upload koodisto-ui-war
+        run: cd koodisto-ui mvn clean install cd -
+      - name: Build Spring Boot
+        run: cd koodisto-ui-service mvn clean install cd -
+      - name: Upload koodisto-ui-server-jar
         uses: actions/upload-artifact@v2
         with:
-          name: koodisto-ui-war
-          path: koodisto-ui/target/koodisto-ui.war
-      - name: Upload koodisto-service-war
-        uses: actions/upload-artifact@v2
-        with:
-          name: koodisto-service-war
-          path: koodisto-service/target/koodisto-service.war
+          name: koodisto-ui-server-jar
+          path: koodisto-ui-server/target/koodisto-ui-server.jar
   deploy-container:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v3
-      - name: Download koodisto-app-spring-boot
+      - name: Download koodisto-ui-server-jar
         uses: actions/download-artifact@v2
         with:
-          name: koodisto-ui-war
-      - name: Download koodisto-service-war
-        uses: actions/download-artifact@v2
-        with:
-          name: koodisto-service-war
+          name: koodisto-ui-server-jar
       - name: Build Docker Conainer
         shell: bash
         env:
@@ -61,12 +52,10 @@ jobs:
         run: |
           git clone https://github.com/Opetushallitus/ci-tools.git
           source ci-tools/common/setup-tools.sh
-          export BASE_IMAGE="baseimage-war-openjdk11:master"
+          export BASE_IMAGE="baseimage-fatjar-openjdk11:master"
           export ARTIFACT_NAME="koodisto-ui"
-          cp koodisto-service.war $DOCKER_BUILD_DIR/artifact/koodisto-service.war
-          cp koodisto-ui.war $DOCKER_BUILD_DIR/artifact/koodisto-ui.war
-          cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
-          cp $DOCKER_BUILD_DIR/config/oph-configuration/koodisto.properties.template $DOCKER_BUILD_DIR/config/oph-configuration/koodisto-ui.properties.template
+          cp koodisto-ui-server.jar $DOCKER_BUILD_DIR/artifact/koodisto-ui.jar
+          touch $DOCKER_BUILD_DIR/config/empty.props
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME
           ./ci-tools/github-build/upload-image.sh $ARTIFACT_NAME
