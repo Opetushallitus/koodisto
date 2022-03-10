@@ -28,9 +28,9 @@ jobs:
       - name: Maven version
         run: mvn --version
       - name: Build UI
-        run: cd koodisto-ui mvn clean install cd -
+        run: cd koodisto-ui && mvn clean install && cd -
       - name: Build Spring Boot
-        run: cd koodisto-ui-service mvn clean install cd -
+        run: cd koodisto-ui-service && mvn clean install && cd -
       - name: Upload koodisto-ui-server-jar
         uses: actions/upload-artifact@v2
         with:
