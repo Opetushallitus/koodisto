@@ -56,7 +56,7 @@ jobs:
           export ARTIFACT_NAME="koodisto-ui"
           mv koodisto-ui.war $DOCKER_BUILD_DIR/artifact/$ARTIFACT_NAME.jar
           cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
-          cp $DOCKER_BUILD_DIR/config/koodisto.properties.template $DOCKER_BUILD_DIR/config/koodisto-ui.properties.template
+          cp $DOCKER_BUILD_DIR/config/oph-configuration/koodisto.properties.template $DOCKER_BUILD_DIR/config/oph-configuration/koodisto-ui.properties.template
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME
           ./ci-tools/github-build/upload-image.sh $ARTIFACT_NAME
