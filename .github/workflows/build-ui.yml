@@ -28,7 +28,7 @@ jobs:
       - name: Maven version
         run: mvn --version
       - name: Build UI
-        run: cd mvn clean install
+        run: mvn clean install
       - name: Upload koodisto-ui-war
         uses: actions/upload-artifact@v2
         with:
