@@ -5,9 +5,13 @@ on:
     branches: [ master ]
     paths-ignore:
       - '**.md'
+      - 'koodisto-ui/**'
+      - 'koodisto-ui-server/**'
   pull_request:
     paths-ignore:
       - '**.md'
+      - 'koodisto-ui/**'
+      - 'koodisto-ui-server/**'
 jobs:
   build:
     runs-on: ubuntu-latest
