@@ -59,7 +59,6 @@ jobs:
           cp koodisto-ui.war $DOCKER_BUILD_DIR/artifact/koodisto-ui.war
           cp -vr src/main/resources/oph-configuration $DOCKER_BUILD_DIR/config/
           cp $DOCKER_BUILD_DIR/config/oph-configuration/koodisto.properties.template $DOCKER_BUILD_DIR/config/oph-configuration/koodisto-ui.properties.template
-          touch $DOCKER_BUILD_DIR/config/empty.props
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-war.sh $ARTIFACT_NAME
           ./ci-tools/github-build/upload-image.sh $ARTIFACT_NAME

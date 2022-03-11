@@ -63,7 +63,7 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
-      - name: Download koodisto-ui-server-jar
+      - name: Download koodisto-service-war
         uses: actions/download-artifact@v2
         with:
           name: koodisto-service-war
