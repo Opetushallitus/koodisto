@@ -1,0 +1,16 @@
+[
+    {
+        "accesscount": 0,
+        "id": 38780,
+        "category": "koodisto",
+        "force": false,
+        "key": "FOO",
+        "accessed": 1646833410214,
+        "created": 1646833410214,
+        "createdBy": "1.2.246.562.24.92517579799",
+        "modified": 1646833410214,
+        "modifiedBy": "1.2.246.562.24.92517579799",
+        "locale": "fi",
+        "value": "BAR"
+    }
+]

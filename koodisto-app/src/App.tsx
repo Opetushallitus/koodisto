@@ -22,12 +22,9 @@ const MainContainer = styled.div`
     border: 1px solid #cccccc;
     background-color: #ffffff;
 `;
-const HeaderContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 1rem 2rem;
-    border-bottom: 1px solid #cccccc;
+export const HeaderContainer = styled.div`
+    padding: 1rem 1rem;
+    border: 1px solid #cccccc;
     align-items: center;
 `;
 const ContentContainer = styled.div`
@@ -39,9 +36,6 @@ const App = () => {
     return (
         <PageBase>
             <MainContainer>
-                <HeaderContainer>
-                    <h1>koodisto</h1>
-                </HeaderContainer>
                 <React.Suspense fallback={<Loading />}>
                     <ContentContainer>
                         <KoodistoTable />

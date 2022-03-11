@@ -1,3 +1,3 @@
-# koodisto-ui
+# koodisto-app
 
 Koodisto-palvelun käyttöliittymä

@@ -12,7 +12,7 @@ const LoadingDiv = styled.div`
 const Loading: React.FC = ({ children }) => {
     return (
         <LoadingDiv>
-            <Spin/>
+            <Spin />
             {children}
         </LoadingDiv>
     );

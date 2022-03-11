@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>fi.vm.sade.koodisto</groupId>
-	<artifactId>koodisto-ui</artifactId>
+	<artifactId>koodisto-app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>koodisto-ui</name>
+	<name>koodisto-app</name>
 	<description>Koodisto UI Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>

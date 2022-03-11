@@ -1,4 +1,4 @@
-name: koodisto-ui
+name: koodisto-app
 on:
   workflow_dispatch:
   push:
@@ -54,20 +54,20 @@ jobs:
         run: mvn --version
       - name: Build Spring-Boot
         run: cd server && mvn clean install && cd -
-      - name: Upload koodisto-ui-spring-boot
+      - name: Upload koodisto-app-spring-boot
         uses: actions/upload-artifact@v2
         with:
-          name: koodisto-ui-spring-boot
-          path: server/target/koodisto-ui.jar
+          name: koodisto-app-spring-boot
+          path: server/target/koodisto-app.jar
 
   deploy-container:
     needs: [cypress,react-build]
     runs-on: ubuntu-latest
     steps:
-      - name: Download koodisto-ui-spring-boot
+      - name: Download koodisto-app-spring-boot
         uses: actions/download-artifact@v2
         with:
-          name: koodisto-ui-spring-boot
+          name: koodisto-app-spring-boot
       - name: Build Docker Conainer
         shell: bash
         env:
@@ -77,8 +77,8 @@ jobs:
           git clone https://github.com/Opetushallitus/ci-tools.git
           source ci-tools/common/setup-tools.sh
           export BASE_IMAGE="baseimage-fatjar-openjdk11:master"
-          export ARTIFACT_NAME="koodisto-ui"
-          mv koodisto-ui.jar $DOCKER_BUILD_DIR/artifact/$ARTIFACT_NAME.jar
+          export ARTIFACT_NAME="koodisto-app"
+          mv koodisto-app.jar $DOCKER_BUILD_DIR/artifact/$ARTIFACT_NAME.jar
           touch $DOCKER_BUILD_DIR/config/empty.props
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME

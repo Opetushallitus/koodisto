@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import App from './App';
-import { Provider } from 'jotai';
+import { Provider, useAtom } from 'jotai';
 import { ROOT_OID } from './context/constants';
 import './index.css';
 import ErrorPage from './components/pages/ErrorPage/ErrorPage';
@@ -11,6 +11,10 @@ import Loading from './components/pages/Loading/Loading';
 import Raamit from './components/Raamit/Raamit';
 import createTheme from '@opetushallitus/virkailija-ui-components/createTheme';
 import { ThemeProvider } from 'styled-components';
+import { casMeLangAtom } from './api/kayttooikeus';
+import { IntlProvider } from 'react-intl';
+import { lokalisaatioMessagesAtom } from './api/lokalisaatio';
+
 const theme = createTheme();
 const cookies = new Cookies();
 axios.interceptors.request.use((config) => {
@@ -39,15 +43,27 @@ export class ErrorBoundary extends React.Component<unknown, { hasError: boolean 
         return this.props.children;
     }
 }
+
+const Initialize: React.FC = ({ children }) => {
+    const [casMeLang] = useAtom(casMeLangAtom);
+    const [messages] = useAtom(lokalisaatioMessagesAtom);
+    return (
+        <IntlProvider locale={casMeLang} defaultLocale={'fi'} messages={messages}>
+            {children}
+        </IntlProvider>
+    );
+};
 ReactDOM.render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
             <Provider>
                 <ErrorBoundary>
                     <React.Suspense fallback={<Loading />}>
-                        <Raamit>
-                            <App />
-                        </Raamit>
+                        <Initialize>
+                            <Raamit>
+                                <App />
+                            </Raamit>
+                        </Initialize>
                     </React.Suspense>
                 </ErrorBoundary>
             </Provider>

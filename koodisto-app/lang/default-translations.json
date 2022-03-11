@@ -1,0 +1,32 @@
+{
+    "TAULUKKO_KOODISTORYHMA_OTSIKKO": {
+        "defaultMessage": "KOODISTORYHMA"
+    },
+    "TAULUKKO_KUVAUS_OTSIKKO": {
+        "defaultMessage": "VOIT RAJATA HAKUA"
+    },
+    "TAULUKKO_LISAA_KOODISTORYHMA_BUTTON": {
+        "defaultMessage": "LUO UUSI KOODISTORYHMA"
+    },
+    "TAULUKKO_LISAA_KOODISTO_BUTTON": {
+        "defaultMessage": "LUO UUSI KOODISTO"
+    },
+    "TAULUKKO_NIMI_OTSIKKO": {
+        "defaultMessage": "NIMI"
+    },
+    "TAULUKKO_NIMI_PUUTTUU_KOODISTOLTA": {
+        "defaultMessage": "NIMI PUUTTUU {koodistoUri}"
+    },
+    "TAULUKKO_OTSIKKO": {
+        "defaultMessage": "OTSIKKO ({filteredCount} / {totalCount})"
+    },
+    "TAULUKKO_VAKIO_FILTTERI": {
+        "defaultMessage": "HAETAAN {count} KOODISTOSTA"
+    },
+    "TAULUKKO_VOIMASSA_ALKU_PVM_OTSIKKO": {
+        "defaultMessage": "VOIMASSA ALKU PVM"
+    },
+    "TAULUKKO_VOIMASSA_LOPPU_PVM_OTSIKKO": {
+        "defaultMessage": "VOIMASSA LOPPU PVM"
+    }
+}

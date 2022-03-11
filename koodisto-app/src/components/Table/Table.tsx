@@ -1,10 +1,14 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { Cell, Column, FilterProps, HeaderGroup, Row, useFilters, useTable } from 'react-table';
+import { useIntl } from 'react-intl';
+import { useEffect } from 'react';
 
 const TableContainer = styled.div`
     overflow-x: scroll;
     overflow-y: hidden;
+    padding: 1rem;
+    border: 1px solid #cccccc;
 `;
 const Table = styled.table`
     width: 100%;
@@ -30,13 +34,20 @@ export const DefaultColumnFilter = <T extends Record<string, unknown>>({
     column: { filterValue, preFilteredRows, setFilter },
 }: FilterProps<T>) => {
     const count = preFilteredRows.length;
+    const { formatMessage } = useIntl();
     return (
         <input
             value={filterValue || ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setFilter(e.target.value || undefined);
             }}
-            placeholder={`Search ${count} records...`}
+            placeholder={formatMessage(
+                {
+                    id: 'TAULUKKO_VAKIO_FILTTERI',
+                    defaultMessage: 'HAETAAN {count} KOODISTOSTA',
+                },
+                { count }
+            )}
         />
     );
 };
@@ -44,25 +55,31 @@ type TableProps<T extends object> = {
     columns: Column<T>[];
     data: T[];
 };
-const TableComponent = <T extends object>({ columns, data }: TableProps<T>) => {
+const TableComponent = <T extends object>({
+    columns,
+    data,
+    onFilter,
+}: TableProps<T> & { onFilter?: (rows: Row<T>[]) => void }) => {
     const defaultColumn = React.useMemo(
         () => ({
-            Filter: DefaultColumnFilter,
+            Filter: <></>,
         }),
         []
     );
-    const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable<T>(
+    const { filteredRows, getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable<T>(
         { columns, data, defaultColumn },
         useFilters
     );
-
+    useEffect(() => {
+        onFilter && onFilter(filteredRows);
+    }, [filteredRows, onFilter]);
     return (
         <TableContainer>
             <Table {...getTableProps()}>
                 <thead>
                     {headerGroups.map((headerGroup: HeaderGroup<T>) => (
                         // eslint-disable-next-line react/jsx-key
-                        <tr {...headerGroup.getHeaderGroupProps()}>
+                        <Tr {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map((column: HeaderGroup<T>) => (
                                 // eslint-disable-next-line react/jsx-key
                                 <Th {...column.getHeaderProps()}>
@@ -70,7 +87,7 @@ const TableComponent = <T extends object>({ columns, data }: TableProps<T>) => {
                                     <div>{column.canFilter ? column.render('Filter') : null}</div>
                                 </Th>
                             ))}
-                        </tr>
+                        </Tr>
                     ))}
                 </thead>
                 <Tbody {...getTableBodyProps()}>
