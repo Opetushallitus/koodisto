@@ -3,15 +3,17 @@ on:
   workflow_dispatch:
   push:
     branches: [ master ]
-    paths-ignore:
-      - '**.md'
-      - 'koodisto-ui/**'
-      - '.github/workflows/build-ui.yml'
+    paths:
+      - '*'
+      - '!**.md'
+      - '!koodisto-ui/**'
+      - '!.github/workflows/build-ui.yml'
   pull_request:
-    paths-ignore:
-      - '**.md'
-      - 'koodisto-ui/**'
-      - '.github/workflows/build-ui.yml'
+    paths:
+      - '*'
+      - '!**.md'
+      - '!koodisto-ui/**'
+      - '!.github/workflows/build-ui.yml'
 jobs:
   build:
     runs-on: ubuntu-latest
