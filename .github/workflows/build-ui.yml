@@ -30,7 +30,7 @@ jobs:
       - name: Maven version
         run: mvn --version
       - name: Build UI
-        run: cd koodisto-ui && mvn clean package -B && cd -
+        run: cd koodisto-ui && mvn clean package  -B -Dbranch=$GITHUB_REF_NAME -Drevision=$GITHUB_SHA -DbuildNumber=$GITHUB_RUN_NUMBER/$GITHUB_RUN_ATTEMPT && cd -
       - name: Upload koodisto-ui-war
         uses: actions/upload-artifact@v2
         with:
