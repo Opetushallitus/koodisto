@@ -4,11 +4,11 @@ on:
   push:
     branches: [ master ]
     paths:
-      - 'koodisto-ui*/**'
+      - 'koodisto-ui/**'
       - '.github/workflows/build-ui.yml'
   pull_request:
     paths:
-      - 'koodisto-ui*/**'
+      - 'koodisto-ui/**'
       - '.github/workflows/build-ui.yml'
 jobs:
   build:

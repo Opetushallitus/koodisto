@@ -6,13 +6,11 @@ on:
     paths-ignore:
       - '**.md'
       - 'koodisto-ui/**'
-      - 'koodisto-ui-server/**'
       - '.github/workflows/build-ui.yml'
   pull_request:
     paths-ignore:
       - '**.md'
       - 'koodisto-ui/**'
-      - 'koodisto-ui-server/**'
       - '.github/workflows/build-ui.yml'
 jobs:
   build:
