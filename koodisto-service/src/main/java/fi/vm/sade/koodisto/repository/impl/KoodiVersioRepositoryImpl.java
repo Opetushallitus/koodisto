@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.repository.impl;
 
+import com.google.common.base.Strings;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.repository.KoodiVersioRepositoryCustom;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
@@ -231,7 +232,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
         List<Predicate> restrictions = new ArrayList<Predicate>();
 
         if (searchCriteria != null) {
-            if (!searchCriteria.getKoodiArvo().isBlank()) {
+            if (!Strings.isNullOrEmpty(searchCriteria.getKoodiArvo())) {
                 restrictions.add(cb.like(cb.lower(koodiVersio.<String> get(KOODIARVO)), searchCriteria.getKoodiArvo().toLowerCase() + '%'));
             }
 
@@ -390,12 +391,12 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
     }
 
     private static boolean searchCriteriaIsBlank(SearchKoodisCriteriaType searchCriteria) {
-        if (!searchCriteria.getKoodiArvo().isBlank() || searchCriteria.getValidAt() != null) {
+        if (!Strings.isNullOrEmpty(searchCriteria.getKoodiArvo()) || searchCriteria.getValidAt() != null) {
             return false;
         }
         boolean isBlank = true;
         for (String s : searchCriteria.getKoodiUris()) {
-            isBlank = isBlank && s.isBlank();
+            isBlank = isBlank && Strings.isNullOrEmpty(s);
         }
         return isBlank;
     }
@@ -567,6 +568,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
     }
 
     @Override
+    @Transactional
     public List<KoodiVersio> findByKoodistoUriAndVersio(String koodistoUri, Integer versio) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<KoodiVersio> query = cb.createQuery(KoodiVersio.class);

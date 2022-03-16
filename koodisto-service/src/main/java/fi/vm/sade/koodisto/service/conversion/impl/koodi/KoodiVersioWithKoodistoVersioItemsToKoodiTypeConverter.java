@@ -19,8 +19,12 @@ import java.util.Optional;
 public class KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter implements
         Converter<KoodiVersioWithKoodistoItem, KoodiType> {
 
-    @Autowired
-    OphProperties ophProperties;
+    private OphProperties ophProperties;
+
+    public KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter(OphProperties ophProperties) {
+        this.ophProperties = ophProperties;
+    }
+
 
     public KoodiType convert(KoodiVersioWithKoodistoItem source) {
         KoodiType converted = new KoodiType();

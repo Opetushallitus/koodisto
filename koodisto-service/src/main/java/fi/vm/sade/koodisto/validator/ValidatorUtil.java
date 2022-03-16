@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.validator;
 
+import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +18,7 @@ public class ValidatorUtil {
     }
 
     public static void checkForBlank(String toCheck, RuntimeException toThrow) {
-        if (toCheck.isBlank()) {
+        if (Strings.isNullOrEmpty(toCheck) || toCheck.isBlank()) {
             logger.warn("Failure during isBlank check: " + toThrow.getMessage());
             throw toThrow;
         }

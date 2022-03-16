@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
@@ -158,6 +161,7 @@ public class KoodistonSuhdeRepositoryImpl implements KoodistonSuhdeRepositoryCus
     }
 
     @Override
+    @Transactional
     public void deleteRelations(KoodistoUriAndVersioType ylaKoodisto, List<KoodistoUriAndVersioType> alaKoodistos,
             SuhteenTyyppi st) {
         for (KoodistonSuhde suhde : getRelations(ylaKoodisto, alaKoodistos, st)) {
@@ -167,6 +171,6 @@ public class KoodistonSuhdeRepositoryImpl implements KoodistonSuhdeRepositoryCus
             yla.removeAlaKoodistonSuhde(suhde);
             em.remove(suhde);
         }
-        em.flush();
+        //em.flush();
     }
 }

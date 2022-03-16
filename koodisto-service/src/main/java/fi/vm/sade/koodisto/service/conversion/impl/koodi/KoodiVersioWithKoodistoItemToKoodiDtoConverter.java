@@ -1,23 +1,25 @@
 package fi.vm.sade.koodisto.service.conversion.impl.koodi;
 
+import com.google.common.base.Strings;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.properties.OphProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.text.Format;
 import java.text.MessageFormat;
 
 
 public class KoodiVersioWithKoodistoItemToKoodiDtoConverter implements
         Converter<KoodiVersioWithKoodistoItem, KoodiDto> {
 
-    @Autowired
-    OphProperties ophProperties;
+    private OphProperties ophProperties;
+
+    public KoodiVersioWithKoodistoItemToKoodiDtoConverter(OphProperties ophProperties) {
+        this.ophProperties = ophProperties;
+    }
 
     @Override
     public KoodiDto convert(KoodiVersioWithKoodistoItem source) {
@@ -46,9 +48,8 @@ public class KoodiVersioWithKoodistoItemToKoodiDtoConverter implements
             converted.setKoodisto(item);
         }
 
-        if (StringUtils.hasLength(converted.getKoodiUri()) && converted.getKoodisto() != null
+        if (!Strings.isNullOrEmpty(converted.getKoodiUri()) && converted.getKoodisto() != null
                 && StringUtils.hasLength(converted.getKoodisto().getKoodistoUri())) {
-            //TODO tsekkaa meneekö oikein?
             String resourceUri = MessageFormat.format(ophProperties.url("koodiUri"), converted.getKoodisto().getKoodistoUri(), converted.getKoodiUri());
             converted.setResourceUri(resourceUri);
         }

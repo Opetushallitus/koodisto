@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.service.conversion.impl.koodi;
 
+import com.google.common.base.Strings;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
@@ -8,8 +9,6 @@ import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
-import fi.vm.sade.koodisto.repository.KoodiMetadataRepository;
-import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.impl.MetadataToSimpleMetadataConverter;
 import fi.vm.sade.properties.OphProperties;
@@ -25,14 +24,11 @@ import java.util.stream.Collectors;
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
         Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
 
-    @Autowired
-    private KoodiVersioRepository koodiVersioRepository;
+    private OphProperties ophProperties;
 
-    @Autowired
-    private KoodiMetadataRepository koodiMetadataRepository;
-
-    @Autowired
-    OphProperties ophProperties;
+    public KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter(OphProperties ophProperties) {
+        this.ophProperties = ophProperties;
+    }
 
     @Override
     public ExtendedKoodiDto convert(KoodiVersioWithKoodistoItem source) {
@@ -86,8 +82,8 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
             converted.setKoodisto(item);
         }
 
-        if (!converted.getKoodiUri().isBlank() && converted.getKoodisto() != null
-                && !converted.getKoodisto().getKoodistoUri().isBlank()) {
+        if (!Strings.isNullOrEmpty(converted.getKoodiUri()) && converted.getKoodisto() != null
+                && !Strings.isNullOrEmpty(converted.getKoodisto().getKoodistoUri())) {
             // TODO tsekkaa toimiiko oikein
             String resourceUri = MessageFormat.format(ophProperties.url("koodiUri"), converted.getKoodisto().getKoodistoUri(), converted.getKoodiUri());
             converted.setResourceUri(resourceUri);

@@ -1,6 +1,8 @@
 package fi.vm.sade.koodisto.configuration;
 
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.*;
+import fi.vm.sade.properties.OphProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -25,14 +27,5 @@ public class WebConfiguration implements WebMvcConfigurer {
         registry.addResourceHandler("/static/**").addResourceLocations("/static/");
     }*/
 
-    @Override
-    public void addFormatters(FormatterRegistry registry) {
-        registry.addConverter(new KoodiMetadataToKoodiMetadataTypeConverter());
-        registry.addConverter(new KoodiMetadataTypeToKoodiMetadataConverter());
-        registry.addConverter(new KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter());
-        registry.addConverter(new KoodiVersioWithKoodistoItemToKoodiDtoConverter());
-        registry.addConverter(new KoodiVersioWithKoodistoItemToSimpleKoodiDtoConverter());
-        registry.addConverter(new KoodiVersioWithKoodistoVersioItemsToKoodiDtoConverter());
-        registry.addConverter(new KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter());
-    }
+
 }

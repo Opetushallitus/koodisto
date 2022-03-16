@@ -12,8 +12,12 @@ import java.text.MessageFormat;
 
 public class KoodiVersioWithKoodistoVersioItemsToKoodiDtoConverter implements
         Converter<KoodiVersioWithKoodistoItem, KoodiDto> {
-    @Autowired
-    OphProperties ophProperties;
+
+    private OphProperties ophProperties;
+
+    public KoodiVersioWithKoodistoVersioItemsToKoodiDtoConverter(OphProperties ophProperties) {
+        this.ophProperties = ophProperties;
+    }
 
     public KoodiDto convert(KoodiVersioWithKoodistoItem source) {
         KoodiDto converted = new KoodiDto();

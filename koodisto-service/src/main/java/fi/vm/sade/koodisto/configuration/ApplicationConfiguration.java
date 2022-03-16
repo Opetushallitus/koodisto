@@ -6,14 +6,13 @@ import fi.vm.sade.javautils.opintopolku_spring_security.OrganisationHierarchyAut
 import fi.vm.sade.javautils.opintopolku_spring_security.ThreadLocalAuthorizer;
 import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
 import fi.vm.sade.koodisto.service.conversion.impl.KoodistoConversionServiceImpl;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.*;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.*;
+import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaToKoodistoRyhmaListDtoConverter;
+import fi.vm.sade.properties.OphProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.TypeDescriptor;
-
-import java.net.MalformedURLException;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Set;
 
 @Configuration
 public class ApplicationConfiguration {
@@ -29,8 +28,30 @@ public class ApplicationConfiguration {
     @Bean
     OrganisationHierarchyAuthorizer hierarchyAuthorizer() { return new OrganisationHierarchyAuthorizer();}
 
+    @Autowired
+    OphProperties ophProperties;
+
     @Bean
-    public KoodistoConversionService conversionService() { return new KoodistoConversionServiceImpl(); }
+    public KoodistoConversionService conversionService() {
+        KoodistoToKoodistoListDtoConverter koodistoToKoodistoListDtoConverter = new KoodistoToKoodistoListDtoConverter(ophProperties, new KoodistoVersioToKoodistoVersioListDtoConverter());
+        KoodistoConversionServiceImpl ks =  new KoodistoConversionServiceImpl();
+        ks.addConverter(koodistoToKoodistoListDtoConverter);
+        ks.addConverter(new KoodiMetadataToKoodiMetadataTypeConverter());
+        ks.addConverter(new KoodistoMetadataToKoodistoMetadataTypeConverter());
+        ks.addConverter(new KoodistoVersioToKoodistoDtoConverter(ophProperties));
+        ks.addConverter(new KoodistoTypeToKoodistoVersioConverter());
+        ks.addConverter(new KoodiTypeToKoodiVersioConverter());
+        ks.addConverter(new KoodiMetadataTypeToKoodiMetadataConverter());
+        ks.addConverter(new KoodistoMetadataTypeToKoodistoMetadataConverter());
+        ks.addConverter(new KoodistoVersioToKoodistoTypeConverter(ophProperties));
+        ks.addConverter(new KoodiVersioWithKoodistoItemToSimpleKoodiDtoConverter());
+        ks.addConverter(new KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter(ophProperties));
+        ks.addConverter(new KoodiVersioWithKoodistoItemToKoodiDtoConverter(ophProperties));
+        ks.addConverter(new KoodistoRyhmaToKoodistoRyhmaListDtoConverter(koodistoToKoodistoListDtoConverter));
+        ks.addConverter(new KoodistoVersioToKoodistoVersioListDtoConverter());
+        ks.addConverter(new KoodistoRyhmaToKoodistoRyhmaDtoConverter());
+        return ks;
+    }
 
     /*static {
         System.setProperty("fi.vm.sade.javautils.http.HttpServletRequestUtils.HARMLESS_URLS", "/koodisto-service/buildversion.txt");

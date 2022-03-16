@@ -33,6 +33,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.activation.DataHandler;
@@ -142,7 +144,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     @Override
-    @Transactional
     public void addRelation(String ylaKoodisto, String alaKoodisto, SuhteenTyyppi suhteenTyyppi) {
         boolean insert = true;
         if(ylaKoodisto.equals(alaKoodisto)){
@@ -164,7 +165,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             koodistonSuhde.setAlakoodistoVersio(ala);
             koodistonSuhde.setVersio(1);
 
-            koodistonSuhdeRepository.save(koodistonSuhde); // TODO should flush hence transactional
+            koodistonSuhdeRepository.saveAndFlush(koodistonSuhde); // TODO should flush hence transactional
         }
     }
 
@@ -245,6 +246,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     @Override
+    @Transactional
     public KoodistoVersio updateKoodisto(UpdateKoodistoDataType updateKoodistoData) {
         if (updateKoodistoData == null || updateKoodistoData.getKoodistoUri().isBlank()) {
             throw new KoodistoUriEmptyException();
@@ -443,7 +445,8 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         return result.get(0);
     }
 
-    private FindOrCreateWrapper<KoodistoVersio> createNewVersion(KoodistoVersio latest) {
+    @Override
+    public FindOrCreateWrapper<KoodistoVersio> createNewVersion(KoodistoVersio latest) {
         authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD, KoodistoRole.UPDATE);
         if (latest.getTila() != Tila.HYVAKSYTTY) {
             return FindOrCreateWrapper.found(latest);
@@ -480,14 +483,16 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         }
 
         // insert KoodistoVersio
-        KoodistoVersio inserted = koodistoVersioRepository.save(input); // TODO check flushing
+        KoodistoVersio inserted = koodistoVersioRepository.saveAndFlush(input);
 
         this.copyKoodiVersiosFromOldKoodistoToNew(base, inserted);
+        //inserted = koodistoVersioRepository.save(inserted);
         koodistonSuhdeRepository.copyRelations(base, inserted);
+        //inserted = koodistoVersioRepository.save(inserted);
         return inserted;
     }
 
-    private void copyKoodiVersiosFromOldKoodistoToNew(KoodistoVersio base, KoodistoVersio inserted) {
+    protected void copyKoodiVersiosFromOldKoodistoToNew(KoodistoVersio base, KoodistoVersio inserted) {
         logger.info("Copying codeElement versios to new Codes version, codes id={}, codes versio={}, new codes versio={}", base.getKoodisto().getId(), base.getVersio(), inserted.getVersio());
         Set<KoodiVersio> newVersions = koodiBusinessService.createNewVersionsNonFlushing(base.getKoodiVersios());
         for (KoodiVersio koodiVersio : newVersions) {
@@ -497,7 +502,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             inserted.addKoodiVersio(newRelationEntry);
             logger.info("  Copied codeElement version, codes id={}, codeElement version id={}", inserted.getKoodisto().getId(), koodiVersio.getId());
         }
-        // TODO there was a flush here
+        koodiVersioRepository.flush();
     }
 
     private KoodistoVersio createNewVersion(KoodistoVersio latest, UpdateKoodistoDataType updateKoodistoData) {
@@ -524,7 +529,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             newVersio.addMetadata(newMetadata);
         }
 
-        KoodistoVersio inserted = koodistoVersioRepository.save(newVersio); // TODO there was a flush here
+        KoodistoVersio inserted = koodistoVersioRepository.saveAndFlush(newVersio); // TODO there was a flush here
         copyKoodiVersiosFromOldKoodistoToNew(latest, inserted);
 
         koodistonSuhdeRepository.copyRelations(latest, inserted);
@@ -748,7 +753,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
     */
     @Override
-    @Transactional
     public KoodistoVersio saveKoodisto(KoodistoDto codesDTO) {
 
         UpdateKoodistoDataType codesDTOAsDataType = converter.convertFromDTOToUpdateKoodistoDataType(codesDTO);
@@ -824,9 +828,8 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
                 levelsWithUrisToBeRemoved.remove(relationCodes);
             }
         }
-
+        latest = getLatestKoodistoVersio(koodistoUri);
         removeRelations(latest.getKoodisto().getKoodistoUri(), includesUrisToBeRemoved, withinUrisToBeRemoved, levelsWithUrisToBeRemoved);
-
         return getLatestKoodistoVersio(koodistoUri);
     }
 

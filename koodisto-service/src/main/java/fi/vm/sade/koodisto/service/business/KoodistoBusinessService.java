@@ -38,6 +38,8 @@ public interface KoodistoBusinessService {
      */
     FindOrCreateWrapper<KoodistoVersio> createNewVersion(String koodistoUri);
 
+    FindOrCreateWrapper<KoodistoVersio> createNewVersion(KoodistoVersio latest);
+
     List<KoodistoVersio> searchKoodistos(SearchKoodistosCriteriaType searchCriteria);
 
     KoodistoVersio getLatestKoodistoVersio(String koodistoUri);

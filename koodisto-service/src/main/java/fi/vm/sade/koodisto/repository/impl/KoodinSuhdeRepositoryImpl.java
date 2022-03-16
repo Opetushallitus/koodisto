@@ -171,7 +171,7 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
         em.flush();
     }*/
 
-    /* @Override
+    @Override
     public void massRemove(List<KoodinSuhde> entityList) {
         if (entityList.isEmpty())
             throw new IllegalArgumentException("EntityList was empty.");
@@ -180,8 +180,8 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
             idList.add(entity.getId());
         }
         em.createQuery("delete from KoodinSuhde k where k.id in (:idList)").setParameter("idList", idList).executeUpdate();
-        em.flush();
-    }*/
+        //em.flush();
+    }
 
     @Override
     public List<KoodinSuhde> getRelations(String ylakoodiUri) {

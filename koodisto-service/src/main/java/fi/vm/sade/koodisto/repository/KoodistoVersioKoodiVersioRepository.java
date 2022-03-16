@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface KoodistoVersioKoodiVersioRepository extends JpaRepository<KoodistoVersioKoodiVersio, Long> {
-    KoodistoVersioKoodiVersio findByKoodistoVersioAndKoodiVersio(Long koodistoVersioId, Long koodiVersioId);
+    KoodistoVersioKoodiVersio findByKoodistoVersioIdAndKoodiVersioId(Long koodistoVersioId, Long koodiVersioId);
 
     List<KoodistoVersioKoodiVersio> findAllByKoodistoVersioAndKoodiVersio(Long koodistoVersioId, Long koodiId);
 

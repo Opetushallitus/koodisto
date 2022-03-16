@@ -7,6 +7,7 @@ import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
@@ -188,6 +189,7 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
 
 
     @Override
+    @Transactional
     public Optional<Integer> findLatestVersioByKoodistoUri(String koodistoUri) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Integer> query = cb.createQuery(Integer.class);
