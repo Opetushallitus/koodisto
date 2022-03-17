@@ -14,7 +14,6 @@
         <module>koodisto-audit</module>
         <module>koodisto-common</module>
         <module>koodisto-service</module>
-        <module>koodisto-ui</module>
     </modules>
 
     <properties>
@@ -72,6 +71,8 @@
         <revision/>
         <buildversiontxt/>
         <buildversion_prefix/>
+        <sonar.organization>opetushallitus</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.coverage.jacoco.xmlReportPaths>**/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
