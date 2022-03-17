@@ -17,6 +17,9 @@
 		<flyway.password>ophoph</flyway.password>
 		<flyway.url>jdbc:postgresql://localhost:5432/koodisto</flyway.url>
 		<flyway.baselineOnMigrate>true</flyway.baselineOnMigrate>
+		<sonar.organization>opetushallitus</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.coverage.jacoco.xmlReportPaths>**/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 	<modules>
