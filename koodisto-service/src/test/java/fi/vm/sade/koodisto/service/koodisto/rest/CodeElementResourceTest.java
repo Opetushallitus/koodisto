@@ -38,7 +38,6 @@ import static org.junit.Assert.*;
 )
 @SpringBootTest
 @AutoConfigureTestDatabase
-@WithMockUser(value = "1.2.3.4.5", authorities = "ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001")
 @RunWith(SpringRunner.class)
 public class CodeElementResourceTest {
 
@@ -49,6 +48,7 @@ public class CodeElementResourceTest {
     private KoodiBusinessService service;
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void returns400AndCorrectErrorCodeIfQueryParamsAreMissing() {
 
         String nullString = null;
@@ -106,6 +106,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void returns500IfErrorOccurs() {
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
         kr.setRelations(Arrays.asList("koodi"));
@@ -118,6 +119,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void removesMultipleCodeElementRelationsWithTypeRINNASTEINEN() {
         String codeElementUri = "sisaltaakoodisto1koodit";
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
@@ -127,6 +129,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void addsMultipleCodeElementRelationsWithTypeRINNASTEINEN() {
         String codeElementUri = "lisaarinnasteinen14";
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
@@ -137,6 +140,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void removesMultipleCodeElementRelationsWithTypeSISALTYY() {
         String codeElementUri = "sisaltaakoodisto1koodit";
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
@@ -146,6 +150,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void addsMultipleCodeElementRelationsWithTypeSISALTYY() {
         String codeElementUri = "lisaasisaltyy18";
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
@@ -157,6 +162,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void removesMultipleCodeElementRelationsWithTypeSISALTYYAndCodeElementBeingLower() {
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
         kr.setRelations(Arrays.asList("sisaltyysuhde4kanssa1", "sisaltyysuhde4kanssa2", "sisaltyysuhde4kanssa3"));
@@ -171,6 +177,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void addsMultipleCodeElementRelationsWithTypeSISALTYYAndCodeElementBeingLower() {
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
         kr.setRelations(Arrays.asList("lisaasisaltyy18kanssa3", "lisaasisaltyy18kanssa4"));
@@ -183,6 +190,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void removesMultipleCodeElementRelationsThatBelongToDifferentCodes() {
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
         kr.setRelations(Arrays.asList("sisaltyysuhde9kanssa1", "sisaltyysuhde9kanssa2", "sisaltyysuhde9kanssa3"));
@@ -193,6 +201,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void addsMultipleCodeElementRelationsThatBelongToDifferentCodes() {
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
         kr.setRelations(Arrays.asList("sisaltyysuhde9kanssa1", "sisaltyysuhde9kanssa2", "sisaltyysuhde9kanssa3"));
@@ -306,6 +315,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void testInsertFailNameLengthValidation() {
         KoodiDto validDto = createValidCodeElementDto("value", "*".repeat(FieldLengths.DEFAULT_FIELD_LENGTH * 2 + 1), "*".repeat(FieldLengths.DEFAULT_FIELD_LENGTH), 3);
 
@@ -313,6 +323,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void testInsert() {
         KoodiDto validDto = createValidCodeElementDto("value", "*".repeat(FieldLengths.DEFAULT_FIELD_LENGTH * 2), "*".repeat(FieldLengths.DEFAULT_FIELD_LENGTH), 3);
 
@@ -338,6 +349,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void testInsertInvalid() {
         KoodiDto validDto = createValidCodeElementDto("newdtouri", "Name", 3);
         assertResponse(resource.insert(null, validDto), 400, "error.validation.codesuri");
@@ -431,6 +443,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void testAddRelation() {
         String codeElementUri = "lisaarinnasteinen14";
         assertEquals(0, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
@@ -444,6 +457,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void testAddRelationInvalid() {
         String codeElementUri = "lisaarinnasteinen14";
         String codeElementUriToAdd = "lisaarinnasteinen14kanssa1";
@@ -487,6 +501,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void testAddRelationToSameCodes() {
         String codeElementUri = "lisaasisaltyy18kanssa1";
         String codeElementUriToAdd = "lisaasisaltyy18kanssa2";
@@ -497,6 +512,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void savesCodeElementWithNameAndRelationsToSameCodesChanges() {
         String koodiUri = "savekoodisuhteillaomaankoodistoon";
         String nimi = "uusinimi";
@@ -540,6 +556,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void testRemoveRelation() {
         String codeElementUri = "sisaltaakoodisto1koodit";
         assertEquals(3, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
@@ -553,6 +570,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void testRemoveRelationInvalid() {
         String codeElementUri = "sisaltaakoodisto1koodit";
         String codeElementUriToRemove = "rinnastuu4kanssa1";
@@ -588,6 +606,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void testDelete() {
         String codeElementUri = "tuhottavatestikoodi";
         int codeElementVersion = 1;
@@ -597,6 +616,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void testDeleteInvalid() {
         assertResponse(resource.delete("tuhottavatestikoodi", 0), 400);
         assertResponse(resource.delete("tuhottavatestikoodi", -1), 400);
@@ -609,6 +629,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void testUpdate() {
         KoodiDto original = (KoodiDto) resource.getCodeElementByCodeElementUri("updatetestkoodisto", 1, "paivitettavatestikoodi").getBody();
         assertNotNull(original);
@@ -630,6 +651,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void testUpdateInvalid() {
         assertResponse(resource.update(null), 400);
         // TODO Make better test
@@ -718,6 +740,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void savesCodeElementWithNewName() {
         String koodiUri = "sisaltyysuhde4kanssa1";
         String nimi = "uusinimi";
@@ -736,6 +759,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void savesCodeElementWithNewNameAndRelations() {
         String koodiUri = "savekoodineljallasuhteella";
         String nimi = "uusinimi";
@@ -759,6 +783,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void savesCodeElementRelationIncludes() {
         String koodiUri = "savekoodineljallasuhteella";
         int versio = 1;
@@ -775,6 +800,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void savesCodeElementRelationWithin() {
         String koodiUri = "savekoodineljallasuhteella";
         int versio = 1;
@@ -791,6 +817,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void savesCodeElementRelationLevelsWith() {
         String koodiUri = "savekoodineljallasuhteella";
         int versio = 1;
@@ -807,6 +834,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void savesCodeElementWithAllRelationChanges() {
         String koodiUri = "savekoodineljallasuhteella";
         int versio = 1;
@@ -860,6 +888,7 @@ public class CodeElementResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void savesCodeElementRelationChangesIfRelationHasExistedBefore() {
         String koodiUri = "uusirelaatiovanhantilalle1";
         int versio = 1;

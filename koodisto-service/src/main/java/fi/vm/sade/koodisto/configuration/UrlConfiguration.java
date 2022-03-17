@@ -18,6 +18,10 @@ public class UrlConfiguration extends OphProperties {
         //this.addOverride("url-virkailija", environment.getRequiredProperty("url-virkailija"));
         //this.addOverride("koodisto-baseurl", environment.getRequiredProperty("koodisto-baseurl"));
         this.addDefault("host.alb", environment.getRequiredProperty("host.alb"));
+
+        this.addDefault("cas.base", environment.getRequiredProperty("cas.base"));
+        this.addDefault("cas.login", environment.getRequiredProperty("cas.login"));
+
         this.addOverride("koodistoUri", environment.getRequiredProperty("koodistoUri"));
         this.addOverride("koodiUri", environment.getRequiredProperty("koodiUri"));
 

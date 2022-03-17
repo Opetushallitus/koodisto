@@ -50,7 +50,6 @@ import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureTestDatabase
-@WithMockUser(value = "1.2.3.4.5", authorities = "ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001")
 public class CodesResourceTest {
 
     @Autowired
@@ -61,6 +60,7 @@ public class CodesResourceTest {
     private ResourceHelper helper;
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void returns400AndCorrectErrorCodeIfQueryParamsAreMissing() {
         String nullString = null;
         String blankString = "";
@@ -99,6 +99,7 @@ public class CodesResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void addsWithinRelationBetweenExistingcodes() {
         String parentUri = "eisuhteitaviela1";
         String childUri = "eisuhteitaviela2";
@@ -125,6 +126,7 @@ public class CodesResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void addsLevesWithRelationBetweenExistingcodes() {
         String parentUri = "eisuhteitaviela3";
         String childUri = "eisuhteitaviela4";
@@ -151,6 +153,7 @@ public class CodesResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void removesRelationBetweenExistingcodes() {
         String parentUri = "sisaltyysuhde1";
         String childUri = "sisaltyysuhde2";
@@ -176,6 +179,7 @@ public class CodesResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void insertsNewCodes() {
         String koodistoUri = "inserttest";
         String codesGroupUri = "koodistojenlisaaminenkoodistoryhmaan";
@@ -190,6 +194,7 @@ public class CodesResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void invalidInsertCausesError() {
         String koodistoUri = "inserttest";
         String codesGroupUri = "koodistojenlisaaminenkoodistoryhmaan";
@@ -202,6 +207,7 @@ public class CodesResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void uudenVersionTallennusSailyttaaVanhanVersionEnnallaan() {
         // uusi koodisto
         LocalDate alkuPvmV1 = LocalDate.of(2000, 1, 1);
@@ -390,6 +396,7 @@ public class CodesResourceTest {
     }
     */
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void updatingCodes() {
         String koodistoUri = "updatekoodisto";
 
@@ -405,6 +412,7 @@ public class CodesResourceTest {
     }
 
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void invalidUpdatingCodesFails() {
         String koodistoUri = "updatekoodisto";
 
@@ -462,6 +470,7 @@ public class CodesResourceTest {
     }
     */
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void deleteCodes() {
         {
             String codesUri = "deletethisuri";
@@ -480,6 +489,7 @@ public class CodesResourceTest {
     }
     
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void savesCodesWithNewName() {
         String koodistoUri = "eisuhteitaviela1";
         String nimi = "uusinimi";
@@ -498,6 +508,7 @@ public class CodesResourceTest {
     }
     
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void savesCodesWithNewNameAndRelations() {
         String koodistoUri = "eisuhteitaviela1";
         String nimi = "uusinimi";

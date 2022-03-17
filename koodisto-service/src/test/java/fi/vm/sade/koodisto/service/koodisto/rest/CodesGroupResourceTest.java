@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +55,7 @@ public class CodesGroupResourceTest {
 
     @Test
     @Transactional
+    @WithMockUser(authorities = "ROLE_APP_KOODISTO_CRUD")
     public void testUpdate() {
         ResponseEntity response = resource.getCodesByCodesUri(-4L);
         assertResponse(response, 200);
@@ -70,6 +72,7 @@ public class CodesGroupResourceTest {
     }
     
     @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = "ROLE_APP_KOODISTO_READ_UPDATE")
     public void testUpdateInvalid() {
         assertResponse(resource.update(null), 400, "error.validation.codesgroup");
         assertResponse(resource.update(new KoodistoRyhmaDto()), 400, "error.codesgroup.uri.empty");
@@ -79,6 +82,7 @@ public class CodesGroupResourceTest {
 
     @Test
     @Transactional
+    @WithMockUser(authorities = "ROLE_APP_KOODISTO_CRUD")
     public void testInsert() {
         String newName = "newnameforcodesgroup";
         KoodistoRyhmaDto dto = createDto(newName, 1);
@@ -96,6 +100,7 @@ public class CodesGroupResourceTest {
     }
     
     @Test
+    @WithMockUser(authorities = "ROLE_APP_KOODISTO_CRUD")
     public void testInsertInvalid() {
         assertResponse(resource.insert(null), 400, "error.validation.codesgroup");
         assertResponse(resource.insert(new KoodistoRyhmaDto()), 400, "error.metadata.empty");
@@ -104,6 +109,7 @@ public class CodesGroupResourceTest {
     }
 
     @Test
+    @WithMockUser(authorities = "ROLE_APP_KOODISTO_CRUD")
     public void testDelete() {
         assertResponse(resource.getCodesByCodesUri(-3L), 200);
         assertResponse(resource.delete(-3L), 202);
@@ -111,6 +117,7 @@ public class CodesGroupResourceTest {
     }
     
     @Test
+    @WithMockUser(authorities = "ROLE_APP_KOODISTO_CRUD")
     public void testDeleteInvalid() {
         assertResponse(resource.delete(null), 400, "error.validation.id");
         assertResponse(resource.delete(0L), 500, "error.codesgroup.not.found");
