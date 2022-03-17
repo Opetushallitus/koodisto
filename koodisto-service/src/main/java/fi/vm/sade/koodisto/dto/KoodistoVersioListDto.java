@@ -17,26 +17,19 @@ import java.util.List;
  */
 public class KoodistoVersioListDto {
 
-    @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
     private int versio;
 
-    @JsonView(JsonViews.Basic.class)
-    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
+    // TODO tsekkaa miten vaikuttaa @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date paivitysPvm;
 
-    @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
     private Date voimassaAlkuPvm;
 
-    @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
     private Date voimassaLoppuPvm;
 
-    @JsonView(JsonViews.Basic.class)
     private Tila tila;
 
-    @JsonView(JsonViews.Basic.class)
     private Long version;
 
-    @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
     private List<KoodistoMetadata> metadata = new ArrayList<KoodistoMetadata>();
 
     public int getVersio() {

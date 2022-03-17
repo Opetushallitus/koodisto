@@ -5,7 +5,6 @@ import fi.vm.sade.koodisto.model.JsonViews;
 
 
 public class FileDto {
-    @JsonView({JsonViews.Basic.class})
     private String data;
 
     public String getData() {

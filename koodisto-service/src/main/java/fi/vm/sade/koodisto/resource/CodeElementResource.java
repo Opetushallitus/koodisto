@@ -76,9 +76,9 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getAllCodeElementVersionsByCodeElementUri. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
             logger.error("Fetching codeElement versions by uri failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
 
         }
     }
@@ -109,9 +109,9 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getCodeElementByUriAndVersion. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
             logger.error("Fetching codeElement by uri and version failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
         }
     }
 
@@ -136,9 +136,9 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getCodeElementByCodeElementUri. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
             logger.error("Fetching codeElement by uri failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
         }
     }
 
@@ -169,9 +169,9 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getAllCodeElementsByCodesUriAndVersion. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
             logger.error("Fetching codeElement failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
         }
     }
 
@@ -197,9 +197,9 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getLatestCodeElementVersionsByCodeElementUri. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
             logger.error("Fetching codeElement by uri failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
         }
     }
 
@@ -220,9 +220,9 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: get changes. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
             logger.error("Fetching changes to code element failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
         }
     }
 
@@ -386,7 +386,6 @@ public class CodeElementResource {
     }
 
     // TODO oikea http metodi olisi delete
-    @JsonView({ JsonViews.Simple.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     /*@ApiOperation(
             value = "Poistaa koodin",
@@ -431,9 +430,9 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: update. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
             logger.error("Updating codeElement failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
         }
     }
 

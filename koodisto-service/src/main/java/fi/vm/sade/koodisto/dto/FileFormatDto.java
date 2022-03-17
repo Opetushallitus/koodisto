@@ -5,9 +5,7 @@ import fi.vm.sade.koodisto.model.JsonViews;
 
 
 public class FileFormatDto {
-    @JsonView({JsonViews.Basic.class})
     private String format;
-    @JsonView({JsonViews.Basic.class})
     private String encoding;
 
     public String getFormat() {

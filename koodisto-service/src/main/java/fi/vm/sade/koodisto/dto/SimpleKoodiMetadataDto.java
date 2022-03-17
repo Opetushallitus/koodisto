@@ -5,10 +5,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Kieli;
 
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+// TODO tsekkaa toiminta @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class SimpleKoodiMetadataDto extends SimpleMetadataDto {
     
-    @JsonView(JsonViews.Basic.class)
     public final String lyhytNimi;
     
     public SimpleKoodiMetadataDto(String nimi, Kieli kieli, String kuvaus, String lyhytNimi) {

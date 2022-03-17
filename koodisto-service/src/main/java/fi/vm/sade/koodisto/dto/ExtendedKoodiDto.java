@@ -11,51 +11,35 @@ import java.util.List;
 
 public class ExtendedKoodiDto {
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     private String koodiUri;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private String resourceUri;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private Long version;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     private int versio;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private KoodistoItemDto koodisto;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     private String koodiArvo;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Date paivitysPvm;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected String paivittajaOid;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Date voimassaAlkuPvm;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Date voimassaLoppuPvm;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Tila tila;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     protected List<KoodiMetadata> metadata = new ArrayList<KoodiMetadata>();
 
-    @JsonView({JsonViews.Extended.class})
     protected List<RelationCodeElement> withinCodeElements = new ArrayList<RelationCodeElement>();
 
-    @JsonView({JsonViews.Extended.class})
     protected List<RelationCodeElement> includesCodeElements = new ArrayList<RelationCodeElement>();
 
-    @JsonView({JsonViews.Extended.class})
     protected List<RelationCodeElement> levelsWithCodeElements = new ArrayList<RelationCodeElement>();
-
 
     public String getKoodiUri() {
         return koodiUri;
@@ -182,22 +166,16 @@ public class ExtendedKoodiDto {
             return codeElementUri;
         }
 
-        @JsonView({JsonViews.Extended.class})
         public final String codeElementUri;
-        @JsonView({JsonViews.Extended.class})
         public final Integer codeElementVersion;
-        @JsonView({JsonViews.Extended.class})
         public final String codeElementValue;
-        @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
         public final List<SimpleMetadataDto> relationMetadata;
-        @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
         public final List<SimpleMetadataDto> parentMetadata;
 
         public boolean isPassive() {
             return passive;
         }
 
-        @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
         public final boolean passive;
         
         public RelationCodeElement() {

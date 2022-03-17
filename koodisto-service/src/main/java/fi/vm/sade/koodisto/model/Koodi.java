@@ -27,7 +27,6 @@ public class Koodi extends BaseEntity {
     @JoinColumn(name = "koodisto_id", nullable = false)
     private Koodisto koodisto;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     @NotNull
     @Column(name="koodiUri", nullable =  false, unique = true)
     private String koodiUri;
