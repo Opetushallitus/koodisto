@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import fi.vm.sade.authorization.NotAuthorizedException;
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
@@ -76,7 +77,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Autowired
     private UriTransliterator uriTransliterator;
 
-    // TODO @Autowired
+    // @Autowired
     //private DownloadService downloadService;
 
     @Autowired
@@ -94,7 +95,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         checkMetadatas(createKoodistoData.getMetadataList());
 
-        List<KoodistoRyhma> koodistoRyhmas = (List<KoodistoRyhma>) koodistoRyhmaRepository.findAllByKoodistoRyhmaUriIn(koodistoRyhmaUris);
+        List<KoodistoRyhma> koodistoRyhmas = koodistoRyhmaRepository.findAllByKoodistoRyhmaUriIn(koodistoRyhmaUris);
         if (koodistoRyhmas.isEmpty()) {
             throw new KoodistoRyhmaNotFoundException();
         }
@@ -153,7 +154,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             koodistonSuhde.setAlakoodistoVersio(ala);
             koodistonSuhde.setVersio(1);
 
-            koodistonSuhdeRepository.saveAndFlush(koodistonSuhde); // TODO should flush hence transactional
+            koodistonSuhdeRepository.saveAndFlush(koodistonSuhde);
         }
     }
 
@@ -211,7 +212,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     private void checkRequiredMetadataFields(Collection<KoodistoMetadataType> metadatas) {
         for (KoodistoMetadataType md : metadatas) {
-            if (md.getNimi().isBlank()) {
+            if (Strings.isNullOrEmpty(md.getNimi())) {
                 logger.error("No koodisto nimi defined for language " + md.getKieli().name());
                 throw new KoodistoNimiEmptyException();
             }
@@ -284,7 +285,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Override
     @Transactional(readOnly = true)
     public List<KoodistoRyhma> listAllKoodistoRyhmas() {
-        return (List<KoodistoRyhma>) koodistoRyhmaRepository.findAll();
+        return koodistoRyhmaRepository.findAll();
     }
 
     @Override
@@ -292,7 +293,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     public KoodistoRyhma getKoodistoGroup(String koodistoGroupUri) {
         List<String> koodistoGroupUris = new ArrayList<String>();
         koodistoGroupUris.add(koodistoGroupUri);
-        List<KoodistoRyhma> koodistoGroups = (List<KoodistoRyhma>) koodistoRyhmaRepository.findAllByKoodistoRyhmaUriIn(koodistoGroupUris);
+        List<KoodistoRyhma> koodistoGroups = koodistoRyhmaRepository.findAllByKoodistoRyhmaUriIn(koodistoGroupUris);
 
         if (koodistoGroups.isEmpty()) {
             throw new KoodistoRyhmaNotFoundException();
@@ -474,9 +475,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         KoodistoVersio inserted = koodistoVersioRepository.saveAndFlush(input);
 
         this.copyKoodiVersiosFromOldKoodistoToNew(base, inserted);
-        //inserted = koodistoVersioRepository.save(inserted);
         koodistonSuhdeRepository.copyRelations(base, inserted);
-        //inserted = koodistoVersioRepository.save(inserted);
         return inserted;
     }
 

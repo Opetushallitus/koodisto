@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
