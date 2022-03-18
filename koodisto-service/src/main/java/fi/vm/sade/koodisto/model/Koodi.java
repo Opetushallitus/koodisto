@@ -1,8 +1,6 @@
 package fi.vm.sade.koodisto.model;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
@@ -26,7 +24,6 @@ public class Koodi extends BaseEntity {
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "koodisto_id", nullable = false)
-    @JsonBackReference
     private Koodisto koodisto;
 
     @NotNull
@@ -34,7 +31,6 @@ public class Koodi extends BaseEntity {
     private String koodiUri;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodi", cascade = CascadeType.ALL)
-    @JsonManagedReference
     private Set<KoodiVersio> koodiVersios = new HashSet<>();
 
     public Koodisto getKoodisto() {

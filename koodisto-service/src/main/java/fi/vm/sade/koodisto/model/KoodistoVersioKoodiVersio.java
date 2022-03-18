@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import fi.vm.sade.koodisto.model.constraint.KoodistoVersioKoodiVersioConstraint;
 
 import javax.persistence.*;
@@ -18,13 +17,11 @@ public class KoodistoVersioKoodiVersio extends BaseEntity {
     @NotNull
     @JoinColumn(name = "koodistoVersio_id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JsonBackReference
     private KoodistoVersio koodistoVersio;
 
     @NotNull
     @JoinColumn(name = "koodiVersio_id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JsonBackReference
     private KoodiVersio koodiVersio;
 
     public KoodistoVersio getKoodistoVersio() {

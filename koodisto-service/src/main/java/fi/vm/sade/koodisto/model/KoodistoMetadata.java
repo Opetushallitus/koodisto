@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import javax.validation.constraints.NotBlank;
 
@@ -75,7 +74,6 @@ public class KoodistoMetadata extends BaseEntity {
     @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(name = KOODISTO_VERSIO_COLUMN_NAME, nullable = false)
-    @JsonBackReference
     private KoodistoVersio koodistoVersio;
 
     public Kieli getKieli() {

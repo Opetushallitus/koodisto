@@ -1,7 +1,5 @@
 package fi.vm.sade.koodisto.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAnotherDateAsserter;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
 import fi.vm.sade.koodisto.util.FieldLengths;
@@ -42,7 +40,6 @@ public class KoodiVersio extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "koodi_id", nullable = false)
-    @JsonBackReference
     private Koodi koodi;
 
     @NotBlank
@@ -82,7 +79,6 @@ public class KoodiVersio extends BaseEntity {
     private Tila tila;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodiVersio", cascade = { CascadeType.ALL })
-    @JsonManagedReference
     private Set<KoodistoVersioKoodiVersio> koodistoVersios = new HashSet<>();
 
     @NotEmpty
