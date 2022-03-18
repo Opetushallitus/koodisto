@@ -29,6 +29,7 @@ public class KoodistoRyhma extends BaseEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "koodistoRyhma_koodisto", joinColumns = @JoinColumn(name = "koodistoRyhma_id", referencedColumnName = BaseEntity.ID_COLUMN_NAME), inverseJoinColumns = @JoinColumn(name = "koodisto_id", referencedColumnName = BaseEntity.ID_COLUMN_NAME))
+    @JsonManagedReference
     private Set<Koodisto> koodistos = new HashSet<>();
 
     @NotEmpty

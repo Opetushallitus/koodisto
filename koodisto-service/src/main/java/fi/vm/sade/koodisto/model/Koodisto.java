@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import org.hibernate.annotations.BatchSize;
 import javax.validation.constraints.NotBlank;
@@ -41,12 +43,15 @@ public class Koodisto extends BaseEntity {
     private Boolean lukittu;
 
     @ManyToMany(mappedBy = "koodistos", fetch = FetchType.LAZY)
+    @JsonBackReference
     private Set<KoodistoRyhma> koodistoRyhmas = new HashSet<>();
 
     @OneToMany(mappedBy = "koodisto", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<KoodistoVersio> koodistoVersios = new HashSet<>();
 
     @OneToMany(mappedBy = "koodisto", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<Koodi> koodis = new HashSet<>();
 
     public String getKoodistoUri() {
