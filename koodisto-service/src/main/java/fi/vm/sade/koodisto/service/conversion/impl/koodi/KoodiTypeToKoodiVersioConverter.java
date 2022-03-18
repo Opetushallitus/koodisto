@@ -6,7 +6,6 @@ import fi.vm.sade.koodisto.service.conversion.AbstractToDomainConverter;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 
 import java.util.Optional;
-//TODO tsekkaa nämä konvertterit että tartteeko jos ei ole xml
 public class KoodiTypeToKoodiVersioConverter extends AbstractToDomainConverter<KoodiType, KoodiVersio> {
 
     @Override
@@ -15,7 +14,6 @@ public class KoodiTypeToKoodiVersioConverter extends AbstractToDomainConverter<K
         versio.setKoodiarvo(source.getKoodiArvo());
 
         if (source.getPaivitysPvm() != null) {
-            // TODO versio.setPaivitysPvm(DateHelper.xmlCalToDate(source.getPaivitysPvm()));
             versio.setPaivitysPvm(source.getPaivitysPvm());
         }
         Optional.ofNullable(source.getPaivittajaOid()).ifPresent(versio::setPaivittajaOid);

@@ -83,7 +83,6 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
 
         if (!Strings.isNullOrEmpty(converted.getKoodiUri()) && converted.getKoodisto() != null
                 && !Strings.isNullOrEmpty(converted.getKoodisto().getKoodistoUri())) {
-            // TODO tsekkaa toimiiko oikein
             String resourceUri = MessageFormat.format(ophProperties.url("koodiUri"), converted.getKoodisto().getKoodistoUri(), converted.getKoodiUri());
             converted.setResourceUri(resourceUri);
         }

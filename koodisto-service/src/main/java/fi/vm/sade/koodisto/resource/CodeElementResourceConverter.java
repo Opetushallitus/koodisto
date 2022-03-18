@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-// TODO poista turhat kommentit
 @Component
 public class CodeElementResourceConverter {
 
@@ -25,19 +24,12 @@ public class CodeElementResourceConverter {
 
     public UpdateKoodiDataType convertFromDTOToUpdateKoodiDataType(KoodiDto koodiDto) {
         UpdateKoodiDataType updateKoodiDataType = new UpdateKoodiDataType();
-        //GregorianCalendar c = new GregorianCalendar();
-        //c.setTime(koodiDto.getVoimassaAlkuPvm());
         Date startDate = koodiDto.getVoimassaAlkuPvm();
         Date endDate = null;
-
-        //try {
-            if (koodiDto.getVoimassaLoppuPvm() != null) {
-               // c.setTime(koodiDto.getVoimassaLoppuPvm());
-                endDate = koodiDto.getVoimassaLoppuPvm(); //DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            }
-       // } catch (DatatypeConfigurationException e) {
-       //     logger.warn("Date couldn't be parsed: ", e);
-       // }
+        if (koodiDto.getVoimassaLoppuPvm() != null) {
+           // c.setTime(koodiDto.getVoimassaLoppuPvm());
+            endDate = koodiDto.getVoimassaLoppuPvm(); //DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+        }
 
         updateKoodiDataType.setVoimassaAlkuPvm(startDate);
         updateKoodiDataType.setVoimassaLoppuPvm(endDate);
@@ -56,23 +48,14 @@ public class CodeElementResourceConverter {
         return updateKoodiDataType;
     }
     
-    // TODO If you can do this without duplicating code, please do it :)
     public UpdateKoodiDataType convertFromDTOToUpdateKoodiDataType(ExtendedKoodiDto koodiDto) {
         UpdateKoodiDataType updateKoodiDataType = new UpdateKoodiDataType();
-        //GregorianCalendar c = new GregorianCalendar();
-        //c.setTime(koodiDto.getVoimassaAlkuPvm());
         Date startDate = koodiDto.getVoimassaAlkuPvm();
         Date endDate = null;
 
-        //try {
-            //startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            if (koodiDto.getVoimassaLoppuPvm() != null) {
-                //c.setTime(koodiDto.getVoimassaLoppuPvm());
-                endDate = koodiDto.getVoimassaLoppuPvm(); // DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            }
-        //} catch (DatatypeConfigurationException e) {
-        //    logger.warn("Date couldn't be parsed: ", e);
-       // }
+        if (koodiDto.getVoimassaLoppuPvm() != null) {
+            endDate = koodiDto.getVoimassaLoppuPvm();
+        }
 
         updateKoodiDataType.setVoimassaAlkuPvm(startDate);
         updateKoodiDataType.setVoimassaLoppuPvm(endDate);
@@ -93,19 +76,11 @@ public class CodeElementResourceConverter {
 
     public CreateKoodiDataType convertFromDTOToCreateKoodiDataType(KoodiDto koodiDto) {
         CreateKoodiDataType createKoodiDataType = new CreateKoodiDataType();
-        //GregorianCalendar c = new GregorianCalendar();
-        //c.setTime(koodiDto.getVoimassaAlkuPvm());
         Date startDate = koodiDto.getVoimassaAlkuPvm();
         Date endDate = null;
-        //try {
-            //startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            if (koodiDto.getVoimassaLoppuPvm() != null) {
-                //c.setTime(koodiDto.getVoimassaLoppuPvm());
-                endDate = koodiDto.getVoimassaLoppuPvm(); // DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            }
-        //} catch (DatatypeConfigurationException e) {
-        //    logger.warn("Date couldn't be parsed: ", e);
-        //}
+        if (koodiDto.getVoimassaLoppuPvm() != null) {
+            endDate = koodiDto.getVoimassaLoppuPvm();
+        }
         createKoodiDataType.setVoimassaAlkuPvm(startDate);
         createKoodiDataType.setVoimassaLoppuPvm(endDate);
         createKoodiDataType.setKoodiArvo(koodiDto.getKoodiArvo());

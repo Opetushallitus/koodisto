@@ -45,7 +45,6 @@ public abstract class KoodiServiceSearchCriteriaBuilder {
 
     public static SearchKoodisCriteriaType latestValidAcceptedKoodiByUri(final String koodiUri) {
         SearchKoodisCriteriaType searchType = latestAcceptedKoodiByUri(koodiUri);
-        // TODO ? searchType.setValidAt(DateHelper.DateToXmlCal(new Date()));
         searchType.setValidAt(new Date());
         return searchType;
     }

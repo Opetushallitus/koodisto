@@ -15,9 +15,6 @@ public interface KoodinSuhdeRepositoryCustom {
 
     List<KoodinSuhde> getRelations(String ylakoodiUri);
 
-    // KoodinSuhde insertNonFlush(KoodinSuhde koodinSuhde);
-    // TODO  void flush();
-
     void massRemove(List<KoodinSuhde> entityList);
 
     List<KoodinSuhde> getWithinRelations(KoodiUriAndVersioType ylaKoodi, List<KoodiUriAndVersioType> alaKoodis, SuhteenTyyppi st);

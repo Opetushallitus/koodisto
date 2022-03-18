@@ -267,8 +267,6 @@ public class KoodistoResource {
             searchCriteria.getKoodiTilas().addAll(koodiTilas);
         }
         if (validAtDate != null) {
-            //GregorianCalendar cal = new GregorianCalendar();
-            //cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(validAtDate));
             searchCriteria.setValidAt(new SimpleDateFormat("yyyy-MM-dd").parse(validAtDate));
         }
 

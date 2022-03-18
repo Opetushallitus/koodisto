@@ -106,7 +106,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         Koodisto koodisto = new Koodisto();
         EntityUtils.copyFields(createKoodistoData, koodisto);
         koodisto.setKoodistoUri(uriTransliterator.generateKoodistoUriByMetadata(createKoodistoData.getMetadataList()));
-        koodisto = koodistoRepository.save(koodisto); // TODO check flushing
+        koodisto = koodistoRepository.save(koodisto);
 
         KoodistoVersio koodistoVersio = new KoodistoVersio();
         EntityUtils.copyFields(createKoodistoData, koodistoVersio);
@@ -123,7 +123,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             koodistoVersio.addMetadata(meta);
         }
 
-        koodistoVersio = koodistoVersioRepository.save(koodistoVersio); // TODO check flushing
+        koodistoVersio = koodistoVersioRepository.save(koodistoVersio);
 
         for (KoodistoRyhma kr : koodistoRyhmas) {
             kr.addKoodisto(koodisto);
@@ -516,7 +516,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             newVersio.addMetadata(newMetadata);
         }
 
-        KoodistoVersio inserted = koodistoVersioRepository.saveAndFlush(newVersio); // TODO there was a flush here
+        KoodistoVersio inserted = koodistoVersioRepository.saveAndFlush(newVersio);
         copyKoodiVersiosFromOldKoodistoToNew(latest, inserted);
 
         koodistonSuhdeRepository.copyRelations(latest, inserted);

@@ -165,7 +165,7 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
     /*@Override
     public void remove(KoodinSuhde entity) {
 
-        //TODO check out FIXME: This is kinda ugly but it works
+        //check out FIXME: This is kinda ugly but it works
         em.createQuery("delete from KoodinSuhde k where k.id = :id").setParameter("id", entity.getId()).executeUpdate();
         em.flush();
     }*/
