@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-// TODO commenting
-
 @Component
 public class CodesResourceConverter {
 
@@ -26,19 +24,12 @@ public class CodesResourceConverter {
 
     public UpdateKoodistoDataType convertFromDTOToUpdateKoodistoDataType(KoodistoDto koodistoDto) {
         UpdateKoodistoDataType updateKoodistoDataType = new UpdateKoodistoDataType();
-        //GregorianCalendar c = new GregorianCalendar();
-        // c.setTime(koodistoDto.getVoimassaAlkuPvm());
         Date startDate = koodistoDto.getVoimassaAlkuPvm();
         Date endDate = null;
-        //try {
-            //startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            if (koodistoDto.getVoimassaLoppuPvm() != null) {
-               // c.setTime(koodistoDto.getVoimassaLoppuPvm());
-                endDate = koodistoDto.getVoimassaLoppuPvm();// DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            }
-       // } catch (DatatypeConfigurationException e) {
-       //     LOGGER.warn("Date couldn't be parsed: ", e);
-       // }
+
+        if (koodistoDto.getVoimassaLoppuPvm() != null) {
+            endDate = koodistoDto.getVoimassaLoppuPvm();// DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+        }
         updateKoodistoDataType.setCodesGroupUri(koodistoDto.getCodesGroupUri());
         updateKoodistoDataType.setVoimassaAlkuPvm(startDate);
         updateKoodistoDataType.setVoimassaLoppuPvm(endDate);
@@ -57,19 +48,12 @@ public class CodesResourceConverter {
 
     public CreateKoodistoDataType convertFromDTOToCreateKoodistoDataType(KoodistoDto koodistoDto) {
         CreateKoodistoDataType createKoodistoDataType = new CreateKoodistoDataType();
-        //GregorianCalendar c = new GregorianCalendar();
-        //c.setTime(koodistoDto.getVoimassaAlkuPvm());
         Date startDate = koodistoDto.getVoimassaAlkuPvm();
         Date endDate = null;
-        //try {
-            //startDate = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            if (koodistoDto.getVoimassaLoppuPvm() != null) {
-                // c.setTime(koodistoDto.getVoimassaLoppuPvm());
-                endDate = koodistoDto.getVoimassaLoppuPvm(); //DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            }
-        //} catch (DatatypeConfigurationException e) {
-        //    LOGGER.warn("Date couldn't be parsed: ", e);
-        //}
+        if (koodistoDto.getVoimassaLoppuPvm() != null) {
+            // c.setTime(koodistoDto.getVoimassaLoppuPvm());
+            endDate = koodistoDto.getVoimassaLoppuPvm(); //DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+        }
         createKoodistoDataType.setVoimassaAlkuPvm(startDate);
         createKoodistoDataType.setVoimassaLoppuPvm(endDate);
         createKoodistoDataType.setOmistaja(koodistoDto.getOmistaja());

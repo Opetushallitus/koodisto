@@ -12,7 +12,6 @@ public class UrlConfiguration extends OphProperties {
 
     @Autowired
     public UrlConfiguration(Environment environment) {
-        // TODO conffit!
         //addFiles("/koodisto-service-oph.properties");
         //this.addOverride("host.virkailija", environment.getRequiredProperty("host.virkailija"));
         //this.addOverride("url-virkailija", environment.getRequiredProperty("url-virkailija"));

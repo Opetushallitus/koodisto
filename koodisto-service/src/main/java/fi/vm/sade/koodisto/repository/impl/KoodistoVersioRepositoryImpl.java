@@ -169,7 +169,7 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
         return result;
     }
 
-    /* TODO check if works @Override
+    /* check if works? @Override
     public boolean koodistoVersioExists(String koodistoUri, Integer koodistoVersio) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);

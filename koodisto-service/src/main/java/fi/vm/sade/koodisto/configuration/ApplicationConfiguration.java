@@ -23,7 +23,7 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public Authorizer authorizer() { return new ThreadLocalAuthorizer();} // TODO onko oikein?
+    public Authorizer authorizer() { return new ThreadLocalAuthorizer();}
 
     @Bean
     OrganisationHierarchyAuthorizer hierarchyAuthorizer() { return new OrganisationHierarchyAuthorizer();}

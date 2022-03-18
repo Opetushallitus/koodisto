@@ -89,7 +89,7 @@ public class CodesResource {
     // @JsonView({ JsonViews.Extended.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @PostMapping(path = "/removerelation/{codesUri}/{codesUriToRemove}/{relationType}", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    /* TODO DELETE kuuluisi olla
+    /* DELETE kuuluisi olla
         @ApiOperation(
             value = "Poistaa relaatio koodistojen väliltä",
             notes = "")*/
@@ -329,7 +329,7 @@ public class CodesResource {
          }
     }
 
-    /* TODO UPLOAD JA DOWNLOAD
+    /*
     @POST
     @Path("/upload/{codesUri}")
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")

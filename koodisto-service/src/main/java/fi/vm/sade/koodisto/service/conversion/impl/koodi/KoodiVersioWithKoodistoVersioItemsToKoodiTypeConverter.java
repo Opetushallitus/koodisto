@@ -66,7 +66,6 @@ public class KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter implements
 
         if (StringUtils.hasLength(converted.getKoodiUri()) && converted.getKoodisto() != null
                 && StringUtils.hasLength(converted.getKoodisto().getKoodistoUri())) {
-            // TODO tsekkaa
             String resourceUri = MessageFormat.format(ophProperties.url("koodiUri"), converted.getKoodiUri(), converted.getKoodisto().getKoodistoUri());
             converted.setResourceUri(resourceUri);
         }

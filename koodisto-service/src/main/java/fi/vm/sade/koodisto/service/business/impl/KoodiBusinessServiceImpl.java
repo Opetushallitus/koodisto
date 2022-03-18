@@ -320,7 +320,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                 KoodistoVersioKoodiVersio newRelationEntry = new KoodistoVersioKoodiVersio();
                 newRelationEntry.setKoodistoVersio(koodisto);
                 newRelationEntry.setKoodiVersio(updated.getKoodiVersio());
-                koodistoVersioKoodiVersioRepository.saveAndFlush(newRelationEntry); // TODO check flushhing is it necessary?
+                koodistoVersioKoodiVersioRepository.saveAndFlush(newRelationEntry);
             }
         }
 
@@ -620,7 +620,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             EntityUtils.copyFields(updateMetadata, newMetadata);
             newMetadata.setKoodiVersio(latest);
             latest.addMetadata(newMetadata);
-            koodiMetadataRepository.saveAndFlush(newMetadata); // TODO check flushing
+            koodiMetadataRepository.saveAndFlush(newMetadata);
         }
 
         // Delete old metadatas
@@ -693,7 +693,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         newRelation.setKoodistoVersio(newKoodistoVersio);
         newRelation.setKoodiVersio(inserted);
         inserted.addKoodistoVersio(newRelation);
-        koodistoVersioKoodiVersioRepository.saveAndFlush(newRelation); // TODO check flush
+        koodistoVersioKoodiVersioRepository.saveAndFlush(newRelation);
 
         return inserted;
     }
@@ -843,7 +843,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         if (kvkoodisto.getKoodistoItem().getVersios().contains(latestKoodistoVersio.getVersio()) && latestKoodistoVersio.getTila().equals(Tila.HYVAKSYTTY)) {
 
             KoodistoVersio newKoodistoVersio = koodistoBusinessService.createNewVersion(latestKoodistoVersio.getKoodisto().getKoodistoUri()).getData();
-            // TODO flushkoodistoVersioKoodiVersioDAO.flush();
+            koodistoVersioKoodiVersioRepository.flush();
             KoodistoVersioKoodiVersio koodistoVersioKoodiVersio = koodistoVersioKoodiVersioRepository.findByKoodistoVersioIdAndKoodiVersioId(newKoodistoVersio.getId(),
                     versio.getId());
             koodistoVersioKoodiVersioRepository.delete(koodistoVersioKoodiVersio);
@@ -1070,7 +1070,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         if (searchData.getKoodiSearchCriteria() == null) {
             searchData.setKoodiSearchCriteria(new SearchKoodisCriteriaType());
         }
-        // TODO searchData.getKoodiSearchCriteria().setValidAt(DateHelper.DateToXmlCal(new Date()));
         searchData.getKoodiSearchCriteria().setValidAt(new Date());
     }
 

@@ -11,8 +11,4 @@ public interface KoodiRepositoryCustom {
     List<KoodiVersio> getLatestCodeElementVersiosByUrisAndTila(List<String> koodiUris, Tila tila);
 
     boolean koodiUriExists(String koodiUri);
-
-    // TODO Koodi insertNonFlush(Koodi koodi);
-
-    // TODO void flush();
 }
