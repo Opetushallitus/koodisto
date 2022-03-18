@@ -1,11 +1,11 @@
 
 package fi.vm.sade.koodisto.service.types.common;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 public class KoodistoType implements Serializable
 {

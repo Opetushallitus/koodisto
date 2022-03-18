@@ -3,7 +3,6 @@ package fi.vm.sade.koodisto.service.types;
 
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
