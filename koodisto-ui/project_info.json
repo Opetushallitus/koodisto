@@ -1,0 +1,11 @@
+{
+  "name": "koodisto-service",
+
+  "Makefile": "no",
+
+  "velka": "js-riipuvuudet git-repossa (packages.json käyttöön)",
+
+  "csrf": "koodisto-ui OK, backend ?",
+
+  "clean oph-config": "ok"
+}
