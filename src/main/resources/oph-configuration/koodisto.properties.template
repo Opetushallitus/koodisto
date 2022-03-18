@@ -6,6 +6,7 @@
 #
 
 # Aseta vähintään nämä ympäristökohtaiset arvot
+spring.datasource.url=jdbc:postgresql://{{host_postgresql_koodisto}}:{{port_postgresql}}/koodisto
 host.cas={{host_cas}}
 host.virkailija={{host_virkailija}}
 
