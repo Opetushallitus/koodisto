@@ -17,15 +17,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_HOST_AUTH_METHOD: trust
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
@@ -37,9 +28,6 @@ jobs:
           cache: 'maven'
       - name: Maven version
         run: mvn --version
-      - name: pre scripts
-        run: |
-          PGPASSWORD=postgres psql -c 'CREATE DATABASE koodisto;' -h localhost -U postgres
       - name: Build
         run: mvn clean package -B -Dbranch=$GITHUB_REF_NAME -Drevision=$GITHUB_SHA -DbuildNumber=$GITHUB_RUN_NUMBER/$GITHUB_RUN_ATTEMPT
       - name: Upload koodisto-service-jar
@@ -49,21 +37,9 @@ jobs:
           path: koodisto-service/target/koodisto-service.jar
   sonarcloud:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_HOST_AUTH_METHOD: trust
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
-      - name: pre scripts
-        run: |
-          PGPASSWORD=postgres psql -c 'CREATE DATABASE koodisto;' -h localhost -U postgres
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
         with:
