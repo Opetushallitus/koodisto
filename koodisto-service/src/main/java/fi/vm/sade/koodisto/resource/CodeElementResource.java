@@ -355,13 +355,17 @@ public class CodeElementResource {
                     SuhteenTyyppi.valueOf(relationType), false);
             return ResponseEntity.ok(null);
         } catch (KoodistoValidationException e) {
-            logger.warn("Invalid parameter for rest call: removeRelation. ", e);
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
-            logger.error("Removing relation to codeElement failed failed.", e);
-            return ResponseEntity.internalServerError().body(message);
-        }
+             logger.warn("Invalid parameter for rest call: removeRelation. {}", e.getMessage());
+             return ResponseEntity.badRequest().body(e.getMessage());
+         } catch (SadeBusinessException e) {
+             String message = e.getMessage();
+             logger.error("Removing relation to codeElement failed with SadeBusinessException. {}", message);
+             return ResponseEntity.internalServerError().body(message);
+         } catch (Exception e) {
+             String message = "error.codes.generic";
+             logger.error("Removing relation to codeElement failed with generic exception. {}", message);
+             return ResponseEntity.internalServerError().body(message);
+         }
     }
 
     @JsonView({ JsonViews.Extended.class })
