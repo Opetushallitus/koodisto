@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping({"/codeelement"})
+@RequestMapping({"/rest/codeelement"})
 public class CodeElementResource {
     private final static Logger logger = LoggerFactory.getLogger(CodeElementResource.class);
 

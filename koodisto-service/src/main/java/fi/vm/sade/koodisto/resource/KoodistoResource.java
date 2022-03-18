@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Properties;
 
 @RestController()
-@RequestMapping({"/json"})
+@RequestMapping({"/rest/json"})
 //@Api(value = "/rest/json", description = "REST/JSON rajapinta")
 public class KoodistoResource {
 

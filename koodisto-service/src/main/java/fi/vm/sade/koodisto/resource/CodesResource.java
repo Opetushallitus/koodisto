@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping({"/codes"})
+@RequestMapping({"/rest/codes"})
 public class CodesResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CodesResource.class);

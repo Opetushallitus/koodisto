@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
 @RestController
-@RequestMapping({"/codesgroup"})
+@RequestMapping({"/rest/codesgroup"})
 //@Api(value = "/rest/codesgroup", description = "Koodistoryhmät")
 public class CodesGroupResource {
     protected final static Logger logger = LoggerFactory.getLogger(CodesGroupResource.class);
