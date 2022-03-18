@@ -23,7 +23,8 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: ophoph
           POSTGRES_HOST_AUTH_METHOD: trust
     steps:
       - name: Checkout source
