@@ -1,7 +1,9 @@
 package fi.vm.sade.koodisto.resource;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
+import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
@@ -37,6 +39,7 @@ public class CodesGroupResource {
 
     private CodesGroupValidator codesGroupValidator = new CodesGroupValidator();
 
+    @JsonView({ JsonViews.Basic.class })
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     /*@ApiOperation(
             value = "Palauttaa koodistoryhmän",
@@ -64,6 +67,7 @@ public class CodesGroupResource {
         }
     }
 
+    @JsonView({ JsonViews.Basic.class })
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     /*@ApiOperation(
@@ -91,6 +95,7 @@ public class CodesGroupResource {
         }
     }
 
+    @JsonView({ JsonViews.Basic.class })
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     /*@ApiOperation(
@@ -119,6 +124,7 @@ public class CodesGroupResource {
         }
     }
 
+    @JsonView({ JsonViews.Simple.class })
     @PostMapping(path = "/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     /*@ApiOperation(
