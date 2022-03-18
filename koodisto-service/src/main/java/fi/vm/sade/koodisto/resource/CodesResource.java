@@ -61,7 +61,6 @@ public class CodesResource {
 
     private CodesValidator codesValidator = new CodesValidator();
 
-   // @JsonView({ JsonViews.Extended.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @JsonView({ JsonViews.Extended.class })
     @PostMapping(path = "/addrelation/{codesUri}/{codesUriToAdd}/{relationType}", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
@@ -89,7 +88,6 @@ public class CodesResource {
         }
     }
 
-    // @JsonView({ JsonViews.Extended.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @JsonView({ JsonViews.Extended.class })
     @PostMapping(path = "/removerelation/{codesUri}/{codesUriToRemove}/{relationType}", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
@@ -257,7 +255,7 @@ public class CodesResource {
         }
     }
 
-    /*@JsonView({ JsonViews.Extended.class })
+    /*
     @ApiOperation(
             value = "Palauttaa tietyn koodistoversion",
             notes = "",
