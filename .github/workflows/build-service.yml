@@ -49,6 +49,15 @@ jobs:
           path: koodisto-service/target/koodisto-service.jar
   sonarcloud:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST_AUTH_METHOD: trust
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
