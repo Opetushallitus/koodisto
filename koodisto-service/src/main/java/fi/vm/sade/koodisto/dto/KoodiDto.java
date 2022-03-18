@@ -14,29 +14,42 @@ import java.util.List;
  */
 public class KoodiDto {
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     private String koodiUri;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private String resourceUri;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private Long version;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     private int versio;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private KoodistoItemDto koodisto;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     private String koodiArvo;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Date paivitysPvm;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected String paivittajaOid;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Date voimassaAlkuPvm;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Date voimassaLoppuPvm;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Tila tila;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     protected List<KoodiMetadata> metadata = new ArrayList<KoodiMetadata>();
+
 
     public String getKoodiUri() {
         return koodiUri;

@@ -3,7 +3,7 @@
  */
 package fi.vm.sade.koodisto.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import javax.validation.constraints.NotBlank;
 
@@ -31,17 +31,18 @@ public class KoodistoRyhmaMetadata extends BaseEntity {
     @NotBlank
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "nimi", length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = false)
+    @JsonView({ JsonViews.Basic.class, JsonViews.Simple.class })
     private String nimi;
 
     @NotNull
     @Column(name = KIELI_COLUMN_NAME, nullable = false, length = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Enumerated(EnumType.STRING)
+    @JsonView({JsonViews.Basic.class, JsonViews.Simple.class})
     private Kieli kieli;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = KOODISTO_RYHMA_COLUMN_NAME, nullable = false)
-    @JsonBackReference
     private KoodistoRyhma koodistoRyhma;
 
     public KoodistoRyhma getKoodistoRyhma() {

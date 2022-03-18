@@ -2,9 +2,10 @@ package fi.vm.sade.koodisto.dto;
 
 import fi.vm.sade.koodisto.model.Kieli;
 
-// TODO tsekkaa toiminta @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
 public class SimpleKoodiMetadataDto extends SimpleMetadataDto {
     
+    @JsonView(JsonViews.Basic.class)
     public final String lyhytNimi;
     
     public SimpleKoodiMetadataDto(String nimi, Kieli kieli, String kuvaus, String lyhytNimi) {

@@ -21,52 +21,64 @@ public class KoodistoMetadata extends BaseEntity {
 
     private static final long serialVersionUID = -6880293349203597691L;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
     @NotNull
     @Column(name = KIELI_COLUMN_NAME, nullable = false, length = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Enumerated(EnumType.STRING)
     private Kieli kieli;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
     @NotBlank
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "nimi", length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = false)
     private String nimi;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.LONG_FIELD_LENGTH)
     @Column(name = "kuvaus", length = FieldLengths.LONG_FIELD_LENGTH, nullable = true)
     private String kuvaus;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.LONG_FIELD_LENGTH)
     @Column(name = "kayttoohje", length = FieldLengths.LONG_FIELD_LENGTH)
     private String kayttoohje;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "kasite", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String kasite;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "kohdealue", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String kohdealue;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "sitovuustaso", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String sitovuustaso;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "kohdealueenOsaAlue", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String kohdealueenOsaAlue;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "toimintaYmparisto", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String toimintaymparisto;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "tarkentaaKoodistoa", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String tarkentaaKoodistoa;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "huomioitavaKoodisto", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String huomioitavaKoodisto;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "koodistonLahde", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String koodistonLahde;

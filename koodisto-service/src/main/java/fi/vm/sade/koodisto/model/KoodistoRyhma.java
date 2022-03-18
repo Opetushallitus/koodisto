@@ -3,7 +3,6 @@
  */
 package fi.vm.sade.koodisto.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -34,7 +33,6 @@ public class KoodistoRyhma extends BaseEntity {
     @NotEmpty
     @OneToMany(mappedBy = "koodistoRyhma", fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    @JsonManagedReference
     private Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = new HashSet<>();
 
     @NotBlank

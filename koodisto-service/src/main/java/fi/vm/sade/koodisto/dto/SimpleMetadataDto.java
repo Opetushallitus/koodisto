@@ -4,10 +4,13 @@ import fi.vm.sade.koodisto.model.Kieli;
 
 public class SimpleMetadataDto {
     
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     public final String nimi;
     
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     public final Kieli kieli;
     
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     public final String kuvaus;
 
     public SimpleMetadataDto(String nimi, Kieli kieli, String kuvaus) {

@@ -8,12 +8,16 @@ import java.util.List;
  */
 public class KoodiRelaatioListaDto {
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
     private String codeElementUri;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
     private String relationType;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
     private boolean isChild;
 
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
     private List<String> relations;
 
     public String getCodeElementUri() {
