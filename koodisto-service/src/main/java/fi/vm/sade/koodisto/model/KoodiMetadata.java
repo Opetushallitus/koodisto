@@ -1,8 +1,9 @@
 package fi.vm.sade.koodisto.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import org.hibernate.annotations.BatchSize;
-import javax.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -42,43 +43,53 @@ public class KoodiMetadata extends BaseEntity {
 
     private static final long serialVersionUID = -6996174469669634802L;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     @NotBlank
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH * 2)
     @Column(name = "nimi", length = FieldLengths.DEFAULT_FIELD_LENGTH * 2, nullable = false)
     private String nimi;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     @Size(min = 0, max = FieldLengths.LONG_FIELD_LENGTH)
     @Column(name = "kuvaus", length = FieldLengths.LONG_FIELD_LENGTH, nullable = true)
     private String kuvaus;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "lyhytNimi", length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = true)
     private String lyhytNimi;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     @Size(min = 0, max = FieldLengths.LONG_FIELD_LENGTH)
     @Column(name = "kayttoohje", length = FieldLengths.LONG_FIELD_LENGTH)
     private String kayttoohje;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "kasite", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String kasite;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     @Size(min = 0, max = FieldLengths.LONG_FIELD_LENGTH)
     @Column(name = "sisaltaaMerkityksen", length = FieldLengths.LONG_FIELD_LENGTH)
     private String sisaltaaMerkityksen;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     @Size(min = 0, max = FieldLengths.LONG_FIELD_LENGTH)
     @Column(name = "eiSisallaMerkitysta", length = FieldLengths.LONG_FIELD_LENGTH)
     private String eiSisallaMerkitysta;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "huomioitavaKoodi", length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private String huomioitavaKoodi;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     @Size(min = 0, max = FieldLengths.LONG_FIELD_LENGTH)
     @Column(name = "sisaltaaKoodiston", length = FieldLengths.LONG_FIELD_LENGTH)
     private String sisaltaaKoodiston;
 
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     @NotNull
     @Column(name = KIELI_COLUMN_NAME, nullable = false, length = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Enumerated(EnumType.STRING)
@@ -176,7 +187,7 @@ public class KoodiMetadata extends BaseEntity {
     public void setKoodiVersio(KoodiVersio koodiVersio) {
         this.koodiVersio = koodiVersio;
     }
-    
+
 
     @Override
     public boolean equals(Object o) {

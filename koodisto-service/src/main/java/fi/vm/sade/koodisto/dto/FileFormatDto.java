@@ -1,5 +1,8 @@
 package fi.vm.sade.koodisto.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import fi.vm.sade.koodisto.model.JsonViews;
+
 public class FileFormatDto {
     @JsonView({JsonViews.Basic.class})
     private String format;

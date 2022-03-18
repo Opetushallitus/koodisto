@@ -1,8 +1,10 @@
 package fi.vm.sade.koodisto.resource;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaListDto;
+import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
@@ -79,6 +81,7 @@ public class KoodistoResource {
         }
     }
 
+    @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     //@Cacheable(maxAgeSeconds = ONE_HOUR)
     /*@ApiOperation(
@@ -90,7 +93,8 @@ public class KoodistoResource {
         return conversionService.convertAll(koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class);
     }
 
-    @GetMapping(path= "/{koodistoUri}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(JsonViews.Basic.class)
+    @GetMapping(path = "/{koodistoUri}", produces = MediaType.APPLICATION_JSON_VALUE)
     //@Cacheable(maxAgeSeconds = ONE_HOUR)
     @Transactional // TODO FIXME?
     /*@ApiOperation(
@@ -99,7 +103,7 @@ public class KoodistoResource {
             response = KoodistoDto.class)*/
     public KoodistoDto getKoodistoByUri(
             @PathVariable String koodistoUri,
-            @RequestParam() Integer koodistoVersio) {
+            @RequestParam(required = false) Integer koodistoVersio) {
 
         KoodistoVersio koodisto = null;
         if (koodistoVersio == null) {
@@ -111,6 +115,7 @@ public class KoodistoResource {
         return conversionService.convert(koodisto, KoodistoDto.class);
     }
 
+    @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "/{koodistoUri}/koodi", produces = MediaType.APPLICATION_JSON_VALUE)
     //@Cacheable(maxAgeSeconds = ONE_HOUR)
     @Transactional
@@ -121,7 +126,7 @@ public class KoodistoResource {
             responseContainer = "List")*/
     public List<KoodiDto> getKoodisByKoodisto(
             @PathVariable String koodistoUri,
-            @RequestParam Integer koodistoVersio,
+            @RequestParam(required = false) Integer koodistoVersio,
             @RequestParam(defaultValue = "false") boolean onlyValidKoodis) {
 
         List<KoodiVersioWithKoodistoItem> koodis = null;
@@ -134,6 +139,7 @@ public class KoodistoResource {
         return conversionService.convertAll(koodis, KoodiDto.class);
     }
 
+    @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "/{koodistoUri}/koodi/arvo/{koodiArvo}", produces = MediaType.APPLICATION_JSON_VALUE)
     //@Cacheable(maxAgeSeconds = ONE_HOUR)
     /*@ApiOperation(
@@ -144,7 +150,7 @@ public class KoodistoResource {
     public List<KoodiDto> getKoodisByArvo(
             @PathVariable String koodistoUri,
             @PathVariable String koodiArvo,
-            @RequestParam Integer koodistoVersio) {
+            @RequestParam(required = false) Integer koodistoVersio) {
         // TODO: tämän pitäisi palauttaa vain yksi koodi
         List<KoodiVersioWithKoodistoItem> koodis = null;
         if (koodistoVersio == null) {
@@ -156,6 +162,7 @@ public class KoodistoResource {
         return conversionService.convertAll(koodis, KoodiDto.class);
     }
 
+    @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "/{koodistoUri}/koodi/{koodiUri}", produces = MediaType.APPLICATION_JSON_VALUE)
     //@Cacheable(maxAgeSeconds = ONE_HOUR)
     /*@ApiOperation(
@@ -166,7 +173,7 @@ public class KoodistoResource {
     public KoodiDto getKoodiByUri(
             @PathVariable String koodistoUri,
             @PathVariable String koodiUri,
-            @RequestParam Integer koodistoVersio) {
+            @RequestParam(required = false) Integer koodistoVersio) {
         KoodiVersioWithKoodistoItem koodi;
         if (koodistoVersio == null) {
             koodi = koodiBusinessService.getKoodiByKoodisto(koodistoUri, koodiUri);
@@ -177,6 +184,7 @@ public class KoodistoResource {
         return conversionService.convert(koodi, KoodiDto.class);
     }
 
+    @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "/relaatio/sisaltyy-alakoodit/{koodiUri}", produces = MediaType.APPLICATION_JSON_VALUE)
     //@Cacheable(maxAgeSeconds = ONE_HOUR)
     /*@ApiOperation(
@@ -185,13 +193,14 @@ public class KoodistoResource {
             response = KoodiDto.class, responseContainer = "List")*/
     public List<KoodiDto> getAlakoodis(
             @PathVariable String koodiUri,
-            @RequestParam Integer koodiVersio) {
+            @RequestParam(required = false) Integer koodiVersio) {
         final boolean isChild = false;
         final SuhteenTyyppi suhteenTyyppi = SuhteenTyyppi.SISALTYY;
 
         return getRelations(koodiUri, koodiVersio, suhteenTyyppi, isChild);
     }
 
+    @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "/relaatio/sisaltyy-ylakoodit/{koodiUri}", produces = MediaType.APPLICATION_JSON_VALUE)
     /*@Cacheable(maxAgeSeconds = ONE_HOUR)
     @ApiOperation(
@@ -201,13 +210,14 @@ public class KoodistoResource {
             responseContainer = "List")*/
     public List<KoodiDto> getYlakoodis(
             @PathVariable String koodiUri,
-            @RequestParam Integer koodiVersio) {
+            @RequestParam(required = false) Integer koodiVersio) {
         final boolean isChild = true;
         final SuhteenTyyppi suhteenTyyppi = SuhteenTyyppi.SISALTYY;
 
         return getRelations(koodiUri, koodiVersio, suhteenTyyppi, isChild);
     }
 
+    @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "/relaatio/rinnasteinen/{koodiUri}", produces = MediaType.APPLICATION_JSON_VALUE)
     //@Cacheable(maxAgeSeconds = ONE_HOUR)
     /*@ApiOperation(
@@ -217,8 +227,8 @@ public class KoodistoResource {
             responseContainer = "List")*/
     public List<KoodiDto> getRinnasteinenKoodis(
             @PathVariable String koodiUri,
-            @RequestParam Integer koodiVersio
-            ) {
+            @RequestParam(required = false) Integer koodiVersio
+    ) {
         final boolean isChild = false;
         final SuhteenTyyppi suhteenTyyppi = SuhteenTyyppi.RINNASTEINEN;
 
@@ -238,6 +248,7 @@ public class KoodistoResource {
     /**
      * http://localhost:5050/koodisto-service/rest/json/searchKoodis?koodiUris=kunta&koodiTilas=LUONNOS&validAt=2013-06-06&koodiVersioSelection=ALL
      */
+    @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "/searchKoodis", produces = MediaType.APPLICATION_JSON_VALUE)
     //@Cacheable(maxAgeSeconds = ONE_HOUR)
     /*@ApiOperation(
@@ -246,14 +257,14 @@ public class KoodistoResource {
             response = KoodiDto.class,
             responseContainer = "List")*/
     public List<KoodiDto> searchKoodis(
-            @RequestParam List<String> koodiUris,
-            @RequestParam String koodiArvo,
-            @RequestParam List<TilaType> koodiTilas,
-            @RequestParam String validAtDate,
-            @RequestParam Integer koodiVersio,
-            @RequestParam SearchKoodisVersioSelectionType koodiVersioSelection
-            ) throws IllegalAccessException, NoSuchMethodException,
-                    InvocationTargetException, ParseException {
+            @RequestParam(required = false) List<String> koodiUris,
+            @RequestParam(required = false) String koodiArvo,
+            @RequestParam(required = false) List<TilaType> koodiTilas,
+            @RequestParam(required = false) String validAtDate,
+            @RequestParam(required = false) Integer koodiVersio,
+            @RequestParam(required = false) SearchKoodisVersioSelectionType koodiVersioSelection
+    ) throws IllegalAccessException, NoSuchMethodException,
+            InvocationTargetException, ParseException {
 
         SearchKoodisCriteriaType searchCriteria = new SearchKoodisCriteriaType();
 
@@ -282,7 +293,7 @@ public class KoodistoResource {
             response = String.class)*/
     public String getKoodistoAsPropertiesDefaultLang(
             @PathVariable String koodistoUri
-            ) throws IOException {
+    ) throws IOException {
         return getKoodistoAsProperties(koodistoUri, "FI");
     }
 
@@ -295,7 +306,7 @@ public class KoodistoResource {
     public String getKoodistoAsProperties(
             @PathVariable String koodistoUri,
             @PathVariable String lang
-            ) throws IOException {
+    ) throws IOException {
         List<KoodiVersioWithKoodistoItem> koodis = koodiBusinessService.getKoodisByKoodisto(koodistoUri, false);
         Properties props = new Properties();
         // iterate all koodis
@@ -316,6 +327,7 @@ public class KoodistoResource {
         return sw.toString();
     }
 
+    @JsonView(JsonViews.Basic.class)
     @PostMapping(path = "/{koodistoUri}/koodi/{koodiUri}/kieli/{lang}/metadata", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     /*@ApiOperation(
@@ -328,7 +340,7 @@ public class KoodistoResource {
             @PathVariable String lang,
             @RequestParam String nimi, // TODO requestparam vs formparam
             @RequestParam String kuvaus
-            ) {
+    ) {
         nimi = nimi.substring(0, Math.min(nimi.length(), FieldLengths.DEFAULT_FIELD_LENGTH)); // nimi cannot be longer
 
         // find/create koodi

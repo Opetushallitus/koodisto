@@ -3,11 +3,13 @@ package fi.vm.sade.koodisto.resource;
 //import com.fasterxml.jackson.annotation.JsonView;
 //import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoListDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaListDto;
 import fi.vm.sade.koodisto.dto.KoodistoVersioListDto;
+import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
@@ -61,6 +63,7 @@ public class CodesResource {
 
    // @JsonView({ JsonViews.Extended.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @JsonView({ JsonViews.Extended.class })
     @PostMapping(path = "/addrelation/{codesUri}/{codesUriToAdd}/{relationType}", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     /*@ApiOperation(
             value = "Lisää relaatio koodistojen välille",
@@ -88,6 +91,7 @@ public class CodesResource {
 
     // @JsonView({ JsonViews.Extended.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @JsonView({ JsonViews.Extended.class })
     @PostMapping(path = "/removerelation/{codesUri}/{codesUriToRemove}/{relationType}", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     /* DELETE kuuluisi olla
         @ApiOperation(
@@ -116,8 +120,8 @@ public class CodesResource {
     }
 
 
-    //@JsonView({ JsonViews.Basic.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @JsonView({ JsonViews.Basic.class })
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     /*@ApiOperation(
             value = "Päivittää koodistoa",
@@ -145,6 +149,7 @@ public class CodesResource {
             value = "Päivittää koodiston kokonaisuutena",
             notes = "Lisää ja poistaa koodistonsuhteita",
             response = Response.class)*/
+    @JsonView({ JsonViews.Basic.class })
     @PutMapping(path = "/save", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> save(
             @RequestBody KoodistoDto codesDTO) {
@@ -165,6 +170,7 @@ public class CodesResource {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
+    @JsonView({ JsonViews.Basic.class })
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     /* @ApiOperation(
             value = "Lisää koodiston",
@@ -194,6 +200,7 @@ public class CodesResource {
             notes = "",
             response = KoodistoRyhmaListDto.class,
             responseContainer = "List")*/
+    @JsonView(JsonViews.Simple.class)
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity listAllCodesGroups() {
        try {
@@ -211,6 +218,7 @@ public class CodesResource {
             notes = "",
             response = KoodistoVersioListDto.class,
             responseContainer = "List")*/
+    @JsonView({ JsonViews.Basic.class })
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity listAllCodesInAllCodeGroups() {
          try {
@@ -229,7 +237,8 @@ public class CodesResource {
             value = "Palauttaa koodiston",
             notes = "",
             response = KoodistoListDto.class)*/
-    @GetMapping(path = "/{codesUri}", produces = MediaType.APPLICATION_JSON_VALUE)
+   @JsonView({ JsonViews.Basic.class })
+   @GetMapping(path = "/{codesUri}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getCodesByCodesUri(
             @PathVariable String codesUri) {
         try {
@@ -253,6 +262,7 @@ public class CodesResource {
             value = "Palauttaa tietyn koodistoversion",
             notes = "",
             response = KoodistoDto.class)*/
+    @JsonView({ JsonViews.Extended.class })
     @GetMapping(path = "/{codesUri}/{codesVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getCodesByCodesUriAndVersion(
             @PathVariable String codesUri,
@@ -284,6 +294,7 @@ public class CodesResource {
             value = "Palauttaa muutokset uusimpaan koodistoversioon verrattaessa",
             notes = "Toimii vain, jos koodisto on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
             response = KoodistoChangesDto.class)*/
+    @JsonView({ JsonViews.Basic.class })
     @GetMapping(path = "/changes/{codesUri}/{codesVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getChangesToCodes(@PathVariable String codesUri,
                                       @PathVariable Integer codesVersion,
@@ -306,7 +317,8 @@ public class CodesResource {
             value = "Palauttaa tehdyt muutokset uusimpaan koodistoversioon käyttäen lähintä päivämäärään osuvaa koodistoversiota vertailussa",
             notes = "Toimii vain, jos koodisto on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
             response = KoodistoChangesDto.class)*/
-    @GetMapping(path = "/changes/withdate/{codesUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}", produces = MediaType.APPLICATION_JSON_VALUE)
+   @JsonView({ JsonViews.Basic.class })
+   @GetMapping(path = "/changes/withdate/{codesUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getChangesToCodesWithDate(@PathVariable String codesUri,
                                               @PathVariable Integer dayOfMonth,
                                               @PathVariable Integer month,
@@ -448,6 +460,7 @@ public class CodesResource {
             notes = "",
             response = Response.class) */
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
+    @JsonView({ JsonViews.Simple.class })
     @PostMapping(path = "/delete/{codesUri}/{codesVersion}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity delete(
             @PathVariable String codesUri,

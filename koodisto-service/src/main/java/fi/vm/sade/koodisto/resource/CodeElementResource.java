@@ -1,10 +1,12 @@
 package fi.vm.sade.koodisto.resource;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.dto.SimpleKoodiDto;
+import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
@@ -54,7 +56,7 @@ public class CodeElementResource {
     private CodeElementRelationListValidator relationValidator = new CodeElementRelationListValidator();
     private ExtendedCodeElementValidator extendedValidator = new ExtendedCodeElementValidator();
 
-    // @JsonView({ JsonViews.Simple.class }) // tarvitaanko?
+    @JsonView({ JsonViews.Simple.class }) // tarvitaanko?
     /*@ApiOperation(
             value = "Palauttaa koodiversiot tietystä koodista",
             notes = "",
@@ -83,7 +85,7 @@ public class CodeElementResource {
     }
 
     @GetMapping(path = "/{codeElementUri}/{codeElementVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
-    //@JsonView({ JsonViews.Extended.class })
+    @JsonView({ JsonViews.Extended.class })
     @Transactional(readOnly = true)
    /* @ApiOperation(
             value = "Palauttaa tietyn koodiversion",
@@ -115,7 +117,7 @@ public class CodeElementResource {
     }
 
     @GetMapping(path = "/{codesUri}/{codesVersion}/{codeElementUri}", produces = MediaType.APPLICATION_JSON_VALUE)
-    //@JsonView({ JsonViews.Basic.class })
+    @JsonView({ JsonViews.Basic.class })
     /*@ApiOperation(
             value = "Palauttaa koodin tietystä koodistoversiosta",
             notes = "",
@@ -141,7 +143,7 @@ public class CodeElementResource {
         }
     }
 
-    //@JsonView({ JsonViews.Simple.class })
+    @JsonView({ JsonViews.Simple.class })
     /*@ApiOperation(
             value = "Palauttaa koodin tietystä koodistoversiosta",
             notes = "",
@@ -178,6 +180,7 @@ public class CodeElementResource {
             value = "Palauttaa uusimman koodiversion",
             notes = "",
             response = KoodiDto.class)*/
+    @JsonView({ JsonViews.Basic.class })
     @GetMapping(path = "/latest/{codeElementUri}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getLatestCodeElementVersionsByCodeElementUri(
             @PathVariable String codeElementUri) {
@@ -202,7 +205,7 @@ public class CodeElementResource {
         }
     }
 
-    //@JsonView({ JsonViews.Extended.class })
+    @JsonView({ JsonViews.Extended.class })
     /*@ApiOperation(
             value = "Palauttaa muutokset uusimpaan koodiversioon",
             notes = "Toimii vain, jos koodi on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
@@ -225,7 +228,7 @@ public class CodeElementResource {
         }
     }
 
-    //@JsonView({ JsonViews.Extended.class })
+    @JsonView({ JsonViews.Extended.class })
     /*@ApiOperation(
             value = "Palauttaa tehdyt muutokset uusimpaan koodiversioon käyttäen lähintä päivämäärään osuvaa koodiversiota vertailussa",
             notes = "Toimii vain, jos koodi on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
@@ -253,7 +256,7 @@ public class CodeElementResource {
         }
     }
 
-    //@JsonView({ JsonViews.Basic.class })
+    @JsonView({ JsonViews.Basic.class })
     /*@ApiOperation(
             value = "Lisää uuden koodin",
             notes = "",
@@ -282,8 +285,7 @@ public class CodeElementResource {
         }
     }
 
-
-    //@JsonView({ JsonViews.Extended.class })
+    @JsonView({ JsonViews.Extended.class })
     /*@ApiOperation(
             value = "Lisää relaation koodien välille",
             notes = "")*/
@@ -310,7 +312,7 @@ public class CodeElementResource {
         }
     }
 
-    //@JsonView({ JsonViews.Extended.class })
+    @JsonView({ JsonViews.Extended.class })
     /*@ApiOperation(
             value = "Lisää koodien välisiä relaatioita, massatoiminto",
             notes = "")*/
@@ -334,7 +336,7 @@ public class CodeElementResource {
         }
     }
 
-    //@JsonView({ JsonViews.Extended.class })
+    @JsonView({ JsonViews.Extended.class })
     /*@ApiOperation(
             value = "Poistaa koodien välisen relaation",
             notes = "")*/
@@ -362,7 +364,7 @@ public class CodeElementResource {
         }
     }
 
-    //@JsonView({ JsonViews.Extended.class })
+    @JsonView({ JsonViews.Extended.class })
     //@ApiOperation(value = "Poistaa koodien välisiä relaatioita, massatoiminto", notes = "")
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @PostMapping(path = "/removerelations", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -412,7 +414,7 @@ public class CodeElementResource {
          }
     }
 
-    //@JsonView({ JsonViews.Extended.class })
+    @JsonView({ JsonViews.Extended.class })
     /*@ApiOperation(
             value = "Päivittää koodin",
             notes = "",
@@ -436,7 +438,7 @@ public class CodeElementResource {
         }
     }
 
-    //@JsonView({ JsonViews.Basic.class })
+    @JsonView({ JsonViews.Basic.class })
     /*@ApiOperation(
             value = "Päivittää koodin kokonaisuutena",
             notes = "Lisää ja poistaa koodinsuhteita vastaamaan annettua koodia.",

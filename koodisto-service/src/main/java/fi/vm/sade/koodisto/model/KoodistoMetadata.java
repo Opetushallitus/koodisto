@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import javax.validation.constraints.NotBlank;
 
