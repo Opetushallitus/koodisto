@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
-import java.util.List;
 
 @Repository
 public class KoodistoMetadataRepositoryImpl implements

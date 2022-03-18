@@ -7,7 +7,6 @@ import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.Koodisto;
-import fi.vm.sade.koodisto.repository.KoodiMetadataRepository;
 import fi.vm.sade.koodisto.repository.KoodiMetadataRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

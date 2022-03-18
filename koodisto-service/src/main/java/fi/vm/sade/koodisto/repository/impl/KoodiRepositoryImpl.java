@@ -12,7 +12,6 @@ import fi.vm.sade.koodisto.repository.KoodiRepositoryCustom;
 import fi.vm.sade.koodisto.repository.KoodistoVersioKoodiVersioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;

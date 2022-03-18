@@ -1,8 +1,5 @@
 package fi.vm.sade.koodisto.dto;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Kieli;
 
 // TODO tsekkaa toiminta @JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)

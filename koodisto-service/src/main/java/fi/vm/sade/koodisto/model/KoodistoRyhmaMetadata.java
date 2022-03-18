@@ -4,7 +4,6 @@
 package fi.vm.sade.koodisto.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import org.hibernate.validator.constraints.NotBlank;
 
