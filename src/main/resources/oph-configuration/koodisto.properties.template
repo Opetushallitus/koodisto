@@ -7,7 +7,9 @@
 
 # Aseta vähintään nämä ympäristökohtaiset arvot
 host.cas={{host_cas}}
-host.virkailija={{host_virkailija}}
+host.virkailija={{host_virkailija}}¨
+spring.datasource.username={{postgres_app_user}}
+spring.datasource.password={{host_postgresql_koodisto_app_password}}
 
 #userdetailsService bean tarvitsee
 host.alb={{host_alb}}
