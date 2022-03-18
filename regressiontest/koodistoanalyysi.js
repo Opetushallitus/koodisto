@@ -356,7 +356,7 @@ export default function () {
     console.log("tobetested" + "", endpoints);
     console.log("tobetested xml" + "", xml);
     console.log(rest.length, rest[0]);
-    const baseUrl = "http://localhost:8081";
+    const baseUrl = "https://virkailija.untuvaopintopolku.fi";
     const toTest = [];
     for (const entry of endpoints.entries()) {
       const url = entry[0]
