@@ -1,0 +1,354 @@
+<script type="text/ng-template" id="confirmcancel.html">
+    <div class="modal-header">
+        <h3>{{'codeelement.createpage.confirmcancel.header' | i18n}}</h3>
+    </div>
+    <div class="modal-body">{{'codeelement.createpage.confirmcancel.text' | i18n}}</div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="codeElementCreatorModal.cancel()">{{'codes.ok' | i18n}}</button>
+        <button class="btn btn-warning" ng-click="codeElementCreatorModal.closeCancelConfirmModal()">{{'codes.cancel' | i18n}}</button>
+    </div>
+</script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1>{{'codeelement.createpage.header' | i18n}}</h1>
+        </div>
+    </div>
+    <form name="form" class="form-horizontal" ng-submit="codeElementCreator.submit()">
+
+        <div class="form-group">
+            <div class="col-md-offset-2">
+                <label for="same_name" class="checkbox"> <input id="same_name" type="checkbox" ng-model="codeElementCreator.model.samename" ng-change="codeElementCreator.setSameValue('name')" />
+                    {{'codes.sameinalllanguages' | i18n}}
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="name_fi" class="col-md-2 control-label">{{'codeelement.createpage.name' | i18n}}</label>
+            <div class="col-md-3">
+                <input id="name_fi" type="text" maxlength="512" class="width-30 form-control" ng-model="codeElementCreator.namefi" name="namefi" placeholder="{{'codes.finnish' | i18n}}"
+                    ng-required="!codeElementCreator.namesv && !codeElementCreator.nameen || codeElementCreator.shortnamefi || codeElementCreator.descriptionfi" ng-blur="codeElementCreator.visitedName = true" />
+                <span class="text-danger" ng-if="codeElementCreator.visitedName && form.namefi.$error.required"><img style="margin-right: 10px;"
+                    src="{{:: codeElementCreator.alertIcon}}">
+                    <span ng-if="!codeElementCreator.namesv && !codeElementCreator.nameen">{{codeElementCreator.errorMessageAtLeastOneName}}</span>
+                    <span ng-if="!(!codeElementCreator.namesv && !codeElementCreator.nameen)">{{codeElementCreator.errorMessageIfOtherInfoIsGiven}}</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-3">
+                <input id="name_sv" type="text" maxlength="512" class="width-30 form-control" ng-model="codeElementCreator.namesv" name="namesv" placeholder="{{'codes.swedish' | i18n}}"
+                    ng-required="!codeElementCreator.namefi && !codeElementCreator.nameen || codeElementCreator.shortnamesv || codeElementCreator.descriptionsv" ng-blur="codeElementCreator.visitedName = true" />
+                <span class="text-danger" ng-if="codeElementCreator.visitedName && form.namesv.$error.required"><img style="margin-right: 10px;"
+                    src="{{:: codeElementCreator.alertIcon}}">
+                    <span ng-if="!codeElementCreator.namefi && !codeElementCreator.nameen">{{codeElementCreator.errorMessageAtLeastOneName}}</span>
+                    <span ng-if="!(!codeElementCreator.namefi && !codeElementCreator.nameen)">{{codeElementCreator.errorMessageIfOtherInfoIsGiven}}</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-3">
+                <input id="name_en" type="text" maxlength="512" class="width-30 form-control" ng-model="codeElementCreator.nameen" name="nameen" placeholder="{{'codes.english' | i18n}}"
+                    ng-required="!codeElementCreator.namefi && !codeElementCreator.namesv || codeElementCreator.shortnameen || codeElementCreator.descriptionen" ng-blur="codeElementCreator.visitedName = true" />
+                <span class="text-danger" ng-if="codeElementCreator.visitedName && form.nameen.$error.required"><img style="margin-right: 10px;"
+                    src="{{:: codeElementCreator.alertIcon}}">
+                    <span ng-if="!codeElementCreator.namefi && !codeElementCreator.namesv">{{codeElementCreator.errorMessageAtLeastOneName}}</span>
+                    <span ng-if="!(!codeElementCreator.namefi && !codeElementCreator.namesv)">{{codeElementCreator.errorMessageIfOtherInfoIsGiven}}</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="code" class="col-md-2 control-label">{{'codeelement.createpage.codevalue' | i18n}}</label>
+            <div class="col-md-3">
+                <input id="code" type="text" maxlength="256" class="width-30 form-control" ng-model="codeElementCreator.codeValue" name="codeValue" ng-blur="codeElementCreator.visitedValue = true" required />
+                <span class="text-danger" ng-if="visitedValue && form.codeValue.$error.required"><img style="margin-right: 10px;"
+                    src="{{:: codeElementCreator.alertIcon}}">{{codeElementCreator.errorMessage}}</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-inline col-md-12">
+                <label for="datesactivestart" class="col-md-2 control-label">{{'codeelement.createpage.datesactive' | i18n}}</label>
+                <div class="input-group col-md-2">
+                    <input id="datesactivestart"
+                           class="form-control"
+                           type="text"
+                           datepicker-popup="dd.MM.yyyy"
+                           name="dActiveStart"
+                           ng-model="codeElementCreator.dActiveStart"
+                           min="minDate"
+                           date-disabled="codeElementCreator.disabled(date, mode)"
+                           ng-blur="codeElementCreator.visitedDate= true"
+                           required
+                           is-open="codeElementCreator.datesactivestart.open"
+                           ng-click="codeElementCreator.datesactivestart.open = true"
+                    />
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                </div>
+                <span>-</span>
+                <div class="input-group col-md-2">
+                    <input id="datesactiveend"
+                           class="form-control"
+                           type="text"
+                           datepicker-popup="dd.MM.yyyy"
+                           ng-model="codeElementCreator.dActiveEnd"
+                           min="minDate"
+                           date-disabled="codeElementCreator.disabled(date, mode)"
+                           is-open="codeElementCreator.datesactiveend.open"
+                           ng-click="codeElementCreator.datesactiveend.open = true"
+                    />
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                </div>
+                <span class="text-danger" ng-if="visitedDate && form.dActiveStart.$error.required"><img style="margin-right: 10px;" src="{{:: codeElementCreator.alertIcon}}">{{codeElementCreator.errorMessage}}</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2">
+                <label for="same_shortname" class="checkbox"> <input id="same_shortname" type="checkbox" ng-model="codeElementCreator.model.sameshortname"
+                        ng-change="codeElementCreator.setSameValue('shortname')" /> {{'codes.sameinalllanguages' | i18n}}
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="shortname_fi" class="col-md-2 control-label">{{'codeelement.createpage.shortname' | i18n}}</label>
+            <div class="col-md-3">
+                <input id="shortname_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codeElementCreator.shortnamefi" name="shortnamefi"
+                    placeholder="{{'codes.finnish' | i18n}}" ng-blur="codeElementCreator.visitedShort = true" />
+                <span class="text-danger" ng-if="visitedShort && form.shortnamefi.$error.required"><img style="margin-right: 10px;"
+                    src="{{:: codeElementCreator.alertIcon}}">{{codeElementCreator.errorMessage}}</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-3">
+                <input id="shortname_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codeElementCreator.shortnamesv" name="shortnamesv"
+                    placeholder="{{'codes.swedish' | i18n}}" ng-blur="codeElementCreator.visitedShort = true" />
+                <span class="text-danger" ng-if="visitedShort && form.shortnamesv.$error.required"><img style="margin-right: 10px;"
+                    src="{{:: codeElementCreator.alertIcon}}">{{codeElementCreator.errorMessage}}</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-3">
+                <input id="shortname_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codeElementCreator.shortnameen" name="shortnameen"
+                    placeholder="{{'codes.english' | i18n}}" ng-blur="codeElementCreator.visitedShort = true" />
+                <span class="text-danger" ng-if="visitedShort && form.shortnameen.$error.required"><img style="margin-right: 10px;"
+                    src="{{:: codeElementCreator.alertIcon}}">{{codeElementCreator.errorMessage}}</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2">
+                <label for="same_description" class="checkbox"> <input id="same_description" type="checkbox" ng-model="codeElementCreator.model.samedescription"
+                        ng-change="codeElementCreator.setSameValue('description')" /> {{'codes.sameinalllanguages' | i18n}}
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="description_fi" class="col-md-2 control-label">{{'codes.createpage.description' | i18n}}</label>
+            <div class="col-md-3">
+                <textarea id="description_fi" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.descriptionfi" name="descriptionfi"
+                    placeholder="{{'codes.finnish' | i18n}}" ng-blur="codeElementCreator.visitedDesc = true"></textarea>
+                <span class="text-danger" ng-if="visitedDesc && form.descriptionfi.$error.required"><img style="margin-right: 10px;"
+                    src="{{:: codeElementCreator.alertIcon}}">{{codeElementCreator.errorMessage}}</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-3">
+                <textarea id="description_sv" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.descriptionsv" name="descriptionsv"
+                    placeholder="{{'codes.swedish' | i18n}}" ng-blur="codeElementCreator.visitedDesc = true"></textarea>
+                <span class="text-danger" ng-if="visitedDesc && form.descriptionsv.$error.required"><img style="margin-right: 10px;"
+                    src="{{:: codeElementCreator.alertIcon}}">{{codeElementCreator.errorMessage}}</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-3">
+                <textarea id="description_en" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.descriptionen" name="descriptionen"
+                    placeholder="{{'codes.english' | i18n}}" ng-blur="codeElementCreator.visitedDesc = true"></textarea>
+                <span class="text-danger" ng-if="visitedDesc && form.descriptionen.$error.required"><img style="margin-right: 10px;"
+                    src="{{:: codeElementCreator.alertIcon}}">{{codeElementCreator.errorMessage}}</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-12">
+                <accordion close-others="false"> <accordion-group is-open="isopen" class=""> <accordion-heading>
+                <i class="pull-left" ng-class="{'glyphicon glyphicon-chevron-down': isopen, 'glyphicon glyphicon-chevron-right': !isopen}"></i> {{'codes.createpage.showextra' | i18n}} </accordion-heading>
+                <div class="form-group">
+                    <div class="col-md-offset-2">
+                        <label for="same_instructions" class="checkbox"> <input id="same_instructions" type="checkbox" ng-model="codeElementCreator.model.sameinstructions"
+                                ng-change="codeElementCreator.setSameValue('instructions')" /> {{'codes.sameinalllanguages' | i18n}}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="instructions_fi" class="col-md-2 control-label">{{'codeelement.createpage.instructions' | i18n}}</label>
+                    <div class="col-md-3">
+                        <textarea id="instructions_fi" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.instructionsfi" placeholder="{{'codes.finnish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-3">
+                        <textarea id="instructions_sv" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.instructionssv" placeholder="{{'codes.swedish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-3">
+                        <textarea id="instructions_en" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.instructionsen" placeholder="{{'codes.english' | i18n}}"></textarea>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-offset-2">
+                        <label for="same_concept"> <input id="same_concept" type="checkbox" ng-model="codeElementCreator.model.sameconcept" ng-change="codeElementCreator.setSameValue('concept')" />
+                            {{'codes.sameinalllanguages' | i18n}}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="concept_fi" class="col-md-2 control-label">{{'codeelement.createpage.concept' | i18n}}</label>
+                    <div class="col-md-3">
+                        <input id="concept_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codeElementCreator.conceptfi" placeholder="{{'codes.finnish' | i18n}}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-3">
+                        <input id="concept_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codeElementCreator.conceptsv" placeholder="{{'codes.swedish' | i18n}}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-3">
+                        <input id="concept_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codeElementCreator.concepten" placeholder="{{'codes.english' | i18n}}" />
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-offset-2">
+                        <input id="same_totakenoticeof" type="checkbox" ng-model="codeElementCreator.model.sametotakenoticeof" ng-change="codeElementCreator.setSameValue('totakenoticeof')" />
+                        <label for="same_totakenoticeof">{{'codes.sameinalllanguages' | i18n}}</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="totakenoticeof_fi" class="col-md-2 control-label">{{'codeelement.createpage.totakenoticeof' | i18n}}</label>
+                    <div class="col-md-3">
+                        <input id="totakenoticeof_fi" type="text" maxlength="256" class="width-30 form-control" ng-model="codeElementCreator.totakenoticeoffi"
+                            placeholder="{{'codes.finnish' | i18n}}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-3">
+                        <input id="totakenoticeof_sv" type="text" maxlength="256" class="width-30 form-control" ng-model="codeElementCreator.totakenoticeofsv"
+                            placeholder="{{'codes.swedish' | i18n}}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-3">
+                        <input id="totakenoticeof_en" type="text" maxlength="256" class="width-30 form-control" ng-model="codeElementCreator.totakenoticeofen"
+                            placeholder="{{'codes.english' | i18n}}" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2">
+                        <label for="same_containssignificance" class="checkbox"> <input id="same_containssignificance" type="checkbox"
+                                ng-model="codeElementCreator.model.samecontainssignificance" ng-change="codeElementCreator.setSameValue('containssignificance')" /> {{'codes.sameinalllanguages' | i18n}}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="containssignificance_fi" class="col-md-2 control-label">{{'codeelement.createpage.containssignificance' | i18n}}</label>
+                    <div class="col-md-3">
+                        <textarea id="containssignificance_fi" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.containssignificancefi"
+                            placeholder="{{'codes.finnish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-3">
+                        <textarea id="containssignificance_sv" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.containssignificancesv"
+                            placeholder="{{'codes.swedish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-3">
+                        <textarea id="containssignificance_en" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.containssignificanceen"
+                            placeholder="{{'codes.english' | i18n}}"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2">
+                        <label for="same_doesnotcontainsignificance" class="checkbox"> <input id="same_doesnotcontainsignificance" type="checkbox"
+                                ng-model="codeElementCreator.model.samedoesnotcontainsignificance" ng-change="codeElementCreator.setSameValue('doesnotcontainsignificance')" /> {{'codes.sameinalllanguages'
+                            | i18n}}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="doesnotcontainsignificance_fi" class="col-md-2 control-label">{{'codeelement.createpage.doesnotcontainsignificance' | i18n}}</label>
+                    <div class="col-md-3">
+                        <textarea id="doesnotcontainsignificance_fi" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.doesnotcontainsignificancefi"
+                            placeholder="{{'codes.finnish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-3">
+                        <textarea id="doesnotcontainsignificance_sv" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.doesnotcontainsignificancesv"
+                            placeholder="{{'codes.swedish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-3">
+                        <textarea id="doesnotcontainsignificance_en" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.doesnotcontainsignificanceen"
+                            placeholder="{{'codes.english' | i18n}}"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2">
+                        <label for="same_containscodes" class="checkbox"> <input id="same_containscodes" type="checkbox" ng-model="codeElementCreator.model.samecontainscodes"
+                                ng-change="codeElementCreator.setSameValue('containscodes')" /> {{'codes.sameinalllanguages' | i18n}}
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="containscodes_fi" class="col-md-2 control-label">{{'codeelement.createpage.containscodes' | i18n}}</label>
+                    <div class="col-md-3">
+                        <textarea id="containscodes_fi" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.containscodesfi" placeholder="{{'codes.finnish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-3">
+                        <textarea id="containscodes_sv" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.containscodessv" placeholder="{{'codes.swedish' | i18n}}"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-3">
+                        <textarea id="containscodes_en" maxlength="2048" class="width-30 form-control" ng-model="codeElementCreator.containscodesen" placeholder="{{'codes.english' | i18n}}"></textarea>
+                    </div>
+                </div>
+
+                </accordion-group> </accordion>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-9">
+                <alert ng-repeat="alert in codeElementCreator.alerts" type="alert.type" close="codeElementCreator.closeAlert($index)"> <img style="margin-right: 10px;"
+                    src="{{:: codeElementCreator.alertIcon}}">{{alert.msg}}</alert>
+            </div>
+        </div>
+
+        <div class="row navbar-fixed-bottom">
+            <button ng-disabled="!form.$valid" auth="crudAny" auth-service="APP_KOODISTO" class="btn btn-primary pull-right" type="submit">{{'codes.save'
+                | i18n}}</button>
+            <button type="button" class="btn pull-right" ng-click="codeElementCreator.showCancelConfirmModal(form.$dirty)">{{'codes.cancel' | i18n}}</button>
+        </div>
+
+    </form>
+</div>

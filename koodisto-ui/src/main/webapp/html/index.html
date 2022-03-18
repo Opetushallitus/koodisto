@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html ng-app="koodisto" ng-controller="eventsCtrl as events">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Koodistojen ylläpito</title>
+
+    <!--conf -->
+    <script type="text/javascript" src="/koodisto-ui/configuration/frontProperties.js"></script>
+
+    <!--Virkailija layout script -->
+    <script type="text/javascript" src="/virkailija-raamit/apply-raamit.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <base href="/koodisto-ui/html/" >
+    <!-- app js insert by webpack -->
+</head>
+<body idler>
+    <div id="application-wrapper">
+        <div id="angularbox" ng-view="">
+            <!-- Angular router -->
+        </div>
+        <div>
+            <div ng-include="'sessionTimeout.html'"></div>
+        </div>
+    </div>
+
+    <div ng-controller="LoadingCtrl as loading"><div ng-show="loading.isLoading" style="position: fixed; top: 0; width: 100%; text-align: center; background: #FFF7BC none repeat scroll 0% 0%; padding: 0.3em; font-weight: bold; font-style: italic;">Käsitellään...</div></div>
+</body>
+
+</html>
