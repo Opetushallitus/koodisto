@@ -8,8 +8,10 @@ import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
 import { HeaderContainer } from '../../../App';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import IconWrapper from '../../IconWapper/IconWrapper';
-
-const KoodistoTable = () => {
+type KoodistoTableProps = {
+    handleLisaaKoodistoRyhma: () => void;
+};
+const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma }) => {
     const [atomData] = useAtom(koodistoAtom);
     const { formatMessage } = useIntl();
     const data = useMemo<Koodisto[]>(() => {
@@ -93,7 +95,7 @@ const KoodistoTable = () => {
                     tagName={'h1'}
                 />
                 <FormattedMessage id={'TAULUKKO_KUVAUS_OTSIKKO'} defaultMessage={'VOIT RAJATA HAKUA'} />
-                <Button>
+                <Button onClick={handleLisaaKoodistoRyhma}>
                     <IconWrapper icon="el:plus-sign" inline={true} />
                     <FormattedMessage
                         id={'TAULUKKO_LISAA_KOODISTORYHMA_BUTTON'}

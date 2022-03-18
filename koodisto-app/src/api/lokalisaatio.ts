@@ -1,14 +1,15 @@
 import { atom, Getter } from 'jotai';
 import { API_LOKALISAATIO_PATH } from '../context/constants';
 import { casMeLangAtom } from './kayttooikeus';
+import axios from 'axios';
 
 const urlAtom = atom(API_LOKALISAATIO_PATH);
 type Lokalisaatio = { locale: 'fi' | 'sv' | 'en'; key: string; value: string };
 
 export const lokalisaatioAtom = atom(async (get: Getter): Promise<Lokalisaatio[]> => {
     const url = get(urlAtom);
-    const response = await fetch(`${url}?${new URLSearchParams({ category: 'koodisto' })}`);
-    return response.json();
+    const { data } = await axios.get<Lokalisaatio[]>(`${url}?${new URLSearchParams({ category: 'koodisto' })}`);
+    return data;
 });
 export const lokalisaatioMessagesAtom = atom((get: Getter): Record<string, string> => {
     const locale = get(casMeLangAtom);

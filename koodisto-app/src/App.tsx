@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import KoodistoTable from './components/pages/KoodistoTable/KoodistoTable';
 import Loading from './components/pages/Loading/Loading';
 import styled from 'styled-components';
@@ -32,13 +32,18 @@ const ContentContainer = styled.div`
     display: block;
     max-width: 100%;
 `;
-const App = () => {
+const App: React.FC = () => {
+    const [koodistoRyhmaModalVisible, setKoodistoRyhmaModalVisible] = useState<boolean>(false);
+    const handleLisaaKoodistoRyhma = () => {
+        setKoodistoRyhmaModalVisible(true);
+    };
     return (
         <PageBase>
             <MainContainer>
                 <React.Suspense fallback={<Loading />}>
                     <ContentContainer>
-                        <KoodistoTable />
+                        <KoodistoTable handleLisaaKoodistoRyhma={handleLisaaKoodistoRyhma} />
+                        {koodistoRyhmaModalVisible && <div>FOO</div>}
                     </ContentContainer>
                 </React.Suspense>
             </MainContainer>

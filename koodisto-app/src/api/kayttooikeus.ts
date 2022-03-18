@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { atom } from 'jotai';
+import { atom, Getter } from 'jotai';
 
 type CASMeApi = {
     uid: string;
@@ -8,14 +8,19 @@ type CASMeApi = {
     lastName: string;
     groups: string[];
     roles: string;
-    lang: string;
+    lang: 'fi' | 'sv' | 'en';
 };
 
-const urlAtom = atom((get) => '/kayttooikeus-service/');
-export const casMeAtom = atom(async (get) => {
-    const { data } = await axios.get<CASMeApi>(`${get(urlAtom)}cas/me`);
+const urlAtom = atom<string>('/kayttooikeus-service/cas/me');
+export const casMeAtom = atom<Promise<CASMeApi>>(async (get: Getter) => {
+    const { data } = await axios.get<CASMeApi | string>(get(urlAtom));
+    if (typeof data === 'string') {
+        const retry = await axios.get<CASMeApi>(get(urlAtom));
+        return retry.data;
+    }
     return data;
 });
 export const casMeLangAtom = atom((get) => {
-    return get(casMeAtom).lang;
+    const casMe = get(casMeAtom);
+    return casMe.lang;
 });

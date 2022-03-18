@@ -64,6 +64,8 @@ jobs:
     needs: [cypress,react-build]
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
       - name: Download koodisto-app-spring-boot
         uses: actions/download-artifact@v2
         with:
@@ -79,7 +81,7 @@ jobs:
           export BASE_IMAGE="baseimage-fatjar-openjdk11:master"
           export ARTIFACT_NAME="koodisto-app"
           mv koodisto-app.jar $DOCKER_BUILD_DIR/artifact/$ARTIFACT_NAME.jar
-          touch $DOCKER_BUILD_DIR/config/empty.props
+          cp -vr resources/oph-configuration $DOCKER_BUILD_DIR/config/
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME
           ./ci-tools/github-build/upload-image.sh $ARTIFACT_NAME

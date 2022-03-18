@@ -3,6 +3,7 @@ import { atom, Getter } from 'jotai';
 import { ApiDate, Kieli } from '../types/types';
 import { casMeLangAtom } from './kayttooikeus';
 import { parseApiDate, translateMetadata } from '../utils/utils';
+import axios from 'axios';
 
 export type Koodisto = {
     koodistoUri: string;
@@ -36,8 +37,8 @@ type KoodistoRyhma = {
 };
 const urlAtom = atom<string>(`${API_BASE_PATH}/codes`);
 export const koodistoRyhmaAtom = atom<Promise<KoodistoRyhma[]>>(async (get: Getter) => {
-    const response = await fetch(get(urlAtom));
-    return response.json();
+    const { data } = await axios.get<KoodistoRyhma[]>(get(urlAtom));
+    return data;
 });
 const distinctTypeFilter = (a: KoodistoApi, i: number, array: KoodistoApi[]): boolean =>
     array.findIndex((b: KoodistoApi) => b.koodistoUri === a.koodistoUri) === i;
@@ -58,7 +59,8 @@ const koodistoApiToKoodisto = (a: KoodistoApi, lang: Kieli): Koodisto => {
 };
 
 export const koodistoAtom = atom<Koodisto[]>((get: Getter) => {
-    const lang = get(casMeLangAtom).toUpperCase() as Kieli;
+    const lowerLang = get(casMeLangAtom);
+    const lang = lowerLang.toUpperCase() as Kieli;
     return get(koodistoRyhmaAtom)
         .flatMap((a: KoodistoRyhma) => a.koodistos.map((k: KoodistoApi) => ({ ...k, ryhmaMetadata: a.metadata })))
         .filter(distinctTypeFilter)
