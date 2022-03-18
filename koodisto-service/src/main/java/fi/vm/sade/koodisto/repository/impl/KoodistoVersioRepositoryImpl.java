@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.repository.impl;
 
 import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.repository.KoodistoVersioRepository;
 import fi.vm.sade.koodisto.repository.KoodistoVersioRepositoryCustom;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;

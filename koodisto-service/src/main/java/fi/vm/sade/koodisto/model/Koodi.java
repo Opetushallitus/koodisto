@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.model;
 
 
-import com.fasterxml.jackson.annotation.JsonView;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;

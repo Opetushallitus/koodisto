@@ -1,10 +1,6 @@
 package fi.vm.sade.koodisto.configuration;
 
-import fi.vm.sade.koodisto.service.conversion.impl.koodi.*;
-import fi.vm.sade.properties.OphProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
