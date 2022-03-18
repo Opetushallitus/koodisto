@@ -285,7 +285,9 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Override
     @Transactional(readOnly = true)
     public List<KoodistoRyhma> listAllKoodistoRyhmas() {
-        return koodistoRyhmaRepository.findAll();
+        List<KoodistoRyhma> list = koodistoRyhmaRepository.findAll();
+        list.sort(Comparator.comparing(BaseEntity::getId));
+        return list;
     }
 
     @Override
