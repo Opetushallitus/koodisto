@@ -20,7 +20,7 @@ public class KoodiBaseSearchCriteriaType implements Serializable
 
     public List<String> getKoodiUris() {
         if (koodiUris == null) {
-            koodiUris = new ArrayList<String>();
+            koodiUris = new ArrayList<>();
         }
         return this.koodiUris;
     }
@@ -35,7 +35,7 @@ public class KoodiBaseSearchCriteriaType implements Serializable
 
     public List<TilaType> getKoodiTilas() {
         if (koodiTilas == null) {
-            koodiTilas = new ArrayList<TilaType>();
+            koodiTilas = new ArrayList<>();
         }
         return this.koodiTilas;
     }

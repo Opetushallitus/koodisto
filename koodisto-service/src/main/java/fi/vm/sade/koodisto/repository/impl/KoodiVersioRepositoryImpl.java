@@ -133,7 +133,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
     }
 
     private static List<Predicate> createRestrictionsForKoodistoCriteria(CriteriaBuilder cb, SearchKoodisByKoodistoCriteriaType koodistoSearchCriteria,
-            Path<Koodisto> koodisto, Path<KoodistoVersio> koodistoVersioPath) {
+                     Path<Koodisto> koodisto, Path<KoodistoVersio> koodistoVersioPath) {
         List<Predicate> restrictions = new ArrayList<>();
         if (koodistoSearchCriteria != null) {
             String koodistoUri = koodistoSearchCriteria.getKoodistoUri();
@@ -195,28 +195,16 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
 
     private static List<Predicate> createRestrictionsForKoodiCriteria(CriteriaBuilder cb, KoodiBaseSearchCriteriaType searchCriteria, Path<Koodi> koodi,
             Path<KoodiVersio> koodiVersio) {
-        List<Predicate> restrictions = new ArrayList<Predicate>();
-
+        List<Predicate> restrictions = new ArrayList<>();
         if (searchCriteria != null) {
-            if (searchCriteria.getKoodiUris() != null && !searchCriteria.getKoodiUris().isEmpty()) {
-                ArrayList<String> koodiUris = new ArrayList<String>();
-                for (String koodiUri : searchCriteria.getKoodiUris()) {
-                    if (!Strings.isNullOrEmpty(koodiUri)) {
-                        koodiUris.add(koodiUri);
-                    }
-                }
-
-                if (!koodiUris.isEmpty()) {
-                    In<String> in = cb.in(koodi.<String> get(KOODI_URI));
-                    for (String uri : koodiUris) {
-                        in.value(uri);
-                    }
-                    restrictions.add(in);
-                }
+            List<String> koodiUris = searchCriteria.getKoodiUris();
+            if (koodiUris != null && !koodiUris.isEmpty()) {
+                In<String> in = cb.in(koodi.get(KOODI_URI));
+                koodiUris.stream().filter(uri -> !Strings.isNullOrEmpty(uri)).forEach(in::value);
+                restrictions.add(in);
             }
             restrictions.addAll(createSecondaryRestrictionsForKoodiSearchCriteria(cb, searchCriteria, koodiVersio));
         }
-
         return restrictions;
     }
 
