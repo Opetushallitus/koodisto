@@ -52,13 +52,13 @@ public class V13__set_old_relations_passive extends BaseJavaMigration {
         });
         Collection<RelationDto> relationsToUpdate = Collections2.filter(codeElementRelations, 
                 new CodeElementRelationsToPassivePredicate(jdbcTemplate, uriVersions));
-        LOGGER.warn("Updating " + relationsToUpdate.size() + "  koodinsuhde rows to passive");
+        LOGGER.warn("Updating {} koodinsuhde rows to passive", relationsToUpdate.size());
         updateCodeElementRelationsToPassive(jdbcTemplate, relationsToUpdate);
     }
 
 
     private void logErrors() {
-        LOGGER.error("Script completed with " + errorMap.size() + " errors.");
+        LOGGER.error("Script completed with {} errors.", errorMap.size());
         for(Long key : errorMap.keySet()) {
             LOGGER.error(errorMap.get(key));
         }
@@ -77,30 +77,18 @@ public class V13__set_old_relations_passive extends BaseJavaMigration {
         List<CodesUriVersionDto> uriVersions = getCodesUriVersions(jdbcTemplate);
         
         Collection<RelationDto> relationsToUpdate = Collections2.filter(codesRelations, new RelationsToPassivePredicate<CodesUriVersionDto>(uriVersions));
-        LOGGER.warn("Updating " + relationsToUpdate.size() + "  koodistonsuhde rows to passive");
+        LOGGER.warn("Updating {} koodistonsuhde rows to passive", relationsToUpdate.size());
         updateCodesRelationsToPassive(jdbcTemplate, relationsToUpdate);
     }
 
     private List<CodesUriVersionDto> getCodesUriVersions(final JdbcTemplate jdbcTemplate) {
         if (codesUriVersions == null) {
             codesUriVersions = jdbcTemplate.query("SELECT kv.*, k.koodistouri FROM koodistoversio kv, koodisto k WHERE kv.koodisto_id = k.id",
-                    new RowMapper<CodesUriVersionDto>() {
-
-                @Override
-                public CodesUriVersionDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    List<Long> koodiVersios = jdbcTemplate.query("SELECT kvkv.koodiversio_id FROM koodistoversio_koodiversio kvkv WHERE kvkv.koodistoversio_id = '" + rs.getLong("id") + "'",
-                            new RowMapper<Long>() {
-
-                        @Override
-                        public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
-                            return rs.getLong("koodiversio_id");
-                        }
-
+                    (rs, rowNum) -> {
+                        List<Long> koodiVersios = jdbcTemplate.query("SELECT kvkv.koodiversio_id FROM koodistoversio_koodiversio kvkv WHERE kvkv.koodistoversio_id = '" + rs.getLong("id") + "'",
+                                (rs1, rowNum1) -> rs1.getLong("koodiversio_id"));
+                        return new CodesUriVersionDto(rs.getLong("id"), rs.getInt("versio"), rs.getString("koodistouri"), Tila.valueOf(rs.getString("tila")), koodiVersios);
                     });
-                    return new CodesUriVersionDto(rs.getLong("id"), rs.getInt("versio"), rs.getString("koodistouri"), Tila.valueOf(rs.getString("tila")), koodiVersios);
-                }
-
-            });
         }
         return codesUriVersions;
     }
@@ -110,7 +98,7 @@ public class V13__set_old_relations_passive extends BaseJavaMigration {
             jdbcTemplate.update("UPDATE koodinsuhde SET ylakoodistapassiivinen = ?, alakoodistapassiivinen = ? WHERE id = ?", 
                     relationDto.upperPassive, relationDto.lowerPassive, relationDto.id);
         }
-        LOGGER.warn(relationsToUpdate.size() + " koodinsuhde rows was succesfully set to passive");
+        LOGGER.warn("{} koodinsuhde rows was succesfully set to passive", relationsToUpdate.size());
     }
     
     private void updateCodesRelationsToPassive(JdbcTemplate jdbcTemplate, Collection<RelationDto> relationsToUpdate) {
@@ -118,7 +106,7 @@ public class V13__set_old_relations_passive extends BaseJavaMigration {
             jdbcTemplate.update("UPDATE koodistonsuhde SET ylakoodistostapassiivinen = ?, alakoodistostapassiivinen = ? WHERE id = ?", 
                     relationDto.upperPassive, relationDto.lowerPassive, relationDto.id);
         }
-        LOGGER.warn(relationsToUpdate.size() + " koodistonsuhde rows was succesfully set to passive");
+        LOGGER.warn("{} koodistonsuhde rows was succesfully set to passive", relationsToUpdate.size());
     }
 
     private static class RelationDto {

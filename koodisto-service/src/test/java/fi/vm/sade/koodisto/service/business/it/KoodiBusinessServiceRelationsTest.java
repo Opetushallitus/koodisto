@@ -48,8 +48,8 @@ public class KoodiBusinessServiceRelationsTest {
                 SuhteenTyyppi.RINNASTEINEN, false);
         assertEquals(2, rinnastuvat.size());
         for (KoodiVersioWithKoodistoItem k : rinnastuvat) {
-            logger.info("Koodi: " + k.getKoodiVersio().getKoodi().getKoodiUri() + " - versio "
-                    + k.getKoodiVersio().getVersio());
+            logger.info("Koodi: {} - versio: {}"
+                    ,k.getKoodiVersio().getKoodi().getKoodiUri(), k.getKoodiVersio().getVersio());
         }
 
         List<KoodiVersioWithKoodistoItem> children = koodiBusinessService.listByRelation(kv, SuhteenTyyppi.SISALTYY,

@@ -141,7 +141,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         KoodistoVersio yla = getLatestKoodistoVersio(ylaKoodisto);
         KoodistoVersio ala = getLatestKoodistoVersio(alaKoodisto);
         if (hasAnyRelation(ylaKoodisto, alaKoodisto)) {
-            logger.warn("Codes already have non-versioned relation: ylakoodisto=" + ylaKoodisto + ", alaKoodisto=" + alaKoodisto);
+            logger.warn("Codes already have non-versioned relation: ylakoodisto={} , alaKoodisto= {}", ylaKoodisto, alaKoodisto);
             insert = false;
         }
         if (suhteenTyyppi == SuhteenTyyppi.SISALTYY && !userIsRootUser() && !koodistosHaveSameOrganisaatio(ylaKoodisto, alaKoodisto)) {
@@ -427,7 +427,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         SearchKoodistosCriteriaType searchCriteria = KoodistoServiceSearchCriteriaBuilder.koodistoByUriAndVersio(koodistoUri, koodistoVersio);
         List<KoodistoVersio> result = koodistoVersioRepository.searchKoodistos(searchCriteria);
         if (result.size() != 1) {
-            logger.error("No koodisto found for URI " + koodistoUri + " and version " + koodistoVersio);
+            logger.error("No koodisto found for URI {} and version {}", koodistoUri, koodistoVersio);
             throw new KoodistoNotFoundException();
         }
 
@@ -619,7 +619,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         KoodistoVersio versio = getKoodistoVersio(koodistoUri, koodistoVersio);
 
         if (!Tila.PASSIIVINEN.equals(versio.getTila())) {
-            logger.error("Cannot delete koodisto version. Tila must be " + Tila.PASSIIVINEN.name() + ".");
+            logger.error("Cannot delete koodisto version. Tila must be {}.", Tila.PASSIIVINEN.name());
             throw new KoodistoVersioNotPassiivinenException();
         }
 
@@ -629,7 +629,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         List<KoodiVersio> koodiVersios = koodiVersioRepository.getKoodiVersiosIncludedOnlyInKoodistoVersio(koodistoUri, koodistoVersio);
         for (KoodiVersio kv : koodiVersios) {
             if (!Tila.PASSIIVINEN.equals(kv.getTila())) {
-                logger.error("Cannot delete koodisto version. Tila must be " + Tila.PASSIIVINEN.name() + " for all koodi versions.");
+                logger.error("Cannot delete koodisto version. Tila must be {} for all koodi versions.", Tila.PASSIIVINEN.name());
                 throw new KoodiVersioNotPassiivinenException();
             }
         }
@@ -735,13 +735,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         for (String uri : includesUris) {
             if (withinUris.contains(uri) || levelsWithUris.contains(uri)) {
-                logger.error("Tried adding multiple relations between codes " + koodistoUri + " and " + uri);
+                logger.error("Tried adding multiple relations between codes {} and {}", koodistoUri, uri);
                 throw new KoodistosAlreadyHaveSuhdeException();
             }
         }
         for (String uri : withinUris) {
             if (levelsWithUris.contains(uri)) {
-                logger.error("Tried adding multiple relations between codes " + koodistoUri + " and " + uri);
+                logger.error("Tried adding multiple relations between codes {} and {}", koodistoUri, uri);
                 throw new KoodistosAlreadyHaveSuhdeException();
             }
         }
