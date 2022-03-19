@@ -309,7 +309,7 @@ public class CodeElementResource {
             ValidatorUtil.validateArgs(errors, codeElementUri, codeElementUriToAdd, relationType);
 
             koodiBusinessService.addRelation(codeElementUri, Arrays.asList(codeElementUriToAdd), SuhteenTyyppi.valueOf(relationType), false);
-            return ResponseEntity.ok(null);//Response.status(Response.Status.OK).build();
+            return ResponseEntity.ok(null);
 
         } catch (KoodistoValidationException e) {
             logger.warn("Invalid parameter for rest call: addRelation. ", e);

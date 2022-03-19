@@ -12,10 +12,6 @@ public class UrlConfiguration extends OphProperties {
 
     @Autowired
     public UrlConfiguration(Environment environment) {
-        //addFiles("/koodisto-service-oph.properties");
-        //this.addOverride("host.virkailija", environment.getRequiredProperty("host.virkailija"));
-        //this.addOverride("url-virkailija", environment.getRequiredProperty("url-virkailija"));
-        //this.addOverride("koodisto-baseurl", environment.getRequiredProperty("koodisto-baseurl"));
         this.addDefault("host.alb", environment.getRequiredProperty("host.alb"));
 
         this.addDefault("cas.base", environment.getRequiredProperty("cas.base"));
@@ -23,7 +19,5 @@ public class UrlConfiguration extends OphProperties {
 
         this.addOverride("koodistoUri", environment.getRequiredProperty("koodistoUri"));
         this.addOverride("koodiUri", environment.getRequiredProperty("koodiUri"));
-
-        //this.frontProperties.setProperty("urlVirkailija", this.require("url-virkailija"));
     }
 }

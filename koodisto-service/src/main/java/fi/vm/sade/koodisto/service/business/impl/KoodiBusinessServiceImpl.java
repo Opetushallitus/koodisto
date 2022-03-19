@@ -376,7 +376,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             return;
         }
         if (st == SuhteenTyyppi.SISALTYY && !userIsRootUser() && !koodisHaveSameOrganisaatio(latest.getKoodi().getKoodiUri(), relatedCodeElements)) {
-            logger.warn("Failed to add 'sisaltyy' relation from {} to {}", latest.getKoodi().getKoodiUri(), relatedCodeElements);
+            logger.warn("Failed to add 'sisaltyy' relation from {} to {}", latest.getKoodi().getKoodiUri(), relatedCodeElements.toString().replaceAll("[\n\r\t]", "_"));
             throw new KoodisHaveDifferentOrganizationsException();
         }
         if (relatedCodeElements.contains(latest.getKoodi().getKoodiUri())) {
