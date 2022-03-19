@@ -136,7 +136,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
             Path<Koodisto> koodisto, Path<KoodistoVersio> koodistoVersio) {
         List<Predicate> restrictions = new ArrayList<Predicate>();
         if (koodistoSearchCriteria != null) {
-        if (!koodistoSearchCriteria.getKoodistoUri().isBlank()) {
+        if (!Strings.isNullOrEmpty(koodistoSearchCriteria.getKoodistoUri())) {
                 restrictions.add(cb.equal(koodisto.get(KOODISTO_URI), koodistoSearchCriteria.getKoodistoUri()));
             }
 
@@ -206,7 +206,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
             if (searchCriteria.getKoodiUris() != null && !searchCriteria.getKoodiUris().isEmpty()) {
                 ArrayList<String> koodiUris = new ArrayList<String>();
                 for (String koodiUri : searchCriteria.getKoodiUris()) {
-                    if (!koodiUri.isBlank()) {
+                    if (!Strings.isNullOrEmpty(koodiUri)) {
                         koodiUris.add(koodiUri);
                     }
                 }
@@ -326,7 +326,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
             String organisaatioOid = tuple.get(TUPLE_ORGANISAATIO_OID, String.class);
             Integer versio = tuple.get(TUPLE_VERSIO, Integer.class);
 
-            if (!uri.isBlank()) {
+            if (!Strings.isNullOrEmpty(uri)) {
                 KoodistoItem koodistoItem = null;
                 if (!koodistos.containsKey(uri)) {
                     koodistoItem = new KoodistoItem();
@@ -363,7 +363,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
     @Transactional
     public List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisCriteriaType searchCriteria) {
         if (searchCriteriaIsBlank(searchCriteria)) {
-            return new ArrayList<KoodiVersioWithKoodistoItem>();
+            return new ArrayList<>();
         }
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Tuple> criteriaQuery = cb.createTupleQuery();

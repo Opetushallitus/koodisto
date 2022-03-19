@@ -6,6 +6,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface KoodiRepository extends JpaRepository<Koodi, Long>, KoodiRepositoryCustom {
+
     Koodi findByKoodiUri(String koodiUri);
+
     void deleteById(Long id);
+
+    boolean existsByKoodiUri(String koodiUri);
 }

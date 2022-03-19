@@ -154,7 +154,7 @@ public class UriTransliteratorImpl implements UriTransliterator {
         String koodiUri = baseKoodiUri;
 
         int i = 1;
-        while (koodiRepository.koodiUriExists(koodiUri)) {
+        while (koodiRepository.existsByKoodiUri(koodiUri)) {
             koodiUri = baseKoodiUri + "-" + i;
             ++i;
         }

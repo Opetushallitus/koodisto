@@ -11,7 +11,7 @@ public class KoodistoItemType implements Serializable
     private final static long serialVersionUID = 1L;
     protected String koodistoUri;
     protected String organisaatioOid;
-    protected List<Integer> koodistoVersio;
+    private List<Integer> koodistoVersio;
 
     public String getKoodistoUri() {
         return koodistoUri;

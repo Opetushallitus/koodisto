@@ -538,7 +538,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                     FindOrCreateWrapper<KoodistoVersio> kvWrapper = koodistoBusinessService.createNewVersion(latestYlakoodiKoodisto);
                     if (kvWrapper.isCreated()) {
                         flushAfterCreation();
-                        //koodistoVersioRepository.saveAndFlush(kvWrapper.getData());
                     }
                 }
             }

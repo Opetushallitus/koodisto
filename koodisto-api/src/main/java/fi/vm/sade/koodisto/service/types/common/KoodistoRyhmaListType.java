@@ -10,8 +10,8 @@ public class KoodistoRyhmaListType implements Serializable
 
     private final static long serialVersionUID = 1L;
     protected String koodistoRyhmaUri;
-    protected List<KoodistoRyhmaMetadataType> koodistoRyhmaMetadatas;
-    protected List<KoodistoListType> koodistos;
+    private List<KoodistoRyhmaMetadataType> koodistoRyhmaMetadatas;
+    private List<KoodistoListType> koodistos;
 
     public String getKoodistoRyhmaUri() {
         return koodistoRyhmaUri;

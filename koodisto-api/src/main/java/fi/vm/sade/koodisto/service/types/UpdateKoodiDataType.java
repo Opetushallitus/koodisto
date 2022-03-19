@@ -23,7 +23,7 @@ public class UpdateKoodiDataType implements Serializable
 
     protected UpdateKoodiTilaType tila;
 
-    protected List<KoodiMetadataType> metadata;
+    private List<KoodiMetadataType> metadata;
     protected int versio;
     protected long lockingVersion;
 

@@ -134,11 +134,11 @@ public class UriTransliteratorTest {
         final String arvo = "/€%&)#öösoyNÄväFi123#€#%€%*'";
         final String expectedUri = koodistoUri + "_" + "oosoynavafi123";
 
-        when(koodiRepository.koodiUriExists(anyString())).thenReturn(false);
+        when(koodiRepository.existsByKoodiUri(anyString())).thenReturn(false);
 
         String generatedUri = uriTransliterator.generateKoodiUriByKoodistoUriAndKoodiArvo(koodistoUri, arvo);
 
-        verify(koodiRepository, times(1)).koodiUriExists(anyString());
+        verify(koodiRepository, times(1)).existsByKoodiUri(anyString());
         assertEquals(expectedUri, generatedUri);
     }
 
@@ -148,11 +148,11 @@ public class UriTransliteratorTest {
         final String arvo = "/€%&)#öösoyNÄväFi123#€#%€%*'";
         final String expectedUri = koodistoUri + "_" + "oosoynavafi123-2";
 
-        when(koodiRepository.koodiUriExists(anyString())).thenReturn(true, true, false);
+        when(koodiRepository.existsByKoodiUri(anyString())).thenReturn(true, true, false);
 
         String generatedUri = uriTransliterator.generateKoodiUriByKoodistoUriAndKoodiArvo(koodistoUri, arvo);
 
-        verify(koodiRepository, times(3)).koodiUriExists(anyString());
+        verify(koodiRepository, times(3)).existsByKoodiUri(anyString());
         assertEquals(expectedUri, generatedUri);
     }
 
@@ -162,11 +162,11 @@ public class UriTransliteratorTest {
         final String arvo = "/€%&)!\"#%€&€%*'";
         final String expectedUri = koodistoUri + "_" + "-";
 
-        when(koodiRepository.koodiUriExists(anyString())).thenReturn(false);
+        when(koodiRepository.existsByKoodiUri(anyString())).thenReturn(false);
 
         String generatedUri = uriTransliterator.generateKoodiUriByKoodistoUriAndKoodiArvo(koodistoUri, arvo);
 
-        verify(koodiRepository, times(1)).koodiUriExists(anyString());
+        verify(koodiRepository, times(1)).existsByKoodiUri(anyString());
         assertEquals(expectedUri, generatedUri);
     }
 

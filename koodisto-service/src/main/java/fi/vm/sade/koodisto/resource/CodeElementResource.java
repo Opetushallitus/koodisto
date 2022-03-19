@@ -37,6 +37,14 @@ import java.util.List;
 public class CodeElementResource {
     private final static Logger logger = LoggerFactory.getLogger(CodeElementResource.class);
 
+    private static final String KOODIURI = "codeelementuri";
+    private static final String KOODIVERSIO = "codeelementversion";
+    private static final String KOODISTOURI = "codesuri";
+    private static final String KOODISTOVERSIO = "codesversion";
+    private static final String RELATIONTYPE = "relationtype";
+
+    private static final String GENERIC_ERROR_CODE = "error.codes.generic";
+
     @Autowired
     KoodiBusinessService koodiBusinessService;
 
@@ -66,7 +74,7 @@ public class CodeElementResource {
     public ResponseEntity getAllCodeElementVersionsByCodeElementUri(
             @PathVariable String codeElementUri) {
         try {
-            String[] errors = { "codeelementuri" };
+            String[] errors = { KOODIURI };
             ValidatorUtil.validateArgs(errors, codeElementUri);
 
             SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(codeElementUri);
@@ -77,7 +85,7 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getAllCodeElementVersionsByCodeElementUri. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            //String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Fetching codeElement versions by uri failed.", e);
             return ResponseEntity.internalServerError().body(e.getMessage());
 
@@ -95,7 +103,7 @@ public class CodeElementResource {
             @PathVariable String codeElementUri,
             @PathVariable int codeElementVersion) {
         try {
-            String[] errors = { "codeelementuri", "codeelementversion" };
+            String[] errors = { KOODIURI, KOODIVERSIO };
             ValidatorUtil.validateArgs(errors, codeElementUri, codeElementVersion);
             ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException("error.validation.codeelementversion"));
 
@@ -110,7 +118,7 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getCodeElementByUriAndVersion. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            //String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Fetching codeElement by uri and version failed.", e);
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
@@ -127,7 +135,7 @@ public class CodeElementResource {
             @PathVariable int codesVersion,
             @PathVariable String codeElementUri) {
         try {
-            String[] errors = { "codesuri", "codesversion", "codeelementuri" };
+            String[] errors = { KOODISTOURI, KOODISTOVERSIO, KOODIURI };
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion, codeElementUri);
             ValidatorUtil.checkForGreaterThan(codesVersion, 0, new KoodistoValidationException("error.validation.codesversion"));
 
@@ -137,7 +145,7 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getCodeElementByCodeElementUri. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            //String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Fetching codeElement by uri failed.", e);
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
@@ -154,7 +162,7 @@ public class CodeElementResource {
             @PathVariable String codesUri,
             @PathVariable int codesVersion) {
         try {
-            String[] errors = { "codesuri", "codesversion" };
+            String[] errors = { KOODISTOURI, KOODISTOVERSIO };
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
             ValidatorUtil.checkForGreaterThan(codesVersion, -1, new KoodistoValidationException("error.validation.codeelementversion"));
 
@@ -170,7 +178,7 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getAllCodeElementsByCodesUriAndVersion. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            //String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Fetching codeElement failed.", e);
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
@@ -185,7 +193,7 @@ public class CodeElementResource {
     public ResponseEntity getLatestCodeElementVersionsByCodeElementUri(
             @PathVariable String codeElementUri) {
         try {
-            String[] errors = { "codeelementuri" };
+            String[] errors = { KOODIURI };
             ValidatorUtil.validateArgs(errors, codeElementUri);
 
             SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(codeElementUri);
@@ -199,9 +207,9 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getLatestCodeElementVersionsByCodeElementUri. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Fetching codeElement by uri failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
         }
     }
 
@@ -222,9 +230,9 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: get changes. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Fetching changes to code element failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
         }
     }
 
@@ -250,7 +258,7 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: get changes. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Fetching changes to code element failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -267,7 +275,7 @@ public class CodeElementResource {
             @PathVariable String codesUri,
             @RequestBody KoodiDto codeelementDTO) {
         try {
-            String[] errors = { "codesuri" };
+            String[] errors = { KOODISTOURI };
             ValidatorUtil.validateArgs(errors, codesUri);
             codesValidator.validate(codeelementDTO, ValidationType.INSERT);
             // TODO huono toteutus
@@ -279,7 +287,7 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: insert. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Inserting codeElement failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -296,7 +304,7 @@ public class CodeElementResource {
             @PathVariable String codeElementUriToAdd,
             @PathVariable String relationType) {
         try {
-            String[] errors = { "codeelementuri", "codeelementuritoadd", "relationtype" };
+            String[] errors = { KOODIURI, "codeelementuritoadd", RELATIONTYPE };
             ValidatorUtil.validateArgs(errors, codeElementUri, codeElementUriToAdd, relationType);
 
             koodiBusinessService.addRelation(codeElementUri, Arrays.asList(codeElementUriToAdd), SuhteenTyyppi.valueOf(relationType), false);
@@ -306,7 +314,7 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: addRelation. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Adding relation to codeElement failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -330,7 +338,7 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: addRelations. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Adding multiple relations to codeElement failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -348,7 +356,7 @@ public class CodeElementResource {
             @PathVariable String relationType) {
 
          try {
-            String[] errors = { "codeelementuri", "codeelementuritoremove", "relationtype" };
+            String[] errors = { KOODIURI, "codeelementuritoremove", RELATIONTYPE };
             ValidatorUtil.validateArgs(errors, codeElementUri, codeElementUriToRemove, relationType);
 
             koodiBusinessService.removeRelation(codeElementUri, Arrays.asList(codeElementUriToRemove),
@@ -362,7 +370,7 @@ public class CodeElementResource {
              logger.error("Removing relation to codeElement failed with SadeBusinessException. {}", message);
              return ResponseEntity.internalServerError().body(message);
          } catch (Exception e) {
-             String message = "error.codes.generic";
+             String message = GENERIC_ERROR_CODE;
              logger.error("Removing relation to codeElement failed with generic exception. {}", message);
              return ResponseEntity.internalServerError().body(message);
          }
@@ -383,14 +391,14 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: removeRelations. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Removing multiple relations form codeElement failed.", message);
             return ResponseEntity.internalServerError().body(message);
 
         }
     }
 
-    // TODO oikea http metodi olisi delete
+    // pitääis olla delete method
     @JsonView({ JsonViews.Simple.class })
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     /*@ApiOperation(
@@ -402,7 +410,7 @@ public class CodeElementResource {
             @PathVariable String codeElementUri,
             @PathVariable int codeElementVersion) {
          try {
-            String[] errors = { "codeelementuri", "codeelementversion" };
+            String[] errors = { KOODIURI, KOODIVERSIO };
             ValidatorUtil.validateArgs(errors, codeElementUri, codeElementVersion);
             ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException("error.validation.codeelementversion"));
 
@@ -412,7 +420,7 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: delete. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
          } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Deleting the codeElement failed.", e);
             return ResponseEntity.internalServerError().body(message);
          }
@@ -436,7 +444,7 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: update. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            //String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Updating codeElement failed.", e);
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
@@ -460,7 +468,7 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: save. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Saving codeElement failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }

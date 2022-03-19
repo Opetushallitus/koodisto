@@ -1,8 +1,5 @@
 package fi.vm.sade.koodisto.resource;
 
-//import com.fasterxml.jackson.annotation.JsonView;
-//import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
-
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
@@ -41,17 +38,18 @@ public class CodesResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CodesResource.class);
 
+    private static final String KOODISTOURI = "codesuri";
+    private static final String KOODISTOVERSIO = "codesversion";
+    private static final String RELATIONTYPE = "relationtype";
+
+    private static final String GENERIC_ERROR_CODE = "error.codes.generic";
+
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;
-
-    /*@Autowired
-    private UploadBusinessService uploadService;*/
 
     @Autowired
     private KoodistoConversionService conversionService;
 
-   /* TODO download @Autowired
-    private DownloadService downloadService;*/
 
     @Autowired
     private CodesResourceConverter converter;
@@ -72,7 +70,7 @@ public class CodesResource {
             @PathVariable String codesUriToAdd,
             @PathVariable String relationType) {
        try {
-            String[] errors = { "codesuri", "codesuritoadd", "relationtype" };
+            String[] errors = { KOODISTOURI, "codesuritoadd", RELATIONTYPE };
             ValidatorUtil.validateArgs(errors, codesUri, codesUriToAdd, relationType);
 
             koodistoBusinessService.addRelation(codesUri, codesUriToAdd, SuhteenTyyppi.valueOf(relationType));
@@ -82,7 +80,7 @@ public class CodesResource {
             LOGGER.warn("Invalid parameter for rest call: addRelation. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             LOGGER.error("Adding relation to codes failed. ", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -101,7 +99,7 @@ public class CodesResource {
             @PathVariable String relationType) {
 
          try {
-            String[] errors = { "codesUri", "codesuritoremove", "relationtype" };
+            String[] errors = { KOODISTOURI, "codesuritoremove", RELATIONTYPE };
             ValidatorUtil.validateArgs(errors, codesUri, codesUriToRemove, relationType);
 
             koodistoBusinessService.removeRelation(codesUri, Arrays.asList(codesUriToRemove), SuhteenTyyppi.valueOf(relationType));
@@ -111,7 +109,7 @@ public class CodesResource {
             LOGGER.warn("Invalid parameter for rest call: removeRelation. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             LOGGER.error("Removing relation from codes failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -136,7 +134,7 @@ public class CodesResource {
             LOGGER.warn("Invalid parameter for rest call: update. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             LOGGER.error("Updating codes failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -161,7 +159,7 @@ public class CodesResource {
             LOGGER.warn("Invalid parameter for rest call: save. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             LOGGER.error("Saving codes failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -186,7 +184,7 @@ public class CodesResource {
             LOGGER.warn("Invalid parameter for rest call: insert. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             LOGGER.error("Inserting codes failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -205,7 +203,7 @@ public class CodesResource {
             return ResponseEntity.ok(conversionService.convertAll(koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class));
 
          } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             LOGGER.error("Listing all codes groups failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -225,7 +223,7 @@ public class CodesResource {
             return ResponseEntity.ok(conversionService.convertAll(koodistoBusinessService.searchKoodistos(searchType), KoodistoVersioListDto.class));
 
          } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             LOGGER.error("Listing all codes in all codes groups failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -240,7 +238,7 @@ public class CodesResource {
     public ResponseEntity getCodesByCodesUri(
             @PathVariable String codesUri) {
         try {
-            String[] errors = { "codesuri" };
+            String[] errors = { KOODISTOURI };
             ValidatorUtil.validateArgs(errors, codesUri);
             Koodisto koodisto = koodistoBusinessService.getKoodistoByKoodistoUri(codesUri);
             return ResponseEntity.ok(conversionService.convert(koodisto, KoodistoListDto.class));
@@ -249,7 +247,7 @@ public class CodesResource {
             LOGGER.warn("Invalid parameter for rest call: getCodesByCodesUri. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             LOGGER.error("Getting codes by codes uri failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -266,7 +264,7 @@ public class CodesResource {
             @PathVariable String codesUri,
             @PathVariable int codesVersion) {
          try {
-            String[] errors = { "codesuri", "codesversion" };
+            String[] errors = { KOODISTOURI, KOODISTOVERSIO };
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
 
             KoodistoVersio koodistoVersio = null;
@@ -282,7 +280,7 @@ public class CodesResource {
             LOGGER.warn("Invalid parameter for rest call: getCodesByCodesUriAndVersion. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
          } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             LOGGER.error("Getting codes by codes uri and version failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -304,7 +302,7 @@ public class CodesResource {
             LOGGER.warn("Invalid parameter for rest call: get changes. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             LOGGER.error("Fetching changes to codes failed.", e);
             return ResponseEntity.internalServerError().body(message);
         }
@@ -333,126 +331,13 @@ public class CodesResource {
             LOGGER.warn("Invalid parameter for rest call: get changes. ", e);
              return ResponseEntity.badRequest().body(e.getMessage());
          } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             LOGGER.error("Fetching changes to codes failed.", e);
              return ResponseEntity.internalServerError().body(message);
          }
     }
 
-    /*
-    @POST
-    @Path("/upload/{codesUri}")
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.TEXT_HTML)
-    @ApiOperation(
-            value = "Tuo koodiston tiedostosta",
-            notes = "",
-            response = Response.class)
-    public Response uploadFile(
-            @ApiParam(value = "Tuotava tiedosto") @Multipart(value = "uploadedFile", required = false) Attachment fileInputStream,
-            @ApiParam(value = "Tiedostotyyppi") @Multipart(value = "fileFormat", required = false) String fileFormat,
-            @ApiParam(value = "Tiedoston koodaus") @Multipart(value = "fileEncoding", required = false) String fileEncoding,
-            @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri) {
-        try {
-            String[] errors = { "file", "fileformat", "codesuri" };
-            ValidatorUtil.validateArgs(errors, fileInputStream, fileFormat, codesUri);
-            if (StringUtils.isBlank(fileEncoding) && !fileFormat.equals("XLS")) {
-                // Encoding can be empty if filetype is binary XLS
-                throw new KoodistoValidationException("error.validation.fileencoding");
-            }
-
-            String mime = "";
-            ExportImportFormatType formatStr = null;
-
-            String encoding = fileEncoding;
-            if (StringUtils.isBlank(encoding) || !Charset.isSupported(encoding)) {
-                encoding = "UTF-8";
-            }
-
-            switch (Format.valueOf(fileFormat)) {
-            case JHS_XML:
-                formatStr = ExportImportFormatType.JHS_XML;
-                mime = "application/xml";
-                break;
-            case CSV:
-                mime = "application/octet-stream; charset=" + encoding;
-                formatStr = ExportImportFormatType.CSV;
-                break;
-            case XLS:
-                formatStr = ExportImportFormatType.XLS;
-                mime = "application/vnd.ms-excel";
-                break;
-            }
-
-            DataSource ds = new InputStreamDataSource(fileInputStream.getDataHandler().getInputStream(), mime);
-            DataHandler handler = new DataHandler(ds);
-            KoodistoVersio kv = uploadService.upload(codesUri, formatStr, encoding, handler);
-            return Response.status(Response.Status.ACCEPTED).entity(kv.getVersio().toString()).build();
-
-            // IE9 ei osaa käsitellä iframeja nätisti, jos palvelimelta tulee 500. ngUpload dirketiivi kaatuu Access Denied virheeseen. Siksi tallennus
-            // palauttaa myös virhetilanteissa 200.
-        } catch (KoodistoValidationException e) {
-            LOGGER.warn("Invalid parameter for rest call: uploadFile. ", e);
-            return Response.status(Response.Status.ACCEPTED).entity(e.getMessage()).build();
-        } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
-            LOGGER.error("Uploading codes failed.", e);
-            return Response.status(Response.Status.ACCEPTED).entity(message).build();
-        }
-
-    }
-
-    @GET
-    @Path("/download/{codesUri}/{codesVersion}/{fileFormat}")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    @JsonView({ JsonViews.Basic.class })
-    @ApiOperation(
-            value = "Lataa koodiston CSV, XML tai XLS tiedostona.",
-            notes = "Palauttaa tyhjän koodistopohjan, jos koodiston URI on 'blankKoodistoDocument' ja versio on -1.",
-            response = Response.class)
-    public Response download(
-            @ApiParam(value = "Koodiston URI") @PathParam("codesUri") String codesUri,
-            @ApiParam(value = "Koodiston versio") @PathParam("codesVersion") int codesVersion,
-            @ApiParam(value = "Tiedostotyyppi (JHS_XML, CSV, XLS)") @PathParam("fileFormat") Format fileFormat,
-            @ApiParam(value = "Tiedoston merkistö (UTF-8, ISO-88519-1, ISO-88519-15)") @DefaultValue("UTF-8") @QueryParam("encoding") String encoding) {
-        try {
-            String[] errors = { "codesuri", "codesversion", "fileformat", "encoding" };
-            ValidatorUtil.validateArgs(errors, codesUri, codesVersion, fileFormat, encoding);
-
-            File file = koodistoBusinessService.downloadFile(codesUri, codesVersion, fileFormat, encoding);
-            TemporaryFileInputStream is = null;
-            is = new TemporaryFileInputStream(file); // Response will close input stream:
-                                                     // https://jersey.java.net/apidocs/2.10/jersey/javax/ws/rs/core/Response.html
-            String extension = "";
-            switch (fileFormat) {
-            case JHS_XML:
-                extension = ".xml";
-                break;
-            case CSV:
-                extension = ".csv";
-                break;
-            case XLS:
-                extension = ".xls";
-                break;
-            }
-            ResponseBuilder responseBuilder = Response.ok((Object) is);
-            responseBuilder.header("Content-Disposition", "inline; filename=\"" + codesUri + extension + "\"");
-            Response response = responseBuilder.build();
-            return response;
-
-        } catch (KoodistoValidationException e) {
-            LOGGER.warn("Invalid parameter for rest call: downloadFile. ", e);
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
-        } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
-            LOGGER.error("Downloading codes failed.", e);
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(message).build();
-        }
-    } */
-
-
-    /* TODO pitäs olla delete
+    /* pitäs olla delete
     @ApiOperation(
             value = "Poistaa koodiston",
             notes = "",
@@ -464,7 +349,7 @@ public class CodesResource {
             @PathVariable String codesUri,
             @PathVariable int codesVersion) {
          try {
-            String[] errors = { "codesuri", "codesversion" };
+            String[] errors = { KOODISTOURI, KOODISTOVERSIO };
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
 
             koodistoBusinessService.delete(codesUri, codesVersion);
@@ -473,7 +358,7 @@ public class CodesResource {
             LOGGER.warn("Invalid parameter for rest call: delete. ", e);
              return ResponseEntity.badRequest().body(e.getMessage());
          } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             LOGGER.error("Deleting codes failed.", e);
              return ResponseEntity.internalServerError().body(message);
          }

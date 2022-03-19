@@ -29,8 +29,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -43,25 +41,7 @@ import java.util.Properties;
 
 @RestController()
 @RequestMapping({"/rest/json"})
-//@Api(value = "/rest/json", description = "REST/JSON rajapinta")
 public class KoodistoResource {
-
-    /*private static final String KUVAUS = "kuvaus";
-    private static final String NIMI = "nimi";
-    private static final String LANG = "lang";
-    private static final String KOODI_VERSIO_SELECTION = "koodiVersioSelection";
-    private static final String VALID_AT = "validAt";
-    private static final String KOODI_TILAS = "koodiTilas";
-    private static final String KOODI_URIS = "koodiUris";
-    private static final String KOODI_VERSIO = "koodiVersio";
-    private static final String ONLY_VALID_KOODIS = "onlyValidKoodis";
-    private static final String KOODI_ARVO = "koodiArvo";
-    private static final String KOODI_URI = "koodiUri";
-    private static final String KOODISTO_VERSIO = "koodistoVersio";
-    private static final String KOODISTO_URI = "koodistoUri";
-    public static final int ONE_HOUR = 60 * 60;*/
-
-    private final DatatypeFactory datatypeFactory;
 
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;
@@ -71,15 +51,6 @@ public class KoodistoResource {
 
     @Autowired
     private KoodistoConversionService conversionService;
-
-
-    public KoodistoResource() {
-        try {
-            datatypeFactory = DatatypeFactory.newInstance();
-        } catch (DatatypeConfigurationException e) {
-            throw new IllegalStateException(e);
-        }
-    }
 
     @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -151,7 +122,6 @@ public class KoodistoResource {
             @PathVariable String koodistoUri,
             @PathVariable String koodiArvo,
             @RequestParam(required = false) Integer koodistoVersio) {
-        // TODO: tämän pitäisi palauttaa vain yksi koodi
         List<KoodiVersioWithKoodistoItem> koodis = null;
         if (koodistoVersio == null) {
             koodis = koodiBusinessService.getKoodisByKoodistoWithKoodiArvo(koodistoUri, koodiArvo);

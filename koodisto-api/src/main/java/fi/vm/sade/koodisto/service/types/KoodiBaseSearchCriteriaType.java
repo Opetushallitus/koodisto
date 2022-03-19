@@ -12,10 +12,10 @@ public class KoodiBaseSearchCriteriaType implements Serializable
 {
 
     private final static long serialVersionUID = 1L;
-    protected List<String> koodiUris;
+    private List<String> koodiUris;
     protected String koodiArvo;
 
-    protected List<TilaType> koodiTilas;
+    private List<TilaType> koodiTilas;
     protected Date validAt;
 
     public List<String> getKoodiUris() {

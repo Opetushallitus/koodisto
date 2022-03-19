@@ -28,11 +28,8 @@ public class ApplicationConfiguration {
     @Bean
     OrganisationHierarchyAuthorizer hierarchyAuthorizer() { return new OrganisationHierarchyAuthorizer();}
 
-    @Autowired
-    OphProperties ophProperties;
-
     @Bean
-    public KoodistoConversionService conversionService() {
+    public KoodistoConversionService conversionService(OphProperties ophProperties) {
         KoodistoToKoodistoListDtoConverter koodistoToKoodistoListDtoConverter = new KoodistoToKoodistoListDtoConverter(ophProperties, new KoodistoVersioToKoodistoVersioListDtoConverter());
         KoodistoConversionServiceImpl ks =  new KoodistoConversionServiceImpl();
         ks.addConverter(koodistoToKoodistoListDtoConverter);

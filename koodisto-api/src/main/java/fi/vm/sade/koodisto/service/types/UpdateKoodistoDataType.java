@@ -21,7 +21,7 @@ public class UpdateKoodistoDataType implements Serializable
     protected String omistaja;
     protected String organisaatioOid;
     protected Boolean lukittu;
-    protected List<KoodistoMetadataType> metadataList;
+    private List<KoodistoMetadataType> metadataList;
     protected int versio;
     protected long lockingVersion;
     public String getCodesGroupUri() {

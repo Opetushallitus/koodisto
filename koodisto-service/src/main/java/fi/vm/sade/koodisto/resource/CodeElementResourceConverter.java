@@ -27,8 +27,7 @@ public class CodeElementResourceConverter {
         Date startDate = koodiDto.getVoimassaAlkuPvm();
         Date endDate = null;
         if (koodiDto.getVoimassaLoppuPvm() != null) {
-           // c.setTime(koodiDto.getVoimassaLoppuPvm());
-            endDate = koodiDto.getVoimassaLoppuPvm(); //DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+            endDate = koodiDto.getVoimassaLoppuPvm();
         }
 
         updateKoodiDataType.setVoimassaAlkuPvm(startDate);

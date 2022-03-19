@@ -23,6 +23,11 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
     private static final String KOODI_URI = "koodiUri";
     private static final String SEPARATOR = "$%$";
 
+    private static final String KOODI = "koodi";
+    private static final String YLAKOODIVERSIO = "ylakoodiVersio";
+    private static final String ALAKOODIVERSIO = "alakoodiVersio";
+    private static final String SUHTEENTYYPPI = "suhteenTyyppi";
+
     @Autowired
     EntityManager em;
 
@@ -43,12 +48,12 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
     private static Predicate addRestrictions(CriteriaQuery<?> cquery, CriteriaBuilder cb, Root<KoodinSuhde> root, KoodiUriAndVersioType ylaKoodi,
             List<KoodiUriAndVersioType> alaKoodis, SuhteenTyyppi st) {
 
-        Join<KoodinSuhde, KoodiVersio> ylakoodiVersioJoin = root.join("ylakoodiVersio");
-        Join<KoodinSuhde, KoodiVersio> alakoodiVersioJoin = root.join("alakoodiVersio");
-        Join<KoodiVersio, Koodi> alakoodiJoin = alakoodiVersioJoin.join("koodi");
-        Join<KoodiVersio, Koodi> ylakoodiJoin = ylakoodiVersioJoin.join("koodi");
+        Join<KoodinSuhde, KoodiVersio> ylakoodiVersioJoin = root.join(YLAKOODIVERSIO);
+        Join<KoodinSuhde, KoodiVersio> alakoodiVersioJoin = root.join(ALAKOODIVERSIO);
+        Join<KoodiVersio, Koodi> alakoodiJoin = alakoodiVersioJoin.join(KOODI);
+        Join<KoodiVersio, Koodi> ylakoodiJoin = ylakoodiVersioJoin.join(KOODI);
 
-        Predicate suhteenTyyppiRestriction = cb.equal(root.get("suhteenTyyppi"), st);
+        Predicate suhteenTyyppiRestriction = cb.equal(root.get(SUHTEENTYYPPI), st);
 
         ArrayList<String> concatenatedAlaList = new ArrayList<String>();
         for (KoodiUriAndVersioType ak : alaKoodis) {
@@ -102,12 +107,12 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
     private static Predicate addWithinRestrictions(CriteriaQuery<?> cquery, CriteriaBuilder cb, Root<KoodinSuhde> root, KoodiUriAndVersioType alaKoodi,
             List<KoodiUriAndVersioType> ylaKoodis, SuhteenTyyppi st) {
 
-        Join<KoodinSuhde, KoodiVersio> ylakoodiVersioJoin = root.join("ylakoodiVersio");
-        Join<KoodinSuhde, KoodiVersio> alakoodiVersioJoin = root.join("alakoodiVersio");
-        Join<KoodiVersio, Koodi> alakoodiJoin = alakoodiVersioJoin.join("koodi");
-        Join<KoodiVersio, Koodi> ylakoodiJoin = ylakoodiVersioJoin.join("koodi");
+        Join<KoodinSuhde, KoodiVersio> ylakoodiVersioJoin = root.join(YLAKOODIVERSIO);
+        Join<KoodinSuhde, KoodiVersio> alakoodiVersioJoin = root.join(ALAKOODIVERSIO);
+        Join<KoodiVersio, Koodi> alakoodiJoin = alakoodiVersioJoin.join(KOODI);
+        Join<KoodiVersio, Koodi> ylakoodiJoin = ylakoodiVersioJoin.join(KOODI);
 
-        Predicate suhteenTyyppiRestriction = cb.equal(root.get("suhteenTyyppi"), st);
+        Predicate suhteenTyyppiRestriction = cb.equal(root.get(SUHTEENTYYPPI), st);
 
         ArrayList<String> concatenatedYlaList = new ArrayList<String>();
         for (KoodiUriAndVersioType ak : ylaKoodis) {
@@ -152,8 +157,8 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
         CriteriaQuery<KoodinSuhde> cquery = cb.createQuery(KoodinSuhde.class);
         Root<KoodinSuhde> root = cquery.from(KoodinSuhde.class);
 
-        root.fetch("ylakoodiVersio");
-        root.fetch("alakoodiVersio");
+        root.fetch(YLAKOODIVERSIO);
+        root.fetch(ALAKOODIVERSIO);
 
         Predicate restrictions = isChild ? addWithinRestrictions(cquery, cb, root, singleKoodi, multipleKoodis, st) : addRestrictions(cquery, cb, root,
                 singleKoodi, multipleKoodis, st);
@@ -161,14 +166,6 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
 
         return em.createQuery(cquery).getResultList();
     }
-
-    /*@Override
-    public void remove(KoodinSuhde entity) {
-
-        //check out FIXME: This is kinda ugly but it works
-        em.createQuery("delete from KoodinSuhde k where k.id = :id").setParameter("id", entity.getId()).executeUpdate();
-        em.flush();
-    }*/
 
     @Override
     public void massRemove(List<KoodinSuhde> entityList) {
@@ -188,22 +185,11 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
 
         CriteriaQuery<KoodinSuhde> cquery = cb.createQuery(KoodinSuhde.class);
         Root<KoodinSuhde> root = cquery.from(KoodinSuhde.class);
-        Join<KoodinSuhde, KoodiVersio> ylakoodiVersio = root.join("ylakoodiVersio", JoinType.LEFT);
-        Join<Object, Object> ylakoodi = ylakoodiVersio.join("koodi", JoinType.LEFT);
+        Join<KoodinSuhde, KoodiVersio> ylakoodiVersio = root.join(YLAKOODIVERSIO, JoinType.LEFT);
+        Join<Object, Object> ylakoodi = ylakoodiVersio.join(KOODI, JoinType.LEFT);
 
         cquery.select(root).where(cb.equal(ylakoodi.get(KOODI_URI), ylakoodiUri));
 
         return em.createQuery(cquery).getResultList();
     }
-    /*
-    public KoodinSuhde insertNonFlush(KoodinSuhde entity) {
-        validate(entity);
-        entityManager.persist(entity);
-        // Database must be synchronized at after this by flushing!
-        return entity;
-    }
-
-    public void flush() {
-        entityManager.flush();
-    }*/
 }

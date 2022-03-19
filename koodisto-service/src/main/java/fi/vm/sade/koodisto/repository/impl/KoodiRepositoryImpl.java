@@ -29,7 +29,7 @@ public class KoodiRepositoryImpl implements KoodiRepositoryCustom {
     @Lazy
     KoodiRepository koodiRepository;
 
-    protected void delete(Koodi koodi) {
+   /* protected void delete(Koodi koodi) {
         for (KoodiVersio koodiVersio : koodi.getKoodiVersios()) {
             for (KoodistoVersioKoodiVersio relation : koodiVersio.getKoodistoVersios()) {
                 koodistoVersioKoodiVersioRepository.delete(relation);
@@ -37,7 +37,7 @@ public class KoodiRepositoryImpl implements KoodiRepositoryCustom {
 
         }
         this.koodiRepository.deleteById(koodi.getId());
-    }
+    }*/
 
     /*@Override
     public Koodi readByUri(String koodiUri) {
@@ -54,13 +54,13 @@ public class KoodiRepositoryImpl implements KoodiRepositoryCustom {
     }
     */
 
-    @Override
+    /*@Override
     public void deleteIncludingRelations(String koodiUri) {
         Koodi koodi = koodiRepository.findByKoodiUri(koodiUri);
         delete(koodi);
-    }
+    }*/
 
-    @Override
+    /*@Override
     public boolean koodiUriExists(String koodiUri) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> query = cb.createQuery(Long.class);
@@ -68,7 +68,7 @@ public class KoodiRepositoryImpl implements KoodiRepositoryCustom {
         Root<Koodi> k = query.from(Koodi.class);
         query.select(cb.count(k.<String>get("koodiUri"))).where(cb.equal(k.get("koodiUri"), koodiUri));
         return em.createQuery(query).getSingleResult() > 0;
-    }
+    }*/
     
     @Override
     public List<KoodiVersio> getLatestCodeElementVersiosByUrisAndTila(List<String> koodiUris, Tila tila) {

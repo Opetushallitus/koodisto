@@ -17,7 +17,7 @@ public class CreateKoodistoDataType implements Serializable
     protected String omistaja;
     protected String organisaatioOid;
     protected Boolean lukittu;
-    protected List<KoodistoMetadataType> metadataList;
+    private List<KoodistoMetadataType> metadataList;
 
     public Date getVoimassaAlkuPvm() {
         return voimassaAlkuPvm;

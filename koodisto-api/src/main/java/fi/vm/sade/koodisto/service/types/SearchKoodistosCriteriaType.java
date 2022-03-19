@@ -12,10 +12,10 @@ public class SearchKoodistosCriteriaType implements Serializable
 {
 
     private final static long serialVersionUID = 1L;
-    protected List<String> koodistoUris;
+    private List<String> koodistoUris;
     protected Integer koodistoVersio;
     protected SearchKoodistosVersioSelectionType koodistoVersioSelection;
-    protected List<TilaType> koodistoTilas;
+    private List<TilaType> koodistoTilas;
     protected Date validAt;
 
     public List<String> getKoodistoUris() {

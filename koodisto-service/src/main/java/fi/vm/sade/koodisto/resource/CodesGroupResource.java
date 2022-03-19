@@ -28,6 +28,8 @@ import java.util.Collection;
 public class CodesGroupResource {
     protected final static Logger logger = LoggerFactory.getLogger(CodesGroupResource.class);
 
+    private static final String GENERIC_ERROR_CODE = "error.codes.generic";
+
     @Autowired
     private KoodistoRyhmaBusinessService koodistoRyhmaBusinessService;
 
@@ -62,7 +64,7 @@ public class CodesGroupResource {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             logger.warn("Error finding CodesGroup. id: " + id, e);
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             return ResponseEntity.internalServerError().body(message);
         }
     }
@@ -90,7 +92,7 @@ public class CodesGroupResource {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             logger.warn("Error while updating codesGroup. ", e);
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             return ResponseEntity.internalServerError().body(message);
         }
     }
@@ -111,7 +113,7 @@ public class CodesGroupResource {
             @RequestBody KoodistoRyhmaDto codesGroupDTO) {
         try {
             codesGroupValidator.validate(codesGroupDTO, ValidationType.INSERT);
-            codesGroupDTO.setKoodistoRyhmaUri(uriTransliterator.generateKoodistoGroupUriByMetadata((Collection) codesGroupDTO.getKoodistoRyhmaMetadatas()));
+            codesGroupDTO.setKoodistoRyhmaUri(uriTransliterator.generateKoodistoGroupUriByMetadata(codesGroupDTO.getKoodistoRyhmaMetadatas()));
             KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.createKoodistoRyhma(codesGroupDTO);
             return ResponseEntity.status(201).body(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class));
         } catch (KoodistoValidationException e) {
@@ -119,7 +121,7 @@ public class CodesGroupResource {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             logger.warn("Error while inserting codesGroup.", e);
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             return ResponseEntity.internalServerError().body(message);
         }
     }
@@ -148,7 +150,7 @@ public class CodesGroupResource {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             logger.warn("Error while removing codesGroup. id: " + id, e);
-            String message = e instanceof SadeBusinessException ? e.getMessage() : "error.codes.generic";
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             return ResponseEntity.internalServerError().body(message);
         }
     }

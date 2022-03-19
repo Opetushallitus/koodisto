@@ -16,7 +16,7 @@ public class CreateKoodiDataType implements Serializable
 
     protected Date voimassaAlkuPvm;
     protected Date voimassaLoppuPvm;
-    protected List<KoodiMetadataType> metadata;
+    private List<KoodiMetadataType> metadata;
 
     public String getKoodiArvo() {
         return koodiArvo;

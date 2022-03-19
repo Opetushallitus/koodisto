@@ -17,7 +17,7 @@ public class SearchKoodisByKoodistoCriteriaType implements Serializable
 
     protected SearchKoodisByKoodistoVersioSelectionType koodistoVersioSelection;
 
-    protected List<TilaType> koodistoTilas;
+    private List<TilaType> koodistoTilas;
 
     protected Date validAt;
     protected KoodiBaseSearchCriteriaType koodiSearchCriteria;

@@ -14,7 +14,7 @@ public class KoodistoListType implements Serializable
     protected String organisaatioOid;
     protected Boolean lukittu;
     protected KoodistoVersioListType latestKoodistoVersio;
-    protected List<KoodistoVersioListType> koodistoVersios;
+    private List<KoodistoVersioListType> koodistoVersios;
 
     public String getKoodistoUri() {
         return koodistoUri;

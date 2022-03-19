@@ -15,12 +15,12 @@ public class KoodiType implements Serializable
     protected KoodistoItemType koodisto;
     protected int versio;
     protected String koodiArvo;
-    protected Date paivitysPvm; // TODO xml > DATE OK?
+    protected Date paivitysPvm;
     protected String paivittajaOid;
     protected Date voimassaAlkuPvm;
     protected Date voimassaLoppuPvm;
     protected TilaType tila;
-    protected List<KoodiMetadataType> metadata;
+    private List<KoodiMetadataType> metadata;
     protected long lockingVersion;
     public String getKoodiUri() {
         return koodiUri;
