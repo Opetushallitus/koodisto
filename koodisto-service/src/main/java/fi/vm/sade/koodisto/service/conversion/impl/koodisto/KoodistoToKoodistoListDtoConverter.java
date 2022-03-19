@@ -31,7 +31,6 @@ public class KoodistoToKoodistoListDtoConverter extends AbstractFromDomainConver
         converted.setKoodistoUri(source.getKoodistoUri());
 
         if (!Strings.isNullOrEmpty(converted.getKoodistoUri())) {
-            // TODO tsekkaa toimiiko ? converted.setResourceUri(koodistoConfiguration.getKoodistoResourceUri(converted.getKoodistoUri()));
             String resourceUri = MessageFormat.format(ophProperties.url("koodistoUri"), converted.getKoodistoUri());
             converted.setResourceUri(resourceUri);
         }

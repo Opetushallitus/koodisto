@@ -44,7 +44,7 @@ public class KoodiChangesServiceImplTest {
     private static final String NAME_SV = "elefant", SHORT_NAME_SV = "kort", DESCRIPTION_SV = "stora flockdjur";
     private static final Integer VERSIO = 1;
 
-    @MockBean// TODO was replacewithmock toimiiko oikein?
+    @MockBean
     private KoodiBusinessService koodiService;
     
     @MockBean
@@ -52,12 +52,7 @@ public class KoodiChangesServiceImplTest {
     
     @Autowired
     private KoodiChangesService service;
-    
-    /*@Before
-    public void init() {
-        MockitoAnnotations.initMocks(this);
-    }*/
-        
+
     @Test
     public void returnsNoChangesIfNothingHasChanged() {
         assertResultIsNoChanges(givenResult(givenKoodiVersio(VERSIO), givenKoodiVersio(VERSIO)), VERSIO);

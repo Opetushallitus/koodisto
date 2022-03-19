@@ -67,7 +67,6 @@ public class KoodistoResource {
     @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "/{koodistoUri}", produces = MediaType.APPLICATION_JSON_VALUE)
     //@Cacheable(maxAgeSeconds = ONE_HOUR)
-    @Transactional // TODO FIXME?
     /*@ApiOperation(
             value = "Lataa koodisto URIn perusteella",
             notes = "Palautaa koodiston, jonka URI on {koodistouri}. Versionumeron voi antaa URL-parametrina",

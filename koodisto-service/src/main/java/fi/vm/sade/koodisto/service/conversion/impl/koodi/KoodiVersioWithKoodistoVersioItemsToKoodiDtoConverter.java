@@ -43,7 +43,6 @@ public class KoodiVersioWithKoodistoVersioItemsToKoodiDtoConverter implements
 
         if (!converted.getKoodiUri().isBlank() && converted.getKoodisto() != null
                 && !converted.getKoodisto().getKoodistoUri().isBlank()) {
-            // TODO tsekkaa
             String resourceUri = MessageFormat.format(ophProperties.url("koodiUri"), converted.getKoodiUri(), converted.getKoodisto().getKoodistoUri());
             converted.setResourceUri(resourceUri);
         }

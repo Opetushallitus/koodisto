@@ -554,7 +554,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         // Delete old metadatas
         for (KoodistoMetadata oldMd : latestMetadatas) {
             latest.removeMetadata(oldMd);
-            koodistoMetadataRepository.delete(oldMd); // TODO check flushing
+            koodistoMetadataRepository.delete(oldMd); // check flushing
         }
 
         // If the latest version is in LUONNOS state and we are updating it to
@@ -643,15 +643,15 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             koodiBusinessService.delete(kv.getKoodi().getKoodiUri(), kv.getVersio(), true);
         }
 
-        koodistoVersioRepository.delete(versio); // TODO flushing?
+        koodistoVersioRepository.delete(versio); // flushing?
         if (koodisto.getKoodistoVersios().size() == 0) {
             for (Koodi koodi : koodisto.getKoodis()) {
-                koodiRepository.delete(koodi); // TODO flushing
+                koodiRepository.delete(koodi); //flushing
             }
             for (KoodistoRyhma kr : koodisto.getKoodistoRyhmas()) {
                 kr.removeKoodisto(koodisto);
             }
-            koodistoRepository.delete(koodisto); // TODO flushing
+            koodistoRepository.delete(koodisto); // flushing
         } else {
             activateRelationsInLatestKoodistoVersio(koodisto);
         }
@@ -694,53 +694,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         return true;
     }
 
-    /* TODO download @Override
-    public File downloadFile(String codesUri, int codesVersion, Format fileFormat, String encoding) {
-        try {
-
-            String extension = "";
-            ExportImportFormatType formatStr = null;
-            if (fileFormat == Format.CSV) {
-                formatStr = ExportImportFormatType.CSV;
-                extension = ".csv";
-            } else if (fileFormat == Format.JHS_XML) {
-                formatStr = ExportImportFormatType.JHS_XML;
-                extension = ".xml";
-            } else if (fileFormat == Format.XLS) {
-                formatStr = ExportImportFormatType.XLS;
-                extension = ".xls";
-            }
-            if (StringUtils.isBlank(encoding) || !Charset.isSupported(encoding)) {
-                encoding = "UTF-8";
-            }
-
-            DataHandler handler = downloadService.download(codesUri, codesVersion, formatStr, encoding);
-
-            File file = createTemporaryFile(codesUri, extension, handler);
-
-            return file;
-        } catch (IOException e) {
-            logger.error("Writing Codes to file failed:\n" + e);
-            throw new KoodistoExportException();
-        }
-    }*/
-
-   /*  TODO private File createTemporaryFile(String codesUri, String extension, DataHandler handler) throws IOException, FileNotFoundException {
-        FileOutputStream fos = null;
-        try {
-            File file = File.createTempFile(codesUri, extension);
-            logger.debug("Created temporary file " + file.getAbsolutePath());
-            fos = new FileOutputStream(file);
-            IOUtils.copy(handler.getInputStream(), fos);
-            fos.close();
-            file.deleteOnExit(); // Delete file when VM is closed
-            return file;
-        } finally {
-            if (fos != null)
-                fos.close();
-        }
-    }
-    */
     @Override
     public KoodistoVersio saveKoodisto(KoodistoDto codesDTO) {
 

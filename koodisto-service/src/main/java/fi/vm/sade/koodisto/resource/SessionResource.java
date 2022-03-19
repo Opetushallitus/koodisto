@@ -14,11 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 @RestController()
 @RequestMapping({"/rest/session"})
 public class SessionResource {
-    @Autowired
-    private HttpServletRequest context;
+
     @GetMapping(path = "/maxinactiveinterval", produces = MediaType.TEXT_PLAIN_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public String maxInactiveInterval() {
+    public String maxInactiveInterval(HttpServletRequest context) {
         return Integer.toString(context.getSession().getMaxInactiveInterval());
     }
 }

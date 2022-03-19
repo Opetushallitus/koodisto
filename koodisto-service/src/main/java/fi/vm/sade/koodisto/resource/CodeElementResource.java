@@ -278,7 +278,7 @@ public class CodeElementResource {
             String[] errors = { KOODISTOURI };
             ValidatorUtil.validateArgs(errors, codesUri);
             codesValidator.validate(codeelementDTO, ValidationType.INSERT);
-            // TODO huono toteutus
+            // aika huono toteutus
             KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem = koodiBusinessService.createKoodi(codesUri,
                     converter.convertFromDTOToCreateKoodiDataType(codeelementDTO));
             KoodiVersioWithKoodistoItemToKoodiDtoConverter koodiVersioWithKoodistoItemToKoodiDtoConverter = new KoodiVersioWithKoodistoItemToKoodiDtoConverter(ophProperties);
