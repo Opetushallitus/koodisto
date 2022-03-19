@@ -12,8 +12,6 @@ public interface KoodistoRyhmaRepository extends CrudRepository<KoodistoRyhma, L
 
     List<KoodistoRyhma> findAll();
 
-    //KoodistoRyhma findByKoodistoRyhmaUri(String koodistoRyhmaUri);
-
     List<KoodistoRyhma> findAllByKoodistoRyhmaUriIn(List<String> koodistoRyhmaUris);
 
     Optional<KoodistoRyhma> findById(Long id);

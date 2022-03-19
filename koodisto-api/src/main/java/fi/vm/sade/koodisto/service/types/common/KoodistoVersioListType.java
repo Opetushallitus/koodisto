@@ -16,7 +16,7 @@ public class KoodistoVersioListType implements Serializable
     protected Date voimassaAlkuPvm;
     protected Date voimassaLoppuPvm;
     protected TilaType tila;
-    protected List<KoodistoMetadataType> metadataList;
+    private List<KoodistoMetadataType> metadataList;
     protected KoodistoListType koodisto;
 
     public String getKoodistoUri() {

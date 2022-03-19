@@ -1,7 +1,6 @@
 
 package fi.vm.sade.koodisto.service.types.common;
 
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +21,7 @@ public class KoodistoType implements Serializable
     protected String omistaja;
     protected String organisaatioOid;
     protected Boolean lukittu;
-    protected List<KoodistoMetadataType> metadataList;
+    private List<KoodistoMetadataType> metadataList;
     protected long lockingVersion;
 
     /**
@@ -94,7 +93,7 @@ public class KoodistoType implements Serializable
      * 
      * @return
      *     possible object is
-     *     {@link XMLGregorianCalendar }
+     *
      *     
      */
     public Date getPaivitysPvm() {

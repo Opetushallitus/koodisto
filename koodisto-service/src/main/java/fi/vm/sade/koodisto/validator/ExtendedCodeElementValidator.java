@@ -4,14 +4,12 @@ import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
 public class ExtendedCodeElementValidator implements RestValidator<ExtendedKoodiDto> {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private static final String KOODI_RELATIONS_ERROR_CODE = "error.validation.codeelement.relations";
 
     @Override
     public void validate(ExtendedKoodiDto validatable, ValidationType type) {
@@ -22,9 +20,9 @@ public class ExtendedCodeElementValidator implements RestValidator<ExtendedKoodi
     public void validateInsert(ExtendedKoodiDto validatable) {
             ValidatorUtil.checkForNull(validatable, new KoodistoValidationException("error.validation.codeelement"));
 
-            ValidatorUtil.checkForNull(validatable.getIncludesCodeElements(), new KoodistoValidationException("error.validation.codeelement.relations"));
-            ValidatorUtil.checkForNull(validatable.getLevelsWithCodeElements(), new KoodistoValidationException("error.validation.codeelement.relations"));
-            ValidatorUtil.checkForNull(validatable.getWithinCodeElements(), new KoodistoValidationException("error.validation.codeelement.relations"));
+            ValidatorUtil.checkForNull(validatable.getIncludesCodeElements(), new KoodistoValidationException(KOODI_RELATIONS_ERROR_CODE));
+            ValidatorUtil.checkForNull(validatable.getLevelsWithCodeElements(), new KoodistoValidationException(KOODI_RELATIONS_ERROR_CODE));
+            ValidatorUtil.checkForNull(validatable.getWithinCodeElements(), new KoodistoValidationException(KOODI_RELATIONS_ERROR_CODE));
 
             ValidatorUtil.checkForBlank(validatable.getKoodiUri(), new KoodistoValidationException("error.validation.codeelementuri"));
             ValidatorUtil.checkForBlank(validatable.getKoodiArvo(), new KoodistoValidationException("error.validation.value"));

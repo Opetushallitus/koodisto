@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.repository.impl;
 
+import com.google.common.base.Strings;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.repository.KoodistoVersioRepositoryCustom;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
@@ -23,6 +24,7 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
 
     private static final String KOODISTO = "koodisto";
     private static final String VERSIO = "versio";
+    private static final String KOODISTOURI = "koodistoUri";
 
     @Autowired
     EntityManager em;
@@ -72,8 +74,8 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
                 List<Predicate> uriRestrictions = new ArrayList<>();
 
                 for (String koodistoUri : searchCriteria.getKoodistoUris()) {
-                    if (!koodistoUri.isBlank()) {
-                        uriRestrictions.add(cb.equal(koodisto.get("koodistoUri"), koodistoUri));
+                    if (!Strings.isNullOrEmpty(koodistoUri)) {
+                        uriRestrictions.add(cb.equal(koodisto.get(KOODISTOURI), koodistoUri));
                     }
                 }
 
@@ -154,7 +156,7 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
         Root<KoodistoVersio> root = query.from(KoodistoVersio.class);
         Join<KoodistoVersio, Koodisto> koodisto = root.join(KOODISTO);
 
-        Predicate koodistoUriEqual = cb.equal(koodisto.get("koodistoUri"), koodistoUri);
+        Predicate koodistoUriEqual = cb.equal(koodisto.get(KOODISTOURI), koodistoUri);
         Predicate koodistoVersioLessThan = cb.lessThan(root.<Integer> get(VERSIO), koodistoVersio);
 
         query.select(root).where(cb.and(koodistoUriEqual, koodistoVersioLessThan)).orderBy(cb.desc(root.<Integer> get(VERSIO)));
@@ -169,24 +171,6 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
         return result;
     }
 
-    /* check if works? @Override
-    public boolean koodistoVersioExists(String koodistoUri, Integer koodistoVersio) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Long> query = cb.createQuery(Long.class);
-        Root<KoodistoVersio> root = query.from(KoodistoVersio.class);
-
-        Join<KoodistoVersio, Koodisto> koodisto = root.join(KOODISTO);
-
-        Predicate koodistoUriEqual = cb.equal(koodisto.get("koodistoUri"), koodistoUri);
-        Predicate koodistoVersioEqual = cb.equal(root.<Integer> get(VERSIO), koodistoVersio);
-
-        query.select(cb.count(root.get("id"))).where(cb.and(koodistoUriEqual, koodistoVersioEqual));
-
-        return em.createQuery(query).getSingleResult() > 0;
-    }
-    */
-
-
     @Override
     @Transactional
     public Optional<Integer> findLatestVersioByKoodistoUri(String koodistoUri) {
@@ -195,8 +179,8 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
         Root<KoodistoVersio> root = query.from(KoodistoVersio.class);
         Join<KoodistoVersio, Koodisto> koodisto = root.join(KOODISTO);
 
-        query.select(cb.max(root.get(VERSIO))).where(cb.equal(koodisto.get("koodistoUri"), koodistoUri));
-        // TODO clener implementation needed
+        query.select(cb.max(root.get(VERSIO))).where(cb.equal(koodisto.get(KOODISTOURI), koodistoUri));
+        // clener implementation needed
         try {
             return Optional.of(em.createQuery(query).getSingleResult());
         } catch (NoResultException e) {

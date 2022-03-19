@@ -143,11 +143,8 @@ public class KoodistonSuhdeRepositoryImpl implements KoodistonSuhdeRepositoryCus
 
     protected KoodistonSuhde createNewRelation(KoodistoVersio parent, KoodistoVersio child, KoodistonSuhde relation) {
         logger.info(
-                "  Inserting new codes version relation, parent codes id=" + parent.getKoodisto().getId() + ", parent version id=" + parent.getId()
-                + ", child codes id=" + child.getKoodisto().getId() + ", child version id=" + child.getId() + ", relation id="
-                + relation.getId() + ", relation version="
-                + (relation.getVersio() + 1) + ", relation type="
-                + relation.getSuhteenTyyppi());
+                "  Inserting new codes version relation, parent codes id={}, parent version id={}, child codes id={}, child version id={},relation id={}, relation version={}, relation type={}", parent.getKoodisto().getId(),
+                parent.getId(), child.getKoodisto().getId(), child.getId(), relation.getId(), relation.getVersio() + 1, relation.getSuhteenTyyppi());
         KoodistonSuhde newRelation = new KoodistonSuhde();
         newRelation.setAlakoodistoVersio(child);
         newRelation.setYlakoodistoVersio(parent);

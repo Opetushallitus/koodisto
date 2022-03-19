@@ -6,10 +6,10 @@ package fi.vm.sade.koodisto.model;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collections;
 import java.util.HashSet;

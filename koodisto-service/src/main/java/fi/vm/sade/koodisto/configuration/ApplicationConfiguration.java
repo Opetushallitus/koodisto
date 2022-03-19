@@ -10,7 +10,6 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodi.*;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.*;
 import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaToKoodistoRyhmaListDtoConverter;
 import fi.vm.sade.properties.OphProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -49,32 +48,4 @@ public class ApplicationConfiguration {
         ks.addConverter(new KoodistoRyhmaToKoodistoRyhmaDtoConverter());
         return ks;
     }
-
-    /*static {
-        System.setProperty("fi.vm.sade.javautils.http.HttpServletRequestUtils.HARMLESS_URLS", "/koodisto-service/buildversion.txt");
-    }
-    protected Configuration configurationPr operties;
-
-    public ApplicationConfiguration() throws ConfigurationException, MalformedURLException {
-        configurationProperties = new PropertiesConfiguration(getClass().getClassLoader().getResource(
-                "config/config.properties"));
-    }
-
-    public String getBaseUri() {
-        return configurationProperties.getString("baseUri");
-    }
-
-    public String getKoodistoResourceUri(String koodistoUri) {
-        return MessageFormat.format(configurationProperties.getString("koodistoUri"), koodistoUri);
-    }
-
-    public String getKoodiResourceUri(String koodistoUri, String koodiUri) {
-        return MessageFormat.format(configurationProperties.getString("koodiUri"), koodistoUri, koodiUri);
-    }
-
-    public String getProperty(String key, Object... args) {
-        return MessageFormat.format(configurationProperties.getString(key), args);
-    }
-
-     */
 }

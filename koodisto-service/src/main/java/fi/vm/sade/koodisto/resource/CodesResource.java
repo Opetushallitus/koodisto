@@ -197,7 +197,7 @@ public class CodesResource {
             response = KoodistoRyhmaListDto.class,
             responseContainer = "List")*/
     @JsonView(JsonViews.Simple.class)
-    @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity listAllCodesGroups() {
        try {
             return ResponseEntity.ok(conversionService.convertAll(koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class));

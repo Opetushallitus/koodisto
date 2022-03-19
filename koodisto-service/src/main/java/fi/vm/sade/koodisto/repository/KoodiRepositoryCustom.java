@@ -6,9 +6,6 @@ import fi.vm.sade.koodisto.model.Tila;
 import java.util.List;
 
 public interface KoodiRepositoryCustom {
-    // void deleteIncludingRelations(String koodiUri);
 
     List<KoodiVersio> getLatestCodeElementVersiosByUrisAndTila(List<String> koodiUris, Tila tila);
-
-    ///boolean koodiUriExists(String koodiUri);
 }

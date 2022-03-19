@@ -528,19 +528,6 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
         TypedQuery<KoodiVersio> query = em.createQuery(criteriaQuery);
         return query;
     }
-    
-    /*@Override
-    public KoodiVersio insertNonFlush(KoodiVersio entity) {
-        validate(entity);
-        getEntityManager().persist(entity);
-        // Database must be synchronized after this by flushing
-        return entity;
-    }*/
-
-    /*@Override
-    public void flush() {
-        getEntityManager().flush();
-    }*/
 
     @Override
     public Map<KoodiVersio, KoodiVersio> getPreviousKoodiVersios(List<KoodiVersio> koodis) {

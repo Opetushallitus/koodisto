@@ -44,6 +44,7 @@ public class CodeElementResource {
     private static final String RELATIONTYPE = "relationtype";
 
     private static final String GENERIC_ERROR_CODE = "error.codes.generic";
+    private static final String KOODISTO_VALIDATION_ERROR_CODE = "error.validation.codeelementversion";
 
     @Autowired
     KoodiBusinessService koodiBusinessService;
@@ -85,9 +86,9 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getAllCodeElementVersionsByCodeElementUri. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Fetching codeElement versions by uri failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
 
         }
     }
@@ -105,7 +106,7 @@ public class CodeElementResource {
         try {
             String[] errors = { KOODIURI, KOODIVERSIO };
             ValidatorUtil.validateArgs(errors, codeElementUri, codeElementVersion);
-            ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException("error.validation.codeelementversion"));
+            ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException(KOODISTO_VALIDATION_ERROR_CODE));
 
             SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(codeElementUri, codeElementVersion);
             List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
@@ -118,13 +119,13 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getCodeElementByUriAndVersion. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Fetching codeElement by uri and version failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
         }
     }
 
-    @GetMapping(path = "/{codesUri}/{codesVersion}/{codeElementUri}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{codesUri}/{codesVersion}/{codeElementUri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     @JsonView({ JsonViews.Basic.class })
     /*@ApiOperation(
             value = "Palauttaa koodin tietystä koodistoversiosta",
@@ -145,9 +146,9 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getCodeElementByCodeElementUri. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Fetching codeElement by uri failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
         }
     }
 
@@ -157,14 +158,14 @@ public class CodeElementResource {
             notes = "",
             response = SimpleKoodiDto.class,
             responseContainer = "List")*/
-    @GetMapping(path = "/codes/{codesUri}/{codesVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/codes/{codesUri}/{codesVersion}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity getAllCodeElementsByCodesUriAndVersion(
             @PathVariable String codesUri,
             @PathVariable int codesVersion) {
         try {
             String[] errors = { KOODISTOURI, KOODISTOVERSIO };
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
-            ValidatorUtil.checkForGreaterThan(codesVersion, -1, new KoodistoValidationException("error.validation.codeelementversion"));
+            ValidatorUtil.checkForGreaterThan(codesVersion, -1, new KoodistoValidationException(KOODISTO_VALIDATION_ERROR_CODE));
 
             List<KoodiVersioWithKoodistoItem> codeElements = null;
             if (codesVersion == 0) {
@@ -178,9 +179,9 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: getAllCodeElementsByCodesUriAndVersion. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Fetching codeElement failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
         }
     }
 
@@ -223,7 +224,7 @@ public class CodeElementResource {
             @PathVariable Integer codeElementVersion,
             @RequestParam(defaultValue = "false") boolean compareToLatestAccepted) {
         try {
-            ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException("error.validation.codeelementversion"));
+            ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException(KOODISTO_VALIDATION_ERROR_CODE));
             return ResponseEntity.ok(changesService.getChangesDto(codeElementUri, codeElementVersion, compareToLatestAccepted));
 
         } catch (KoodistoValidationException e) {
@@ -412,7 +413,7 @@ public class CodeElementResource {
          try {
             String[] errors = { KOODIURI, KOODIVERSIO };
             ValidatorUtil.validateArgs(errors, codeElementUri, codeElementVersion);
-            ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException("error.validation.codeelementversion"));
+            ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException(KOODISTO_VALIDATION_ERROR_CODE));
 
             koodiBusinessService.delete(codeElementUri, codeElementVersion);
             return ResponseEntity.status(202).body(null);

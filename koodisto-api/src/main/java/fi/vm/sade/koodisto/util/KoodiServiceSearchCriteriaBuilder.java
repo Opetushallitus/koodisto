@@ -70,7 +70,6 @@ public abstract class KoodiServiceSearchCriteriaBuilder {
 
         KoodiBaseSearchCriteriaType koodiCriteria = new KoodiBaseSearchCriteriaType();
         koodiCriteria.getKoodiTilas().add(TilaType.HYVAKSYTTY);
-        // koodiCriteria.setValidAt(DateHelper.DateToXmlCal(new Date()));
         koodiCriteria.setValidAt(new Date());
         searchType.setKoodiSearchCriteria(koodiCriteria);
 

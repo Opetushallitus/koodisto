@@ -5,7 +5,6 @@ package fi.vm.sade.koodisto.repository.impl;
 
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiVersio;
-import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.repository.KoodiRepository;
 import fi.vm.sade.koodisto.repository.KoodiRepositoryCustom;
@@ -29,46 +28,6 @@ public class KoodiRepositoryImpl implements KoodiRepositoryCustom {
     @Lazy
     KoodiRepository koodiRepository;
 
-   /* protected void delete(Koodi koodi) {
-        for (KoodiVersio koodiVersio : koodi.getKoodiVersios()) {
-            for (KoodistoVersioKoodiVersio relation : koodiVersio.getKoodistoVersios()) {
-                koodistoVersioKoodiVersioRepository.delete(relation);
-            }
-
-        }
-        this.koodiRepository.deleteById(koodi.getId());
-    }*/
-
-    /*@Override
-    public Koodi readByUri(String koodiUri) {
-
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Koodi> query = cb.createQuery(Koodi.class);
-        Root<Koodi> root = query.from(Koodi.class);
-
-        Predicate uriCondition = cb.equal(root.<String>get("koodiUri"), koodiUri);
-
-        query.select(root).where(uriCondition);
-
-        return em.createQuery(query).getSingleResult();
-    }
-    */
-
-    /*@Override
-    public void deleteIncludingRelations(String koodiUri) {
-        Koodi koodi = koodiRepository.findByKoodiUri(koodiUri);
-        delete(koodi);
-    }*/
-
-    /*@Override
-    public boolean koodiUriExists(String koodiUri) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Long> query = cb.createQuery(Long.class);
-
-        Root<Koodi> k = query.from(Koodi.class);
-        query.select(cb.count(k.<String>get("koodiUri"))).where(cb.equal(k.get("koodiUri"), koodiUri));
-        return em.createQuery(query).getSingleResult() > 0;
-    }*/
     
     @Override
     public List<KoodiVersio> getLatestCodeElementVersiosByUrisAndTila(List<String> koodiUris, Tila tila) {
@@ -91,20 +50,4 @@ public class KoodiRepositoryImpl implements KoodiRepositoryCustom {
         return results;
 
     }
-    /*
-    @Override
-    public Koodi insertNonFlush(Koodi entity) {
-        validate(entity);
-        EntityManager em = getEntityManager();
-        em.persist(entity);
-        // Database must be synchronized after this by flushing
-        return entity;
-    }
-
-    @Override
-    public void flush() {
-        getEntityManager().flush();
-    }
-
-     */
 }

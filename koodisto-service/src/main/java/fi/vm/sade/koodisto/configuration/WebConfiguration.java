@@ -6,9 +6,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
-    /*@Value("${server.swagger.context-path}")
-    private String swaggerPath;
-*/
+
     // vanhaa versiota varten ohajaan kyselyt buildversion.txt:stä actuator endpointiin.
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -16,10 +14,6 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .setViewName("forward:/actuator/health");
     }
 
-    /*@Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**").addResourceLocations("/static/");
-    }*/
 
 
 }

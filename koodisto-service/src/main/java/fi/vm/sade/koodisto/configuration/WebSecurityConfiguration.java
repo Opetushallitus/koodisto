@@ -87,7 +87,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public SingleSignOutFilter singleSignOutFilter() {
         SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
         singleSignOutFilter.setIgnoreInitConfiguration(true);
-        // singleSignOutFilter.setCasServerUrlPrefix(this.ophProperties.url("cas.base"));
         return singleSignOutFilter;
     }
 
