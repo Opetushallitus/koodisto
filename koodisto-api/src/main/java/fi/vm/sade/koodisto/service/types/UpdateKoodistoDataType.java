@@ -12,7 +12,7 @@ import java.util.List;
 public class UpdateKoodistoDataType implements Serializable
 {
 
-    private final static long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     protected String codesGroupUri;
     protected String koodistoUri;
     protected Date voimassaAlkuPvm;

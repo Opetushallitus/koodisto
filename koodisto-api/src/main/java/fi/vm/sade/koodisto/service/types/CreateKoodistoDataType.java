@@ -11,7 +11,7 @@ import java.util.List;
 public class CreateKoodistoDataType implements Serializable
 {
 
-    private final static long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     protected Date voimassaAlkuPvm;
     protected Date voimassaLoppuPvm;
     protected String omistaja;

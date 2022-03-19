@@ -35,7 +35,7 @@ import java.util.List;
 @RestController
 @RequestMapping({"/rest/codeelement"})
 public class CodeElementResource {
-    private final static Logger logger = LoggerFactory.getLogger(CodeElementResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(CodeElementResource.class);
 
     private static final String KOODIURI = "codeelementuri";
     private static final String KOODIVERSIO = "codeelementversion";

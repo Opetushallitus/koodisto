@@ -9,11 +9,7 @@ public class CodeElementRelationListValidator implements RestValidator<KoodiRela
 
     @Override
     public void validate(KoodiRelaatioListaDto validatable, ValidationType type) {
-        if (type == ValidationType.INSERT) {
-            validateInsert(validatable);
-        } else {
-            validateUpdate(validatable);
-        }
+        validateInsert(validatable);
     }
 
     @Override
@@ -26,9 +22,6 @@ public class CodeElementRelationListValidator implements RestValidator<KoodiRela
 
     @Override
     public void validateUpdate(KoodiRelaatioListaDto validatable) {
-        ValidatorUtil.checkForNull(validatable, TO_THROW);
-        ValidatorUtil.checkForBlank(validatable.getCodeElementUri(), TO_THROW);
-        ValidatorUtil.checkCollectionIsNotNullOrEmpty(validatable.getRelations(), TO_THROW);
-        ValidatorUtil.checkForBlank(validatable.getRelationType(), TO_THROW);
+        validateInsert(validatable);
     }
 }

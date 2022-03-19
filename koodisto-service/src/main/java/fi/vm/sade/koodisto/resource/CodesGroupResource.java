@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping({"/rest/codesgroup"})
 //@Api(value = "/rest/codesgroup", description = "Koodistoryhmät")
 public class CodesGroupResource {
-    protected final static Logger logger = LoggerFactory.getLogger(CodesGroupResource.class);
+    protected static final Logger logger = LoggerFactory.getLogger(CodesGroupResource.class);
 
     private static final String GENERIC_ERROR_CODE = "error.codes.generic";
 

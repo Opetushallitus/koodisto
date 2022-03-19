@@ -6,7 +6,7 @@ import java.io.Serializable;
 public class KoodiUriAndVersioType implements Serializable
 {
 
-    private final static long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     protected String koodiUri;
     protected int versio;

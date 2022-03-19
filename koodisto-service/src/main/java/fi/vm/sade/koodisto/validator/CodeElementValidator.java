@@ -3,14 +3,10 @@ package fi.vm.sade.koodisto.validator;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
 public class CodeElementValidator implements RestValidator<KoodiDto> {
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Override
     public void validate(KoodiDto validatable, ValidationType type) {

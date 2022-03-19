@@ -58,7 +58,7 @@ public class KoodistoBusinessServiceTest {
     @Autowired
     private KoodistoConversionService conversionService;
 
-    private final static Long KOODISTON_SUHDE = -6L;
+    private static final Long KOODISTON_SUHDE = -6L;
 
     @Test
     public void testCreate() {

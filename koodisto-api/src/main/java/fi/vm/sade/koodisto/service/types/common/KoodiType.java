@@ -9,7 +9,7 @@ import java.util.List;
 public class KoodiType implements Serializable
 {
 
-    private final static long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     protected String koodiUri;
     protected String resourceUri;
     protected KoodistoItemType koodisto;

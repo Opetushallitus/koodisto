@@ -32,13 +32,13 @@ import static org.mockito.Mockito.when;
 public class KoodistoChangesServiceImplTest {
     
     private static final String KOODI_URI = "koivu";
-    private final static String KOODISTO_URI = "lehtipuut";
-    private final static String NAME = "Lehtipuut", DESCRIPTION = "pudottavat lehtensä syksyisin";
-    private final static String NAME_EN = "Leaftrees", DESCRIPTION_EN = "leaves are dropped during autumn";
-    private final static Date CURRENT_DATE = new Date();
+    private static final String KOODISTO_URI = "lehtipuut";
+    private static final String NAME = "Lehtipuut", DESCRIPTION = "pudottavat lehtensä syksyisin";
+    private static final String NAME_EN = "Leaftrees", DESCRIPTION_EN = "leaves are dropped during autumn";
+    private static final Date CURRENT_DATE = new Date();
     private static final Date FIRST_DATE = new Date(2000), SECOND_DATE = new Date(20050000), THIRD_DATE = new Date(30050000);
     
-    private final static Integer VERSIO = 1;
+    private static final Integer VERSIO = 1;
     
     @MockBean
     @Autowired

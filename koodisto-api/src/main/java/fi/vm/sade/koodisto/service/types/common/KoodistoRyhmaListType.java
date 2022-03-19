@@ -8,7 +8,7 @@ import java.util.List;
 public class KoodistoRyhmaListType implements Serializable
 {
 
-    private final static long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     protected String koodistoRyhmaUri;
     private List<KoodistoRyhmaMetadataType> koodistoRyhmaMetadatas;
     private List<KoodistoListType> koodistos;

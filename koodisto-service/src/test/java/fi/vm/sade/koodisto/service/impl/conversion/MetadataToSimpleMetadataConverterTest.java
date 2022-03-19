@@ -15,8 +15,8 @@ import static org.junit.Assert.assertEquals;
 
 public class MetadataToSimpleMetadataConverterTest {
     
-    private final static String CODES_NAME = "codes", CODES_DESCRIPTION = "desc";
-    private final static String CODE_NAME = "koodi", CODE_DESCRIPTION = "kuvaus", CODE_SHORT_NAME = "ko";
+    private static final String CODES_NAME = "codes", CODES_DESCRIPTION = "desc";
+    private static final String CODE_NAME = "koodi", CODE_DESCRIPTION = "kuvaus", CODE_SHORT_NAME = "ko";
     
     @Test
     public void convertsKoodistoMetadataToSimpleMetadata() {

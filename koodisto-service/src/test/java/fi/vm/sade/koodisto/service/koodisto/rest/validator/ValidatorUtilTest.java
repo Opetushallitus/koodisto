@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ValidatorUtilTest {
 
-    private final static KoodistoValidationException ERROR = new KoodistoValidationException("error");
+    private static final KoodistoValidationException ERROR = new KoodistoValidationException("error");
 
     @Test(expected = KoodistoValidationException.class)
     public void throwsExceptionWhenGivenStringIsEmpty() {

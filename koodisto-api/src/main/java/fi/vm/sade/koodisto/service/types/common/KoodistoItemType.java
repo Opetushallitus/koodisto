@@ -8,7 +8,7 @@ import java.util.List;
 public class KoodistoItemType implements Serializable
 {
 
-    private final static long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     protected String koodistoUri;
     protected String organisaatioOid;
     private List<Integer> koodistoVersio;

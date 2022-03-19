@@ -11,7 +11,7 @@ import java.util.List;
 public class SearchKoodistosCriteriaType implements Serializable
 {
 
-    private final static long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     private List<String> koodistoUris;
     protected Integer koodistoVersio;
     protected SearchKoodistosVersioSelectionType koodistoVersioSelection;
