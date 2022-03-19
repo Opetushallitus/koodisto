@@ -22,6 +22,7 @@ import javax.persistence.criteria.*;
 import javax.persistence.criteria.CriteriaBuilder.In;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
 
@@ -210,32 +211,24 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
 
     private static List<Predicate> createSecondaryRestrictionsForKoodiSearchCriteria(CriteriaBuilder cb, KoodiBaseSearchCriteriaType searchCriteria,
             Path<KoodiVersio> koodiVersio) {
-        List<Predicate> restrictions = new ArrayList<Predicate>();
+        List<Predicate> restrictions = new ArrayList<>();
 
         if (searchCriteria != null) {
-            if (!Strings.isNullOrEmpty(searchCriteria.getKoodiArvo())) {
-                restrictions.add(cb.like(cb.lower(koodiVersio.<String> get(KOODIARVO)), searchCriteria.getKoodiArvo().toLowerCase() + '%'));
+            String koodiArvo = searchCriteria.getKoodiArvo();
+            List<Predicate> koodiTilaPredicates = searchCriteria.getKoodiTilas().stream().filter(Objects::nonNull).map(tila -> cb.equal(koodiVersio.get(TILA), Tila.valueOf(tila.name()))).collect(Collectors.toList());;
+            Date validAt = searchCriteria.getValidAt();
+            if (!Strings.isNullOrEmpty(koodiArvo)) {
+                restrictions.add(cb.like(cb.lower(koodiVersio.get(KOODIARVO)), koodiArvo.toLowerCase() + '%'));
             }
 
-            if (searchCriteria.getKoodiTilas() != null && searchCriteria.getKoodiTilas().size() > 0) {
-                List<Predicate> tilaRestrictions = new ArrayList<Predicate>();
-                for (TilaType tila : searchCriteria.getKoodiTilas()) {
-                    if (tila != null) {
-                        tilaRestrictions.add(cb.equal(koodiVersio.get(TILA), Tila.valueOf(tila.name())));
-                    }
-                }
-
-                if (!tilaRestrictions.isEmpty()) {
-                    restrictions.add(tilaRestrictions.size() == 1 ? tilaRestrictions.get(0) : cb.or(tilaRestrictions.toArray(new Predicate[tilaRestrictions
-                            .size()])));
-                }
+            if(!koodiTilaPredicates.isEmpty()) {
+                restrictions.add(koodiTilaPredicates.size() == 1 ? koodiTilaPredicates.get(0) : cb.or(koodiTilaPredicates.toArray(new Predicate[0])));
             }
 
-            if (searchCriteria.getValidAt() != null) {
-                Date validAt = searchCriteria.getValidAt();
-                Predicate conditionVoimassaAlku = cb.lessThanOrEqualTo(koodiVersio.<Date> get(VOIMASSA_ALKU_PVM), validAt);
+            if (validAt != null) {
+                Predicate conditionVoimassaAlku = cb.lessThanOrEqualTo(koodiVersio.get(VOIMASSA_ALKU_PVM), validAt);
                 Predicate conditionNullAlku = cb.isNull(koodiVersio.get(VOIMASSA_ALKU_PVM));
-                Predicate conditionVoimassaLoppu = cb.greaterThanOrEqualTo(koodiVersio.<Date> get(VOIMASSA_LOPPU_PVM), validAt);
+                Predicate conditionVoimassaLoppu = cb.greaterThanOrEqualTo(koodiVersio.get(VOIMASSA_LOPPU_PVM), validAt);
                 Predicate conditionNullLoppu = cb.isNull(koodiVersio.get(VOIMASSA_LOPPU_PVM));
 
                 restrictions.add(cb.and(cb.or(conditionVoimassaAlku, conditionNullAlku), cb.or(conditionVoimassaLoppu, conditionNullLoppu)));
@@ -444,13 +437,13 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
 
     private static Predicate createKoodiRelationRestriction(CriteriaBuilder cb, Path<Koodi> koodiPath, Path<KoodiVersio> koodiVersioPath,
             KoodiUriAndVersioType koodi) {
-        return cb.and(cb.equal(koodiPath.<String> get(KOODI_URI), koodi.getKoodiUri()), cb.equal(koodiVersioPath.get(VERSIO), koodi.getVersio()));
+        return cb.and(cb.equal(koodiPath.get(KOODI_URI), koodi.getKoodiUri()), cb.equal(koodiVersioPath.get(VERSIO), koodi.getVersio()));
     }
 
     @Override
     public List<KoodiVersio> getKoodiVersios(KoodiUriAndVersioType... koodis) {
         if (koodis.length == 0) {
-            return new ArrayList<KoodiVersio>();
+            return new ArrayList<>();
         }
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<KoodiVersio> criteriaQuery = cb.createQuery(KoodiVersio.class);
@@ -460,7 +453,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
         root.fetch(KOODI);
         root.fetch(METADATAS, JoinType.LEFT);
 
-        List<Predicate> restrictions = new ArrayList<Predicate>();
+        List<Predicate> restrictions = new ArrayList<>();
         for (KoodiUriAndVersioType kv : koodis) {
             restrictions.add(cb.and(cb.equal(koodi.<String> get(KOODI_URI), kv.getKoodiUri()), cb.equal(root.get(VERSIO), kv.getVersio())));
         }
@@ -487,12 +480,12 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
     @Override
     public Map<String, Integer> getLatestVersionNumbersForUris(String... koodiUris) {
         if(koodiUris == null || koodiUris.length == 0){
-            return new HashMap<String, Integer>();
+            return new HashMap<>();
         }
         SearchKoodisCriteriaType searchCriteria = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(koodiUris);
         TypedQuery<KoodiVersio> query = createKoodiVersioQueryFromSearchCriteria(searchCriteria);
 
-        HashMap<String, Integer> returnMap = new HashMap<String, Integer>();
+        HashMap<String, Integer> returnMap = new HashMap<>();
         for (KoodiVersio result : query.getResultList()) {
             returnMap.put(result.getKoodi().getKoodiUri(), result.getVersio());
         }
@@ -522,8 +515,8 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
             CriteriaQuery<KoodiVersio> query = cb.createQuery(KoodiVersio.class);
             Root<KoodiVersio> root = query.from(KoodiVersio.class);
             Join<KoodiVersio, Koodi> koodi = root.join(KOODI);
-            Predicate koodiUriEqual = cb.equal(koodi.<String> get(KOODI_URI), kv.getKoodi().getKoodiUri());
-            Predicate koodiVersioLessThan = cb.lessThan(root.<Integer> get(VERSIO), kv.getVersio());
+            Predicate koodiUriEqual = cb.equal(koodi.get(KOODI_URI), kv.getKoodi().getKoodiUri());
+            Predicate koodiVersioLessThan = cb.lessThan(root.get(VERSIO), kv.getVersio());
             
             query.select(root).where(cb.and(koodiUriEqual, koodiVersioLessThan)).orderBy(cb.desc(root.<Integer> get(VERSIO)));
             List<KoodiVersio> resultList = em.createQuery(query).setMaxResults(1).getResultList();
