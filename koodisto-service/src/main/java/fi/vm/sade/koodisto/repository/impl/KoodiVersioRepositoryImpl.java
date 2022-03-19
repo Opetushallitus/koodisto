@@ -133,38 +133,33 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
     }
 
     private static List<Predicate> createRestrictionsForKoodistoCriteria(CriteriaBuilder cb, SearchKoodisByKoodistoCriteriaType koodistoSearchCriteria,
-            Path<Koodisto> koodisto, Path<KoodistoVersio> koodistoVersio) {
-        List<Predicate> restrictions = new ArrayList<Predicate>();
+            Path<Koodisto> koodisto, Path<KoodistoVersio> koodistoVersioPath) {
+        List<Predicate> restrictions = new ArrayList<>();
         if (koodistoSearchCriteria != null) {
-        if (!Strings.isNullOrEmpty(koodistoSearchCriteria.getKoodistoUri())) {
-                restrictions.add(cb.equal(koodisto.get(KOODISTO_URI), koodistoSearchCriteria.getKoodistoUri()));
+            String koodistoUri = koodistoSearchCriteria.getKoodistoUri();
+            SearchKoodisByKoodistoVersioSelectionType ct = koodistoSearchCriteria.getKoodistoVersioSelection();
+            Integer koodistonVersio = koodistoSearchCriteria.getKoodistoVersio();
+            List<TilaType> koodistonTilat = koodistoSearchCriteria.getKoodistoTilas();
+            if (!Strings.isNullOrEmpty(koodistoUri)) {
+                restrictions.add(cb.equal(koodisto.get(KOODISTO_URI), koodistoUri));
             }
 
-            if (koodistoSearchCriteria.getKoodistoVersioSelection() != null
-                    && SearchKoodisByKoodistoVersioSelectionType.SPECIFIC.equals(koodistoSearchCriteria.getKoodistoVersioSelection())) {
-                restrictions.add(cb.equal(koodistoVersio.get(VERSIO), koodistoSearchCriteria.getKoodistoVersio()));
+            if (SearchKoodisByKoodistoVersioSelectionType.SPECIFIC.equals(ct) && koodistonVersio != null) {
+                restrictions.add(cb.equal(koodistoVersioPath.get(VERSIO), koodistonVersio));
             }
 
-            if (koodistoSearchCriteria.getKoodistoTilas() != null && koodistoSearchCriteria.getKoodistoTilas().size() > 0) {
-                List<Predicate> tilaRestrictions = new ArrayList<Predicate>();
-                for (TilaType tila : koodistoSearchCriteria.getKoodistoTilas()) {
-                    if (tila != null) {
-                        tilaRestrictions.add(cb.equal(koodistoVersio.get(TILA), Tila.valueOf(tila.name())));
-                    }
-                }
-
-                if (!tilaRestrictions.isEmpty()) {
-                    restrictions.add(tilaRestrictions.size() == 1 ? tilaRestrictions.get(0) : cb.or(tilaRestrictions.toArray(new Predicate[tilaRestrictions
-                            .size()])));
-                }
+            List<Predicate> tilaRestrictions = new ArrayList<>();
+            koodistonTilat.stream().filter(Objects::nonNull).forEach(tila -> tilaRestrictions.add(cb.equal(koodistoVersioPath.get(TILA), Tila.valueOf(tila.name()))));
+            if (!tilaRestrictions.isEmpty()) {
+                restrictions.add(tilaRestrictions.size() == 1 ? tilaRestrictions.get(0) : cb.or(tilaRestrictions.toArray(new Predicate[0])));
             }
 
-            if (koodistoSearchCriteria.getValidAt() != null) {
-                Date validAt = koodistoSearchCriteria.getValidAt();
-                Predicate conditionVoimassaAlku = cb.lessThanOrEqualTo(koodistoVersio.<Date> get(VOIMASSA_ALKU_PVM), validAt);
-                Predicate conditionNullAlku = cb.isNull(koodistoVersio.get(VOIMASSA_ALKU_PVM));
-                Predicate conditionVoimassaLoppu = cb.greaterThanOrEqualTo(koodistoVersio.<Date> get(VOIMASSA_LOPPU_PVM), validAt);
-                Predicate conditionNullLoppu = cb.isNull(koodistoVersio.get(VOIMASSA_LOPPU_PVM));
+            Date validAt = koodistoSearchCriteria.getValidAt();
+            if (validAt != null) {
+                Predicate conditionVoimassaAlku = cb.lessThanOrEqualTo(koodistoVersioPath.get(VOIMASSA_ALKU_PVM), validAt);
+                Predicate conditionNullAlku = cb.isNull(koodistoVersioPath.get(VOIMASSA_ALKU_PVM));
+                Predicate conditionVoimassaLoppu = cb.greaterThanOrEqualTo(koodistoVersioPath.get(VOIMASSA_LOPPU_PVM), validAt);
+                Predicate conditionNullLoppu = cb.isNull(koodistoVersioPath.get(VOIMASSA_LOPPU_PVM));
 
                 restrictions.add(cb.and(cb.or(conditionVoimassaAlku, conditionNullAlku), cb.or(conditionVoimassaLoppu, conditionNullLoppu)));
             }
