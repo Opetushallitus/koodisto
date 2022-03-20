@@ -8,7 +8,12 @@ import java.util.Collection;
 import java.util.Date;
 
 public class ValidatorUtil {
-    private static Logger logger = LoggerFactory.getLogger(ValidatorUtil.class);
+
+    private ValidatorUtil() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    private static final Logger logger = LoggerFactory.getLogger(ValidatorUtil.class);
 
     public static void checkForNull(Object toCheck, RuntimeException toThrow) {
         if (toCheck == null) {

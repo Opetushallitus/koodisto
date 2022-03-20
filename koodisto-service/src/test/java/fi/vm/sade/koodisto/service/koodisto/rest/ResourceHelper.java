@@ -23,39 +23,39 @@ public class ResourceHelper {
     private CodeElementResource codeElementResource;
 
     public KoodistoDto createKoodisto(KoodistoDto koodisto) {
-        ResponseEntity response = resource.insert(koodisto);
-        assertEquals(response.getStatusCodeValue(), 201);
+        ResponseEntity<Object> response = resource.insert(koodisto);
+        assertEquals(201, response.getStatusCodeValue());
         return (KoodistoDto) response.getBody();
     }
 
     public KoodistoDto getKoodisto(String koodistoUri, int versio) {
-        ResponseEntity response = resource.getCodesByCodesUriAndVersion(koodistoUri, versio);
-        assertEquals(response.getStatusCodeValue(), 200);
+        ResponseEntity<Object> response = resource.getCodesByCodesUriAndVersion(koodistoUri, versio);
+        assertEquals(200, response.getStatusCodeValue());
         return (KoodistoDto) response.getBody();
     }
 
     public KoodistoDto updateKoodisto(KoodistoDto koodisto) {
-        ResponseEntity response = resource.update(koodisto);
-        assertEquals(response.getStatusCodeValue(), 201);
+        ResponseEntity<Object> response = resource.update(koodisto);
+        assertEquals(201, response.getStatusCodeValue());
         int versio = (int) response.getBody();
         return getKoodisto(koodisto.getKoodistoUri(), versio);
     }
 
     public KoodiDto createKoodi(String koodistoUri, KoodiDto koodi) {
-        ResponseEntity response = codeElementResource.insert(koodistoUri, koodi);
-        assertEquals(response.getStatusCodeValue(), 201);
+        ResponseEntity<Object> response = codeElementResource.insert(koodistoUri, koodi);
+        assertEquals(201, response.getStatusCodeValue());
         return (KoodiDto) response.getBody();
     }
 
     public ExtendedKoodiDto getKoodi(String koodiUri, int versio) {
-        ResponseEntity response = codeElementResource.getCodeElementByUriAndVersion(koodiUri, versio);
-        assertEquals(response.getStatusCodeValue(), 200);
+        ResponseEntity<Object> response = codeElementResource.getCodeElementByUriAndVersion(koodiUri, versio);
+        assertEquals(200, response.getStatusCodeValue());
         return (ExtendedKoodiDto) response.getBody();
     }
 
     public KoodiDto updateKoodi(KoodiDto koodi) {
-        ResponseEntity response = codeElementResource.update(koodi);
-        assertEquals(response.getStatusCodeValue(), 201);
+        ResponseEntity<Object> response = codeElementResource.update(koodi);
+        assertEquals(201, response.getStatusCodeValue());
         return (KoodiDto) response.getBody();
     }
 
