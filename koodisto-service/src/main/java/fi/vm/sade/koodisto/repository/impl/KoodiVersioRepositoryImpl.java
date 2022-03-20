@@ -286,13 +286,14 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
      * @return
      */
     private List<KoodiVersioWithKoodistoItem> convertSearchResultSet(List<Tuple> resultSet) {
-        Map<KoodiVersio, Map<String, KoodistoItem>> koodiVersios = new HashMap<KoodiVersio, Map<String, KoodistoItem>>();
-        for (Tuple tuple : resultSet) {
-            KoodiVersio kv = tuple.get(TUPLE_KOODI_VERSIO, KoodiVersio.class);
+        Map<KoodiVersio, Map<String, KoodistoItem>> koodiVersios = new HashMap<>();
+        List<KoodiVersioWithKoodistoItem> result = new ArrayList<>();
 
-            Map<String, KoodistoItem> koodistos = null;
+        resultSet.forEach((tuple) -> {
+            KoodiVersio kv = tuple.get(TUPLE_KOODI_VERSIO, KoodiVersio.class);
+            Map<String, KoodistoItem> koodistos;
             if (!koodiVersios.containsKey(kv)) {
-                koodistos = new HashMap<String, KoodistoItem>();
+                koodistos = new HashMap<>();
                 koodiVersios.put(kv, koodistos);
             } else {
                 koodistos = koodiVersios.get(kv);
@@ -303,7 +304,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
             Integer versio = tuple.get(TUPLE_VERSIO, Integer.class);
 
             if (!Strings.isNullOrEmpty(uri)) {
-                KoodistoItem koodistoItem = null;
+                KoodistoItem koodistoItem;
                 if (!koodistos.containsKey(uri)) {
                     koodistoItem = new KoodistoItem();
                     koodistoItem.setKoodistoUri(uri);
@@ -317,20 +318,17 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
                     koodistoItem.addVersio(versio);
                 }
             }
-        }
+        });
 
-        List<KoodiVersioWithKoodistoItem> result = new ArrayList<KoodiVersioWithKoodistoItem>();
-        for (Entry<KoodiVersio, Map<String, KoodistoItem>> ke : koodiVersios.entrySet()) {
+        koodiVersios.forEach((key, value) -> {
             KoodiVersioWithKoodistoItem k = new KoodiVersioWithKoodistoItem();
-            k.setKoodiVersio(ke.getKey());
-
-            if (ke.getValue() != null && ke.getValue().size() > 0) {
-                KoodistoItem koodistoItem = ke.getValue().values().iterator().next();
+            k.setKoodiVersio(key);
+            if (value != null && value.size() > 0) {
+                KoodistoItem koodistoItem = value.values().iterator().next();
                 k.setKoodistoItem(koodistoItem);
             }
-
             result.add(k);
-        }
+        });
 
         return result;
     }
