@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static fi.vm.sade.koodisto.service.types.SearchKoodistosVersioSelectionType.*;
-
 @Repository
 public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCustom {
 
@@ -59,10 +57,10 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
 
         List<Predicate> restrictions = createRestrictionsForKoodistoCriteria(cb, criteriaQuery, searchCriteria, koodi, root);
 
-        criteriaQuery.select(root).where(cb.and(restrictions.toArray(new Predicate[restrictions.size()])));
+        criteriaQuery.select(root).where(cb.and(restrictions.toArray(new Predicate[0])));
         criteriaQuery.distinct(true);
 
-        EntityGraph entityGraph = em.getEntityGraph("koodistoWithRelations");
+        EntityGraph<?> entityGraph = em.getEntityGraph("koodistoWithRelations");
         TypedQuery<KoodistoVersio> query = em.createQuery(criteriaQuery)
                 .setHint("javax.persistence.fetchgraph", entityGraph);
 
@@ -155,7 +153,7 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
         Join<KoodistoVersio, Koodisto> koodisto = root.join(KOODISTO);
 
         Predicate koodistoUriEqual = cb.equal(koodisto.get(KOODISTOURI), koodistoUri);
-        Predicate koodistoVersioLessThan = cb.lessThan(root.<Integer> get(VERSIO), koodistoVersio);
+        Predicate koodistoVersioLessThan = cb.lessThan(root.get(VERSIO), koodistoVersio);
 
         query.select(root).where(cb.and(koodistoUriEqual, koodistoVersioLessThan)).orderBy(cb.desc(root.<Integer> get(VERSIO)));
 

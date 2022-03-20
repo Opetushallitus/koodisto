@@ -61,9 +61,9 @@ public class CodeElementResource {
     @Autowired
     OphProperties ophProperties;
 
-    private CodeElementValidator codesValidator = new CodeElementValidator();
-    private CodeElementRelationListValidator relationValidator = new CodeElementRelationListValidator();
-    private ExtendedCodeElementValidator extendedValidator = new ExtendedCodeElementValidator();
+    private final CodeElementValidator codesValidator = new CodeElementValidator();
+    private final CodeElementRelationListValidator relationValidator = new CodeElementRelationListValidator();
+    private final ExtendedCodeElementValidator extendedValidator = new ExtendedCodeElementValidator();
 
     @JsonView({ JsonViews.Simple.class }) // tarvitaanko?
     /*@ApiOperation(
@@ -72,7 +72,7 @@ public class CodeElementResource {
             response = SimpleKoodiDto.class,
             responseContainer = "List")*/
     @GetMapping(path = "/{codeElementUri}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getAllCodeElementVersionsByCodeElementUri(
+    public ResponseEntity<?> getAllCodeElementVersionsByCodeElementUri(
             @PathVariable String codeElementUri) {
         try {
             String[] errors = { KOODIURI };
@@ -244,16 +244,16 @@ public class CodeElementResource {
             response = KoodiChangesDto.class)*/
     @GetMapping(path = "/changes/withdate/{codeElementUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getChangesToCodeElementWithDate(@PathVariable String codeElementUri,
-                                                           @PathVariable Integer dayOfMonth,
+                                                           @PathVariable Integer dayofmonth,
                                                            @PathVariable Integer month,
                                                            @PathVariable Integer year,
-                                                           @PathVariable Integer hourOfDay,
+                                                           @PathVariable Integer hour,
                                                            @PathVariable Integer minute,
                                                            @PathVariable Integer second,
                                                            @RequestParam(defaultValue = "false") Boolean compareToLatestAccepted) {
          try {
-            ValidatorUtil.validateDateParameters(dayOfMonth, month, year, hourOfDay, minute, second);
-            DateTime dateTime = new DateTime(year, month, dayOfMonth, hourOfDay, minute, second);
+            ValidatorUtil.validateDateParameters(dayofmonth, month, year, hour, minute, second);
+            DateTime dateTime = new DateTime(year, month, dayofmonth, hour, minute, second);
             return ResponseEntity.ok(changesService.getChangesDto(codeElementUri, dateTime, compareToLatestAccepted));
         } catch (KoodistoValidationException e) {
             logger.warn("Invalid parameter for rest call: get changes. ", e);
@@ -360,7 +360,7 @@ public class CodeElementResource {
             String[] errors = { KOODIURI, "codeelementuritoremove", RELATIONTYPE };
             ValidatorUtil.validateArgs(errors, codeElementUri, codeElementUriToRemove, relationType);
 
-            koodiBusinessService.removeRelation(codeElementUri, Arrays.asList(codeElementUriToRemove),
+            koodiBusinessService.removeRelation(codeElementUri, List.of(codeElementUriToRemove),
                     SuhteenTyyppi.valueOf(relationType), false);
             return ResponseEntity.ok(null);
         } catch (KoodistoValidationException e) {
@@ -393,7 +393,7 @@ public class CodeElementResource {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
-            logger.error("Removing multiple relations form codeElement failed.", message);
+            logger.error("Removing multiple relations form codeElement failed. {}", message);
             return ResponseEntity.internalServerError().body(message);
 
         }
@@ -445,9 +445,9 @@ public class CodeElementResource {
             logger.warn("Invalid parameter for rest call: update. ", e);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            //String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
+            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             logger.error("Updating codeElement failed.", e);
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ResponseEntity.internalServerError().body(message);
         }
     }
 
