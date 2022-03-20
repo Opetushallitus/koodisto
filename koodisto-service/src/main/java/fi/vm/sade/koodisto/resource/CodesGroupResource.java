@@ -51,7 +51,7 @@ public class CodesGroupResource {
             @ApiResponse(code = 400, message = "Id on virheellinen"),
             @ApiResponse(code = 500, message = "Koodistoryhmää ei löydy kyseisellä id:llä")
     })*/
-    public ResponseEntity<?> getCodesByCodesUri(
+    public ResponseEntity<Object> getCodesByCodesUri(
             @PathVariable("id") Long id) {
         try {
             String[] errors = { "id" };
@@ -80,7 +80,7 @@ public class CodesGroupResource {
             @ApiResponse(code = 400, message = "Parametri on tyhjä"),
             @ApiResponse(code = 500, message = "Koodistoryhmää ei saatu päivitettyä")
     })*/
-    public ResponseEntity<?> update(
+    public ResponseEntity<Object> update(
             @RequestBody KoodistoRyhmaDto codesGroupDTO) {
         try {
             codesGroupValidator.validate(codesGroupDTO, ValidationType.UPDATE);
@@ -108,7 +108,7 @@ public class CodesGroupResource {
             @ApiResponse(code = 400, message = "Parametri on tyhjä"),
             @ApiResponse(code = 500, message = "Koodistoryhmää ei saatu lisättyä")
     })*/
-    public ResponseEntity<?> insert(
+    public ResponseEntity<Object> insert(
             @RequestBody KoodistoRyhmaDto codesGroupDTO) {
         try {
             codesGroupValidator.validate(codesGroupDTO, ValidationType.INSERT);
@@ -137,7 +137,7 @@ public class CodesGroupResource {
             @ApiResponse(code = 400, message = "Id on virheellinen."),
             @ApiResponse(code = 500, message = "Koodiryhmää ei saatu poistettua")
     })*/
-    public ResponseEntity<?> delete(
+    public ResponseEntity<Object> delete(
             @PathVariable Long id) {
         try {
             String[] errors = { "id" };

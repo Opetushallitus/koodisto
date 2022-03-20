@@ -66,7 +66,7 @@ public class CodesResource {
     /*@ApiOperation(
             value = "Lisää relaatio koodistojen välille",
             notes = "")*/
-    public ResponseEntity<?> addRelation(
+    public ResponseEntity<Object> addRelation(
             @PathVariable String codesUri,
             @PathVariable String codesUriToAdd,
             @PathVariable String relationType) {
@@ -94,7 +94,7 @@ public class CodesResource {
         @ApiOperation(
             value = "Poistaa relaatio koodistojen väliltä",
             notes = "")*/
-    public ResponseEntity<?> removeRelation(
+    public ResponseEntity<Object> removeRelation(
             @PathVariable String codesUri,
             @PathVariable String codesUriToRemove,
             @PathVariable String relationType) {
@@ -124,7 +124,7 @@ public class CodesResource {
             value = "Päivittää koodistoa",
             notes = "",
             response = Response.class)*/
-    public ResponseEntity<?> update(
+    public ResponseEntity<Object> update(
             @RequestBody KoodistoDto codesDTO) {
          try {
             codesValidator.validate(codesDTO, ValidationType.UPDATE);
@@ -173,7 +173,7 @@ public class CodesResource {
             value = "Lisää koodiston",
             notes = "",
             response = Response.class)*/
-    public ResponseEntity<?> insert(
+    public ResponseEntity<Object> insert(
             @RequestBody KoodistoDto codesDTO) {
         try {
             codesValidator.validate(codesDTO, ValidationType.INSERT);
@@ -199,7 +199,7 @@ public class CodesResource {
             responseContainer = "List")*/
     @JsonView(JsonViews.Simple.class)
     @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
-    public ResponseEntity<?> listAllCodesGroups() {
+    public ResponseEntity<Object> listAllCodesGroups() {
        try {
             return ResponseEntity.ok(conversionService.convertAll(koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class));
 
@@ -217,7 +217,7 @@ public class CodesResource {
             responseContainer = "List")*/
     @JsonView({ JsonViews.Basic.class })
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> listAllCodesInAllCodeGroups() {
+    public ResponseEntity<Object> listAllCodesInAllCodeGroups() {
          try {
 
             SearchKoodistosCriteriaType searchType = KoodistoServiceSearchCriteriaBuilder.latestCodes();
@@ -236,7 +236,7 @@ public class CodesResource {
             response = KoodistoListDto.class)*/
    @JsonView({ JsonViews.Basic.class })
    @GetMapping(path = "/{codesUri}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getCodesByCodesUri(
+    public ResponseEntity<Object> getCodesByCodesUri(
             @PathVariable String codesUri) {
         try {
             String[] errors = { KOODISTOURI };
@@ -261,7 +261,7 @@ public class CodesResource {
             response = KoodistoDto.class)*/
     @JsonView({ JsonViews.Extended.class })
     @GetMapping(path = "/{codesUri}/{codesVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getCodesByCodesUriAndVersion(
+    public ResponseEntity<Object> getCodesByCodesUriAndVersion(
             @PathVariable String codesUri,
             @PathVariable int codesVersion) {
          try {
@@ -293,7 +293,7 @@ public class CodesResource {
             response = KoodistoChangesDto.class)*/
     @JsonView({ JsonViews.Basic.class })
     @GetMapping(path = "/changes/{codesUri}/{codesVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getChangesToCodes(@PathVariable String codesUri,
+    public ResponseEntity<Object> getChangesToCodes(@PathVariable String codesUri,
                                       @PathVariable Integer codesVersion,
             @RequestParam(defaultValue = "false") boolean compareToLatestAccepted) { // queryparam
         try {
@@ -316,7 +316,7 @@ public class CodesResource {
             response = KoodistoChangesDto.class)*/
    @JsonView({ JsonViews.Basic.class })
    @GetMapping(path = "/changes/withdate/{codesUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getChangesToCodesWithDate(@PathVariable String codesUri,
+    public ResponseEntity<Object> getChangesToCodesWithDate(@PathVariable String codesUri,
                                               @PathVariable Integer dayofmonth,
                                               @PathVariable Integer month,
                                               @PathVariable Integer year,
@@ -346,13 +346,12 @@ public class CodesResource {
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
     @JsonView({ JsonViews.Simple.class })
     @PostMapping(path = "/delete/{codesUri}/{codesVersion}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> delete(
+    public ResponseEntity<Object> delete(
             @PathVariable String codesUri,
             @PathVariable int codesVersion) {
          try {
             String[] errors = { KOODISTOURI, KOODISTOVERSIO };
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
-
             koodistoBusinessService.delete(codesUri, codesVersion);
             return ResponseEntity.status(202).body(null);
          } catch (KoodistoValidationException e) {

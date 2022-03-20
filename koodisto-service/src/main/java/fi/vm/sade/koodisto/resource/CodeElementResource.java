@@ -78,7 +78,7 @@ public class CodeElementResource {
             response = SimpleKoodiDto.class,
             responseContainer = "List")*/
     @GetMapping(path = "/{codeElementUri}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getAllCodeElementVersionsByCodeElementUri(
+    public ResponseEntity<Object> getAllCodeElementVersionsByCodeElementUri(
             @PathVariable String codeElementUri) {
         try {
             String[] errors = { KOODIURI };
@@ -106,7 +106,7 @@ public class CodeElementResource {
             value = "Palauttaa tietyn koodiversion",
             notes = "sisältää koodiversion koodinsuhteet",
             response = ExtendedKoodiDto.class)*/
-    public ResponseEntity<?> getCodeElementByUriAndVersion(
+    public ResponseEntity<Object> getCodeElementByUriAndVersion(
             @PathVariable String codeElementUri,
             @PathVariable int codeElementVersion) {
         try {
@@ -137,7 +137,7 @@ public class CodeElementResource {
             value = "Palauttaa koodin tietystä koodistoversiosta",
             notes = "",
             response = KoodiDto.class)*/
-    public ResponseEntity<?> getCodeElementByCodeElementUri(
+    public ResponseEntity<Object> getCodeElementByCodeElementUri(
             @PathVariable String codesUri,
             @PathVariable int codesVersion,
             @PathVariable String codeElementUri) {
@@ -165,7 +165,7 @@ public class CodeElementResource {
             response = SimpleKoodiDto.class,
             responseContainer = "List")*/
     @GetMapping(path = "/codes/{codesUri}/{codesVersion}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
-    public ResponseEntity<?> getAllCodeElementsByCodesUriAndVersion(
+    public ResponseEntity<Object> getAllCodeElementsByCodesUriAndVersion(
             @PathVariable String codesUri,
             @PathVariable int codesVersion) {
         try {
@@ -197,7 +197,7 @@ public class CodeElementResource {
             response = KoodiDto.class)*/
     @JsonView({ JsonViews.Basic.class })
     @GetMapping(path = "/latest/{codeElementUri}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getLatestCodeElementVersionsByCodeElementUri(
+    public ResponseEntity<Object> getLatestCodeElementVersionsByCodeElementUri(
             @PathVariable String codeElementUri) {
         try {
             String[] errors = { KOODIURI };
@@ -226,7 +226,7 @@ public class CodeElementResource {
             notes = "Toimii vain, jos koodi on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
             response = KoodiChangesDto.class)*/
     @GetMapping(path = "/changes/{codeElementUri}/{codeElementVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getChangesToCodeElement(@PathVariable String codeElementUri,
+    public ResponseEntity<Object> getChangesToCodeElement(@PathVariable String codeElementUri,
             @PathVariable Integer codeElementVersion,
             @RequestParam(defaultValue = "false") boolean compareToLatestAccepted) {
         try {
@@ -249,7 +249,7 @@ public class CodeElementResource {
             notes = "Toimii vain, jos koodi on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
             response = KoodiChangesDto.class)*/
     @GetMapping(path = "/changes/withdate/{codeElementUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getChangesToCodeElementWithDate(@PathVariable String codeElementUri,
+    public ResponseEntity<Object> getChangesToCodeElementWithDate(@PathVariable String codeElementUri,
                                                            @PathVariable Integer dayofmonth,
                                                            @PathVariable Integer month,
                                                            @PathVariable Integer year,
@@ -278,7 +278,7 @@ public class CodeElementResource {
             response = Response.class)*/
     @PostMapping(path = "/{codesUri}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
-    public ResponseEntity<?> insert(
+    public ResponseEntity<Object> insert(
             @PathVariable String codesUri,
             @RequestBody KoodiDto codeelementDTO) {
         try {
@@ -440,7 +440,7 @@ public class CodeElementResource {
             response = Response.class)*/
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> update(
+    public ResponseEntity<Object> update(
             @RequestBody KoodiDto codeElementDTO) {
         try {
             codesValidator.validate(codeElementDTO, ValidationType.UPDATE);
