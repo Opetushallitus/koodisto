@@ -116,7 +116,7 @@ public class CodesGroupResource {
             KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.createKoodistoRyhma(codesGroupDTO);
             return ResponseEntity.status(201).body(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class));
         } catch (KoodistoValidationException e) {
-            logger.warn("Invalid parameter for rest call. codesGroupDTO: {} ", codesGroupDTO);
+            logger.warn("Invalid parameter for rest call. codesGroupDTO: {}", codesGroupDTO);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             logger.warn("Error while inserting codesGroup.", e);

@@ -20,15 +20,13 @@ public class CodesResourceConverter {
     @Autowired
     private KoodistoConversionService conversionService;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CodesResource.class);
-
     public UpdateKoodistoDataType convertFromDTOToUpdateKoodistoDataType(KoodistoDto koodistoDto) {
         UpdateKoodistoDataType updateKoodistoDataType = new UpdateKoodistoDataType();
         Date startDate = koodistoDto.getVoimassaAlkuPvm();
         Date endDate = null;
 
         if (koodistoDto.getVoimassaLoppuPvm() != null) {
-            endDate = koodistoDto.getVoimassaLoppuPvm();// DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+            endDate = koodistoDto.getVoimassaLoppuPvm();
         }
         updateKoodistoDataType.setCodesGroupUri(koodistoDto.getCodesGroupUri());
         updateKoodistoDataType.setVoimassaAlkuPvm(startDate);
@@ -51,8 +49,7 @@ public class CodesResourceConverter {
         Date startDate = koodistoDto.getVoimassaAlkuPvm();
         Date endDate = null;
         if (koodistoDto.getVoimassaLoppuPvm() != null) {
-            // c.setTime(koodistoDto.getVoimassaLoppuPvm());
-            endDate = koodistoDto.getVoimassaLoppuPvm(); //DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+            endDate = koodistoDto.getVoimassaLoppuPvm();
         }
         createKoodistoDataType.setVoimassaAlkuPvm(startDate);
         createKoodistoDataType.setVoimassaLoppuPvm(endDate);

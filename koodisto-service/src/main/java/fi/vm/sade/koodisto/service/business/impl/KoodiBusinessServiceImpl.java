@@ -389,7 +389,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                 FindOrCreateWrapper<KoodiVersio> wrapper = createNewVersion(latest, false);
                 if (wrapper.isCreated()) {
                     flushAfterCreation();
-                    //koodiVersioRepository.saveAndFlush(wrapper.getData());
 
                 }
                 latest = wrapper.getData();
@@ -423,7 +422,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             }
             if (createdNewKoodistoVersion) {
                 flushAfterCreation();
-                //koodistoVersioRepository.saveAndFlush(koodistoVersio);
             }
             ylakoodiVersios = getLatestKoodiVersios(ylakoodiUris.toArray(new String[ylakoodiUris.size()]));
             boolean createdNewKoodiVersion = false;
@@ -432,7 +430,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             }
             if (createdNewKoodiVersion) {
                 flushAfterCreation();
-                //koodiVersioRepository.saveAndFlush(koodiVersio);
             }
             ylakoodiVersios = getLatestKoodiVersios(ylakoodiUris.toArray(new String[ylakoodiUris.size()]));
             KoodiVersio latestAlakoodi = getLatestKoodiVersio(alakoodiUri);
@@ -564,7 +561,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             logger.info("KoodiVersio: {}", latest.getVersio());
 
             // Create a new version (if needed) of the koodisto too
-            //KoodistoVersio latestKoodistoVersio = koodistoBusinessService.getLatestKoodistoVersio(latest.getKoodi().getKoodisto().getKoodistoUri());
             KoodistoVersio newKoodistoVersion = koodistoBusinessService.createNewVersion(latest.getKoodi().getKoodisto().getKoodistoUri()).getData();
 
             // create new version
