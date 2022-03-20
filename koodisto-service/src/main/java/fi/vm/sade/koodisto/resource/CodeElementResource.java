@@ -22,14 +22,12 @@ import fi.vm.sade.properties.OphProperties;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -46,24 +44,32 @@ public class CodeElementResource {
     private static final String GENERIC_ERROR_CODE = "error.codes.generic";
     private static final String KOODISTO_VALIDATION_ERROR_CODE = "error.validation.codeelementversion";
 
-    @Autowired
+    final
     KoodiBusinessService koodiBusinessService;
 
-    @Autowired
+    final
     KoodistoConversionService conversionService;
 
-    @Autowired
+    final
     KoodiChangesService changesService;
     
-    @Autowired
+    final
     CodeElementResourceConverter converter;
 
-    @Autowired
+    final
     OphProperties ophProperties;
 
     private final CodeElementValidator codesValidator = new CodeElementValidator();
     private final CodeElementRelationListValidator relationValidator = new CodeElementRelationListValidator();
     private final ExtendedCodeElementValidator extendedValidator = new ExtendedCodeElementValidator();
+
+    public CodeElementResource(KoodiBusinessService koodiBusinessService, KoodistoConversionService conversionService, KoodiChangesService changesService, CodeElementResourceConverter converter, OphProperties ophProperties) {
+        this.koodiBusinessService = koodiBusinessService;
+        this.conversionService = conversionService;
+        this.changesService = changesService;
+        this.converter = converter;
+        this.ophProperties = ophProperties;
+    }
 
     @JsonView({ JsonViews.Simple.class }) // tarvitaanko?
     /*@ApiOperation(
@@ -100,7 +106,7 @@ public class CodeElementResource {
             value = "Palauttaa tietyn koodiversion",
             notes = "sisältää koodiversion koodinsuhteet",
             response = ExtendedKoodiDto.class)*/
-    public ResponseEntity getCodeElementByUriAndVersion(
+    public ResponseEntity<?> getCodeElementByUriAndVersion(
             @PathVariable String codeElementUri,
             @PathVariable int codeElementVersion) {
         try {
@@ -131,7 +137,7 @@ public class CodeElementResource {
             value = "Palauttaa koodin tietystä koodistoversiosta",
             notes = "",
             response = KoodiDto.class)*/
-    public ResponseEntity getCodeElementByCodeElementUri(
+    public ResponseEntity<?> getCodeElementByCodeElementUri(
             @PathVariable String codesUri,
             @PathVariable int codesVersion,
             @PathVariable String codeElementUri) {
@@ -159,7 +165,7 @@ public class CodeElementResource {
             response = SimpleKoodiDto.class,
             responseContainer = "List")*/
     @GetMapping(path = "/codes/{codesUri}/{codesVersion}", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
-    public ResponseEntity getAllCodeElementsByCodesUriAndVersion(
+    public ResponseEntity<?> getAllCodeElementsByCodesUriAndVersion(
             @PathVariable String codesUri,
             @PathVariable int codesVersion) {
         try {
@@ -191,7 +197,7 @@ public class CodeElementResource {
             response = KoodiDto.class)*/
     @JsonView({ JsonViews.Basic.class })
     @GetMapping(path = "/latest/{codeElementUri}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getLatestCodeElementVersionsByCodeElementUri(
+    public ResponseEntity<?> getLatestCodeElementVersionsByCodeElementUri(
             @PathVariable String codeElementUri) {
         try {
             String[] errors = { KOODIURI };
@@ -220,7 +226,7 @@ public class CodeElementResource {
             notes = "Toimii vain, jos koodi on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
             response = KoodiChangesDto.class)*/
     @GetMapping(path = "/changes/{codeElementUri}/{codeElementVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getChangesToCodeElement(@PathVariable String codeElementUri,
+    public ResponseEntity<?> getChangesToCodeElement(@PathVariable String codeElementUri,
             @PathVariable Integer codeElementVersion,
             @RequestParam(defaultValue = "false") boolean compareToLatestAccepted) {
         try {
@@ -243,7 +249,7 @@ public class CodeElementResource {
             notes = "Toimii vain, jos koodi on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.",
             response = KoodiChangesDto.class)*/
     @GetMapping(path = "/changes/withdate/{codeElementUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getChangesToCodeElementWithDate(@PathVariable String codeElementUri,
+    public ResponseEntity<?> getChangesToCodeElementWithDate(@PathVariable String codeElementUri,
                                                            @PathVariable Integer dayofmonth,
                                                            @PathVariable Integer month,
                                                            @PathVariable Integer year,
@@ -272,7 +278,7 @@ public class CodeElementResource {
             response = Response.class)*/
     @PostMapping(path = "/{codesUri}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
-    public ResponseEntity insert(
+    public ResponseEntity<?> insert(
             @PathVariable String codesUri,
             @RequestBody KoodiDto codeelementDTO) {
         try {
@@ -308,7 +314,7 @@ public class CodeElementResource {
             String[] errors = { KOODIURI, "codeelementuritoadd", RELATIONTYPE };
             ValidatorUtil.validateArgs(errors, codeElementUri, codeElementUriToAdd, relationType);
 
-            koodiBusinessService.addRelation(codeElementUri, Arrays.asList(codeElementUriToAdd), SuhteenTyyppi.valueOf(relationType), false);
+            koodiBusinessService.addRelation(codeElementUri, List.of(codeElementUriToAdd), SuhteenTyyppi.valueOf(relationType), false);
             return ResponseEntity.ok(null);
 
         } catch (KoodistoValidationException e) {
@@ -434,7 +440,7 @@ public class CodeElementResource {
             response = Response.class)*/
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
     @PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity update(
+    public ResponseEntity<?> update(
             @RequestBody KoodiDto codeElementDTO) {
         try {
             codesValidator.validate(codeElementDTO, ValidationType.UPDATE);

@@ -14,7 +14,6 @@ import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
 import fi.vm.sade.koodisto.validator.ValidatorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,22 +21,24 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping({"/rest/codesgroup"})
-//@Api(value = "/rest/codesgroup", description = "Koodistoryhmät")
 public class CodesGroupResource {
     protected static final Logger logger = LoggerFactory.getLogger(CodesGroupResource.class);
 
     private static final String GENERIC_ERROR_CODE = "error.codes.generic";
 
-    @Autowired
-    private KoodistoRyhmaBusinessService koodistoRyhmaBusinessService;
+    private final KoodistoRyhmaBusinessService koodistoRyhmaBusinessService;
 
-    @Autowired
-    private KoodistoConversionService conversionService;
+    private final KoodistoConversionService conversionService;
 
-    @Autowired
-    private UriTransliterator uriTransliterator;
+    private final UriTransliterator uriTransliterator;
 
-    private CodesGroupValidator codesGroupValidator = new CodesGroupValidator();
+    private final CodesGroupValidator codesGroupValidator = new CodesGroupValidator();
+
+    public CodesGroupResource(KoodistoRyhmaBusinessService koodistoRyhmaBusinessService, KoodistoConversionService conversionService, UriTransliterator uriTransliterator) {
+        this.koodistoRyhmaBusinessService = koodistoRyhmaBusinessService;
+        this.conversionService = conversionService;
+        this.uriTransliterator = uriTransliterator;
+    }
 
     @JsonView({ JsonViews.Basic.class })
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -50,7 +51,7 @@ public class CodesGroupResource {
             @ApiResponse(code = 400, message = "Id on virheellinen"),
             @ApiResponse(code = 500, message = "Koodistoryhmää ei löydy kyseisellä id:llä")
     })*/
-    public ResponseEntity getCodesByCodesUri(
+    public ResponseEntity<?> getCodesByCodesUri(
             @PathVariable("id") Long id) {
         try {
             String[] errors = { "id" };
@@ -79,7 +80,7 @@ public class CodesGroupResource {
             @ApiResponse(code = 400, message = "Parametri on tyhjä"),
             @ApiResponse(code = 500, message = "Koodistoryhmää ei saatu päivitettyä")
     })*/
-    public ResponseEntity update(
+    public ResponseEntity<?> update(
             @RequestBody KoodistoRyhmaDto codesGroupDTO) {
         try {
             codesGroupValidator.validate(codesGroupDTO, ValidationType.UPDATE);
@@ -107,7 +108,7 @@ public class CodesGroupResource {
             @ApiResponse(code = 400, message = "Parametri on tyhjä"),
             @ApiResponse(code = 500, message = "Koodistoryhmää ei saatu lisättyä")
     })*/
-    public ResponseEntity insert(
+    public ResponseEntity<?> insert(
             @RequestBody KoodistoRyhmaDto codesGroupDTO) {
         try {
             codesGroupValidator.validate(codesGroupDTO, ValidationType.INSERT);
@@ -136,7 +137,7 @@ public class CodesGroupResource {
             @ApiResponse(code = 400, message = "Id on virheellinen."),
             @ApiResponse(code = 500, message = "Koodiryhmää ei saatu poistettua")
     })*/
-    public ResponseEntity delete(
+    public ResponseEntity<?> delete(
             @PathVariable Long id) {
         try {
             String[] errors = { "id" };
