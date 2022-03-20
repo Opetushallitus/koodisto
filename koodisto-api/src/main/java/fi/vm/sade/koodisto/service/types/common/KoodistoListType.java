@@ -58,7 +58,7 @@ public class KoodistoListType implements Serializable
 
     public List<KoodistoVersioListType> getKoodistoVersios() {
         if (koodistoVersios == null) {
-            koodistoVersios = new ArrayList<KoodistoVersioListType>();
+            koodistoVersios = new ArrayList<>();
         }
         return this.koodistoVersios;
     }

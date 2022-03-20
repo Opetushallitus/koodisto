@@ -50,7 +50,6 @@ public class DevWebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/rest/**").permitAll()
                 .anyRequest().authenticated().and().exceptionHandling().accessDeniedHandler(accessDeniedHandler())
                 .and().httpBasic();
-        ;
     }
 
     @Bean

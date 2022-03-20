@@ -31,7 +31,7 @@ public class KoodistoItemType implements Serializable
 
     public List<Integer> getKoodistoVersio() {
         if (koodistoVersio == null) {
-            koodistoVersio = new ArrayList<Integer>();
+            koodistoVersio = new ArrayList<>();
         }
         return this.koodistoVersio;
     }

@@ -105,7 +105,7 @@ public class KoodistoBusinessServiceTest {
 
     private KoodistoVersio createKoodisto(String omistaja, String organisaatioOid, Date voimassaAlkuPvm, Date voimassaLoppuPvm, String nimi) {
         List<KoodistoRyhma> ryhmas = koodistoBusinessService.listAllKoodistoRyhmas();
-        List<String> ryhmaUris = new ArrayList<String>();
+        List<String> ryhmaUris = new ArrayList<>();
         ryhmaUris.add(ryhmas.get(0).getKoodistoRyhmaUri());
 
         CreateKoodistoDataType createKoodistoDataType = DataUtils.createCreateKoodistoDataType(

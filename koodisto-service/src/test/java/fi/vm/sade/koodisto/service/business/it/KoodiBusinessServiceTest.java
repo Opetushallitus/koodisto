@@ -66,7 +66,7 @@ public class KoodiBusinessServiceTest {
 
     private static Set<KoodiMetadataType> convert(Set<KoodiMetadata> koodiMetadataSet) {
 
-        Set<KoodiMetadataType> koodiMetadataTypeSet = new HashSet<KoodiMetadataType>();
+        Set<KoodiMetadataType> koodiMetadataTypeSet = new HashSet<>();
 
         for (KoodiMetadata koodiMetadata : koodiMetadataSet) {
 

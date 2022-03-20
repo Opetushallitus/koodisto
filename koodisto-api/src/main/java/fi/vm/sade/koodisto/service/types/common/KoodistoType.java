@@ -162,7 +162,7 @@ public class KoodistoType implements Serializable
 
     public List<KoodistoMetadataType> getMetadataList() {
         if (metadataList == null) {
-            metadataList = new ArrayList<KoodistoMetadataType>();
+            metadataList = new ArrayList<>();
         }
         return this.metadataList;
     }

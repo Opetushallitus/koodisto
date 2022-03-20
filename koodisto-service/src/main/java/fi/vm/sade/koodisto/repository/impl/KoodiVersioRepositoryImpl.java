@@ -21,7 +21,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import javax.persistence.criteria.CriteriaBuilder.In;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
@@ -171,7 +170,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
 
     private static List<Predicate> createRestrictionsForKoodiCriteria(CriteriaBuilder cb, CriteriaQuery<?> criteriaQuery,
             SearchKoodisCriteriaType searchCriteria, Path<Koodi> koodi, Path<KoodiVersio> koodiVersio) {
-        List<Predicate> restrictions = createRestrictionsForKoodiCriteria(cb, (KoodiBaseSearchCriteriaType) searchCriteria, koodi, koodiVersio);
+        List<Predicate> restrictions = createRestrictionsForKoodiCriteria(cb, searchCriteria, koodi, koodiVersio);
 
         if (searchCriteria != null && searchCriteria.getKoodiVersioSelection() != null) {
             switch (searchCriteria.getKoodiVersioSelection()) {
@@ -215,7 +214,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
 
         if (searchCriteria != null) {
             String koodiArvo = searchCriteria.getKoodiArvo();
-            List<Predicate> koodiTilaPredicates = searchCriteria.getKoodiTilas().stream().filter(Objects::nonNull).map(tila -> cb.equal(koodiVersio.get(TILA), Tila.valueOf(tila.name()))).collect(Collectors.toList());;
+            List<Predicate> koodiTilaPredicates = searchCriteria.getKoodiTilas().stream().filter(Objects::nonNull).map(tila -> cb.equal(koodiVersio.get(TILA), Tila.valueOf(tila.name()))).collect(Collectors.toList());
             Date validAt = searchCriteria.getValidAt();
             if (!Strings.isNullOrEmpty(koodiArvo)) {
                 restrictions.add(cb.like(cb.lower(koodiVersio.get(KOODIARVO)), koodiArvo.toLowerCase() + '%'));
@@ -245,7 +244,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
         if (SearchKoodisByKoodistoVersioSelectionType.LATEST.equals(searchCriteria.getKoodistoVersioSelection())) {
             Integer koodistoVersion = getKoodistoVersionByCriteria(searchCriteria);
             if (koodistoVersion == null) {
-                return new ArrayList<KoodiVersioWithKoodistoItem>();
+                return new ArrayList<>();
             }
 
             searchCriteria.setKoodistoVersioSelection(SearchKoodisByKoodistoVersioSelectionType.SPECIFIC);
@@ -289,7 +288,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
         Map<KoodiVersio, Map<String, KoodistoItem>> koodiVersios = new HashMap<>();
         List<KoodiVersioWithKoodistoItem> result = new ArrayList<>();
 
-        resultSet.forEach((tuple) -> {
+        resultSet.forEach(tuple -> {
             KoodiVersio kv = tuple.get(TUPLE_KOODI_VERSIO, KoodiVersio.class);
             Map<String, KoodistoItem> koodistos;
             if (!koodiVersios.containsKey(kv)) {
@@ -499,8 +498,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
         List<Predicate> restrictions = createRestrictionsForKoodiCriteria(cb, criteriaQuery, searchCriteria, koodi, root);
         criteriaQuery.select(root).where(cb.and(restrictions.toArray(new Predicate[restrictions.size()])));
         criteriaQuery.distinct(true);
-        TypedQuery<KoodiVersio> query = em.createQuery(criteriaQuery);
-        return query;
+        return em.createQuery(criteriaQuery);
     }
 
     @Override

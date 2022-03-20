@@ -55,7 +55,7 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
 
         Predicate suhteenTyyppiRestriction = cb.equal(root.get(SUHTEENTYYPPI), st);
 
-        ArrayList<String> concatenatedAlaList = new ArrayList<String>();
+        ArrayList<String> concatenatedAlaList = new ArrayList<>();
         for (KoodiUriAndVersioType ak : alaKoodis) {
             concatenatedAlaList.add(ak.getKoodiUri() + SEPARATOR + ak.getVersio());
         }
@@ -63,7 +63,7 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
             throw new KoodiNotFoundException("error.codeelement.relation.list.empty");
         }
         Predicate concatenatedAlakoodiUriAndVersioRestriction =
-                cb.concat(alakoodiJoin.<String> get(KOODI_URI), cb.concat(SEPARATOR, alakoodiVersioJoin.<String> get(VERSIO)))
+                cb.concat(alakoodiJoin.get(KOODI_URI), cb.concat(SEPARATOR, alakoodiVersioJoin.get(VERSIO)))
                         .in(concatenatedAlaList);
 
         Predicate ylakoodiRestriction = cb.and(
@@ -78,12 +78,12 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
                     ylakoodiRestriction,
                     concatenatedAlakoodiUriAndVersioRestriction);
 
-            ArrayList<String> concatenatedYlaList = new ArrayList<String>();
+            ArrayList<String> concatenatedYlaList = new ArrayList<>();
             for (KoodiUriAndVersioType yk : alaKoodis) {
                 concatenatedYlaList.add(yk.getKoodiUri() + SEPARATOR + yk.getVersio());
             }
             Predicate concatenatedYlakoodiUriAndVersioRestriction =
-                    cb.concat(ylakoodiJoin.<String> get(KOODI_URI), cb.concat(SEPARATOR, ylakoodiVersioJoin.<String> get(VERSIO)))
+                    cb.concat(ylakoodiJoin.get(KOODI_URI), cb.concat(SEPARATOR, ylakoodiVersioJoin.<String> get(VERSIO)))
                             .in(concatenatedYlaList);
 
             Predicate alakoodiRestriction = cb.and(
@@ -114,7 +114,7 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
 
         Predicate suhteenTyyppiRestriction = cb.equal(root.get(SUHTEENTYYPPI), st);
 
-        ArrayList<String> concatenatedYlaList = new ArrayList<String>();
+        ArrayList<String> concatenatedYlaList = new ArrayList<>();
         for (KoodiUriAndVersioType ak : ylaKoodis) {
             concatenatedYlaList.add(ak.getKoodiUri() + SEPARATOR + ak.getVersio());
         }

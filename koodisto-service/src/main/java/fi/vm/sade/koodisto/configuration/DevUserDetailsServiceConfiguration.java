@@ -46,20 +46,18 @@ public class DevUserDetailsServiceConfiguration {
 
         @Override
         public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            switch (username) {
-                case "restricted":
-                    return User.builder()
-                            .authorities(List.of(RESTRICTED_AUTHORITIES))
-                            .password(this.passwordEncoder.encode(username))
-                            .username(username)
-                            .build();
-                default:
-                    return User.builder()
-                            .authorities(List.of(OPH_AUTHORITIES))
-                            .password(this.passwordEncoder.encode("devaaja"))
-                            .username("devaaja")
-                            .build();
+            if ("restricted".equals(username)) {
+                return User.builder()
+                        .authorities(List.of(RESTRICTED_AUTHORITIES))
+                        .password(this.passwordEncoder.encode(username))
+                        .username(username)
+                        .build();
             }
+            return User.builder()
+                    .authorities(List.of(OPH_AUTHORITIES))
+                    .password(this.passwordEncoder.encode("devaaja"))
+                    .username("devaaja")
+                    .build();
         }
     }
 }

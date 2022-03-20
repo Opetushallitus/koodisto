@@ -45,9 +45,7 @@ public class KoodiRepositoryImpl implements KoodiRepositoryCustom {
         cquery.distinct(true);
         
         cquery.select(versio).where(restrictions);
-        List<KoodiVersio> results = em.createQuery(cquery).getResultList();
 
-        return results;
-
+        return em.createQuery(cquery).getResultList();
     }
 }

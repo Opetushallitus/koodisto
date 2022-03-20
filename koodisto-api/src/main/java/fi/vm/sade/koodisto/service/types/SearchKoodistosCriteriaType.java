@@ -43,7 +43,7 @@ public class SearchKoodistosCriteriaType implements Serializable
 
     public List<TilaType> getKoodistoTilas() {
         if (koodistoTilas == null) {
-            koodistoTilas = new ArrayList<TilaType>();
+            koodistoTilas = new ArrayList<>();
         }
         return this.koodistoTilas;
     }

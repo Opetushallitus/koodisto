@@ -20,7 +20,7 @@ public class KoodistoItemDto {
     private String organisaatioOid;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
-    private List<Integer> koodistoVersios = new ArrayList<Integer>();
+    private List<Integer> koodistoVersios = new ArrayList<>();
 
     public String getKoodistoUri() {
         return koodistoUri;

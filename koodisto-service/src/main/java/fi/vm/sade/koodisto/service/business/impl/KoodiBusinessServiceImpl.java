@@ -280,13 +280,13 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         ArrayList<UpdateKoodiDataType> koodisToBeUpdated = new ArrayList<UpdateKoodiDataType>();
         ArrayList<UpdateKoodiDataType> koodisToBeCreated = new ArrayList<UpdateKoodiDataType>();
 
-        ArrayList<String> koodiUris = new ArrayList<String>();
+        ArrayList<String> koodiUris = new ArrayList<>();
         for (UpdateKoodiDataType updateData : koodiList) {
             koodiUris.add(updateData.getKoodiUri());
         }
 
-        HashSet<String> koodiUrisInThisKoodisto = new HashSet<String>();
-        HashSet<String> koodiArvosInThisKoodisto = new HashSet<String>();
+        HashSet<String> koodiUrisInThisKoodisto = new HashSet<>();
+        HashSet<String> koodiArvosInThisKoodisto = new HashSet<>();
         for (KoodistoVersioKoodiVersio versio : koodisto.getKoodiVersios()) {
             koodiUrisInThisKoodisto.add(versio.getKoodiVersio().getKoodi().getKoodiUri());
             koodiArvosInThisKoodisto.add(versio.getKoodiVersio().getKoodiarvo());
@@ -873,6 +873,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         for (KoodiVersio kv : koodi.getKoodiVersios()) {
             latest = latest == null || latest.getVersio() < kv.getVersio() ? kv : latest;
         }
+        assert latest != null;
         setRelationsToPassiveOrActive(latest, false);
     }
 
@@ -907,9 +908,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             throw new KoodistoVersionNumberEmptyException();
         }
 
-        List<KoodiVersioWithKoodistoItem> list = koodiVersioRepository.searchKoodis(searchCriteria);
-
-        return list;
+        return koodiVersioRepository.searchKoodis(searchCriteria);
     }
 
     private void checkKoodistoExists(String koodistoUri) {
@@ -1081,8 +1080,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         boolean result = true;
         KoodiVersio ylakoodi = getLatestKoodiVersio(ylakoodiUri);
         String organisaatio1 = ylakoodi.getKoodi().getKoodisto().getOrganisaatioOid();
-        ArrayList<String> alreadyChecked = new ArrayList<String>();
-        List<KoodiVersioWithKoodistoItem> alakoodiVersios = getLatestKoodiVersios(alakoodiUris.toArray(new String[alakoodiUris.size()]));
+        ArrayList<String> alreadyChecked = new ArrayList<>();
+        List<KoodiVersioWithKoodistoItem> alakoodiVersios = getLatestKoodiVersios(alakoodiUris.toArray(new String[0]));
         for (KoodiVersioWithKoodistoItem ak : alakoodiVersios) {
             String organisaatio2 = ak.getKoodistoItem().getOrganisaatioOid();
             if (!alreadyChecked.contains(organisaatio2)) {
@@ -1182,7 +1181,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         if (kvWrapper.isCreated()) {
             if (flushAfterCreation) {
                 flushAfterCreation();
-               // koodistoVersioRepository.saveAndFlush(kvWrapper.getData());
             }
             latest = getLatestKoodiVersio(latest.getKoodi().getKoodiUri());
         }
@@ -1206,7 +1204,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private List<String> filterRemovedRelationUrisToSet(List<RelationCodeElement> newRelations, HashSet<String> existingUris) {
-        ArrayList<String> toBeRemoved = new ArrayList<String>();
+        ArrayList<String> toBeRemoved = new ArrayList<>();
         for (String existingUri : existingUris) {
             boolean found = false;
             for (RelationCodeElement koodinSuhde : newRelations) {

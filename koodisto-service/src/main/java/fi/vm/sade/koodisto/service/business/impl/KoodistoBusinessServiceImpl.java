@@ -293,7 +293,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Override
     @Transactional(readOnly = true)
     public KoodistoRyhma getKoodistoGroup(String koodistoGroupUri) {
-        List<String> koodistoGroupUris = new ArrayList<String>();
+        List<String> koodistoGroupUris = new ArrayList<>();
         koodistoGroupUris.add(koodistoGroupUri);
         List<KoodistoRyhma> koodistoGroups = koodistoRyhmaRepository.findAllByKoodistoRyhmaUriIn(koodistoGroupUris);
 

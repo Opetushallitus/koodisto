@@ -23,14 +23,14 @@ public class KoodistoRyhmaListType implements Serializable
 
     public List<KoodistoRyhmaMetadataType> getKoodistoRyhmaMetadatas() {
         if (koodistoRyhmaMetadatas == null) {
-            koodistoRyhmaMetadatas = new ArrayList<KoodistoRyhmaMetadataType>();
+            koodistoRyhmaMetadatas = new ArrayList<>();
         }
         return this.koodistoRyhmaMetadatas;
     }
 
     public List<KoodistoListType> getKoodistos() {
         if (koodistos == null) {
-            koodistos = new ArrayList<KoodistoListType>();
+            koodistos = new ArrayList<>();
         }
         return this.koodistos;
     }

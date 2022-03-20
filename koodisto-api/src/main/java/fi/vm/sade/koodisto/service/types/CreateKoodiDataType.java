@@ -45,7 +45,7 @@ public class CreateKoodiDataType implements Serializable
 
     public List<KoodiMetadataType> getMetadata() {
         if (metadata == null) {
-            metadata = new ArrayList<KoodiMetadataType>();
+            metadata = new ArrayList<>();
         }
         return this.metadata;
     }

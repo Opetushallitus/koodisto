@@ -36,7 +36,7 @@ public class UriTransliteratorTest {
     }
 
     private static Collection<KoodistoMetadataType> generateMetadataByNimi(Map<KieliType, String> nimiByKieli) {
-        List<KoodistoMetadataType> metadatas = new ArrayList<KoodistoMetadataType>();
+        List<KoodistoMetadataType> metadatas = new ArrayList<>();
 
         for (Map.Entry<KieliType, String> entry : nimiByKieli.entrySet()) {
             KoodistoMetadataType metadata = createMetadata(entry.getKey(), entry.getValue());
@@ -112,7 +112,7 @@ public class UriTransliteratorTest {
 
     @Test(expected = MetadataEmptyException.class)
     public void testGenerateKoodistoUriEmptyMetadataList() {
-        uriTransliterator.generateKoodistoUriByMetadata(new ArrayList<KoodistoMetadataType>());
+        uriTransliterator.generateKoodistoUriByMetadata(new ArrayList<>());
     }
 
     @Test
