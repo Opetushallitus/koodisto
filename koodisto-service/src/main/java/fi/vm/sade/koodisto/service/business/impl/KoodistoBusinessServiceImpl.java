@@ -213,7 +213,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private void checkRequiredMetadataFields(Collection<KoodistoMetadataType> metadatas) {
         for (KoodistoMetadataType md : metadatas) {
             if (Strings.isNullOrEmpty(md.getNimi())) {
-                logger.error("No koodisto nimi defined for language " + md.getKieli().name());
+                logger.error("No koodisto nimi defined for language {}", md.getKieli().name());
                 throw new KoodistoNimiEmptyException();
             }
         }
@@ -229,7 +229,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     private void checkTila(KoodistoVersio latest, UpdateKoodistoDataType updateKoodistoData) {
         if (Tila.HYVAKSYTTY.equals(latest.getTila()) && updateKoodistoData.getTila().equals(TilaType.LUONNOS)) {
-            logger.error("Invalid state transition (HYVAKSYTTY->LUONNOS) for koodisto " + latest.getKoodisto().getKoodistoUri());
+            logger.error("Invalid state transition (HYVAKSYTTY->LUONNOS) for koodisto {}", latest.getKoodisto().getKoodistoUri());
             throw new KoodistoTilaException();
         }
     }
@@ -356,7 +356,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     public Koodisto getKoodistoByKoodistoUri(String koodistoUri) {
         Koodisto result = koodistoRepository.findByKoodistoUri(koodistoUri);
         if (result == null) {
-            logger.error("No koodisto found for URI " + koodistoUri);
+            logger.error("No koodisto found for URI {}", koodistoUri);
             throw new KoodistoNotFoundException();
         }
         Iterator<KoodistoVersio> itr = result.getKoodistoVersios().iterator();
@@ -384,7 +384,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         SearchKoodistosCriteriaType searchCriteria = KoodistoServiceSearchCriteriaBuilder.latestKoodistoByUri(koodistoUri);
         List<KoodistoVersio> result = koodistoVersioRepository.searchKoodistos(searchCriteria);
         if (result.size() != 1) {
-            logger.error("No koodisto found for URI " + koodistoUri);
+            logger.error("No koodisto found for URI {}", koodistoUri);
             throw new KoodistoNotFoundException();
         }
         if (initialize) {
@@ -639,7 +639,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         koodisto = koodistoRepository.findByKoodistoUri(koodistoUri);
 
         for (KoodiVersio kv : koodiVersios) {
-            logger.info("Delete " + kv.getKoodi().getId());
+            logger.info("Delete {}", kv.getKoodi().getId());
             koodiBusinessService.delete(kv.getKoodi().getKoodiUri(), kv.getVersio(), true);
         }
 

@@ -47,7 +47,7 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     private void checkRequiredMetadataFields(List<KoodistoRyhmaMetadata> metadatas) {
         for (KoodistoRyhmaMetadata md : metadatas) {
             if (md.getNimi().isBlank()) {
-                logger.error("No koodistoryhmä nimi defined for language " + md.getKieli().name());
+                logger.error("No koodistoryhmä nimi defined for language {}", md.getKieli().name());
                 throw new KoodistoRyhmaNimiEmptyException();
             }
         }

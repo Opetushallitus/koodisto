@@ -20,8 +20,6 @@ public class CodeElementResourceConverter {
     @Autowired
     private KoodistoConversionService conversionService;
 
-    private static final Logger logger = LoggerFactory.getLogger(CodesResource.class);
-
     public UpdateKoodiDataType convertFromDTOToUpdateKoodiDataType(KoodiDto koodiDto) {
         UpdateKoodiDataType updateKoodiDataType = new UpdateKoodiDataType();
         Date startDate = koodiDto.getVoimassaAlkuPvm();

@@ -220,7 +220,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     private void checkRequiredMetadataFields(Collection<KoodiMetadataType> metadatas) {
         for (KoodiMetadataType md : metadatas) {
             if (md.getNimi().isBlank()) {
-                logger.error("No koodi nimi defined for language " + md.getKieli().name());
+                logger.error("No koodi nimi defined for language {}", md.getKieli().name());
                 throw new KoodiNimiEmptyException();
             }
         }
@@ -561,7 +561,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                 || (Tila.HYVAKSYTTY.equals(latest.getTila()) && UpdateKoodiTilaType.LUONNOS.equals(updateKoodiData.getTila()))
                 || (!Tila.PASSIIVINEN.equals(latest.getTila()) && updateKoodiData.getTila() != null && UpdateKoodiTilaType.PASSIIVINEN.equals(updateKoodiData
                         .getTila()))) {
-            logger.info("KoodiVersio: " + latest.getVersio());
+            logger.info("KoodiVersio: {}", latest.getVersio());
 
             // Create a new version (if needed) of the koodisto too
             //KoodistoVersio latestKoodistoVersio = koodistoBusinessService.getLatestKoodistoVersio(latest.getKoodi().getKoodisto().getKoodistoUri());
@@ -663,7 +663,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             return updateOldVersion(latest, updateKoodiData);
         }
 
-        logger.info("Creating new version of KoodiVersio, base version =" + latest.getVersio());
+        logger.info("Creating new version of KoodiVersio, base version = {}", latest.getVersio());
 
         KoodiVersio newVersio = new KoodiVersio();
         EntityUtils.copyFields(updateKoodiData, newVersio);
@@ -892,7 +892,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
 
         if (!koodistoRepository.existsByKoodistoUri(searchCriteria.getKoodistoUri())) {
-            logger.error("No koodisto found for URI " + searchCriteria.getKoodistoUri());
+            logger.error("No koodisto found for URI {}", searchCriteria.getKoodistoUri());
             throw new KoodistoNotFoundException();
         }
 
@@ -913,7 +913,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private void checkKoodistoExists(String koodistoUri) {
         if (!koodistoBusinessService.koodistoExists(koodistoUri)) {
-            logger.error("No koodisto found with koodisto URI " + koodistoUri);
+            logger.error("No koodisto found with koodisto URI {}", koodistoUri);
             throw new KoodistoNotFoundException();
         }
     }

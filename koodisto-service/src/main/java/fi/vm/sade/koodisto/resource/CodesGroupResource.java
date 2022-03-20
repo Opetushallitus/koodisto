@@ -59,10 +59,10 @@ public class CodesGroupResource {
             KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.getKoodistoRyhmaById(id);
             return ResponseEntity.ok(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class));
         } catch (KoodistoValidationException e) {
-            logger.warn("Invalid parameter for rest call. id: " + id);
+            logger.warn("Invalid parameter for rest call. id: {}", id);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            logger.warn("Error finding CodesGroup. id: " + id, e);
+            logger.warn("Error finding CodesGroup. id: {}", id, e);
             String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             return ResponseEntity.internalServerError().body(message);
         }
@@ -116,7 +116,7 @@ public class CodesGroupResource {
             KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.createKoodistoRyhma(codesGroupDTO);
             return ResponseEntity.status(201).body(conversionService.convert(koodistoRyhma, KoodistoRyhmaDto.class));
         } catch (KoodistoValidationException e) {
-            logger.warn("Invalid parameter for rest call. codesGroupDTO: " + codesGroupDTO);
+            logger.warn("Invalid parameter for rest call. codesGroupDTO: {} ", codesGroupDTO);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             logger.warn("Error while inserting codesGroup.", e);
@@ -145,10 +145,10 @@ public class CodesGroupResource {
             koodistoRyhmaBusinessService.delete(id);
             return ResponseEntity.accepted().build();
         } catch (KoodistoValidationException e) {
-            logger.warn("Invalid parameter for rest call. id: " + id);
+            logger.warn("Invalid parameter for rest call. id: {}", id);
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            logger.warn("Error while removing codesGroup. id: " + id, e);
+            logger.warn("Error while removing codesGroup. id: {}", id, e);
             String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
             return ResponseEntity.internalServerError().body(message);
         }
