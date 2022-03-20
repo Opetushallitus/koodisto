@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.repository.KoodistoVersioRepositoryCustom;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
+import fi.vm.sade.koodisto.service.types.SearchKoodistosVersioSelectionType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static fi.vm.sade.koodisto.service.types.SearchKoodistosVersioSelectionType.*;
 
 @Repository
 public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCustom {
@@ -70,23 +74,17 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
         List<Predicate> restrictions = new ArrayList<>();
 
         if (searchCriteria != null) {
-            if (searchCriteria.getKoodistoUris() != null && searchCriteria.getKoodistoUris().size() > 0) {
-                List<Predicate> uriRestrictions = new ArrayList<>();
+            List<Predicate> uriRestrictions = searchCriteria.getKoodistoUris().stream().filter(uri -> !Strings.isNullOrEmpty(uri))
+                    .map(koodistoUri -> cb.equal(koodisto.get(KOODISTOURI), koodistoUri)).collect(Collectors.toList());
 
-                for (String koodistoUri : searchCriteria.getKoodistoUris()) {
-                    if (!Strings.isNullOrEmpty(koodistoUri)) {
-                        uriRestrictions.add(cb.equal(koodisto.get(KOODISTOURI), koodistoUri));
-                    }
-                }
-
-                if (!uriRestrictions.isEmpty()) {
-                    restrictions.add(uriRestrictions.size() == 1 ? uriRestrictions.get(0)
-                            : cb.or(uriRestrictions.toArray(new Predicate[uriRestrictions.size()])));
-                }
+            if (!uriRestrictions.isEmpty()) {
+                restrictions.add(uriRestrictions.size() == 1 ? uriRestrictions.get(0)
+                        : cb.or(uriRestrictions.toArray(new Predicate[0])));
             }
 
-            if (searchCriteria.getKoodistoVersioSelection() != null) {
-                switch (searchCriteria.getKoodistoVersioSelection()) {
+            SearchKoodistosVersioSelectionType koodistoVersioSelection = searchCriteria.getKoodistoVersioSelection();
+            if (koodistoVersioSelection != null) {
+                switch (koodistoVersioSelection) {
                     case SPECIFIC:
                         restrictions.add(cb.equal(koodistoVersio.get(VERSIO), searchCriteria.getKoodistoVersio()));
                         break;

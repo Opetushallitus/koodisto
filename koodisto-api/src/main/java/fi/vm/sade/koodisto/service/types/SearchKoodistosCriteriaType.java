@@ -20,7 +20,7 @@ public class SearchKoodistosCriteriaType implements Serializable
 
     public List<String> getKoodistoUris() {
         if (koodistoUris == null) {
-            koodistoUris = new ArrayList<String>();
+            koodistoUris = new ArrayList<>();
         }
         return this.koodistoUris;
     }
