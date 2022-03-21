@@ -3,13 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [ master ]
-    paths:
-      - 'koodisto-ui/**'
-      - '.github/workflows/build-ui.yml'
   pull_request:
-    paths:
-      - 'koodisto-ui/**'
-      - '.github/workflows/build-ui.yml'
 jobs:
   build:
     runs-on: ubuntu-latest
