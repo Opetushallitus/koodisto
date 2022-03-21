@@ -43,11 +43,11 @@ module.exports = function makeWebpackConfig(options) {
      */
         config.output = {
             // Absolute output directory
-            path: BUILD ? __dirname + '/build' : __dirname + '/html',
+            path: BUILD ? __dirname + '/build' : __dirname + '/koodisto-ui/html',
 
             // Output path from the view of the page
             // Uses webpack-dev-server in development
-            publicPath: BUILD ? '/html/' : 'http://localhost:3000/',
+            publicPath: BUILD ? '/koodisto-ui/html/' : 'http://localhost:3000/',
 
             // Filename for entry points
             // Only adds hash in build mode
