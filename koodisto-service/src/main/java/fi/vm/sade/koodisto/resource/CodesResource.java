@@ -234,8 +234,8 @@ public class CodesResource {
             value = "Palauttaa koodiston",
             notes = "",
             response = KoodistoListDto.class)*/
-   @JsonView({ JsonViews.Basic.class })
-   @GetMapping(path = "/{codesUri}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView({ JsonViews.Basic.class })
+    @GetMapping(path = "/{codesUri}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getCodesByCodesUri(
             @PathVariable String codesUri) {
         try {

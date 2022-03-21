@@ -43,14 +43,17 @@ import java.util.Properties;
 @RequestMapping({"/rest/json"})
 public class KoodistoResource {
 
-    @Autowired
-    private KoodistoBusinessService koodistoBusinessService;
+    private final KoodistoBusinessService koodistoBusinessService;
 
-    @Autowired
-    private KoodiBusinessService koodiBusinessService;
+    private final KoodiBusinessService koodiBusinessService;
 
-    @Autowired
-    private KoodistoConversionService conversionService;
+    private final KoodistoConversionService conversionService;
+
+    public KoodistoResource(KoodistoBusinessService koodistoBusinessService, KoodiBusinessService koodiBusinessService, KoodistoConversionService conversionService) {
+        this.koodistoBusinessService = koodistoBusinessService;
+        this.koodiBusinessService = koodiBusinessService;
+        this.conversionService = conversionService;
+    }
 
     @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -88,7 +91,6 @@ public class KoodistoResource {
     @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "/{koodistoUri}/koodi", produces = MediaType.APPLICATION_JSON_VALUE)
     //@Cacheable(maxAgeSeconds = ONE_HOUR)
-    @Transactional
     /*@ApiOperation(
             value = "Listaa koodiston kaikki koodit",
             notes = "Palauttaa koodiston, jonka URI on {koodistouri} koodit. Koodiston versionumeron voi antaa URL-parametrina",
@@ -307,7 +309,7 @@ public class KoodistoResource {
             @PathVariable String koodistoUri,
             @PathVariable String koodiUri,
             @PathVariable String lang,
-            @RequestParam String nimi, // TODO requestparam vs formparam
+            @RequestParam String nimi,
             @RequestParam String kuvaus
     ) {
         nimi = nimi.substring(0, Math.min(nimi.length(), FieldLengths.DEFAULT_FIELD_LENGTH)); // nimi cannot be longer
