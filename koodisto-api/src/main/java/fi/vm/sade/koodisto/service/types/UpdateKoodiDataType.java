@@ -1,12 +1,7 @@
 
 package fi.vm.sade.koodisto.service.types;
 
-import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class UpdateKoodiDataType extends CreateKoodiDataType implements Serializable
 {

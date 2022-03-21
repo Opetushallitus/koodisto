@@ -2,7 +2,6 @@
 package fi.vm.sade.koodisto.service.types;
 
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
-import fi.vm.sade.koodisto.service.types.common.KoodistoType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
