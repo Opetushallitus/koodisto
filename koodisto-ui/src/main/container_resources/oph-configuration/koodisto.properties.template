@@ -1,0 +1,42 @@
+#
+# TÄHÄN TIEDOSTOON EI SAA TALLENTAA YMPÄRISTÖKOHTAISIA ARVOJA MUUTOIN KUIN MUUTTUJINA!!!
+# 
+# Tämä tiedosto toimii pohjana oph-configuration/common.properties tiedostolle,
+# joka asettaa tomcatin ympäristökohtaiset arvot.
+#
+
+# Aseta vähintään nämä ympäristökohtaiset arvot
+auth.mode={{auth_mode}}
+host.cas={{host_cas}}
+host.alb={{host_alb}}
+host.virkailija={{host_virkailija}}
+server.name={{ansible_hostname}}
+koodisto-service.postgresql.url=jdbc:postgresql://{{host_postgresql_koodisto}}:{{port_postgresql}}/koodisto
+koodisto-service.postgresql.user={{postgres_app_user}}
+koodisto-service.postgresql.password={{host_postgresql_koodisto_app_password}}
+koodisto-service.postgresql.maxactive={{host_postgresql_koodisto_max_active}}
+koodisto-service.postgresql.maxwait={{host_postgresql_koodisto_max_wait}}
+koodisto-service.postgresql.maxlifetimemillis=60000
+
+# Oletusarvoja
+cas.callback.koodisto-service=http://{{ cluster_koodisto_host | default("${server.name}") }}:{{ cluster_koodisto_port | default("8303") }}/koodisto-service
+cas.callback.koodisto-ui=http://{{ cluster_koodisto_host | default("${server.name}") }}:{{ cluster_koodisto_port | default("8303") }}/koodisto-ui
+cas.group-role-attribute=cn
+cas.group-search-base=ou\=groups
+cas.group-search-filter=(uniqueMember\={0})
+cas.sendRenew=false
+cas.user-search-base=ou\=people
+cas.user-search-filter=(|(mail\={0})(uid\={0}))
+cas.service.koodisto-service=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-service
+cas.service.koodisto-ui=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-ui
+flyway.initOnMigrate=true
+flyway.outOfOrder=true
+jpa.schemaUpdate=validate
+jpa.showSql=false
+web.url.cas=https\://${host.cas}/cas
+
+# Riippuvuuksien tarvitsemia asetuksia
+cas.service.organisaatio-service=https://{{host_organisaatio | default("${host.virkailija}") }}/organisaatio-service
+root.organisaatio.oid=1.2.246.562.10.00000000001
+common.corsfilter.mode={{corsfilter_mode | default('PRODUCTION')}}
+common.corsfilter.allowed-domains={{corsfilter_allowed_domains | default('')}}
