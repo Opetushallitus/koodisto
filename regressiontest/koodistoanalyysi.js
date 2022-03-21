@@ -1,5 +1,6 @@
 import fs from "fs";
 import fetch from "node-fetch";
+const baseUrl = "http://localhost:8081";
 export default function () {
   const dir = "./koodistoregression";
   if (!fs.existsSync(dir)) {
@@ -356,7 +357,6 @@ export default function () {
     console.log("tobetested" + "", endpoints);
     console.log("tobetested xml" + "", xml);
     console.log(rest.length, rest[0]);
-    const baseUrl = "http://localhost:8081";
     const toTest = [];
     for (const entry of endpoints.entries()) {
       const url = entry[0]
@@ -373,7 +373,6 @@ export default function () {
           fs.writeFile(filename, text, (err) => {
             if (err) {
               console.error(err);
-              return;
             }
           });
         });
@@ -382,7 +381,6 @@ export default function () {
     fs.writeFile(dir + "/endpoints.json", JSON.stringify(toTest), (err) => {
       if (err) {
         console.error(err);
-        return;
       }
     });
   });

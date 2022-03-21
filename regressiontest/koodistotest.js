@@ -1,6 +1,7 @@
 import fs from "fs";
 import fetch from "node-fetch";
 
+const baseUrl = "http://localhost:8080";
 const correction = (input) => {
     return input
         .replace(/hahtuvaopintopolku/g, "untuvaopintopolku")
@@ -9,7 +10,6 @@ const correction = (input) => {
 }
 export default function () {
     const dir = "./koodistoregression";
-    const baseUrl = "http://localhost:8080";
 
     fs.readFile(dir + "/endpoints.json", "utf-8", (err, data) => {
         if (err) {
