@@ -14,6 +14,13 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Koodisto :: Parent</name>
 
+	<modules>
+		<module>koodisto-audit</module>
+		<!-- <module>koodisto-common</module> -->
+		<module>koodisto-service</module>
+		<module>koodisto-api</module>
+	</modules>
+
 	<properties>
 		<java.version>11</java.version>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
@@ -27,11 +34,6 @@
 		<sonar.coverage.jacoco.xmlReportPaths>**/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
-	<modules>
-		<!-- <module>koodisto-audit</module> -->
-		<module>koodisto-service</module>
-		<module>koodisto-api</module>
-	</modules>
 
 	<dependencyManagement>
 		<dependencies>
