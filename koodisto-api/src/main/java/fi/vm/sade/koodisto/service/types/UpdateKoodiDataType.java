@@ -8,22 +8,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UpdateKoodiDataType implements Serializable
+public class UpdateKoodiDataType extends CreateKoodiDataType implements Serializable
 {
 
     private static final long serialVersionUID = 1L;
 
     protected String koodiUri;
 
-    protected String koodiArvo;
-
-    protected Date voimassaAlkuPvm;
-
-    protected Date voimassaLoppuPvm;
-
     protected UpdateKoodiTilaType tila;
 
-    private List<KoodiMetadataType> metadata;
     protected int versio;
     protected long lockingVersion;
 
@@ -35,43 +28,12 @@ public class UpdateKoodiDataType implements Serializable
         this.koodiUri = value;
     }
 
-    public String getKoodiArvo() {
-        return koodiArvo;
-    }
-
-    public void setKoodiArvo(String value) {
-        this.koodiArvo = value;
-    }
-
-    public Date getVoimassaAlkuPvm() {
-        return voimassaAlkuPvm;
-    }
-
-    public void setVoimassaAlkuPvm(Date value) {
-        this.voimassaAlkuPvm = value;
-    }
-
-    public Date getVoimassaLoppuPvm() {
-        return voimassaLoppuPvm;
-    }
-
-    public void setVoimassaLoppuPvm(Date value) {
-        this.voimassaLoppuPvm = value;
-    }
-
     public UpdateKoodiTilaType getTila() {
         return tila;
     }
 
     public void setTila(UpdateKoodiTilaType value) {
         this.tila = value;
-    }
-
-    public List<KoodiMetadataType> getMetadata() {
-        if (metadata == null) {
-            metadata = new ArrayList<>();
-        }
-        return this.metadata;
     }
 
     public int getVersio() {
@@ -89,6 +51,5 @@ public class UpdateKoodiDataType implements Serializable
     public void setLockingVersion(long value) {
         this.lockingVersion = value;
     }
-
 
 }
