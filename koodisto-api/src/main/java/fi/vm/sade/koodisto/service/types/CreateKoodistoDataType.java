@@ -65,5 +65,4 @@ public class CreateKoodistoDataType implements Serializable
         }
         return this.metadataList;
     }
-
 }
