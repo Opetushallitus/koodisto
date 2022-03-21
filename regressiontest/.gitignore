@@ -1,3 +1,4 @@
 node_modules
 koodistoregression/*
 /koodistoanalyysi.log
+error*.json
