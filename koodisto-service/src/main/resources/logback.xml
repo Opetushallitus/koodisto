@@ -43,7 +43,7 @@
     <root level="INFO">
         <appender-ref ref="STDOUT-CONSOLE"/>
     </root>
-    <logger name="log4j.logger.fi.vm.sade.koodisto.audit.AuditLogger" level="INFO" additivity="false">
+    <logger name="fi.vm.sade.koodisto.audit.AuditLogger" level="INFO" additivity="false">
         <appender-ref ref="AUDIT"/>
         <appender-ref ref="STDOUT-AUDIT"/>
     </logger>
