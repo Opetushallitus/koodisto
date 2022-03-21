@@ -12,7 +12,6 @@ public class UpdateKoodistoDataType extends CreateKoodistoDataType implements Se
     protected String codesGroupUri;
     protected String koodistoUri;
     protected TilaType tila;
-    protected String organisaatioOid;
     protected int versio;
     protected long lockingVersion;
     public String getCodesGroupUri() {
