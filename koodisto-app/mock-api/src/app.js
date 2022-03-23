@@ -14,7 +14,7 @@ if (debug) {
     app.use(bodyParser.json());
     morganBody(app);
 }
-const koodistoApp = createProxyMiddleware('http://localhost:8080/koodisto-app');
+const koodistoApp = createProxyMiddleware('http://localhost:8081/koodisto-app');
 const koodistoService = createProxyMiddleware('http://localhost:8081/koodisto-service');
 app.use(cors());
 app.use('/kayttooikeus-service', apiMocker('src/api/kayttooikeus-service'));

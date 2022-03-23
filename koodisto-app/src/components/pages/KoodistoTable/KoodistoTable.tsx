@@ -8,8 +8,12 @@ import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
 import { HeaderContainer } from '../../../App';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import IconWrapper from '../../IconWapper/IconWrapper';
+import downloadCsv from '../../../utils/downloadCsv';
 type KoodistoTableProps = {
     handleLisaaKoodistoRyhma: () => void;
+};
+const uploadCsv = (koodistoUri: string) => {
+    console.info(koodistoUri);
 };
 const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma }) => {
     const [atomData] = useAtom(koodistoAtom);
@@ -79,6 +83,27 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                 ),
                 accessor: (values: Koodisto) => {
                     return values.voimassaLoppuPvm && <FormattedDate value={values.voimassaLoppuPvm} />;
+                },
+            },
+            {
+                id: 'downloadCsv',
+                Header: '',
+                accessor: (values: Koodisto) => {
+                    return (
+                        <IconWrapper
+                            name={`${values.koodistoUri}-uploadicon`}
+                            icon="el:download"
+                            inline={true}
+                            onClick={() => downloadCsv(values.koodistoUri)}
+                        />
+                    );
+                },
+            },
+            {
+                id: 'uploadCsv',
+                Header: '',
+                accessor: (values: Koodisto) => {
+                    return <IconWrapper icon="el:upload" inline={true} onClick={() => uploadCsv(values.koodistoUri)} />;
                 },
             },
         ],

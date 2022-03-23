@@ -14,6 +14,13 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
+      - name: Code coverrage cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-cypress-coverage
+        with:
+          path: cypress-coverage
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.sha }}
       - name: Use node 14
         uses: actions/setup-node@v2
         with:
@@ -33,6 +40,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+      - name: Code coverrage cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-code-coverage
+        with:
+          path: coverage
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.sha }}
       - name: Use node 14
         uses: actions/setup-node@v2
         with:
@@ -42,6 +56,8 @@ jobs:
         run: npm install
       - name: Install mock dependencies
         run: cd mock-api && npm install && cd -
+      - name: Run jest
+        run: npm run test
       - name: Run react Build
         run: npm run build
       - name: Set up JDK 11
@@ -85,3 +101,30 @@ jobs:
           ./ci-tools/common/pull-image.sh
           ./ci-tools/github-build/build-fatjar.sh $ARTIFACT_NAME
           ./ci-tools/github-build/upload-image.sh $ARTIFACT_NAME
+  sonarcloud:
+    needs: [react-build, cypress]
+    name: SonarCloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Code coverrage cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-code-coverage
+        with:
+          path: coverage
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.sha }}
+      - name: Cypress coverrage cache
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-cypress-coverage
+        with:
+          path: cypress-coverage
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.sha }}
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

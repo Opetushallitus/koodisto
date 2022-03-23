@@ -1,5 +1,4 @@
-import { ApiDate, Kieli } from '../types/types';
-import { Metadata } from '../api/koodisto';
+import { ApiDate, Kieli, Metadata } from '../types/types';
 import moment from 'moment';
 
 export const translateMetadata = (a: Metadata[], lang: Kieli): string | undefined => {

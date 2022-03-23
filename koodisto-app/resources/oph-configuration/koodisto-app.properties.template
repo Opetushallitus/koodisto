@@ -13,16 +13,12 @@ host.virkailija={{host_virkailija}}
 server.name={{ansible_hostname}}
 
 # Oletusarvoja
-cas.callback.koodisto-service=http://{{ cluster_koodisto_host | default("${server.name}") }}:{{ cluster_koodisto_port | default("8303") }}/koodisto-service
-cas.callback.koodisto-ui=http://{{ cluster_koodisto_host | default("${server.name}") }}:{{ cluster_koodisto_port | default("8303") }}/koodisto-ui
 cas.group-role-attribute=cn
 cas.group-search-base=ou\=groups
 cas.group-search-filter=(uniqueMember\={0})
 cas.sendRenew=false
 cas.user-search-base=ou\=people
 cas.user-search-filter=(|(mail\={0})(uid\={0}))
-cas.service.koodisto-service=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-service
-cas.service.koodisto-ui=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-ui
 flyway.initOnMigrate=true
 flyway.outOfOrder=true
 jpa.schemaUpdate=validate

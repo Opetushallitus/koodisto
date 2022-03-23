@@ -5,5 +5,8 @@ src/react-app-env.d.ts
 coverage/
 cypress/videos
 cypress/screenshots
+cypress/downloads
 cypress-coverage
 node_modules/
+.DS_Store
+.nyc_output
