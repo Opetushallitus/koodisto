@@ -27,9 +27,7 @@ jobs:
           node-version: '14'
           cache: 'npm'
       - name: Install dependencies
-        run: npm install
-      - name: Install mock dependencies
-        run: cd mock-api && npm install && cd -
+        run: npm run install:all
       - name: Run Cypress tests
         run: npm run cypress:ci
 
@@ -53,9 +51,7 @@ jobs:
           node-version: '14'
           cache: 'npm'
       - name: Install dependencies
-        run: npm install
-      - name: Install mock dependencies
-        run: cd mock-api && npm install && cd -
+        run: npm run install:all
       - name: Run jest
         run: npm run test
       - name: Run react Build

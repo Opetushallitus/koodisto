@@ -55,7 +55,7 @@
     "scripts": {
         "dev": "concurrently  --success first --kill-others 'npm run mock-api' 'npm run start'",
         "start": "BROWSER=none react-scripts -r @cypress/instrument-cra start",
-        "mock-api": "cd mock-api && npm run mock-api",
+        "mock-api": "npm --prefix ./mock-api run mock-api",
         "server": "cd server && mvn spring-boot:run",
         "build": "npm run lint && react-scripts build",
         "test": "react-scripts test --coverage --watchAll=false",
@@ -67,7 +67,8 @@
         "cypress:ci": "START_SERVER_AND_TEST_INSECURE=1 concurrently  --success first --kill-others 'wait-on http://localhost:3000/koodisto-app && npm run cypress:run' 'npm run mock-api' 'npm run start'",
         "prepare": "husky install",
         "extract": "formatjs extract",
-        "generate:translations": "npm run extract -- 'src/**/*.ts*' --ignore='**/*.d.ts' --out-file lang/default-translations.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'"
+        "generate:translations": "npm run extract -- 'src/**/*.ts*' --ignore='**/*.d.ts' --out-file lang/default-translations.json --id-interpolation-pattern '[sha512:contenthash:base64:6]'",
+        "install:all": "npm --prefix ./mock-api install && npm install"
     },
     "browserslist": {
         "production": [
