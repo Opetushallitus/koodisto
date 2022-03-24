@@ -29,4 +29,4 @@ Cypress testit:
 
 Kontainer buildataan github actionilla, ja sonarcloud analyysi löytyy
 
-[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/summary/new_code?id=Opetushallitus_koodisto-app)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Opetushallitus_koodisto-app&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Opetushallitus_koodisto-app)

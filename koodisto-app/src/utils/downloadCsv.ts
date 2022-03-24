@@ -1,6 +1,7 @@
 import Papa from 'papaparse';
 import { Koodi, Metadata } from '../types/types';
 import { fetchKoodisto } from '../api/koodisto';
+import { info } from '../components/Notification/Notification';
 
 export const mapKoodiToCSV = (koodi: Koodi) => {
     const reducedMetdata = koodi.metadata.reduce((p, a) => {
@@ -43,13 +44,13 @@ const convertCsvToExcelAcceptedBlob = (csv: string) => {
 };
 
 const downloadCsv = async (koodistoUri: string) => {
-    const response = await fetchKoodisto(koodistoUri);
-    if (!response) return;
-    const { data } = response;
+    const data = await fetchKoodisto(koodistoUri);
+    if (!data) return;
     data.sort((a, b) => a.koodiUri.localeCompare(b.koodiUri));
     const csvData = data.map(mapKoodiToCSV);
     const csv = Papa.unparse(csvData, { quotes: true, quoteChar: '"', delimiter: '\t', newline: '\r\n' });
     const blob = convertCsvToExcelAcceptedBlob(csv);
     pushBlobToUser({ fileName: `${koodistoUri}.csv`, blob });
+    info({ title: 'CSV_DOWNLOAD_NOTIFICATION_TITLE', message: 'CSV_DOWNLOAD_NOTIFICATION_SUCCESS' });
 };
 export default downloadCsv;
