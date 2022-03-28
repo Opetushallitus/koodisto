@@ -17,7 +17,7 @@ public class UrlConfiguration extends OphProperties {
         this.addDefault("cas.base", environment.getRequiredProperty("cas.base"));
         this.addDefault("cas.login", environment.getRequiredProperty("cas.login"));
 
-        this.addOverride("koodistoUri", environment.getRequiredProperty("koodistoUri"));
-        this.addOverride("koodiUri", environment.getRequiredProperty("koodiUri"));
+        this.addOverride("koodistoUriFormat", environment.getRequiredProperty("koodistoUriFormat"));
+        this.addOverride("koodiUriFormat", environment.getRequiredProperty("koodiUriFormat"));
     }
 }

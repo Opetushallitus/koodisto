@@ -2,7 +2,7 @@ package fi.vm.sade.koodisto.validator;
 
 public interface Validatable {
 
-    public enum ValidationType {
+    enum ValidationType {
         INSERT, UPDATE
     }
 

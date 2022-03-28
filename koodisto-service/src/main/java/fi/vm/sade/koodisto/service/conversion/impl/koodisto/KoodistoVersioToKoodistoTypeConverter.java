@@ -28,8 +28,7 @@ public class KoodistoVersioToKoodistoTypeConverter extends AbstractFromDomainCon
         converted.setKoodistoUri(source.getKoodisto().getKoodistoUri());
 
         if (!Strings.isNullOrEmpty(converted.getKoodistoUri())) {
-            //converted.setResourceUri(koodistoConfiguration.getKoodistoResourceUri(converted.getKoodistoUri()));
-            String resourceUri = MessageFormat.format(ophProperties.url("koodistoUri"), converted.getKoodistoUri());
+            String resourceUri = MessageFormat.format(ophProperties.url("koodistoUriFormat"), converted.getKoodistoUri());
             converted.setResourceUri(resourceUri);
         }
         converted.setOmistaja(source.getKoodisto().getOmistaja());
