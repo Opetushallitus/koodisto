@@ -12,6 +12,10 @@ import fi.vm.sade.koodisto.validator.CodesGroupValidator;
 import fi.vm.sade.koodisto.validator.KoodistoValidationException;
 import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
 import fi.vm.sade.koodisto.validator.ValidatorUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -42,17 +46,9 @@ public class CodesGroupResource {
 
     @JsonView({ JsonViews.Basic.class })
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    /*@ApiOperation(
-            value = "Palauttaa koodistoryhmän",
-            notes = "",
-            response = Response.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK"),
-            @ApiResponse(code = 400, message = "Id on virheellinen"),
-            @ApiResponse(code = 500, message = "Koodistoryhmää ei löydy kyseisellä id:llä")
-    })*/
+    @Operation(description = "Palauttaa koodistoryhmän")
     public ResponseEntity<Object> getCodesByCodesUri(
-            @PathVariable("id") Long id) {
+            @Parameter(description = "Koodistoryhman id") @PathVariable("id") Long id) {
         try {
             String[] errors = { "id" };
             ValidatorUtil.validateArgs(errors, id);
@@ -71,17 +67,9 @@ public class CodesGroupResource {
     @JsonView({ JsonViews.Basic.class })
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
-    /*@ApiOperation(
-            value = "Päivittää koodistoryhmää",
-            notes = "",
-            response = Response.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "OK"),
-            @ApiResponse(code = 400, message = "Parametri on tyhjä"),
-            @ApiResponse(code = 500, message = "Koodistoryhmää ei saatu päivitettyä")
-    })*/
+    @Operation(description = "Päivittää koodistoryhmää")
     public ResponseEntity<Object> update(
-            @RequestBody KoodistoRyhmaDto codesGroupDTO) {
+            @Parameter(description = "Koodistoryhmä") @RequestBody KoodistoRyhmaDto codesGroupDTO) {
         try {
             codesGroupValidator.validate(codesGroupDTO, ValidationType.UPDATE);
             KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.updateKoodistoRyhma(codesGroupDTO);
@@ -99,17 +87,9 @@ public class CodesGroupResource {
     @JsonView({ JsonViews.Basic.class })
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
-    /*@ApiOperation(
-            value = "Luo uuden koodistoryhmän",
-            notes = "",
-            response = Response.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "OK"),
-            @ApiResponse(code = 400, message = "Parametri on tyhjä"),
-            @ApiResponse(code = 500, message = "Koodistoryhmää ei saatu lisättyä")
-    })*/
+    @Operation(description = "Luo uuden koodistoryhmän")
     public ResponseEntity<Object> insert(
-            @RequestBody KoodistoRyhmaDto codesGroupDTO) {
+            @Parameter(description = "Koodistoryhmä") @RequestBody KoodistoRyhmaDto codesGroupDTO) {
         try {
             codesGroupValidator.validate(codesGroupDTO, ValidationType.INSERT);
             codesGroupDTO.setKoodistoRyhmaUri(uriTransliterator.generateKoodistoGroupUriByMetadata(codesGroupDTO.getKoodistoRyhmaMetadatas()));
@@ -128,17 +108,9 @@ public class CodesGroupResource {
     @JsonView({ JsonViews.Simple.class })
     @PostMapping(path = "/delete/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
-    /*@ApiOperation(
-            value = "Poistaa koodistoryhmän",
-            notes = "",
-            response = Response.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 202, message = "OK"),
-            @ApiResponse(code = 400, message = "Id on virheellinen."),
-            @ApiResponse(code = 500, message = "Koodiryhmää ei saatu poistettua")
-    })*/
+    @Operation(description = "Poistaa koodistoryhmän")
     public ResponseEntity<Object> delete(
-            @PathVariable Long id) {
+            @Parameter(description = "Koodistoryhmän id") @PathVariable Long id) {
         try {
             String[] errors = { "id" };
             ValidatorUtil.validateArgs(errors, id);

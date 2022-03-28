@@ -21,7 +21,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -113,7 +112,7 @@ public class CodeElementResource {
             SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(codeElementUri, codeElementVersion);
             List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
 
-            if (codeElements.size() == 0) {
+            if (codeElements.isEmpty()) {
                 return ResponseEntity.internalServerError().body("error.codeelement.not.found");
             }
             return ResponseEntity.ok(conversionService.convert(codeElements.get(0), ExtendedKoodiDto.class));
@@ -191,7 +190,7 @@ public class CodeElementResource {
 
             SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(codeElementUri);
             List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
-            if (codeElements.size() < 1) {
+            if (codeElements.isEmpty()) {
                 return ResponseEntity.internalServerError().body("error.codeelement.not.found");
             }
             return ResponseEntity.ok(conversionService.convert(codeElements.get(0), KoodiDto.class));

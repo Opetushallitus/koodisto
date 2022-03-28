@@ -171,12 +171,11 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
     public void massRemove(List<KoodinSuhde> entityList) {
         if (entityList.isEmpty())
             throw new IllegalArgumentException("EntityList was empty.");
-        ArrayList<Long> idList = new ArrayList<Long>();
+        ArrayList<Long> idList = new ArrayList<>();
         for (KoodinSuhde entity : entityList) {
             idList.add(entity.getId());
         }
         em.createQuery("delete from KoodinSuhde k where k.id in (:idList)").setParameter("idList", idList).executeUpdate();
-        //em.flush();
     }
 
     @Override

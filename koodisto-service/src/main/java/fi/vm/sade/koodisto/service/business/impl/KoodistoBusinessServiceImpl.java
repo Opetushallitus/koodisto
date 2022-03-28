@@ -77,9 +77,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Autowired
     private UriTransliterator uriTransliterator;
 
-    // @Autowired
-    //private DownloadService downloadService;
-
     @Autowired
     private CodesResourceConverter converter;
 
@@ -548,13 +545,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             EntityUtils.copyFields(updateMetadata, newMetadata);
             newMetadata.setKoodistoVersio(latest);
             latest.addMetadata(newMetadata);
-            koodistoMetadataRepository.save(newMetadata); // TODO there was a flush
+            koodistoMetadataRepository.save(newMetadata);
         }
 
         // Delete old metadatas
         for (KoodistoMetadata oldMd : latestMetadatas) {
             latest.removeMetadata(oldMd);
-            koodistoMetadataRepository.delete(oldMd); // check flushing
+            koodistoMetadataRepository.delete(oldMd);
         }
 
         // If the latest version is in LUONNOS state and we are updating it to

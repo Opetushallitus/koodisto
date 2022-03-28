@@ -49,7 +49,7 @@ public class KoodistonSuhdeRepositoryImpl implements KoodistonSuhdeRepositoryCus
 
         Predicate suhteenTyyppiRestriction = cb.equal(root.get("suhteenTyyppi"), st);
 
-        List<Predicate> alakoodistoRestrictions = new ArrayList<Predicate>();
+        List<Predicate> alakoodistoRestrictions = new ArrayList<>();
         for (KoodistoUriAndVersioType ak : alaKoodistos) {
             alakoodistoRestrictions.add(cb.and(cb.equal(alakoodistoJoin.<String> get(KOODISTO_URI), ak.getKoodistoUri()),
                     cb.equal(alakoodistoVersioJoin.get(VERSIO), ak.getVersio())));
@@ -64,9 +64,9 @@ public class KoodistonSuhdeRepositoryImpl implements KoodistonSuhdeRepositoryCus
         if (st == SuhteenTyyppi.RINNASTEINEN) {
 
             Predicate ylaAndAla = cb.and(ylakoodistoRestriction,
-                    cb.or(alakoodistoRestrictions.toArray(new Predicate[alakoodistoRestrictions.size()])));
+                    cb.or(alakoodistoRestrictions.toArray(new Predicate[0])));
 
-            List<Predicate> ylakoodiRestrictions = new ArrayList<Predicate>();
+            List<Predicate> ylakoodiRestrictions = new ArrayList<>();
             for (KoodistoUriAndVersioType ak : alaKoodistos) {
                 ylakoodiRestrictions.add(cb.and(cb.equal(ylakoodistoJoin.<String> get(KOODISTO_URI),
                         ak.getKoodistoUri()), cb.equal(ylakoodistoVersioJoin.get(VERSIO), ak.getVersio())));
@@ -164,6 +164,5 @@ public class KoodistonSuhdeRepositoryImpl implements KoodistonSuhdeRepositoryCus
             yla.removeAlaKoodistonSuhde(suhde);
             em.remove(suhde);
         }
-        //em.flush();
     }
 }

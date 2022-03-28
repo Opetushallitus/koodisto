@@ -113,7 +113,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
     }
 
     private List<SimpleCodeElementRelation> passiveRelations(KoodiVersio latestKoodiVersio) {
-        Collection<KoodinSuhde> passiveRelations = Collections2.filter(getRelationsFromKoodiVersio(latestKoodiVersio), input -> input.isPassive());
+        Collection<KoodinSuhde> passiveRelations = Collections2.filter(getRelationsFromKoodiVersio(latestKoodiVersio), KoodinSuhde::isPassive);
         return new ArrayList<>(Collections2.transform(passiveRelations, new KoodinSuhdeToSimpleCodeElementRelation(latestKoodiVersio.getKoodi().getKoodiUri())));
     }
 

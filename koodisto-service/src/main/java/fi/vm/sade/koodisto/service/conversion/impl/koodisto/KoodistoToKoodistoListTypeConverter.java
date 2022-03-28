@@ -26,15 +26,8 @@ public class KoodistoToKoodistoListTypeConverter extends AbstractFromDomainConve
             converted.getKoodistoVersios().add(versioConverter.convert(versio));
         }
 
-        if (converted.getKoodistoVersios().size() > 0) {
-            Collections.sort(converted.getKoodistoVersios(), new Comparator<KoodistoVersioListType>() {
-
-                @Override
-                public int compare(KoodistoVersioListType o1, KoodistoVersioListType o2) {
-                    return o2.getVersio() - o1.getVersio();
-                }
-            });
-
+        if (!converted.getKoodistoVersios().isEmpty()) {
+            Collections.sort(converted.getKoodistoVersios(), (o1, o2) -> o2.getVersio() - o1.getVersio());
             converted.setLatestKoodistoVersio(converted.getKoodistoVersios().get(0));
         }
 
