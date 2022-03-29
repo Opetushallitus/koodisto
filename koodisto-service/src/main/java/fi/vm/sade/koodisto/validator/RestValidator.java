@@ -1,6 +1,6 @@
 package fi.vm.sade.koodisto.validator;
 
-import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
+import fi.vm.sade.koodisto.validator.ValidationType;
 
 public interface RestValidator<T> {
     

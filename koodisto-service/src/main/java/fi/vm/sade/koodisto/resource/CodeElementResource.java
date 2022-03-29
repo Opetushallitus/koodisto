@@ -14,7 +14,7 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodisto
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import fi.vm.sade.koodisto.validator.*;
-import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
+import fi.vm.sade.koodisto.validator.ValidationType;
 import fi.vm.sade.properties.OphProperties;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

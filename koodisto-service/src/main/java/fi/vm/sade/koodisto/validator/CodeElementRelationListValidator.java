@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.validator;
 
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
-import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
+import fi.vm.sade.koodisto.validator.ValidationType;
 
 public class CodeElementRelationListValidator implements RestValidator<KoodiRelaatioListaDto> {
 

@@ -3,6 +3,7 @@ package fi.vm.sade.koodisto.model;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAnotherDateAsserter;
 import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
 import fi.vm.sade.koodisto.util.FieldLengths;
+import fi.vm.sade.koodisto.util.UserData;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -14,9 +15,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.*;
-
-import static fi.vm.sade.koodisto.util.userData.getCurrentUserOid;
-
 
 @FieldAssert(field1 = "voimassaAlkuPvm", field2 = "voimassaLoppuPvm", asserter = DateIsNullOrNotBeforeAnotherDateAsserter.class, message = "{voimassaLoppuPvm.invalid}")
 @Entity
@@ -108,7 +106,7 @@ public class KoodistoVersio extends BaseEntity {
 
     @PreUpdate
     protected void onUpdate() {
-        getCurrentUserOid().ifPresent(this::setPaivittajaOid);
+        UserData.getCurrentUserOid().ifPresent(this::setPaivittajaOid);
         this.paivitysPvm = new Date();
     }
 
