@@ -3,7 +3,6 @@ package fi.vm.sade.koodisto.validator;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
-import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
 
 import java.util.Collection;
 

@@ -3,11 +3,12 @@ package fi.vm.sade.koodisto.audit;
 import fi.vm.sade.auditlog.Audit;
 import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.Target;
-import java.io.Serializable;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.persister.entity.EntityPersister;
+
+import java.io.Serializable;
 
 public class AuditPostInsertEventListener implements PostInsertEventListener {
 

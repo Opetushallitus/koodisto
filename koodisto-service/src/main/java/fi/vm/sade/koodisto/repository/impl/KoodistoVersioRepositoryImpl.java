@@ -107,14 +107,14 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
         List<Predicate> restrictions = new ArrayList<>();
 
         if (searchCriteria != null) {
-            if (searchCriteria.getKoodistoTilas() != null && searchCriteria.getKoodistoTilas().size() > 0) {
+            if (searchCriteria.getKoodistoTilas() != null && !searchCriteria.getKoodistoTilas().isEmpty()) {
                 List<Predicate> tilaRestrictions = new ArrayList<>();
                 for (TilaType tila : searchCriteria.getKoodistoTilas()) {
                     tilaRestrictions.add(cb.equal(koodistoVersio.get("tila"), Tila.valueOf(tila.name())));
                 }
 
                 restrictions.add(tilaRestrictions.size() == 1 ? tilaRestrictions.get(0)
-                        : cb.or(tilaRestrictions.toArray(new Predicate[tilaRestrictions.size()])));
+                        : cb.or(tilaRestrictions.toArray(new Predicate[0])));
             }
 
             if (searchCriteria.getValidAt() != null) {
@@ -142,7 +142,7 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
         List<Predicate> restrictions = createSecondaryRestrictionsForKoodistoCriteria(cb, searchCriteria, root);
         restrictions.add(cb.equal(koodisto.get("id"), koodistoPath.get("id")));
 
-        return subquery.select(versioMax).where(cb.and(restrictions.toArray(new Predicate[restrictions.size()])));
+        return subquery.select(versioMax).where(cb.and(restrictions.toArray(new Predicate[0])));
     }
 
     @Override
@@ -160,7 +160,7 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
         List<KoodistoVersio> resultList = em.createQuery(query).setMaxResults(1).getResultList();
 
         KoodistoVersio result = null;
-        if (resultList.size() != 0) {
+        if (!resultList.isEmpty()) {
             result = resultList.get(0);
         }
 

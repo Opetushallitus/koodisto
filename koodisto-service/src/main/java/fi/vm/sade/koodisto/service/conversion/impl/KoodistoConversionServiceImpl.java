@@ -14,7 +14,7 @@ public class KoodistoConversionServiceImpl extends GenericConversionService impl
 
     @Override
     public <T, E extends List<?>> List<T> convertAll(E source, Class<T> targetType) {
-        List<T> list = new ArrayList<T>();
+        List<T> list = new ArrayList<>();
         for (Object e : source) {
             list.add(this.convert(e, targetType));
         }
@@ -23,7 +23,7 @@ public class KoodistoConversionServiceImpl extends GenericConversionService impl
 
     @Override
     public <T, E extends Set<?>> Set<T> convertAll(E source, Class<T> targetType) {
-        Set<T> set = new HashSet<T>();
+        Set<T> set = new HashSet<>();
         for (Object e : source) {
             set.add(this.convert(e, targetType));
         }

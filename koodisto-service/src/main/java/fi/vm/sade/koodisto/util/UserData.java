@@ -4,8 +4,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
-public abstract class userData {
-    private userData() {
+public final class UserData {
+    private UserData() {
         throw new IllegalStateException("Utility class");
     }
     public static Optional<String> getCurrentUserOid() { return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication().getName());}

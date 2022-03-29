@@ -10,7 +10,10 @@ import java.util.List;
 
 public class MetadataToSimpleMetadataConverter {
 
-    
+    private MetadataToSimpleMetadataConverter() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static SimpleMetadataDto convert(KoodistoMetadata metadata) {
         return new SimpleMetadataDto(metadata.getNimi(), metadata.getKieli(), metadata.getKuvaus());
     }

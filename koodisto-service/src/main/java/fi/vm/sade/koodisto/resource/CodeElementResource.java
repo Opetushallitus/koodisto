@@ -2,7 +2,10 @@ package fi.vm.sade.koodisto.resource;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
-import fi.vm.sade.koodisto.dto.*;
+import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
+import fi.vm.sade.koodisto.dto.KoodiDto;
+import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
+import fi.vm.sade.koodisto.dto.SimpleKoodiDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
@@ -14,14 +17,12 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodisto
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import fi.vm.sade.koodisto.validator.*;
-import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
 import fi.vm.sade.properties.OphProperties;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -113,7 +114,7 @@ public class CodeElementResource {
             SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(codeElementUri, codeElementVersion);
             List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
 
-            if (codeElements.size() == 0) {
+            if (codeElements.isEmpty()) {
                 return ResponseEntity.internalServerError().body("error.codeelement.not.found");
             }
             return ResponseEntity.ok(conversionService.convert(codeElements.get(0), ExtendedKoodiDto.class));
@@ -191,7 +192,7 @@ public class CodeElementResource {
 
             SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(codeElementUri);
             List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
-            if (codeElements.size() < 1) {
+            if (codeElements.isEmpty()) {
                 return ResponseEntity.internalServerError().body("error.codeelement.not.found");
             }
             return ResponseEntity.ok(conversionService.convert(codeElements.get(0), KoodiDto.class));

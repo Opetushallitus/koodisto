@@ -2,7 +2,6 @@ package fi.vm.sade.koodisto.validator;
 
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
-import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
 
 import java.util.Collection;
 

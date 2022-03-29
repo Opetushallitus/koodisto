@@ -17,7 +17,7 @@ import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import fi.vm.sade.koodisto.validator.CodesValidator;
 import fi.vm.sade.koodisto.validator.KoodistoValidationException;
-import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
+import fi.vm.sade.koodisto.validator.ValidationType;
 import fi.vm.sade.koodisto.validator.ValidatorUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

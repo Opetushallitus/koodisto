@@ -4,7 +4,6 @@ import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
-import fi.vm.sade.koodisto.validator.Validatable.ValidationType;
 
 import java.util.Collection;
 

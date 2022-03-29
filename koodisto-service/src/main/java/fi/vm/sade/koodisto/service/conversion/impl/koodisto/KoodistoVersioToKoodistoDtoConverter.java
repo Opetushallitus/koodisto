@@ -59,7 +59,7 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         });
 
         if (!Strings.isNullOrEmpty(converted.getKoodistoUri())) {
-            String resourceUri = MessageFormat.format(ophProperties.url("koodistoUri"), converted.getKoodistoUri());
+            String resourceUri = MessageFormat.format(ophProperties.url("koodistoUriFormat"), converted.getKoodistoUri());
             converted.setResourceUri(resourceUri);
         }
 
