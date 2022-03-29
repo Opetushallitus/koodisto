@@ -4,11 +4,9 @@ import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.service.types.common.KoodistoListType;
-import fi.vm.sade.koodisto.service.types.common.KoodistoVersioListType;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
-import java.util.Comparator;
 
 @Component("koodistoToKoodistoListTypeConverter")
 public class KoodistoToKoodistoListTypeConverter extends AbstractFromDomainConverter<Koodisto, KoodistoListType> {

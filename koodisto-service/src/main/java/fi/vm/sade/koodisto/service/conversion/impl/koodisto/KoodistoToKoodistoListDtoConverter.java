@@ -2,7 +2,6 @@ package fi.vm.sade.koodisto.service.conversion.impl.koodisto;
 
 import com.google.common.base.Strings;
 import fi.vm.sade.koodisto.dto.KoodistoListDto;
-import fi.vm.sade.koodisto.dto.KoodistoVersioListDto;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.Collections;
-import java.util.Comparator;
 
 @Component("koodistoToKoodistoListDtoConverter")
 public class KoodistoToKoodistoListDtoConverter extends AbstractFromDomainConverter<Koodisto, KoodistoListDto> {

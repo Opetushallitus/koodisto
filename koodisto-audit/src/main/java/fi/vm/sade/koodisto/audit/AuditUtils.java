@@ -2,9 +2,6 @@ package fi.vm.sade.koodisto.audit;
 
 import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.User;
-import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import org.hibernate.persister.entity.EntityPersister;
 import org.hibernate.type.Type;
 import org.ietf.jgss.GSSException;
@@ -14,6 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public final class AuditUtils {
 

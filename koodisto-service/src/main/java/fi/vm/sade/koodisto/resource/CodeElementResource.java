@@ -2,7 +2,10 @@ package fi.vm.sade.koodisto.resource;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
-import fi.vm.sade.koodisto.dto.*;
+import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
+import fi.vm.sade.koodisto.dto.KoodiDto;
+import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
+import fi.vm.sade.koodisto.dto.SimpleKoodiDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
@@ -14,7 +17,6 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodisto
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import fi.vm.sade.koodisto.validator.*;
-import fi.vm.sade.koodisto.validator.ValidationType;
 import fi.vm.sade.properties.OphProperties;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
