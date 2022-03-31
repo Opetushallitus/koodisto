@@ -62,7 +62,7 @@ public class CodesResource {
         this.changesService = changesService;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @JsonView({ JsonViews.Extended.class })
     @PostMapping(path = "/addrelation/{codesUri}/{codesUriToAdd}/{relationType}", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Lisää relaatio koodistojen välille")
@@ -87,7 +87,7 @@ public class CodesResource {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @JsonView({ JsonViews.Extended.class })
     @PostMapping(path = "/removerelation/{codesUri}/{codesUriToRemove}/{relationType}", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Poistaa relaatio koodistojen väliltä")
@@ -114,7 +114,7 @@ public class CodesResource {
     }
 
 
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @JsonView({ JsonViews.Basic.class })
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Päivittää koodistoa")
@@ -135,7 +135,7 @@ public class CodesResource {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @Operation(description = "Päivittää koodiston kokonaisuutena",
             summary = "Lisää ja poistaa koodistonsuhteita")
     @JsonView({ JsonViews.Basic.class })
@@ -158,7 +158,7 @@ public class CodesResource {
         }
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @JsonView({ JsonViews.Basic.class })
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Lisää koodiston")
@@ -312,7 +312,7 @@ public class CodesResource {
 
     // pitäs olla delete
     @Operation(description = "Poistaa koodiston")
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @JsonView({ JsonViews.Simple.class })
     @PostMapping(path = "/delete/{codesUri}/{codesVersion}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> delete(

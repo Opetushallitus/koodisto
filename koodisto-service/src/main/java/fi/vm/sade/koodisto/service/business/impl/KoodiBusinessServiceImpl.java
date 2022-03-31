@@ -17,7 +17,6 @@ import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.*;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
-import fi.vm.sade.koodisto.service.impl.KoodistoRole;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
@@ -36,6 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+
+import static fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD;
 
 @Transactional
 @Service("koodiBusinessService")
@@ -103,7 +104,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         koodistoBusinessService.createNewVersion(koodistoUri);
 
         KoodistoVersio koodistoVersio = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
-        authorizer.checkOrganisationAccess(koodistoVersio.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD);
+        authorizer.checkOrganisationAccess(koodistoVersio.getKoodisto().getOrganisaatioOid(), ROLE_APP_KOODISTO_CRUD);
 
         return createKoodiNonFlush(koodistoUri, createKoodiData, koodistoVersio);
     }
@@ -335,7 +336,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         KoodistoVersio newKoodistoVersio = koodisto;
         if (createKoodiList.size() > 0) {
             newKoodistoVersio = koodistoBusinessService.createNewVersion(koodistoUri).getData();
-            authorizer.checkOrganisationAccess(newKoodistoVersio.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD);
+            authorizer.checkOrganisationAccess(newKoodistoVersio.getKoodisto().getOrganisaatioOid(), ROLE_APP_KOODISTO_CRUD);
         }
 
         for (CreateKoodiDataType createData : createKoodiList) {
@@ -1081,7 +1082,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         for (KoodiVersioWithKoodistoItem ak : alakoodiVersios) {
             String organisaatio2 = ak.getKoodistoItem().getOrganisaatioOid();
             if (!alreadyChecked.contains(organisaatio2)) {
-                authorizer.checkOrganisationAccess(organisaatio1, KoodistoRole.CRUD);
+                authorizer.checkOrganisationAccess(organisaatio1, ROLE_APP_KOODISTO_CRUD);
                 result = result && StringUtils.equals(organisaatio1, organisaatio2); // false if any organisation mismatches
                 alreadyChecked.add(organisaatio2);
             }
@@ -1091,7 +1092,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private boolean userIsRootUser() {
         try {
-            authorizer.checkOrganisationAccess(ROOT_ORG, KoodistoRole.CRUD);
+            authorizer.checkOrganisationAccess(ROOT_ORG, ROLE_APP_KOODISTO_CRUD);
         } catch (NotAuthorizedException e) {
             return false;
         }
