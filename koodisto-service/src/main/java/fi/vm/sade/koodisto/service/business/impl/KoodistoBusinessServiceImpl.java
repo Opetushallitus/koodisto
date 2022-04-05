@@ -14,7 +14,6 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.*;
-import fi.vm.sade.koodisto.service.impl.KoodistoRole;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosVersioSelectionType;
@@ -34,6 +33,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+
+import static fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD;
+import static fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_READ_UPDATE;
 
 @Transactional
 @Service("koodistoBusinessService")
@@ -98,7 +100,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         }
 
         // authorize creation
-        authorizer.checkOrganisationAccess(createKoodistoData.getOrganisaatioOid(), KoodistoRole.CRUD);
+        authorizer.checkOrganisationAccess(createKoodistoData.getOrganisaatioOid(), ROLE_APP_KOODISTO_CRUD);
 
         Koodisto koodisto = new Koodisto();
         EntityUtils.copyFields(createKoodistoData, koodisto);
@@ -251,7 +253,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
         changeCodesGroup(updateKoodistoData, latest);
         // authorize update
-        authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD, KoodistoRole.UPDATE);
+        authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), ROLE_APP_KOODISTO_CRUD, ROLE_APP_KOODISTO_READ_UPDATE);
         latest = createNewVersionIfNeeded(latest, updateKoodistoData);
 
         // update the non-version specific fields
@@ -435,7 +437,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Override
     public FindOrCreateWrapper<KoodistoVersio> createNewVersion(KoodistoVersio latest) {
-        authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD, KoodistoRole.UPDATE);
+        authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), ROLE_APP_KOODISTO_CRUD, ROLE_APP_KOODISTO_READ_UPDATE);
         if (latest.getTila() != Tila.HYVAKSYTTY) {
             return FindOrCreateWrapper.found(latest);
         }
@@ -460,7 +462,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         input.setTila(Tila.LUONNOS);
 
         Koodisto koodisto = base.getKoodisto();
-        authorizer.checkOrganisationAccess(koodisto.getOrganisaatioOid(), KoodistoRole.CRUD, KoodistoRole.UPDATE);
+        authorizer.checkOrganisationAccess(koodisto.getOrganisaatioOid(), ROLE_APP_KOODISTO_CRUD, ROLE_APP_KOODISTO_READ_UPDATE);
 
         input.setKoodisto(koodisto);
 
@@ -504,7 +506,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
             newVersio.setVoimassaLoppuPvm(null);
         }
 
-        authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD, KoodistoRole.UPDATE);
+        authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), ROLE_APP_KOODISTO_CRUD, ROLE_APP_KOODISTO_READ_UPDATE);
         Koodisto koodisto = latest.getKoodisto();
         newVersio.setKoodisto(latest.getKoodisto());
 
@@ -621,7 +623,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         }
 
         Koodisto koodisto = koodistoRepository.findByKoodistoUri(koodistoUri);
-        authorizer.checkOrganisationAccess(koodisto.getOrganisaatioOid(), KoodistoRole.CRUD);
+        authorizer.checkOrganisationAccess(koodisto.getOrganisaatioOid(), ROLE_APP_KOODISTO_CRUD);
 
         List<KoodiVersio> koodiVersios = koodiVersioRepository.getKoodiVersiosIncludedOnlyInKoodistoVersio(koodistoUri, koodistoVersio);
         for (KoodiVersio kv : koodiVersios) {
@@ -678,13 +680,13 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private boolean koodistosHaveSameOrganisaatio(String koodistoUri, String anotherKoodistoUri) {
         String organisaatio1 = getKoodistoByKoodistoUri(koodistoUri).getOrganisaatioOid();
         String organisaatio2 = getKoodistoByKoodistoUri(anotherKoodistoUri).getOrganisaatioOid();
-        authorizer.checkOrganisationAccess(organisaatio1, KoodistoRole.CRUD);
+        authorizer.checkOrganisationAccess(organisaatio1, ROLE_APP_KOODISTO_CRUD);
         return StringUtils.equals(organisaatio1, organisaatio2);
     }
 
     private boolean userIsRootUser() {
         try {
-            authorizer.checkOrganisationAccess(ROOT_ORG, KoodistoRole.CRUD);
+            authorizer.checkOrganisationAccess(ROOT_ORG, ROLE_APP_KOODISTO_CRUD);
         } catch (NotAuthorizedException e) {
             return false;
         }
