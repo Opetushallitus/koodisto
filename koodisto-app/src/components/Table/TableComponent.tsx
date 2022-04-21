@@ -1,7 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Cell, Column, FilterProps, HeaderGroup, Row, useFilters, useTable } from 'react-table';
-import { useIntl } from 'react-intl';
+import { Cell, Column, HeaderGroup, Row, useFilters, useTable } from 'react-table';
 import { useEffect } from 'react';
 
 const TableContainer = styled.div`
@@ -10,16 +9,26 @@ const TableContainer = styled.div`
     padding: 1rem;
     border: 1px solid #cccccc;
 `;
-const Table = styled.table`
+const TableElement = styled.table`
     width: 100%;
+    min-height: 60vh;
     border-spacing: 0;
 `;
 const Th = styled.th`
     text-align: left;
-    border-bottom: 1px solid rgba(151, 151, 151, 0.5);
 `;
-const Td = styled.td``;
+const Td = styled.td`
+    font-family: Roboto, Arial Unicode MS, Arial, sans-serif;
+    font-weight: 400;
+    color: #0a789c;
+`;
 const Tr = styled.tr``;
+const Thead = styled.thead`
+    ${Tr}:first-child ${Th} {
+        border-bottom: 1px solid rgba(151, 151, 151, 0.5);
+    }
+`;
+
 const Tbody = styled.tbody`
     ${Tr}:nth-child(even) {
         background: rgba(245, 245, 245, 1);
@@ -30,27 +39,6 @@ const Tbody = styled.tbody`
     }
 `;
 
-export const DefaultColumnFilter = <T extends Record<string, unknown>>({
-    column: { filterValue, preFilteredRows, setFilter },
-}: FilterProps<T>) => {
-    const count = preFilteredRows.length;
-    const { formatMessage } = useIntl();
-    return (
-        <input
-            value={filterValue || ''}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setFilter(e.target.value || undefined);
-            }}
-            placeholder={formatMessage(
-                {
-                    id: 'TAULUKKO_VAKIO_FILTTERI',
-                    defaultMessage: 'HAETAAN {count} KOODISTOSTA',
-                },
-                { count }
-            )}
-        />
-    );
-};
 type TableProps<T extends object> = {
     columns: Column<T>[];
     data: T[];
@@ -75,8 +63,8 @@ const TableComponent = <T extends object>({
     }, [filteredRows, onFilter]);
     return (
         <TableContainer>
-            <Table {...getTableProps()}>
-                <thead>
+            <TableElement {...getTableProps()}>
+                <Thead>
                     {headerGroups.map((headerGroup: HeaderGroup<T>) => (
                         // eslint-disable-next-line react/jsx-key
                         <Tr {...headerGroup.getHeaderGroupProps()}>
@@ -89,7 +77,7 @@ const TableComponent = <T extends object>({
                             ))}
                         </Tr>
                     ))}
-                </thead>
+                </Thead>
                 <Tbody {...getTableBodyProps()}>
                     {rows.map((row: Row<T>) => {
                         prepareRow(row);
@@ -104,7 +92,7 @@ const TableComponent = <T extends object>({
                         );
                     })}
                 </Tbody>
-            </Table>
+            </TableElement>
         </TableContainer>
     );
 };

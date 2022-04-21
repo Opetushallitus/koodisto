@@ -2,7 +2,6 @@ import React, { ErrorInfo } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
-import App from './App';
 import { Provider, useAtom } from 'jotai';
 import { ROOT_OID } from './context/constants';
 import './index.css';
@@ -14,6 +13,7 @@ import { ThemeProvider } from 'styled-components';
 import { casMeLangAtom } from './api/kayttooikeus';
 import { IntlProvider } from 'react-intl';
 import { lokalisaatioMessagesAtom } from './api/lokalisaatio';
+import KoodistoApp from './KoodistoApp';
 
 const theme = createTheme();
 const cookies = new Cookies();
@@ -61,7 +61,7 @@ ReactDOM.render(
                     <React.Suspense fallback={<Loading />}>
                         <Initialize>
                             <Raamit>
-                                <App />
+                                <KoodistoApp />
                             </Raamit>
                         </Initialize>
                     </React.Suspense>

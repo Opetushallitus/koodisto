@@ -2,6 +2,6 @@ import React from 'react';
 import { Icon, IconProps } from '@iconify/react';
 
 const IconWrapper = (props: IconProps) => {
-    return <Icon fr={0} height={'1.2rem'} {...props} />;
+    return <Icon fr={0} {...props} />;
 };
 export default IconWrapper;

@@ -1,5 +1,5 @@
 body {
-    font-family: Arial Unicode MS, Arial, sans-serif;
+    font-family: Roboto, Arial Unicode MS, Arial, sans-serif;
     font-size: 16px;
 }
 
@@ -14,6 +14,22 @@ h5 {
     color: #2a2a2a;
     padding: 0;
     margin: 0;
+}
+
+a {
+    font-family: Roboto, Arial Unicode MS, Arial, sans-serif;
+    font-weight: 400;
+    color: #0a789c;
+    text-decoration: none;
+}
+
+span {
+    font-family: Roboto, Arial Unicode MS, Arial, sans-serif;
+    font-weight: 400;
+}
+
+a:visited {
+    text-decoration: none;
 }
 
 [role='dialog'] > div > div:first-child {
