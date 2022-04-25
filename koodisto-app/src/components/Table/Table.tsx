@@ -1,7 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Cell, Column, HeaderGroup, Row, useFilters, useTable } from 'react-table';
+import { Cell, Column, FilterProps, HeaderGroup, Row, useFilters, useTable } from 'react-table';
 import { useEffect } from 'react';
+import { useIntl } from 'react-intl';
+import Input from '@opetushallitus/virkailija-ui-components/Input';
+import Select from '@opetushallitus/virkailija-ui-components/Select';
+import { ValueType } from 'react-select';
+import { SelectOptionType } from '../pages/KoodistoTable/KoodistoTable';
 
 const TableContainer = styled.div`
     overflow-x: scroll;
@@ -39,10 +44,70 @@ const Tbody = styled.tbody`
     }
 `;
 
+const SelectContainer = styled.div`
+    min-width: 17rem;
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+`;
+
+const InputContainer = styled.div`
+    max-width: 25rem;
+    margin-bottom: 1rem;
+`;
+
 type TableProps<T extends object> = {
     columns: Column<T>[];
     data: T[];
 };
+
+export const NimiColumnFilterComponent = <T extends Record<string, unknown>>({
+    column: { filterValue, preFilteredRows, setFilter },
+}: FilterProps<T>) => {
+    const count = preFilteredRows.length;
+    const { formatMessage } = useIntl();
+    return (
+        <InputContainer>
+            <Input
+                value={filterValue || ''}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setFilter(e.target.value || undefined);
+                }}
+                placeholder={formatMessage(
+                    {
+                        id: 'TAULUKKO_VAKIO_FILTTERI',
+                        defaultMessage: 'Haetaan {count} koodistosta',
+                    },
+                    { count }
+                )}
+            />
+        </InputContainer>
+    );
+};
+
+export const SelectColumnFilterComponent = <T extends Record<string, unknown>>({
+    column: { filterValue, preFilteredRows, setFilter },
+}: FilterProps<T>) => {
+    const { formatMessage } = useIntl();
+
+    const uniqueOptions = Array.from(
+        new Map(preFilteredRows.map(({ values: { ryhmaTieto } }) => [ryhmaTieto.value, ryhmaTieto])).values()
+    );
+    return (
+        <SelectContainer>
+            <Select
+                onChange={(values: ValueType<SelectOptionType>) => setFilter(values)}
+                placeholder={formatMessage({
+                    id: 'TAULUKKO_DROPDOWN_FILTTERI',
+                    defaultMessage: 'Valitse Ryhmä listalta',
+                })}
+                isMulti={true}
+                value={filterValue || []}
+                options={uniqueOptions}
+            />
+        </SelectContainer>
+    );
+};
+
 const Table = <T extends object>({
     columns,
     data,

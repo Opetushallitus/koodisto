@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useMemo, useState } from 'react';
 import { useAtom } from 'jotai';
-import { Column, FilterProps, Row } from 'react-table';
+import { Column, Row } from 'react-table';
 import { Koodisto, koodistoAtom } from '../../../api/koodisto';
 import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
 import { ButtonLabelPrefix, HeaderContainer } from './KoodistoTablePage';
@@ -10,10 +10,7 @@ import IconWrapper from '../../IconWapper/IconWrapper';
 import downloadCsv from '../../../utils/downloadCsv';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Input from '@opetushallitus/virkailija-ui-components/Input';
-import Select from '@opetushallitus/virkailija-ui-components/Select';
-import { ValueType } from 'react-select';
-import Table from '../../Table/Table';
+import Table, { NimiColumnFilterComponent, SelectColumnFilterComponent } from '../../Table/Table';
 type KoodistoTableProps = {
     handleLisaaKoodistoRyhma: () => void;
 };
@@ -35,68 +32,9 @@ const InfoText = styled.span`
     color: #666666;
 `;
 
-const SelectContainer = styled.div`
-    min-width: 17rem;
-    margin-bottom: 1rem;
-    margin-right: 1rem;
-`;
-
-const InputContainer = styled.div`
-    max-width: 25rem;
-    margin-bottom: 1rem;
-`;
-
 export type SelectOptionType = {
     value: string;
     label: string;
-};
-
-export const NimiColumnFilterComponent = <T extends Record<string, unknown>>({
-    column: { filterValue, preFilteredRows, setFilter },
-}: FilterProps<T>) => {
-    const count = preFilteredRows.length;
-    const { formatMessage } = useIntl();
-    return (
-        <InputContainer>
-            <Input
-                value={filterValue || ''}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    setFilter(e.target.value || undefined);
-                }}
-                placeholder={formatMessage(
-                    {
-                        id: 'TAULUKKO_VAKIO_FILTTERI',
-                        defaultMessage: 'Haetaan {count} koodistosta',
-                    },
-                    { count }
-                )}
-            />
-        </InputContainer>
-    );
-};
-
-export const SelectColumnFilterComponent = <T extends Record<string, unknown>>({
-    column: { filterValue, preFilteredRows, setFilter },
-}: FilterProps<T>) => {
-    const { formatMessage } = useIntl();
-
-    const uniqueOptions = Array.from(
-        new Map(preFilteredRows.map(({ values: { ryhmaTieto } }) => [ryhmaTieto.value, ryhmaTieto])).values()
-    );
-    return (
-        <SelectContainer>
-            <Select
-                onChange={(values: ValueType<SelectOptionType>) => setFilter(values)}
-                placeholder={formatMessage({
-                    id: 'TAULUKKO_DROPDOWN_FILTTERI',
-                    defaultMessage: 'Valitse Ryhmä listalta',
-                })}
-                isMulti={true}
-                value={filterValue || []}
-                options={uniqueOptions}
-            />
-        </SelectContainer>
-    );
 };
 
 const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma }) => {
