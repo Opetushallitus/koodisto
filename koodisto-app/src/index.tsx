@@ -13,7 +13,7 @@ import { ThemeProvider } from 'styled-components';
 import { casMeLangAtom } from './api/kayttooikeus';
 import { IntlProvider } from 'react-intl';
 import { lokalisaatioMessagesAtom } from './api/lokalisaatio';
-import KoodistoApp from './KoodistoApp';
+import App from './App';
 
 const theme = createTheme();
 const cookies = new Cookies();
@@ -61,7 +61,7 @@ ReactDOM.render(
                     <React.Suspense fallback={<Loading />}>
                         <Initialize>
                             <Raamit>
-                                <KoodistoApp />
+                                <App />
                             </Raamit>
                         </Initialize>
                     </React.Suspense>

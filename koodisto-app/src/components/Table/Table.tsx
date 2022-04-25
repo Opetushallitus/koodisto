@@ -43,7 +43,7 @@ type TableProps<T extends object> = {
     columns: Column<T>[];
     data: T[];
 };
-const TableComponent = <T extends object>({
+const Table = <T extends object>({
     columns,
     data,
     onFilter,
@@ -97,4 +97,4 @@ const TableComponent = <T extends object>({
     );
 };
 
-export default TableComponent;
+export default Table;

@@ -2,7 +2,7 @@ import React from 'react';
 import KoodistoTablePage from './components/pages/KoodistoTable/KoodistoTablePage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
-const KoodistoApp: React.FC = () => {
+const App: React.FC = () => {
     return (
         <BrowserRouter basename={'/koodisto-app'}>
             <Routes>
@@ -12,4 +12,4 @@ const KoodistoApp: React.FC = () => {
     );
 };
 
-export default KoodistoApp;
+export default App;

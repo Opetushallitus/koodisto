@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { ValueType } from 'react-select';
-import TableComponent from '../../Table/TableComponent';
+import Table from '../../Table/Table';
 type KoodistoTableProps = {
     handleLisaaKoodistoRyhma: () => void;
 };
@@ -237,7 +237,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                     <FormattedMessage id={'TAULUKKO_LISAA_KOODISTO_BUTTON'} defaultMessage={'Luo uusi koodisto'} />
                 </Button>
             </HeaderContainer>
-            <TableComponent<Koodisto>
+            <Table<Koodisto>
                 columns={columns}
                 data={data}
                 onFilter={(rows) => {
