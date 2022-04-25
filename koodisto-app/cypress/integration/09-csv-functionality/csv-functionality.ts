@@ -1,6 +1,9 @@
 import { API_BASE_PATH, BASE_PATH } from '../../../src/context/constants';
 import path from 'path';
 const koodistoUri = 'arvosanat';
+beforeEach(() => {
+    cy.task('deleteFolder', Cypress.config('downloadsFolder'));
+});
 describe('CSV functionality tests', () => {
     it('shows download icon on landing page', () => {
         cy.intercept(`${API_BASE_PATH}/codes`, { fixture: 'codes.json' });

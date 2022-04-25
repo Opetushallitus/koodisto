@@ -3,7 +3,8 @@ import { atom, Getter } from 'jotai';
 import { ApiDate, Kieli, Koodi, Metadata } from '../types/types';
 import { casMeLangAtom } from './kayttooikeus';
 import { parseApiDate, translateMetadata } from '../utils/utils';
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
+import { errorHandlingWrapper } from './errorHandling';
 
 export type Koodisto = {
     koodistoUri: string;
@@ -63,12 +64,9 @@ export const koodistoAtom = atom<Koodisto[]>((get: Getter) => {
         .map((a) => koodistoApiToKoodisto(a, lang));
 });
 
-export const fetchKoodisto = async (koodistoUri: string): Promise<AxiosResponse<Koodi[]> | undefined> => {
-    return axios
-        .get<Koodi[]>(`${API_BASE_PATH}/json/${koodistoUri}/koodi`)
-        .catch((e) => {
-            console.error(e);
-            return undefined;
-        })
-        .then((data) => data);
+export const fetchKoodisto = async (koodistoUri: string): Promise<Koodi[] | undefined> => {
+    return errorHandlingWrapper(async () => {
+        const { data } = await axios.get<Koodi[]>(`${API_BASE_PATH}/json/${koodistoUri}/koodi`);
+        return data;
+    });
 };

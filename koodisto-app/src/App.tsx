@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import KoodistoTable from './components/pages/KoodistoTable/KoodistoTable';
 import Loading from './components/pages/Loading/Loading';
 import styled from 'styled-components';
+import Notification from './components/Notification/Notification';
 
 const PageBase = styled.div`
     width: 100%;
@@ -39,6 +40,7 @@ const App: React.FC = () => {
     };
     return (
         <PageBase>
+            <Notification />
             <MainContainer>
                 <React.Suspense fallback={<Loading />}>
                     <ContentContainer>
