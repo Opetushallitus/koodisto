@@ -97,7 +97,7 @@ export const SelectColumnFilterComponent = <T extends Record<string, unknown>>({
                 onChange={(values: ValueType<SelectOptionType>) => setFilter(values)}
                 placeholder={formatMessage({
                     id: 'TAULUKKO_DROPDOWN_FILTTERI',
-                    defaultMessage: 'Valitse Ryhmä listalta',
+                    defaultMessage: 'Valitse arvo listalta',
                 })}
                 isMulti={true}
                 value={filterValue || []}
