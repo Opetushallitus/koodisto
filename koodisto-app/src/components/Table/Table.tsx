@@ -85,12 +85,11 @@ export const NimiColumnFilterComponent = <T extends Record<string, unknown>>({
 };
 
 export const SelectColumnFilterComponent = <T extends Record<string, unknown>>({
-    column: { filterValue, preFilteredRows, setFilter },
+    column: { filterValue, preFilteredRows, setFilter, id },
 }: FilterProps<T>) => {
     const { formatMessage } = useIntl();
-
     const uniqueOptions = Array.from(
-        new Map(preFilteredRows.map(({ values: { ryhmaTieto } }) => [ryhmaTieto.value, ryhmaTieto])).values()
+        new Map(preFilteredRows.map(({ values }) => [values[id].value, values[id]])).values()
     );
     return (
         <SelectContainer>
