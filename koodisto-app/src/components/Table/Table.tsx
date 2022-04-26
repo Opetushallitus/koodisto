@@ -60,7 +60,7 @@ type TableProps<T extends object> = {
     data: T[];
 };
 
-export const NimiColumnFilterComponent = <T extends Record<string, unknown>>({
+export const TextFilterComponent = <T extends Record<string, unknown>>({
     column: { filterValue, preFilteredRows, setFilter },
 }: FilterProps<T>) => {
     const count = preFilteredRows.length;
@@ -84,7 +84,7 @@ export const NimiColumnFilterComponent = <T extends Record<string, unknown>>({
     );
 };
 
-export const SelectColumnFilterComponent = <T extends Record<string, unknown>>({
+export const SelectFilterComponent = <T extends Record<string, unknown>>({
     column: { filterValue, preFilteredRows, setFilter, id },
 }: FilterProps<T>) => {
     const { formatMessage } = useIntl();

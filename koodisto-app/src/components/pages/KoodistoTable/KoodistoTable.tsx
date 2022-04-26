@@ -10,7 +10,10 @@ import IconWrapper from '../../IconWapper/IconWrapper';
 import downloadCsv from '../../../utils/downloadCsv';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Table, { NimiColumnFilterComponent, SelectColumnFilterComponent } from '../../Table/Table';
+import Table, {
+    TextFilterComponent,
+    SelectFilterComponent,
+} from '../../Table/Table';
 type KoodistoTableProps = {
     handleLisaaKoodistoRyhma: () => void;
 };
@@ -68,7 +71,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                                 )
                             );
                         },
-                        Filter: SelectColumnFilterComponent,
+                        Filter: SelectFilterComponent,
                         filter: (rows, _columnIds: string[], filterValue: SelectOptionType[]) =>
                             rows.filter((row) =>
                                 filterValue.length > 0
@@ -98,7 +101,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                                 )
                             );
                         },
-                        Filter: NimiColumnFilterComponent,
+                        Filter: TextFilterComponent,
                         filter: 'text',
                         Cell: ({ value }: { value: string }) => <Link to="/">{value}</Link>,
                     },
