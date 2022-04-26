@@ -8,7 +8,7 @@ describe('CSV functionality tests', () => {
     it('shows download icon on landing page', () => {
         cy.intercept(`${API_BASE_PATH}/codes`, { fixture: 'codes.json' });
         cy.visit(`${BASE_PATH}`);
-        cy.get(`svg[name="${koodistoUri}-uploadicon"]`).should('be.visible');
+        cy.get(`svg[name="${koodistoUri}-uploadicon"]`).scrollIntoView().should('be.visible');
     });
     it('can download arvosanat', () => {
         cy.intercept(`${API_BASE_PATH}/json/arvosanat/koodi`, { fixture: 'arvosanat.json' });

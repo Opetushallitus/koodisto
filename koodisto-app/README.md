@@ -27,6 +27,6 @@ Cypress testit:
 
 `npm run cypress:ci`
 
-Kontainer buildataan github actionilla, ja sonarcloud analyysi löytyy
+Container buildataan github actionilla, ja sonarcloud analyysi löytyy
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Opetushallitus_koodisto-app&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Opetushallitus_koodisto-app)

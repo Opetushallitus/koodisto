@@ -14,6 +14,7 @@ export type Koodisto = {
     nimi?: string;
     organisaatioOid: string;
     ryhmaNimi?: string;
+    ryhmaId?: number;
 };
 type KoodistoApi = {
     koodistoUri: string;
@@ -25,6 +26,7 @@ type KoodistoApi = {
     };
     organisaatioOid: string;
     ryhmaMetadata: Metadata[];
+    ryhmaId?: number;
 };
 type KoodistoRyhma = {
     id: number;
@@ -52,6 +54,7 @@ const koodistoApiToKoodisto = (a: KoodistoApi, lang: Kieli): Koodisto => {
         organisaatioOid: a.organisaatioOid,
         nimi,
         ryhmaNimi,
+        ryhmaId: a.ryhmaId,
     };
 };
 
@@ -59,7 +62,9 @@ export const koodistoAtom = atom<Koodisto[]>((get: Getter) => {
     const lowerLang = get(casMeLangAtom);
     const lang = lowerLang.toUpperCase() as Kieli;
     return get(koodistoRyhmaAtom)
-        .flatMap((a: KoodistoRyhma) => a.koodistos.map((k: KoodistoApi) => ({ ...k, ryhmaMetadata: a.metadata })))
+        .flatMap((a: KoodistoRyhma) =>
+            a.koodistos.map((k: KoodistoApi) => ({ ...k, ryhmaId: a.id, ryhmaMetadata: a.metadata }))
+        )
         .filter(distinctTypeFilter)
         .map((a) => koodistoApiToKoodisto(a, lang));
 });
