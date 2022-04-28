@@ -26,6 +26,7 @@ a {
 span {
     font-family: Roboto, Arial Unicode MS, Arial, sans-serif;
     font-weight: 400;
+    color: #666666;
 }
 
 a:visited {
@@ -35,3 +36,4 @@ a:visited {
 [role='dialog'] > div > div:first-child {
     background-color: transparent;
 }
+

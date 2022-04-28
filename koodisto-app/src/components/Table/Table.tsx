@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { ValueType } from 'react-select';
-import { SelectOptionType } from '../pages/KoodistoTable/KoodistoTable';
+import { SelectOptionType } from '../pages/KoodistoTablePage/KoodistoTable';
 
 const TableContainer = styled.div`
     overflow-x: scroll;
@@ -129,28 +129,36 @@ const Table = <T extends object>({
         <TableContainer>
             <TableElement {...getTableProps()}>
                 <Thead>
-                    {headerGroups.map((headerGroup: HeaderGroup<T>) => (
-                        // eslint-disable-next-line react/jsx-key
-                        <Tr {...headerGroup.getHeaderGroupProps()}>
-                            {headerGroup.headers.map((column: HeaderGroup<T>) => (
-                                // eslint-disable-next-line react/jsx-key
-                                <Th {...column.getHeaderProps()}>
-                                    {column.render('Header')}
-                                    <div>{column.canFilter ? column.render('Filter') : null}</div>
-                                </Th>
-                            ))}
-                        </Tr>
-                    ))}
+                    {headerGroups.map((headerGroup: HeaderGroup<T>) => {
+                        const { key, ...rest } = headerGroup.getHeaderGroupProps();
+                        return (
+                            <Tr {...rest} key={key}>
+                                {headerGroup.headers.map((column: HeaderGroup<T>) => {
+                                    const { key, ...rest } = column.getHeaderProps();
+                                    return (
+                                        <Th {...rest} key={key}>
+                                            {column.render('Header')}
+                                            <div>{column.canFilter ? column.render('Filter') : null}</div>
+                                        </Th>
+                                    );
+                                })}
+                            </Tr>
+                        );
+                    })}
                 </Thead>
                 <Tbody {...getTableBodyProps()}>
                     {rows.map((row: Row<T>) => {
                         prepareRow(row);
+                        const { key, ...rest } = row.getRowProps();
                         return (
-                            // eslint-disable-next-line react/jsx-key
-                            <Tr {...row.getRowProps()}>
+                            <Tr {...rest} key={key}>
                                 {row.cells.map((cell: Cell<T>) => {
-                                    // eslint-disable-next-line react/jsx-key
-                                    return <Td {...cell.getCellProps()}>{cell.render('Cell')}</Td>;
+                                    const { key, ...rest } = cell.getCellProps();
+                                    return (
+                                        <Td {...rest} key={key}>
+                                            {cell.render('Cell')}
+                                        </Td>
+                                    );
                                 })}
                             </Tr>
                         );
