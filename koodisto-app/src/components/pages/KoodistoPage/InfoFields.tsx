@@ -13,7 +13,8 @@ const InfoRow = styled.div`
     flex-direction: row;
     > * {
         &:first-child {
-            width: 11rem;
+            min-width: 11rem;
+            max-width: 11rem;
         }
     }
 `;

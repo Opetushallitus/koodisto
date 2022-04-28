@@ -29,8 +29,8 @@ type KoodistoInRyhma = {
     ryhmaMetadata: Metadata[];
     ryhmaId?: number;
 };
-/*
-type KoodistoVersio = {
+
+export type KoodistoVersio = {
     versio: number;
     paivitysPvm: Date;
     voimassaAlkuPvm: ApiDate;
@@ -40,6 +40,22 @@ type KoodistoVersio = {
     metadata: Metadata[];
 };
 
+export type KoodistoRelation = {
+    codesUri: string;
+    codesVersion: number;
+    passive: boolean;
+    nimi: {
+        fi: string;
+        sv: string;
+        en: string;
+    };
+    kuvaus: {
+        fi: string;
+        sv: string;
+        en: string;
+    };
+};
+/*
 export type KoodistoWithVersions = {
     koodistoUri: string;
     resourceUri: string;
@@ -67,9 +83,9 @@ export type KoodistoPageKoodisto = {
     tila: string;
     metadata: Metadata[];
     codesVersions: number[];
-    withinCodes: Koodi[];
-    includesCodes: Koodi[];
-    levelsWithCodes: Koodi[];
+    withinCodes: KoodistoRelation[];
+    includesCodes: KoodistoRelation[];
+    levelsWithCodes: KoodistoRelation[];
 };
 
 type KoodistoRyhma = {

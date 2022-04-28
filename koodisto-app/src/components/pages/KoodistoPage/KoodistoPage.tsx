@@ -5,7 +5,6 @@ import IconWrapper from '../../IconWapper/IconWrapper';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
-import Accordion from '../../Accordion/Accordion';
 import { fetchKoodistoByUriAndVersio, KoodistoPageKoodisto } from '../../../api/koodisto';
 import { translateMetadata } from '../../../utils/utils';
 import { Kieli } from '../../../types/types';
@@ -14,6 +13,7 @@ import { ValueType } from 'react-select';
 import { Location } from 'history';
 import Loading from '../Loading/Loading';
 import InfoFields from './InfoFields';
+import KoodistoPageAccordion from './KoodistoPageAccordion';
 
 const MainContainer = styled.div`
     flex-grow: 1;
@@ -161,7 +161,11 @@ const KoodistoPage: React.FC = () => {
             </MainHeaderContainer>
             <MainContainer>
                 <InfoFields koodisto={koodisto} kuvaus={koodistonMetadata?.kuvaus || ''} ryhmaNimi={state?.ryhmaNimi} />
-                <Accordion />
+                <KoodistoPageAccordion
+                    includesCodes={koodisto.includesCodes}
+                    withinCodes={koodisto.withinCodes}
+                    levelsWithCodes={koodisto.levelsWithCodes}
+                />
             </MainContainer>
         </>
     );
