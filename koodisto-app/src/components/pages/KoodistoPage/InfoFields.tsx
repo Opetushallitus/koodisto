@@ -1,7 +1,8 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedDate, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import { KoodistoPageKoodisto } from '../../../api/koodisto';
+import { Link } from 'react-router-dom';
 
 const InfoContainer = styled.div`
     display: flex;
@@ -24,17 +25,16 @@ const InfoValue = styled.span`
 `;
 
 interface InfoFieldsProps {
-    ryhmaNimi: string | undefined;
     kuvaus: string;
     koodisto: KoodistoPageKoodisto;
 }
 
-const InfoFields = ({ koodisto, ryhmaNimi, kuvaus }: InfoFieldsProps) => {
+const InfoFields = ({ koodisto, kuvaus }: InfoFieldsProps) => {
     return (
         <InfoContainer>
             <InfoRow>
                 <FormattedMessage id={'KOODISTOSIVU_AVAIN_URI_TUNNUS'} defaultMessage={'URI-tunnus'} tagName={'span'} />
-                <a href={koodisto?.resourceUri || ''}>{koodisto?.resourceUri}</a>
+                <Link to={koodisto.resourceUri}>{koodisto.resourceUri}</Link>
             </InfoRow>
             <InfoRow>
                 <FormattedMessage
@@ -42,11 +42,13 @@ const InfoFields = ({ koodisto, ryhmaNimi, kuvaus }: InfoFieldsProps) => {
                     defaultMessage={'Koodistoryhmä'}
                     tagName={'span'}
                 />
-                <InfoValue>{ryhmaNimi || koodisto?.codesGroupUri}</InfoValue>
+                <InfoValue>{koodisto.codesGroupUri}</InfoValue>
             </InfoRow>
             <InfoRow>
                 <FormattedMessage id={'KOODISTOSIVU_AVAIN_VOIMASSA'} defaultMessage={'Voimassa'} tagName={'span'} />
-                <InfoValue>{koodisto.voimassaAlkuPvm}</InfoValue>
+                <InfoValue>
+                    <FormattedDate value={koodisto.voimassaAlkuPvm} />
+                </InfoValue>
             </InfoRow>
             <InfoRow>
                 <FormattedMessage id={'KOODISTOSIVU_AVAIN_KUVAUS'} defaultMessage={'Kuvaus'} tagName={'span'} />
@@ -62,7 +64,9 @@ const InfoFields = ({ koodisto, ryhmaNimi, kuvaus }: InfoFieldsProps) => {
             </InfoRow>
             <InfoRow>
                 <FormattedMessage id={'KOODISTOSIVU_AVAIN_PAIVITETTY'} defaultMessage={'Päivitetty'} tagName={'span'} />
-                <InfoValue>{koodisto.paivitysPvm}</InfoValue>
+                <InfoValue>
+                    <FormattedDate value={koodisto.paivitysPvm} />
+                </InfoValue>
             </InfoRow>
         </InfoContainer>
     );

@@ -147,13 +147,3 @@ export const fetchKoodistoByUriAndVersio = async (
         return data;
     });
 };
-/*
-export const fetchKoodistowithVersionsByUri = async (
-    koodistoUri: string
-): Promise<KoodistoWithVersions | undefined> => {
-    return errorHandlingWrapper(async () => {
-        const { data } = await axios.get<KoodistoWithVersions>(`${API_BASE_PATH}/codes/${koodistoUri}`);
-        return data;
-    });
-};
-*/

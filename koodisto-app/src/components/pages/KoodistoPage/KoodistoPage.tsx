@@ -3,14 +3,13 @@ import styled from 'styled-components';
 import { FormattedMessage, useIntl } from 'react-intl';
 import IconWrapper from '../../IconWapper/IconWrapper';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
-import { Link, useLocation, useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { fetchKoodistoByUriAndVersio, KoodistoPageKoodisto } from '../../../api/koodisto';
 import { translateMetadata } from '../../../utils/utils';
 import { Kieli } from '../../../types/types';
 import { SelectOptionType } from '../KoodistoTablePage/KoodistoTable';
 import { ValueType } from 'react-select';
-import { Location } from 'history';
 import Loading from '../Loading/Loading';
 import InfoFields from './InfoFields';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
@@ -65,17 +64,8 @@ const SelectContainer = styled.div`
     width: 8rem;
 `;
 
-type LocationState = Location & {
-    state:
-        | {
-              ryhmaNimi: string;
-          }
-        | undefined;
-};
-
 const KoodistoPage: React.FC = () => {
     const { versio, koodistoUri } = useParams();
-    const { state } = useLocation() as LocationState;
     const { formatMessage, locale } = useIntl();
     const [koodisto, setKoodisto] = useState<KoodistoPageKoodisto | undefined>();
     const [selectedVersio, setSelectedVersio] = useState<ValueType<SelectOptionType>>({
@@ -160,7 +150,7 @@ const KoodistoPage: React.FC = () => {
                 </MainHeaderButtonsContainer>
             </MainHeaderContainer>
             <MainContainer>
-                <InfoFields koodisto={koodisto} kuvaus={koodistonMetadata?.kuvaus || ''} ryhmaNimi={state?.ryhmaNimi} />
+                <InfoFields koodisto={koodisto} kuvaus={koodistonMetadata?.kuvaus || ''} />
                 <KoodistoPageAccordion
                     includesCodes={koodisto.includesCodes}
                     withinCodes={koodisto.withinCodes}

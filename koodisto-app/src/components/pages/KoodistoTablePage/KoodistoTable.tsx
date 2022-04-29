@@ -32,6 +32,10 @@ const InfoText = styled.span`
     color: #666666;
 `;
 
+const TableCellText = styled.span`
+    color: #0a789c;
+`;
+
 export type SelectOptionType = {
     value: string;
     label: string;
@@ -41,11 +45,8 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
     const [atomData] = useAtom(koodistoAtom);
     const { formatMessage } = useIntl();
     const data = useMemo<TablePageKoodisto[]>(() => {
-        const sortedAtom = atomData.map((a) => {
-            return { ...a, name: 'foo' };
-        });
-        sortedAtom.sort((a, b) => a.koodistoUri.localeCompare(b.koodistoUri));
-        return sortedAtom;
+        atomData.sort((a, b) => a.koodistoUri.localeCompare(b.koodistoUri));
+        return [...atomData];
     }, [atomData]);
     const [filteredRows, setFilteredRows] = useState<Row<TablePageKoodisto>[]>([]);
     const columns = React.useMemo<Column<TablePageKoodisto>[]>(
@@ -76,28 +77,19 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                 columns: [
                     {
                         id: 'nimi',
-                        accessor: (values: TablePageKoodisto) => {
-                            console.log('values', values);
-                            return (
-                                values.nimi ||
-                                formatMessage(
-                                    {
-                                        id: 'TAULUKKO_NIMI_PUUTTUU_KOODISTOLTA',
-                                        defaultMessage: 'Nimi puuttuu {koodistoUri}',
-                                    },
-                                    { koodistoUri: values.koodistoUri }
-                                )
-                            );
-                        },
+                        accessor: (values: TablePageKoodisto) =>
+                            values.nimi ||
+                            formatMessage(
+                                {
+                                    id: 'TAULUKKO_NIMI_PUUTTUU_KOODISTOLTA',
+                                    defaultMessage: 'Nimi puuttuu {koodistoUri}',
+                                },
+                                { koodistoUri: values.koodistoUri }
+                            ),
                         Filter: NimiColumnFilterComponent,
                         filter: 'text',
                         Cell: ({ value, row }: { value: string; row: Row<TablePageKoodisto> }) => (
-                            <Link
-                                to={`koodisto/${row.original.koodistoUri}/${row.original.versio}`}
-                                state={{ ryhmaNimi: row.original.ryhmaNimi }}
-                            >
-                                {value}
-                            </Link>
+                            <Link to={`koodisto/${row.original.koodistoUri}/${row.original.versio}`}>{value}</Link>
                         ),
                     },
                 ],
@@ -107,9 +99,12 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                 columns: [
                     {
                         id: 'voimassaAlkuPvm',
-                        accessor: (values) => {
-                            return values.voimassaAlkuPvm && <FormattedDate value={values.voimassaAlkuPvm} />;
-                        },
+                        accessor: (values) =>
+                            values.voimassaAlkuPvm && (
+                                <TableCellText>
+                                    <FormattedDate value={values.voimassaAlkuPvm} />
+                                </TableCellText>
+                            ),
                     },
                 ],
             },
@@ -118,32 +113,37 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                 columns: [
                     {
                         id: 'voimassaLoppuPvm',
-                        accessor: (values: TablePageKoodisto) => {
-                            return values.voimassaLoppuPvm && <FormattedDate value={values.voimassaLoppuPvm} />;
-                        },
+                        accessor: (values: TablePageKoodisto) =>
+                            values.voimassaLoppuPvm && (
+                                <TableCellText>
+                                    <FormattedDate value={values.voimassaLoppuPvm} />
+                                </TableCellText>
+                            ),
                     },
                 ],
             },
             {
                 id: 'downloadCsv',
                 Header: '',
-                accessor: (values: TablePageKoodisto) => {
-                    return (
+                accessor: (values: TablePageKoodisto) => (
+                    <TableCellText>
                         <IconWrapper
                             name={`${values.koodistoUri}-uploadicon`}
                             icon="el:download"
                             inline={true}
                             onClick={() => downloadCsv(values.koodistoUri)}
                         />
-                    );
-                },
+                    </TableCellText>
+                ),
             },
             {
                 id: 'uploadCsv',
                 Header: '',
-                accessor: (values: TablePageKoodisto) => {
-                    return <IconWrapper icon="el:upload" inline={true} onClick={() => uploadCsv(values.koodistoUri)} />;
-                },
+                accessor: (values: TablePageKoodisto) => (
+                    <TableCellText>
+                        <IconWrapper icon="el:upload" inline={true} onClick={() => uploadCsv(values.koodistoUri)} />
+                    </TableCellText>
+                ),
             },
         ],
         [formatMessage]

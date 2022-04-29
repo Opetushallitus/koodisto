@@ -16,7 +16,8 @@ const TableContainer = styled.div`
 `;
 const TableElement = styled.table`
     width: 100%;
-    min-height: 60vh;
+    min-height: 20vh;
+    max-height: 60vh;
     border-spacing: 0;
 `;
 const Th = styled.th`
@@ -25,7 +26,6 @@ const Th = styled.th`
 const Td = styled.td`
     font-family: Roboto, Arial Unicode MS, Arial, sans-serif;
     font-weight: 400;
-    color: #0a789c;
 `;
 const Tr = styled.tr``;
 const Thead = styled.thead`
