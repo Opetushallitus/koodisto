@@ -162,19 +162,23 @@ public class KoodistoDto extends AbstractKoodistoDto {
         public final boolean passive;
         @JsonView({JsonViews.Extended.class})
         public final Map<String, String> nimi;
+        @JsonView({JsonViews.Extended.class})
+        public final Map<String, String> kuvaus;
 
         public RelationCodes() {
             this.codesUri = null;
             this.codesVersion = -1;
             this.passive = false;
             this.nimi = new HashMap<>();
+            this.kuvaus = new HashMap<>();
         }
 
-        public RelationCodes(String codesUri, Integer codesVersion, boolean passive, Map<String, String> nimi) {
+        public RelationCodes(String codesUri, Integer codesVersion, boolean passive, Map<String, String> nimi, Map<String, String> kuvaus) {
             this.codesUri = codesUri;
             this.codesVersion = codesVersion;
             this.passive = passive;
             this.nimi = nimi;
+            this.kuvaus = kuvaus;
         }
     }
 }

@@ -514,9 +514,9 @@ public class CodesResourceTest {
         assertTrue(codesToBeSaved.getLevelsWithCodes().size() == 0);
 
         codesToBeSaved.getMetadata().get(0).setNimi(nimi);
-        codesToBeSaved.getIncludesCodes().add(new RelationCodes("eisuhteitaviela2", 1, false, new HashMap<>()));
-        codesToBeSaved.getWithinCodes().add(new RelationCodes("eisuhteitaviela3", 1, false, new HashMap<>()));
-        codesToBeSaved.getLevelsWithCodes().add(new RelationCodes("eisuhteitaviela4", 1, false, new HashMap<>()));
+        codesToBeSaved.getIncludesCodes().add(new RelationCodes("eisuhteitaviela2", 1, false, new HashMap<>(), new HashMap<>()));
+        codesToBeSaved.getWithinCodes().add(new RelationCodes("eisuhteitaviela3", 1, false, new HashMap<>(), new HashMap<>()));
+        codesToBeSaved.getLevelsWithCodes().add(new RelationCodes("eisuhteitaviela4", 1, false, new HashMap<>(), new HashMap<>()));
         assertResponse(resource.save(codesToBeSaved), 200);
 
         KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(koodistoUri, versio+1).getBody();
