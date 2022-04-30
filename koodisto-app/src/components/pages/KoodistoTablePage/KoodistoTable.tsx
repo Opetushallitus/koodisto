@@ -10,7 +10,10 @@ import IconWrapper from '../../IconWapper/IconWrapper';
 import downloadCsv from '../../../utils/downloadCsv';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Table, { NimiColumnFilterComponent, SelectColumnFilterComponent } from '../../Table/Table';
+import Table, {
+    TextFilterComponent,
+    SelectFilterComponent,
+} from '../../Table/Table';
 type KoodistoTableProps = {
     handleLisaaKoodistoRyhma: () => void;
 };
@@ -57,7 +60,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                     {
                         id: 'ryhmaTieto',
                         accessor: (values: TablePageKoodisto) => ({ label: values.ryhmaNimi, value: values.ryhmaId }),
-                        Filter: SelectColumnFilterComponent,
+                        Filter: SelectFilterComponent,
                         filter: (rows, _columnIds: string[], filterValue: SelectOptionType[]) =>
                             rows.filter((row) =>
                                 filterValue.length > 0
@@ -86,7 +89,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                                 },
                                 { koodistoUri: values.koodistoUri }
                             ),
-                        Filter: NimiColumnFilterComponent,
+                        Filter: TextFilterComponent,
                         filter: 'text',
                         Cell: ({ value, row }: { value: string; row: Row<TablePageKoodisto> }) => (
                             <Link to={`koodisto/${row.original.koodistoUri}/${row.original.versio}`}>{value}</Link>
