@@ -3,13 +3,12 @@ import styled from 'styled-components';
 import { FormattedMessage, useIntl } from 'react-intl';
 import IconWrapper from '../../IconWapper/IconWrapper';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { fetchKoodistoByUriAndVersio, KoodistoPageKoodisto } from '../../../api/koodisto';
 import { translateMetadata } from '../../../utils/utils';
 import { Kieli } from '../../../types/types';
 import { SelectOptionType } from '../KoodistoTablePage/KoodistoTable';
-import { ValueType } from 'react-select';
 import Loading from '../Loading/Loading';
 import InfoFields from './InfoFields';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
@@ -66,9 +65,10 @@ const SelectContainer = styled.div`
 
 const KoodistoPage: React.FC = () => {
     const { versio, koodistoUri } = useParams();
+    const navigate = useNavigate();
     const { formatMessage, locale } = useIntl();
     const [koodisto, setKoodisto] = useState<KoodistoPageKoodisto | undefined>();
-    const [selectedVersio, setSelectedVersio] = useState<ValueType<SelectOptionType>>({
+    const incomingVersioOption: SelectOptionType = {
         label: formatMessage(
             {
                 id: 'KOODISTOSIVU_VERSIO_DROPDOWN_LABEL',
@@ -77,7 +77,7 @@ const KoodistoPage: React.FC = () => {
             { versio: versio || '' }
         ),
         value: versio || '',
-    });
+    };
     useEffect(() => {
         (async () => {
             if (koodistoUri && versio) {
@@ -85,7 +85,7 @@ const KoodistoPage: React.FC = () => {
                 setKoodisto(koodistoData);
             }
         })();
-    }, [koodistoUri, selectedVersio, versio]);
+    }, [koodistoUri, versio]);
 
     if (!koodisto) {
         return <Loading />;
@@ -104,7 +104,7 @@ const KoodistoPage: React.FC = () => {
                 value: versio.toString(),
             };
         })
-        .concat([selectedVersio as SelectOptionType]);
+        .concat([incomingVersioOption]);
     return (
         <>
             <KoodistoPathContainer>
@@ -124,12 +124,16 @@ const KoodistoPage: React.FC = () => {
                     <h1>{koodistonMetadata?.nimi}</h1>
                     <SelectContainer>
                         <Select
-                            onChange={setSelectedVersio}
+                            onChange={(value) => {
+                                if ((value as SelectOptionType).value !== incomingVersioOption?.value) {
+                                    navigate(`/koodisto/${koodisto.koodistoUri}/${(value as SelectOptionType).value}`);
+                                }
+                            }}
                             placeholder={formatMessage({
                                 id: 'KOODISTOVERSIO_DROPDOWN',
                                 defaultMessage: 'Koodistoversio',
                             })}
-                            value={selectedVersio}
+                            value={incomingVersioOption}
                             options={versioOptions}
                         />
                     </SelectContainer>
