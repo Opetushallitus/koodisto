@@ -38,7 +38,7 @@ const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({ koodist
                     relation.kuvaus[locale as keyof typeof relation.kuvaus] || relation.kuvaus['fi'],
             },
         ],
-        [formatMessage]
+        [formatMessage, locale]
     );
 
     return <Table<KoodistoRelation> columns={columns} data={data} />;
