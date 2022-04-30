@@ -125,7 +125,7 @@ const KoodistoPage: React.FC = () => {
                     <SelectContainer>
                         <Select
                             onChange={(value) => {
-                                if ((value as SelectOptionType).value !== incomingVersioOption?.value) {
+                                if ((value as SelectOptionType).value !== incomingVersioOption.value) {
                                     navigate(`/koodisto/${koodisto.koodistoUri}/${(value as SelectOptionType).value}`);
                                 }
                             }}

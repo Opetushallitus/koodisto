@@ -55,17 +55,6 @@ export type KoodistoRelation = {
         en: string;
     };
 };
-/*
-export type KoodistoWithVersions = {
-    koodistoUri: string;
-    resourceUri: string;
-    omistaja: string | null;
-    organisaatioOid: string;
-    lukittu: boolean | null;
-    latestKoodistoVersio: KoodistoVersio;
-    koodistoVersios: KoodistoVersio[];
-};
- */
 
 export type KoodistoPageKoodisto = {
     koodistoUri: string;
