@@ -10,10 +10,7 @@ import IconWrapper from '../../IconWapper/IconWrapper';
 import downloadCsv from '../../../utils/downloadCsv';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Table, {
-    TextFilterComponent,
-    SelectFilterComponent,
-} from '../../Table/Table';
+import Table, { TextFilterComponent, SelectFilterComponent } from '../../Table/Table';
 type KoodistoTableProps = {
     handleLisaaKoodistoRyhma: () => void;
 };
