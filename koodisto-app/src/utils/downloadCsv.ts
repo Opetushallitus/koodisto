@@ -1,6 +1,6 @@
 import Papa from 'papaparse';
 import { Koodi, Metadata } from '../types/types';
-import { fetchKoodisto } from '../api/koodisto';
+import { fetchKoodisByKoodisto } from '../api/koodisto';
 import { info } from '../components/Notification/Notification';
 
 export const mapKoodiToCSV = (koodi: Koodi) => {
@@ -44,7 +44,7 @@ const convertCsvToExcelAcceptedBlob = (csv: string) => {
 };
 
 const downloadCsv = async (koodistoUri: string) => {
-    const data = await fetchKoodisto(koodistoUri);
+    const data = await fetchKoodisByKoodisto(koodistoUri);
     if (!data) return;
     data.sort((a, b) => a.koodiUri.localeCompare(b.koodiUri));
     const csvData = data.map(mapKoodiToCSV);

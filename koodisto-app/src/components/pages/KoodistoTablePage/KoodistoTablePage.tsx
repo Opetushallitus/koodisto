@@ -1,20 +1,10 @@
 import React, { useState } from 'react';
 import KoodistoTable from './KoodistoTable';
-import Loading from '../Loading/Loading';
 import styled from 'styled-components';
-import Notification from '../../Notification/Notification';
 import { FormattedMessage } from 'react-intl';
 import IconWrapper from '../../IconWapper/IconWrapper';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 
-const PageBase = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    min-height: 87vh;
-`;
 const MainContainer = styled.div`
     flex-grow: 1;
     display: flex;
@@ -55,7 +45,7 @@ const KoodistoTablePage: React.FC = () => {
         setKoodistoRyhmaModalVisible(true);
     };
     return (
-        <PageBase>
+        <>
             <MainHeaderContainer>
                 <FormattedMessage id={'TAULUKKOSIVU_OTSIKKO'} defaultMessage={'Koodistojen ylläpito'} tagName={'h1'} />
                 <Button variant={'text'}>
@@ -68,16 +58,13 @@ const KoodistoTablePage: React.FC = () => {
                     />
                 </Button>
             </MainHeaderContainer>
-            <Notification />
             <MainContainer>
-                <React.Suspense fallback={<Loading />}>
-                    <ContentContainer>
-                        <KoodistoTable handleLisaaKoodistoRyhma={handleLisaaKoodistoRyhma} />
-                        {koodistoRyhmaModalVisible && <div>FOO</div>}
-                    </ContentContainer>
-                </React.Suspense>
+                <ContentContainer>
+                    <KoodistoTable handleLisaaKoodistoRyhma={handleLisaaKoodistoRyhma} />
+                    {koodistoRyhmaModalVisible && <div>FOO</div>}
+                </ContentContainer>
             </MainContainer>
-        </PageBase>
+        </>
     );
 };
 

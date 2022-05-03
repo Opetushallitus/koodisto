@@ -6,7 +6,7 @@ import { parseApiDate, translateMetadata } from '../utils/utils';
 import axios from 'axios';
 import { errorHandlingWrapper } from './errorHandling';
 
-export type Koodisto = {
+export type TablePageKoodisto = {
     koodistoUri: string;
     versio: number;
     voimassaAlkuPvm?: Date;
@@ -16,7 +16,8 @@ export type Koodisto = {
     ryhmaNimi?: string;
     ryhmaId?: number;
 };
-type KoodistoApi = {
+
+type KoodistoInRyhma = {
     koodistoUri: string;
     latestKoodistoVersio: {
         metadata: Metadata[];
@@ -28,23 +29,73 @@ type KoodistoApi = {
     ryhmaMetadata: Metadata[];
     ryhmaId?: number;
 };
+
+export type KoodistoVersio = {
+    versio: number;
+    paivitysPvm: Date;
+    voimassaAlkuPvm: ApiDate;
+    voimassaLoppuPvm: ApiDate;
+    tila: string;
+    version: number;
+    metadata: Metadata[];
+};
+
+export type KoodistoRelation = {
+    codesUri: string;
+    codesVersion: number;
+    passive: boolean;
+    nimi: {
+        fi: string;
+        sv: string;
+        en: string;
+    };
+    kuvaus: {
+        fi: string;
+        sv: string;
+        en: string;
+    };
+};
+
+export type KoodistoPageKoodisto = {
+    koodistoUri: string;
+    resourceUri: string;
+    omistaja: string | null;
+    organisaatioOid: string;
+    lukittu: boolean | null;
+    codesGroupUri: string;
+    version: number;
+    versio: number;
+    paivitysPvm: ApiDate;
+    paivittajaOid: string;
+    voimassaAlkuPvm: ApiDate;
+    voimassaLoppuPvm: ApiDate;
+    tila: string;
+    metadata: Metadata[];
+    codesVersions: number[];
+    withinCodes: KoodistoRelation[];
+    includesCodes: KoodistoRelation[];
+    levelsWithCodes: KoodistoRelation[];
+};
+
 type KoodistoRyhma = {
     id: number;
     koodistoRyhmaUri: string;
-    koodistos: KoodistoApi[];
+    koodistos: KoodistoInRyhma[];
     metadata: Metadata[];
 };
 const urlAtom = atom<string>(`${API_BASE_PATH}/codes`);
+
 export const koodistoRyhmaAtom = atom<Promise<KoodistoRyhma[]>>(async (get: Getter) => {
     const { data } = await axios.get<KoodistoRyhma[]>(get(urlAtom));
     return data;
 });
-const distinctTypeFilter = (a: KoodistoApi, i: number, array: KoodistoApi[]): boolean =>
-    array.findIndex((b: KoodistoApi) => b.koodistoUri === a.koodistoUri) === i;
 
-const koodistoApiToKoodisto = (a: KoodistoApi, lang: Kieli): Koodisto => {
-    const nimi = translateMetadata(a.latestKoodistoVersio.metadata, lang);
-    const ryhmaNimi = translateMetadata(a.ryhmaMetadata, lang);
+const distinctTypeFilter = (a: KoodistoInRyhma, i: number, array: KoodistoInRyhma[]): boolean =>
+    array.findIndex((b: KoodistoInRyhma) => b.koodistoUri === a.koodistoUri) === i;
+
+const koodistoApiToKoodisto = (a: KoodistoInRyhma, lang: Kieli): TablePageKoodisto => {
+    const nimi = translateMetadata(a.latestKoodistoVersio.metadata, lang)?.nimi;
+    const ryhmaNimi = translateMetadata(a.ryhmaMetadata, lang)?.nimi;
     return {
         koodistoUri: a.koodistoUri,
         versio: a.latestKoodistoVersio.versio,
@@ -58,20 +109,30 @@ const koodistoApiToKoodisto = (a: KoodistoApi, lang: Kieli): Koodisto => {
     };
 };
 
-export const koodistoAtom = atom<Koodisto[]>((get: Getter) => {
+export const koodistoAtom = atom<TablePageKoodisto[]>((get: Getter) => {
     const lowerLang = get(casMeLangAtom);
     const lang = lowerLang.toUpperCase() as Kieli;
     return get(koodistoRyhmaAtom)
         .flatMap((a: KoodistoRyhma) =>
-            a.koodistos.map((k: KoodistoApi) => ({ ...k, ryhmaId: a.id, ryhmaMetadata: a.metadata }))
+            a.koodistos.map((k: KoodistoInRyhma) => ({ ...k, ryhmaId: a.id, ryhmaMetadata: a.metadata }))
         )
         .filter(distinctTypeFilter)
         .map((a) => koodistoApiToKoodisto(a, lang));
 });
 
-export const fetchKoodisto = async (koodistoUri: string): Promise<Koodi[] | undefined> => {
+export const fetchKoodisByKoodisto = async (koodistoUri: string): Promise<Koodi[] | undefined> => {
     return errorHandlingWrapper(async () => {
         const { data } = await axios.get<Koodi[]>(`${API_BASE_PATH}/json/${koodistoUri}/koodi`);
+        return data;
+    });
+};
+
+export const fetchKoodistoByUriAndVersio = async (
+    koodistoUri: string,
+    versio: string
+): Promise<KoodistoPageKoodisto | undefined> => {
+    return errorHandlingWrapper(async () => {
+        const { data } = await axios.get<KoodistoPageKoodisto>(`${API_BASE_PATH}/codes/${koodistoUri}/${versio}`);
         return data;
     });
 };

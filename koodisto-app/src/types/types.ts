@@ -12,6 +12,13 @@ export type Metadata = {
     eisisallamerkitysta?: string;
     huomioitavakoodi?: string;
     sisaltaakoodiston?: string;
+    kohdealue?: string;
+    sitovuustaso?: string;
+    kohdealueenOsaAlue?: string;
+    toimintaymparisto?: string;
+    tarkentaaKoodistoa?: string;
+    huomioitavaKoodisto?: string;
+    koodistonLahde?: string;
 };
 
 export type Koodi = {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useMemo, useState } from 'react';
 import { useAtom } from 'jotai';
 import { Column, Row } from 'react-table';
-import { Koodisto, koodistoAtom } from '../../../api/koodisto';
+import { koodistoAtom, TablePageKoodisto } from '../../../api/koodisto';
 import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
 import { ButtonLabelPrefix, HeaderContainer } from './KoodistoTablePage';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
@@ -10,10 +10,7 @@ import IconWrapper from '../../IconWapper/IconWrapper';
 import downloadCsv from '../../../utils/downloadCsv';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Table, {
-    TextFilterComponent,
-    SelectFilterComponent,
-} from '../../Table/Table';
+import Table, { TextFilterComponent, SelectFilterComponent } from '../../Table/Table';
 type KoodistoTableProps = {
     handleLisaaKoodistoRyhma: () => void;
 };
@@ -35,6 +32,10 @@ const InfoText = styled.span`
     color: #666666;
 `;
 
+const TableCellText = styled.span`
+    color: #0a789c;
+`;
+
 export type SelectOptionType = {
     value: string;
     label: string;
@@ -43,34 +44,19 @@ export type SelectOptionType = {
 const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma }) => {
     const [atomData] = useAtom(koodistoAtom);
     const { formatMessage } = useIntl();
-    const data = useMemo<Koodisto[]>(() => {
-        const sortedAtom = atomData.map((a) => {
-            return { ...a, name: 'foo' };
-        });
-        sortedAtom.sort((a, b) => a.koodistoUri.localeCompare(b.koodistoUri));
-        return sortedAtom;
+    const data = useMemo<TablePageKoodisto[]>(() => {
+        atomData.sort((a, b) => a.koodistoUri.localeCompare(b.koodistoUri));
+        return [...atomData];
     }, [atomData]);
-    const [filteredRows, setFilteredRows] = useState<Row<Koodisto>[]>([]);
-    const columns = React.useMemo<Column<Koodisto>[]>(
+    const [filteredRows, setFilteredRows] = useState<Row<TablePageKoodisto>[]>([]);
+    const columns = React.useMemo<Column<TablePageKoodisto>[]>(
         () => [
             {
                 Header: formatMessage({ id: 'TAULUKKO_KOODISTORYHMA_OTSIKKO', defaultMessage: 'Koodistoryhma' }),
                 columns: [
                     {
                         id: 'ryhmaTieto',
-                        accessor: (values: Koodisto) => ({ label: values.ryhmaNimi, value: values.ryhmaId }),
-                        cell: (values: Koodisto) => {
-                            return (
-                                values.ryhmaNimi ||
-                                formatMessage(
-                                    {
-                                        id: 'TAULUKKO_NIMI_PUUTTUU_KOODISTOLTA',
-                                        defaultMessage: 'NIMI PUUTTUU {koodistoUri}',
-                                    },
-                                    { koodistoUri: values.koodistoUri }
-                                )
-                            );
-                        },
+                        accessor: (values: TablePageKoodisto) => ({ label: values.ryhmaNimi, value: values.ryhmaId }),
                         Filter: SelectFilterComponent,
                         filter: (rows, _columnIds: string[], filterValue: SelectOptionType[]) =>
                             rows.filter((row) =>
@@ -80,7 +66,9 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                                           .includes(row.values.ryhmaTieto.value)
                                     : rows
                             ),
-                        Cell: ({ value }: { value: SelectOptionType }) => <Link to="/">{value.label}</Link>,
+                        Cell: ({ value, row }: { value: SelectOptionType; row: Row<TablePageKoodisto> }) => (
+                            <Link to={`koodistoRyhma/${row.original.ryhmaId}`}>{value.label}</Link>
+                        ),
                     },
                 ],
             },
@@ -89,21 +77,20 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                 columns: [
                     {
                         id: 'nimi',
-                        accessor: (values: Koodisto) => {
-                            return (
-                                values.nimi ||
-                                formatMessage(
-                                    {
-                                        id: 'TAULUKKO_NIMI_PUUTTUU_KOODISTOLTA',
-                                        defaultMessage: 'Nimi puuttuu {koodistoUri}',
-                                    },
-                                    { koodistoUri: values.koodistoUri }
-                                )
-                            );
-                        },
+                        accessor: (values: TablePageKoodisto) =>
+                            values.nimi ||
+                            formatMessage(
+                                {
+                                    id: 'TAULUKKO_NIMI_PUUTTUU_KOODISTOLTA',
+                                    defaultMessage: 'Nimi puuttuu {koodistoUri}',
+                                },
+                                { koodistoUri: values.koodistoUri }
+                            ),
                         Filter: TextFilterComponent,
                         filter: 'text',
-                        Cell: ({ value }: { value: string }) => <Link to="/">{value}</Link>,
+                        Cell: ({ value, row }: { value: string; row: Row<TablePageKoodisto> }) => (
+                            <Link to={`koodisto/${row.original.koodistoUri}/${row.original.versio}`}>{value}</Link>
+                        ),
                     },
                 ],
             },
@@ -112,9 +99,12 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                 columns: [
                     {
                         id: 'voimassaAlkuPvm',
-                        accessor: (values) => {
-                            return values.voimassaAlkuPvm && <FormattedDate value={values.voimassaAlkuPvm} />;
-                        },
+                        accessor: (values) =>
+                            values.voimassaAlkuPvm && (
+                                <TableCellText>
+                                    <FormattedDate value={values.voimassaAlkuPvm} />
+                                </TableCellText>
+                            ),
                     },
                 ],
             },
@@ -123,32 +113,37 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                 columns: [
                     {
                         id: 'voimassaLoppuPvm',
-                        accessor: (values: Koodisto) => {
-                            return values.voimassaLoppuPvm && <FormattedDate value={values.voimassaLoppuPvm} />;
-                        },
+                        accessor: (values: TablePageKoodisto) =>
+                            values.voimassaLoppuPvm && (
+                                <TableCellText>
+                                    <FormattedDate value={values.voimassaLoppuPvm} />
+                                </TableCellText>
+                            ),
                     },
                 ],
             },
             {
                 id: 'downloadCsv',
                 Header: '',
-                accessor: (values: Koodisto) => {
-                    return (
+                accessor: (values: TablePageKoodisto) => (
+                    <TableCellText>
                         <IconWrapper
                             name={`${values.koodistoUri}-uploadicon`}
                             icon="el:download"
                             inline={true}
                             onClick={() => downloadCsv(values.koodistoUri)}
                         />
-                    );
-                },
+                    </TableCellText>
+                ),
             },
             {
                 id: 'uploadCsv',
                 Header: '',
-                accessor: (values: Koodisto) => {
-                    return <IconWrapper icon="el:upload" inline={true} onClick={() => uploadCsv(values.koodistoUri)} />;
-                },
+                accessor: (values: TablePageKoodisto) => (
+                    <TableCellText>
+                        <IconWrapper icon="el:upload" inline={true} onClick={() => uploadCsv(values.koodistoUri)} />
+                    </TableCellText>
+                ),
             },
         ],
         [formatMessage]
@@ -178,7 +173,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                     <FormattedMessage id={'TAULUKKO_LISAA_KOODISTO_BUTTON'} defaultMessage={'Luo uusi koodisto'} />
                 </Button>
             </HeaderContainer>
-            <Table<Koodisto>
+            <Table<TablePageKoodisto>
                 columns={columns}
                 data={data}
                 onFilter={(rows) => {

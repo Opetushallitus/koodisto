@@ -7,17 +7,14 @@ const urlAtom = atom(API_LOKALISAATIO_PATH);
 type Lokalisaatio = { locale: 'fi' | 'sv' | 'en'; key: string; value: string };
 
 export const lokalisaatioAtom = atom(async (get: Getter): Promise<Lokalisaatio[]> => {
+    const locale = get(casMeLangAtom);
     const url = get(urlAtom);
-    const { data } = await axios.get<Lokalisaatio[]>(`${url}?${new URLSearchParams({ category: 'koodisto' })}`);
+    const { data } = await axios.get<Lokalisaatio[]>(`${url}?${new URLSearchParams({ category: 'koodisto', locale })}`);
     return data;
 });
+
 export const lokalisaatioMessagesAtom = atom((get: Getter): Record<string, string> => {
-    const locale = get(casMeLangAtom);
-    return get(lokalisaatioAtom)
-        .filter((a: Lokalisaatio) => a.locale === locale)
-        .reduce((p: Record<string, string>, c: Lokalisaatio) => {
-            const here = {} as Record<string, string>;
-            here[c.key] = c.value;
-            return { ...p, ...here };
-        }, {} as Record<string, string>);
+    return get(lokalisaatioAtom).reduce((p: Record<string, string>, c: Lokalisaatio) => {
+        return { ...p, [c.key]: c.value };
+    }, {});
 });
