@@ -38,10 +38,11 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
                     converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(),
                             relatedKoodisto.getVersio(),
                             ks.isPassive(),
-                            this.getNimi(relatedKoodisto)));
+                            this.getNimi(relatedKoodisto),
+                            this.getKuvaus(relatedKoodisto)));
                     break;
                 case SISALTYY:
-                    converted.getWithinCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive(), this.getNimi(relatedKoodisto)));
+                    converted.getWithinCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive(), this.getNimi(relatedKoodisto), this.getKuvaus(relatedKoodisto)));
                     break;
             }
         });
@@ -50,10 +51,10 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
             KoodistoVersio relatedKoodisto = ks.getAlakoodistoVersio();
             switch (ks.getSuhteenTyyppi()) {
                 case RINNASTEINEN:
-                    converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive(), this.getNimi(relatedKoodisto)));
+                    converted.getLevelsWithCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive(), this.getNimi(relatedKoodisto), this.getKuvaus(relatedKoodisto)));
                     break;
                 case SISALTYY:
-                    converted.getIncludesCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive(), this.getNimi(relatedKoodisto)));
+                    converted.getIncludesCodes().add(new RelationCodes(relatedKoodisto.getKoodisto().getKoodistoUri(), relatedKoodisto.getVersio(), ks.isPassive(), this.getNimi(relatedKoodisto), this.getKuvaus(relatedKoodisto)));
                     break;
             }
         });
@@ -96,6 +97,11 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
 
     private Map<String, String> getNimi(KoodistoVersio koodistoVersio) {
         return koodistoVersio.getMetadatas().stream()
-                .collect(Collectors.toMap(metadata -> metadata.getKieli().name(), KoodistoMetadata::getNimi));
+                .collect(Collectors.toMap(metadata -> metadata.getKieli().name().toLowerCase(), KoodistoMetadata::getNimi));
+    }
+
+    private Map<String, String> getKuvaus(KoodistoVersio koodistoVersio) {
+        return koodistoVersio.getMetadatas().stream()
+                .collect(Collectors.toMap(metadata -> metadata.getKieli().name().toLowerCase(), KoodistoMetadata::getKuvaus));
     }
 }

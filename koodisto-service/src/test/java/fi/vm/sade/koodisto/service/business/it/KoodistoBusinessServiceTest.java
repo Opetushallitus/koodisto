@@ -222,9 +222,9 @@ public class KoodistoBusinessServiceTest {
 	public void testSavingKoodisto() {
 	    String koodistoUri = "koodistonSaveTestiKoodisto0";
 	    int versio = 1;
-	    List<RelationCodes> includesCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto1", 1, false, new HashMap<>()));
-	    List<RelationCodes> withinCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto2", 1, false, new HashMap<>()));
-	    List<RelationCodes> levelsWithCodes = Arrays.asList(new RelationCodes("koodistonSaveTestiKoodisto3", 1, false, new HashMap<>()));
+	    List<RelationCodes> includesCodes = List.of(new RelationCodes("koodistonSaveTestiKoodisto1", 1, false, new HashMap<>(), new HashMap<>()));
+	    List<RelationCodes> withinCodes = List.of(new RelationCodes("koodistonSaveTestiKoodisto2", 1, false, new HashMap<>(), new HashMap<>()));
+	    List<RelationCodes> levelsWithCodes = List.of(new RelationCodes("koodistonSaveTestiKoodisto3", 1, false, new HashMap<>(), new HashMap<>()));
 	    KoodistoDto codesDTO = createKoodistoDtoForSave(koodistoUri, versio, includesCodes, withinCodes, levelsWithCodes);
 
 	    KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
