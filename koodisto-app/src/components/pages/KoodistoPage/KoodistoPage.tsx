@@ -91,7 +91,7 @@ const KoodistoPage: React.FC = () => {
                 }
             }
         })();
-    }, [koodistoUri, versio]);
+    }, [koodistoUri, versio, locale]);
 
     if (!koodisto) {
         return <Loading />;
