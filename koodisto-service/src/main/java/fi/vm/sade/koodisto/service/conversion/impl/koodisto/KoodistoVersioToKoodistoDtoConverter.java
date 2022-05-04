@@ -15,6 +15,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -102,6 +103,6 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
 
     private Map<String, String> getKuvaus(KoodistoVersio koodistoVersio) {
         return koodistoVersio.getMetadatas().stream()
-                .collect(Collectors.toMap(metadata -> metadata.getKieli().name().toLowerCase(), KoodistoMetadata::getKuvaus));
+                .collect(Collectors.toMap(metadata -> metadata.getKieli().name().toLowerCase(), koodistoMetadata -> Optional.ofNullable(koodistoMetadata.getKuvaus()).orElse("")));
     }
 }
