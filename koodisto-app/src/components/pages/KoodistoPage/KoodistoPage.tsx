@@ -12,6 +12,7 @@ import { SelectOptionType } from '../KoodistoTablePage/KoodistoTable';
 import Loading from '../Loading/Loading';
 import InfoFields from './InfoFields';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
+import { fetchOrganisaatio } from '../../../api/organisaatio';
 
 const MainContainer = styled.div`
     flex-grow: 1;
@@ -68,6 +69,7 @@ const KoodistoPage: React.FC = () => {
     const navigate = useNavigate();
     const { formatMessage, locale } = useIntl();
     const [koodisto, setKoodisto] = useState<KoodistoPageKoodisto | undefined>();
+
     const incomingVersioOption: SelectOptionType = {
         label: formatMessage(
             {
@@ -82,7 +84,11 @@ const KoodistoPage: React.FC = () => {
         (async () => {
             if (koodistoUri && versio) {
                 const koodistoData = await fetchKoodistoByUriAndVersio(koodistoUri, versio);
-                setKoodisto(koodistoData);
+                if (koodistoData) {
+                    const organisaatio = await fetchOrganisaatio(koodistoData.organisaatioOid);
+                    koodistoData.organisaatioNimi = organisaatio?.nimi[locale as 'fi' | 'sv' | 'en'];
+                    setKoodisto(koodistoData);
+                }
             }
         })();
     }, [koodistoUri, versio]);

@@ -61,6 +61,7 @@ export type KoodistoPageKoodisto = {
     resourceUri: string;
     omistaja: string | null;
     organisaatioOid: string;
+    organisaatioNimi?: string;
     lukittu: boolean | null;
     codesGroupUri: string;
     version: number;
