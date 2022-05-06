@@ -60,7 +60,7 @@ const InfoFields = ({ koodisto, kuvaus }: InfoFieldsProps) => {
                     defaultMessage={'Organisaatio'}
                     tagName={'span'}
                 />
-                <InfoValue>{koodisto.organisaatioOid} TODO organisaation nimi</InfoValue>
+                <InfoValue>{koodisto.organisaatioNimi}</InfoValue>
             </InfoRow>
             <InfoRow>
                 <FormattedMessage id={'KOODISTOSIVU_AVAIN_PAIVITETTY'} defaultMessage={'Päivitetty'} tagName={'span'} />
