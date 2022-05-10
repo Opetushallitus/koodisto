@@ -52,7 +52,7 @@ public class InternalResource {
     public @ResponseBody ResponseEntity<List<KoodiDto>> getKoodiBatch(
             @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri
     ) {
-        List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.getKoodisByKoodisto(koodistoUri,true);
+        List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.getKoodisByKoodisto(koodistoUri, true);
         return ResponseEntity.ok(conversionService.convertAll(result, KoodiDto.class));
     }
 
@@ -64,16 +64,14 @@ public class InternalResource {
     public ResponseEntity<Object> createKoodiBatch(
             @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri, @NotEmpty(message = "error.koodi.list.empty") @RequestBody List<@Valid KoodiDto> koodis
     ) {
-        try {
-            List<UpdateKoodiDataType> koodiList = koodis.stream()
-                    .map(koodi -> validateAndSet(koodistoUri, koodi))
-                    .map(converter::convertFromDTOToUpdateKoodiDataType)
-                    .collect(Collectors.toList());
-            KoodistoVersio koodisto = koodiBusinessService.massCreate(koodistoUri, koodiList);
-            return ResponseEntity.ok(conversionService.convert(koodisto, KoodistoDto.class));
-        } catch (KoodistoNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+
+        List<UpdateKoodiDataType> koodiList = koodis.stream()
+                .map(koodi -> validateAndSet(koodistoUri, koodi))
+                .map(converter::convertFromDTOToUpdateKoodiDataType)
+                .collect(Collectors.toList());
+        KoodistoVersio koodisto = koodiBusinessService.massCreate(koodistoUri, koodiList);
+        return ResponseEntity.ok(conversionService.convert(koodisto, KoodistoDto.class));
+
     }
 
     private KoodiDto validateAndSet(String koodistoUri, KoodiDto koodi) {
@@ -89,15 +87,4 @@ public class InternalResource {
         return (koodistoUri + "_" + (koodi.getKoodiArvo().replaceAll("[^A-Za-z0-9]", "").toLowerCase()));
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<Object> handle(ConstraintViolationException constraintViolationException) {
-        Set<ConstraintViolation<?>> violations = constraintViolationException.getConstraintViolations();
-        String errorMessage = constraintViolationException.getMessage();
-        if (!violations.isEmpty()) {
-            StringBuilder builder = new StringBuilder();
-            violations.forEach(violation -> builder.append(" " + violation.getMessage()));
-            errorMessage = builder.toString();
-        }
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-    }
 }
