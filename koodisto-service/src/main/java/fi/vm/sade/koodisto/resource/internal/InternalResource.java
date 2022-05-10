@@ -61,11 +61,11 @@ public class InternalResource {
             return ResponseEntity.badRequest().build();
         }
         try {
-            List<UpdateKoodiDataType> foo = koodis.stream()
+            List<UpdateKoodiDataType> koodiList = koodis.stream()
                     .map(koodi -> validateAndSet(koodistoUri, koodi))
                     .map(converter::convertFromDTOToUpdateKoodiDataType)
                     .collect(Collectors.toList());
-            KoodistoVersio koodisto = koodiBusinessService.massCreate(koodistoUri, foo);
+            KoodistoVersio koodisto = koodiBusinessService.massCreate(koodistoUri, koodiList);
             return ResponseEntity.ok(conversionService.convert(koodisto, KoodistoDto.class));
         } catch (KoodistoNotFoundException e) {
             return ResponseEntity.notFound().build();
