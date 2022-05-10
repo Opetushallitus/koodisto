@@ -8,7 +8,6 @@ import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.resource.CodeElementResourceConverter;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
-import fi.vm.sade.koodisto.service.business.exception.KoodiArvoEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
@@ -83,7 +82,6 @@ public class InternalResource {
             koodi.setVoimassaAlkuPvm(new Date());
         }
         if (koodi.getKoodiUri() == null || koodi.getKoodiUri().isBlank()) {
-            ValidatorUtil.checkForBlank(koodi.getKoodiArvo(), new KoodiArvoEmptyException());
             koodi.setKoodiUri(getKoodiUri(koodistoUri, koodi));
         }
         if (koodi.getTila() == null) {
