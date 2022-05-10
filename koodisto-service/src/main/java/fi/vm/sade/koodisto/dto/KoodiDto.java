@@ -49,7 +49,7 @@ public class KoodiDto {
     protected String paivittajaOid;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
-    protected Date voimassaAlkuPvm;
+    protected Date voimassaAlkuPvm = new Date();
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Date voimassaLoppuPvm;

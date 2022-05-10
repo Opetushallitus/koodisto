@@ -78,9 +78,6 @@ public class InternalResource {
 
     private KoodiDto validateAndSet(String koodistoUri, KoodiDto koodi) {
         ValidatorUtil.checkForBlank(koodi.getMetadata().get(0).getNimi(), new ConstraintViolationException("error.nimi.empty", new HashSet<>()));
-        if (koodi.getVoimassaAlkuPvm() == null) {
-            koodi.setVoimassaAlkuPvm(new Date());
-        }
         if (koodi.getKoodiUri() == null || koodi.getKoodiUri().isBlank()) {
             koodi.setKoodiUri(getKoodiUri(koodistoUri, koodi));
         }
