@@ -277,8 +277,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         KoodistoVersio koodisto = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
 
-        ArrayList<UpdateKoodiDataType> koodisToBeUpdated = new ArrayList<UpdateKoodiDataType>();
-        ArrayList<UpdateKoodiDataType> koodisToBeCreated = new ArrayList<UpdateKoodiDataType>();
+        ArrayList<UpdateKoodiDataType> koodisToBeUpdated = new ArrayList<>();
+        ArrayList<UpdateKoodiDataType> koodisToBeCreated = new ArrayList<>();
 
         ArrayList<String> koodiUris = new ArrayList<>();
         for (UpdateKoodiDataType updateData : koodiList) {
@@ -324,7 +324,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             }
         }
 
-        ArrayList<CreateKoodiDataType> createKoodiList = new ArrayList<CreateKoodiDataType>();
+        ArrayList<CreateKoodiDataType> createKoodiList = new ArrayList<>();
         for (UpdateKoodiDataType data : koodisToBeCreated) {
             CreateKoodiDataType createData = new CreateKoodiDataType();
             EntityUtils.copyFields(data, createData);
@@ -333,7 +333,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
 
         KoodistoVersio newKoodistoVersio = koodisto;
-        if (createKoodiList.size() > 0) {
+        if (!createKoodiList.isEmpty()) {
             newKoodistoVersio = koodistoBusinessService.createNewVersion(koodistoUri).getData();
             authorizer.checkOrganisationAccess(newKoodistoVersio.getKoodisto().getOrganisaatioOid(), KoodistoRole.CRUD);
         }
@@ -350,7 +350,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<KoodiVersioWithKoodistoItem> listByRelation(KoodiUriAndVersioType koodi, SuhteenTyyppi suhdeTyyppi, Boolean isChild) {
+    public List<KoodiVersioWithKoodistoItem> listByRelation(KoodiUriAndVersioType koodi, SuhteenTyyppi suhdeTyyppi, boolean isChild) {
         Set<KoodiVersioWithKoodistoItem> koodis = new HashSet<>();
         if (SuhteenTyyppi.RINNASTEINEN.equals(suhdeTyyppi)) {
             koodis.addAll(koodiVersioRepository.listByParentRelation(koodi, suhdeTyyppi));
