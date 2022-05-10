@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.Tila;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,7 +28,7 @@ public class KoodiDto {
     private Long version;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-    private int versio;
+    private int versio = 1;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private KoodistoItemDto koodisto;
@@ -35,7 +36,7 @@ public class KoodiDto {
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     private String koodiArvo;
 
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     protected Date paivitysPvm;
 
