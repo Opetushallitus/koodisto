@@ -258,7 +258,7 @@ public class CodeElementResource {
     @JsonView({ JsonViews.Basic.class })
     @Operation(description = "Lisää uuden koodin")
     @PostMapping(path = "/{codesUri}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     public ResponseEntity<Object> insert(
             @Parameter(description = "Koodiston URI") @PathVariable String codesUri,
             @Parameter(description = "Koodi") @RequestBody KoodiDto codeelementDTO) {
@@ -283,7 +283,7 @@ public class CodeElementResource {
 
     @JsonView({ JsonViews.Extended.class })
     @Operation(description = "Lisää relaation koodien välille")
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @PostMapping(path = "/addrelation/{codeElementUri}/{codeElementUriToAdd}/{relationType}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addRelation(
             @Parameter(description = "Koodin URI") @PathVariable String codeElementUri,
@@ -308,7 +308,7 @@ public class CodeElementResource {
 
     @JsonView({ JsonViews.Extended.class })
     @Operation(description = "Lisää koodien välisiä relaatioita, massatoiminto")
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @PostMapping(path = "/addrelations", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addRelations(
             @Parameter(description = "Relaation tiedot JSON muodossa") @RequestBody KoodiRelaatioListaDto koodiRelaatioDto
@@ -331,7 +331,7 @@ public class CodeElementResource {
     @JsonView({ JsonViews.Extended.class })
     @Operation(
             description = "Poistaa koodien välisen relaation")
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @PostMapping(path = "/removerelation/{codeElementUri}/{codeElementUriToRemove}/{relationType}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> removeRelation(
             @Parameter(description = "Koodin URI") @PathVariable String codeElementUri,
@@ -361,7 +361,7 @@ public class CodeElementResource {
 
     @JsonView({ JsonViews.Extended.class })
     @Operation(description = "Poistaa koodien välisiä relaatioita, massatoiminto")
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @PostMapping(path = "/removerelations", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> removeRelations(
             @Parameter(description = "Relaation tiedot JSON muodossa") @RequestBody KoodiRelaatioListaDto koodiRelaatioDto
@@ -383,7 +383,7 @@ public class CodeElementResource {
 
     // pitääis olla delete method
     @JsonView({ JsonViews.Simple.class })
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @Operation(description = "Poistaa koodin")
     @PostMapping(path = "/delete/{codeElementUri}/{codeElementVersion}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> delete(
@@ -408,7 +408,7 @@ public class CodeElementResource {
 
     @JsonView({ JsonViews.Extended.class })
     @Operation(description = "Päivittää koodin")
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> update(
             @Parameter(description = "Koodi") @RequestBody KoodiDto codeElementDTO) {
@@ -429,7 +429,7 @@ public class CodeElementResource {
 
     @JsonView({ JsonViews.Basic.class })
     @Operation(description = "Päivittää koodin kokonaisuutena", summary = "Lisää ja poistaa koodinsuhteita vastaamaan annettua koodia.")
-    @PreAuthorize("hasAnyRole('ROLE_APP_KOODISTO_READ_UPDATE','ROLE_APP_KOODISTO_CRUD')")
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @PutMapping(path = "/save", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> save(
             @Parameter(description = "Koodi") @RequestBody ExtendedKoodiDto koodiDTO) {

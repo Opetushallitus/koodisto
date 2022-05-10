@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 
+import static fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_READ_UPDATE;
 import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
@@ -72,7 +73,7 @@ public class CodesGroupResourceTest {
     }
     
     @Test
-    @WithMockUser(value = "1.2.3.4.5", authorities = "ROLE_APP_KOODISTO_READ_UPDATE")
+    @WithMockUser(value = "1.2.3.4.5", authorities = ROLE_APP_KOODISTO_READ_UPDATE)
     public void testUpdateInvalid() {
         assertResponse(resource.update(null), 400, "error.validation.codesgroup");
         assertResponse(resource.update(new KoodistoRyhmaDto()), 400, "error.codesgroup.uri.empty");

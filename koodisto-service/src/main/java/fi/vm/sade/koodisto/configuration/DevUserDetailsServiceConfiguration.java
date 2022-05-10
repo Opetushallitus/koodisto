@@ -13,13 +13,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
+import static fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD;
+
 @Profile("dev")
 @Configuration
 public class DevUserDetailsServiceConfiguration {
     private static final SimpleGrantedAuthority[] OPH_AUTHORITIES = new SimpleGrantedAuthority[]{
-            new SimpleGrantedAuthority("ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001"),
-            new SimpleGrantedAuthority("ROLE_APP_KOODISTO"),
-            new SimpleGrantedAuthority("ROLE_APP_KOODISTO_CRUD")
+            new SimpleGrantedAuthority(String.format("%s_1.2.246.562.10.00000000001", ROLE_APP_KOODISTO_CRUD)),
+            new SimpleGrantedAuthority(ROLE_APP_KOODISTO_CRUD)
     };
     private static final SimpleGrantedAuthority[] RESTRICTED_AUTHORITIES = new SimpleGrantedAuthority[]{
             new SimpleGrantedAuthority("ROLE_APP_KOODISTO_READ")
