@@ -73,6 +73,18 @@ class InternalResourceIntegrationTest {
     }
 
     @Test
+    @Description("Post null body is bad request")
+    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testPostInternal03() throws Exception {
+        this.mockMvc.perform(post("/internal/koodi/dummy")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+        this.mockMvc.perform(post("/internal/koodi/dummy")
+                        .contentType(MediaType.APPLICATION_JSON).content(""))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @Description("Posting can add one koodi")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal1() throws Exception {
@@ -217,4 +229,7 @@ class InternalResourceIntegrationTest {
                                 "}]"))
                 .andExpect(status().isNotFound());
     }
+
+
+
 }

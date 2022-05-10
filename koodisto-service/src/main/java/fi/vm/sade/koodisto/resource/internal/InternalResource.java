@@ -9,7 +9,6 @@ import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.resource.CodeElementResourceConverter;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodiArvoEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoImportException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
@@ -18,16 +17,25 @@ import fi.vm.sade.koodisto.validator.ValidatorUtil;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Hidden
+@Validated
 @RestController
 @RequestMapping({"/internal"})
 @RequiredArgsConstructor
@@ -55,11 +63,8 @@ public class InternalResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Extended.class})
     public ResponseEntity<Object> createKoodiBatch(
-            @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri, @RequestBody List<KoodiDto> koodis
+            @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri, @NotEmpty(message = "error.koodi.list.empty") @RequestBody List<@Valid KoodiDto> koodis
     ) {
-        if (koodis == null || koodis.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
         try {
             List<UpdateKoodiDataType> koodiList = koodis.stream()
                     .map(koodi -> validateAndSet(koodistoUri, koodi))
@@ -73,9 +78,7 @@ public class InternalResource {
     }
 
     private KoodiDto validateAndSet(String koodistoUri, KoodiDto koodi) {
-        ValidatorUtil.checkForBlank(koodi.getKoodiArvo(), new KoodistoImportException("error.koodiarvo.empty"));
-        ValidatorUtil.checkCollectionIsNotNullOrEmpty(koodi.getMetadata(), new KoodistoImportException("error.metadata.empty"));
-        ValidatorUtil.checkForBlank(koodi.getMetadata().get(0).getNimi(), new KoodistoImportException("error.nimi.empty"));
+        ValidatorUtil.checkForBlank(koodi.getMetadata().get(0).getNimi(), new ConstraintViolationException("error.nimi.empty", new HashSet<>()));
         if (koodi.getVoimassaAlkuPvm() == null) {
             koodi.setVoimassaAlkuPvm(new Date());
         }
@@ -94,4 +97,15 @@ public class InternalResource {
         return (koodistoUri + "_" + (koodi.getKoodiArvo().replaceAll("[^A-Za-z0-9]", "").toLowerCase()));
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<Object> handle(ConstraintViolationException constraintViolationException) {
+        Set<ConstraintViolation<?>> violations = constraintViolationException.getConstraintViolations();
+        String errorMessage = constraintViolationException.getMessage();
+        if (!violations.isEmpty()) {
+            StringBuilder builder = new StringBuilder();
+            violations.forEach(violation -> builder.append(" " + violation.getMessage()));
+            errorMessage = builder.toString();
+        }
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
 }
