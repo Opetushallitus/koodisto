@@ -55,7 +55,7 @@ public class KoodiDto {
     protected Date voimassaLoppuPvm;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
-    protected Tila tila;
+    protected Tila tila = Tila.LUONNOS;
 
     @NotEmpty(message = "error.metadata.empty")
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})

@@ -84,9 +84,6 @@ public class InternalResource {
         if (koodi.getKoodiUri() == null || koodi.getKoodiUri().isBlank()) {
             koodi.setKoodiUri(getKoodiUri(koodistoUri, koodi));
         }
-        if (koodi.getTila() == null) {
-            koodi.setTila(Tila.LUONNOS);
-        }
         koodi.setVersion((long) koodi.getVersio());
         return koodi;
     }
