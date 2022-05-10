@@ -83,9 +83,6 @@ public class InternalResource {
             ValidatorUtil.checkForBlank(koodi.getKoodiArvo(), new KoodiArvoEmptyException());
             koodi.setKoodiUri(getKoodiUri(koodistoUri, koodi));
         }
-        if (koodi.getVersio() == 0) {
-            koodi.setVersio(1);
-        }
         if (koodi.getTila() == null) {
             koodi.setTila(Tila.LUONNOS);
         }
