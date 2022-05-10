@@ -38,8 +38,8 @@ VALUES
 
 INSERT INTO koodiversio (id,version,paivityspvm,luotu,tila,versio,voimassaalkupvm,koodi_id,koodiarvo)
 VALUES
-    ('-1', '1', '2012-03-22', '2013-01-01', 'HYVAKSYTTY', '1', '1990-01-01', '-1', '1'),
-    ('-2', '1', '2012-03-22', '2013-01-01', 'LUONNOS', '1', '1990-01-01', '-2', '1');
+    ('-1', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'HYVAKSYTTY', '1', '1990-01-01', '-1', '1'),
+    ('-2', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'LUONNOS', '1', '1990-01-01', '-2', '1');
 
 INSERT INTO koodimetadata (id,kieli,nimi,version,koodiversio_id,lyhytnimi, kuvaus)
 VALUES

@@ -33,7 +33,7 @@ class InternalResourceIntegrationTest {
         this.mockMvc.perform(get("/internal/koodi/get"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"koodiUri\":\"get_1\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"2012-03-21\"")));
+                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"2012-03-22\"")));
     }
 
     @Test
@@ -109,7 +109,7 @@ class InternalResourceIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
                 .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"two1\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"2012-03-21\"")));
+                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"2012-03-22\"")));
         this.mockMvc.perform(post("/internal/koodi/two")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("[{" +
@@ -146,7 +146,7 @@ class InternalResourceIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
                 .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"two1\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"2012-03-21\"")));
+                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"2012-03-22\"")));
         this.mockMvc.perform(post("/internal/koodi/two")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("[{" +
