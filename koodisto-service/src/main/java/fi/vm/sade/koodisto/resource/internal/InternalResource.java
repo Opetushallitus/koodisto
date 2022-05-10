@@ -94,8 +94,7 @@ public class InternalResource {
     }
 
     private String getKoodiUri(String koodistoUri, KoodiDto koodi) {
-        String koodiUri = (koodistoUri + "_" + (koodi.getKoodiArvo().replaceAll("[^A-Za-z0-9]", "").toLowerCase()));
-        return koodiUri;
+        return (koodistoUri + "_" + (koodi.getKoodiArvo().replaceAll("[^A-Za-z0-9]", "").toLowerCase()));
     }
 
 }

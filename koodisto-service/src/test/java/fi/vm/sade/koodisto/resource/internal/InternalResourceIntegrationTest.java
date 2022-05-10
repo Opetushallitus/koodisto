@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.resource.internal;
 
-import fi.vm.sade.koodisto.repository.KoodistoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,7 +13,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,8 +26,6 @@ class InternalResourceIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @Autowired
-    private KoodistoRepository koodistoRepository;
 
     @Test
     @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
@@ -100,8 +98,7 @@ class InternalResourceIntegrationTest {
         this.mockMvc.perform(get("/internal/koodi/one"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"koodiUri\":\"one_1\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now()
-                        .toString() + "\"")));
+                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now() + "\"")));
     }
 
     @Test
@@ -138,8 +135,7 @@ class InternalResourceIntegrationTest {
                 .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
                 .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
                 .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"UPDATED\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now()
-                        .toString() + "\"")));
+                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now() + "\"")));
     }
 
     @Test
@@ -192,8 +188,8 @@ class InternalResourceIntegrationTest {
                 .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
                 .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"UPDATED\"")))
                 .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"ADDED\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now().toString() + "\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"2\",\"paivitysPvm\":\"" + LocalDate.now().toString() + "\"")));
+                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now() + "\"")))
+                .andExpect(content().string(containsString("\"koodiArvo\":\"2\",\"paivitysPvm\":\"" + LocalDate.now() + "\"")));
     }
 
     @Test
