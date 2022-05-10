@@ -28,8 +28,9 @@ class InternalResourceIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
+    @Description("Test get enpoint")
     @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
-    void getInternalKoodiFoo() throws Exception {
+    void testGetInternalKoodi() throws Exception {
         this.mockMvc.perform(get("/internal/koodi/get"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"koodiUri\":\"get_1\"")))
