@@ -10,7 +10,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Objects;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -146,7 +148,6 @@ class InternalResourceIntegrationTest {
         this.mockMvc.perform(get("/internal/koodi/two"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
-                .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
                 .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"UPDATED\"")))
                 .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now() + "\"")));
     }
@@ -229,7 +230,5 @@ class InternalResourceIntegrationTest {
                                 "}]"))
                 .andExpect(status().isNotFound());
     }
-
-
 
 }
