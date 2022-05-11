@@ -36,7 +36,7 @@ public interface KoodiBusinessService {
      * @return
      */
     List<KoodiVersioWithKoodistoItem> listByRelation(KoodiUriAndVersioType koodi, SuhteenTyyppi suhdeTyyppi,
-            Boolean isChild);
+            boolean isChild);
 
     /**
      * Deletes given code version permanently

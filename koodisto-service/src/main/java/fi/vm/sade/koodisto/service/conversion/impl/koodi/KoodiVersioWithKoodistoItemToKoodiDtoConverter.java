@@ -5,20 +5,17 @@ import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.properties.OphProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.StringUtils;
 
 import java.text.MessageFormat;
 
-
+@RequiredArgsConstructor
 public class KoodiVersioWithKoodistoItemToKoodiDtoConverter implements
         Converter<KoodiVersioWithKoodistoItem, KoodiDto> {
 
-    private OphProperties ophProperties;
-
-    public KoodiVersioWithKoodistoItemToKoodiDtoConverter(OphProperties ophProperties) {
-        this.ophProperties = ophProperties;
-    }
+    private final OphProperties ophProperties;
 
     @Override
     public KoodiDto convert(KoodiVersioWithKoodistoItem source) {
