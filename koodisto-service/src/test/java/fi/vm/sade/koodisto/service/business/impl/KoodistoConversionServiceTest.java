@@ -179,7 +179,6 @@ public class KoodistoConversionServiceTest {
 
     private KoodiMetadataDto createKoodiMetatadata() {
         KoodiMetadataDto meta = new KoodiMetadataDto();
-//        meta.setId(1L);
         meta.setEiSisallaMerkitysta("Ei sisällä merkitystä");
         meta.setHuomioitavaKoodi("Huomioitava koodi");
         meta.setKasite("Käsite");
