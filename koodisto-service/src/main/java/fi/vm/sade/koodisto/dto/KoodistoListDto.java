@@ -2,15 +2,14 @@ package fi.vm.sade.koodisto.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: wuoti
- * Date: 21.5.2013
- * Time: 9.05
- */
+@Getter
+@Setter
 public class KoodistoListDto extends AbstractKoodistoDto {
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
@@ -19,20 +18,4 @@ public class KoodistoListDto extends AbstractKoodistoDto {
     @JsonView(JsonViews.Basic.class)
     private List<KoodistoVersioListDto> koodistoVersios = new ArrayList<KoodistoVersioListDto>();
 
-
-    public KoodistoVersioListDto getLatestKoodistoVersio() {
-        return latestKoodistoVersio;
-    }
-
-    public void setLatestKoodistoVersio(KoodistoVersioListDto latestKoodistoVersio) {
-        this.latestKoodistoVersio = latestKoodistoVersio;
-    }
-
-    public List<KoodistoVersioListDto> getKoodistoVersios() {
-        return koodistoVersios;
-    }
-
-    public void setKoodistoVersios(List<KoodistoVersioListDto> koodistoVersios) {
-        this.koodistoVersios = koodistoVersios;
-    }
 }

@@ -2,7 +2,7 @@ package fi.vm.sade.koodisto.resource;
 
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
+import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
@@ -36,7 +36,7 @@ public class CodeElementResourceConverter {
         if (!koodiDto.getTila().toString().equals("HYVAKSYTTY")) {
             updateKoodiDataType.setTila(UpdateKoodiTilaType.fromValue(koodiDto.getTila().toString()));
         }
-        for (KoodiMetadata koodiMetadata : koodiDto.getMetadata()) {
+        for (KoodiMetadataDto koodiMetadata : koodiDto.getMetadata()) {
             updateKoodiDataType.getMetadata().add(conversionService.convert(koodiMetadata, KoodiMetadataType.class));
         }
 
@@ -62,7 +62,7 @@ public class CodeElementResourceConverter {
         if (!koodiDto.getTila().toString().equals("HYVAKSYTTY")) {
             updateKoodiDataType.setTila(UpdateKoodiTilaType.fromValue(koodiDto.getTila().toString()));
         }
-        for (KoodiMetadata koodiMetadata : koodiDto.getMetadata()) {
+        for (KoodiMetadataDto koodiMetadata : koodiDto.getMetadata()) {
             updateKoodiDataType.getMetadata().add(conversionService.convert(koodiMetadata, KoodiMetadataType.class));
         }
 
@@ -80,7 +80,7 @@ public class CodeElementResourceConverter {
         createKoodiDataType.setVoimassaLoppuPvm(endDate);
         createKoodiDataType.setKoodiArvo(koodiDto.getKoodiArvo());
 
-        for (KoodiMetadata koodiMetadata : koodiDto.getMetadata()) {
+        for (KoodiMetadataDto koodiMetadata : koodiDto.getMetadata()) {
             createKoodiDataType.getMetadata().add(conversionService.convert(koodiMetadata, KoodiMetadataType.class));
         }
 

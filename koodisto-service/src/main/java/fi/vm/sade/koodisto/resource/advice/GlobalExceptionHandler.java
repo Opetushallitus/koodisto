@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
         if (!violations.isEmpty()) {
             StringBuilder builder = new StringBuilder();
             violations.forEach(violation -> builder.append(" ").append(violation.getMessage()));
-            errorMessage = builder.toString();
+            errorMessage = builder.toString().trim();
         }
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }

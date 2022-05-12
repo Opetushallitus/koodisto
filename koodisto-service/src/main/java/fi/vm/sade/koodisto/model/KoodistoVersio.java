@@ -4,6 +4,8 @@ import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAno
 import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import fi.vm.sade.koodisto.util.UserData;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -36,6 +38,8 @@ import java.util.*;
                 @NamedSubgraph(name = "koodisto", attributeNodes = @NamedAttributeNode("koodistoRyhmas")),
         })
 })
+@Getter
+@Setter
 public class KoodistoVersio extends BaseEntity {
 
     private static final long serialVersionUID = 7811620155498209499L;
@@ -110,61 +114,6 @@ public class KoodistoVersio extends BaseEntity {
         this.paivitysPvm = new Date();
     }
 
-    public Koodisto getKoodisto() {
-        return koodisto;
-    }
-
-    public void setKoodisto(Koodisto koodisto) {
-        this.koodisto = koodisto;
-    }
-
-    public Integer getVersio() {
-        return versio;
-    }
-
-    public void setVersio(Integer versio) {
-        this.versio = versio;
-    }
-
-    public Date getPaivitysPvm() {
-        return paivitysPvm;
-    }
-
-    public void setPaivitysPvm(Date paivitysPvm) {
-        this.paivitysPvm = paivitysPvm;
-    }
-    
-    public Date getLuotu() {
-        return luotu;
-    }
-    
-    public void setLuotu(Date luotu) {
-        this.luotu = luotu;
-    }
-
-    public Date getVoimassaAlkuPvm() {
-        return voimassaAlkuPvm;
-    }
-
-    public void setVoimassaAlkuPvm(Date voimassaAlkuPvm) {
-        this.voimassaAlkuPvm = voimassaAlkuPvm;
-    }
-
-    public Date getVoimassaLoppuPvm() {
-        return voimassaLoppuPvm;
-    }
-
-    public void setVoimassaLoppuPvm(Date voimassaLoppuPvm) {
-        this.voimassaLoppuPvm = voimassaLoppuPvm;
-    }
-
-    public Tila getTila() {
-        return tila;
-    }
-
-    public void setTila(Tila tila) {
-        this.tila = tila;
-    }
 
     public void addKoodiVersio(KoodistoVersioKoodiVersio koodiVersio) {
         this.koodiVersios.add(koodiVersio);
@@ -196,22 +145,6 @@ public class KoodistoVersio extends BaseEntity {
         this.koodiVersios.remove(koodiVersio);
     }
 
-    public Set<KoodistonSuhde> getYlakoodistos() {
-        return ylakoodistos;
-    }
-
-    public void setYlakoodistos(final Set<KoodistonSuhde> ylakoodisto) {
-        this.ylakoodistos = ylakoodisto;
-    }
-
-    public Set<KoodistonSuhde> getAlakoodistos() {
-        return alakoodistos;
-    }
-
-    public void setAlakoodistos(final Set<KoodistonSuhde> alakoodisto) {
-        this.alakoodistos = alakoodisto;
-    }
-    
     public void removeYlaKoodistonSuhde(KoodistonSuhde ks) {
         ylakoodistos.remove(ks);
     }
@@ -237,14 +170,6 @@ public class KoodistoVersio extends BaseEntity {
     @Override
     public int hashCode() {
         return super.hashCode();
-    }
-
-    public String getPaivittajaOid() {
-        return paivittajaOid;
-    }
-
-    public void setPaivittajaOid(String paivittajaOid) {
-        this.paivittajaOid = paivittajaOid;
     }
 
 }

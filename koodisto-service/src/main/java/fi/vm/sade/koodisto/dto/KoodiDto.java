@@ -3,11 +3,11 @@ package fi.vm.sade.koodisto.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.Tila;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,5 +59,5 @@ public class KoodiDto {
 
     @NotEmpty(message = "error.metadata.empty")
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-    protected List<KoodiMetadata> metadata = new ArrayList<>();
+    protected List<@Valid KoodiMetadataDto> metadata = new ArrayList<>();
 }

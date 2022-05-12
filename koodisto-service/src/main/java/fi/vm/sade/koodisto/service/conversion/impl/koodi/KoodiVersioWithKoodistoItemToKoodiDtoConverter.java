@@ -2,6 +2,7 @@ package fi.vm.sade.koodisto.service.conversion.impl.koodi;
 
 import com.google.common.base.Strings;
 import fi.vm.sade.koodisto.dto.KoodiDto;
+import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.properties.OphProperties;
@@ -10,6 +11,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.util.StringUtils;
 
 import java.text.MessageFormat;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class KoodiVersioWithKoodistoItemToKoodiDtoConverter implements
@@ -24,7 +26,21 @@ public class KoodiVersioWithKoodistoItemToKoodiDtoConverter implements
         converted.setKoodiArvo(source.getKoodiVersio().getKoodiarvo());
         converted.setKoodiUri(source.getKoodiVersio().getKoodi().getKoodiUri());
 
-        converted.getMetadata().addAll(source.getKoodiVersio().getMetadatas());
+        converted.getMetadata().addAll(source.getKoodiVersio().getMetadatas().stream()
+                .map(metadata -> KoodiMetadataDto.builder()
+                        .nimi(metadata.getNimi())
+                        .kuvaus(metadata.getKuvaus())
+                        .lyhytNimi(metadata.getLyhytNimi())
+                        .kayttoohje(metadata.getKayttoohje())
+                        .kasite(metadata.getKasite())
+                        .sisaltaaMerkityksen(metadata.getSisaltaaMerkityksen())
+                        .eiSisallaMerkitysta(metadata.getEiSisallaMerkitysta())
+                        .huomioitavaKoodi(metadata.getHuomioitavaKoodi())
+                        .sisaltaaKoodiston(metadata.getSisaltaaKoodiston())
+                        .kieli(metadata.getKieli())
+                        .koodiVersio(metadata.getKoodiVersio())
+                        .build())
+                .collect(Collectors.toList()));
         converted.setPaivitysPvm(source.getKoodiVersio().getPaivitysPvm());
         converted.setPaivittajaOid(source.getKoodiVersio().getPaivittajaOid());
         converted.setTila(source.getKoodiVersio().getTila());

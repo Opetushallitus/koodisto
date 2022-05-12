@@ -1,8 +1,8 @@
 package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
 import fi.vm.sade.koodisto.dto.KoodiDto;
+import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.validator.CodeElementValidator;
 import fi.vm.sade.koodisto.validator.KoodistoValidationException;
@@ -32,7 +32,7 @@ public class CodeElementValidatorTest {
         @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodeElementWithoutLanguageDefinedForMetadata() {
             KoodiDto dto = new KoodiDto();
-            KoodiMetadata data = new KoodiMetadata();
+            KoodiMetadataDto data = new KoodiMetadataDto();
             dto.setMetadata(Arrays.asList(data));
             validator.validateInsert(dto);
         }
@@ -40,7 +40,7 @@ public class CodeElementValidatorTest {
         @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodeElementWithoutName() {
             KoodiDto dto = new KoodiDto();
-            KoodiMetadata data = new KoodiMetadata();
+            KoodiMetadataDto data = new KoodiMetadataDto();
             data.setNimi("    ");
             data.setKieli(Kieli.FI);
             dto.setMetadata(Arrays.asList(data));
@@ -91,7 +91,7 @@ public class CodeElementValidatorTest {
         public void doesNotAllowUpdatingCodeElementWithoutLanguageDefinedForMetadata() {
             KoodiDto dto = new KoodiDto();
             dto.setKoodiUri("uri");
-            KoodiMetadata data = new KoodiMetadata();
+            KoodiMetadataDto data = new KoodiMetadataDto();
             dto.setMetadata(Arrays.asList(data));
             validator.validateUpdate(dto);
         }
@@ -100,7 +100,7 @@ public class CodeElementValidatorTest {
         public void doesNotAllowUpdatingCodeElementWithoutName() {
             KoodiDto dto = new KoodiDto();
             dto.setKoodiUri("uri");
-            KoodiMetadata data = new KoodiMetadata();
+            KoodiMetadataDto data = new KoodiMetadataDto();
             data.setNimi("    ");
             data.setKieli(Kieli.FI);
             dto.setMetadata(Arrays.asList(data));
@@ -123,8 +123,8 @@ public class CodeElementValidatorTest {
         return dto;
     }
 
-    private static List<KoodiMetadata> givenCorrectMetaData() {
-        KoodiMetadata data = new KoodiMetadata();
+    private static List<KoodiMetadataDto> givenCorrectMetaData() {
+        KoodiMetadataDto data = new KoodiMetadataDto();
         data.setNimi("name");
         data.setKuvaus("description");
         data.setLyhytNimi("n");

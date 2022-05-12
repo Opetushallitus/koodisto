@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.validator;
 
 import fi.vm.sade.koodisto.dto.KoodiDto;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
+import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 
 import java.util.Collection;
 
@@ -38,14 +38,14 @@ public class CodeElementValidator implements RestValidator<KoodiDto> {
         checkMetadatas(validatable.getMetadata());
     }
 
-    private void checkRequiredMetadataFields(Collection<KoodiMetadata> metadatas) {
-        for (KoodiMetadata md : metadatas) {
+    private void checkRequiredMetadataFields(Collection<KoodiMetadataDto> metadatas) {
+        for (KoodiMetadataDto md : metadatas) {
             ValidatorUtil.checkForNull(md.getKieli(), new KoodistoValidationException("error.validation.language"));
             ValidatorUtil.checkForBlank(md.getNimi(), new KoodistoValidationException("error.validation.name"));
         }
     }
 
-    private void checkMetadatas(Collection<KoodiMetadata> metadatas) {
+    private void checkMetadatas(Collection<KoodiMetadataDto> metadatas) {
         ValidatorUtil.checkCollectionIsNotNullOrEmpty(metadatas, new KoodistoValidationException("error.validation.metadata"));
         checkRequiredMetadataFields(metadatas);
     }

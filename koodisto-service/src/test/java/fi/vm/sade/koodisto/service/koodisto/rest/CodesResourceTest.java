@@ -3,7 +3,6 @@ package fi.vm.sade.koodisto.service.koodisto.rest;
 import fi.vm.sade.koodisto.dto.*;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
 import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.resource.CodesResource;
@@ -59,20 +58,20 @@ public class CodesResourceTest {
         String nullString = null;
         String blankString = "";
         KoodistoDto nullCodesDTO = null;
-        
+
         //String stubString = "uri";
         //InputStream stubInputStream = IOUtils.toInputStream("stubfile");
 
         assertResponse(resource.update(nullCodesDTO), 400, "error.validation.codes");
-        
+
         assertResponse(resource.insert(nullCodesDTO), 400, "error.validation.codes");
-        
+
         assertResponse(resource.getCodesByCodesUri(nullString), 400, "error.validation.codesuri");
         assertResponse(resource.getCodesByCodesUri(blankString), 400, "error.validation.codesuri");
-        
+
         assertResponse(resource.getCodesByCodesUriAndVersion(nullString, 0), 400, "error.validation.codesuri");
         assertResponse(resource.getCodesByCodesUriAndVersion(blankString, 0), 400, "error.validation.codesuri");
-        
+
         // IE9 can not handle upload if server return 400 or 500
         /*assertResponse(resource.uploadFile(null, stubString, stubString, stubString), 202, "error.validation.file");
         assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), nullString, stubString, stubString), 202, "error.validation.fileformat");
@@ -267,7 +266,7 @@ public class CodesResourceTest {
         ExtendedKoodiDto koodiV1d = helper.getKoodi(koodiV1a.getKoodiUri(), koodiV1b.getVersio());
         assertThat(koodiV1d).isEqualToIgnoringGivenFields(koodiV1b,
                 "version", "koodisto", "paivitysPvm", "tila",
-                "withinCodeElements", "includesCodeElements", "levelsWithCodeElements");
+                "withinCodeElements", "includesCodeElements", "levelsWithCodeElements", "metadata");
     }
 
     @Test
@@ -481,7 +480,7 @@ public class CodesResourceTest {
         }
 
     }
-    
+
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void savesCodesWithNewName() {
@@ -500,7 +499,7 @@ public class CodesResourceTest {
         assertEquals(Tila.LUONNOS, codes.getTila());
         assertEquals(nimi, codes.getMetadata().get(0).getNimi());
     }
-    
+
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void savesCodesWithNewNameAndRelations() {
@@ -524,49 +523,49 @@ public class CodesResourceTest {
         assertTrue(codes.getWithinCodes().size() == 1);
         assertTrue(codes.getLevelsWithCodes().size() == 1);
     }
-    
+
     @Test
     public void returnsNoChangesToCodes() {
-        assertEquals(MuutosTila.EI_MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodes("moniaversioita", 3, false).getBody()).muutosTila);
+        assertEquals(MuutosTila.EI_MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodes("moniaversioita", 3, false).getBody()).getMuutosTila());
     }
-    
+
     @Test
     public void returnsChangesToCodes() {
-        assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodes("moniaversioita", 1, false).getBody()).muutosTila);
+        assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodes("moniaversioita", 1, false).getBody()).getMuutosTila());
     }
-    
+
     @Test
     public void returnsNoChangesToCodesUsingDate() {
-        assertEquals(MuutosTila.EI_MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2014, 0, 0, 0, false).getBody()).muutosTila);
+        assertEquals(MuutosTila.EI_MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2014, 0, 0, 0, false).getBody()).getMuutosTila());
     }
-    
+
     @Test
     public void returnsChangesToCodesUsingDate() {
-        assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2012, 0, 0, 0, false).getBody()).muutosTila);
-        assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2013, 0, 0, 0, false).getBody()).muutosTila);
+        assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2012, 0, 0, 0, false).getBody()).getMuutosTila());
+        assertEquals(MuutosTila.MUUTOKSIA, ((KoodistoChangesDto)resource.getChangesToCodesWithDate("moniaversioita", 20, 9, 2013, 0, 0, 0, false).getBody()).getMuutosTila());
     }
-    
+
     @Test
     public void returnsChangesToCodesWithLotsOfChanges() {
         assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 1, false).getBody(), 3, 1, 2, 2, 1, 1, Tila.LUONNOS, 1, 1, 0, MuutosTila.MUUTOKSIA);
         assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 2, false).getBody(), 3, 0, 2, 1, 1, 0, Tila.LUONNOS, 1, 1, 1, MuutosTila.MUUTOKSIA);
         assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 3, false).getBody(), 3, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
     }
-    
+
     @Test
     public void returnsChangesToCodesWithLotsOfChangesComparingAgainstLatestAcceptedKoodistoVersio() {
         assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 1, true).getBody(), 2, 1, 0, 1, 0, 1, null, 1, 1, 0, MuutosTila.MUUTOKSIA);
         assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 2, true).getBody(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
         assertChanges((KoodistoChangesDto) resource.getChangesToCodes("paljonmuutoksia", 3, true).getBody(), 2, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
     }
-    
+
     @Test
     public void returnsChangesToCodesWithLotsOfChangesUsingDate() {
         assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2012, 0, 0, 0, false).getBody(), 3, 1, 2, 2, 1, 1, Tila.LUONNOS, 1, 1, 0, MuutosTila.MUUTOKSIA);
         assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 5, 2014, 0, 0, 0, false).getBody(), 3, 0, 2, 1, 1, 0, Tila.LUONNOS, 1, 1, 1, MuutosTila.MUUTOKSIA);
         assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2014, 0, 0, 0, false).getBody(), 3, 0, 0, 0, 0, 0, null, 0, 0, 0, MuutosTila.EI_MUUTOKSIA);
     }
-    
+
     @Test
     public void returnsChangesToCodesWithLotsOfChangesComparingAgainstLatestAcceptedKoodistoVersioAndDate() {
         assertChanges((KoodistoChangesDto) resource.getChangesToCodesWithDate("paljonmuutoksia", 20, 9, 2012, 0, 0, 0, true).getBody(), 2, 1, 0, 1, 0, 1, null, 1, 1, 0, MuutosTila.MUUTOKSIA);
@@ -575,17 +574,17 @@ public class CodesResourceTest {
     }
 
     private void assertChanges(KoodistoChangesDto changes, int expectedVersio, int removedMetas, int changedMetas, int addedRelations, int passiveRelations, int removedRelations, Tila expectedTila, int addedCodeElements, int changedCodeElements, int removedCodeElements, MuutosTila muutosTila) {
-        assertEquals(muutosTila, changes.muutosTila);
-        assertEquals(expectedVersio, changes.viimeisinVersio.intValue());
-        assertEquals(changedMetas, changes.muuttuneetTiedot.size());
-        assertEquals(removedMetas, changes.poistuneetTiedot.size());
-        assertEquals(addedRelations, changes.lisatytKoodistonSuhteet.size());
-        assertEquals(passiveRelations, changes.passivoidutKoodistonSuhteet.size());
-        assertEquals(removedRelations, changes.poistetutKoodistonSuhteet.size());
-        assertEquals(expectedTila, changes.tila);
-        assertEquals(addedCodeElements, changes.lisatytKoodit.size());
-        assertEquals(changedCodeElements, changes.muuttuneetKoodit.size());
-        assertEquals(removedCodeElements, changes.poistetutKoodit.size());
+        assertEquals(muutosTila, changes.getMuutosTila());
+        assertEquals(expectedVersio, changes.getViimeisinVersio().intValue());
+        assertEquals(changedMetas, changes.getMuuttuneetTiedot().size());
+        assertEquals(removedMetas, changes.getPoistuneetTiedot().size());
+        assertEquals(addedRelations, changes.getLisatytKoodistonSuhteet().size());
+        assertEquals(passiveRelations, changes.getPassivoidutKoodistonSuhteet().size());
+        assertEquals(removedRelations, changes.getPoistetutKoodistonSuhteet().size());
+        assertEquals(expectedTila, changes.getTila());
+        assertEquals(addedCodeElements, changes.getLisatytKoodit().size());
+        assertEquals(changedCodeElements, changes.getMuuttuneetKoodit().size());
+        assertEquals(removedCodeElements, changes.getPoistetutKoodit().size());
     }
 
     // UTILITIES
@@ -624,7 +623,7 @@ public class CodesResourceTest {
         KoodiDto dto = new KoodiDto();
         dto.setKoodiUri(String.format("%s_%s", koodisto.getKoodistoUri(), arvo));
         dto.setKoodiArvo(arvo);
-        KoodiMetadata metadata = new KoodiMetadata();
+        KoodiMetadataDto metadata = new KoodiMetadataDto();
         metadata.setKieli(Kieli.FI);
         metadata.setNimi(nimiFi);
         dto.setMetadata(singletonList(metadata));

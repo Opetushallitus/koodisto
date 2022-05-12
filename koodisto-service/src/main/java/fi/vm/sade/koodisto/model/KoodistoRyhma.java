@@ -4,6 +4,8 @@
 package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.koodisto.util.FieldLengths;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -19,6 +21,8 @@ import java.util.Set;
 @org.hibernate.annotations.Table(appliesTo = KoodistoRyhma.TABLE_NAME, comment = "Koodistoryhmä sisältää aina tietyn tyyppisiä koodistoja, esim. alueet. Koodisto voi kuulua useaan koodistoryhmään.")
 @Entity
 @Cacheable
+@Getter
+@Setter
 public class KoodistoRyhma extends BaseEntity {
 
     private static final long serialVersionUID = 4137284135569188700L;
@@ -48,14 +52,6 @@ public class KoodistoRyhma extends BaseEntity {
         return Collections.unmodifiableSet(koodistoRyhmaMetadatas);
     }
 
-    public String getKoodistoRyhmaUri() {
-        return koodistoRyhmaUri;
-    }
-
-    public void setKoodistoRyhmaUri(String koodistoJoukkoUri) {
-        this.koodistoRyhmaUri = koodistoJoukkoUri;
-    }
-
     public void addKoodistoRyhmaMetadata(KoodistoRyhmaMetadata metadata) {
         this.koodistoRyhmaMetadatas.add(metadata);
         metadata.setKoodistoRyhma(this);
@@ -63,10 +59,6 @@ public class KoodistoRyhma extends BaseEntity {
 
     public void removeKoodistoRyhmaMetadata(KoodistoRyhmaMetadata metadata) {
         this.koodistoRyhmaMetadatas.remove(metadata);
-    }
-
-    public void setKoodistoRyhmaMetadatas(final Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas) {
-        this.koodistoRyhmaMetadatas = koodistoRyhmaMetadatas;
     }
 
     public void addKoodisto(Koodisto koodisto) {

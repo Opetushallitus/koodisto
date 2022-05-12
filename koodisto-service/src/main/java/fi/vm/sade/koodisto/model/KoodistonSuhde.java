@@ -1,6 +1,8 @@
 package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.koodisto.util.FieldLengths;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
@@ -11,6 +13,8 @@ import javax.validation.constraints.NotNull;
         KoodistonSuhde.ALAKOODISTO_COLUMN_NAME, KoodistonSuhde.YLAKOODISTO_COLUMN_NAME, KoodistonSuhde.SUHTEEN_TYYPPI_COLUMN_NAME, KoodistonSuhde.VERSIO_COLUMN_NAME }))
 @org.hibernate.annotations.Table(appliesTo = KoodistonSuhde.TABLE_NAME, comment = "Määrittää kahden koodiston välisen suhteen. Suhteen tyyppi voi olla SISALTYY tai RINNASTEINEN.")
 @Cacheable
+@Getter
+@Setter
 public class KoodistonSuhde extends BaseEntity {
 
     private static final long serialVersionUID = -8875747407128912635L;
@@ -49,54 +53,6 @@ public class KoodistonSuhde extends BaseEntity {
     @NotNull
     @Column(name = "alakoodistostapassiivinen", nullable = false)
     private boolean alaKoodistoPassive = false;
-    
-    public KoodistoVersio getYlakoodistoVersio() {
-        return ylakoodistoVersio;
-    }
-
-    public void setYlakoodistoVersio(KoodistoVersio ylakoodistoVersio) {
-        this.ylakoodistoVersio = ylakoodistoVersio;
-    }
-
-    public KoodistoVersio getAlakoodistoVersio() {
-        return alakoodistoVersio;
-    }
-
-    public void setAlakoodistoVersio(KoodistoVersio alakoodistoVersio) {
-        this.alakoodistoVersio = alakoodistoVersio;
-    }
-
-    public SuhteenTyyppi getSuhteenTyyppi() {
-        return suhteenTyyppi;
-    }
-
-    public void setSuhteenTyyppi(SuhteenTyyppi suhteenTyyppi) {
-        this.suhteenTyyppi = suhteenTyyppi;
-    }
-    
-    public Integer getVersio() {
-        return versio;
-    }
-
-    public void setVersio(Integer versio) {
-        this.versio = versio;
-    }
-    
-    public void setAlaKoodistoPassive(boolean alaKoodistoPassive) {
-        this.alaKoodistoPassive = alaKoodistoPassive;
-    }
-    
-    public void setYlaKoodistoPassive(boolean ylaKoodistoPassive) {
-        this.ylaKoodistoPassive = ylaKoodistoPassive;
-    }
-    
-    public boolean isAlaKoodistoPassive() {
-        return alaKoodistoPassive;
-    }
-    
-    public boolean isYlaKoodistoPassive() {
-        return ylaKoodistoPassive;
-    }
     
     public boolean isPassive() {
         return ylaKoodistoPassive || alaKoodistoPassive;

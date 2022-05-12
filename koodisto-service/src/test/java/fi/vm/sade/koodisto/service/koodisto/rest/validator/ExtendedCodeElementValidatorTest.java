@@ -1,20 +1,19 @@
 package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
+import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.validator.ExtendedCodeElementValidator;
 import fi.vm.sade.koodisto.validator.KoodistoValidationException;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 public class ExtendedCodeElementValidatorTest {
 
-    private static ExtendedCodeElementValidator validator = new ExtendedCodeElementValidator();
+    private static final ExtendedCodeElementValidator validator = new ExtendedCodeElementValidator();
 
     public static class ValidatingInsert {
 
@@ -32,8 +31,8 @@ public class ExtendedCodeElementValidatorTest {
         @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodeElementWithoutLanguageDefinedForMetadata() {
             ExtendedKoodiDto dto = new ExtendedKoodiDto();
-            KoodiMetadata data = new KoodiMetadata();
-            dto.setMetadata(Arrays.asList(data));
+            KoodiMetadataDto data = new KoodiMetadataDto();
+            dto.setMetadata(List.of(data));
             validator.validateInsert(dto);
         }
 
@@ -61,10 +60,10 @@ public class ExtendedCodeElementValidatorTest {
         @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodeElementWithoutName() {
             ExtendedKoodiDto dto = new ExtendedKoodiDto();
-            KoodiMetadata data = new KoodiMetadata();
+            KoodiMetadataDto data = new KoodiMetadataDto();
             data.setNimi("    ");
             data.setKieli(Kieli.FI);
-            dto.setMetadata(Arrays.asList(data));
+            dto.setMetadata(List.of(data));
             validator.validateInsert(dto);
         }
 
@@ -85,12 +84,12 @@ public class ExtendedCodeElementValidatorTest {
         return dto;
     }
 
-    private static List<KoodiMetadata> givenCorrectMetaData() {
-        KoodiMetadata data = new KoodiMetadata();
+    private static List<KoodiMetadataDto> givenCorrectMetaData() {
+        KoodiMetadataDto data = new KoodiMetadataDto();
         data.setNimi("name");
         data.setKuvaus("description");
         data.setLyhytNimi("n");
         data.setKieli(Kieli.FI);
-        return Arrays.asList(data);
+        return List.of(data);
     }
 }

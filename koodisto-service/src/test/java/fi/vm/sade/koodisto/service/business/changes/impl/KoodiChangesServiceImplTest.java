@@ -247,10 +247,10 @@ public class KoodiChangesServiceImplTest {
         assertTrue(dto.poistetutKoodinSuhteet.isEmpty());
         assertEquals(1, dto.lisatytKoodinSuhteet.size());
         SimpleCodeElementRelation relation = dto.lisatytKoodinSuhteet.get(0);
-        assertEquals(koodiUri, relation.koodiUri);
-        assertEquals(SuhteenTyyppi.RINNASTEINEN, relation.suhteenTyyppi);
-        assertTrue(relation.lapsiKoodi);
-        assertEquals(relationVersion, relation.versio);
+        assertEquals(koodiUri, relation.getKoodiUri());
+        assertEquals(SuhteenTyyppi.RINNASTEINEN, relation.getSuhteenTyyppi());
+        assertTrue(relation.isLapsiKoodi());
+        assertEquals(relationVersion, relation.getVersio());
     }
     
     @Test
@@ -265,10 +265,10 @@ public class KoodiChangesServiceImplTest {
         assertTrue(dto.lisatytKoodinSuhteet.isEmpty());
         assertEquals(1, dto.poistetutKoodinSuhteet.size());
         SimpleCodeElementRelation relation = dto.poistetutKoodinSuhteet.get(0);
-        assertEquals(koodiUri, relation.koodiUri);
-        assertEquals(SuhteenTyyppi.SISALTYY, relation.suhteenTyyppi);
-        assertFalse(relation.lapsiKoodi);
-        assertEquals(relationVersion, relation.versio);
+        assertEquals(koodiUri, relation.getKoodiUri());
+        assertEquals(SuhteenTyyppi.SISALTYY, relation.getSuhteenTyyppi());
+        assertFalse(relation.isLapsiKoodi());
+        assertEquals(relationVersion, relation.getVersio());
     }
     
     @Test
@@ -284,10 +284,10 @@ public class KoodiChangesServiceImplTest {
         assertTrue(dto.poistetutKoodinSuhteet.isEmpty());
         assertEquals(1, dto.passivoidutKoodinSuhteet.size());
         SimpleCodeElementRelation relation = dto.passivoidutKoodinSuhteet.get(0);
-        assertEquals(koodiUri, relation.koodiUri);
-        assertEquals(SuhteenTyyppi.SISALTYY, relation.suhteenTyyppi);
-        assertTrue(relation.lapsiKoodi);
-        assertEquals(relationVersion, relation.versio);
+        assertEquals(koodiUri, relation.getKoodiUri());
+        assertEquals(SuhteenTyyppi.SISALTYY, relation.getSuhteenTyyppi());
+        assertTrue(relation.isLapsiKoodi());
+        assertEquals(relationVersion, relation.getVersio());
     }
     
     @Test

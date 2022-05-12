@@ -3,6 +3,7 @@ package fi.vm.sade.koodisto.service.conversion.impl.koodi;
 import com.google.common.base.Strings;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
+import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
 import fi.vm.sade.koodisto.model.KoodiVersio;
@@ -61,7 +62,21 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
             }
         }
 
-        converted.getMetadata().addAll(sourceKoodiVersio.getMetadatas());
+        converted.getMetadata().addAll(sourceKoodiVersio.getMetadatas().stream()
+                .map(metadata -> KoodiMetadataDto.builder()
+                        .nimi(metadata.getNimi())
+                        .kuvaus(metadata.getKuvaus())
+                        .lyhytNimi(metadata.getLyhytNimi())
+                        .kayttoohje(metadata.getKayttoohje())
+                        .kasite(metadata.getKasite())
+                        .sisaltaaMerkityksen(metadata.getSisaltaaMerkityksen())
+                        .eiSisallaMerkitysta(metadata.getEiSisallaMerkitysta())
+                        .huomioitavaKoodi(metadata.getHuomioitavaKoodi())
+                        .sisaltaaKoodiston(metadata.getSisaltaaKoodiston())
+                        .kieli(metadata.getKieli())
+                        .koodiVersio(metadata.getKoodiVersio())
+                        .build())
+                .collect(Collectors.toList()));
         converted.setPaivitysPvm(sourceKoodiVersio.getPaivitysPvm());
         converted.setPaivittajaOid(sourceKoodiVersio.getPaivittajaOid());
         converted.setTila(sourceKoodiVersio.getTila());
