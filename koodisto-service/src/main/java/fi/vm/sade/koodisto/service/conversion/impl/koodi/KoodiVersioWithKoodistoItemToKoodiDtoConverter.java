@@ -5,6 +5,7 @@ import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToKoodistoVersioListDtoConverter;
 import fi.vm.sade.properties.OphProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
@@ -18,7 +19,7 @@ public class KoodiVersioWithKoodistoItemToKoodiDtoConverter implements
         Converter<KoodiVersioWithKoodistoItem, KoodiDto> {
 
     private final OphProperties ophProperties;
-
+    private final KoodiMetadataToKoodiMetadataDtoConverter koodistoVersioToKoodistoVersioListDtoConverter;
     @Override
     public KoodiDto convert(KoodiVersioWithKoodistoItem source) {
         KoodiDto converted = new KoodiDto();
@@ -27,19 +28,7 @@ public class KoodiVersioWithKoodistoItemToKoodiDtoConverter implements
         converted.setKoodiUri(source.getKoodiVersio().getKoodi().getKoodiUri());
 
         converted.getMetadata().addAll(source.getKoodiVersio().getMetadatas().stream()
-                .map(metadata -> KoodiMetadataDto.builder()
-                        .nimi(metadata.getNimi())
-                        .kuvaus(metadata.getKuvaus())
-                        .lyhytNimi(metadata.getLyhytNimi())
-                        .kayttoohje(metadata.getKayttoohje())
-                        .kasite(metadata.getKasite())
-                        .sisaltaaMerkityksen(metadata.getSisaltaaMerkityksen())
-                        .eiSisallaMerkitysta(metadata.getEiSisallaMerkitysta())
-                        .huomioitavaKoodi(metadata.getHuomioitavaKoodi())
-                        .sisaltaaKoodiston(metadata.getSisaltaaKoodiston())
-                        .kieli(metadata.getKieli())
-                        .koodiVersio(metadata.getKoodiVersio())
-                        .build())
+                .map(koodistoVersioToKoodistoVersioListDtoConverter::convert)
                 .collect(Collectors.toList()));
         converted.setPaivitysPvm(source.getKoodiVersio().getPaivitysPvm());
         converted.setPaivittajaOid(source.getKoodiVersio().getPaivittajaOid());

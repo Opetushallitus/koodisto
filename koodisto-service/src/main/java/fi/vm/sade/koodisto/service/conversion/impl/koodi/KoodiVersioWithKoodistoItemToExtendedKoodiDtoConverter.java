@@ -13,6 +13,7 @@ import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.impl.MetadataToSimpleMetadataConverter;
 import fi.vm.sade.properties.OphProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 
 import java.text.MessageFormat;
@@ -21,14 +22,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
         Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
 
-    private OphProperties ophProperties;
-
-    public KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter(OphProperties ophProperties) {
-        this.ophProperties = ophProperties;
-    }
+    private final OphProperties ophProperties;
+    private final KoodiMetadataToKoodiMetadataDtoConverter koodistoVersioToKoodistoVersioListDtoConverter;
 
     @Override
     public ExtendedKoodiDto convert(KoodiVersioWithKoodistoItem source) {
@@ -63,19 +62,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
         }
 
         converted.getMetadata().addAll(sourceKoodiVersio.getMetadatas().stream()
-                .map(metadata -> KoodiMetadataDto.builder()
-                        .nimi(metadata.getNimi())
-                        .kuvaus(metadata.getKuvaus())
-                        .lyhytNimi(metadata.getLyhytNimi())
-                        .kayttoohje(metadata.getKayttoohje())
-                        .kasite(metadata.getKasite())
-                        .sisaltaaMerkityksen(metadata.getSisaltaaMerkityksen())
-                        .eiSisallaMerkitysta(metadata.getEiSisallaMerkitysta())
-                        .huomioitavaKoodi(metadata.getHuomioitavaKoodi())
-                        .sisaltaaKoodiston(metadata.getSisaltaaKoodiston())
-                        .kieli(metadata.getKieli())
-                        .koodiVersio(metadata.getKoodiVersio())
-                        .build())
+                .map(koodistoVersioToKoodistoVersioListDtoConverter::convert)
                 .collect(Collectors.toList()));
         converted.setPaivitysPvm(sourceKoodiVersio.getPaivitysPvm());
         converted.setPaivittajaOid(sourceKoodiVersio.getPaivittajaOid());
