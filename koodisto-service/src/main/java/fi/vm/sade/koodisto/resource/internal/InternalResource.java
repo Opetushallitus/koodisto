@@ -10,7 +10,6 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
-import fi.vm.sade.koodisto.validator.ValidatorUtil;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +19,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,7 +57,7 @@ public class InternalResource {
     ) {
 
         List<UpdateKoodiDataType> koodiList = koodis.stream()
-                .map(koodi -> validateAndSet(koodistoUri, koodi))
+                .map(koodi -> setKoodiUri(koodistoUri, koodi))
                 .map(converter::convertFromDTOToUpdateKoodiDataType)
                 .collect(Collectors.toList());
         KoodistoVersio koodisto = koodiBusinessService.massCreate(koodistoUri, koodiList);
@@ -68,12 +65,10 @@ public class InternalResource {
 
     }
 
-    private KoodiDto validateAndSet(String koodistoUri, KoodiDto koodi) {
-        ValidatorUtil.checkForBlank(koodi.getMetadata().get(0).getNimi(), new ConstraintViolationException("error.nimi.empty", new HashSet<>()));
+    private KoodiDto setKoodiUri(String koodistoUri, KoodiDto koodi) {
         if (koodi.getKoodiUri() == null || koodi.getKoodiUri().isBlank()) {
             koodi.setKoodiUri(getKoodiUri(koodistoUri, koodi));
         }
-        koodi.setVersion((long) koodi.getVersio());
         return koodi;
     }
 

@@ -6,22 +6,19 @@ import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.properties.OphProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.Collections;
 
 @Component("koodistoToKoodistoListDtoConverter")
+@RequiredArgsConstructor
 public class KoodistoToKoodistoListDtoConverter extends AbstractFromDomainConverter<Koodisto, KoodistoListDto> {
 
-    private OphProperties ophProperties;
+    private final OphProperties ophProperties;
 
-    private KoodistoVersioToKoodistoVersioListDtoConverter koodistoVersioToKoodistoVersioListDtoConverter;
-
-    public KoodistoToKoodistoListDtoConverter(OphProperties ophProperties, KoodistoVersioToKoodistoVersioListDtoConverter koodistoVersioToKoodistoVersioListDtoConverter) {
-        this.ophProperties = ophProperties;
-        this.koodistoVersioToKoodistoVersioListDtoConverter = koodistoVersioToKoodistoVersioListDtoConverter;
-    }
+    private final KoodistoVersioToKoodistoVersioListDtoConverter koodistoVersioToKoodistoVersioListDtoConverter;
 
     @Override
     public KoodistoListDto convert(Koodisto source) {

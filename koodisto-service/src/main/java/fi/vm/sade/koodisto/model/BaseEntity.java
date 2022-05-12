@@ -16,6 +16,8 @@
  */
 package fi.vm.sade.koodisto.model;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -30,6 +32,8 @@ import java.io.Serializable;
  * @author tommiha
  */
 @MappedSuperclass
+@Getter
+@Setter
 public class BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -1482830143396044915L;
@@ -57,22 +61,6 @@ public class BaseEntity implements Serializable {
     @Version
     @Column(name = VERSION_COLUMN_NAME, nullable = false)
     private Long version;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
-    public void setVersion(Long version) {
-        this.version = version;
-    }
 
     @Override
     public boolean equals(Object o) {

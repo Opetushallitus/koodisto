@@ -777,8 +777,8 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private Set<String> urisAsSet(List<RelationCodes> relations) {
         HashSet<String> result = new HashSet<String>();
         for (RelationCodes r : relations) {
-            if(!r.passive) {
-                result.add(r.codesUri);
+            if(!r.isPassive()) {
+                result.add(r.getCodesUri());
             }
         }
         return result;

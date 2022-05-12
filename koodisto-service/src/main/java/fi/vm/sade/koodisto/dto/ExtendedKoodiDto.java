@@ -3,13 +3,17 @@ package fi.vm.sade.koodisto.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.Tila;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Getter
+@Setter
 public class ExtendedKoodiDto {
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
@@ -47,169 +51,34 @@ public class ExtendedKoodiDto {
     protected Tila tila;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-    protected List<KoodiMetadata> metadata = new ArrayList<KoodiMetadata>();
+    protected List<KoodiMetadataDto> metadata = new ArrayList<>();
 
     @JsonView({JsonViews.Extended.class})
-    protected List<RelationCodeElement> withinCodeElements = new ArrayList<RelationCodeElement>();
+    protected List<RelationCodeElement> withinCodeElements = new ArrayList<>();
 
     @JsonView({JsonViews.Extended.class})
-    protected List<RelationCodeElement> includesCodeElements = new ArrayList<RelationCodeElement>();
+    protected List<RelationCodeElement> includesCodeElements = new ArrayList<>();
 
     @JsonView({JsonViews.Extended.class})
-    protected List<RelationCodeElement> levelsWithCodeElements = new ArrayList<RelationCodeElement>();
+    protected List<RelationCodeElement> levelsWithCodeElements = new ArrayList<>();
 
-
-    public String getKoodiUri() {
-        return koodiUri;
-    }
-
-    public void setKoodiUri(String koodiUri) {
-        this.koodiUri = koodiUri;
-    }
-
-    public String getResourceUri() {
-        return resourceUri;
-    }
-
-    public void setResourceUri(String resourceUri) {
-        this.resourceUri = resourceUri;
-    }
-
-    public int getVersio() {
-        return versio;
-    }
-
-    public void setVersio(int versio) {
-        this.versio = versio;
-    }
-
-    public KoodistoItemDto getKoodisto() {
-        return koodisto;
-    }
-
-    public void setKoodisto(KoodistoItemDto koodisto) {
-        this.koodisto = koodisto;
-    }
-
-    public String getKoodiArvo() {
-        return koodiArvo;
-    }
-
-    public void setKoodiArvo(String koodiArvo) {
-        this.koodiArvo = koodiArvo;
-    }
-
-    public Date getPaivitysPvm() {
-        return paivitysPvm;
-    }
-
-    public void setPaivitysPvm(Date paivitysPvm) {
-        this.paivitysPvm = paivitysPvm;
-    }
-
-    public String getPaivittajaOid() {
-        return paivittajaOid;
-    }
-
-    public void setPaivittajaOid(String paivittajaOid) {
-        this.paivittajaOid = paivittajaOid;
-    }
-
-    public Date getVoimassaAlkuPvm() {
-        return voimassaAlkuPvm;
-    }
-
-    public void setVoimassaAlkuPvm(Date voimassaAlkuPvm) {
-        this.voimassaAlkuPvm = voimassaAlkuPvm;
-    }
-
-    public Date getVoimassaLoppuPvm() {
-        return voimassaLoppuPvm;
-    }
-
-    public void setVoimassaLoppuPvm(Date voimassaLoppuPvm) {
-        this.voimassaLoppuPvm = voimassaLoppuPvm;
-    }
-
-    public Tila getTila() {
-        return tila;
-    }
-
-    public void setTila(Tila tila) {
-        this.tila = tila;
-    }
-
-    public List<KoodiMetadata> getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(List<KoodiMetadata> metadata) {
-        this.metadata = metadata;
-    }
-
-    public Long getVersion() {
-        return version;
-    }
-
-    public void setVersion(final Long version) {
-        this.version = version;
-    }
-
-    public List<RelationCodeElement> getWithinCodeElements() {
-        return withinCodeElements;
-    }
-
-    public void setWithinCodeElements(final List<RelationCodeElement> withinCodeElements) {
-        this.withinCodeElements = withinCodeElements;
-    }
-
-    public List<RelationCodeElement> getIncludesCodeElements() {
-        return includesCodeElements;
-    }
-
-    public void setIncludesCodeElements(final List<RelationCodeElement> includesCodeElements) {
-        this.includesCodeElements = includesCodeElements;
-    }
-
-    public List<RelationCodeElement> getLevelsWithCodeElements() {
-        return levelsWithCodeElements;
-    }
-
-    public void setLevelsWithCodeElements(final List<RelationCodeElement> levelsWithCodeElements) {
-        this.levelsWithCodeElements = levelsWithCodeElements;
-    }
-    
+    @Getter
+    @RequiredArgsConstructor
     public static class RelationCodeElement {
-        public String getCodeElementUri() {
-            return codeElementUri;
-        }
-
         @JsonView({JsonViews.Extended.class})
-        public final String codeElementUri;
+        private final String codeElementUri;
         @JsonView({JsonViews.Extended.class})
-        public final Integer codeElementVersion;
+        private final Integer codeElementVersion;
         @JsonView({JsonViews.Extended.class})
-        public final String codeElementValue;
+        private final String codeElementValue;
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-        public final List<SimpleMetadataDto> relationMetadata;
+        private final List<SimpleMetadataDto> relationMetadata;
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-        public final List<SimpleMetadataDto> parentMetadata;
-
-        public boolean isPassive() {
-            return passive;
-        }
+        private final List<SimpleMetadataDto> parentMetadata;
 
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
         public final boolean passive;
-        
-        public RelationCodeElement() {
-            this.codeElementUri = null;
-            this.codeElementVersion = -1;
-            this.relationMetadata = null;
-            this.parentMetadata = null;
-            this.codeElementValue = null;
-            this.passive = false;
-        }
+
 
         public RelationCodeElement(String codeElementUri, Integer version, boolean passive) {
             this.codeElementUri = codeElementUri;
@@ -218,17 +87,9 @@ public class ExtendedKoodiDto {
             this.parentMetadata = null;
             this.codeElementValue = null;
             this.passive = passive;
-            
+
         }
-        
-        public RelationCodeElement(String codeElementUri, Integer codeElementVersion, String codeElementValue, List<SimpleMetadataDto> relationMetadata, List<SimpleMetadataDto> parentMetadata, boolean passive) {
-            this.codeElementUri = codeElementUri;
-            this.codeElementVersion = codeElementVersion;
-            this.relationMetadata = relationMetadata;
-            this.parentMetadata = parentMetadata;
-            this.codeElementValue = codeElementValue;
-            this.passive = passive;
-        }
+
     }
 
 }

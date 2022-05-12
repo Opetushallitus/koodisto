@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.validator;
 
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
+import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 
 import java.util.Collection;
@@ -40,14 +40,14 @@ public class ExtendedCodeElementValidator implements RestValidator<ExtendedKoodi
         validateInsert(validatable);
     }
 
-    private void checkRequiredMetadataFields(Collection<KoodiMetadata> metadatas) {
-        for (KoodiMetadata md : metadatas) {
+    private void checkRequiredMetadataFields(Collection<KoodiMetadataDto> metadatas) {
+        for (KoodiMetadataDto md : metadatas) {
             ValidatorUtil.checkForNull(md.getKieli(), new KoodistoValidationException("error.validation.kieli"));
             ValidatorUtil.checkForBlank(md.getNimi(), new KoodistoValidationException("error.validation.nimi"));
         }
     }
 
-    private void checkMetadatas(Collection<KoodiMetadata> metadatas) {
+    private void checkMetadatas(Collection<KoodiMetadataDto> metadatas) {
         ValidatorUtil.checkCollectionIsNotNullOrEmpty(metadatas, new MetadataEmptyException());
         checkRequiredMetadataFields(metadatas);
     }

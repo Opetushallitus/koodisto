@@ -3,92 +3,56 @@ package fi.vm.sade.koodisto.dto;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@RequiredArgsConstructor
+@Getter
+@Setter
 public class KoodistoChangesDto {
-    
-    public final String koodistoUri;
-    
-    public final MuutosTila muutosTila;
-    
-    public final Integer viimeisinVersio;
-    
-    public final List<SimpleMetadataDto> muuttuneetTiedot;
-    
-    public final List<SimpleMetadataDto> poistuneetTiedot;
 
-    public final Date viimeksiPaivitetty;
+    private final String koodistoUri;
+    private final MuutosTila muutosTila;
+    private final Integer viimeisinVersio;
+    private final List<SimpleMetadataDto> muuttuneetTiedot;
+    private final List<SimpleMetadataDto> poistuneetTiedot;
+    private final Date viimeksiPaivitetty;
+    private final Date voimassaAlkuPvm;
+    private final Date voimassaLoppuPvm;
+    private final Boolean poistettuVoimassaLoppuPvm;
+    private final Tila tila;
+    private final List<SimpleCodesRelation> lisatytKoodistonSuhteet;
+    private final List<SimpleCodesRelation> poistetutKoodistonSuhteet;
+    private final List<SimpleCodesRelation> passivoidutKoodistonSuhteet;
+    private final List<KoodiChangesDto> lisatytKoodit;
+    private final List<KoodiChangesDto> muuttuneetKoodit;
+    private final List<KoodiChangesDto> poistetutKoodit;
 
-    public final Date voimassaAlkuPvm;
-
-    public final Date voimassaLoppuPvm;
-
-    public final Boolean poistettuVoimassaLoppuPvm;
-    
-    public final Tila tila;
-
-    public final List<SimpleCodesRelation> lisatytKoodistonSuhteet;
-
-    public final List<SimpleCodesRelation> poistetutKoodistonSuhteet;
-
-    public final List<SimpleCodesRelation> passivoidutKoodistonSuhteet;
-
-    public final List<KoodiChangesDto> lisatytKoodit;
-    
-    public final List<KoodiChangesDto> muuttuneetKoodit;
-
-    public final List<KoodiChangesDto> poistetutKoodit;
-    
-    public KoodistoChangesDto(String koodistoUri, MuutosTila muutosTila, Integer viimeisinVersio,
-            List<SimpleMetadataDto> muuttuneetTiedot, List<SimpleMetadataDto> poistuneetTiedot, Date viimeksiPaivitetty, Date voimassaAlkuPvm,
-            Date voimassaLoppuPvm, Boolean poistettuVoimassaLoppuPvm, Tila tila,
-            List<SimpleCodesRelation> lisatytKoodistonSuhteet, List<SimpleCodesRelation> poistetutKoodistonSuhteet, List<SimpleCodesRelation> passivoidutKoodistonSuhteet,
-            List<KoodiChangesDto> lisatytKoodit, List<KoodiChangesDto> muuttuneetKoodit, List<KoodiChangesDto> poistetutKoodit) {
-        this.muutosTila = muutosTila;
-        this.viimeisinVersio = viimeisinVersio;
-        this.muuttuneetTiedot = muuttuneetTiedot;
-        this.poistuneetTiedot = poistuneetTiedot;
-        this.viimeksiPaivitetty = viimeksiPaivitetty;
-        this.voimassaAlkuPvm = voimassaAlkuPvm;
-        this.voimassaLoppuPvm = voimassaLoppuPvm;
-        this.poistettuVoimassaLoppuPvm = poistettuVoimassaLoppuPvm;
-        this.tila = tila;
-        this.lisatytKoodistonSuhteet = lisatytKoodistonSuhteet;
-        this.poistetutKoodistonSuhteet = poistetutKoodistonSuhteet;
-        this.passivoidutKoodistonSuhteet = passivoidutKoodistonSuhteet;
-        this.lisatytKoodit = lisatytKoodit;
-        this.muuttuneetKoodit = muuttuneetKoodit;
-        this.poistetutKoodit = poistetutKoodit;
-        this.koodistoUri = koodistoUri;
-    }
-    
     public KoodistoChangesDto(String koodistoUri, MuutosTila muutosTila, Integer viimeisinVersio, Date viimeksiPaivitetty) {
-        this(koodistoUri, muutosTila, viimeisinVersio, new ArrayList<SimpleMetadataDto>(), new ArrayList<SimpleMetadataDto>(), 
-                viimeksiPaivitetty, null, null, null, null, 
-                new ArrayList<SimpleCodesRelation>(), new ArrayList<SimpleCodesRelation>(), new ArrayList<SimpleCodesRelation>(), 
-                new ArrayList<KoodiChangesDto>(), new ArrayList<KoodiChangesDto>(), new ArrayList<KoodiChangesDto>());
+        this(koodistoUri, muutosTila, viimeisinVersio, new ArrayList<>(), new ArrayList<>(),
+                viimeksiPaivitetty, null, null, null, null,
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>(),
+                new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
+    @Getter
+    @Setter
+    @RequiredArgsConstructor
     public static class SimpleCodesRelation {
 
-        public final String koodistoUri;
+        private final String koodistoUri;
 
-        public final Integer versio;
+        private final Integer versio;
 
-        public final SuhteenTyyppi suhteenTyyppi;
+        private final SuhteenTyyppi suhteenTyyppi;
 
-        public final boolean lapsiKoodisto;
-        
-        public SimpleCodesRelation(String koodistoUri, Integer versio, SuhteenTyyppi suhteenTyyppi, boolean lapsiKoodisto) {
-            this.koodistoUri = koodistoUri;
-            this.versio = versio;
-            this.suhteenTyyppi = suhteenTyyppi;
-            this.lapsiKoodisto = lapsiKoodisto;
-        }
-        
+        private final boolean lapsiKoodisto;
+
     }
-    
+
 }

@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
+import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
@@ -54,8 +55,8 @@ public class KoodistoConversionServiceTest {
     }
 
     @Test
-    public void testKoodiMetadataToKoodimetadataDTOConverter() {
-        KoodiMetadata meta = createKoodiMetatadata();
+    public void testKoodiMetadataDtoToKoodiMetadataTypeConverter() {
+        KoodiMetadataDto meta = createKoodiMetatadata();
         KoodiMetadataType dto = conversionService.convert(meta, KoodiMetadataType.class);
         assertNotNull(dto);
         checkConvertedFields(dto, KoodiMetadataType.class);
@@ -176,9 +177,8 @@ public class KoodistoConversionServiceTest {
         return dto;
     }
 
-    private KoodiMetadata createKoodiMetatadata() {
-        KoodiMetadata meta = new KoodiMetadata();
-        meta.setId(1L);
+    private KoodiMetadataDto createKoodiMetatadata() {
+        KoodiMetadataDto meta = new KoodiMetadataDto();
         meta.setEiSisallaMerkitysta("Ei sisällä merkitystä");
         meta.setHuomioitavaKoodi("Huomioitava koodi");
         meta.setKasite("Käsite");

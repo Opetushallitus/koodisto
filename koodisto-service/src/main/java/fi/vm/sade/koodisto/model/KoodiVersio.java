@@ -4,6 +4,8 @@ import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAno
 import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import fi.vm.sade.koodisto.util.UserData;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -23,6 +25,8 @@ import java.util.Set;
         "voimassaolopäivämäärät ja koodin tilan.")
 @Cacheable
 @BatchSize(size = 100)
+@Getter
+@Setter
 public class KoodiVersio extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -122,78 +126,6 @@ public class KoodiVersio extends BaseEntity {
         metadatas.remove(metadata);
     }
 
-    public Koodi getKoodi() {
-        return koodi;
-    }
-
-    public void setKoodi(Koodi koodi) {
-        this.koodi = koodi;
-    }
-
-    public Integer getVersio() {
-        return versio;
-    }
-
-    public void setVersio(Integer versio) {
-        this.versio = versio;
-    }
-
-    public Date getPaivitysPvm() {
-        return paivitysPvm;
-    }
-
-    public void setPaivitysPvm(Date paivitysPvm) {
-        this.paivitysPvm = paivitysPvm;
-    }
-    
-    public Date getLuotu() {
-        return luotu;
-    }
-    
-    public void setLuotu(Date luotu) {
-        this.luotu = luotu;
-    }
-
-    public Date getVoimassaAlkuPvm() {
-        return voimassaAlkuPvm;
-    }
-
-    public void setVoimassaAlkuPvm(Date voimassaAlkuPvm) {
-        this.voimassaAlkuPvm = voimassaAlkuPvm;
-    }
-
-    public Date getVoimassaLoppuPvm() {
-        return voimassaLoppuPvm;
-    }
-
-    public void setVoimassaLoppuPvm(Date voimassaLoppuPvm) {
-        this.voimassaLoppuPvm = voimassaLoppuPvm;
-    }
-
-    public Tila getTila() {
-        return tila;
-    }
-
-    public void setTila(Tila tila) {
-        this.tila = tila;
-    }
-
-    public String getKoodiarvo() {
-        return koodiarvo;
-    }
-
-    public void setKoodiarvo(String koodiarvo) {
-        this.koodiarvo = koodiarvo;
-    }
-
-    public Set<KoodinSuhde> getYlakoodis() {
-        return ylakoodis;
-    }
-
-    public Set<KoodinSuhde> getAlakoodis() {
-        return alakoodis;
-    }
-
     public void addYlakoodi(KoodinSuhde ylakoodi) {
         this.ylakoodis.add(ylakoodi);
     }
@@ -217,23 +149,6 @@ public class KoodiVersio extends BaseEntity {
     @AssertTrue(message = "Validation end date must not be before start date")
     public boolean getValidateDates() {
         return voimassaAlkuPvm != null && (voimassaLoppuPvm == null || !voimassaLoppuPvm.before(voimassaAlkuPvm));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    public String getPaivittajaOid() {
-        return paivittajaOid;
-    }
-
-    public void setPaivittajaOid(String paivittajaOid) {
-        this.paivittajaOid = paivittajaOid;
     }
 
 }

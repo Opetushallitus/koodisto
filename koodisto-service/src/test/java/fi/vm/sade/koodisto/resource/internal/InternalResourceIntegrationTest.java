@@ -10,9 +10,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Objects;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -61,7 +59,8 @@ class InternalResourceIntegrationTest {
                                 "\"lyhytNimi\":\"ONE\"," +
                                 "\"kieli\":\"SV\"}]" +
                                 "}]"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("error.koodisto.not.found"));
     }
 
     @Test
@@ -71,7 +70,8 @@ class InternalResourceIntegrationTest {
         this.mockMvc.perform(post("/internal/koodi/dummy")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("[]"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("error.koodi.list.empty"));
     }
 
     @Test
@@ -85,7 +85,31 @@ class InternalResourceIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON).content(""))
                 .andExpect(status().isBadRequest());
     }
-
+    @Test
+    @Description("Posting empty name is bad request")
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testPostInternal04() throws Exception {
+        this.mockMvc.perform(post("/internal/koodi/one")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("[{" +
+                                "\"koodiArvo\":\"1\"," +
+                                "\"metadata\":[" +
+                                "{\"nimi\":\"\"," +
+                                "\"kuvaus\":\"ONE\"," +
+                                "\"lyhytNimi\":\"ONE\"," +
+                                "\"kieli\":\"FI\"}," +
+                                "{\"nimi\":\"ONE\"," +
+                                "\"kuvaus\":\"ONE\"," +
+                                "\"lyhytNimi\":\"ONE\"," +
+                                "\"kieli\":\"EN\"}," +
+                                "{\"nimi\":\"ONE\"," +
+                                "\"kuvaus\":\"ONE\"," +
+                                "\"lyhytNimi\":\"ONE\"," +
+                                "\"kieli\":\"SV\"}]" +
+                                "}]"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("error.nimi.empty"));
+    }
     @Test
     @Description("Posting can add one koodi")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})

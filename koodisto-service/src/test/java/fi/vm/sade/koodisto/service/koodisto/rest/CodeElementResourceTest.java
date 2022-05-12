@@ -3,7 +3,6 @@ package fi.vm.sade.koodisto.service.koodisto.rest;
 import fi.vm.sade.koodisto.dto.*;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.resource.CodeElementResource;
@@ -371,7 +370,7 @@ public class CodeElementResourceTest {
         assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400, "error.validation.metadata");
 
         invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
-        ArrayList<KoodiMetadata> metadatas = new ArrayList<KoodiMetadata>();
+        ArrayList<KoodiMetadataDto> metadatas = new ArrayList<>();
         invalidDto.setMetadata(metadatas);
         assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400, "error.validation.metadata");
 
@@ -380,7 +379,7 @@ public class CodeElementResourceTest {
         assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400, "error.validation.enddate");
 
         invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
-        KoodiMetadata invalidMd = new KoodiMetadata();
+        KoodiMetadataDto invalidMd = new KoodiMetadataDto();
         invalidMd.setKieli(Kieli.FI);
         invalidMd.setNimi(""); // Invalid
         invalidMd.setLyhytNimi("Name");
@@ -390,7 +389,7 @@ public class CodeElementResourceTest {
         assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400);
 
         invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
-        invalidMd = new KoodiMetadata();
+        invalidMd = new KoodiMetadataDto();
         invalidMd.setKieli(Kieli.FI);
         invalidMd.setNimi(null); // Invalid
         invalidMd.setLyhytNimi("Name");
@@ -400,7 +399,7 @@ public class CodeElementResourceTest {
         assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400);
 
         invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
-        invalidMd = new KoodiMetadata();
+        invalidMd = new KoodiMetadataDto();
         invalidMd.setKieli(Kieli.FI);
         invalidMd.setNimi("Name");
         invalidMd.setLyhytNimi(""); // Invalid
@@ -410,7 +409,7 @@ public class CodeElementResourceTest {
         assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400);
 
         invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
-        invalidMd = new KoodiMetadata();
+        invalidMd = new KoodiMetadataDto();
         invalidMd.setKieli(Kieli.FI);
         invalidMd.setNimi("Name");
         invalidMd.setLyhytNimi(null); // Invalid
@@ -420,7 +419,7 @@ public class CodeElementResourceTest {
         assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400);
 
         invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
-        invalidMd = new KoodiMetadata();
+        invalidMd = new KoodiMetadataDto();
         invalidMd.setKieli(Kieli.FI);
         invalidMd.setNimi("Name");
         invalidMd.setLyhytNimi("Name");
@@ -430,7 +429,7 @@ public class CodeElementResourceTest {
         assertResponse(resource.insert("lisaasisaltyy3", invalidDto), 400);
 
         invalidDto = createValidCodeElementDto("newdtouri", "Name", 3);
-        invalidMd = new KoodiMetadata();
+        invalidMd = new KoodiMetadataDto();
         invalidMd.setKieli(Kieli.FI);
         invalidMd.setNimi("Name");
         invalidMd.setLyhytNimi("Name");
@@ -519,9 +518,9 @@ public class CodeElementResourceTest {
 
         ExtendedKoodiDto codeElementToBeSaved = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getBody();
         assertEquals(1, codeElementToBeSaved.getIncludesCodeElements().size());
-        assertEquals("samankoodistonsisalla1", codeElementToBeSaved.getIncludesCodeElements().get(0).codeElementUri);
+        assertEquals("samankoodistonsisalla1", codeElementToBeSaved.getIncludesCodeElements().get(0).getCodeElementUri());
         assertEquals(1, codeElementToBeSaved.getWithinCodeElements().size());
-        assertEquals("samankoodistonsisalla2", codeElementToBeSaved.getWithinCodeElements().get(0).codeElementUri);
+        assertEquals("samankoodistonsisalla2", codeElementToBeSaved.getWithinCodeElements().get(0).getCodeElementUri());
 
         codeElementToBeSaved.getMetadata().get(0).setNimi(nimi);
         codeElementToBeSaved.getIncludesCodeElements().clear();
@@ -534,9 +533,9 @@ public class CodeElementResourceTest {
         assertEquals(nimi, codeElement.getMetadata().get(0).getNimi());
         assertEquals(2, codeElement.getIncludesCodeElements().size());
         for (RelationCodeElement relation : codeElement.getIncludesCodeElements()) {
-            if ("uusisamankoodistonsisalla1".equals(relation.codeElementUri)) {
+            if ("uusisamankoodistonsisalla1".equals(relation.getCodeElementUri())) {
                 assertFalse(relation.passive);
-            } else if ("samankoodistonsisalla1".equals(relation.codeElementUri)) {
+            } else if ("samankoodistonsisalla1".equals(relation.getCodeElementUri())) {
                 assertTrue(relation.passive);
             } else {
                 fail();
@@ -544,9 +543,9 @@ public class CodeElementResourceTest {
         }
         assertEquals(2, codeElement.getWithinCodeElements().size());
         for (RelationCodeElement relation : codeElement.getWithinCodeElements()) {
-            if ("uusisamankoodistonsisalla2".equals(relation.codeElementUri)) {
+            if ("uusisamankoodistonsisalla2".equals(relation.getCodeElementUri())) {
                 assertFalse(relation.passive);
-            } else if ("samankoodistonsisalla2".equals(relation.codeElementUri)) {
+            } else if ("samankoodistonsisalla2".equals(relation.getCodeElementUri())) {
                 assertTrue(relation.passive);
             } else {
                 fail();
@@ -634,8 +633,8 @@ public class CodeElementResourceTest {
         assertNotNull(original);
         assertEquals(1, original.getMetadata().size());
 
-        List<KoodiMetadata> koodiMetadata = new ArrayList<KoodiMetadata>();
-        KoodiMetadata o1 = original.getMetadata().get(0);
+        List<KoodiMetadataDto> koodiMetadata = new ArrayList<>();
+        KoodiMetadataDto o1 = original.getMetadata().get(0);
         o1.setNimi("Modified Name");
         koodiMetadata.add(o1);
         original.setMetadata(koodiMetadata);
@@ -906,7 +905,7 @@ public class CodeElementResourceTest {
         assertEquals(0, codeElement.getLevelsWithCodeElements().size());
         assertEquals(0, codeElement.getWithinCodeElements().size());
 
-        assertEquals("uusirelaatiovanhantilalle2", codeElement.getIncludesCodeElements().get(0).codeElementUri);
+        assertEquals("uusirelaatiovanhantilalle2", codeElement.getIncludesCodeElements().get(0).getCodeElementUri());
         assertFalse(codeElement.getIncludesCodeElements().get(0).passive);
     }
 
@@ -944,9 +943,9 @@ public class CodeElementResourceTest {
         dto.setVoimassaAlkuPvm(new Date());
         dto.setVoimassaLoppuPvm(null);
         dto.setKoodiArvo(value);
-        List<KoodiMetadata> mds = new ArrayList<KoodiMetadata>();
+        List<KoodiMetadataDto> mds = new ArrayList<>();
         for (int i = 0; i < amountOfMetadatas; i++) {
-            KoodiMetadata md = new KoodiMetadata();
+            KoodiMetadataDto md = new KoodiMetadataDto();
             md.setKieli(Kieli.values()[i % Kieli.values().length]);
             md.setNimi(name);
             md.setLyhytNimi(shortName);

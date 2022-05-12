@@ -1,6 +1,8 @@
 package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.koodisto.util.FieldLengths;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
@@ -16,6 +18,8 @@ import java.util.Set;
 @Entity
 @Cacheable
 @BatchSize(size = 100)
+@Getter
+@Setter
 public class Koodisto extends BaseEntity {
 
     private static final long serialVersionUID = -6903116815069994046L;
@@ -41,37 +45,13 @@ public class Koodisto extends BaseEntity {
     private Boolean lukittu;
 
     @ManyToMany(mappedBy = "koodistos", fetch = FetchType.LAZY)
-    private Set<KoodistoRyhma> koodistoRyhmas = new HashSet<>();
+    private final Set<KoodistoRyhma> koodistoRyhmas = new HashSet<>();
 
     @OneToMany(mappedBy = "koodisto", fetch = FetchType.LAZY)
-    private Set<KoodistoVersio> koodistoVersios = new HashSet<>();
+    private final Set<KoodistoVersio> koodistoVersios = new HashSet<>();
 
     @OneToMany(mappedBy = "koodisto", fetch = FetchType.LAZY)
     private Set<Koodi> koodis = new HashSet<>();
-
-    public String getKoodistoUri() {
-        return koodistoUri;
-    }
-
-    public void setKoodistoUri(String koodistoUri) {
-        this.koodistoUri = koodistoUri;
-    }
-
-    public String getOmistaja() {
-        return omistaja;
-    }
-
-    public void setOmistaja(String omistaja) {
-        this.omistaja = omistaja;
-    }
-
-    public Boolean getLukittu() {
-        return lukittu;
-    }
-
-    public void setLukittu(Boolean lukittu) {
-        this.lukittu = lukittu;
-    }
 
     public Set<KoodistoRyhma> getKoodistoRyhmas() {
         return Collections.unmodifiableSet(koodistoRyhmas);
@@ -111,24 +91,6 @@ public class Koodisto extends BaseEntity {
 
     public Set<Koodi> getKoodis() {
         return Collections.unmodifiableSet(koodis);
-    }
-
-    public String getOrganisaatioOid() {
-        return organisaatioOid;
-    }
-
-    public void setOrganisaatioOid(String organisaatioOid) {
-        this.organisaatioOid = organisaatioOid;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
     }
 
 }
