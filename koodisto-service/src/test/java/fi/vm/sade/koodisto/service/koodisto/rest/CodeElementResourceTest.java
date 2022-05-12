@@ -518,9 +518,9 @@ public class CodeElementResourceTest {
 
         ExtendedKoodiDto codeElementToBeSaved = (ExtendedKoodiDto) resource.getCodeElementByUriAndVersion(koodiUri, versio).getBody();
         assertEquals(1, codeElementToBeSaved.getIncludesCodeElements().size());
-        assertEquals("samankoodistonsisalla1", codeElementToBeSaved.getIncludesCodeElements().get(0).codeElementUri);
+        assertEquals("samankoodistonsisalla1", codeElementToBeSaved.getIncludesCodeElements().get(0).getCodeElementUri());
         assertEquals(1, codeElementToBeSaved.getWithinCodeElements().size());
-        assertEquals("samankoodistonsisalla2", codeElementToBeSaved.getWithinCodeElements().get(0).codeElementUri);
+        assertEquals("samankoodistonsisalla2", codeElementToBeSaved.getWithinCodeElements().get(0).getCodeElementUri());
 
         codeElementToBeSaved.getMetadata().get(0).setNimi(nimi);
         codeElementToBeSaved.getIncludesCodeElements().clear();
@@ -533,9 +533,9 @@ public class CodeElementResourceTest {
         assertEquals(nimi, codeElement.getMetadata().get(0).getNimi());
         assertEquals(2, codeElement.getIncludesCodeElements().size());
         for (RelationCodeElement relation : codeElement.getIncludesCodeElements()) {
-            if ("uusisamankoodistonsisalla1".equals(relation.codeElementUri)) {
+            if ("uusisamankoodistonsisalla1".equals(relation.getCodeElementUri())) {
                 assertFalse(relation.passive);
-            } else if ("samankoodistonsisalla1".equals(relation.codeElementUri)) {
+            } else if ("samankoodistonsisalla1".equals(relation.getCodeElementUri())) {
                 assertTrue(relation.passive);
             } else {
                 fail();
@@ -543,9 +543,9 @@ public class CodeElementResourceTest {
         }
         assertEquals(2, codeElement.getWithinCodeElements().size());
         for (RelationCodeElement relation : codeElement.getWithinCodeElements()) {
-            if ("uusisamankoodistonsisalla2".equals(relation.codeElementUri)) {
+            if ("uusisamankoodistonsisalla2".equals(relation.getCodeElementUri())) {
                 assertFalse(relation.passive);
-            } else if ("samankoodistonsisalla2".equals(relation.codeElementUri)) {
+            } else if ("samankoodistonsisalla2".equals(relation.getCodeElementUri())) {
                 assertTrue(relation.passive);
             } else {
                 fail();
@@ -905,7 +905,7 @@ public class CodeElementResourceTest {
         assertEquals(0, codeElement.getLevelsWithCodeElements().size());
         assertEquals(0, codeElement.getWithinCodeElements().size());
 
-        assertEquals("uusirelaatiovanhantilalle2", codeElement.getIncludesCodeElements().get(0).codeElementUri);
+        assertEquals("uusirelaatiovanhantilalle2", codeElement.getIncludesCodeElements().get(0).getCodeElementUri());
         assertFalse(codeElement.getIncludesCodeElements().get(0).passive);
     }
 

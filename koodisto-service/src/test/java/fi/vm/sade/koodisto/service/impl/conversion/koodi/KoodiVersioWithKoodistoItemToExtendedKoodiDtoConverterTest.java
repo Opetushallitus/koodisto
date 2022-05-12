@@ -49,19 +49,19 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
         KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
         ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
         RelationCodeElement rel = dto.getIncludesCodeElements().get(0);
-        SimpleMetadataDto data = rel.relationMetadata.get(0);
+        SimpleMetadataDto data = rel.getRelationMetadata().get(0);
         KoodiMetadata givenKoodiMetadata = givenKoodiMetadata();
         assertEquals(givenKoodiMetadata.getKieli(), data.kieli);
         assertEquals(givenKoodiMetadata.getNimi(), data.nimi);
         assertEquals(givenKoodiMetadata.getKuvaus(), data.kuvaus);
-        assertEquals(givenKoodiVersio().getKoodiarvo(), rel.codeElementValue);
+        assertEquals(givenKoodiVersio().getKoodiarvo(), rel.getCodeElementValue());
     }
 
     @Test
     public void storesParentCodesMetadataToRelationCodeElement() {
         KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
         ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
-        assertEquals(Kieli.EN, dto.getIncludesCodeElements().get(0).parentMetadata.get(0).kieli);
+        assertEquals(Kieli.EN, dto.getIncludesCodeElements().get(0).getParentMetadata().get(0).kieli);
     }
 
     @Test

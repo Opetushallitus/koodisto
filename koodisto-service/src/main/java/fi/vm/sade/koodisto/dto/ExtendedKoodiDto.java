@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Tila;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -59,39 +60,25 @@ public class ExtendedKoodiDto {
     protected List<RelationCodeElement> includesCodeElements = new ArrayList<>();
 
     @JsonView({JsonViews.Extended.class})
-    protected List<RelationCodeElement> levelsWithCodeElements = new ArrayList<RelationCodeElement>();
+    protected List<RelationCodeElement> levelsWithCodeElements = new ArrayList<>();
 
+    @Getter
+    @RequiredArgsConstructor
     public static class RelationCodeElement {
-        public String getCodeElementUri() {
-            return codeElementUri;
-        }
-
         @JsonView({JsonViews.Extended.class})
-        public final String codeElementUri;
+        private final String codeElementUri;
         @JsonView({JsonViews.Extended.class})
-        public final Integer codeElementVersion;
+        private final Integer codeElementVersion;
         @JsonView({JsonViews.Extended.class})
-        public final String codeElementValue;
+        private final String codeElementValue;
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-        public final List<SimpleMetadataDto> relationMetadata;
+        private final List<SimpleMetadataDto> relationMetadata;
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-        public final List<SimpleMetadataDto> parentMetadata;
-
-        public boolean isPassive() {
-            return passive;
-        }
+        private final List<SimpleMetadataDto> parentMetadata;
 
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
         public final boolean passive;
-        
-        public RelationCodeElement() {
-            this.codeElementUri = null;
-            this.codeElementVersion = -1;
-            this.relationMetadata = null;
-            this.parentMetadata = null;
-            this.codeElementValue = null;
-            this.passive = false;
-        }
+
 
         public RelationCodeElement(String codeElementUri, Integer version, boolean passive) {
             this.codeElementUri = codeElementUri;
@@ -100,17 +87,9 @@ public class ExtendedKoodiDto {
             this.parentMetadata = null;
             this.codeElementValue = null;
             this.passive = passive;
-            
+
         }
-        
-        public RelationCodeElement(String codeElementUri, Integer codeElementVersion, String codeElementValue, List<SimpleMetadataDto> relationMetadata, List<SimpleMetadataDto> parentMetadata, boolean passive) {
-            this.codeElementUri = codeElementUri;
-            this.codeElementVersion = codeElementVersion;
-            this.relationMetadata = relationMetadata;
-            this.parentMetadata = parentMetadata;
-            this.codeElementValue = codeElementValue;
-            this.passive = passive;
-        }
+
     }
 
 }
