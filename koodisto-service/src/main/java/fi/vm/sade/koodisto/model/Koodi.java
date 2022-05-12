@@ -47,16 +47,4 @@ public class Koodi extends BaseEntity {
         this.koodiVersios.remove(koodiVersio);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-    
-    
-    
 }

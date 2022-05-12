@@ -28,13 +28,4 @@ public class KoodistoVersioKoodiVersio extends BaseEntity {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private KoodiVersio koodiVersio;
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
 }

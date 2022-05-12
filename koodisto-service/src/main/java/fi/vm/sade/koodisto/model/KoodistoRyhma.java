@@ -69,13 +69,4 @@ public class KoodistoRyhma extends BaseEntity {
         this.koodistos.remove(koodisto);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
 }

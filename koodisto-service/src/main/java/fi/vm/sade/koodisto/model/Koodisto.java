@@ -96,14 +96,4 @@ public class Koodisto extends BaseEntity {
         return Collections.unmodifiableSet(koodis);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
 }

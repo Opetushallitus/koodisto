@@ -93,13 +93,4 @@ public class KoodistoMetadata extends BaseEntity {
     @JoinColumn(name = KOODISTO_VERSIO_COLUMN_NAME, nullable = false)
     private KoodistoVersio koodistoVersio;
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
 }

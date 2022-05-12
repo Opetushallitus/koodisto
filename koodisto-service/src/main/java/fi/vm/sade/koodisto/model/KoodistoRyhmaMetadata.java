@@ -49,14 +49,4 @@ public class KoodistoRyhmaMetadata extends BaseEntity {
     @JoinColumn(name = KOODISTO_RYHMA_COLUMN_NAME, nullable = false)
     private KoodistoRyhma koodistoRyhma;
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
 }

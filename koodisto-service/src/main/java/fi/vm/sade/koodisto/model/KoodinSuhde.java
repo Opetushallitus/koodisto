@@ -60,13 +60,4 @@ public class KoodinSuhde extends BaseEntity {
         return ylaKoodiPassive || alaKoodiPassive;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
 }
