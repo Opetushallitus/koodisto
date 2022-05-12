@@ -29,7 +29,7 @@ public class KoodiDto {
     private String resourceUri;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
-    private Long version;
+    private long version;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     private int versio = 1;

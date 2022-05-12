@@ -57,7 +57,7 @@ public class InternalResource {
     ) {
 
         List<UpdateKoodiDataType> koodiList = koodis.stream()
-                .map(koodi -> validateAndSet(koodistoUri, koodi))
+                .map(koodi -> setKoodiUri(koodistoUri, koodi))
                 .map(converter::convertFromDTOToUpdateKoodiDataType)
                 .collect(Collectors.toList());
         KoodistoVersio koodisto = koodiBusinessService.massCreate(koodistoUri, koodiList);
@@ -65,11 +65,10 @@ public class InternalResource {
 
     }
 
-    private KoodiDto validateAndSet(String koodistoUri, KoodiDto koodi) {
+    private KoodiDto setKoodiUri(String koodistoUri, KoodiDto koodi) {
         if (koodi.getKoodiUri() == null || koodi.getKoodiUri().isBlank()) {
             koodi.setKoodiUri(getKoodiUri(koodistoUri, koodi));
         }
-        koodi.setVersion((long) koodi.getVersio());
         return koodi;
     }
 
