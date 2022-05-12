@@ -59,8 +59,6 @@ public class CodesResourceTest {
         String blankString = "";
         KoodistoDto nullCodesDTO = null;
 
-        //String stubString = "uri";
-        //InputStream stubInputStream = IOUtils.toInputStream("stubfile");
 
         assertResponse(resource.update(nullCodesDTO), 400, "error.validation.codes");
 
@@ -72,21 +70,6 @@ public class CodesResourceTest {
         assertResponse(resource.getCodesByCodesUriAndVersion(nullString, 0), 400, "error.validation.codesuri");
         assertResponse(resource.getCodesByCodesUriAndVersion(blankString, 0), 400, "error.validation.codesuri");
 
-        // IE9 can not handle upload if server return 400 or 500
-        /*assertResponse(resource.uploadFile(null, stubString, stubString, stubString), 202, "error.validation.file");
-        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), nullString, stubString, stubString), 202, "error.validation.fileformat");
-        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), blankString, stubString, stubString), 202, "error.validation.fileformat");
-        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), stubString, nullString, stubString), 202, "error.validation.fileencoding");
-        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), stubString, blankString, stubString), 202, "error.validation.fileencoding");
-        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), stubString, stubString, nullString), 202, "error.validation.codesuri");
-        assertResponse(resource.uploadFile(new Attachment("id", stubInputStream), stubString, stubString, blankString), 202, "error.validation.codesuri");
-
-        assertResponse(resource.download(nullString, 0, Format.JHS_XML, stubString), 400, "error.validation.codesuri");
-        assertResponse(resource.download(blankString, 0, Format.JHS_XML, stubString), 400, "error.validation.codesuri");
-        assertResponse(resource.download(stubString, 0, null, stubString), 400, "error.validation.fileformat");
-        assertResponse(resource.download(stubString, 0, Format.JHS_XML, nullString), 400, "error.validation.encoding");
-        assertResponse(resource.download(stubString, 0, Format.JHS_XML, blankString), 400, "error.validation.encoding");
-        */
         assertResponse(resource.delete(nullString, 0), 400, "error.validation.codesuri");
         assertResponse(resource.delete(blankString, 0), 400, "error.validation.codesuri");
     }
@@ -295,99 +278,7 @@ public class CodesResourceTest {
 
         // TODO:tarkempi assertointi
     }
-    /*
-    @Test
-    public void uploadsCSVFiles() {
-        InputStream is = null;
-        String fileFormat = "CSV";
-        String fileEncoding = "UTF-8";
-        String codesUri = "csvfileuploaduri";
-        assertResponse(resource.uploadFile(createAttachment("csv_example.csv"), fileFormat, fileEncoding, codesUri), 202);
-        KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(codesUri, 0).getBody();
-        assertNotNull(codes);
-        List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
-        assertEquals("csvfileuploaduri_arvo", koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
-    }
 
-    @Test
-    public void uploadsXMLFiles() {
-        InputStream is = null;
-        String fileFormat = "JHS_XML";
-        String fileEncoding = "UTF-8";
-        String codesUri = "xmlfileuploaduri";
-        assertResponse(resource.uploadFile(createAttachment("jhs_xml_example.xml"), fileFormat, fileEncoding, codesUri), 202);
-        KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(codesUri, 0).getBody();
-        assertNotNull(codes);
-        List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
-        assertEquals("xmlfileuploaduri_arvo", koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
-    }
-
-    @Test
-    public void uploadsXLSFiles() {
-        InputStream is = null;
-        String fileFormat = "XLS";
-        String fileEncoding = "UTF-8";
-        String codesUri = "xlsfileuploaduri";
-        assertResponse(resource.uploadFile(createAttachment("excel_example.xls"), fileFormat, fileEncoding, codesUri), 202);
-        KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(codesUri, 0).getBody();
-        assertNotNull(codes);
-        List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
-        assertEquals("xlsfileuploaduri_arvo", koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
-    }
-
-    private Attachment createAttachment(String sourceUrl) {
-        return new Attachment("id", new DataHandler(new TestDataSource(sourceUrl)), null);
-    }
-
-    @Test
-    public void uploadsSameFileTwice() {
-        String fileFormat = "CSV";
-        String fileEncoding = "UTF-8";
-        String codesUri = "csvfileuploaduri";
-
-        assertResponse(resource.uploadFile(createAttachment("csv_example.csv"), fileFormat, fileEncoding, codesUri), 202);
-        KoodistoDto codes = (KoodistoDto) resource.getCodesByCodesUriAndVersion(codesUri, 0).getBody();
-        assertNotNull(codes);
-        List<KoodiVersioWithKoodistoItem> koodis = service.getKoodisByKoodisto(codesUri, false);
-        assertEquals("csvfileuploaduri_arvo", koodis.get(0).getKoodiVersio().getKoodi().getKoodiUri());
-
-        assertResponse(resource.uploadFile(createAttachment("csv_example.csv"), fileFormat, fileEncoding, codesUri), 202);
-    }
-
-    @Test
-    public void failsToUploadInvalidFile() {
-        InputStream is = null;
-        String fileFormat = "CSV";
-        String fileEncoding = "UTF-8";
-        String codesUri = "csvfileuploaduri";
-            // IE9 can not handle upload if server return 400 or 500
-            assertResponse(resource.uploadFile(createFailureAttachment(), fileFormat, fileEncoding, codesUri), 202, "error.codes.importing.empty.file");
-    }
-
-    private Attachment createFailureAttachment() {
-        return new Attachment("id", new DataHandler(new DataSource() {
-            @Override
-            public InputStream getInputStream() throws IOException {
-                return new ByteArrayInputStream("Failure Of Files!".getBytes(Charset.defaultCharset()));
-            }
-
-            @Override
-            public OutputStream getOutputStream() throws IOException {
-                return null;
-            }
-
-            @Override
-            public String getContentType() {
-                return null;
-            }
-
-            @Override
-            public String getName() {
-                return null;
-            }
-        }), null);
-    }
-    */
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void updatingCodes() {
@@ -417,51 +308,7 @@ public class CodesResourceTest {
         assertEquals("Update testi", codes1.getMetadata().get(0).getNimi());
     }
 
-   /* @Test
-    public void downloadsFiles() {
-        {
-            String codesUri = "filedownloaduri";
-            int codesVersion = 1;
-            String encoding = "Utf-8";
-            Format fileFormat = Format.CSV;
-            Response response = resource.download(codesUri, codesVersion, fileFormat, encoding);
-            assertResponse(response, 200);
-            String content = inputStreamToString(response.getBody());
-            assertTrue(content.contains("Description of downloaded code"));
-            try {
-                ((InputStream) response.getBody()).close();
-            } catch (IOException ignore) {
-            }
-        }
-        {
-            String codesUri = "filedownloaduri";
-            int codesVersion = 1;
-            String encoding = "Utf-8";
-            Format fileFormat = Format.JHS_XML;
-            Response response = resource.download(codesUri, codesVersion, fileFormat, encoding);
-            assertResponse(response, 200);
-            String content = inputStreamToString(response.getBody());
-            assertTrue(content.contains("Description of downloaded code"));
-            try {
-                ((InputStream) response.getBody()).close();
-            } catch (IOException ignore) {
-            }
-        }
-        {
-            String codesUri = "filedownloaduri";
-            int codesVersion = 1;
-            String encoding = "Utf-8";
-            Format fileFormat = Format.XLS;
-            Response response = resource.download(codesUri, codesVersion, fileFormat, encoding);
-            assertResponse(response, 200);
-            assertNotNull(response.getBody());
-            try {
-                ((InputStream) response.getBody()).close();
-            } catch (IOException ignore) {
-            }
-        }
-    }
-    */
+
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     public void deleteCodes() {
@@ -639,19 +486,6 @@ public class CodesResourceTest {
         assertResponse(response, expectedStatus);
         assertEquals(expectedEntity, response.getBody());
     }
-    /* 
-    private String inputStreamToString(Object entity) {
-        try {
-            StringWriter writer = new StringWriter();
-            IOUtils.copy((InputStream) entity, writer);
-            return writer.toString();
-        } catch (IOException e) {
-            fail();
-        }
-        return null;
-    }
-    
-     */
 
     class TestDataSource implements DataSource {
         private final String url;
