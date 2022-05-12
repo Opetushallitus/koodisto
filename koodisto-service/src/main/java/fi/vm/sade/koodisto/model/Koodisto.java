@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.koodisto.util.FieldLengths;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -46,12 +45,10 @@ public class Koodisto extends BaseEntity {
     private Boolean lukittu;
 
     @ManyToMany(mappedBy = "koodistos", fetch = FetchType.LAZY)
-    @Getter(AccessLevel.NONE)
-    private Set<KoodistoRyhma> koodistoRyhmas = new HashSet<>();
+    private final Set<KoodistoRyhma> koodistoRyhmas = new HashSet<>();
 
     @OneToMany(mappedBy = "koodisto", fetch = FetchType.LAZY)
-    @Getter(AccessLevel.NONE)
-    private Set<KoodistoVersio> koodistoVersios = new HashSet<>();
+    private final Set<KoodistoVersio> koodistoVersios = new HashSet<>();
 
     @OneToMany(mappedBy = "koodisto", fetch = FetchType.LAZY)
     private Set<Koodi> koodis = new HashSet<>();
