@@ -1,19 +1,12 @@
 package fi.vm.sade.koodisto.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.koodisto.model.BaseEntity;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.util.FieldLengths;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 
 @Getter
