@@ -68,7 +68,11 @@ public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConv
         String ryhmatUri = sourceKoodisto.getKoodistoRyhmas().stream()
                 .map(KoodistoRyhma::getKoodistoRyhmaUri)
                 .filter(koodistoRyhmaUri -> !koodistoRyhmaUri.contains("kaikki"))
-                .findAny().orElse(sourceKoodisto.getKoodistoRyhmas().stream().findFirst().toString());
+                .findAny()
+                .orElse(sourceKoodisto.getKoodistoRyhmas().stream()
+                        .map(KoodistoRyhma::getKoodistoRyhmaUri)
+                        .findFirst()
+                        .orElse(""));
         converted.setCodesGroupUri(ryhmatUri);
 
         converted.setOmistaja(sourceKoodisto.getOmistaja());

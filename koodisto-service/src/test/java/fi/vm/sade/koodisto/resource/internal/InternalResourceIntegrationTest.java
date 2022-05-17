@@ -28,7 +28,7 @@ class InternalResourceIntegrationTest {
     private MockMvc mockMvc;
 
     @Test
-    @Description("Test get enpoint")
+    @Description("Test get endpoint")
     @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testGetInternalKoodi() throws Exception {
         this.mockMvc.perform(get("/internal/koodi/get"))
@@ -85,6 +85,7 @@ class InternalResourceIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON).content(""))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     @Description("Posting empty name is bad request")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
@@ -110,6 +111,7 @@ class InternalResourceIntegrationTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("error.nimi.empty"));
     }
+
     @Test
     @Description("Posting can add one koodi")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
@@ -253,6 +255,16 @@ class InternalResourceIntegrationTest {
                                 "\"kieli\":\"SV\"}]" +
                                 "}]"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Description("Get koodisto list")
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testGetKoodisto() throws Exception {
+        this.mockMvc
+                .perform(get("/internal/koodisto"))
+                .andExpect(content().string(containsString("{\"koodistoRyhmaMetadata\":[{\"id\":-1,\"uri\":\"general\",\"nimi\":\"general\",\"kieli\":\"FI\"}],\"koodistoUri\":\"dummy\",\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Dummy\"}]}")))
+                .andExpect(status().isOk());
     }
 
 }

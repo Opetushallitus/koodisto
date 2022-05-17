@@ -8,6 +8,7 @@ import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
 import fi.vm.sade.koodisto.service.conversion.impl.KoodistoConversionServiceImpl;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.*;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.*;
+import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaToKoodistoRyhmaListDtoConverter;
 import fi.vm.sade.properties.OphProperties;
 import org.springframework.context.annotation.Bean;
@@ -22,15 +23,19 @@ public class ApplicationConfiguration {
     }
 
     @Bean
-    public Authorizer authorizer() { return new ThreadLocalAuthorizer();}
+    public Authorizer authorizer() {
+        return new ThreadLocalAuthorizer();
+    }
 
     @Bean
-    OrganisationHierarchyAuthorizer hierarchyAuthorizer() { return new OrganisationHierarchyAuthorizer();}
+    OrganisationHierarchyAuthorizer hierarchyAuthorizer() {
+        return new OrganisationHierarchyAuthorizer();
+    }
 
     @Bean
     public KoodistoConversionService conversionService(OphProperties ophProperties) {
         KoodistoToKoodistoListDtoConverter koodistoToKoodistoListDtoConverter = new KoodistoToKoodistoListDtoConverter(ophProperties, new KoodistoVersioToKoodistoVersioListDtoConverter());
-        KoodistoConversionServiceImpl ks =  new KoodistoConversionServiceImpl();
+        KoodistoConversionServiceImpl ks = new KoodistoConversionServiceImpl();
         ks.addConverter(koodistoToKoodistoListDtoConverter);
         ks.addConverter(new KoodiMetadataDtoToKoodiMetadataTypeConverter());
         ks.addConverter(new KoodistoMetadataToKoodistoMetadataTypeConverter());
@@ -46,6 +51,7 @@ public class ApplicationConfiguration {
         ks.addConverter(new KoodistoRyhmaToKoodistoRyhmaListDtoConverter(koodistoToKoodistoListDtoConverter));
         ks.addConverter(new KoodistoVersioToKoodistoVersioListDtoConverter());
         ks.addConverter(new KoodistoRyhmaToKoodistoRyhmaDtoConverter());
+        ks.addConverter(new KoodistoVersioToInternalKoodistoListDtoConverter(new KoodistoMetadataToKoodistoMetadataDtoConverter(),new KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter()));
         return ks;
     }
 }
