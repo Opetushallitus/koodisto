@@ -263,7 +263,13 @@ class InternalResourceIntegrationTest {
     void testGetKoodisto() throws Exception {
         this.mockMvc
                 .perform(get("/internal/koodisto"))
-                .andExpect(content().string(containsString("{\"koodistoRyhmaMetadata\":[{\"id\":-1,\"uri\":\"general\",\"nimi\":\"general\",\"kieli\":\"FI\"}],\"koodistoUri\":\"dummy\",\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Dummy\"}]}")))
+                .andExpect(content().string(containsString("{" +
+                        "\"koodistoRyhmaMetadata\":[{\"id\":-1,\"uri\":\"general\",\"nimi\":\"general\",\"kieli\":\"FI\"}]," +
+                        "\"koodistoUri\":\"dummy\",\"versio\":1," +
+                        "\"voimassaAlkuPvm\":\"2012-11-20\"," +
+                        "\"voimassaLoppuPvm\":null," +
+                        "\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Dummy\"}]," +
+                        "\"koodiCount\":0}")))
                 .andExpect(status().isOk());
     }
 

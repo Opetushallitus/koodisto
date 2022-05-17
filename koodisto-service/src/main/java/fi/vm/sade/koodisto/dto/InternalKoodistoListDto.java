@@ -27,4 +27,6 @@ public class InternalKoodistoListDto {
     private Date voimassaLoppuPvm;
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
     private List<KoodistoMetadataDto> metadata;
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
+    private int koodiCount;
 }
