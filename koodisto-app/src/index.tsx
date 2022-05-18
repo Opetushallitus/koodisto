@@ -10,7 +10,7 @@ import Loading from './components/pages/Loading/Loading';
 import Raamit from './components/Raamit/Raamit';
 import createTheme from '@opetushallitus/virkailija-ui-components/createTheme';
 import { ThemeProvider } from 'styled-components';
-import { casMeLangAtom } from './api/kayttooikeus';
+import { casMeLocaleAtom } from './api/kayttooikeus';
 import { IntlProvider } from 'react-intl';
 import { lokalisaatioMessagesAtom } from './api/lokalisaatio';
 import App from './App';
@@ -45,10 +45,10 @@ export class ErrorBoundary extends React.Component<unknown, { hasError: boolean 
 }
 
 const Initialize: React.FC = ({ children }) => {
-    const [casMeLang] = useAtom(casMeLangAtom);
+    const [casMeLocale] = useAtom(casMeLocaleAtom);
     const [messages] = useAtom(lokalisaatioMessagesAtom);
     return (
-        <IntlProvider locale={casMeLang} defaultLocale={'fi'} messages={messages}>
+        <IntlProvider locale={casMeLocale} defaultLocale={'fi'} messages={messages}>
             {children}
         </IntlProvider>
     );

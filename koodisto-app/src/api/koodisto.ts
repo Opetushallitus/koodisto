@@ -13,23 +13,9 @@ export type TablePageKoodisto = {
     voimassaAlkuPvm?: Date;
     voimassaLoppuPvm?: Date;
     nimi?: string;
-    organisaatioOid: string;
     ryhmaNimi?: string;
     ryhmaId?: number;
-};
-
-type KoodistoInRyhma = {
-    koodistoUri: string;
-    versio: number;
-    latestKoodistoVersio: {
-        metadata: Metadata[];
-        versio: number;
-        voimassaAlkuPvm?: ApiDate;
-        voimassaLoppuPvm?: ApiDate;
-    };
-    organisaatioOid: string;
-    ryhmaMetadata: Metadata[];
-    ryhmaId?: number;
+    koodiCount: number;
 };
 
 export type KoodistoVersio = {
@@ -79,48 +65,49 @@ export type KoodistoPageKoodisto = {
     includesCodes: KoodistoRelation[];
     levelsWithCodes: KoodistoRelation[];
 };
-
-type KoodistoRyhma = {
+type RyhmaMetadata = {
     id: number;
-    koodistoRyhmaUri: string;
-    koodistos: KoodistoInRyhma[];
-    metadata: Metadata[];
+    uri: string;
+    kieli: Kieli;
+    nimi: string;
 };
-const urlAtom = atom<string>(`${API_BASE_PATH}/codes`);
+type ApiKoodistoList = {
+    koodistoUri: string;
+    versio: number;
+    koodistoRyhmaMetadata: RyhmaMetadata[];
+    metadata: Metadata[];
+    voimassaAlkuPvm: ApiDate;
+    voimassaLoppuPvm: ApiDate;
+    koodiCount: number;
+};
+const urlAtom = atom<string>(`${API_INTERNAL_PATH}/koodisto`);
 
-export const koodistoRyhmaAtom = atom<Promise<KoodistoRyhma[]>>(async (get: Getter) => {
-    const { data } = await axios.get<KoodistoRyhma[]>(get(urlAtom));
+export const koodistoListAtom = atom<Promise<ApiKoodistoList[]>>(async (get: Getter) => {
+    const { data } = await axios.get<ApiKoodistoList[]>(get(urlAtom));
     return data;
 });
 
-const distinctTypeFilter = (a: KoodistoInRyhma, i: number, array: KoodistoInRyhma[]): boolean =>
-    array.findIndex((b: KoodistoInRyhma) => b.koodistoUri === a.koodistoUri) === i;
-
-const koodistoApiToKoodisto = (a: KoodistoInRyhma, lang: Kieli): TablePageKoodisto => {
-    const nimi = translateMetadata(a.latestKoodistoVersio.metadata, lang)?.nimi;
-    const ryhmaNimi = translateMetadata(a.ryhmaMetadata, lang)?.nimi;
+const apiKoodistoListToKoodistoList = (a: ApiKoodistoList, lang: Kieli): TablePageKoodisto => {
+    const nimi = translateMetadata(a.metadata, lang)?.nimi;
+    const ryhmaNimi = translateMetadata(
+        !!a.koodistoRyhmaMetadata ? a.koodistoRyhmaMetadata : [{ kieli: 'FI', nimi: 'N/A' }],
+        lang
+    )?.nimi;
     return {
+        ryhmaId: a.koodistoRyhmaMetadata?.[0]?.id || undefined,
         koodistoUri: a.koodistoUri,
-        versio: a.latestKoodistoVersio.versio,
-        voimassaAlkuPvm: a.latestKoodistoVersio.voimassaAlkuPvm && parseApiDate(a.latestKoodistoVersio.voimassaAlkuPvm),
-        voimassaLoppuPvm:
-            a.latestKoodistoVersio.voimassaLoppuPvm && parseApiDate(a.latestKoodistoVersio.voimassaLoppuPvm),
-        organisaatioOid: a.organisaatioOid,
+        versio: a.versio,
+        voimassaAlkuPvm: a.voimassaAlkuPvm && parseApiDate(a.voimassaAlkuPvm),
+        voimassaLoppuPvm: a.voimassaLoppuPvm && parseApiDate(a.voimassaLoppuPvm),
         nimi,
         ryhmaNimi,
-        ryhmaId: a.ryhmaId,
+        koodiCount: a.koodiCount,
     };
 };
 
 export const koodistoAtom = atom<TablePageKoodisto[]>((get: Getter) => {
-    const lowerLang = get(casMeLangAtom);
-    const lang = lowerLang.toUpperCase() as Kieli;
-    return get(koodistoRyhmaAtom)
-        .flatMap((a: KoodistoRyhma) =>
-            a.koodistos.map((k: KoodistoInRyhma) => ({ ...k, ryhmaId: a.id, ryhmaMetadata: a.metadata }))
-        )
-        .filter(distinctTypeFilter)
-        .map((a) => koodistoApiToKoodisto(a, lang));
+    const lang = get(casMeLangAtom);
+    return get(koodistoListAtom).map((a) => apiKoodistoListToKoodistoList(a, lang));
 });
 
 export const fetchKoodisByKoodisto = async ({

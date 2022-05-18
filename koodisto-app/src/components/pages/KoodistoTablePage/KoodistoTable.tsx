@@ -119,6 +119,16 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                     },
                 ],
             },
+            {
+                Header: formatMessage({ id: 'TAULUKKO_KOODIMAARA', defaultMessage: 'Koodian lkm' }),
+                columns: [
+                    {
+                        id: 'koodiCount',
+                        accessor: (values: TablePageKoodisto) =>
+                            values.koodiCount && <TableCellText>{values.koodiCount}</TableCellText>,
+                    },
+                ],
+            },
         ],
         [formatMessage]
     );

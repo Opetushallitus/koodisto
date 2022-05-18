@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { atom, Getter } from 'jotai';
+import { Kieli } from '../types/types';
 
 type CASMeApi = {
     uid: string;
@@ -20,7 +21,11 @@ export const casMeAtom = atom<Promise<CASMeApi>>(async (get: Getter) => {
     }
     return data;
 });
-export const casMeLangAtom = atom((get) => {
+export const casMeLocaleAtom = atom((get) => {
     const casMe = get(casMeAtom);
     return casMe.lang;
+});
+export const casMeLangAtom = atom((get) => {
+    const lang = get(casMeLocaleAtom);
+    return lang.toUpperCase() as Kieli;
 });

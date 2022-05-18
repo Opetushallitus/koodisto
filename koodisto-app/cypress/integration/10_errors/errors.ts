@@ -1,4 +1,4 @@
-import { API_BASE_PATH, BASE_PATH } from '../../../src/context/constants';
+import { API_BASE_PATH, API_INTERNAL_PATH, BASE_PATH } from '../../../src/context/constants';
 
 const koodistoUri = 'kunta';
 Cypress.on('uncaught:exception', (err, runnable) => {
@@ -9,7 +9,7 @@ beforeEach(() => {
 });
 describe('Errors', () => {
     it('shows error boudary if codes fails', () => {
-        cy.intercept('GET', `${API_BASE_PATH}/codes`, (req) => {
+        cy.intercept('GET', `${API_INTERNAL_PATH}/koodisto`, (req) => {
             req.reply({
                 statusCode: 404,
                 body: '404 Not Found!',
