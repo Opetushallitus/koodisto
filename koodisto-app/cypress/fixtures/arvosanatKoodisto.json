@@ -1,0 +1,63 @@
+{
+    "koodistoUri": "arvosanat",
+    "resourceUri": "https://virkailija.opintopolku.fi/koodisto-service/rest/codes/arvosanat",
+    "omistaja": "Opetushallitus",
+    "organisaatioOid": "1.2.246.562.10.00000000001",
+    "lukittu": null,
+    "codesGroupUri": "http://koulutuskoodistot",
+    "version": 1,
+    "versio": 1,
+    "paivitysPvm": "2015-02-20",
+    "paivittajaOid": null,
+    "voimassaAlkuPvm": "2013-01-01",
+    "voimassaLoppuPvm": null,
+    "tila": "LUONNOS",
+    "metadata": [
+        {
+            "kieli": "SV",
+            "nimi": "arvosanat",
+            "kuvaus": "arvosanat",
+            "kayttoohje": null,
+            "kasite": null,
+            "kohdealue": null,
+            "sitovuustaso": null,
+            "kohdealueenOsaAlue": null,
+            "toimintaymparisto": null,
+            "tarkentaaKoodistoa": null,
+            "huomioitavaKoodisto": null,
+            "koodistonLahde": null
+        },
+        {
+            "kieli": "FI",
+            "nimi": "arvosanat",
+            "kuvaus": "arvosanat",
+            "kayttoohje": null,
+            "kasite": null,
+            "kohdealue": null,
+            "sitovuustaso": null,
+            "kohdealueenOsaAlue": null,
+            "toimintaymparisto": null,
+            "tarkentaaKoodistoa": null,
+            "huomioitavaKoodisto": null,
+            "koodistonLahde": null
+        },
+        {
+            "kieli": "EN",
+            "nimi": "arvosanat",
+            "kuvaus": "arvosanat",
+            "kayttoohje": null,
+            "kasite": null,
+            "kohdealue": null,
+            "sitovuustaso": null,
+            "kohdealueenOsaAlue": null,
+            "toimintaymparisto": null,
+            "tarkentaaKoodistoa": null,
+            "huomioitavaKoodisto": null,
+            "koodistonLahde": null
+        }
+    ],
+    "codesVersions": [],
+    "withinCodes": [],
+    "includesCodes": [],
+    "levelsWithCodes": []
+}

@@ -23,7 +23,7 @@ module.exports = (on, config) => {
     // `config` is the resolved Cypress config
     on('task', {
         deleteFolder(folderName) {
-            console.log('deleting folder %s', folderName);
+            console.info('deleting folder %s', folderName);
             return new Promise((resolve, reject) => {
                 rmdir(folderName, { maxRetries: 10, recursive: true }, (err) => {
                     if (err) {

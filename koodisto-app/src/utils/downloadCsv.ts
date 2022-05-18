@@ -4,23 +4,26 @@ import { fetchKoodisByKoodisto } from '../api/koodisto';
 import { info } from '../components/Notification/Notification';
 
 export const mapKoodiToCSV = (koodi: Koodi) => {
-    const reducedMetdata = koodi.metadata.reduce((p, a) => {
+    const allLang = ['FI', 'SV', 'EN'];
+    const metadataKeys = ['nimi', 'lyhytNimi', 'kuvaus'] as (keyof Metadata)[];
+    const reducedMetadata = allLang.reduce((p, language) => {
         const languageKeyedMetadata: { [key: string]: string | undefined } = {};
-        const keys = Object.keys(a) as (keyof Metadata)[];
-        keys.filter((k) => k !== 'kieli').forEach(
-            (k) => (languageKeyedMetadata[`${k.toUpperCase()}_${a.kieli}`] = a[k])
-        );
+        const languageMetadata = {
+            nimi: '',
+            lyhytNimi: '',
+            kuvaus: '',
+            ...koodi.metadata.find((a) => a.kieli === language),
+        };
+        metadataKeys.forEach((k) => (languageKeyedMetadata[`${k}_${language}`] = languageMetadata[k]));
         return { ...p, ...languageKeyedMetadata };
     }, {});
     return {
-        versio: koodi.versio,
-        koodiUri: koodi.koodiUri,
+        koodistoUri: koodi.koodisto?.koodistoUri,
         koodiArvo: koodi.koodiArvo,
-        paivitysPvm: koodi.paivitysPvm,
+        versio: koodi.versio,
         voimassaAlkuPvm: koodi.voimassaAlkuPvm,
         voimassaLoppuPvm: koodi.voimassaLoppuPvm,
-        tila: koodi.tila,
-        ...reducedMetdata,
+        ...reducedMetadata,
     };
 };
 const pushBlobToUser = ({ fileName, blob }: { fileName: string; blob: Blob }) => {
@@ -43,8 +46,8 @@ const convertCsvToExcelAcceptedBlob = (csv: string) => {
     return new Blob([csvArray], { type: 'text/csv;charset=UTF-16LE;' });
 };
 
-const downloadCsv = async (koodistoUri: string) => {
-    const data = await fetchKoodisByKoodisto(koodistoUri);
+const downloadCsv = async ({ koodistoUri, koodistoVersio }: { koodistoUri: string; koodistoVersio?: number }) => {
+    const data = await fetchKoodisByKoodisto({ koodistoUri, koodistoVersio });
     if (!data) return;
     data.sort((a, b) => a.koodiUri.localeCompare(b.koodiUri));
     const csvData = data.map(mapKoodiToCSV);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import 'react-notifications-component/dist/theme.css';
 import { iNotification, ReactNotifications, Store } from 'react-notifications-component';
 import {
@@ -17,9 +17,8 @@ const MESSAGE_DEFAULTS = {
 };
 const messageInputs = ({ title, message, timeOut }: NotificationProps): iNotification => ({
     ...MESSAGE_DEFAULTS,
-    // @ts-ignore
-    title: title ? <FormattedMessage id={title} defaultMessage={title} /> : undefined,
-    message: message ? <FormattedMessage id={message} defaultMessage={message} /> : undefined,
+    title: typeof title === 'string' ? <FormattedMessage id={title} defaultMessage={title} /> : title,
+    message: typeof message === 'string' ? <FormattedMessage id={message} defaultMessage={message} /> : message,
     dismiss: {
         duration: timeOut || DEFAULT_TIMEOUT,
         pauseOnHover: true,
@@ -30,8 +29,8 @@ const Notification = () => {
     return <ReactNotifications />;
 };
 type NotificationProps = {
-    title?: string;
-    message: string;
+    title?: ReactNode | string;
+    message: ReactNode | string;
     timeOut?: number;
 };
 

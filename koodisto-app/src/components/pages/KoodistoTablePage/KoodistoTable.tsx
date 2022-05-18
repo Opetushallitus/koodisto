@@ -7,15 +7,12 @@ import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
 import { ButtonLabelPrefix, HeaderContainer } from './KoodistoTablePage';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import IconWrapper from '../../IconWapper/IconWrapper';
-import downloadCsv from '../../../utils/downloadCsv';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Table, { TextFilterComponent, SelectFilterComponent } from '../../Table/Table';
+import Table, { SelectFilterComponent, TextFilterComponent } from '../../Table/Table';
+
 type KoodistoTableProps = {
     handleLisaaKoodistoRyhma: () => void;
-};
-const uploadCsv = (koodistoUri: string) => {
-    console.info(koodistoUri);
 };
 
 const HeaderContentDivider = styled.div`
@@ -121,29 +118,6 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                             ),
                     },
                 ],
-            },
-            {
-                id: 'downloadCsv',
-                Header: '',
-                accessor: (values: TablePageKoodisto) => (
-                    <TableCellText>
-                        <IconWrapper
-                            name={`${values.koodistoUri}-uploadicon`}
-                            icon="el:download"
-                            inline={true}
-                            onClick={() => downloadCsv(values.koodistoUri)}
-                        />
-                    </TableCellText>
-                ),
-            },
-            {
-                id: 'uploadCsv',
-                Header: '',
-                accessor: (values: TablePageKoodisto) => (
-                    <TableCellText>
-                        <IconWrapper icon="el:upload" inline={true} onClick={() => uploadCsv(values.koodistoUri)} />
-                    </TableCellText>
-                ),
             },
         ],
         [formatMessage]

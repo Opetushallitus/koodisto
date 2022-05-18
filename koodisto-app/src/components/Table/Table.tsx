@@ -130,13 +130,13 @@ const Table = <T extends object>({
             <TableElement {...getTableProps()}>
                 <Thead>
                     {headerGroups.map((headerGroup: HeaderGroup<T>) => {
-                        const { key, ...rest } = headerGroup.getHeaderGroupProps();
+                        const { key: headerGroupKey, ...headerGroupRest } = headerGroup.getHeaderGroupProps();
                         return (
-                            <Tr {...rest} key={key}>
+                            <Tr {...headerGroupRest} key={headerGroupKey}>
                                 {headerGroup.headers.map((column: HeaderGroup<T>) => {
-                                    const { key, ...rest } = column.getHeaderProps();
+                                    const { key: getHeaderPropsKey, ...getHeaderPropsRest } = column.getHeaderProps();
                                     return (
-                                        <Th {...rest} key={key}>
+                                        <Th {...getHeaderPropsRest} key={getHeaderPropsKey}>
                                             {column.render('Header')}
                                             <div>{column.canFilter ? column.render('Filter') : null}</div>
                                         </Th>
@@ -149,13 +149,13 @@ const Table = <T extends object>({
                 <Tbody {...getTableBodyProps()}>
                     {rows.map((row: Row<T>) => {
                         prepareRow(row);
-                        const { key, ...rest } = row.getRowProps();
+                        const { key: rowKey, ...rowRest } = row.getRowProps();
                         return (
-                            <Tr {...rest} key={key}>
+                            <Tr {...rowRest} key={rowKey}>
                                 {row.cells.map((cell: Cell<T>) => {
-                                    const { key, ...rest } = cell.getCellProps();
+                                    const { key: cellKey, ...cellRest } = cell.getCellProps();
                                     return (
-                                        <Td {...rest} key={key}>
+                                        <Td {...cellRest} key={cellKey}>
                                             {cell.render('Cell')}
                                         </Td>
                                     );

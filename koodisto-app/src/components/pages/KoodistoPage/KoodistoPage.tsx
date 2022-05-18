@@ -13,6 +13,7 @@ import Loading from '../Loading/Loading';
 import InfoFields from './InfoFields';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
 import { fetchOrganisaatio } from '../../../api/organisaatio';
+import CSVUploader from '../../CSVUploader/CSVUploader';
 
 const MainContainer = styled.div`
     flex-grow: 1;
@@ -35,7 +36,7 @@ const MainHeaderButtonsContainer = styled.div`
     display: flex;
     flex-direction: column;
     > * {
-        &:first-child {
+        :not(:last-child) {
             margin: 0 0 1rem 0;
         }
     }
@@ -66,9 +67,11 @@ const SelectContainer = styled.div`
 
 const KoodistoPage: React.FC = () => {
     const { versio, koodistoUri } = useParams();
+    const versioNumber = versio ? +versio : undefined;
     const navigate = useNavigate();
     const { formatMessage, locale } = useIntl();
     const [koodisto, setKoodisto] = useState<KoodistoPageKoodisto | undefined>();
+    const [uploadCsvVisible, setUploadCsvVisible] = useState<boolean>(false);
 
     const incomingVersioOption: SelectOptionType = {
         label: formatMessage(
@@ -82,8 +85,8 @@ const KoodistoPage: React.FC = () => {
     };
     useEffect(() => {
         (async () => {
-            if (koodistoUri && versio) {
-                const koodistoData = await fetchKoodistoByUriAndVersio(koodistoUri, versio);
+            if (koodistoUri && versioNumber) {
+                const koodistoData = await fetchKoodistoByUriAndVersio(koodistoUri, versioNumber);
                 if (koodistoData) {
                     const organisaatio = await fetchOrganisaatio(koodistoData.organisaatioOid);
                     koodistoData.organisaatioNimi = organisaatio?.nimi[locale as 'fi' | 'sv' | 'en'];
@@ -91,23 +94,23 @@ const KoodistoPage: React.FC = () => {
                 }
             }
         })();
-    }, [koodistoUri, versio, locale]);
+    }, [koodistoUri, locale, versioNumber]);
 
     if (!koodisto) {
         return <Loading />;
     }
     const koodistonMetadata = translateMetadata(koodisto.metadata, locale.toUpperCase() as Kieli);
     const versioOptions = koodisto.codesVersions
-        .map((versio) => {
+        .map((a) => {
             return {
                 label: formatMessage(
                     {
                         id: 'KOODISTOSIVU_VERSIO_DROPDOWN_LABEL',
                         defaultMessage: 'Versio {versio}',
                     },
-                    { versio }
+                    { versio: a }
                 ),
-                value: versio.toString(),
+                value: a.toString(),
             };
         })
         .concat([incomingVersioOption]);
@@ -151,7 +154,7 @@ const KoodistoPage: React.FC = () => {
                             defaultMessage={'Muokkaa koodistoa'}
                         />
                     </Button>
-                    <Button variant={'outlined'}>
+                    <Button variant={'outlined'} onClick={() => setUploadCsvVisible(true)} name={`${koodistoUri}-csv`}>
                         <FormattedMessage
                             id={'KOODISTOSIVU_TUO_VIE_KOODISTO_BUTTON'}
                             defaultMessage={'Lataa / tuo koodisto'}
@@ -167,6 +170,13 @@ const KoodistoPage: React.FC = () => {
                     levelsWithCodes={koodisto.levelsWithCodes}
                 />
             </MainContainer>
+            {uploadCsvVisible && koodistoUri && (
+                <CSVUploader
+                    koodistoUri={koodistoUri}
+                    koodistoVersio={versioNumber}
+                    closeUploader={() => setUploadCsvVisible(false)}
+                />
+            )}
         </>
     );
 };
