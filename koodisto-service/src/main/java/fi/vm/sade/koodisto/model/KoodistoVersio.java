@@ -6,12 +6,14 @@ import fi.vm.sade.koodisto.util.FieldLengths;
 import fi.vm.sade.koodisto.util.UserData;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.core.style.ToStringCreator;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -85,6 +87,8 @@ public class KoodistoVersio extends BaseEntity {
     private Tila tila;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodistoVersio", cascade = { CascadeType.ALL })
+
+    @LazyCollection(LazyCollectionOption.EXTRA)
     private Set<KoodistoVersioKoodiVersio> koodiVersios = new HashSet<>();
 
     @NotEmpty
@@ -161,6 +165,10 @@ public class KoodistoVersio extends BaseEntity {
     @AssertTrue(message = "Validation end date must not be before start date")
     private boolean getValidateDates() {
         return voimassaAlkuPvm != null && (voimassaLoppuPvm == null || !voimassaLoppuPvm.before(voimassaAlkuPvm));
+    }
+
+    public int getKoodiCount(){
+        return koodiVersios.size();
     }
 
 }

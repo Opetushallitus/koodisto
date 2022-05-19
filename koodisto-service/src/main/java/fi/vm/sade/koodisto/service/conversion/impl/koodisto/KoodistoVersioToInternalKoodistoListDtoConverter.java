@@ -33,7 +33,7 @@ public class KoodistoVersioToInternalKoodistoListDtoConverter extends
                         .collect(Collectors.toList()))
                 .voimassaAlkuPvm(source.getVoimassaAlkuPvm())
                 .voimassaLoppuPvm(source.getVoimassaLoppuPvm())
-                .koodiCount(source.getKoodiVersios().size())
+                .koodiCount(source.getKoodiCount())
                 .build();
     }
 }
