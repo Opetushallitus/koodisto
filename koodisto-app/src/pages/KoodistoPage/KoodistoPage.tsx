@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage, useIntl } from 'react-intl';
-import IconWrapper from '../../IconWapper/IconWrapper';
+import IconWrapper from '../../components/IconWapper/IconWrapper';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
-import { fetchKoodistoByUriAndVersio, KoodistoPageKoodisto } from '../../../api/koodisto';
-import { translateMetadata } from '../../../utils/utils';
-import { Kieli } from '../../../types/types';
+import { fetchKoodistoByUriAndVersio, KoodistoPageKoodisto } from '../../api/koodisto';
+import { translateMetadata } from '../../utils/utils';
+import { Kieli } from '../../types/types';
 import { SelectOptionType } from '../KoodistoTablePage/KoodistoTable';
-import Loading from '../Loading/Loading';
+import Loading from '../../components/Loading/Loading';
 import InfoFields from './InfoFields';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
-import { fetchOrganisaatio } from '../../../api/organisaatio';
-import CSVUploader from '../../CSVUploader/CSVUploader';
+import { fetchOrganisaatio } from '../../api/organisaatio';
+import CSVUploader from '../../components/CSVUploader/CSVUploader';
 
 const MainContainer = styled.div`
     flex-grow: 1;

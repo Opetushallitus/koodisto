@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { ValueType } from 'react-select';
-import { SelectOptionType } from '../pages/KoodistoTablePage/KoodistoTable';
+import { SelectOptionType } from '../../pages/KoodistoTablePage/KoodistoTable';
 
 const TableContainer = styled.div`
     overflow-x: scroll;

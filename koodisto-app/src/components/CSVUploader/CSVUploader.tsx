@@ -9,7 +9,7 @@ import { Column } from 'react-table';
 import { CsvKoodiObject, MessageFormatter } from '../../types/types';
 import { getHeaders, mapCsvToKoodi, mapHeadersToColumns, validData } from './uploadCsv';
 import { batchUpsertKoodi, useKoodisto } from '../../api/koodisto';
-import Loading from '../pages/Loading/Loading';
+import Loading from '../Loading/Loading';
 import { danger, success } from '../Notification/Notification';
 import downloadCsv from '../../utils/downloadCsv';
 import styled from 'styled-components';

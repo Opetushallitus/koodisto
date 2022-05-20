@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 import { Column, Row } from 'react-table';
-import { KoodistoRelation } from '../../../api/koodisto';
+import { KoodistoRelation } from '../../api/koodisto';
 import { useIntl } from 'react-intl';
-import Table from '../../Table/Table';
+import Table from '../../components/Table/Table';
 import { Link } from 'react-router-dom';
 
 type KoodistoRelationsTableProps = {

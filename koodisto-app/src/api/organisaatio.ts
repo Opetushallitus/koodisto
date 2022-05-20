@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { errorHandlingWrapper } from './errorHandling';
+import { errorHandlingWrapper } from './errorHandling/errorHandling';
 
 type Organisaatio = {
     nimi: {

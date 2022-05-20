@@ -1,7 +1,7 @@
 import React from 'react';
-import Accordion from '../../Accordion/Accordion';
+import Accordion from '../../components/Accordion/Accordion';
 import { useIntl } from 'react-intl';
-import { KoodistoRelation } from '../../../api/koodisto';
+import { KoodistoRelation } from '../../api/koodisto';
 import KoodistoRelationsTable from './KoodistoRelationsTable';
 
 const SISALTYY_KOODISTOIHIN_ID = 0;

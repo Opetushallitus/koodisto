@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormattedDate, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
-import { KoodistoPageKoodisto } from '../../../api/koodisto';
+import { KoodistoPageKoodisto } from '../../api/koodisto';
 import { Link } from 'react-router-dom';
 
 const InfoContainer = styled.div`

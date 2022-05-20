@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import KoodistoTable from './KoodistoTable';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import IconWrapper from '../../IconWapper/IconWrapper';
+import IconWrapper from '../../components/IconWapper/IconWrapper';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 
 const MainContainer = styled.div`

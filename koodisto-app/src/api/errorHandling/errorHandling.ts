@@ -1,5 +1,5 @@
 import Axios, { AxiosError, AxiosResponse } from 'axios';
-import { danger, warning } from '../components/Notification/Notification';
+import { danger, warning } from '../../components/Notification/Notification';
 
 const handleError = <T>(error: AxiosError<T> | unknown) => {
     if (Axios.isAxiosError(error)) {

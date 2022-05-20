@@ -3,7 +3,7 @@ import { atom, Getter } from 'jotai';
 import { ApiDate, UpsertKoodi, Kieli, Koodi, Metadata } from '../types/types';
 import { casMeLangAtom } from './kayttooikeus';
 import { parseApiDate, translateMetadata } from '../utils/utils';
-import { errorHandlingWrapper, useErrorHandlingWrapper } from './errorHandling';
+import { errorHandlingWrapper, useErrorHandlingWrapper } from './errorHandling/errorHandling';
 import useAxios from 'axios-hooks';
 import axios from 'axios';
 

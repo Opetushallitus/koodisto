@@ -2,14 +2,14 @@ import * as React from 'react';
 import { useMemo, useState } from 'react';
 import { useAtom } from 'jotai';
 import { Column, Row } from 'react-table';
-import { koodistoAtom, TablePageKoodisto } from '../../../api/koodisto';
+import { koodistoAtom, TablePageKoodisto } from '../../api/koodisto';
 import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
 import { ButtonLabelPrefix, HeaderContainer } from './KoodistoTablePage';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
-import IconWrapper from '../../IconWapper/IconWrapper';
+import IconWrapper from '../../components/IconWapper/IconWrapper';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Table, { SelectFilterComponent, TextFilterComponent } from '../../Table/Table';
+import Table, { SelectFilterComponent, TextFilterComponent } from '../../components/Table/Table';
 
 type KoodistoTableProps = {
     handleLisaaKoodistoRyhma: () => void;
