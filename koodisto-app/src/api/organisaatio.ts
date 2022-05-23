@@ -1,17 +1,14 @@
 import axios from 'axios';
 import { errorHandlingWrapper } from './errorHandling/errorHandling';
+import { OrganisaatioNimi } from '../types/types';
 
 type Organisaatio = {
-    nimi: {
-        fi: string;
-        sv: string;
-        en: string;
-    };
+    nimi: OrganisaatioNimi;
 };
 
-export const fetchOrganisaatio = async (oid: string): Promise<Organisaatio | undefined> => {
+export const fetchOrganisaatioNimi = async (oid: string): Promise<OrganisaatioNimi | undefined> => {
     return errorHandlingWrapper(async () => {
-        const { data } = await axios.get<Organisaatio>(`/organisaatio-service/rest/organisaatio/${oid}`);
-        return data;
+        const { data } = await axios.get<Organisaatio>(`/organisaatio-service/api/${oid}`);
+        return data.nimi;
     });
 };

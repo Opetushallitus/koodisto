@@ -2,9 +2,10 @@ import { atom, Getter } from 'jotai';
 import { API_LOKALISAATIO_PATH } from '../context/constants';
 import { casMeLocaleAtom } from './kayttooikeus';
 import axios from 'axios';
+import { Locale } from '../types/types';
 
 const urlAtom = atom(API_LOKALISAATIO_PATH);
-type Lokalisaatio = { locale: 'fi' | 'sv' | 'en'; key: string; value: string };
+type Lokalisaatio = { locale: Locale; key: string; value: string };
 
 export const lokalisaatioAtom = atom(async (get: Getter): Promise<Lokalisaatio[]> => {
     const locale = get(casMeLocaleAtom);

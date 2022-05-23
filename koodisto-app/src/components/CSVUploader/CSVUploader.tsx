@@ -3,12 +3,12 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import CSVReaderModal from '../CSVReaderModal/CSVReaderModal';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import * as React from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Table from '../Table/Table';
 import { Column } from 'react-table';
-import { CsvKoodiObject, MessageFormatter } from '../../types/types';
+import { CsvKoodiObject, Koodi, MessageFormatter } from '../../types/types';
 import { getHeaders, mapCsvToKoodi, mapHeadersToColumns, validData } from './uploadCsv';
-import { batchUpsertKoodi, useKoodisto } from '../../api/koodisto';
+import { batchUpsertKoodi, fetchKoodiListByKoodisto } from '../../api/koodisto';
 import Loading from '../Loading/Loading';
 import { danger, success } from '../Notification/Notification';
 import downloadCsv from '../../utils/downloadCsv';
@@ -113,25 +113,32 @@ const persistData = async ({
 
 const CSVUploader: React.FC<Props> = ({ koodistoUri, koodistoVersio, closeUploader }) => {
     const [csvKoodiArray, setCsvKoodiArray] = useState<CsvKoodiObject[]>([]);
+
+    const [persistedKoodiList, setPersistedKoodiList] = useState<Koodi[] | undefined>(undefined);
     const [saving, setSaving] = useState<boolean>(false);
-    const now = useMemo<number>(() => (koodistoUri.length > 0 ? Date.now() : 0), [koodistoUri]);
     const { formatMessage } = useIntl();
-    const { data, loading } = useKoodisto(koodistoUri, now);
+    useEffect(() => {
+        (async () => {
+            const koodiList = await fetchKoodiListByKoodisto({ koodistoUri, koodistoVersio });
+            setPersistedKoodiList(koodiList);
+        })();
+    }, [koodistoUri, koodistoVersio]);
+
     const headers = useMemo<(keyof CsvKoodiObject)[]>(() => [...getHeaders(csvKoodiArray || [])], [csvKoodiArray]);
     const dataMemo = useMemo<CsvKoodiObject[]>(
         () =>
             csvKoodiArray?.map((a) => ({
                 ...a,
-                newRow: data?.find((b) => b.koodiArvo === a.koodiArvo) === undefined,
+                newRow: persistedKoodiList?.find((b) => b.koodiArvo === a.koodiArvo) === undefined,
             })) || [],
-        [csvKoodiArray, data]
+        [csvKoodiArray, persistedKoodiList]
     );
 
     const columns = React.useMemo<Column<CsvKoodiObject>[]>(
         () => mapHeadersToColumns({ headers: ['newRow' as keyof CsvKoodiObject, ...headers], formatMessage }),
         [formatMessage, headers]
     );
-    if (loading) return <Loading />;
+    if (!persistedKoodiList) return <Loading />;
     return (
         <Modal
             body={

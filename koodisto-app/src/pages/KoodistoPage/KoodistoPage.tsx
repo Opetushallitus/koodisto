@@ -5,14 +5,12 @@ import IconWrapper from '../../components/IconWapper/IconWrapper';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
-import { fetchKoodistoByUriAndVersio, KoodistoPageKoodisto } from '../../api/koodisto';
+import { fetchPageKoodisto } from '../../api/koodisto';
 import { translateMetadata } from '../../utils/utils';
-import { Kieli } from '../../types/types';
-import { SelectOptionType } from '../KoodistoTablePage/KoodistoTable';
+import { Kieli, PageKoodisto, SelectOptionType } from '../../types/types';
 import Loading from '../../components/Loading/Loading';
 import InfoFields from './InfoFields';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
-import { fetchOrganisaatio } from '../../api/organisaatio';
 import CSVUploader from '../../components/CSVUploader/CSVUploader';
 
 const MainContainer = styled.div`
@@ -35,6 +33,7 @@ const MainHeaderContainer = styled.div`
 const MainHeaderButtonsContainer = styled.div`
     display: flex;
     flex-direction: column;
+
     > * {
         :not(:last-child) {
             margin: 0 0 1rem 0;
@@ -54,6 +53,7 @@ const KoodistoPathContainer = styled.div`
 const HeadingDivider = styled.div`
     display: flex;
     align-items: center;
+
     > * {
         &:first-child {
             margin-right: 3rem;
@@ -70,7 +70,7 @@ const KoodistoPage: React.FC = () => {
     const versioNumber = versio ? +versio : undefined;
     const navigate = useNavigate();
     const { formatMessage, locale } = useIntl();
-    const [koodisto, setKoodisto] = useState<KoodistoPageKoodisto | undefined>();
+    const [koodisto, setKoodisto] = useState<PageKoodisto | undefined>();
     const [uploadCsvVisible, setUploadCsvVisible] = useState<boolean>(false);
 
     const incomingVersioOption: SelectOptionType = {
@@ -86,12 +86,8 @@ const KoodistoPage: React.FC = () => {
     useEffect(() => {
         (async () => {
             if (koodistoUri && versioNumber) {
-                const koodistoData = await fetchKoodistoByUriAndVersio(koodistoUri, versioNumber);
-                if (koodistoData) {
-                    const organisaatio = await fetchOrganisaatio(koodistoData.organisaatioOid);
-                    koodistoData.organisaatioNimi = organisaatio?.nimi[locale as 'fi' | 'sv' | 'en'];
-                    setKoodisto(koodistoData);
-                }
+                const koodistoData = await fetchPageKoodisto(koodistoUri, versioNumber);
+                setKoodisto(koodistoData);
             }
         })();
     }, [koodistoUri, locale, versioNumber]);

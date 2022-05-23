@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useMemo, useState } from 'react';
 import { useAtom } from 'jotai';
 import { Column, Row } from 'react-table';
-import { koodistoAtom, TablePageKoodisto } from '../../api/koodisto';
+import { koodistoListAtom } from '../../api/koodisto';
 import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
 import { ButtonLabelPrefix, HeaderContainer } from './KoodistoTablePage';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
@@ -10,6 +10,7 @@ import IconWrapper from '../../components/IconWapper/IconWrapper';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import Table, { SelectFilterComponent, TextFilterComponent } from '../../components/Table/Table';
+import { ListKoodisto, SelectOptionType } from '../../types/types';
 
 type KoodistoTableProps = {
     handleLisaaKoodistoRyhma: () => void;
@@ -33,27 +34,22 @@ const TableCellText = styled.span`
     color: #0a789c;
 `;
 
-export type SelectOptionType = {
-    value: string;
-    label: string;
-};
-
 const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma }) => {
-    const [atomData] = useAtom(koodistoAtom);
+    const [atomData] = useAtom(koodistoListAtom);
     const { formatMessage } = useIntl();
-    const data = useMemo<TablePageKoodisto[]>(() => {
+    const data = useMemo<ListKoodisto[]>(() => {
         atomData.sort((a, b) => a.koodistoUri.localeCompare(b.koodistoUri));
         return [...atomData];
     }, [atomData]);
-    const [filteredRows, setFilteredRows] = useState<Row<TablePageKoodisto>[]>([]);
-    const columns = React.useMemo<Column<TablePageKoodisto>[]>(
+    const [filteredRows, setFilteredRows] = useState<Row<ListKoodisto>[]>([]);
+    const columns = React.useMemo<Column<ListKoodisto>[]>(
         () => [
             {
                 Header: formatMessage({ id: 'TAULUKKO_KOODISTORYHMA_OTSIKKO', defaultMessage: 'Koodistoryhma' }),
                 columns: [
                     {
                         id: 'ryhmaTieto',
-                        accessor: (values: TablePageKoodisto) => ({ label: values.ryhmaNimi, value: values.ryhmaId }),
+                        accessor: (values: ListKoodisto) => ({ label: values.ryhmaNimi, value: values.ryhmaId }),
                         Filter: SelectFilterComponent,
                         filter: (rows, _columnIds: string[], filterValue: SelectOptionType[]) =>
                             rows.filter((row) =>
@@ -63,7 +59,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                                           .includes(row.values.ryhmaTieto.value)
                                     : rows
                             ),
-                        Cell: ({ value, row }: { value: SelectOptionType; row: Row<TablePageKoodisto> }) => (
+                        Cell: ({ value, row }: { value: SelectOptionType; row: Row<ListKoodisto> }) => (
                             <Link to={`koodistoRyhma/${row.original.ryhmaId}`}>{value.label}</Link>
                         ),
                     },
@@ -74,7 +70,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                 columns: [
                     {
                         id: 'nimi',
-                        accessor: (values: TablePageKoodisto) =>
+                        accessor: (values: ListKoodisto) =>
                             values.nimi ||
                             formatMessage(
                                 {
@@ -85,7 +81,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                             ),
                         Filter: TextFilterComponent,
                         filter: 'text',
-                        Cell: ({ value, row }: { value: string; row: Row<TablePageKoodisto> }) => (
+                        Cell: ({ value, row }: { value: string; row: Row<ListKoodisto> }) => (
                             <Link to={`koodisto/${row.original.koodistoUri}/${row.original.versio}`}>{value}</Link>
                         ),
                     },
@@ -110,7 +106,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                 columns: [
                     {
                         id: 'voimassaLoppuPvm',
-                        accessor: (values: TablePageKoodisto) =>
+                        accessor: (values: ListKoodisto) =>
                             values.voimassaLoppuPvm && (
                                 <TableCellText>
                                     <FormattedDate value={values.voimassaLoppuPvm} />
@@ -124,7 +120,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                 columns: [
                     {
                         id: 'koodiCount',
-                        accessor: (values: TablePageKoodisto) =>
+                        accessor: (values: ListKoodisto) =>
                             values.koodiCount && <TableCellText>{values.koodiCount}</TableCellText>,
                     },
                 ],
@@ -157,7 +153,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                     <FormattedMessage id={'TAULUKKO_LISAA_KOODISTO_BUTTON'} defaultMessage={'Luo uusi koodisto'} />
                 </Button>
             </HeaderContainer>
-            <Table<TablePageKoodisto>
+            <Table<ListKoodisto>
                 columns={columns}
                 data={data}
                 onFilter={(rows) => {

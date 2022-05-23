@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { atom, Getter } from 'jotai';
-import { Kieli } from '../types/types';
+import { Atom, atom, Getter } from 'jotai';
+import { Kieli, Locale } from '../types/types';
+const urlAtom = atom<string>('/kayttooikeus-service/cas/me');
 
 type CASMeApi = {
     uid: string;
@@ -9,10 +10,9 @@ type CASMeApi = {
     lastName: string;
     groups: string[];
     roles: string;
-    lang: 'fi' | 'sv' | 'en';
+    lang: Locale;
 };
 
-const urlAtom = atom<string>('/kayttooikeus-service/cas/me');
 export const casMeAtom = atom<Promise<CASMeApi>>(async (get: Getter) => {
     const { data } = await axios.get<CASMeApi | string>(get(urlAtom));
     if (typeof data === 'string') {
@@ -21,11 +21,11 @@ export const casMeAtom = atom<Promise<CASMeApi>>(async (get: Getter) => {
     }
     return data;
 });
-export const casMeLocaleAtom = atom((get) => {
+export const casMeLocaleAtom: Atom<Locale> = atom((get) => {
     const casMe = get(casMeAtom);
     return casMe.lang;
 });
-export const casMeLangAtom = atom((get) => {
+export const casMeLangAtom: Atom<Kieli> = atom((get) => {
     const lang = get(casMeLocaleAtom);
     return lang.toUpperCase() as Kieli;
 });

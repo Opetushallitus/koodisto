@@ -29,7 +29,6 @@ describe('Errors', () => {
             });
         });
         cy.get(`[name="${koodistoUri}-csv"]`).click();
-        cy.get(`[name="${koodistoUri}-download"]`).click();
         cy.contains('Server Error').should('be.visible');
     });
     it('error if 404 with key', () => {
@@ -43,7 +42,6 @@ describe('Errors', () => {
             });
         });
         cy.get(`[name="${koodistoUri}-csv"]`).click();
-        cy.get(`[name="${koodistoUri}-download"]`).click();
         cy.contains('Not Found').should('be.visible');
         cy.contains('custom message').should('be.visible');
     });
@@ -58,7 +56,6 @@ describe('Errors', () => {
             });
         });
         cy.get(`[name="${koodistoUri}-csv"]`).click();
-        cy.get(`[name="${koodistoUri}-download"]`).click();
         cy.contains('custom key').should('be.visible');
         cy.contains('custom message').should('be.visible');
     });

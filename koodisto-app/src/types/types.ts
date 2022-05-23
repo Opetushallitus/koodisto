@@ -1,8 +1,10 @@
 import { MessageDescriptor } from '@formatjs/intl/src/types';
 import { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat';
 import { Options as IntlMessageFormatOptions } from 'intl-messageformat/src/core';
+import { KoodistoRelation } from '../api/koodisto';
 
 export type Kieli = 'EN' | 'FI' | 'SV';
+export type Locale = Lowercase<Kieli>;
 export type ApiDate = `${number}${number}${number}${number}-${number}${number}-${number}${number}`;
 
 export type Metadata = {
@@ -10,19 +12,6 @@ export type Metadata = {
     nimi: string;
     kuvaus?: string;
     lyhytnimi?: string;
-    kayttoohje?: string;
-    kasite?: string;
-    sisaltaamerkityksen?: string;
-    eisisallamerkitysta?: string;
-    huomioitavakoodi?: string;
-    sisaltaakoodiston?: string;
-    kohdealue?: string;
-    sitovuustaso?: string;
-    kohdealueenOsaAlue?: string;
-    toimintaymparisto?: string;
-    tarkentaaKoodistoa?: string;
-    huomioitavaKoodisto?: string;
-    koodistonLahde?: string;
 };
 
 export type Koodi = UpsertKoodi & {
@@ -34,6 +23,7 @@ export type Koodi = UpsertKoodi & {
     tila: string;
     koodisto?: { koodistoUri: string };
 };
+
 export type UpsertKoodi = {
     koodiArvo: string;
     versio?: number;
@@ -41,6 +31,7 @@ export type UpsertKoodi = {
     voimassaLoppuPvm?: string;
     metadata: Metadata[];
 };
+
 export type CsvKoodiObject = {
     koodistoUri: string;
     koodiArvo: string;
@@ -64,3 +55,42 @@ export type MessageFormatter = (
     values?: Record<string, PrimitiveType | FormatXMLElementFn<string, string>>,
     opts?: IntlMessageFormatOptions
 ) => string;
+
+export type SelectOptionType = {
+    value: string;
+    label: string;
+};
+export type OrganisaatioNimi = {
+    fi: string;
+    sv: string;
+    en: string;
+};
+type BaseKoodisto = {
+    koodistoUri: string;
+    versio: number;
+    voimassaAlkuPvm: Date;
+    voimassaLoppuPvm?: Date;
+};
+export type ListKoodisto = BaseKoodisto & {
+    nimi?: string;
+    ryhmaNimi?: string;
+    ryhmaId?: number;
+    koodiCount: number;
+};
+
+export type PageKoodisto = BaseKoodisto & {
+    resourceUri: string;
+    omistaja: string | null;
+    organisaatioOid: string;
+    organisaatioNimi?: OrganisaatioNimi;
+    lukittu: boolean | null;
+    codesGroupUri: string;
+    paivitysPvm: ApiDate;
+    paivittajaOid: string;
+    tila: string;
+    metadata: Metadata[];
+    codesVersions: number[];
+    withinCodes: KoodistoRelation[];
+    includesCodes: KoodistoRelation[];
+    levelsWithCodes: KoodistoRelation[];
+};

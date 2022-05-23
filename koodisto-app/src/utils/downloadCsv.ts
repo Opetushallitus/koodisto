@@ -1,10 +1,10 @@
 import Papa from 'papaparse';
-import { Koodi, Metadata } from '../types/types';
-import { fetchKoodisByKoodisto } from '../api/koodisto';
+import { Kieli, Koodi, Metadata } from '../types/types';
+import { fetchKoodiListByKoodisto } from '../api/koodisto';
 import { info } from '../components/Notification/Notification';
 
 export const mapKoodiToCSV = (koodi: Koodi) => {
-    const allLang = ['FI', 'SV', 'EN'];
+    const allLang: Kieli[] = ['FI', 'SV', 'EN'];
     const metadataKeys = ['nimi', 'lyhytNimi', 'kuvaus'] as (keyof Metadata)[];
     const reducedMetadata = allLang.reduce((p, language) => {
         const languageKeyedMetadata: { [key: string]: string | undefined } = {};
@@ -47,7 +47,7 @@ const convertCsvToExcelAcceptedBlob = (csv: string) => {
 };
 
 const downloadCsv = async ({ koodistoUri, koodistoVersio }: { koodistoUri: string; koodistoVersio?: number }) => {
-    const data = await fetchKoodisByKoodisto({ koodistoUri, koodistoVersio });
+    const data = await fetchKoodiListByKoodisto({ koodistoUri, koodistoVersio });
     if (!data) return;
     data.sort((a, b) => a.koodiUri.localeCompare(b.koodiUri));
     const csvData = data.map(mapKoodiToCSV);

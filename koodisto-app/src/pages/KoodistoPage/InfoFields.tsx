@@ -1,8 +1,8 @@
 import React from 'react';
-import { FormattedDate, FormattedMessage } from 'react-intl';
+import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
-import { KoodistoPageKoodisto } from '../../api/koodisto';
 import { Link } from 'react-router-dom';
+import { Locale, PageKoodisto } from '../../types/types';
 
 const InfoContainer = styled.div`
     display: flex;
@@ -26,10 +26,11 @@ const InfoValue = styled.span`
 
 interface InfoFieldsProps {
     kuvaus: string;
-    koodisto: KoodistoPageKoodisto;
+    koodisto: PageKoodisto;
 }
 
 const InfoFields = ({ koodisto, kuvaus }: InfoFieldsProps) => {
+    const { locale } = useIntl();
     return (
         <InfoContainer>
             <InfoRow>
@@ -60,7 +61,7 @@ const InfoFields = ({ koodisto, kuvaus }: InfoFieldsProps) => {
                     defaultMessage={'Organisaatio'}
                     tagName={'span'}
                 />
-                <InfoValue>{koodisto.organisaatioNimi}</InfoValue>
+                <InfoValue>{koodisto.organisaatioNimi?.[locale as Locale]}</InfoValue>
             </InfoRow>
             <InfoRow>
                 <FormattedMessage id={'KOODISTOSIVU_AVAIN_PAIVITETTY'} defaultMessage={'Päivitetty'} tagName={'span'} />
