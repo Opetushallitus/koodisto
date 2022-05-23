@@ -127,9 +127,6 @@ public class UriTransliteratorImpl implements UriTransliterator {
         if (baseKoodistoRyhmaUri.isBlank()) {
             baseKoodistoRyhmaUri = "-";
         }
-        if (!baseKoodistoRyhmaUri.toLowerCase(Locale.ROOT).contains("http://")) {
-            baseKoodistoRyhmaUri = "http://" + baseKoodistoRyhmaUri;
-        }
         String koodistoRyhmaUri = baseKoodistoRyhmaUri;
 
         int i = 1;
