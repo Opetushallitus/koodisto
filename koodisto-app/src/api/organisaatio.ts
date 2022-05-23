@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { errorHandlingWrapper } from './errorHandling/errorHandling';
-import { OrganisaatioNimi } from '../types/types';
+import { errorHandlingWrapper } from './errorHandling';
+import { OrganisaatioNimi } from '../types';
 
 type Organisaatio = {
     nimi: OrganisaatioNimi;

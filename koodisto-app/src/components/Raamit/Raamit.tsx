@@ -4,7 +4,7 @@ const VIRKAILIJA_RAAMIT_PROD_URL = '/virkailija-raamit/apply-raamit.js';
 const VIRKAILIJA_RAAMIT_DEV_URL = '/koodisto-app/dev-raamit.js';
 const SCRIPT_ELEMENT_ID = 'virkailija-raamit-script';
 
-const Raamit: React.FC = ({ children }) => {
+export const Raamit: React.FC = ({ children }) => {
     if (process.env.NODE_ENV === 'development' && !document.getElementById(SCRIPT_ELEMENT_ID)) {
         const scriptElement = document.createElement('script');
         scriptElement.src = VIRKAILIJA_RAAMIT_DEV_URL;
@@ -18,4 +18,3 @@ const Raamit: React.FC = ({ children }) => {
     }
     return <>{children}</>;
 };
-export default Raamit;

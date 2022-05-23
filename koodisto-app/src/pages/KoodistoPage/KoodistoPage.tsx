@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage, useIntl } from 'react-intl';
-import IconWrapper from '../../components/IconWapper/IconWrapper';
+import { IconWrapper } from '../../components/IconWapper';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { fetchPageKoodisto } from '../../api/koodisto';
-import { translateMetadata } from '../../utils/utils';
-import { Kieli, PageKoodisto, SelectOptionType } from '../../types/types';
-import Loading from '../../components/Loading/Loading';
+import { translateMetadata } from '../../utils';
+import { Kieli, PageKoodisto, SelectOptionType } from '../../types';
+import { Loading } from '../../components/Loading';
 import InfoFields from './InfoFields';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
-import CSVUploader from '../../components/CSVUploader/CSVUploader';
+import { CSVUploader } from '../../components/CSVUploader';
 
 const MainContainer = styled.div`
     flex-grow: 1;
@@ -65,7 +65,7 @@ const SelectContainer = styled.div`
     width: 8rem;
 `;
 
-const KoodistoPage: React.FC = () => {
+export const KoodistoPage: React.FC = () => {
     const { versio, koodistoUri } = useParams();
     const versioNumber = versio ? +versio : undefined;
     const navigate = useNavigate();
@@ -176,5 +176,3 @@ const KoodistoPage: React.FC = () => {
         </>
     );
 };
-
-export default KoodistoPage;

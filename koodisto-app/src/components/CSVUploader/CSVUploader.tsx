@@ -1,17 +1,17 @@
-import Modal from '../Modal/Modal';
+import { Modal } from '../Modal';
 import { FormattedMessage, useIntl } from 'react-intl';
-import CSVReaderModal from '../CSVReaderModal/CSVReaderModal';
+import { CSVReaderModal } from '../CSVReaderModal';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import Table from '../Table/Table';
+import { Table } from '../Table';
 import { Column } from 'react-table';
-import { CsvKoodiObject, Koodi, MessageFormatter } from '../../types/types';
+import { CsvKoodiObject, Koodi, MessageFormatter } from '../../types';
 import { getHeaders, mapCsvToKoodi, mapHeadersToColumns, validData } from './uploadCsv';
 import { batchUpsertKoodi, fetchKoodiListByKoodisto } from '../../api/koodisto';
-import Loading from '../Loading/Loading';
-import { danger, success } from '../Notification/Notification';
-import downloadCsv from '../../utils/downloadCsv';
+import { Loading } from '../Loading';
+import { danger, success } from '../Notification';
+import { downloadCsv } from '../../utils';
 import styled from 'styled-components';
 
 const DownloadContainer = styled.div`
@@ -111,7 +111,7 @@ const persistData = async ({
     }
 };
 
-const CSVUploader: React.FC<Props> = ({ koodistoUri, koodistoVersio, closeUploader }) => {
+export const CSVUploader: React.FC<Props> = ({ koodistoUri, koodistoVersio, closeUploader }) => {
     const [csvKoodiArray, setCsvKoodiArray] = useState<CsvKoodiObject[]>([]);
 
     const [persistedKoodiList, setPersistedKoodiList] = useState<Koodi[] | undefined>(undefined);
@@ -204,4 +204,3 @@ const CSVUploader: React.FC<Props> = ({ koodistoUri, koodistoVersio, closeUpload
         />
     );
 };
-export default CSVUploader;

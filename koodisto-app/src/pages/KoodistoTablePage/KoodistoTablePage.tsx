@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import KoodistoTable from './KoodistoTable';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import IconWrapper from '../../components/IconWapper/IconWrapper';
+import { IconWrapper } from '../../components/IconWapper';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 
 const MainContainer = styled.div`
@@ -39,7 +39,7 @@ export const ButtonLabelPrefix = styled.span`
     align-items: center;
     padding-right: 0.3rem;
 `;
-const KoodistoTablePage: React.FC = () => {
+export const KoodistoTablePage: React.FC = () => {
     const [koodistoRyhmaModalVisible, setKoodistoRyhmaModalVisible] = useState<boolean>(false);
     const handleLisaaKoodistoRyhma = () => {
         setKoodistoRyhmaModalVisible(true);
@@ -67,5 +67,3 @@ const KoodistoTablePage: React.FC = () => {
         </>
     );
 };
-
-export default KoodistoTablePage;

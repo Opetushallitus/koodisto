@@ -25,7 +25,7 @@ const messageInputs = ({ title, message, timeOut }: NotificationProps): iNotific
         showIcon: true,
     },
 });
-const Notification = () => {
+export const Notification = () => {
     return <ReactNotifications />;
 };
 type NotificationProps = {
@@ -58,5 +58,3 @@ export const danger = (props: NotificationProps) => {
         type: 'danger' as NOTIFICATION_TYPE,
     });
 };
-
-export default Notification;

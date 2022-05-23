@@ -6,7 +6,7 @@ import {
     AccordionItemButton,
     AccordionItemPanel,
 } from 'react-accessible-accordion';
-import IconWrapper from '../IconWapper/IconWrapper';
+import { IconWrapper } from '../IconWapper';
 import { UUID } from 'react-accessible-accordion/dist/types/components/ItemContext';
 import styled from 'styled-components';
 
@@ -41,7 +41,7 @@ type AccordionProps = {
     data: AccordionDataItem[];
 };
 
-const Accordion = (props: AccordionProps) => {
+export const Accordion = (props: AccordionProps) => {
     const { data } = props;
     const [activeAcIds, setActiveAcIds] = useState<UUID[]>([]);
     return (
@@ -62,5 +62,3 @@ const Accordion = (props: AccordionProps) => {
         </AC>
     );
 };
-
-export default Accordion;

@@ -1,4 +1,4 @@
-import { ApiDate, Kieli, Metadata } from '../types/types';
+import { ApiDate, Kieli, Metadata } from '../types';
 import moment from 'moment';
 
 export const translateMetadata = (metadata: Metadata[], lang: Kieli): Metadata | undefined =>
@@ -7,3 +7,4 @@ export const translateMetadata = (metadata: Metadata[], lang: Kieli): Metadata |
 export const parseApiDate = (a: ApiDate): Date => {
     return !!a && moment(a).toDate();
 };
+export { downloadCsv } from './downloadCsv';

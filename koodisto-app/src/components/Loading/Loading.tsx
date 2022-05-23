@@ -9,7 +9,7 @@ const LoadingDiv = styled.div`
     align-items: center;
 `;
 
-const Loading: React.FC = ({ children }) => {
+export const Loading: React.FC = ({ children }) => {
     return (
         <LoadingDiv>
             <Spin />
@@ -17,4 +17,3 @@ const Loading: React.FC = ({ children }) => {
         </LoadingDiv>
     );
 };
-export default Loading;

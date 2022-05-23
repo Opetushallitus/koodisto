@@ -1,10 +1,10 @@
 import React from 'react';
-import KoodistoTablePage from './pages/KoodistoTablePage/KoodistoTablePage';
+import { KoodistoTablePage } from './pages/KoodistoTablePage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
-import Notification from './components/Notification/Notification';
-import KoodistoPage from './pages/KoodistoPage/KoodistoPage';
-import Loading from './components/Loading/Loading';
+import { Notification } from './components/Notification';
+import { KoodistoPage } from './pages/KoodistoPage';
+import { Loading } from './components/Loading';
 
 export const PageBase = styled.div`
     width: 100%;

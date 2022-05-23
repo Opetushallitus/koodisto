@@ -42,7 +42,7 @@ type Props = {
     footer?: React.ReactNode;
 };
 
-const Modal: React.FC<Props> = ({ onClose, footer, header, body }: Props) => {
+export const Modal: React.FC<Props> = ({ onClose, footer, header, body }: Props) => {
     return (
         <StyledOPModal open onClose={onClose}>
             {header && <StyledModalHeader onClose={onClose}>{header}</StyledModalHeader>}
@@ -57,5 +57,3 @@ const Modal: React.FC<Props> = ({ onClose, footer, header, body }: Props) => {
         </StyledOPModal>
     );
 };
-
-export default Modal;

@@ -6,11 +6,11 @@ import { koodistoListAtom } from '../../api/koodisto';
 import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
 import { ButtonLabelPrefix, HeaderContainer } from './KoodistoTablePage';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
-import IconWrapper from '../../components/IconWapper/IconWrapper';
+import { IconWrapper } from '../../components/IconWapper';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import Table, { SelectFilterComponent, TextFilterComponent } from '../../components/Table/Table';
-import { ListKoodisto, SelectOptionType } from '../../types/types';
+import { Table, SelectFilterComponent, TextFilterComponent } from '../../components/Table';
+import { ListKoodisto, SelectOptionType } from '../../types';
 
 type KoodistoTableProps = {
     handleLisaaKoodistoRyhma: () => void;
@@ -19,6 +19,7 @@ type KoodistoTableProps = {
 const HeaderContentDivider = styled.div`
     display: inline-flex;
     align-items: baseline;
+
     > * {
         &:first-child {
             padding-right: 1rem;

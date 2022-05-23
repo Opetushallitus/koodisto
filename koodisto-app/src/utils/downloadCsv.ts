@@ -1,5 +1,5 @@
 import Papa from 'papaparse';
-import { Kieli, Koodi, Metadata } from '../types/types';
+import { Kieli, Koodi, Metadata } from '../types';
 import { fetchKoodiListByKoodisto } from '../api/koodisto';
 import { info } from '../components/Notification/Notification';
 
@@ -46,7 +46,13 @@ const convertCsvToExcelAcceptedBlob = (csv: string) => {
     return new Blob([csvArray], { type: 'text/csv;charset=UTF-16LE;' });
 };
 
-const downloadCsv = async ({ koodistoUri, koodistoVersio }: { koodistoUri: string; koodistoVersio?: number }) => {
+export const downloadCsv = async ({
+    koodistoUri,
+    koodistoVersio,
+}: {
+    koodistoUri: string;
+    koodistoVersio?: number;
+}) => {
     const data = await fetchKoodiListByKoodisto({ koodistoUri, koodistoVersio });
     if (!data) return;
     data.sort((a, b) => a.koodiUri.localeCompare(b.koodiUri));
@@ -56,4 +62,3 @@ const downloadCsv = async ({ koodistoUri, koodistoVersio }: { koodistoUri: strin
     pushBlobToUser({ fileName: `${koodistoUri}.csv`, blob });
     info({ title: 'CSV_DOWNLOAD_NOTIFICATION_TITLE', message: 'CSV_DOWNLOAD_NOTIFICATION_SUCCESS' });
 };
-export default downloadCsv;

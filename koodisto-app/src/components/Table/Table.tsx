@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { ValueType } from 'react-select';
-import { SelectOptionType } from '../../types/types';
+import { SelectOptionType } from '../../types';
 
 const TableContainer = styled.div`
     overflow-x: scroll;
@@ -107,7 +107,7 @@ export const SelectFilterComponent = <T extends Record<string, unknown>>({
     );
 };
 
-const Table = <T extends object>({
+export const Table = <T extends object>({
     columns,
     data,
     onFilter,
@@ -168,5 +168,3 @@ const Table = <T extends object>({
         </TableContainer>
     );
 };
-
-export default Table;

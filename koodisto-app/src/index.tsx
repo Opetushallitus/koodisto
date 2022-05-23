@@ -5,9 +5,9 @@ import Cookies from 'universal-cookie';
 import { Provider, useAtom } from 'jotai';
 import { ROOT_OID } from './context/constants';
 import './index.css';
-import ErrorPage from './pages/ErrorPage/ErrorPage';
-import Loading from './components/Loading/Loading';
-import Raamit from './components/Raamit/Raamit';
+import { ErrorPage } from './pages/ErrorPage';
+import { Loading } from './components/Loading';
+import { Raamit } from './components/Raamit';
 import createTheme from '@opetushallitus/virkailija-ui-components/createTheme';
 import { ThemeProvider } from 'styled-components';
 import { casMeLocaleAtom } from './api/kayttooikeus';
@@ -24,17 +24,21 @@ axios.interceptors.request.use((config) => {
     }
     return config;
 });
+
 export class ErrorBoundary extends React.Component<unknown, { hasError: boolean }> {
     constructor(props: unknown) {
         super(props);
         this.state = { hasError: false };
     }
+
     static getDerivedStateFromError() {
         return { hasError: true };
     }
+
     componentDidCatch(error: Error, errorInfo: ErrorInfo) {
         console.error(error, errorInfo);
     }
+
     render() {
         const { hasError } = this.state;
         if (hasError) {

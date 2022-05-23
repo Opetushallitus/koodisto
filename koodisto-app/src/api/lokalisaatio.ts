@@ -2,7 +2,7 @@ import { atom, Getter } from 'jotai';
 import { API_LOKALISAATIO_PATH } from '../context/constants';
 import { casMeLocaleAtom } from './kayttooikeus';
 import axios from 'axios';
-import { Locale } from '../types/types';
+import { Locale } from '../types';
 
 const urlAtom = atom(API_LOKALISAATIO_PATH);
 type Lokalisaatio = { locale: Locale; key: string; value: string };

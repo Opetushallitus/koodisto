@@ -1,5 +1,5 @@
 import React from 'react';
-import Accordion from '../../components/Accordion/Accordion';
+import { Accordion } from '../../components/Accordion';
 import { useIntl } from 'react-intl';
 import { KoodistoRelation } from '../../api/koodisto';
 import KoodistoRelationsTable from './KoodistoRelationsTable';

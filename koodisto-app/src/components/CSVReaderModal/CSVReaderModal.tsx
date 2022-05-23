@@ -36,7 +36,7 @@ type Props<T> = {
     onUploadAccepted?: (data: ParseResult<T>, file?: File, event?: DragEvent | Event) => void;
 };
 
-const CSVReaderModal = <T extends object>({ onUploadAccepted }: Props<T>) => {
+export const CSVReaderModal = <T extends object>({ onUploadAccepted }: Props<T>) => {
     const { CSVReader } = useCSVReader();
     return (
         <CSVReader onUploadAccepted={onUploadAccepted} config={{ header: true }}>
@@ -69,4 +69,3 @@ const CSVReaderModal = <T extends object>({ onUploadAccepted }: Props<T>) => {
         </CSVReader>
     );
 };
-export default CSVReaderModal;

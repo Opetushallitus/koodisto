@@ -19,7 +19,7 @@ const handleError = <T>(error: AxiosError<T> | unknown) => {
         console.error(error);
     }
 };
-const errorHandlingWrapper = async <A = never, B = AxiosResponse<A>>(
+export const errorHandlingWrapper = async <A = never, B = AxiosResponse<A>>(
     workhorse: () => Promise<B>
 ): Promise<B | undefined> => {
     return workhorse().catch((e) => {
@@ -27,12 +27,11 @@ const errorHandlingWrapper = async <A = never, B = AxiosResponse<A>>(
         return Promise.resolve(undefined);
     });
 };
-function useErrorHandlingWrapper<T>(workhorse: () => { data: T | undefined; loading: boolean }) {
+export const useErrorHandlingWrapper = <T>(workhorse: () => { data: T | undefined; loading: boolean }) => {
     try {
         return workhorse();
     } catch (error) {
         handleError(error);
         return { data: undefined, loading: false };
     }
-}
-export { errorHandlingWrapper, useErrorHandlingWrapper };
+};

@@ -2,7 +2,7 @@ import React from 'react';
 import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { Locale, PageKoodisto } from '../../types/types';
+import { Locale, PageKoodisto } from '../../types';
 
 const InfoContainer = styled.div`
     display: flex;

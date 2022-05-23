@@ -1,5 +1,5 @@
-import { translateMetadata } from './utils';
-import { Kieli, Metadata } from '../types/types';
+import { translateMetadata } from './index';
+import { Kieli, Metadata } from '../types';
 
 describe('translateMetadata', () => {
     const uppercaseSVLocale = 'SV' as Kieli;

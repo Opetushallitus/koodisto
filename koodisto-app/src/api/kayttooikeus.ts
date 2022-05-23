@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Atom, atom, Getter } from 'jotai';
-import { Kieli, Locale } from '../types/types';
+import { Kieli, Locale } from '../types';
 const urlAtom = atom<string>('/kayttooikeus-service/cas/me');
 
 type CASMeApi = {

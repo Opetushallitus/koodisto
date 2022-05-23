@@ -1,4 +1,4 @@
-import { CsvKoodiObject, Kieli, MessageFormatter, UpsertKoodi } from '../../types/types';
+import { CsvKoodiObject, Kieli, MessageFormatter, UpsertKoodi } from '../../types';
 import { Column } from 'react-table';
 
 export const getHeaders = (data?: CsvKoodiObject[]): (keyof CsvKoodiObject)[] =>
