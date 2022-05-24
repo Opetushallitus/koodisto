@@ -9,22 +9,21 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @Builder
 public class InternalKoodiVersioDto {
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private String koodiarvo;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private Integer versio;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private Date paivitysPvm;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private String paivittajaOid;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private Date voimassaAlkuPvm;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private List<KoodiMetadataDto> metadatas;
 }

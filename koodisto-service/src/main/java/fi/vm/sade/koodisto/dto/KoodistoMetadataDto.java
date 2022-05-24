@@ -15,10 +15,10 @@ import lombok.Setter;
 public class KoodistoMetadataDto   {
 
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Intetrnal.class })
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class })
     private Kieli kieli;
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Intetrnal.class })
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class })
     private String nimi;
 
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })

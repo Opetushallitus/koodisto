@@ -2,7 +2,6 @@ package fi.vm.sade.koodisto.resource.internal;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.KoodiDto;
-import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoListDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
 import fi.vm.sade.koodisto.model.JsonViews;
@@ -47,7 +46,7 @@ public class InternalResource {
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @GetMapping(path = "/koodi/{koodistoUri}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     public @ResponseBody ResponseEntity<List<KoodiDto>> getKoodiListForKoodisto(
             @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri
     ) {
@@ -59,7 +58,7 @@ public class InternalResource {
     @PostMapping(path = "/koodi/{koodistoUri}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     public ResponseEntity<InternalKoodistoPageDto> upsertKoodiByKoodisto(
             @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri, @NotEmpty(message = "error.koodi.list.empty") @RequestBody List<@Valid KoodiDto> koodis
     ) {
@@ -76,7 +75,7 @@ public class InternalResource {
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @GetMapping(path = "/koodisto",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     public @ResponseBody ResponseEntity<List<InternalKoodistoListDto>> getKoodistoList() {
         SearchKoodistosCriteriaType criteria = KoodistoServiceSearchCriteriaBuilder.latestCodes();
         List<KoodistoVersio> result = koodistoBusinessService.searchKoodistos(criteria);
@@ -86,7 +85,7 @@ public class InternalResource {
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @GetMapping(path = "/koodisto/{koodistoUri}/{koodistoVersio}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     public @ResponseBody ResponseEntity<InternalKoodistoPageDto> getKoodisto(
             @PathVariable @NotBlank String koodistoUri,
              @PathVariable @Min(1) Integer koodistoVersio) {

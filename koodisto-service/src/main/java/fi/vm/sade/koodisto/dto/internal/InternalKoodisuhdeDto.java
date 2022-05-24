@@ -8,12 +8,12 @@ import java.util.Map;
 
 @Builder
 public class InternalKoodisuhdeDto {
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private final String koodiUri;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private final Integer koodiVersio;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private final Map<String, String> nimi;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private final Map<String, String> kuvaus;
 }

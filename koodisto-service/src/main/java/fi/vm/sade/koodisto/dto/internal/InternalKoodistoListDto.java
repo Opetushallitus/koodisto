@@ -16,19 +16,19 @@ import java.util.Set;
 @Setter
 @Builder
 public class InternalKoodistoListDto {
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private
     Set<KoodistoRyhmaMetadataDto> koodistoRyhmaMetadata;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private String koodistoUri;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private int versio;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private Date voimassaAlkuPvm;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private Date voimassaLoppuPvm;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private List<KoodistoMetadataDto> metadata;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private int koodiCount;
 }

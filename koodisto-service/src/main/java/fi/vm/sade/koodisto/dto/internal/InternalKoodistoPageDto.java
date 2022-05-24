@@ -15,30 +15,30 @@ import java.util.List;
 @Setter
 @Builder
 public class InternalKoodistoPageDto {
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private String resourceUri;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private int versio;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private Date paivitysPvm;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private String paivittajaOid;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private Date voimassaAlkuPvm;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private Date voimassaLoppuPvm;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private Tila tila;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private List<KoodistoMetadataDto> metadata;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private List<Integer> koodiVersio;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private List<InternalKoodisuhdeDto> sisaltyyKoodistoihin;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private List<InternalKoodisuhdeDto> sisaltaaKoodistot;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private List<InternalKoodisuhdeDto> rinnastuuKoodistoihin;
-    @JsonView({JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Internal.class})
     private List<InternalKoodiVersioDto> koodiList;
 }

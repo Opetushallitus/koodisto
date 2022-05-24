@@ -17,7 +17,7 @@ import javax.validation.constraints.NotEmpty;
 public class KoodiMetadataDto {
 
     @NotEmpty(message = "error.nimi.empty")
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
     private String nimi;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
@@ -44,7 +44,7 @@ public class KoodiMetadataDto {
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private String sisaltaaKoodiston;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Intetrnal.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
     private Kieli kieli;
 
     private KoodiVersio koodiVersio;
