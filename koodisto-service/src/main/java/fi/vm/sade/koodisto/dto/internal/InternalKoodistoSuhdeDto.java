@@ -7,11 +7,11 @@ import lombok.Builder;
 import java.util.Map;
 
 @Builder
-public class InternalKoodisuhdeDto {
+public class InternalKoodistoSuhdeDto {
     @JsonView({JsonViews.Internal.class})
-    private final String koodiUri;
+    private final String koodistoUri;
     @JsonView({JsonViews.Internal.class})
-    private final Integer koodiVersio;
+    private final Integer koodistoVersio;
     @JsonView({JsonViews.Internal.class})
     private final Map<String, String> nimi;
     @JsonView({JsonViews.Internal.class})

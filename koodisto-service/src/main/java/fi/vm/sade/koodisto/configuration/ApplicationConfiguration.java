@@ -52,7 +52,7 @@ public class ApplicationConfiguration {
         ks.addConverter(new KoodistoVersioToKoodistoVersioListDtoConverter());
         ks.addConverter(new KoodistoRyhmaToKoodistoRyhmaDtoConverter());
         ks.addConverter(new KoodistoVersioToInternalKoodistoListDtoConverter(new KoodistoMetadataToKoodistoMetadataDtoConverter(), new KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter()));
-        ks.addConverter(new KoodistoVersioToInternalKoodistoPageDtoConverter(new KoodistoMetadataToKoodistoMetadataDtoConverter(), new KoodiVersioToInternalKoodiVersioDtoConverter(new KoodiMetadataToKoodiMetadataDtoConverter())));
+        ks.addConverter(new KoodistoVersioToInternalKoodistoPageDtoConverter(ophProperties, new KoodistoMetadataToKoodistoMetadataDtoConverter(), new KoodiVersioToInternalKoodiVersioDtoConverter(new KoodiMetadataToKoodiMetadataDtoConverter())));
         return ks;
     }
 }

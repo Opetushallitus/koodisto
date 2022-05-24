@@ -1,12 +1,14 @@
 package fi.vm.sade.koodisto.service.conversion.impl.koodisto;
 
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
-import fi.vm.sade.koodisto.dto.internal.InternalKoodisuhdeDto;
+import fi.vm.sade.koodisto.dto.internal.InternalKoodistoSuhdeDto;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioDtoConverter;
+import fi.vm.sade.properties.OphProperties;
 import lombok.RequiredArgsConstructor;
 
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -14,15 +16,20 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class KoodistoVersioToInternalKoodistoPageDtoConverter extends
         AbstractFromDomainConverter<KoodistoVersio, InternalKoodistoPageDto> {
+
+    private final OphProperties ophProperties;
     private final KoodistoMetadataToKoodistoMetadataDtoConverter koodistoMetadataToKoodistoMetadataDtoConverter;
     private final KoodiVersioToInternalKoodiVersioDtoConverter koodiVersioToInternalKoodiVersioDtoConverter;
 
     @Override
     public InternalKoodistoPageDto convert(KoodistoVersio source) {
-        List<InternalKoodisuhdeDto> levelsWithCodes = getLevelsWithCodes(source);
+        List<InternalKoodistoSuhdeDto> levelsWithCodes = getLevelsWithCodes(source);
         return InternalKoodistoPageDto.builder()
-                .resourceUri(source.getKoodisto().getKoodistoUri())
+                .koodistoRyhmaUri(source.getKoodisto().getKoodistoUri())
+                .resourceUri(MessageFormat.format(ophProperties.url("koodistoUriFormat"), source.getKoodisto().getKoodistoUri()))
+                .koodistoUri(source.getKoodisto().getKoodistoUri())
                 .versio(source.getVersio())
+                .organisaatioOid(source.getKoodisto().getOrganisaatioOid())
                 .paivitysPvm(source.getPaivitysPvm())
                 .paivittajaOid(source.getPaivittajaOid())
                 .voimassaAlkuPvm(source.getVoimassaAlkuPvm())
@@ -44,23 +51,23 @@ public class KoodistoVersioToInternalKoodistoPageDtoConverter extends
                 .build();
     }
 
-    private static List<InternalKoodisuhdeDto> getLevelsWithCodes(KoodistoVersio source) {
-        List<InternalKoodisuhdeDto> levelsWith = new ArrayList<>();
+    private static List<InternalKoodistoSuhdeDto> getLevelsWithCodes(KoodistoVersio source) {
+        List<InternalKoodistoSuhdeDto> levelsWith = new ArrayList<>();
         levelsWith.addAll(extractBySuhde(source.getYlakoodistos(), SuhteenTyyppi.RINNASTEINEN, KoodistonSuhde::getYlakoodistoVersio));
         levelsWith.addAll(extractBySuhde(source.getAlakoodistos(), SuhteenTyyppi.RINNASTEINEN, KoodistonSuhde::getAlakoodistoVersio));
         return levelsWith;
     }
 
 
-    private static List<InternalKoodisuhdeDto> extractBySuhde(Set<KoodistonSuhde> source, SuhteenTyyppi tyyppi,
-                                                              Function<KoodistonSuhde, KoodistoVersio> getKoodistoVersio) {
+    private static List<InternalKoodistoSuhdeDto> extractBySuhde(Set<KoodistonSuhde> source, SuhteenTyyppi tyyppi,
+                                                                 Function<KoodistonSuhde, KoodistoVersio> getKoodistoVersio) {
         return source.stream()
                 .filter(ks -> ks.getSuhteenTyyppi() == tyyppi)
                 .map(getKoodistoVersio)
                 .filter(Objects::nonNull)
-                .map(relatedKoodisto -> (InternalKoodisuhdeDto.builder()
-                        .koodiUri(relatedKoodisto.getKoodisto().getKoodistoUri())
-                        .koodiVersio(relatedKoodisto.getVersio())
+                .map(relatedKoodisto -> (InternalKoodistoSuhdeDto.builder()
+                        .koodistoUri(relatedKoodisto.getKoodisto().getKoodistoUri())
+                        .koodistoVersio(relatedKoodisto.getVersio())
                         .nimi(getNimi(relatedKoodisto))
                         .kuvaus(getKuvaus(relatedKoodisto)).build())).collect(Collectors.toList());
     }

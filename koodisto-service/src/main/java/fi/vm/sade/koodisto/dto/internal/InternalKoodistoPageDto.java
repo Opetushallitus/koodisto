@@ -16,9 +16,15 @@ import java.util.List;
 @Builder
 public class InternalKoodistoPageDto {
     @JsonView({JsonViews.Internal.class})
+    private String koodistoRyhmaUri;
+    @JsonView({JsonViews.Internal.class})
     private String resourceUri;
     @JsonView({JsonViews.Internal.class})
+    private String koodistoUri;
+    @JsonView({JsonViews.Internal.class})
     private int versio;
+    @JsonView({JsonViews.Internal.class})
+    private String organisaatioOid;
     @JsonView({JsonViews.Internal.class})
     private Date paivitysPvm;
     @JsonView({JsonViews.Internal.class})
@@ -34,11 +40,11 @@ public class InternalKoodistoPageDto {
     @JsonView({JsonViews.Internal.class})
     private List<Integer> koodiVersio;
     @JsonView({JsonViews.Internal.class})
-    private List<InternalKoodisuhdeDto> sisaltyyKoodistoihin;
+    private List<InternalKoodistoSuhdeDto> sisaltyyKoodistoihin;
     @JsonView({JsonViews.Internal.class})
-    private List<InternalKoodisuhdeDto> sisaltaaKoodistot;
+    private List<InternalKoodistoSuhdeDto> sisaltaaKoodistot;
     @JsonView({JsonViews.Internal.class})
-    private List<InternalKoodisuhdeDto> rinnastuuKoodistoihin;
+    private List<InternalKoodistoSuhdeDto> rinnastuuKoodistoihin;
     @JsonView({JsonViews.Internal.class})
     private List<InternalKoodiVersioDto> koodiList;
 }
