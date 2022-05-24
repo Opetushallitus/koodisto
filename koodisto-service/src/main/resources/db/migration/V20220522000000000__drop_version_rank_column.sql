@@ -1,0 +1,1 @@
+alter table schema_version drop column version_rank;

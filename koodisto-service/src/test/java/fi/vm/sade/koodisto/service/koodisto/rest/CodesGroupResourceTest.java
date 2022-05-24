@@ -71,7 +71,7 @@ public class CodesGroupResourceTest {
         assertDtoEquals(dto, (KoodistoRyhmaDto) response.getBody());
 
     }
-    
+
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = ROLE_APP_KOODISTO_READ_UPDATE)
     public void testUpdateInvalid() {
@@ -95,11 +95,11 @@ public class CodesGroupResourceTest {
         ResponseEntity codesByCodesUri = resource.getCodesByCodesUri(newId);
         assertResponse(codesByCodesUri, 200);
         KoodistoRyhmaDto insertedDto = (KoodistoRyhmaDto) codesByCodesUri.getBody();
-        assertEquals("http://" + newName, insertedDto.getKoodistoRyhmaUri());
+        assertEquals(newName, insertedDto.getKoodistoRyhmaUri());
         assertEquals(1, insertedDto.getKoodistoRyhmaMetadatas().size());
         assertEquals(0, insertedDto.getKoodistos().size());
     }
-    
+
     @Test
     @WithMockUser(authorities = "ROLE_APP_KOODISTO_CRUD")
     public void testInsertInvalid() {
@@ -116,7 +116,7 @@ public class CodesGroupResourceTest {
         assertResponse(resource.delete(-3L), 202);
         assertResponse(resource.getCodesByCodesUri(-3L), 500);
     }
-    
+
     @Test
     @WithMockUser(authorities = "ROLE_APP_KOODISTO_CRUD")
     public void testDeleteInvalid() {
@@ -131,12 +131,12 @@ public class CodesGroupResourceTest {
     private void assertResponse(ResponseEntity response, int expectedStatus) {
         assertEquals(expectedStatus, response.getStatusCodeValue());
     }
-    
+
     private void assertResponse(ResponseEntity response, int expectedStatus, Object expectedEntity) {
         assertResponse(response, expectedStatus);
         assertEquals(expectedEntity, response.getBody());
     }
-    
+
     private KoodistoRyhmaDto createDto(String name, int howManyMetadatas) {
         KoodistoRyhmaDto dto = new KoodistoRyhmaDto();
         HashSet<KoodistoRyhmaMetadata> metadatas = new HashSet<KoodistoRyhmaMetadata>();

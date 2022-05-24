@@ -1,0 +1,1 @@
+UPDATE koodistoryhma set koodistoryhmauri = substr(koodistoryhmauri,length('http://')+1) where koodistoryhmauri like 'http://%';
