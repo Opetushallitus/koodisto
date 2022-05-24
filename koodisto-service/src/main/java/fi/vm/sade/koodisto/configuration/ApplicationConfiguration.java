@@ -39,20 +39,34 @@ public class ApplicationConfiguration {
         ks.addConverter(koodistoToKoodistoListDtoConverter);
         ks.addConverter(new KoodiMetadataDtoToKoodiMetadataTypeConverter());
         ks.addConverter(new KoodistoMetadataToKoodistoMetadataTypeConverter());
-        ks.addConverter(new KoodistoVersioToKoodistoDtoConverter(ophProperties));
+        ks.addConverter(new KoodistoVersioToKoodistoDtoConverter(
+                ophProperties));
         ks.addConverter(new KoodistoTypeToKoodistoVersioConverter());
         ks.addConverter(new KoodiTypeToKoodiVersioConverter());
         ks.addConverter(new KoodiMetadataTypeToKoodiMetadataConverter());
         ks.addConverter(new KoodistoMetadataTypeToKoodistoMetadataConverter());
-        ks.addConverter(new KoodistoVersioToKoodistoTypeConverter(ophProperties));
+        ks.addConverter(new KoodistoVersioToKoodistoTypeConverter(
+                ophProperties));
         ks.addConverter(new KoodiVersioWithKoodistoItemToSimpleKoodiDtoConverter());
-        ks.addConverter(new KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter(ophProperties, new KoodiMetadataToKoodiMetadataDtoConverter()));
-        ks.addConverter(new KoodiVersioWithKoodistoItemToKoodiDtoConverter(ophProperties, new KoodiMetadataToKoodiMetadataDtoConverter()));
-        ks.addConverter(new KoodistoRyhmaToKoodistoRyhmaListDtoConverter(koodistoToKoodistoListDtoConverter));
+        ks.addConverter(new KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter(
+                ophProperties,
+                new KoodiMetadataToKoodiMetadataDtoConverter()));
+        ks.addConverter(new KoodiVersioWithKoodistoItemToKoodiDtoConverter(
+                ophProperties,
+                new KoodiMetadataToKoodiMetadataDtoConverter()));
+        ks.addConverter(new KoodistoRyhmaToKoodistoRyhmaListDtoConverter(
+                koodistoToKoodistoListDtoConverter));
         ks.addConverter(new KoodistoVersioToKoodistoVersioListDtoConverter());
         ks.addConverter(new KoodistoRyhmaToKoodistoRyhmaDtoConverter());
-        ks.addConverter(new KoodistoVersioToInternalKoodistoListDtoConverter(new KoodistoMetadataToKoodistoMetadataDtoConverter(), new KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter()));
-        ks.addConverter(new KoodistoVersioToInternalKoodistoPageDtoConverter(ophProperties, new KoodistoMetadataToKoodistoMetadataDtoConverter(), new KoodiVersioToInternalKoodiVersioDtoConverter(new KoodiMetadataToKoodiMetadataDtoConverter())));
+        ks.addConverter(new KoodistoVersioToInternalKoodistoListDtoConverter(
+                new KoodistoMetadataToKoodistoMetadataDtoConverter(),
+                new KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter()));
+        ks.addConverter(new KoodistoVersioToInternalKoodistoPageDtoConverter(
+                ophProperties,
+                new KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter(),
+                new KoodistoMetadataToKoodistoMetadataDtoConverter(),
+                new KoodiVersioToInternalKoodiVersioDtoConverter(
+                        new KoodiMetadataToKoodiMetadataDtoConverter())));
         return ks;
     }
 }

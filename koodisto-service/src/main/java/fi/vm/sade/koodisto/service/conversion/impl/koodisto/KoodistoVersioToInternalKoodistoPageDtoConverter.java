@@ -5,6 +5,7 @@ import fi.vm.sade.koodisto.dto.internal.InternalKoodistoSuhdeDto;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;
 import fi.vm.sade.properties.OphProperties;
 import lombok.RequiredArgsConstructor;
 
@@ -18,6 +19,7 @@ public class KoodistoVersioToInternalKoodistoPageDtoConverter extends
         AbstractFromDomainConverter<KoodistoVersio, InternalKoodistoPageDto> {
 
     private final OphProperties ophProperties;
+    private final KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter koodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;
     private final KoodistoMetadataToKoodistoMetadataDtoConverter koodistoMetadataToKoodistoMetadataDtoConverter;
     private final KoodiVersioToInternalKoodiVersioDtoConverter koodiVersioToInternalKoodiVersioDtoConverter;
 
@@ -25,7 +27,13 @@ public class KoodistoVersioToInternalKoodistoPageDtoConverter extends
     public InternalKoodistoPageDto convert(KoodistoVersio source) {
         List<InternalKoodistoSuhdeDto> levelsWithCodes = getLevelsWithCodes(source);
         return InternalKoodistoPageDto.builder()
-                .koodistoRyhmaUri(source.getKoodisto().getKoodistoUri())
+                .koodistoRyhmaMetadata(source.getKoodisto().getKoodistoRyhmas().stream()
+                        .findFirst()
+                        .map(KoodistoRyhma::getKoodistoRyhmaMetadatas)
+                        .map(a -> a.stream()
+                                .map(koodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter::convert)
+                                .collect(Collectors.toSet()))
+                        .orElse(null))
                 .resourceUri(MessageFormat.format(ophProperties.url("koodistoUriFormat"), source.getKoodisto().getKoodistoUri()))
                 .koodistoUri(source.getKoodisto().getKoodistoUri())
                 .versio(source.getVersio())

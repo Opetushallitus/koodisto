@@ -2,6 +2,7 @@ package fi.vm.sade.koodisto.dto.internal;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.KoodistoMetadataDto;
+import fi.vm.sade.koodisto.dto.KoodistoRyhmaMetadataDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Tila;
 import lombok.Builder;
@@ -10,13 +11,14 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 @Builder
 public class InternalKoodistoPageDto {
     @JsonView({JsonViews.Internal.class})
-    private String koodistoRyhmaUri;
+    private Set<KoodistoRyhmaMetadataDto> koodistoRyhmaMetadata;
     @JsonView({JsonViews.Internal.class})
     private String resourceUri;
     @JsonView({JsonViews.Internal.class})
