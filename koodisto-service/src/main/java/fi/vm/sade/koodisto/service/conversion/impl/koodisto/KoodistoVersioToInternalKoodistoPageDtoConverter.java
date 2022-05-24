@@ -53,7 +53,7 @@ public class KoodistoVersioToInternalKoodistoPageDtoConverter extends
 
 
     private static List<InternalKoodisuhdeDto> extractBySuhde(Set<KoodistonSuhde> source, SuhteenTyyppi tyyppi,
-                                                              Function<? super KoodistonSuhde, ? extends KoodistoVersio> getKoodistoVersio) {
+                                                              Function<KoodistonSuhde, KoodistoVersio> getKoodistoVersio) {
         return source.stream()
                 .filter(ks -> ks.getSuhteenTyyppi() == tyyppi)
                 .map(getKoodistoVersio)
