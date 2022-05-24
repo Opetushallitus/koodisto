@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class InternalKoodiVersioDto {
     @JsonView({JsonViews.Internal.class})
-    private String koodiarvo;
+    private String koodiArvo;
     @JsonView({JsonViews.Internal.class})
     private Integer versio;
     @JsonView({JsonViews.Internal.class})
@@ -25,5 +25,5 @@ public class InternalKoodiVersioDto {
     @JsonView({JsonViews.Internal.class})
     private Date voimassaAlkuPvm;
     @JsonView({JsonViews.Internal.class})
-    private List<KoodiMetadataDto> metadatas;
+    private List<KoodiMetadataDto> metadata;
 }

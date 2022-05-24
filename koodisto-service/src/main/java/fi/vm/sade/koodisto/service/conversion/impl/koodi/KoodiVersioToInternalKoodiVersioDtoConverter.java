@@ -15,12 +15,12 @@ private final KoodiMetadataToKoodiMetadataDtoConverter koodiMetadataToKoodiMetad
     public InternalKoodiVersioDto convert(KoodiVersio source) {
         return
         InternalKoodiVersioDto.builder()
-                .koodiarvo(source.getKoodiarvo())
+                .koodiArvo(source.getKoodiarvo())
                 .versio(source.getVersio())
                 .paivitysPvm(source.getPaivitysPvm())
                 .paivittajaOid(source.getPaivittajaOid())
                 .voimassaAlkuPvm(source.getVoimassaAlkuPvm())
-                .metadatas(source.getMetadatas().stream()
+                .metadata(source.getMetadatas().stream()
                         .map(koodiMetadataToKoodiMetadataDtoConverter::convert)
                         .collect(Collectors.toList()))
                 .build();

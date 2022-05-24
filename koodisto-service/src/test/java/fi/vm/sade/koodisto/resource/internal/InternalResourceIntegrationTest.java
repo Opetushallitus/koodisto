@@ -268,7 +268,7 @@ class InternalResourceIntegrationTest {
                         "\"koodistoUri\":\"dummy\",\"versio\":1," +
                         "\"voimassaAlkuPvm\":\"2012-11-20\"," +
                         "\"voimassaLoppuPvm\":null," +
-                        "\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Dummy\"}]," +
+                        "\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Dummy\",\"kuvaus\":\"kuvaus\"}]," +
                         "\"koodiCount\":0}")))
                 .andExpect(status().isOk());
     }
