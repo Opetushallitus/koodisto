@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.dto.internal;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.KoodistoMetadataDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaMetadataDto;
@@ -28,12 +29,15 @@ public class InternalKoodistoPageDto {
     @JsonView({JsonViews.Internal.class})
     private String organisaatioOid;
     @JsonView({JsonViews.Internal.class})
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date paivitysPvm;
     @JsonView({JsonViews.Internal.class})
     private String paivittajaOid;
     @JsonView({JsonViews.Internal.class})
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date voimassaAlkuPvm;
     @JsonView({JsonViews.Internal.class})
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date voimassaLoppuPvm;
     @JsonView({JsonViews.Internal.class})
     private Tila tila;
