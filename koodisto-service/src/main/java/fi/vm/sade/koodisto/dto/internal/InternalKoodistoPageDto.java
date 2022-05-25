@@ -18,38 +18,53 @@ import java.util.Set;
 @Setter
 @Builder
 public class InternalKoodistoPageDto {
+
     @JsonView({JsonViews.Internal.class})
     private Set<KoodistoRyhmaMetadataDto> koodistoRyhmaMetadata;
+
     @JsonView({JsonViews.Internal.class})
     private String resourceUri;
+
     @JsonView({JsonViews.Internal.class})
     private String koodistoUri;
+
     @JsonView({JsonViews.Internal.class})
     private int versio;
+
     @JsonView({JsonViews.Internal.class})
     private String organisaatioOid;
+
     @JsonView({JsonViews.Internal.class})
-//    @JsonFormat(pattern="yyyy-MM-dd")
     private Date paivitysPvm;
+
     @JsonView({JsonViews.Internal.class})
     private String paivittajaOid;
+
     @JsonView({JsonViews.Internal.class})
     private Date voimassaAlkuPvm;
+
     @JsonView({JsonViews.Internal.class})
     @JsonFormat(pattern="yyyy-MM-dd")
     private Date voimassaLoppuPvm;
+
     @JsonView({JsonViews.Internal.class})
     private Tila tila;
+
     @JsonView({JsonViews.Internal.class})
     private List<KoodistoMetadataDto> metadata;
+
     @JsonView({JsonViews.Internal.class})
     private List<Integer> koodiVersio;
+
     @JsonView({JsonViews.Internal.class})
     private List<InternalKoodistoSuhdeDto> sisaltyyKoodistoihin;
+
     @JsonView({JsonViews.Internal.class})
     private List<InternalKoodistoSuhdeDto> sisaltaaKoodistot;
+
     @JsonView({JsonViews.Internal.class})
     private List<InternalKoodistoSuhdeDto> rinnastuuKoodistoihin;
+
     @JsonView({JsonViews.Internal.class})
     private List<InternalKoodiVersioDto> koodiList;
 }
