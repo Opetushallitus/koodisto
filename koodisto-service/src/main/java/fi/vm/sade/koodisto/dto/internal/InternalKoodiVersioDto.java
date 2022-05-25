@@ -25,7 +25,6 @@ public class InternalKoodiVersioDto {
     @JsonView({JsonViews.Internal.class})
     private String paivittajaOid;
     @JsonView({JsonViews.Internal.class})
-    @JsonFormat(pattern="yyyy-MM-dd")
     private Date voimassaAlkuPvm;
     @JsonView({JsonViews.Internal.class})
     private List<KoodiMetadataDto> metadata;

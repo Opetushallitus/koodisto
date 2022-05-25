@@ -29,12 +29,11 @@ public class InternalKoodistoPageDto {
     @JsonView({JsonViews.Internal.class})
     private String organisaatioOid;
     @JsonView({JsonViews.Internal.class})
-    @JsonFormat(pattern="yyyy-MM-dd")
+//    @JsonFormat(pattern="yyyy-MM-dd")
     private Date paivitysPvm;
     @JsonView({JsonViews.Internal.class})
     private String paivittajaOid;
     @JsonView({JsonViews.Internal.class})
-    @JsonFormat(pattern="yyyy-MM-dd")
     private Date voimassaAlkuPvm;
     @JsonView({JsonViews.Internal.class})
     @JsonFormat(pattern="yyyy-MM-dd")

@@ -281,7 +281,7 @@ class InternalResourceIntegrationTest {
         this.mockMvc
                 .perform(get("/internal/koodisto/get/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().json((
+                .andExpect(content().json(
                         "{\"koodistoRyhmaMetadata\":[{" +
                                 "\"id\":-1," +
                                 "\"uri\":\"general\"," +
@@ -307,7 +307,7 @@ class InternalResourceIntegrationTest {
                                 "\"paivitysPvm\":\"2012-03-22\"," +
                                 "\"paivittajaOid\":null," +
                                 "\"voimassaAlkuPvm\":\"1990-01-01\"," +
-                                "\"metadata\":[{\"nimi\":\"get1\",\"kieli\":\"FI\"}]}]}"),true));
+                                "\"metadata\":[{\"nimi\":\"get1\",\"kieli\":\"FI\"}]}]}"));
     }
 
 }
