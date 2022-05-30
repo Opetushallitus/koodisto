@@ -1,6 +1,6 @@
 package fi.vm.sade.koodisto.service.conversion.impl.koodisto;
 
-import fi.vm.sade.koodisto.dto.InternalKoodistoListDto;
+import fi.vm.sade.koodisto.dto.internal.InternalKoodistoListDto;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
@@ -21,7 +21,6 @@ public class KoodistoVersioToInternalKoodistoListDtoConverter extends
                 .koodistoUri(source.getKoodisto().getKoodistoUri())
                 .versio(source.getVersio())
                 .koodistoRyhmaMetadata(source.getKoodisto().getKoodistoRyhmas().stream()
-                        .filter(a -> !a.getKoodistoRyhmaUri().equals("http://kaikkikoodistot"))
                         .findFirst()
                         .map(KoodistoRyhma::getKoodistoRyhmaMetadatas)
                         .map(a -> a.stream()
