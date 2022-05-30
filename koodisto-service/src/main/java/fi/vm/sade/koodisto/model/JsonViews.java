@@ -7,4 +7,6 @@ public class JsonViews {
     }
     public static class Simple {
     }
+    public static class Internal {
+    }
 }

@@ -12,6 +12,7 @@ public class KoodistoMetadataToKoodistoMetadataDtoConverter extends
         return KoodistoMetadataDto.builder()
                 .kieli(source.getKieli())
                 .nimi(source.getNimi())
+                .kuvaus(source.getKuvaus())
                 .build();
     }
 
