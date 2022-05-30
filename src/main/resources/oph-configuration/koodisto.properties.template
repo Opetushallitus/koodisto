@@ -25,7 +25,7 @@ cas.group-search-filter=(uniqueMember\={0})
 cas.sendRenew=false
 cas.user-search-base=ou\=people
 cas.user-search-filter=(|(mail\={0})(uid\={0}))
-cas.service.koodisto-service=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-service
+cas.service.koodisto=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-service
 cas.service.koodisto-ui=https://{{ host_koodisto | default("${host.virkailija}") }}/koodisto-ui
 flyway.initOnMigrate=true
 flyway.outOfOrder=true
