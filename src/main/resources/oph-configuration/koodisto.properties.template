@@ -17,7 +17,7 @@ spring.datasource.password={{host_postgresql_koodisto_app_password}}
 host.alb={{host_alb}}
 
 # Oletusarvoja
-cas.callback.koodisto-service=https://{{ cluster_koodisto_host | default("${server.name}") }}:{{ cluster_koodisto_port | default("8303") }}/koodisto-service
+cas.callback.koodisto=https://{{ cluster_koodisto_host | default("${server.name}") }}:{{ cluster_koodisto_port | default("8303") }}/koodisto-service
 cas.callback.koodisto-ui=https://{{ cluster_koodisto_host | default("${server.name}") }}:{{ cluster_koodisto_port | default("8303") }}/koodisto-ui
 cas.group-role-attribute=cn
 cas.group-search-base=ou\=groups
