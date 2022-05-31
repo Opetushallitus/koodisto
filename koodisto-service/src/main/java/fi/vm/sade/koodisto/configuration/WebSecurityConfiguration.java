@@ -103,13 +103,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         casAuthenticationEntryPoint.setServiceProperties(serviceProperties());
         return casAuthenticationEntryPoint;
     }
-    @Bean
-    public AuthenticationSuccessHandler successHandler() {
-        SavedRequestAwareAuthenticationSuccessHandler handler = new SavedRequestAwareAuthenticationSuccessHandler();
-        handler.setTargetUrlParameter("redirectTo");
-        handler.setDefaultTargetUrl("/");
-        return handler;
-    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
