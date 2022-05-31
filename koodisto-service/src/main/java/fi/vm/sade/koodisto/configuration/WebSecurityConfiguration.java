@@ -3,8 +3,6 @@ package fi.vm.sade.koodisto.configuration;
 import fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter;
 import fi.vm.sade.koodisto.configuration.properties.CasProperties;
 import fi.vm.sade.properties.OphProperties;
-import lombok.RequiredArgsConstructor;
-import org.jasig.cas.client.session.SessionMappingStorage;
 import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jasig.cas.client.validation.Cas20ProxyTicketValidator;
 import org.jasig.cas.client.validation.TicketValidator;
@@ -30,12 +28,17 @@ import org.springframework.security.web.authentication.SavedRequestAwareAuthenti
 @Configuration
 @EnableGlobalMethodSecurity(jsr250Enabled = false, prePostEnabled = true, securedEnabled = true)
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final CasProperties casProperties;
     private final OphProperties ophProperties;
     private final UserDetailsService userDetailsService;
-    private final SessionMappingStorage sessionMappingStorage;
+
+    @Autowired
+    public WebSecurityConfiguration(CasProperties casProperties, OphProperties ophProperties, UserDetailsService userDetailsService) {
+        this.casProperties = casProperties;
+        this.ophProperties = ophProperties;
+        this.userDetailsService = userDetailsService;
+    }
 
     @Bean
     public ServiceProperties serviceProperties() {
@@ -66,13 +69,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         ticketValidator.setAcceptAnyProxy(true);
         return ticketValidator;
     }
-    @Bean
-    public AuthenticationSuccessHandler successHandler() {
-        SavedRequestAwareAuthenticationSuccessHandler handler = new SavedRequestAwareAuthenticationSuccessHandler();
-        handler.setTargetUrlParameter("redirectTo");
-        handler.setDefaultTargetUrl("/");
-        return handler;
-    }
+
     //
     // CAS filter
     //
@@ -93,7 +90,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     public SingleSignOutFilter singleSignOutFilter() {
         SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
         singleSignOutFilter.setIgnoreInitConfiguration(true);
-        singleSignOutFilter.setSessionMappingStorage(sessionMappingStorage);
         return singleSignOutFilter;
     }
 
@@ -107,7 +103,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         casAuthenticationEntryPoint.setServiceProperties(serviceProperties());
         return casAuthenticationEntryPoint;
     }
-
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        SavedRequestAwareAuthenticationSuccessHandler handler = new SavedRequestAwareAuthenticationSuccessHandler();
+        handler.setTargetUrlParameter("redirectTo");
+        handler.setDefaultTargetUrl("/");
+        return handler;
+    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
