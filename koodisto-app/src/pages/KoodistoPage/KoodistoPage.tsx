@@ -11,7 +11,7 @@ import { PageKoodisto, SelectOptionType } from '../../types';
 import { Loading } from '../../components/Loading';
 import InfoFields from './InfoFields';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
-import { CSVUploader } from '../../components/CSVUploader';
+import { CSVFunctionModal } from '../../modals/CSVFunctionModal';
 import { useAtom } from 'jotai';
 import { casMeLangAtom } from '../../api/kayttooikeus';
 
@@ -164,7 +164,7 @@ export const KoodistoPage: React.FC = () => {
                 <KoodistoPageAccordion koodisto={koodisto} />
             </MainContainer>
             {uploadCsvVisible && koodistoUri && (
-                <CSVUploader
+                <CSVFunctionModal
                     koodistoUri={koodistoUri}
                     koodistoVersio={versioNumber}
                     closeUploader={() => setUploadCsvVisible(false)}

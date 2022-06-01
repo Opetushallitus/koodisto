@@ -1,6 +1,6 @@
 import { mapCsvToKoodi, validData } from './uploadCsv';
 
-describe('CSVUploader', () => {
+describe('CSVFunctionModal', () => {
     it('can verify undefined data', () => {
         expect(validData(undefined)).toBe(false);
     });
