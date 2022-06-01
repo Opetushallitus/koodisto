@@ -21,7 +21,7 @@ public class ServletContainerConfiguration {
      * muuttaa {@link javax.servlet.ServletRequest#getScheme()} palauttamaan
      * `https` jolloin palvelun kautta luodut urlit muodostuvat oikein.
      *
-     * Aktivointi: `kayttooikeus.uses-ssl-proxy` arvoon `true`.
+     * Aktivointi: `koodisto-service.uses-ssl-proxy` arvoon `true`.
      *
      * @return EmbeddedServletContainerCustomizer jonka Spring automaattisesti
      * tunnistaa ja lisää servlet containerin konfigurointiin
