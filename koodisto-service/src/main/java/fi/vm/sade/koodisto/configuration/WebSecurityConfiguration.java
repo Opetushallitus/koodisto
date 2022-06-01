@@ -24,7 +24,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Profile("!dev")
 @Configuration
-@EnableGlobalMethodSecurity(jsr250Enabled = false, prePostEnabled = true, securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final CasProperties casProperties;
@@ -123,7 +123,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth
                 .authenticationProvider(casAuthenticationProvider());
     }
