@@ -7,11 +7,13 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { fetchPageKoodisto } from '../../api/koodisto';
 import { translateMetadata } from '../../utils';
-import { Kieli, PageKoodisto, SelectOptionType } from '../../types';
+import { PageKoodisto, SelectOptionType } from '../../types';
 import { Loading } from '../../components/Loading';
 import InfoFields from './InfoFields';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
 import { CSVUploader } from '../../components/CSVUploader';
+import { useAtom } from 'jotai';
+import { casMeLangAtom } from '../../api/kayttooikeus';
 
 const MainContainer = styled.div`
     flex-grow: 1;
@@ -69,7 +71,8 @@ export const KoodistoPage: React.FC = () => {
     const { versio, koodistoUri } = useParams();
     const versioNumber = versio ? +versio : undefined;
     const navigate = useNavigate();
-    const { formatMessage, locale } = useIntl();
+    const { formatMessage } = useIntl();
+    const [lang] = useAtom(casMeLangAtom);
     const [koodisto, setKoodisto] = useState<PageKoodisto | undefined>();
     const [uploadCsvVisible, setUploadCsvVisible] = useState<boolean>(false);
 
@@ -90,26 +93,24 @@ export const KoodistoPage: React.FC = () => {
                 setKoodisto(koodistoData);
             }
         })();
-    }, [koodistoUri, locale, versioNumber]);
+    }, [koodistoUri, versioNumber]);
 
     if (!koodisto) {
         return <Loading />;
     }
-    const koodistonMetadata = translateMetadata(koodisto.metadata, locale.toUpperCase() as Kieli);
-    const versioOptions = koodisto.codesVersions
-        .map((a) => {
-            return {
-                label: formatMessage(
-                    {
-                        id: 'KOODISTOSIVU_VERSIO_DROPDOWN_LABEL',
-                        defaultMessage: 'Versio {versio}',
-                    },
-                    { versio: a }
-                ),
-                value: a.toString(),
-            };
-        })
-        .concat([incomingVersioOption]);
+    const koodistonMetadata = translateMetadata({ metadata: koodisto.metadata, lang });
+    const versioOptions = koodisto.koodiVersio.map((a) => {
+        return {
+            label: formatMessage(
+                {
+                    id: 'KOODISTOSIVU_VERSIO_DROPDOWN_LABEL',
+                    defaultMessage: 'Versio {versio}',
+                },
+                { versio: a }
+            ),
+            value: a.toString(),
+        };
+    });
     return (
         <>
             <KoodistoPathContainer>
@@ -159,12 +160,8 @@ export const KoodistoPage: React.FC = () => {
                 </MainHeaderButtonsContainer>
             </MainHeaderContainer>
             <MainContainer>
-                <InfoFields koodisto={koodisto} kuvaus={koodistonMetadata?.kuvaus || ''} />
-                <KoodistoPageAccordion
-                    includesCodes={koodisto.includesCodes}
-                    withinCodes={koodisto.withinCodes}
-                    levelsWithCodes={koodisto.levelsWithCodes}
-                />
+                <InfoFields koodisto={koodisto} />
+                <KoodistoPageAccordion koodisto={koodisto} />
             </MainContainer>
             {uploadCsvVisible && koodistoUri && (
                 <CSVUploader

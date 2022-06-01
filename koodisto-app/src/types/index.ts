@@ -1,7 +1,6 @@
 import { MessageDescriptor } from '@formatjs/intl/src/types';
 import { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat';
 import { Options as IntlMessageFormatOptions } from 'intl-messageformat/src/core';
-import { KoodistoRelation } from '../api/koodisto';
 
 export type Kieli = 'EN' | 'FI' | 'SV';
 export type Locale = Lowercase<Kieli>;
@@ -77,20 +76,35 @@ export type ListKoodisto = BaseKoodisto & {
     ryhmaId?: number;
     koodiCount: number;
 };
-
+export type KoodistoRelation = {
+    koodistoUri: string;
+    koodistoVersio: number;
+    passive: boolean;
+    nimi: {
+        fi: string;
+        sv: string;
+        en: string;
+    };
+    kuvaus: {
+        fi: string;
+        sv: string;
+        en: string;
+    };
+};
 export type PageKoodisto = BaseKoodisto & {
     resourceUri: string;
     omistaja: string | null;
     organisaatioOid: string;
     organisaatioNimi?: OrganisaatioNimi;
     lukittu: boolean | null;
-    codesGroupUri: string;
+    koodistoRyhmaMetadata: Metadata[];
     paivitysPvm: ApiDate;
     paivittajaOid: string;
     tila: string;
     metadata: Metadata[];
-    codesVersions: number[];
-    withinCodes: KoodistoRelation[];
-    includesCodes: KoodistoRelation[];
-    levelsWithCodes: KoodistoRelation[];
+    koodiVersio: number[];
+    sisaltyyKoodistoihin: KoodistoRelation[];
+    sisaltaaKoodistot: KoodistoRelation[];
+    rinnastuuKoodistoihin: KoodistoRelation[];
+    koodiList: Koodi[];
 };

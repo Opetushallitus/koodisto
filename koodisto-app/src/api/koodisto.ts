@@ -1,6 +1,6 @@
 import { API_BASE_PATH, API_INTERNAL_PATH } from '../context/constants';
 import { atom, Getter } from 'jotai';
-import { ApiDate, Kieli, Koodi, ListKoodisto, Metadata, PageKoodisto, UpsertKoodi } from '../types';
+import { ApiDate, Kieli, Koodi, ListKoodisto, Metadata, PageKoodisto, UpsertKoodi, KoodistoRelation } from '../types';
 import { casMeLangAtom } from './kayttooikeus';
 import { parseApiDate, translateMetadata } from '../utils';
 import { errorHandlingWrapper } from './errorHandling';
@@ -8,22 +8,6 @@ import axios from 'axios';
 import { fetchOrganisaatioNimi } from './organisaatio';
 
 const urlAtom = atom<string>(`${API_INTERNAL_PATH}/koodisto`);
-
-export type KoodistoRelation = {
-    codesUri: string;
-    codesVersion: number;
-    passive: boolean;
-    nimi: {
-        fi: string;
-        sv: string;
-        en: string;
-    };
-    kuvaus: {
-        fi: string;
-        sv: string;
-        en: string;
-    };
-};
 
 type ApiRyhmaMetadata = {
     id: number;
@@ -43,14 +27,15 @@ type ApiPageKoodisto = ApiBaseKoodisto & {
     omistaja: string | null;
     organisaatioOid: string;
     lukittu: boolean | null;
-    codesGroupUri: string;
+    koodistoRyhmaMetadata: Metadata[];
     paivitysPvm: ApiDate;
     paivittajaOid: string;
     tila: string;
-    codesVersions: number[];
-    withinCodes: KoodistoRelation[];
-    includesCodes: KoodistoRelation[];
-    levelsWithCodes: KoodistoRelation[];
+    koodiVersio: number[];
+    sisaltyyKoodistoihin: KoodistoRelation[];
+    sisaltaaKoodistot: KoodistoRelation[];
+    rinnastuuKoodistoihin: KoodistoRelation[];
+    koodiList: Koodi[];
 };
 type ApiListKoodisto = ApiBaseKoodisto & {
     koodistoRyhmaMetadata: ApiRyhmaMetadata[];
@@ -58,11 +43,8 @@ type ApiListKoodisto = ApiBaseKoodisto & {
 };
 
 const apiKoodistoListToKoodistoList = (a: ApiListKoodisto, lang: Kieli): ListKoodisto => {
-    const nimi = translateMetadata(a.metadata, lang)?.nimi;
-    const ryhmaNimi = translateMetadata(
-        !!a.koodistoRyhmaMetadata ? a.koodistoRyhmaMetadata : [{ kieli: 'FI', nimi: 'N/A' }],
-        lang
-    )?.nimi;
+    const nimi = translateMetadata({ metadata: a.metadata, lang })?.nimi;
+    const ryhmaNimi = translateMetadata({ metadata: a.koodistoRyhmaMetadata, lang })?.nimi;
     return {
         ryhmaId: a.koodistoRyhmaMetadata?.[0]?.id || undefined,
         koodistoUri: a.koodistoUri,
@@ -133,7 +115,7 @@ export const batchUpsertKoodi = async (
 export const fetchPageKoodisto = async (koodistoUri: string, versio: number): Promise<PageKoodisto | undefined> => {
     return errorHandlingWrapper(async () => {
         const { data: apiPageKoodisto } = await axios.get<ApiPageKoodisto>(
-            `${API_BASE_PATH}/codes/${koodistoUri}/${versio}`
+            `${API_INTERNAL_PATH}/koodisto/${koodistoUri}/${versio}`
         );
         if (apiPageKoodisto) {
             const organisaatioNimi = await fetchOrganisaatioNimi(apiPageKoodisto.organisaatioOid);

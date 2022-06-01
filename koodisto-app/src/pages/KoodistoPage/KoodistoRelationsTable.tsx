@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useMemo } from 'react';
 import { Column, Row } from 'react-table';
-import { KoodistoRelation } from '../../api/koodisto';
 import { useIntl } from 'react-intl';
 import { Table } from '../../components/Table';
 import { Link } from 'react-router-dom';
+import { KoodistoRelation } from '../../types';
 
 type KoodistoRelationsTableProps = {
     koodistoRelations: KoodistoRelation[];
@@ -21,15 +21,15 @@ const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({ koodist
                 id: 'nimi',
                 Header: formatMessage({ id: 'TAULUKKO_KOODISTO_OTSIKKO', defaultMessage: 'Koodisto' }),
                 Cell: ({ row }: { row: Row<KoodistoRelation> }) => (
-                    <Link to={`/koodisto/${row.original.codesUri}/${row.original.codesVersion}`}>
+                    <Link to={`/koodisto/${row.original.koodistoUri}/${row.original.koodistoVersio}`}>
                         {row.original.nimi[locale as keyof typeof row.original.nimi] || row.original.nimi['fi']}
                     </Link>
                 ),
             },
             {
-                id: 'codesVersion',
+                id: 'koodistoVersio',
                 Header: formatMessage({ id: 'TAULUKKO_VERSIO_OTSIKKO', defaultMessage: 'Versio' }),
-                accessor: 'codesVersion',
+                accessor: 'koodistoVersio',
             },
             {
                 id: 'kuvaus',

@@ -1,21 +1,21 @@
 import React from 'react';
 import { Accordion } from '../../components/Accordion';
 import { useIntl } from 'react-intl';
-import { KoodistoRelation } from '../../api/koodisto';
 import KoodistoRelationsTable from './KoodistoRelationsTable';
+import { KoodiTable } from './KoodiTable';
+import { PageKoodisto } from '../../types';
 
 const SISALTYY_KOODISTOIHIN_ID = 0;
 const SISALTAA_KOODISTOT_ID = 1;
 const RINNASTUU_KOODISTOIHIN_ID = 2;
+const KOODIT_ID = 3;
 
 type KoodistoPageAccordionProps = {
-    levelsWithCodes: KoodistoRelation[];
-    withinCodes: KoodistoRelation[];
-    includesCodes: KoodistoRelation[];
+    koodisto: PageKoodisto;
 };
 
-const KoodistoPageAccordion = (props: KoodistoPageAccordionProps) => {
-    const { levelsWithCodes, withinCodes, includesCodes } = props;
+const KoodistoPageAccordion = ({ koodisto }: KoodistoPageAccordionProps) => {
+    const { rinnastuuKoodistoihin, sisaltyyKoodistoihin, sisaltaaKoodistot, koodiList } = koodisto;
     const { formatMessage } = useIntl();
     const data = [
         {
@@ -25,9 +25,9 @@ const KoodistoPageAccordion = (props: KoodistoPageAccordionProps) => {
                     id: 'TAULUKKO_SISALTYY_KOODISTOIHIN_OTSIKKO',
                     defaultMessage: 'Sisältyy koodistoihin ({count})',
                 },
-                { count: withinCodes.length }
+                { count: sisaltyyKoodistoihin.length }
             ),
-            panelComponent: <KoodistoRelationsTable koodistoRelations={withinCodes} />,
+            panelComponent: <KoodistoRelationsTable koodistoRelations={sisaltyyKoodistoihin} />,
         },
         {
             id: RINNASTUU_KOODISTOIHIN_ID,
@@ -36,9 +36,9 @@ const KoodistoPageAccordion = (props: KoodistoPageAccordionProps) => {
                     id: 'TAULUKKO_RINNASTUU_KOODISTOIHIN_OTSIKKO',
                     defaultMessage: 'Rinnastuu koodistoihin ({count})',
                 },
-                { count: levelsWithCodes.length }
+                { count: rinnastuuKoodistoihin.length }
             ),
-            panelComponent: <KoodistoRelationsTable koodistoRelations={levelsWithCodes} />,
+            panelComponent: <KoodistoRelationsTable koodistoRelations={rinnastuuKoodistoihin} />,
         },
         {
             id: SISALTAA_KOODISTOT_ID,
@@ -47,9 +47,20 @@ const KoodistoPageAccordion = (props: KoodistoPageAccordionProps) => {
                     id: 'TAULUKKO_SISALTAA_KOODISTOT_OTSIKKO',
                     defaultMessage: 'Sisältää koodistot ({count})',
                 },
-                { count: includesCodes.length }
+                { count: sisaltaaKoodistot.length }
             ),
-            panelComponent: <KoodistoRelationsTable koodistoRelations={includesCodes} />,
+            panelComponent: <KoodistoRelationsTable koodistoRelations={sisaltaaKoodistot} />,
+        },
+        {
+            id: KOODIT_ID,
+            localizedHeadingTitle: formatMessage(
+                {
+                    id: 'TAULUKKO_KOODIT_OTSIKKO',
+                    defaultMessage: 'Koodit ({count})',
+                },
+                { count: koodiList.length }
+            ),
+            panelComponent: <KoodiTable koodiList={koodiList} />,
         },
     ];
 

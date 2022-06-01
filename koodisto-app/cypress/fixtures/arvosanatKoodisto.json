@@ -1,13 +1,17 @@
 {
+    "koodistoRyhmaMetadata": [
+        {
+            "id": 4,
+            "uri": "koulutuskoodistot",
+            "nimi": "Koulutuskoodistot",
+            "kieli": "FI"
+        }
+    ],
+    "resourceUri": "https://virkailija.hahtuvaopintopolku.fi/koodisto-service/rest/codes/arvosanat",
     "koodistoUri": "arvosanat",
-    "resourceUri": "https://virkailija.opintopolku.fi/koodisto-service/rest/codes/arvosanat",
-    "omistaja": "Opetushallitus",
-    "organisaatioOid": "1.2.246.562.10.00000000001",
-    "lukittu": null,
-    "codesGroupUri": "http://koulutuskoodistot",
-    "version": 1,
     "versio": 1,
-    "paivitysPvm": "2015-02-20",
+    "organisaatioOid": "1.2.246.562.10.00000000001",
+    "paivitysPvm": "2015-02-20T12:33:54.963+00:00",
     "paivittajaOid": null,
     "voimassaAlkuPvm": "2013-01-01",
     "voimassaLoppuPvm": null,
@@ -16,48 +20,180 @@
         {
             "kieli": "SV",
             "nimi": "arvosanat",
-            "kuvaus": "arvosanat",
-            "kayttoohje": null,
-            "kasite": null,
-            "kohdealue": null,
-            "sitovuustaso": null,
-            "kohdealueenOsaAlue": null,
-            "toimintaymparisto": null,
-            "tarkentaaKoodistoa": null,
-            "huomioitavaKoodisto": null,
-            "koodistonLahde": null
+            "kuvaus": "arvosanat"
         },
         {
             "kieli": "FI",
             "nimi": "arvosanat",
-            "kuvaus": "arvosanat",
-            "kayttoohje": null,
-            "kasite": null,
-            "kohdealue": null,
-            "sitovuustaso": null,
-            "kohdealueenOsaAlue": null,
-            "toimintaymparisto": null,
-            "tarkentaaKoodistoa": null,
-            "huomioitavaKoodisto": null,
-            "koodistonLahde": null
+            "kuvaus": "arvosanat"
         },
         {
             "kieli": "EN",
             "nimi": "arvosanat",
-            "kuvaus": "arvosanat",
-            "kayttoohje": null,
-            "kasite": null,
-            "kohdealue": null,
-            "sitovuustaso": null,
-            "kohdealueenOsaAlue": null,
-            "toimintaymparisto": null,
-            "tarkentaaKoodistoa": null,
-            "huomioitavaKoodisto": null,
-            "koodistonLahde": null
+            "kuvaus": "arvosanat"
         }
     ],
-    "codesVersions": [],
-    "withinCodes": [],
-    "includesCodes": [],
-    "levelsWithCodes": []
+    "koodiVersio": [1],
+    "sisaltyyKoodistoihin": [],
+    "sisaltaaKoodistot": [],
+    "rinnastuuKoodistoihin": [],
+    "koodiList": [
+        {
+            "koodiArvo": "5",
+            "versio": 1,
+            "paivitysPvm": "2013-10-28T13:32:18.063+00:00",
+            "paivittajaOid": null,
+            "voimassaAlkuPvm": "2013-09-03",
+            "metadata": [
+                {
+                    "nimi": "5",
+                    "kieli": "SV"
+                },
+                {
+                    "nimi": "5",
+                    "kieli": "FI"
+                }
+            ]
+        },
+        {
+            "koodiArvo": "10",
+            "versio": 1,
+            "paivitysPvm": "2013-10-28T13:32:18.160+00:00",
+            "paivittajaOid": null,
+            "voimassaAlkuPvm": "2013-09-03",
+            "metadata": [
+                {
+                    "nimi": "10",
+                    "kieli": "SV"
+                },
+                {
+                    "nimi": "10",
+                    "kieli": "FI"
+                }
+            ]
+        },
+        {
+            "koodiArvo": "9",
+            "versio": 1,
+            "paivitysPvm": "2013-10-28T13:32:17.949+00:00",
+            "paivittajaOid": null,
+            "voimassaAlkuPvm": "2013-09-03",
+            "metadata": [
+                {
+                    "nimi": "9",
+                    "kieli": "SV"
+                },
+                {
+                    "nimi": "9",
+                    "kieli": "FI"
+                }
+            ]
+        },
+        {
+            "koodiArvo": "S",
+            "versio": 1,
+            "paivitysPvm": "2015-02-23T14:04:17.451+00:00",
+            "paivittajaOid": null,
+            "voimassaAlkuPvm": "2015-02-01",
+            "metadata": [
+                {
+                    "nimi": "Hyväksytty",
+                    "kieli": "FI"
+                },
+                {
+                    "nimi": "Hyväksytty",
+                    "kieli": "EN"
+                },
+                {
+                    "nimi": "Godkänt",
+                    "kieli": "SV"
+                }
+            ]
+        },
+        {
+            "koodiArvo": "4",
+            "versio": 1,
+            "paivitysPvm": "2013-10-28T13:32:17.998+00:00",
+            "paivittajaOid": null,
+            "voimassaAlkuPvm": "2013-09-03",
+            "metadata": [
+                {
+                    "nimi": "4",
+                    "kieli": "SV"
+                },
+                {
+                    "nimi": "4",
+                    "kieli": "FI"
+                }
+            ]
+        },
+        {
+            "koodiArvo": "Ei arvosanaa",
+            "versio": 1,
+            "paivitysPvm": "2013-10-28T13:32:18.095+00:00",
+            "paivittajaOid": null,
+            "voimassaAlkuPvm": "2013-09-03",
+            "metadata": [
+                {
+                    "nimi": "Ei arvosanaa",
+                    "kieli": "FI"
+                },
+                {
+                    "nimi": "Inget vitsord",
+                    "kieli": "SV"
+                }
+            ]
+        },
+        {
+            "koodiArvo": "7",
+            "versio": 1,
+            "paivitysPvm": "2013-10-28T13:32:18.127+00:00",
+            "paivittajaOid": null,
+            "voimassaAlkuPvm": "2013-09-03",
+            "metadata": [
+                {
+                    "nimi": "7",
+                    "kieli": "SV"
+                },
+                {
+                    "nimi": "7",
+                    "kieli": "FI"
+                }
+            ]
+        },
+        {
+            "koodiArvo": "8",
+            "versio": 1,
+            "paivitysPvm": "2013-10-28T13:32:17.912+00:00",
+            "paivittajaOid": null,
+            "voimassaAlkuPvm": "2013-09-03",
+            "metadata": [
+                {
+                    "nimi": "8",
+                    "kieli": "FI"
+                },
+                {
+                    "nimi": "8",
+                    "kieli": "SV"
+                }
+            ]
+        },
+        {
+            "koodiArvo": "6",
+            "versio": 1,
+            "paivitysPvm": "2013-10-28T13:32:18.030+00:00",
+            "paivittajaOid": null,
+            "voimassaAlkuPvm": "2013-09-03",
+            "metadata": [
+                {
+                    "nimi": "6",
+                    "kieli": "FI"
+                },
+                {
+                    "nimi": "6",
+                    "kieli": "SV"
+                }
+            ]
+        }
+    ]
 }

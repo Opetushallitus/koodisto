@@ -86,6 +86,24 @@
   "TAULUKKO_KOODISTO_OTSIKKO": {
     "defaultMessage": "Koodisto"
   },
+  "TAULUKKO_KOODIT_OTSIKKO": {
+    "defaultMessage": "Koodit ({count})"
+  },
+  "TAULUKKO_KOODI_KOODIARVO": {
+    "defaultMessage": "Koodiarvo"
+  },
+  "TAULUKKO_KOODI_NIMI": {
+    "defaultMessage": "Nimi"
+  },
+  "TAULUKKO_KOODI_PAIVITETTY": {
+    "defaultMessage": "Päivitetty"
+  },
+  "TAULUKKO_KOODI_VERSIO": {
+    "defaultMessage": "Versio"
+  },
+  "TAULUKKO_KOODI_VOIMASSA": {
+    "defaultMessage": "Voimassa"
+  },
   "TAULUKKO_KUVAUS_OTSIKKO": {
     "defaultMessage": "Voit rajata koodistoryhmällä tai nimellä"
   },

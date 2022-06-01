@@ -20,7 +20,7 @@ describe('Errors', () => {
         cy.contains('Service Unavailable').should('be.visible');
     });
     it('error if 500', () => {
-        cy.intercept(`${API_BASE_PATH}/codes/${koodistoUri}/2`, { fixture: 'kuntaKoodisto.json' });
+        cy.intercept(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, { fixture: 'kuntaKoodisto.json' });
         cy.visit(`${BASE_PATH}/koodisto/${koodistoUri}/2`);
         cy.intercept(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, (req) => {
             req.reply({
@@ -32,7 +32,7 @@ describe('Errors', () => {
         cy.contains('Server Error').should('be.visible');
     });
     it('error if 404 with key', () => {
-        cy.intercept(`${API_BASE_PATH}/codes/${koodistoUri}/2`, { fixture: 'kuntaKoodisto.json' });
+        cy.intercept(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, { fixture: 'kuntaKoodisto.json' });
         cy.visit(`${BASE_PATH}/koodisto/${koodistoUri}/2`);
         cy.intercept(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, (req) => {
             req.reply({
@@ -46,7 +46,7 @@ describe('Errors', () => {
         cy.contains('custom message').should('be.visible');
     });
     it('error if 404 with key and message', () => {
-        cy.intercept(`${API_BASE_PATH}/codes/${koodistoUri}/2`, { fixture: 'kuntaKoodisto.json' });
+        cy.intercept(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, { fixture: 'kuntaKoodisto.json' });
         cy.visit(`${BASE_PATH}/koodisto/${koodistoUri}/2`);
         cy.intercept(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, (req) => {
             req.reply({

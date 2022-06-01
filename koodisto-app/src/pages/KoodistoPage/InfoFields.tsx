@@ -1,8 +1,10 @@
 import React from 'react';
-import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
+import { FormattedDate, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-import { Locale, PageKoodisto } from '../../types';
+import { PageKoodisto } from '../../types';
+import { translateMetadata } from '../../utils';
+import { useAtom } from 'jotai';
+import { casMeLangAtom, casMeLocaleAtom } from '../../api/kayttooikeus';
 
 const InfoContainer = styled.div`
     display: flex;
@@ -25,17 +27,21 @@ const InfoValue = styled.span`
 `;
 
 interface InfoFieldsProps {
-    kuvaus: string;
     koodisto: PageKoodisto;
 }
 
-const InfoFields = ({ koodisto, kuvaus }: InfoFieldsProps) => {
-    const { locale } = useIntl();
+const InfoFields = ({ koodisto }: InfoFieldsProps) => {
+    const [lang] = useAtom(casMeLangAtom);
+    const [locale] = useAtom(casMeLocaleAtom);
+    const kuvaus = translateMetadata({ metadata: koodisto.metadata, lang })?.kuvaus || '';
+    const ryhmaNimi = translateMetadata({ metadata: koodisto.koodistoRyhmaMetadata, lang })?.nimi || '';
     return (
         <InfoContainer>
             <InfoRow>
                 <FormattedMessage id={'KOODISTOSIVU_AVAIN_URI_TUNNUS'} defaultMessage={'URI-tunnus'} tagName={'span'} />
-                <Link to={koodisto.resourceUri}>{koodisto.resourceUri}</Link>
+                <InfoValue>
+                    <a href={koodisto.resourceUri}>{koodisto.resourceUri}</a>
+                </InfoValue>
             </InfoRow>
             <InfoRow>
                 <FormattedMessage
@@ -43,7 +49,7 @@ const InfoFields = ({ koodisto, kuvaus }: InfoFieldsProps) => {
                     defaultMessage={'Koodistoryhmä'}
                     tagName={'span'}
                 />
-                <InfoValue>{koodisto.codesGroupUri}</InfoValue>
+                <InfoValue>{ryhmaNimi}</InfoValue>
             </InfoRow>
             <InfoRow>
                 <FormattedMessage id={'KOODISTOSIVU_AVAIN_VOIMASSA'} defaultMessage={'Voimassa'} tagName={'span'} />
@@ -61,7 +67,7 @@ const InfoFields = ({ koodisto, kuvaus }: InfoFieldsProps) => {
                     defaultMessage={'Organisaatio'}
                     tagName={'span'}
                 />
-                <InfoValue>{koodisto.organisaatioNimi?.[locale as Locale]}</InfoValue>
+                <InfoValue>{koodisto.organisaatioNimi?.[locale]}</InfoValue>
             </InfoRow>
             <InfoRow>
                 <FormattedMessage id={'KOODISTOSIVU_AVAIN_PAIVITETTY'} defaultMessage={'Päivitetty'} tagName={'span'} />

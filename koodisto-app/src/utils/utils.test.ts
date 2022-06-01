@@ -17,6 +17,6 @@ describe('translateMetadata', () => {
         ['Should default to FI locale if non valid uppercase locale is given', metadatasFISV, 'en', FIMetadata],
         ['Should should return undefined if metadata is empty', emptyMetadatasByError, uppercaseFiLocale, undefined],
     ])('%s', (_, input, second, expected) => {
-        expect(translateMetadata(input, second as Kieli)).toStrictEqual(expected);
+        expect(translateMetadata({ metadata: input, lang: second as Kieli })).toStrictEqual(expected);
     });
 });
