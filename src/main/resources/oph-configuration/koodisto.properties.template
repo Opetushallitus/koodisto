@@ -17,6 +17,7 @@ spring.datasource.password={{host_postgresql_koodisto_app_password}}
 host.alb={{host_alb}}
 
 # Oletusarvoja
+koodisto-service.uses-ssl-proxy=true
 cas.group-role-attribute=cn
 cas.group-search-base=ou\=groups
 cas.group-search-filter=(uniqueMember\={0})
