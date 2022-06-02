@@ -12,8 +12,7 @@ public class WebConfiguration implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/buildversion.txt")
                 .setViewName("forward:/actuator/health");
+        registry.addViewController("/")
+                .setViewName("forward:/actuator/health");
     }
-
-
-
 }
