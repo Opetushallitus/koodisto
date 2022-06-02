@@ -24,3 +24,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import 'cypress-file-upload';
+import { API_STATUS_PATH } from '../../src/context/constants';
+
+Cypress.Commands.add('mockBaseIntercepts', () => {
+    cy.intercept(`${API_STATUS_PATH}`, { fixture: 'status.json' });
+});

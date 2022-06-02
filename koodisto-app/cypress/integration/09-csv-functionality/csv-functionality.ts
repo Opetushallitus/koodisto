@@ -6,6 +6,9 @@ before(() => {
     cy.task('deleteFolder', Cypress.config('downloadsFolder'));
 });
 describe('CSV functionality tests', () => {
+    beforeEach(() => {
+        cy.mockBaseIntercepts();
+    });
     it('shows download button on koodisto page', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/1`, { fixture: `${koodistoUri}Koodisto.json` });
         cy.visit(`${BASE_PATH}/koodisto/${koodistoUri}/1`);

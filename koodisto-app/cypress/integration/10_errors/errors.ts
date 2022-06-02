@@ -8,6 +8,9 @@ beforeEach(() => {
     cy.task('deleteFolder', Cypress.config('downloadsFolder'));
 });
 describe('Errors', () => {
+    beforeEach(() => {
+        cy.mockBaseIntercepts();
+    });
     it('shows error boudary if codes fails', () => {
         cy.intercept('GET', `${API_INTERNAL_PATH}/koodisto`, (req) => {
             req.reply({

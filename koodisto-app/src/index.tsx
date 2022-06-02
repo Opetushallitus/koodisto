@@ -14,6 +14,7 @@ import { casMeLocaleAtom } from './api/kayttooikeus';
 import { IntlProvider } from 'react-intl';
 import { lokalisaatioMessagesAtom } from './api/lokalisaatio';
 import App from './App';
+import { statusAtom } from './api/status';
 
 const theme = createTheme();
 const cookies = new Cookies();
@@ -49,6 +50,7 @@ export class ErrorBoundary extends React.Component<unknown, { hasError: boolean 
 }
 
 const Initialize: React.FC = ({ children }) => {
+    useAtom(statusAtom);
     const [casMeLocale] = useAtom(casMeLocaleAtom);
     const [messages] = useAtom(lokalisaatioMessagesAtom);
     return (
