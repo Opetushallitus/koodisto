@@ -8,15 +8,16 @@ import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiTilaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 @Component
+@RequiredArgsConstructor
 public class CodeElementResourceConverter {
 
-    @Autowired
-    private KoodistoConversionService conversionService;
+    private final KoodistoConversionService conversionService;
 
     public UpdateKoodiDataType convertFromDTOToUpdateKoodiDataType(KoodiDto koodiDto) {
         UpdateKoodiDataType updateKoodiDataType = new UpdateKoodiDataType();

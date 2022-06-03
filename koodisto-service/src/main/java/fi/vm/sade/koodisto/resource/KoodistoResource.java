@@ -25,6 +25,7 @@ import fi.vm.sade.koodisto.util.FieldLengths;
 import fi.vm.sade.koodisto.util.KoodistoHelper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,7 @@ import java.util.Properties;
 
 @RestController()
 @RequestMapping({"/rest/json"})
+@RequiredArgsConstructor
 public class KoodistoResource {
 
     private final KoodistoBusinessService koodistoBusinessService;
@@ -48,11 +50,6 @@ public class KoodistoResource {
 
     private final KoodistoConversionService conversionService;
 
-    public KoodistoResource(KoodistoBusinessService koodistoBusinessService, KoodiBusinessService koodiBusinessService, KoodistoConversionService conversionService) {
-        this.koodistoBusinessService = koodistoBusinessService;
-        this.koodiBusinessService = koodiBusinessService;
-        this.conversionService = conversionService;
-    }
 
     @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)

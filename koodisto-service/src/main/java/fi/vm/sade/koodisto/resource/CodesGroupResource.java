@@ -13,6 +13,7 @@ import fi.vm.sade.koodisto.validator.ValidationType;
 import fi.vm.sade.koodisto.validator.ValidatorUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping({"/rest/codesgroup"})
+@RequiredArgsConstructor
 public class CodesGroupResource {
     protected static final Logger logger = LoggerFactory.getLogger(CodesGroupResource.class);
 
@@ -34,12 +36,6 @@ public class CodesGroupResource {
     private final UriTransliterator uriTransliterator;
 
     private final CodesGroupValidator codesGroupValidator = new CodesGroupValidator();
-
-    public CodesGroupResource(KoodistoRyhmaBusinessService koodistoRyhmaBusinessService, KoodistoConversionService conversionService, UriTransliterator uriTransliterator) {
-        this.koodistoRyhmaBusinessService = koodistoRyhmaBusinessService;
-        this.conversionService = conversionService;
-        this.uriTransliterator = uriTransliterator;
-    }
 
     @JsonView({JsonViews.Basic.class})
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)

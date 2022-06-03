@@ -21,6 +21,7 @@ import fi.vm.sade.koodisto.validator.ValidationType;
 import fi.vm.sade.koodisto.validator.ValidatorUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping({"/rest/codes"})
+@RequiredArgsConstructor
 public class CodesResource {
 
     private static final Logger logger = LoggerFactory.getLogger(CodesResource.class);
@@ -48,19 +50,11 @@ public class CodesResource {
 
     private final KoodistoConversionService conversionService;
 
-
     private final CodesResourceConverter converter;
 
     private final KoodistoChangesService changesService;
 
     private final CodesValidator codesValidator = new CodesValidator();
-
-    public CodesResource(KoodistoBusinessService koodistoBusinessService, KoodistoConversionService conversionService, CodesResourceConverter converter, KoodistoChangesService changesService) {
-        this.koodistoBusinessService = koodistoBusinessService;
-        this.conversionService = conversionService;
-        this.converter = converter;
-        this.changesService = changesService;
-    }
 
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @JsonView({JsonViews.Extended.class})
