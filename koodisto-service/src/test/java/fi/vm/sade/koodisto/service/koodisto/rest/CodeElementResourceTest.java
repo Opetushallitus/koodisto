@@ -108,8 +108,8 @@ public class CodeElementResourceTest {
     public void returns500IfErrorOccurs() {
         KoodiRelaatioListaDto kr = new KoodiRelaatioListaDto();
         kr.setRelations(Arrays.asList("koodi"));
-        assertResponse(this.addRelations("codeelementuri", "SISALTYY", kr), 500, "error.codeelement.not.found");
-        assertResponse(this.removeRelations("codeelementuri", "SISALTYY", kr), 500, "error.codeelement.not.found");
+        assertResponse(this.addRelations("codeelementuri", "SISALTYY", kr), 400, "error.codeelement.not.found");
+        assertResponse(this.removeRelations("codeelementuri", "SISALTYY", kr), 400, "error.codeelement.not.found");
 
         kr.setRelations(Arrays.asList("rinnastuu4kanssa1", "rinnastuu4kanssa2", "rinnastuu4kanssa3"));
         assertResponse(this.addRelations("codeelementuri", "asd", kr), 500, "error.codes.generic");
@@ -262,15 +262,15 @@ public class CodeElementResourceTest {
 
     @Test
     public void testGetCodeElementByCodeElementUriInvalid() {
-        assertResponse(resource.getCodeElementByCodeElementUri("invalidcodeelementuri", 1, "sisaltyysuhde4kanssa1"), 500, "error.codes.not.found");
+        assertResponse(resource.getCodeElementByCodeElementUri("invalidcodeelementuri", 1, "sisaltyysuhde4kanssa1"), 400, "error.codes.not.found");
         assertResponse(resource.getCodeElementByCodeElementUri("", 1, "sisaltyysuhde4kanssa1"), 400);
         assertResponse(resource.getCodeElementByCodeElementUri(null, 1, "sisaltyysuhde4kanssa1"), 400);
 
         assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 0, "sisaltyysuhde4kanssa1"), 400);
         assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", -1, "sisaltyysuhde4kanssa1"), 400, "error.validation.codesversion");
-        assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 9999, "sisaltyysuhde4kanssa1"), 500);
+        assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 9999, "sisaltyysuhde4kanssa1"), 400);
 
-        assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, "invalidcodesuri"), 500, "error.codeelement.not.found");
+        assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, "invalidcodesuri"), 400, "error.codeelement.not.found");
         assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, ""), 400);
         assertResponse(resource.getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, null), 400);
     }
@@ -290,7 +290,7 @@ public class CodeElementResourceTest {
     public void testGetAllCodeElementsByCodesUriAndVersionInvalid() {
         assertResponse(resource.getAllCodeElementsByCodesUriAndVersion("lisaarinnasteinen2", -1), 400);
         assertResponse(resource.getAllCodeElementsByCodesUriAndVersion("", 1), 400);
-        assertResponse(resource.getAllCodeElementsByCodesUriAndVersion("uridoesnotexist", 1), 500, "error.codes.not.found");
+        assertResponse(resource.getAllCodeElementsByCodesUriAndVersion("uridoesnotexist", 1), 400, "error.codes.not.found");
         assertResponse(resource.getAllCodeElementsByCodesUriAndVersion(null, 1), 400);
     }
 
@@ -352,7 +352,7 @@ public class CodeElementResourceTest {
         KoodiDto validDto = createValidCodeElementDto("newdtouri", "Name", 3);
         assertResponse(resource.insert(null, validDto), 400, "error.validation.codesuri");
         assertResponse(resource.insert("", validDto), 400, "error.validation.codesuri");
-        assertResponse(resource.insert("totallyInvalidKoodistoUri", validDto), 500, "error.codes.not.found");
+        assertResponse(resource.insert("totallyInvalidKoodistoUri", validDto), 400, "error.codes.not.found");
 
         assertResponse(resource.insert("lisaasisaltyy3", null), 400, "error.validation.codeelement");
         assertResponse(resource.insert("lisaasisaltyy3", new KoodiDto()), 400, "error.validation.value");
@@ -469,10 +469,10 @@ public class CodeElementResourceTest {
         assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, null), 400, "error.validation.relationtype");
 
         assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, "doenostexist"), 500, "error.codes.generic");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUri, relationType), 500, "error.codeelement.relation.to.self");
-        assertResponse(resource.addRelation("doenotexist", codeElementUriToAdd, relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.addRelation(codeElementUri, "doesnotexist", relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAddWithoutCodesRelation, relationType), 500,
+        assertResponse(resource.addRelation(codeElementUri, codeElementUri, relationType), 400, "error.codeelement.relation.to.self");
+        assertResponse(resource.addRelation("doenotexist", codeElementUriToAdd, relationType), 400, "error.codeelement.not.found");
+        assertResponse(resource.addRelation(codeElementUri, "doesnotexist", relationType), 400, "error.codeelement.not.found");
+        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAddWithoutCodesRelation, relationType), 400,
                 "error.codeelement.codes.have.no.relation");
 
         assertEquals(0, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
@@ -489,10 +489,10 @@ public class CodeElementResourceTest {
         assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, null), 400, "error.validation.relationtype");
 
         assertResponse(resource.addRelation(codeElementUri, codeElementUriToAdd, "doenostexist"), 500, "error.codes.generic");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUri, relationType), 500, "error.codeelement.relation.to.self");
-        assertResponse(resource.addRelation("doenotexist", codeElementUriToAdd, relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.addRelation(codeElementUri, "doesnotexist", relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAddWithoutCodesRelation, relationType), 500,
+        assertResponse(resource.addRelation(codeElementUri, codeElementUri, relationType), 400, "error.codeelement.relation.to.self");
+        assertResponse(resource.addRelation("doenotexist", codeElementUriToAdd, relationType), 400, "error.codeelement.not.found");
+        assertResponse(resource.addRelation(codeElementUri, "doesnotexist", relationType), 400, "error.codeelement.not.found");
+        assertResponse(resource.addRelation(codeElementUri, codeElementUriToAddWithoutCodesRelation, relationType), 400,
                 "error.codeelement.codes.have.no.relation");
 
         assertEquals(0, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.SISALTYY).size());
@@ -581,8 +581,8 @@ public class CodeElementResourceTest {
         resource.removeRelation(codeElementUri, codeElementUriToRemove, null);
         resource.removeRelation(codeElementUri, codeElementUriToRemove, "doenostexist");
 
-        assertResponse(resource.removeRelation("doenotexist", codeElementUriToRemove, relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.removeRelation(codeElementUri, "doesnotexist", relationType), 500, "error.codeelement.relation.list.empty");
+        assertResponse(resource.removeRelation("doenotexist", codeElementUriToRemove, relationType), 400, "error.codeelement.not.found");
+        assertResponse(resource.removeRelation(codeElementUri, "doesnotexist", relationType), 400, "error.codeelement.relation.list.empty");
 
         assertEquals(3, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.RINNASTEINEN).size());
 
@@ -597,8 +597,8 @@ public class CodeElementResourceTest {
         resource.removeRelation(codeElementUri, codeElementUriToRemove, null);
         resource.removeRelation(codeElementUri, codeElementUriToRemove, "doenostexist");
 
-        assertResponse(resource.removeRelation("doenotexist", codeElementUriToRemove, relationType), 500, "error.codeelement.not.found");
-        assertResponse(resource.removeRelation(codeElementUri, "doesnotexist", relationType), 500, "error.codeelement.relation.list.empty");
+        assertResponse(resource.removeRelation("doenotexist", codeElementUriToRemove, relationType), 400, "error.codeelement.not.found");
+        assertResponse(resource.removeRelation(codeElementUri, "doesnotexist", relationType), 400, "error.codeelement.relation.list.empty");
 
         assertEquals(3, service.listByRelation(codeElementUri, 1, false, SuhteenTyyppi.SISALTYY).size());
     }
@@ -620,8 +620,8 @@ public class CodeElementResourceTest {
         assertResponse(resource.delete("tuhottavatestikoodi", -1), 400);
         assertResponse(resource.delete("", 1), 400);
         assertResponse(resource.delete(null, 1), 400);
-        assertResponse(resource.delete("thisisnotexistinguri", 1), 500, "error.codeelement.not.found");
-        assertResponse(resource.delete("sisaltaakoodisto1koodit", 1), 500, "error.codeelement.not.passive");
+        assertResponse(resource.delete("thisisnotexistinguri", 1), 400, "error.codeelement.not.found");
+        assertResponse(resource.delete("sisaltaakoodisto1koodit", 1), 400, "error.codeelement.not.passive");
 
         assertNotNull(resource.getCodeElementByUriAndVersion("tuhottavatestikoodi", 1));
     }

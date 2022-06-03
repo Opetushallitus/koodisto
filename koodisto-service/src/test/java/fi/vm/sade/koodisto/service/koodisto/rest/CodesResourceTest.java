@@ -323,7 +323,7 @@ public class CodesResourceTest {
             String codesUri = "invaliddeleteuri";
             int codesVersion = 99;
 
-            assertResponse(resource.delete(codesUri, codesVersion), 500);
+            assertResponse(resource.delete(codesUri, codesVersion), 400);
         }
 
     }
@@ -487,31 +487,5 @@ public class CodesResourceTest {
         assertEquals(expectedEntity, response.getBody());
     }
 
-    class TestDataSource implements DataSource {
-        private final String url;
 
-        public TestDataSource(String url) {
-            this.url = url;
-        }
-
-        @Override
-        public InputStream getInputStream() throws IOException {
-            return getClass().getClassLoader().getResourceAsStream(this.url);
-        }
-
-        @Override
-        public OutputStream getOutputStream() throws IOException {
-            return null;
-        }
-
-        @Override
-        public String getContentType() {
-            return null;
-        }
-
-        @Override
-        public String getName() {
-            return null;
-        }
-    }
 }

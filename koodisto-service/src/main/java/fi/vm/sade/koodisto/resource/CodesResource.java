@@ -36,7 +36,7 @@ import java.util.List;
 @RequestMapping({"/rest/codes"})
 public class CodesResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CodesResource.class);
+    private static final Logger logger = LoggerFactory.getLogger(CodesResource.class);
 
     private static final String KOODISTOURI = "codesuri";
     private static final String KOODISTOVERSIO = "codesversion";
@@ -63,83 +63,80 @@ public class CodesResource {
     }
 
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
-    @JsonView({ JsonViews.Extended.class })
-    @PostMapping(path = "/addrelation/{codesUri}/{codesUriToAdd}/{relationType}", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView({JsonViews.Extended.class})
+    @PostMapping(path = "/addrelation/{codesUri}/{codesUriToAdd}/{relationType}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Lisää relaatio koodistojen välille")
     public ResponseEntity<Object> addRelation(
             @Parameter(description = "Koodiston URI") @PathVariable String codesUri,
             @Parameter(description = "Linkitettävän koodiston URI") @PathVariable String codesUriToAdd,
             @Parameter(description = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathVariable String relationType) {
-       try {
-            String[] errors = { KOODISTOURI, "codesuritoadd", RELATIONTYPE };
+        try {
+            String[] errors = {KOODISTOURI, "codesuritoadd", RELATIONTYPE};
             ValidatorUtil.validateArgs(errors, codesUri, codesUriToAdd, relationType);
 
             koodistoBusinessService.addRelation(codesUri, codesUriToAdd, SuhteenTyyppi.valueOf(relationType));
             return ResponseEntity.ok(null);
 
-        } catch (KoodistoValidationException e) {
-            LOGGER.warn("Invalid parameter for rest call: addRelation. ", e);
+        } catch (SadeBusinessException e) {
+            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
-            LOGGER.error("Adding relation to codes failed. ", e);
-            return ResponseEntity.internalServerError().body(message);
+            logger.error("Adding relation to codes failed. ", e);
+            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
         }
     }
 
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
-    @JsonView({ JsonViews.Extended.class })
-    @PostMapping(path = "/removerelation/{codesUri}/{codesUriToRemove}/{relationType}", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView({JsonViews.Extended.class})
+    @PostMapping(path = "/removerelation/{codesUri}/{codesUriToRemove}/{relationType}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Poistaa relaatio koodistojen väliltä")
     public ResponseEntity<Object> removeRelation(
             @Parameter(description = "Koodiston URI") @PathVariable String codesUri,
             @Parameter(description = "Irrotettavan koodiston URI") @PathVariable String codesUriToRemove,
             @Parameter(description = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathVariable String relationType) {
 
-         try {
-            String[] errors = { KOODISTOURI, "codesuritoremove", RELATIONTYPE };
+        try {
+            String[] errors = {KOODISTOURI, "codesuritoremove", RELATIONTYPE};
             ValidatorUtil.validateArgs(errors, codesUri, codesUriToRemove, relationType);
 
             koodistoBusinessService.removeRelation(codesUri, List.of(codesUriToRemove), SuhteenTyyppi.valueOf(relationType));
             return ResponseEntity.ok(null);
 
-         } catch (KoodistoValidationException e) {
-            LOGGER.warn("Invalid parameter for rest call: removeRelation. ", e);
+        } catch (SadeBusinessException e) {
+            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
-            LOGGER.error("Removing relation from codes failed.", e);
-            return ResponseEntity.internalServerError().body(message);
+            logger.error("Removing relation from codes failed.", e);
+            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
         }
     }
 
 
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
-    @JsonView({ JsonViews.Basic.class })
-    @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView({JsonViews.Basic.class})
+    @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Päivittää koodistoa")
     public ResponseEntity<Object> update(
-           @Parameter(description = "Koodisto") @RequestBody KoodistoDto codesDTO) {
-         try {
+            @Parameter(description = "Koodisto") @RequestBody KoodistoDto codesDTO) {
+        try {
             codesValidator.validate(codesDTO, ValidationType.UPDATE);
             KoodistoVersio koodistoVersio = koodistoBusinessService.updateKoodisto(converter.convertFromDTOToUpdateKoodistoDataType(codesDTO));
             return ResponseEntity.status(201).body(koodistoVersio.getVersio());
 
-        } catch (KoodistoValidationException e) {
-            LOGGER.warn("Invalid parameter for rest call: update. ", e);
+        } catch (SadeBusinessException e) {
+            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
-            LOGGER.error("Updating codes failed.", e);
-            return ResponseEntity.internalServerError().body(message);
+            logger.error("Updating codes failed.", e);
+            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
         }
     }
 
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @Operation(description = "Päivittää koodiston kokonaisuutena",
             summary = "Lisää ja poistaa koodistonsuhteita")
-    @JsonView({ JsonViews.Basic.class })
-    @PutMapping(path = "/save", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView({JsonViews.Basic.class})
+    @PutMapping(path = "/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> save(
             @Parameter(description = "Koodisto") @RequestBody KoodistoDto codesDTO) {
         try {
@@ -148,19 +145,18 @@ public class CodesResource {
             KoodistoVersio koodistoVersio = koodistoBusinessService.saveKoodisto(codesDTO);
             return ResponseEntity.ok(koodistoVersio.getVersio().toString());
 
-         } catch (KoodistoValidationException e) {
-            LOGGER.warn("Invalid parameter for rest call: save. ", e);
+        } catch (SadeBusinessException e) {
+            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
-            LOGGER.error("Saving codes failed.", e);
-            return ResponseEntity.internalServerError().body(message);
+            logger.error("Saving codes failed.", e);
+            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
         }
     }
 
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
-    @JsonView({ JsonViews.Basic.class })
-    @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView({JsonViews.Basic.class})
+    @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Lisää koodiston")
     public ResponseEntity<Object> insert(
             @Parameter(description = "Koodisto") @RequestBody KoodistoDto codesDTO) {
@@ -170,100 +166,95 @@ public class CodesResource {
             codesGroupUris.add(codesDTO.getCodesGroupUri());
             KoodistoVersio koodistoVersio = koodistoBusinessService.createKoodisto(codesGroupUris, converter.convertFromDTOToCreateKoodistoDataType(codesDTO));
             return ResponseEntity.status(201).body(conversionService.convert(koodistoVersio, KoodistoDto.class));
-         } catch (KoodistoValidationException e) {
-            LOGGER.warn("Invalid parameter for rest call: insert. ", e);
+        } catch (SadeBusinessException e) {
+            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
-            LOGGER.error("Inserting codes failed.", e);
-            return ResponseEntity.internalServerError().body(message);
+            logger.error("Inserting codes failed.", e);
+            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
         }
     }
 
 
     @Operation(description = "Palauttaa kaikki koodistoryhmät")
     @JsonView(JsonViews.Simple.class)
-    @GetMapping(path = "", produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    @GetMapping(path = "", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<Object> listAllCodesGroups() {
-       try {
+        try {
             return ResponseEntity.ok(conversionService.convertAll(koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class));
-
-         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
-            LOGGER.error("Listing all codes groups failed.", e);
-            return ResponseEntity.internalServerError().body(message);
+        } catch (SadeBusinessException e) {
+            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Listing all codes groups failed.", e);
+            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
         }
     }
 
     @Operation(description = "Palauttaa kaikki koodistoryhmät ja niiden sisältämät koodistot")
-    @JsonView({ JsonViews.Basic.class })
+    @JsonView({JsonViews.Basic.class})
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> listAllCodesInAllCodeGroups() {
-         try {
-
+        try {
             SearchKoodistosCriteriaType searchType = KoodistoServiceSearchCriteriaBuilder.latestCodes();
             return ResponseEntity.ok(conversionService.convertAll(koodistoBusinessService.searchKoodistos(searchType), KoodistoVersioListDto.class));
-
-         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
-            LOGGER.error("Listing all codes in all codes groups failed.", e);
-            return ResponseEntity.internalServerError().body(message);
+        } catch (SadeBusinessException e) {
+            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Listing all codes in all codes groups failed.", e);
+            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
         }
     }
 
     @Operation(description = "Palauttaa koodiston")
-    @JsonView({ JsonViews.Basic.class })
+    @JsonView({JsonViews.Basic.class})
     @GetMapping(path = "/{codesUri}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getCodesByCodesUri(
             @Parameter(description = "Koodiston URI") @PathVariable String codesUri) {
         try {
-            String[] errors = { KOODISTOURI };
+            String[] errors = {KOODISTOURI};
             ValidatorUtil.validateArgs(errors, codesUri);
             Koodisto koodisto = koodistoBusinessService.getKoodistoByKoodistoUri(codesUri);
             return ResponseEntity.ok(conversionService.convert(koodisto, KoodistoListDto.class));
-
-        } catch (KoodistoValidationException e) {
-            LOGGER.warn("Invalid parameter for rest call: getCodesByCodesUri. ", e);
+        } catch (SadeBusinessException e) {
+            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
-            LOGGER.error("Getting codes by codes uri failed.", e);
-            return ResponseEntity.internalServerError().body(message);
+            logger.error("Getting codes by codes uri failed.", e);
+            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
         }
     }
 
     @Operation(description = "Palauttaa tietyn koodistoversion")
-    @JsonView({ JsonViews.Extended.class })
+    @JsonView({JsonViews.Extended.class})
     @GetMapping(path = "/{codesUri}/{codesVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getCodesByCodesUriAndVersion(
             @Parameter(description = "Koodiston URI") @PathVariable String codesUri,
             @Parameter(description = "Koodiston Versio") @PathVariable int codesVersion) {
-         try {
-            String[] errors = { KOODISTOURI, KOODISTOVERSIO };
+        try {
+            String[] errors = {KOODISTOURI, KOODISTOVERSIO};
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
-
             KoodistoVersio koodistoVersio;
             if (codesVersion == 0) {
                 koodistoVersio = koodistoBusinessService.getLatestKoodistoVersio(codesUri);
             } else {
                 koodistoVersio = koodistoBusinessService.getKoodistoVersio(codesUri, codesVersion);
             }
-
             return ResponseEntity.ok(conversionService.convert(koodistoVersio, KoodistoDto.class));
 
-          } catch (KoodistoValidationException e) {
-            LOGGER.warn("Invalid parameter for rest call: getCodesByCodesUriAndVersion. ", e);
+        } catch (SadeBusinessException e) {
+            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
             return ResponseEntity.badRequest().body(e.getMessage());
-         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
-            LOGGER.error("Getting codes by codes uri and version failed.", e);
-            return ResponseEntity.internalServerError().body(message);
+        } catch (Exception e) {
+            logger.error("Getting codes by codes uri and version failed.", e);
+            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
         }
     }
 
     @Operation(description = "Palauttaa muutokset uusimpaan koodistoversioon verrattaessa",
             summary = "Toimii vain, jos koodisto on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.")
-    @JsonView({ JsonViews.Basic.class })
+    @JsonView({JsonViews.Basic.class})
     @GetMapping(path = "/changes/{codesUri}/{codesVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getChangesToCodes(
             @Parameter(description = "Koodiston URI") @PathVariable String codesUri,
@@ -272,64 +263,61 @@ public class CodesResource {
         try {
             ValidatorUtil.checkForGreaterThan(codesVersion, 0, new KoodistoValidationException("error.validation.codeelementversion"));
             return ResponseEntity.ok(changesService.getChangesDto(codesUri, codesVersion, compareToLatestAccepted));
-        } catch (KoodistoValidationException e) {
-            LOGGER.warn("Invalid parameter for rest call: get changes. ", e);
+        } catch (SadeBusinessException e) {
+            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
-            LOGGER.error("Fetching changes to codes failed.", e);
-            return ResponseEntity.internalServerError().body(message);
+            logger.error("Fetching changes to codes failed.", e);
+            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
         }
     }
 
 
     @Operation(description = "Palauttaa tehdyt muutokset uusimpaan koodistoversioon käyttäen lähintä päivämäärään osuvaa koodistoversiota vertailussa",
             summary = "Toimii vain, jos koodisto on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.")
-    @JsonView({ JsonViews.Basic.class })
+    @JsonView({JsonViews.Basic.class})
     @GetMapping(path = "/changes/withdate/{codesUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getChangesToCodesWithDate(
-              @Parameter(description = "Koodiston URI") @PathVariable String codesUri,
-              @Parameter(description = "Kuukauden päivä") @PathVariable Integer dayofmonth,
-              @Parameter(description = "Kuukausi") @PathVariable Integer month,
-              @Parameter(description = "Vuosi") @PathVariable Integer year,
-              @Parameter(description = "Tunti") @PathVariable Integer hour,
-              @Parameter(description = "Minuutti")@PathVariable Integer minute,
-              @Parameter(description = "Sekunti") @PathVariable Integer second,
-              @Parameter(description = "Verrataanko viimeiseen hyväksyttyyn versioon") @RequestParam(defaultValue = "false") boolean compareToLatestAccepted) {
-         try {
+            @Parameter(description = "Koodiston URI") @PathVariable String codesUri,
+            @Parameter(description = "Kuukauden päivä") @PathVariable Integer dayofmonth,
+            @Parameter(description = "Kuukausi") @PathVariable Integer month,
+            @Parameter(description = "Vuosi") @PathVariable Integer year,
+            @Parameter(description = "Tunti") @PathVariable Integer hour,
+            @Parameter(description = "Minuutti") @PathVariable Integer minute,
+            @Parameter(description = "Sekunti") @PathVariable Integer second,
+            @Parameter(description = "Verrataanko viimeiseen hyväksyttyyn versioon") @RequestParam(defaultValue = "false") boolean compareToLatestAccepted) {
+        try {
             ValidatorUtil.validateDateParameters(dayofmonth, month, year, hour, minute, second);
             DateTime date = new DateTime(year, month, dayofmonth, hour, minute, second);
             return ResponseEntity.ok(changesService.getChangesDto(codesUri, date, compareToLatestAccepted));
-         } catch (KoodistoValidationException e) {
-            LOGGER.warn("Invalid parameter for rest call: get changes. ", e);
-             return ResponseEntity.badRequest().body(e.getMessage());
-         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
-            LOGGER.error("Fetching changes to codes failed.", e);
-             return ResponseEntity.internalServerError().body(message);
-         }
+        } catch (SadeBusinessException e) {
+            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Fetching changes to codes failed.", e);
+            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
+        }
     }
 
     // pitäs olla delete
     @Operation(description = "Poistaa koodiston")
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
-    @JsonView({ JsonViews.Simple.class })
-    @PostMapping(path = "/delete/{codesUri}/{codesVersion}",consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView({JsonViews.Simple.class})
+    @PostMapping(path = "/delete/{codesUri}/{codesVersion}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> delete(
             @Parameter(description = "Koodiston URI") @PathVariable String codesUri,
             @Parameter(description = "Koodiston Versio") @PathVariable int codesVersion) {
-         try {
-            String[] errors = { KOODISTOURI, KOODISTOVERSIO };
+        try {
+            String[] errors = {KOODISTOURI, KOODISTOVERSIO};
             ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
             koodistoBusinessService.delete(codesUri, codesVersion);
             return ResponseEntity.status(202).body(null);
-         } catch (KoodistoValidationException e) {
-            LOGGER.warn("Invalid parameter for rest call: delete. ", e);
-             return ResponseEntity.badRequest().body(e.getMessage());
-         } catch (Exception e) {
-            String message = e instanceof SadeBusinessException ? e.getMessage() : GENERIC_ERROR_CODE;
-            LOGGER.error("Deleting codes failed.", e);
-             return ResponseEntity.internalServerError().body(message);
-         }
+        } catch (SadeBusinessException e) {
+            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            logger.error("Deleting codes failed.", e);
+            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
+        }
     }
 }
