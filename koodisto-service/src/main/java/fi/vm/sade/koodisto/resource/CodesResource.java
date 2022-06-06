@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.resource;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoListDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaListDto;

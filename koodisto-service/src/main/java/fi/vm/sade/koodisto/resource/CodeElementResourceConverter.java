@@ -9,7 +9,6 @@ import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiTilaType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
