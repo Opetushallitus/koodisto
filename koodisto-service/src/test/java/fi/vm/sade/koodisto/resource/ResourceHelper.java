@@ -1,4 +1,4 @@
-package fi.vm.sade.koodisto.service.koodisto.rest;
+package fi.vm.sade.koodisto.resource;
 
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;

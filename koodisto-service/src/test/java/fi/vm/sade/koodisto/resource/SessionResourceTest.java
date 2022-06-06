@@ -1,5 +1,5 @@
 
-package fi.vm.sade.koodisto.service.koodisto.rest;
+package fi.vm.sade.koodisto.resource;
 
 import fi.vm.sade.koodisto.resource.SessionResource;
 import org.junit.Test;

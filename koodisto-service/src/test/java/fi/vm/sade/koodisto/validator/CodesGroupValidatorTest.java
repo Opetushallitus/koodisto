@@ -1,4 +1,4 @@
-package fi.vm.sade.koodisto.service.koodisto.rest.validator;
+package fi.vm.sade.koodisto.validator;
 
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.Kieli;
