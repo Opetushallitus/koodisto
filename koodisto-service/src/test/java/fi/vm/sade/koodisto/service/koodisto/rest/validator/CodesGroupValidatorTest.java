@@ -1,16 +1,12 @@
 package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
-import org.junit.Test;
-
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNimiEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 public class CodesGroupValidatorTest {
 

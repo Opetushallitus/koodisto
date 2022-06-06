@@ -1,10 +1,10 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import org.junit.Test;
-
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
+import org.junit.Test;
+
 import static org.junit.Assert.assertNotNull;
 
 

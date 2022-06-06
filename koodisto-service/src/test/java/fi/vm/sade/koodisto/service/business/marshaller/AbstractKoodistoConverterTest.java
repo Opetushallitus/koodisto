@@ -7,13 +7,11 @@ import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.ByteArrayDataSource;
 import fi.vm.sade.koodisto.util.DateHelper;
 import fi.vm.sade.koodisto.util.KoodistoHelper;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import javax.activation.DataHandler;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;

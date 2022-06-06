@@ -3,10 +3,10 @@ package fi.vm.sade.koodisto.service.business.impl;
 import fi.vm.sade.koodisto.dao.KoodistoRyhmaDAO;
 import fi.vm.sade.koodisto.dao.KoodistoRyhmaMetadataDAO;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
-import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.model.KoodistoRyhma;
+import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.NoResultException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.persistence.NoResultException;
 
 @Transactional
 @Service("koodistoRyhmaBusinessService")

@@ -5,7 +5,6 @@ import fi.vm.sade.koodisto.service.UploadService;
 import fi.vm.sade.koodisto.service.business.UploadBusinessService;
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 
 import javax.activation.DataHandler;
 import javax.jws.WebParam;

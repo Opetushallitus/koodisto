@@ -1,16 +1,12 @@
 package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
-import java.util.Collection;
-
+import fi.vm.sade.koodisto.dto.KoodiDto;
+import fi.vm.sade.koodisto.model.KoodiMetadata;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.Validatable.ValidationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fi.vm.sade.koodisto.dto.KoodiDto;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
-import fi.vm.sade.koodisto.service.business.exception.KoodiNimiEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodiUriEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
-import fi.vm.sade.koodisto.service.koodisto.rest.validator.Validatable.ValidationType;
+import java.util.Collection;
 
 public class CodeElementValidator implements RestValidator<KoodiDto> {
 

@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.service.business.changes.impl;
 
 import com.google.common.base.Function;
-
 import fi.vm.sade.koodisto.dto.KoodiChangesDto.SimpleCodeElementRelation;
 import fi.vm.sade.koodisto.model.KoodinSuhde;
 

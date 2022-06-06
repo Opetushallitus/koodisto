@@ -1,17 +1,16 @@
 package fi.vm.sade.koodisto.dto;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.annotation.JsonView;
-
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.service.serializer.FinnishJsonDateSerializer;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
 public class KoodistoChangesDto {

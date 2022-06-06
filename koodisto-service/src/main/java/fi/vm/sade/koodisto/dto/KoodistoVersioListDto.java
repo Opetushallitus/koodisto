@@ -1,11 +1,10 @@
 package fi.vm.sade.koodisto.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.Tila;
-
-import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 import java.util.Date;

@@ -1,25 +1,18 @@
 package db.migration;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
+import com.googlecode.flyway.core.api.migration.spring.SpringJdbcMigration;
+import fi.vm.sade.koodisto.model.Tila;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Iterables;
-import com.googlecode.flyway.core.api.migration.spring.SpringJdbcMigration;
-
-import fi.vm.sade.koodisto.model.Tila;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 public class V13__set_old_relations_passive implements SpringJdbcMigration {
     

@@ -1,13 +1,12 @@
 package fi.vm.sade.koodisto.filter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *

@@ -4,7 +4,6 @@ import fi.vm.sade.koodisto.dao.KoodistoVersioDAO;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-
 import fi.vm.sade.koodisto.util.DateHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;

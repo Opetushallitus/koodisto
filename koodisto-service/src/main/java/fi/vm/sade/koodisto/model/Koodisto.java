@@ -1,13 +1,11 @@
 package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.koodisto.common.util.FieldLengths;
-
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;

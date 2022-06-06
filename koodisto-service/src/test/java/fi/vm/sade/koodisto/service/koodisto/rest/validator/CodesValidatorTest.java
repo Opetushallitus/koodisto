@@ -1,15 +1,14 @@
 package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.Test;
-
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.Tila;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 public class CodesValidatorTest {
     

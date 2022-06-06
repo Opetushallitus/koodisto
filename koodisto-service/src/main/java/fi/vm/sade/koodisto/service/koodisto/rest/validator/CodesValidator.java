@@ -1,10 +1,10 @@
 package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
-import java.util.Collection;
-
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.Validatable.ValidationType;
+
+import java.util.Collection;
 
 public class CodesValidator implements RestValidator<KoodistoDto> {
 

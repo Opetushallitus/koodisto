@@ -1,10 +1,16 @@
 package fi.vm.sade.koodisto.service.business.changes.impl;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
+import fi.vm.sade.koodisto.dto.KoodiChangesDto;
+import fi.vm.sade.koodisto.dto.KoodiChangesDto.SimpleCodeElementRelation;
+import fi.vm.sade.koodisto.dto.SimpleKoodiMetadataDto;
+import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
+import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.ChangesService;
+import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
+import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
+import fi.vm.sade.koodisto.test.support.DtoFactory;
+import fi.vm.sade.koodisto.test.support.builder.KoodiVersioBuilder;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,32 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fi.vm.sade.koodisto.dto.KoodiChangesDto;
-import fi.vm.sade.koodisto.dto.KoodiChangesDto.SimpleCodeElementRelation;
-import fi.vm.sade.koodisto.dto.SimpleKoodiMetadataDto;
-import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.Koodi;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
-import fi.vm.sade.koodisto.model.KoodiVersio;
-import fi.vm.sade.koodisto.model.KoodinSuhde;
-import fi.vm.sade.koodisto.model.Koodisto;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.SuhteenTyyppi;
-import fi.vm.sade.koodisto.model.Tila;
-import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
-import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
-import fi.vm.sade.koodisto.service.business.changes.ChangesService;
-import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
-import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
-import fi.vm.sade.koodisto.test.support.DtoFactory;
-import fi.vm.sade.koodisto.test.support.builder.KoodiVersioBuilder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "classpath:spring/simple-test-context.xml")

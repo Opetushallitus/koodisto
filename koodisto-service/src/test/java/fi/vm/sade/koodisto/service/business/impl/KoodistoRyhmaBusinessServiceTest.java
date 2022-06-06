@@ -1,12 +1,14 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.PersistenceException;
-
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
+import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.Koodisto;
+import fi.vm.sade.koodisto.model.KoodistoRyhma;
+import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
+import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
+import fi.vm.sade.koodisto.service.business.exception.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,24 +17,13 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-
-import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
-import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.Koodisto;
-import fi.vm.sade.koodisto.model.KoodistoRyhma;
-import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
-import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNimiEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
+import javax.persistence.PersistenceException;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.Assert.*;
 
 @ContextConfiguration(locations = "classpath:spring/test-context.xml")
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,

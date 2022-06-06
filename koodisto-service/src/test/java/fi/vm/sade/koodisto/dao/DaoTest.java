@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.dao;
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
-import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
 import org.springframework.test.context.ContextConfiguration;

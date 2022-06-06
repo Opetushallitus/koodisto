@@ -1,11 +1,11 @@
 package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
-import java.util.Collection;
-import java.util.Date;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.Date;
 
 public class ValidatorUtil {
     private static Logger logger = LoggerFactory.getLogger(ValidatorUtil.class);

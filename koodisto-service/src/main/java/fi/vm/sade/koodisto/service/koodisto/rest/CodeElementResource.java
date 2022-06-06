@@ -1,23 +1,24 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
+import fi.vm.sade.koodisto.dto.*;
+import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.model.KoodiVersio;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
+import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
+import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
+import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
+import fi.vm.sade.koodisto.service.impl.conversion.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.*;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.Validatable.ValidationType;
+import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
+import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,31 +27,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
-import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
-import fi.vm.sade.koodisto.dto.KoodiChangesDto;
-import fi.vm.sade.koodisto.dto.KoodiDto;
-import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
-import fi.vm.sade.koodisto.dto.SimpleKoodiDto;
-import fi.vm.sade.koodisto.model.JsonViews;
-import fi.vm.sade.koodisto.model.KoodiVersio;
-import fi.vm.sade.koodisto.model.SuhteenTyyppi;
-import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
-import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
-import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
-import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import fi.vm.sade.koodisto.service.impl.conversion.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
-import fi.vm.sade.koodisto.service.koodisto.rest.validator.CodeElementRelationListValidator;
-import fi.vm.sade.koodisto.service.koodisto.rest.validator.CodeElementValidator;
-import fi.vm.sade.koodisto.service.koodisto.rest.validator.ExtendedCodeElementValidator;
-import fi.vm.sade.koodisto.service.koodisto.rest.validator.KoodistoValidationException;
-import fi.vm.sade.koodisto.service.koodisto.rest.validator.Validatable.ValidationType;
-import fi.vm.sade.koodisto.service.koodisto.rest.validator.ValidatorUtil;
-import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
-import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @Path("/codeelement")

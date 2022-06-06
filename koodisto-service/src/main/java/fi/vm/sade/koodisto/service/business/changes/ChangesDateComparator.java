@@ -1,8 +1,8 @@
 package fi.vm.sade.koodisto.service.business.changes;
 
-import java.util.Collection;
-
 import org.joda.time.DateTime;
+
+import java.util.Collection;
 
 public abstract class ChangesDateComparator<C> {
 

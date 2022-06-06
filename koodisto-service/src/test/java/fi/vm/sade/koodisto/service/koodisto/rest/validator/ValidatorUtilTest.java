@@ -1,14 +1,14 @@
 package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
-import java.util.ArrayList;
-import java.util.Date;
-
-import org.junit.Test;
-
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.model.constraint.exception.KoodistoValidatorRuntimeException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 
 public class ValidatorUtilTest {

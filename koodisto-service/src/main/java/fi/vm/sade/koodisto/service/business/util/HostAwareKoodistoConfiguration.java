@@ -16,11 +16,12 @@
 package fi.vm.sade.koodisto.service.business.util;
 
 import fi.vm.sade.koodisto.common.configuration.KoodistoConfiguration;
-import java.net.MalformedURLException;
-import java.text.MessageFormat;
 import org.apache.commons.configuration.ConfigurationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.net.MalformedURLException;
+import java.text.MessageFormat;
 
 /**
  *

@@ -1,17 +1,13 @@
 package fi.vm.sade.koodisto.service.koodisto.rest.validator;
 
-import java.util.Collection;
-
-
-
-import org.apache.commons.lang.StringUtils;
-
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaUriEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.Validatable.ValidationType;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.Collection;
 
 public class CodesGroupValidator implements RestValidator<KoodistoRyhmaDto> {
 

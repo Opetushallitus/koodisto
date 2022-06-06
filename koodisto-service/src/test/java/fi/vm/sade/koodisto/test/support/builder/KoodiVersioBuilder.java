@@ -1,14 +1,8 @@
 package fi.vm.sade.koodisto.test.support.builder;
 
-import java.util.Date;
+import fi.vm.sade.koodisto.model.*;
 
-import fi.vm.sade.koodisto.model.Koodi;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
-import fi.vm.sade.koodisto.model.KoodiVersio;
-import fi.vm.sade.koodisto.model.KoodinSuhde;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
-import fi.vm.sade.koodisto.model.Tila;
+import java.util.Date;
 
 public class KoodiVersioBuilder implements Builder<KoodiVersio>{
     

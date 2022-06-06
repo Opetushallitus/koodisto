@@ -1,24 +1,9 @@
 package fi.vm.sade.koodisto.test.support;
 
-import java.util.Date;
+import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.test.support.builder.*;
 
-import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.Koodi;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
-import fi.vm.sade.koodisto.model.KoodiVersio;
-import fi.vm.sade.koodisto.model.KoodinSuhde;
-import fi.vm.sade.koodisto.model.Koodisto;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.KoodistonSuhde;
-import fi.vm.sade.koodisto.model.SuhteenTyyppi;
-import fi.vm.sade.koodisto.model.Tila;
-import fi.vm.sade.koodisto.test.support.builder.KoodiBuilder;
-import fi.vm.sade.koodisto.test.support.builder.KoodiMetadataBuilder;
-import fi.vm.sade.koodisto.test.support.builder.KoodiVersioBuilder;
-import fi.vm.sade.koodisto.test.support.builder.KoodinSuhdeBuilder;
-import fi.vm.sade.koodisto.test.support.builder.KoodistoVersioBuilder;
-import fi.vm.sade.koodisto.test.support.builder.KoodistonSuhdeBuilder;
+import java.util.Date;
 
 public class DtoFactory {
 

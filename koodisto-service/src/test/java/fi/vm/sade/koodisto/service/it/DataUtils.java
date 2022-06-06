@@ -1,24 +1,15 @@
 package fi.vm.sade.koodisto.service.it;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.impl.conversion.koodisto.KoodistoMetadataToKoodistoMetadataTypeConverter;
-import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
-import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodiTilaType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
-import fi.vm.sade.koodisto.service.types.common.KieliType;
-import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
-import fi.vm.sade.koodisto.service.types.common.KoodiType;
-import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
-import fi.vm.sade.koodisto.service.types.common.KoodistoType;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
+import fi.vm.sade.koodisto.service.types.*;
+import fi.vm.sade.koodisto.service.types.common.*;
 import fi.vm.sade.koodisto.util.DateHelper;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public final class DataUtils {
 

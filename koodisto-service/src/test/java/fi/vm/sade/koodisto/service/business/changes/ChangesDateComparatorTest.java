@@ -1,10 +1,10 @@
 package fi.vm.sade.koodisto.service.business.changes;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.joda.time.DateTime;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 

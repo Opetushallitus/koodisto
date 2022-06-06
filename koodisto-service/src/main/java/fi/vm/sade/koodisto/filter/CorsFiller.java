@@ -1,12 +1,12 @@
 package fi.vm.sade.koodisto.filter;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.List;
 
 abstract class CorsFiller<R, Q> {
 

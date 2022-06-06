@@ -3,12 +3,12 @@
  */
 package fi.vm.sade.koodisto.dao;
 
-import java.util.List;
-
 import fi.vm.sade.koodisto.dao.impl.JpaDAO;
 import fi.vm.sade.koodisto.model.Koodi;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.Tila;
+
+import java.util.List;
 
 /**
  * @author tommiha

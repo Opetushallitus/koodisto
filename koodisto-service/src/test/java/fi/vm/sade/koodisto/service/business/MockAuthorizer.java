@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.service.business;
 
-import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.authorization.NotAuthorizedException;
+import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 
 /**
  * @author Eetu Blomqvist

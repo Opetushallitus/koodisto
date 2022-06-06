@@ -1,12 +1,10 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-import java.util.HashSet;
-
-import javax.ws.rs.core.Response;
-
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
+import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
+import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +13,10 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
-
-
-import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
-import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.transaction.annotation.Transactional;
+
+import javax.ws.rs.core.Response;
+import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
 

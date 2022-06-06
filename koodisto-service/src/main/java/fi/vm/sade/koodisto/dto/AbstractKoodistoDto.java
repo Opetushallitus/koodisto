@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.dto;
 
-import fi.vm.sade.koodisto.model.JsonViews;
 import com.fasterxml.jackson.annotation.JsonView;
+import fi.vm.sade.koodisto.model.JsonViews;
 
 /**
  * User: wuoti

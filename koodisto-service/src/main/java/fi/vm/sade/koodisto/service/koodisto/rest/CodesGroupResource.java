@@ -1,41 +1,28 @@
 package fi.vm.sade.koodisto.service.koodisto.rest;
 
-import java.util.Collection;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
+import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.CodesGroupValidator;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.KoodistoValidationException;
-import fi.vm.sade.koodisto.service.koodisto.rest.validator.ValidatorUtil;
 import fi.vm.sade.koodisto.service.koodisto.rest.validator.Validatable.ValidationType;
+import fi.vm.sade.koodisto.service.koodisto.rest.validator.ValidatorUtil;
+import io.swagger.annotations.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.Collection;
 
 @Controller
 @Path("/codesgroup")

@@ -1,10 +1,9 @@
 package fi.vm.sade.koodisto.dto;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonView;
-
 import fi.vm.sade.koodisto.model.JsonViews;
+
+import java.util.List;
 
 /**
  * User: petur1

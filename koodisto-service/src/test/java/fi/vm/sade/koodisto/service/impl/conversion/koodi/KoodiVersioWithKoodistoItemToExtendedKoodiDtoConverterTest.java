@@ -1,10 +1,15 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-
+import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
+import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
+import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
+import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
+import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
+import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
+import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
+import fi.vm.sade.koodisto.test.support.DtoFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kubek2k.springockito.annotations.ReplaceWithMock;
@@ -13,25 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
-import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
-import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
-import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
-import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.Koodi;
-import fi.vm.sade.koodisto.model.KoodiMetadata;
-import fi.vm.sade.koodisto.model.KoodiVersio;
-import fi.vm.sade.koodisto.model.KoodinSuhde;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
-import fi.vm.sade.koodisto.model.SuhteenTyyppi;
-import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
-import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
-import fi.vm.sade.koodisto.test.support.DtoFactory;
-import static org.junit.Assert.assertEquals;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "classpath:spring/test-context.xml")

@@ -20,7 +20,6 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.ws.rs.WebApplicationException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;

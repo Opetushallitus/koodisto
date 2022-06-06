@@ -5,8 +5,6 @@ import fi.vm.sade.koodisto.service.GenericFault;
 import fi.vm.sade.koodisto.service.business.DownloadBusinessService;
 import fi.vm.sade.koodisto.service.types.common.ExportImportFormatType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 
 import javax.activation.DataHandler;
 import javax.jws.WebParam;
