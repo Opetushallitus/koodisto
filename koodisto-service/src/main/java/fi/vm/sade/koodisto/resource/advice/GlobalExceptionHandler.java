@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
         String errorMessage = ex.getMessage();
         if (!violations.isEmpty()) {
             StringBuilder builder = new StringBuilder();
-            violations.forEach(violation -> builder.append(" ").append(violation.getMessage()));
+            violations.forEach(violation -> builder.append(" ").append(violation.getPropertyPath()).append(": ").append(violation.getMessage()));
             errorMessage = builder.toString().trim();
         }
         return ResponseEntity.badRequest().body(errorMessage);

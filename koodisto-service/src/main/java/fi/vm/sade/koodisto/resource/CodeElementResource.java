@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.resource;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
@@ -23,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -64,20 +62,12 @@ public class CodeElementResource {
     @GetMapping(path = "/{codeElementUri}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getAllCodeElementVersionsByCodeElementUri(
             @Parameter(description = "Koodin URI") @PathVariable String codeElementUri) {
-        try {
-            String[] errors = {KOODIURI};
-            ValidatorUtil.validateArgs(errors, codeElementUri);
+        String[] errors = {KOODIURI};
+        ValidatorUtil.validateArgs(errors, codeElementUri);
 
-            SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(codeElementUri);
-            List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
-            return ResponseEntity.ok(conversionService.convertAll(codeElements, SimpleKoodiDto.class));
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Fetching codeElement versions by uri failed.", e);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
-        }
+        SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(codeElementUri);
+        List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
+        return ResponseEntity.ok(conversionService.convertAll(codeElements, SimpleKoodiDto.class));
     }
 
     @GetMapping(path = "/{codeElementUri}/{codeElementVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -90,25 +80,17 @@ public class CodeElementResource {
     public ResponseEntity<Object> getCodeElementByUriAndVersion(
             @Parameter(description = "Koodin URI") @PathVariable String codeElementUri,
             @Parameter(description = "Koodin versio") @PathVariable int codeElementVersion) {
-        try {
-            String[] errors = {KOODIURI, KOODIVERSIO};
-            ValidatorUtil.validateArgs(errors, codeElementUri, codeElementVersion);
-            ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException(KOODISTO_VALIDATION_ERROR_CODE));
+        String[] errors = {KOODIURI, KOODIVERSIO};
+        ValidatorUtil.validateArgs(errors, codeElementUri, codeElementVersion);
+        ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException(KOODISTO_VALIDATION_ERROR_CODE));
 
-            SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(codeElementUri, codeElementVersion);
-            List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
+        SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(codeElementUri, codeElementVersion);
+        List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
 
-            if (codeElements.isEmpty()) {
-                throw new KoodiNotFoundException();
-            }
-            return ResponseEntity.ok(conversionService.convert(codeElements.get(0), ExtendedKoodiDto.class));
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Fetching codeElement by uri and version failed.", e);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
+        if (codeElements.isEmpty()) {
+            throw new KoodiNotFoundException();
         }
+        return ResponseEntity.ok(conversionService.convert(codeElements.get(0), ExtendedKoodiDto.class));
     }
 
     @GetMapping(path = "/{codesUri}/{codesVersion}/{codeElementUri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
@@ -118,20 +100,12 @@ public class CodeElementResource {
             @Parameter(description = "Koodiston URI") @PathVariable String codesUri,
             @Parameter(description = "Koodiston versio") @PathVariable int codesVersion,
             @Parameter(description = "Koodin URI") @PathVariable String codeElementUri) {
-        try {
-            String[] errors = {KOODISTOURI, KOODISTOVERSIO, KOODIURI};
-            ValidatorUtil.validateArgs(errors, codesUri, codesVersion, codeElementUri);
-            ValidatorUtil.checkForGreaterThan(codesVersion, 0, new KoodistoValidationException("error.validation.codesversion"));
+        String[] errors = {KOODISTOURI, KOODISTOVERSIO, KOODIURI};
+        ValidatorUtil.validateArgs(errors, codesUri, codesVersion, codeElementUri);
+        ValidatorUtil.checkForGreaterThan(codesVersion, 0, new KoodistoValidationException("error.validation.codesversion"));
 
-            KoodiVersioWithKoodistoItem codeElement = koodiBusinessService.getKoodiByKoodistoVersio(codesUri, codesVersion, codeElementUri);
-            return ResponseEntity.ok(conversionService.convert(codeElement, KoodiDto.class));
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Fetching codeElement by uri failed.", e);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
-        }
+        KoodiVersioWithKoodistoItem codeElement = koodiBusinessService.getKoodiByKoodistoVersio(codesUri, codesVersion, codeElementUri);
+        return ResponseEntity.ok(conversionService.convert(codeElement, KoodiDto.class));
     }
 
     @JsonView({JsonViews.Simple.class})
@@ -140,26 +114,18 @@ public class CodeElementResource {
     public ResponseEntity<Object> getAllCodeElementsByCodesUriAndVersion(
             @Parameter(description = "Koodisto URI") @PathVariable String codesUri,
             @Parameter(description = "Koodiston versio") @PathVariable int codesVersion) {
-        try {
-            String[] errors = {KOODISTOURI, KOODISTOVERSIO};
-            ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
-            ValidatorUtil.checkForGreaterThan(codesVersion, -1, new KoodistoValidationException(KOODISTO_VALIDATION_ERROR_CODE));
+        String[] errors = {KOODISTOURI, KOODISTOVERSIO};
+        ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
+        ValidatorUtil.checkForGreaterThan(codesVersion, -1, new KoodistoValidationException(KOODISTO_VALIDATION_ERROR_CODE));
 
-            List<KoodiVersioWithKoodistoItem> codeElements = null;
-            if (codesVersion == 0) {
-                // FIXME: Why return anything when version is invalid?
-                codeElements = koodiBusinessService.getKoodisByKoodisto(codesUri, false);
-            } else {
-                codeElements = koodiBusinessService.getKoodisByKoodistoVersio(codesUri, codesVersion, false);
-            }
-            return ResponseEntity.ok(conversionService.convertAll(codeElements, SimpleKoodiDto.class));
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Fetching codeElement failed.", e);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
+        List<KoodiVersioWithKoodistoItem> codeElements = null;
+        if (codesVersion == 0) {
+            // FIXME: Why return anything when version is invalid?
+            codeElements = koodiBusinessService.getKoodisByKoodisto(codesUri, false);
+        } else {
+            codeElements = koodiBusinessService.getKoodisByKoodistoVersio(codesUri, codesVersion, false);
         }
+        return ResponseEntity.ok(conversionService.convertAll(codeElements, SimpleKoodiDto.class));
     }
 
     @Operation(description = "Palauttaa uusimman koodiversion")
@@ -167,24 +133,16 @@ public class CodeElementResource {
     @GetMapping(path = "/latest/{codeElementUri}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getLatestCodeElementVersionsByCodeElementUri(
             @Parameter(description = "Koodin URI") @PathVariable String codeElementUri) {
-        try {
-            String[] errors = {KOODIURI};
-            ValidatorUtil.validateArgs(errors, codeElementUri);
+        String[] errors = {KOODIURI};
+        ValidatorUtil.validateArgs(errors, codeElementUri);
 
-            SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(codeElementUri);
-            List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
-            if (codeElements.isEmpty()) {
-                throw new KoodiNotFoundException();
-            }
-            return ResponseEntity.ok(conversionService.convert(codeElements.get(0), KoodiDto.class));
-
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Fetching codeElement by uri failed.", e);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
+        SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(codeElementUri);
+        List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
+        if (codeElements.isEmpty()) {
+            throw new KoodiNotFoundException();
         }
+        return ResponseEntity.ok(conversionService.convert(codeElements.get(0), KoodiDto.class));
+
     }
 
     @JsonView({JsonViews.Extended.class})
@@ -195,17 +153,9 @@ public class CodeElementResource {
     public ResponseEntity<Object> getChangesToCodeElement(@Parameter(description = "Koodin URI") @PathVariable String codeElementUri,
                                                           @Parameter(description = "Koodin versio") @PathVariable Integer codeElementVersion,
                                                           @Parameter(description = "Verrataanko viimeiseen hyväksyttyyn versioon") @RequestParam(defaultValue = "false") boolean compareToLatestAccepted) {
-        try {
-            ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException(KOODISTO_VALIDATION_ERROR_CODE));
-            return ResponseEntity.ok(changesService.getChangesDto(codeElementUri, codeElementVersion, compareToLatestAccepted));
+        ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException(KOODISTO_VALIDATION_ERROR_CODE));
+        return ResponseEntity.ok(changesService.getChangesDto(codeElementUri, codeElementVersion, compareToLatestAccepted));
 
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Fetching changes to code element failed.", e);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
-        }
     }
 
     @JsonView({JsonViews.Extended.class})
@@ -220,17 +170,11 @@ public class CodeElementResource {
                                                                   @Parameter(description = "Minuutti") @PathVariable Integer minute,
                                                                   @Parameter(description = "Sekunti") @PathVariable Integer second,
                                                                   @Parameter(description = "Verrataanko viimeiseen hyväksyttyyn versioon") @RequestParam(defaultValue = "false") Boolean compareToLatestAccepted) {
-        try {
-            ValidatorUtil.validateDateParameters(dayofmonth, month, year, hour, minute, second);
-            DateTime dateTime = new DateTime(year, month, dayofmonth, hour, minute, second);
-            return ResponseEntity.ok(changesService.getChangesDto(codeElementUri, dateTime, compareToLatestAccepted));
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Fetching changes to code element failed.", e);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
-        }
+
+        ValidatorUtil.validateDateParameters(dayofmonth, month, year, hour, minute, second);
+        DateTime dateTime = new DateTime(year, month, dayofmonth, hour, minute, second);
+        return ResponseEntity.ok(changesService.getChangesDto(codeElementUri, dateTime, compareToLatestAccepted));
+
     }
 
     @JsonView({JsonViews.Basic.class})
@@ -240,21 +184,15 @@ public class CodeElementResource {
     public ResponseEntity<Object> insert(
             @Parameter(description = "Koodiston URI") @PathVariable String codesUri,
             @Parameter(description = "Koodi") @RequestBody KoodiDto codeelementDTO) {
-        try {
-            String[] errors = {KOODISTOURI};
-            ValidatorUtil.validateArgs(errors, codesUri);
-            codesValidator.validate(codeelementDTO, ValidationType.INSERT);
-            // aika huono toteutus
-            KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem = koodiBusinessService.createKoodi(codesUri,
-                    converter.convertFromDTOToCreateKoodiDataType(codeelementDTO));
-            return ResponseEntity.status(201).body(conversionService.convert(koodiVersioWithKoodistoItem, KoodiDto.class));
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Inserting codeElement failed.", e);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
-        }
+
+        String[] errors = {KOODISTOURI};
+        ValidatorUtil.validateArgs(errors, codesUri);
+        codesValidator.validate(codeelementDTO, ValidationType.INSERT);
+        // aika huono toteutus
+        KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem = koodiBusinessService.createKoodi(codesUri,
+                converter.convertFromDTOToCreateKoodiDataType(codeelementDTO));
+        return ResponseEntity.status(201).body(conversionService.convert(koodiVersioWithKoodistoItem, KoodiDto.class));
+
     }
 
     @JsonView({JsonViews.Extended.class})
@@ -265,19 +203,13 @@ public class CodeElementResource {
             @Parameter(description = "Koodin URI") @PathVariable String codeElementUri,
             @Parameter(description = "Linkitettävän koodin URI") @PathVariable String codeElementUriToAdd,
             @Parameter(description = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathVariable String relationType) {
-        try {
-            String[] errors = {KOODIURI, "codeelementuritoadd", RELATIONTYPE};
-            ValidatorUtil.validateArgs(errors, codeElementUri, codeElementUriToAdd, relationType);
-            koodiBusinessService.addRelation(codeElementUri, List.of(codeElementUriToAdd), SuhteenTyyppi.valueOf(relationType), false);
-            return ResponseEntity.ok(null);
 
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Adding relation to codeElement failed.", e);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
-        }
+        String[] errors = {KOODIURI, "codeelementuritoadd", RELATIONTYPE};
+        ValidatorUtil.validateArgs(errors, codeElementUri, codeElementUriToAdd, relationType);
+        koodiBusinessService.addRelation(codeElementUri, List.of(codeElementUriToAdd), SuhteenTyyppi.valueOf(relationType), false);
+        return ResponseEntity.ok(null);
+
+
     }
 
     @JsonView({JsonViews.Extended.class})
@@ -287,18 +219,12 @@ public class CodeElementResource {
     public ResponseEntity<String> addRelations(
             @Parameter(description = "Relaation tiedot JSON muodossa") @RequestBody KoodiRelaatioListaDto koodiRelaatioDto
     ) {
-        try {
-            relationValidator.validate(koodiRelaatioDto, ValidationType.INSERT);
 
-            koodiBusinessService.addRelation(koodiRelaatioDto);
-            return ResponseEntity.ok(null);
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Adding multiple relations to codeElement failed.", e);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
-        }
+        relationValidator.validate(koodiRelaatioDto, ValidationType.INSERT);
+
+        koodiBusinessService.addRelation(koodiRelaatioDto);
+        return ResponseEntity.ok(null);
+
     }
 
     @JsonView({JsonViews.Extended.class})
@@ -311,20 +237,14 @@ public class CodeElementResource {
             @Parameter(description = "Irroitettavan koodin URI") @PathVariable String codeElementUriToRemove,
             @Parameter(description = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathVariable String relationType) {
 
-        try {
-            String[] errors = {KOODIURI, "codeelementuritoremove", RELATIONTYPE};
-            ValidatorUtil.validateArgs(errors, codeElementUri, codeElementUriToRemove, relationType);
 
-            koodiBusinessService.removeRelation(codeElementUri, List.of(codeElementUriToRemove),
-                    SuhteenTyyppi.valueOf(relationType), false);
-            return ResponseEntity.ok(null);
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Removing relation to codeElement failed with generic exception. {}", GENERIC_ERROR_CODE);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
-        }
+        String[] errors = {KOODIURI, "codeelementuritoremove", RELATIONTYPE};
+        ValidatorUtil.validateArgs(errors, codeElementUri, codeElementUriToRemove, relationType);
+
+        koodiBusinessService.removeRelation(codeElementUri, List.of(codeElementUriToRemove),
+                SuhteenTyyppi.valueOf(relationType), false);
+        return ResponseEntity.ok(null);
+
     }
 
     @JsonView({JsonViews.Extended.class})
@@ -334,17 +254,11 @@ public class CodeElementResource {
     public ResponseEntity<String> removeRelations(
             @Parameter(description = "Relaation tiedot JSON muodossa") @RequestBody KoodiRelaatioListaDto koodiRelaatioDto
     ) {
-        try {
-            relationValidator.validate(koodiRelaatioDto, ValidationType.UPDATE);
-            koodiBusinessService.removeRelation(koodiRelaatioDto);
-            return ResponseEntity.ok(null);
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Removing multiple relations form codeElement failed.");
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
-        }
+
+        relationValidator.validate(koodiRelaatioDto, ValidationType.UPDATE);
+        koodiBusinessService.removeRelation(koodiRelaatioDto);
+        return ResponseEntity.ok(null);
+
     }
 
     // pitääis olla delete method
@@ -355,20 +269,14 @@ public class CodeElementResource {
     public ResponseEntity<String> delete(
             @Parameter(description = "Koodin URI") @PathVariable String codeElementUri,
             @Parameter(description = "Koodin versio") @PathVariable int codeElementVersion) {
-        try {
-            String[] errors = {KOODIURI, KOODIVERSIO};
-            ValidatorUtil.validateArgs(errors, codeElementUri, codeElementVersion);
-            ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException(KOODISTO_VALIDATION_ERROR_CODE));
 
-            koodiBusinessService.delete(codeElementUri, codeElementVersion);
-            return ResponseEntity.status(202).body(null);
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Deleting the codeElement failed.", e);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
-        }
+        String[] errors = {KOODIURI, KOODIVERSIO};
+        ValidatorUtil.validateArgs(errors, codeElementUri, codeElementVersion);
+        ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException(KOODISTO_VALIDATION_ERROR_CODE));
+
+        koodiBusinessService.delete(codeElementUri, codeElementVersion);
+        return ResponseEntity.status(202).body(null);
+
     }
 
     @JsonView({JsonViews.Extended.class})
@@ -377,18 +285,12 @@ public class CodeElementResource {
     @PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> update(
             @Parameter(description = "Koodi") @RequestBody KoodiDto codeElementDTO) {
-        try {
-            codesValidator.validate(codeElementDTO, ValidationType.UPDATE);
-            KoodiVersioWithKoodistoItem koodiVersio =
-                    koodiBusinessService.updateKoodi(converter.convertFromDTOToUpdateKoodiDataType(codeElementDTO));
-            return ResponseEntity.status(201).body(conversionService.convert(koodiVersio, KoodiDto.class));
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Updating codeElement failed.", e);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
-        }
+
+        codesValidator.validate(codeElementDTO, ValidationType.UPDATE);
+        KoodiVersioWithKoodistoItem koodiVersio =
+                koodiBusinessService.updateKoodi(converter.convertFromDTOToUpdateKoodiDataType(codeElementDTO));
+        return ResponseEntity.status(201).body(conversionService.convert(koodiVersio, KoodiDto.class));
+
     }
 
     @JsonView({JsonViews.Basic.class})
@@ -397,17 +299,11 @@ public class CodeElementResource {
     @PutMapping(path = "/save", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> save(
             @Parameter(description = "Koodi") @RequestBody ExtendedKoodiDto koodiDTO) {
-        try {
-            extendedValidator.validate(koodiDTO, ValidationType.UPDATE);
 
-            KoodiVersio koodiVersio = koodiBusinessService.saveKoodi(koodiDTO);
-            return ResponseEntity.ok(koodiVersio.getVersio().toString());
-        } catch (SadeBusinessException e) {
-            logger.debug("SadeBusinessException of type {}", e.getClass().getName());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error("Saving codeElement failed.", e);
-            return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
-        }
+        extendedValidator.validate(koodiDTO, ValidationType.UPDATE);
+
+        KoodiVersio koodiVersio = koodiBusinessService.saveKoodi(koodiDTO);
+        return ResponseEntity.ok(koodiVersio.getVersio().toString());
+
     }
 }

@@ -71,7 +71,7 @@ class InternalKoodiResourceTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("[]"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("error.koodi.list.empty"));
+                .andExpect(content().string("upsertKoodiByKoodisto.koodis: error.koodi.list.empty"));
     }
 
     @Test
@@ -109,7 +109,7 @@ class InternalKoodiResourceTest {
                                 "\"kieli\":\"SV\"}]" +
                                 "}]"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("error.nimi.empty"));
+                .andExpect(content().string("upsertKoodiByKoodisto.koodis[0].metadata[0].nimi: error.nimi.empty"));
     }
 
     @Test
