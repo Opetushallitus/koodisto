@@ -324,7 +324,7 @@ class CodesResourceTest {
 
             mockMvc.perform(post(BASE_PATH + "/delete/{codesUri}/{codesVersion}", codesUri, codesVersion)
                             .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isNotFound());
 
         }
         {
@@ -332,7 +332,7 @@ class CodesResourceTest {
             int codesVersion = 99;
             mockMvc.perform(post(BASE_PATH + "/delete/{codesUri}/{codesVersion}", codesUri, codesVersion)
                             .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isNotFound());
         }
 
     }
