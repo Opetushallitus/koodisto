@@ -37,8 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class CodeElementResourceTest {
     private static final String BASE_PATH = "/rest/codeelement";
-    @Autowired
-    private CodeElementResource resource;
+
     @Autowired
     private KoodiBusinessService service;
     @Autowired
