@@ -54,7 +54,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Object> handleIllegalArgumentException(MethodArgumentTypeMismatchException e) {
-        return ResponseEntity.badRequest().body(String.format("error.validation.%s", e.getParameter().getParameterName().toLowerCase()));
+        return ResponseEntity.badRequest().body(String.format("error.validation.%s", e.getParameter().getParameterName()).toLowerCase());
     }
 
     @ExceptionHandler(SadeBusinessException.class)
