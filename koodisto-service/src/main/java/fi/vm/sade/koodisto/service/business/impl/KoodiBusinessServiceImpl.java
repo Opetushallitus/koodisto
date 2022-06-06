@@ -1205,7 +1205,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         for (String existingUri : existingUris) {
             boolean found = false;
             for (RelationCodeElement koodinSuhde : newRelations) {
-                if (!koodinSuhde.passive) {
+                if (!koodinSuhde.isPassive()) {
                     found = found || koodinSuhde.getCodeElementUri().equals(existingUri);
                 }
             }
@@ -1219,7 +1219,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     private List<String> filterNewRelationUrisToSet(List<RelationCodeElement> newRelations, HashSet<String> existingUris) {
         ArrayList<String> toBeAdded = new ArrayList<>();
         for (RelationCodeElement koodinSuhde : newRelations) {
-            if (!koodinSuhde.passive && !existingUris.contains(koodinSuhde.getCodeElementUri())) {
+            if (!koodinSuhde.isPassive() && !existingUris.contains(koodinSuhde.getCodeElementUri())) {
                 toBeAdded.add(koodinSuhde.getCodeElementUri());
             }
         }

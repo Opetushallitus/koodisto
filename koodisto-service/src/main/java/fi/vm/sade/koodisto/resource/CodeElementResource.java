@@ -11,6 +11,7 @@ import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
+import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -97,7 +99,7 @@ public class CodeElementResource {
             List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
 
             if (codeElements.isEmpty()) {
-                return ResponseEntity.internalServerError().body("error.codeelement.not.found");
+                throw new KoodiNotFoundException();
             }
             return ResponseEntity.ok(conversionService.convert(codeElements.get(0), ExtendedKoodiDto.class));
         } catch (SadeBusinessException e) {
@@ -172,7 +174,7 @@ public class CodeElementResource {
             SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.latestKoodisByUris(codeElementUri);
             List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
             if (codeElements.isEmpty()) {
-                return ResponseEntity.internalServerError().body("error.codeelement.not.found");
+                throw new KoodiNotFoundException();
             }
             return ResponseEntity.ok(conversionService.convert(codeElements.get(0), KoodiDto.class));
 

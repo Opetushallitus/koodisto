@@ -12,7 +12,7 @@ public class KoodiNotFoundException extends SadeBusinessException {
 
     private static final long serialVersionUID = 1L;
     public static final String ERROR_KEY = KoodiNotFoundException.class.getCanonicalName();
-    private static final String ERROR_MESSAGE = "error.codeelement.not.found";
+    private static final String ERROR_MESSAGE = "error.koodi.not.found";
 
     public KoodiNotFoundException() {
         super(ERROR_MESSAGE);

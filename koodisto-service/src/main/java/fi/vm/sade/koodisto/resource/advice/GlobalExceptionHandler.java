@@ -1,11 +1,14 @@
 package fi.vm.sade.koodisto.resource.advice;
 
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
+import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -38,13 +41,22 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(KoodistoNotFoundException.class)
-    public ResponseEntity<Object> handleKoodistoNotFoundException() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("error.koodisto.not.found");
+    public ResponseEntity<Object> handleKoodistoNotFoundException(KoodistoNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(KoodiNotFoundException.class)
+    public ResponseEntity<Object> handleKoodiNotFoundException(KoodiNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Object> handleHttpMessageNotReadableException() {
+    public ResponseEntity<Object> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         return ResponseEntity.badRequest().body("error.http.message.not.readable");
+    }
+    @ExceptionHandler(HttpMessageConversionException.class)
+    public ResponseEntity<Object> handleHttpMessageNotReadableException(HttpMessageConversionException e) {
+        return ResponseEntity.badRequest().body("error.http.message.not.convertable");
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
@@ -61,15 +73,20 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleSadeBusinessException(SadeBusinessException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
     @ExceptionHandler(KoodistoRyhmaNotFoundException.class)
     public ResponseEntity<Object> handleSadeBusinessException(KoodistoRyhmaNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleIllegalArgumentException(Exception e) {
+    public ResponseEntity<Object> handleException(Exception e) {
         return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
     }
 
+    @ExceptionHandler(RequestRejectedException.class)
+    public ResponseEntity<Object> handleRequestRejectedException(RequestRejectedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(GENERIC_ERROR_CODE);
+    }
 
 }
