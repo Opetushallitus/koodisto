@@ -1,10 +1,8 @@
-package fi.vm.sade.koodisto.service.koodisto.rest;
+package fi.vm.sade.koodisto.resource;
 
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.resource.CodeElementResource;
-import fi.vm.sade.koodisto.resource.CodesResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;

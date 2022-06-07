@@ -106,7 +106,7 @@ public class KoodiBusinessServiceTest {
 
     @Test
     public void testDeleteVersio() {
-        final String koodistoUri = "http://koodisto21";
+        final String koodistoUri = "koodisto21";
         final String koodiUri = "477";
 
         final int numberOfVersiosBeforeDelete = 2;
@@ -132,7 +132,7 @@ public class KoodiBusinessServiceTest {
     @Test
     public void changeTilaFromHyvaksyttyToLuonnos() throws Exception {
 
-        final String koodistoUri = "http://koodisto19";
+        final String koodistoUri = "koodisto19";
         final Integer koodistoVersioBeforeTilaChange = 1;
         final Integer koodistoVersioAfterTilaChange = 2;
 
@@ -141,7 +141,7 @@ public class KoodiBusinessServiceTest {
         assertEquals(koodistoVersioBeforeTilaChange, beforeUpdate.getVersio());
         assertEquals(Tila.HYVAKSYTTY, beforeUpdate.getTila());
 
-        List<KoodiVersioWithKoodistoItem> koodiVersioWithKoodistoItems = koodiBusinessService.getKoodisByKoodisto("http://koodisto19", true);
+        List<KoodiVersioWithKoodistoItem> koodiVersioWithKoodistoItems = koodiBusinessService.getKoodisByKoodisto("koodisto19", true);
         for (KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem : koodiVersioWithKoodistoItems) {
             if (Tila.HYVAKSYTTY.equals(koodiVersioWithKoodistoItem.getKoodiVersio().getTila())) {
                 UpdateKoodiDataType updateKoodiDataType = convert(koodiVersioWithKoodistoItem.getKoodiVersio());

@@ -84,7 +84,7 @@ public class KoodistoBusinessServiceTest {
 
     @Test
     public void testCreateNewVersion() {
-        String koodistoUri = "http://www.kunnat.fi/kunta";
+        String koodistoUri = "www.kunnat.fi/kunta";
 
         List<KoodistoVersio> currentVersions = listAllKoodistoVersions(koodistoUri);
         assertEquals(1, currentVersions.size());
@@ -97,7 +97,7 @@ public class KoodistoBusinessServiceTest {
     @Test
     public void testListAllVersions() {
 
-        String uri = "http://www.kunnat.fi/kunta";
+        String uri = "www.kunnat.fi/kunta";
 
         List<KoodistoVersio> koodistos = listAllKoodistoVersions(uri);
         assertEquals(1, koodistos.size());
@@ -116,7 +116,7 @@ public class KoodistoBusinessServiceTest {
 
     @Test(expected = KoodiVersioHasRelationsException.class)
     public void testDeleteVersioWithKoodiVersioHasRelationsException() {
-        final String koodistoUri = "http://testikoodisto.fi";
+        final String koodistoUri = "testikoodisto.fi";
         final Integer koodistoVersio = 2;
 
         final int numberOfVersiosBeforeDelete = 2;
@@ -136,7 +136,7 @@ public class KoodistoBusinessServiceTest {
     @Test
     public void testDeleteKoodisto() {
 
-        final String koodistoUri = "http://koodisto20";
+        final String koodistoUri = "koodisto20";
         final Integer koodistoVersio = 1;
 
         assertTrue(koodistoBusinessService.koodistoExists(koodistoUri));
@@ -160,7 +160,7 @@ public class KoodistoBusinessServiceTest {
 
     @Test(expected = KoodistonSuhdeContainsKoodinSuhdeException.class)
     public void existingCodeElementRelationsPreventDeletingKoodisto() {
-        koodistoBusinessService.removeRelation("koodisiirtyykoodisto", Arrays.asList("http://koodisto18"), SuhteenTyyppi.SISALTYY);
+        koodistoBusinessService.removeRelation("koodisiirtyykoodisto", Arrays.asList("koodisto18"), SuhteenTyyppi.SISALTYY);
     }
 
     @Test
@@ -172,8 +172,8 @@ public class KoodistoBusinessServiceTest {
 
     @Test
     public void addsRelation() {
-        koodistoBusinessService.addRelation("http://koodisto20", "http://koodisto21", SuhteenTyyppi.RINNASTEINEN);
-        assertTrue(koodistoBusinessService.hasAnyRelation("http://koodisto20", "http://koodisto21"));
+        koodistoBusinessService.addRelation("koodisto20", "koodisto21", SuhteenTyyppi.RINNASTEINEN);
+        assertTrue(koodistoBusinessService.hasAnyRelation("koodisto20", "koodisto21"));
     }
 
     @Test
@@ -210,12 +210,12 @@ public class KoodistoBusinessServiceTest {
     }
 	@Test
     public void doesNotSetStartDateToNewDateWhenUpdatingKoodistoVersioThatIsInLuonnosTila() {
-        KoodistoVersio kv = koodistoBusinessService.getLatestKoodistoVersio("http://koodisto15");
+        KoodistoVersio kv = koodistoBusinessService.getLatestKoodistoVersio("koodisto15");
         Date startDate = kv.getVoimassaAlkuPvm();
         UpdateKoodistoDataType type = DataUtils.createUpdateKoodistoDataType(kv.getKoodisto().getKoodistoUri(), kv.getKoodisto().getOmistaja(), TilaType.LUONNOS,
                 kv.getKoodisto().getOrganisaatioOid(), startDate, kv.getVoimassaLoppuPvm(), "NewName", kv.getVersio(), kv.getVersion());        
         koodistoBusinessService.updateKoodisto(type);
-        assertEquals(startDate, koodistoBusinessService.getLatestKoodistoVersio("http://koodisto15").getVoimassaAlkuPvm());
+        assertEquals(startDate, koodistoBusinessService.getLatestKoodistoVersio("koodisto15").getVoimassaAlkuPvm());
     }
 
 	@Test
@@ -261,7 +261,7 @@ public class KoodistoBusinessServiceTest {
 
     @Test(expected=KoodistoTilaException.class)
     public void doesNotAllowTilaUpdateFromHyvaksyttyToLuonnos() {
-        KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio("http://koodisto12");
+        KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio("koodisto12");
         KoodistoDto dto = conversionService.convert(result, KoodistoDto.class);
         dto.setTila(Tila.LUONNOS);
         koodistoBusinessService.saveKoodisto(dto);

@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.dto;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
@@ -14,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 @Setter
+@JsonView({ JsonViews.Basic.class })
 public class KoodistoChangesDto {
 
     private final String koodistoUri;

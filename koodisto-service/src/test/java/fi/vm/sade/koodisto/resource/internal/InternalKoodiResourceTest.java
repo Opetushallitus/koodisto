@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Sql({"/truncate_tables.sql"})
 @Sql({"/test-data-internal-rest.sql"})
-class InternalResourceIntegrationTest {
+class InternalKoodiResourceTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -71,7 +71,7 @@ class InternalResourceIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("[]"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("error.koodi.list.empty"));
+                .andExpect(content().string("upsertKoodiByKoodisto.koodis: error.koodi.list.empty"));
     }
 
     @Test
@@ -109,7 +109,7 @@ class InternalResourceIntegrationTest {
                                 "\"kieli\":\"SV\"}]" +
                                 "}]"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("error.nimi.empty"));
+                .andExpect(content().string("upsertKoodiByKoodisto.koodis[0].metadata[0].nimi: error.nimi.empty"));
     }
 
     @Test
@@ -255,58 +255,6 @@ class InternalResourceIntegrationTest {
                                 "\"kieli\":\"SV\"}]" +
                                 "}]"))
                 .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @Description("Get koodisto list")
-    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
-    void testGetKoodistoList() throws Exception {
-        this.mockMvc
-                .perform(get("/internal/koodisto"))
-                .andExpect(content().string(containsString("{" +
-                        "\"koodistoRyhmaMetadata\":[{\"id\":-1,\"uri\":\"general\",\"nimi\":\"general\",\"kieli\":\"FI\"}]," +
-                        "\"koodistoUri\":\"dummy\",\"versio\":1," +
-                        "\"voimassaAlkuPvm\":\"2012-11-20\"," +
-                        "\"voimassaLoppuPvm\":null," +
-                        "\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Dummy\",\"kuvaus\":\"kuvaus\"}]," +
-                        "\"koodiCount\":0}")))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @Description("Get koodisto page data")
-    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
-    void testGetKoodistoPage() throws Exception {
-        this.mockMvc
-                .perform(get("/internal/koodisto/get/1"))
-                .andExpect(status().isOk())
-                .andExpect(content().json(
-                        "{\"koodistoRyhmaMetadata\":[{" +
-                                "\"id\":-1," +
-                                "\"uri\":\"general\"," +
-                                "\"nimi\":\"general\"," +
-                                "\"kieli\":\"FI\"}]," +
-                                "\"resourceUri\":\"http://localhost/8080/koodisto-service/rest/codes/get\"," +
-                                "\"koodistoUri\":\"get\"," +
-                                "\"versio\":1," +
-                                "\"organisaatioOid\":\"1.2.2004.6\"," +
-                                "\"paivitysPvm\":\"2012-03-22\"," +
-                                "\"paivittajaOid\":null," +
-                                "\"voimassaAlkuPvm\":\"2012-11-20\"," +
-                                "\"voimassaLoppuPvm\":null," +
-                                "\"tila\":\"HYVAKSYTTY\"," +
-                                "\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"get\",\"kuvaus\":\"get\"}]," +
-                                "\"koodiVersio\":[1]," +
-                                "\"sisaltyyKoodistoihin\":[]," +
-                                "\"sisaltaaKoodistot\":[]," +
-                                "\"rinnastuuKoodistoihin\":[]," +
-                                "\"koodiList\":[{" +
-                                "\"koodiArvo\":\"1\"," +
-                                "\"versio\":1," +
-                                "\"paivitysPvm\":\"2012-03-22\"," +
-                                "\"paivittajaOid\":null," +
-                                "\"voimassaAlkuPvm\":\"1990-01-01\"," +
-                                "\"metadata\":[{\"nimi\":\"get1\",\"kieli\":\"FI\"}]}]}"));
     }
 
 }

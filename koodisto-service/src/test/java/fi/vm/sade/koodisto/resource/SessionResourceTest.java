@@ -1,7 +1,6 @@
 
-package fi.vm.sade.koodisto.service.koodisto.rest;
+package fi.vm.sade.koodisto.resource;
 
-import fi.vm.sade.koodisto.resource.SessionResource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

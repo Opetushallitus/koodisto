@@ -77,8 +77,17 @@ public class ExtendedKoodiDto {
         private final List<SimpleMetadataDto> parentMetadata;
 
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-        public final boolean passive;
+        private final boolean passive;
 
+
+        public RelationCodeElement() {
+            this.codeElementUri = null;
+            this.codeElementVersion = -1;
+            this.relationMetadata = null;
+            this.parentMetadata = null;
+            this.codeElementValue = null;
+            this.passive = false;
+        }
 
         public RelationCodeElement(String codeElementUri, Integer version, boolean passive) {
             this.codeElementUri = codeElementUri;
@@ -89,7 +98,5 @@ public class ExtendedKoodiDto {
             this.passive = passive;
 
         }
-
     }
-
 }

@@ -1,11 +1,9 @@
-package fi.vm.sade.koodisto.service.koodisto.rest.validator;
+package fi.vm.sade.koodisto.validator;
 
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.Tila;
-import fi.vm.sade.koodisto.validator.CodesValidator;
-import fi.vm.sade.koodisto.validator.KoodistoValidationException;
 import org.junit.Test;
 
 import java.util.Arrays;

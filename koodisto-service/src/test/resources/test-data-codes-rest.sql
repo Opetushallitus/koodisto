@@ -80,7 +80,7 @@ VALUES
 INSERT INTO koodistometadata (id,kieli,nimi,version,koodistoversio_id, kuvaus)
 VALUES
     ('-99', 'FI', 'Dummy', '0', '-99', 'kuvaus'),
-    ('-1', 'FI', '1 sisältää 2 -testi', '0', '-1', '1 sisältää 2 -testi'),
+    ('-1', 'FI', '1 sisaltaa 2 -testi', '0', '-1', '1 sisaltaa 2 -testi'),
     ('-2', 'FI', '2 sisältyy 1 -testi', '0', '-2', '2 sisältyy 1 -testi'),
     ('-3', 'FI', '3 rinnastuu 4 -testi', '0', '-3', '3 rinnastuu 4 -testi'),
     ('-4', 'FI', '4 rinnastuu 3 -testi', '0', '-4', '4 rinnastuu 3 -testi'),
