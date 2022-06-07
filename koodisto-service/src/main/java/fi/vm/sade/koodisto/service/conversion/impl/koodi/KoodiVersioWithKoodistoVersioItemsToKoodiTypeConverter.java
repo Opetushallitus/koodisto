@@ -9,7 +9,6 @@ import fi.vm.sade.koodisto.service.types.common.KoodistoItemType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.properties.OphProperties;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

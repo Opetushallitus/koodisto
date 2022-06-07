@@ -2,12 +2,10 @@ package fi.vm.sade.koodisto.resource;
 
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.resource.KoodistoResource;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.types.SearchKoodisVersioSelectionType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
