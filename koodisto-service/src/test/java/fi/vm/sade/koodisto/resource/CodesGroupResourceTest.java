@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.resource;
 
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -89,15 +90,16 @@ class CodesGroupResourceTest {
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = ROLE_APP_KOODISTO_CRUD)
     void testInsert() throws Exception {
-        this.mockMvc.perform(
+        Integer id = JsonPath.read(this.mockMvc.perform(
                         post("/rest/codesgroup/")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"koodistoRyhmaUri\":\"newnameforcodesgroup\",\"koodistoRyhmaMetadatas\":[{\"nimi\":\"newnameforcodesgroup\",\"kieli\":\"FI\"}]}"))
                 .andExpect(status().isCreated())
-                .andExpect(content().json("{\"id\":1,\"koodistoRyhmaUri\":\"newnameforcodesgroup\",\"koodistoRyhmaMetadatas\":[{\"nimi\":\"newnameforcodesgroup\",\"kieli\":\"FI\"}],\"koodistos\":[]}", true));
-        this.mockMvc.perform(get(String.format("/rest/codesgroup/%s", 1)))
+                .andExpect(content().json("{\"koodistoRyhmaUri\":\"newnameforcodesgroup\",\"koodistoRyhmaMetadatas\":[{\"nimi\":\"newnameforcodesgroup\",\"kieli\":\"FI\"}],\"koodistos\":[]}"))
+                .andReturn().getResponse().getContentAsString(), "$.id");
+        this.mockMvc.perform(get(String.format("/rest/codesgroup/%s", id)))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":1,\"koodistoRyhmaUri\":\"newnameforcodesgroup\",\"koodistoRyhmaMetadatas\":[{\"nimi\":\"newnameforcodesgroup\",\"kieli\":\"FI\"}],\"koodistos\":[]}", true));
+                .andExpect(content().json("{\"id\":" + id + ",\"koodistoRyhmaUri\":\"newnameforcodesgroup\",\"koodistoRyhmaMetadatas\":[{\"nimi\":\"newnameforcodesgroup\",\"kieli\":\"FI\"}],\"koodistos\":[]}", true));
     }
 
     @Test

@@ -531,7 +531,7 @@ class CodesResourceTest {
     }
 
   private String createKoodistoString(String koodistoUri, String codesGroupUri) throws Exception {
-        //{"koodistoUri":"dummy","resourceUri":"http://localhost/8080/koodisto-service/rest/codes/dummy","omistaja":null,"organisaatioOid":"1.2.2004.6","lukittu":null,"codesGroupUri":"dummy","version":0,"versio":1,"paivitysPvm":"2012-03-21","paivittajaOid":null,"voimassaAlkuPvm":"2012-11-20","voimassaLoppuPvm":null,"tila":"HYVAKSYTTY","metadata":[{"kieli":"FI","nimi":"Dummy","kuvaus":"kuvaus","kayttoohje":null,"kasite":null,"kohdealue":null,"sitovuustaso":null,"kohdealueenOsaAlue":null,"toimintaymparisto":null,"tarkentaaKoodistoa":null,"huomioitavaKoodisto":null,"koodistonLahde":null}],"codesVersions":[],"withinCodes":[],"includesCodes":[],"levelsWithCodes":[]}
+        //{"koodistoUri":"dummy","resourceUri":"localhost/8080/koodisto-service/rest/codes/dummy","omistaja":null,"organisaatioOid":"1.2.2004.6","lukittu":null,"codesGroupUri":"dummy","version":0,"versio":1,"paivitysPvm":"2012-03-21","paivittajaOid":null,"voimassaAlkuPvm":"2012-11-20","voimassaLoppuPvm":null,"tila":"HYVAKSYTTY","metadata":[{"kieli":"FI","nimi":"Dummy","kuvaus":"kuvaus","kayttoohje":null,"kasite":null,"kohdealue":null,"sitovuustaso":null,"kohdealueenOsaAlue":null,"toimintaymparisto":null,"tarkentaaKoodistoa":null,"huomioitavaKoodisto":null,"koodistonLahde":null}],"codesVersions":[],"withinCodes":[],"includesCodes":[],"levelsWithCodes":[]}
         return mockMvc.perform(get(BASE_PATH + "/{codesUri}/{codesVersion}", "dummy", 1))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()
                 .replaceAll("\"koodistoUri\":\"dummy\"", "\"koodistoUri\":\"" + koodistoUri + "\"")

@@ -257,10 +257,9 @@ class CodeElementResourceTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(3));
 
-        // FIXME Taemae palauttaa ilmeisesti palauttaa jotain mutta miksi? Mikae olisi toivottu toiminnallisuus?
         getAllCodeElementsByCodesUriAndVersion("lisaasisaltyy3", 0)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray());
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("error.validation.koodi.versio"));
     }
 
     @Test

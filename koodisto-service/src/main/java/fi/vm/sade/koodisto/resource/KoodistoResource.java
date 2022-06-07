@@ -67,7 +67,7 @@ public class KoodistoResource {
             summary = "Palautaa koodiston, jonka URI on {koodistouri}. Versionumeron voi antaa URL-parametrina")
     public KoodistoDto getKoodistoByUri(
             @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri,
-            @Parameter(description = "Koodiston Versio")  @RequestParam(required = false) Integer koodistoVersio) {
+            @Parameter(description = "Koodiston Versio") @RequestParam(required = false) Integer koodistoVersio) {
 
         KoodistoVersio koodisto = null;
         if (koodistoVersio == null) {
@@ -237,16 +237,14 @@ public class KoodistoResource {
     public String getKoodistoAsPropertiesDefaultLang(
             @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri
     ) throws IOException {
-        return getKoodistoAsProperties(koodistoUri, "FI");
+        if (koodistoUri.contains("_")) {
+            return getKoodistoAsProperties(koodistoUri.substring(0, koodistoUri.indexOf("_")), koodistoUri.substring(koodistoUri.indexOf("_") + 1));
+        } else {
+            return getKoodistoAsProperties(koodistoUri, "FI");
+        }
     }
 
-    @GetMapping(path = "/{koodistoUri}_{lang}.properties", produces = MediaType.TEXT_PLAIN_VALUE)
-    //@Cacheable(maxAgeSeconds = ONE_HOUR)
-    @Operation(description = "Hae koodiston tiedot kielen perusteella",
-            summary = "Sisältää listan koodiston koodiarvoista ja niiden nimistä.")
-    public String getKoodistoAsProperties(
-            @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri,
-            @Parameter(description = "Kieli (FI, SV tai EN)") @PathVariable String lang
+    private String getKoodistoAsProperties(String koodistoUri, String lang
     ) throws IOException {
         List<KoodiVersioWithKoodistoItem> koodis = koodiBusinessService.getKoodisByKoodisto(koodistoUri, false);
         Properties props = new Properties();
@@ -277,8 +275,8 @@ public class KoodistoResource {
             @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri,
             @Parameter(description = "Koodin URI") @PathVariable String koodiUri,
             @Parameter(description = "Kieli (FI, SV tai EN)") @PathVariable String lang,
-            @Parameter(description = "Koodin nimi") @RequestParam String nimi,
-            @Parameter(description = "Koodin kuvaus") @RequestParam String kuvaus
+            @Parameter(description = "Koodin nimi") @RequestParam("nimi") String nimi,
+            @Parameter(description = "Koodin kuvaus") @RequestParam("kuvaus") String kuvaus
     ) {
         nimi = nimi.substring(0, Math.min(nimi.length(), FieldLengths.DEFAULT_FIELD_LENGTH)); // nimi cannot be longer
 

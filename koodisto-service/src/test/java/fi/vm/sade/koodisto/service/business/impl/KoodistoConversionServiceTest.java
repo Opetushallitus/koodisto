@@ -152,7 +152,7 @@ public class KoodistoConversionServiceTest {
         KoodiType dto = new KoodiType();
         dto.setVersio(1);
         dto.setKoodiArvo("arvo");
-        dto.setKoodiUri("http://foo.fi");
+        dto.setKoodiUri("foo.fi");
         dto.setPaivitysPvm(new Date());
         dto.setTila(TilaType.HYVAKSYTTY);
         dto.setVersio(1);
@@ -194,7 +194,7 @@ public class KoodistoConversionServiceTest {
 
     private KoodistoType createKoodistoType() {
         KoodistoType dto = new KoodistoType();
-        dto.setKoodistoUri("http://koodistoUri");
+        dto.setKoodistoUri("koodistoUri");
         dto.setLukittu(false);
         dto.setOmistaja("Omistaja");
         dto.setOrganisaatioOid("organisaatioOid");
@@ -211,7 +211,7 @@ public class KoodistoConversionServiceTest {
     private Koodisto createKoodisto() {
         Koodisto koodisto = new Koodisto();
         koodisto.setId(1L);
-        koodisto.setKoodistoUri("http://koodistouri.fi");
+        koodisto.setKoodistoUri("koodistouri.fi");
         koodisto.setLukittu(false);
         koodisto.setOmistaja("Omistaja");
         koodisto.setOrganisaatioOid("organisaatiooid");

@@ -120,8 +120,7 @@ public class CodeElementResource {
 
         List<KoodiVersioWithKoodistoItem> codeElements = null;
         if (codesVersion == 0) {
-            // FIXME: Why return anything when version is invalid?
-            codeElements = koodiBusinessService.getKoodisByKoodisto(codesUri, false);
+            throw new KoodistoValidationException("error.validation.koodi.versio");
         } else {
             codeElements = koodiBusinessService.getKoodisByKoodistoVersio(codesUri, codesVersion, false);
         }

@@ -48,6 +48,7 @@ public class ApplicationConfiguration {
         ks.addConverter(new KoodistoVersioToKoodistoTypeConverter(
                 ophProperties));
         ks.addConverter(new KoodiVersioWithKoodistoItemToSimpleKoodiDtoConverter());
+        ks.addConverter(new KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter(ophProperties));
         ks.addConverter(new KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter(
                 ophProperties,
                 new KoodiMetadataToKoodiMetadataDtoConverter()));
