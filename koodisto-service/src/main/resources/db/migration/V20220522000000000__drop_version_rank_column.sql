@@ -1,1 +1,1 @@
-alter table schema_version drop column version_rank;
+alter table schema_version drop column if exists version_rank;

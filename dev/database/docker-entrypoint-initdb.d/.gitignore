@@ -1,0 +1,5 @@
+# Ignore all...
+*
+# ...but these
+!.gitignore
+!01_create_oph_role.sql
