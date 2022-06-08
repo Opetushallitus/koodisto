@@ -11,6 +11,8 @@
 
 ## Paikalliskehitys
 
+Huom, lokaalikehitys vaatii paikallisen [backendin](https://github.com/Opetushallitus/koodisto).
+
 Npm install:
 
 `npm run install:all`
