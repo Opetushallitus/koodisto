@@ -2,6 +2,8 @@ package fi.vm.sade.koodisto.service.business.impl;
 
 import com.google.common.base.Strings;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
+import fi.vm.sade.koodisto.dto.internal.InternalInsertKoodistoRyhmaDto;
+import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.repository.KoodistoRyhmaMetadataRepository;
@@ -42,6 +44,25 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
         }
         koodistoRyhma = koodistoRyhmaRepository.save(koodistoRyhma);
         return koodistoRyhma;
+    }
+
+    @Override
+    public KoodistoRyhma createKoodistoRyhma(InternalInsertKoodistoRyhmaDto insertKoodistoRyhma) {
+        String koodistoRyhmaUri = insertKoodistoRyhma.getNimi().getFi();
+        String baseKoodistoRyhmaUri = koodistoRyhmaUri;
+        int i = 1;
+        while (koodistoRyhmaRepository.existsByKoodistoRyhmaUri(koodistoRyhmaUri)) {
+            koodistoRyhmaUri = baseKoodistoRyhmaUri + "-" + i;
+            ++i;
+        }
+        KoodistoRyhma koodistoRyhma = new KoodistoRyhma();
+        koodistoRyhma.setKoodistoRyhmaUri(koodistoRyhmaUri);
+        koodistoRyhma.setKoodistoRyhmaMetadatas(Set.of(
+                KoodistoRyhmaMetadata.builder().kieli(Kieli.FI).nimi(insertKoodistoRyhma.getNimi().getFi()).koodistoRyhma(koodistoRyhma).build(),
+                KoodistoRyhmaMetadata.builder().kieli(Kieli.SV).nimi(insertKoodistoRyhma.getNimi().getSv()).koodistoRyhma(koodistoRyhma).build(),
+                KoodistoRyhmaMetadata.builder().kieli(Kieli.EN).nimi(insertKoodistoRyhma.getNimi().getEn()).koodistoRyhma(koodistoRyhma).build()
+        ));
+        return koodistoRyhmaRepository.save(koodistoRyhma);
     }
 
     private void checkRequiredMetadataFields(List<KoodistoRyhmaMetadata> metadatas) {
@@ -96,6 +117,22 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     }
 
     @Override
+    public KoodistoRyhma updateKoodistoRyhma(String koodistoRyhmaUri, InternalInsertKoodistoRyhmaDto updateKoodistoRyhma) {
+        KoodistoRyhma koodistoRyhma = koodistoRyhmaRepository.findByKoodistoRyhmaUri(koodistoRyhmaUri).orElseThrow(KoodistoRyhmaNotFoundException::new);
+        koodistoRyhma.getKoodistoRyhmaMetadatas().stream().filter(a -> a.getKieli().equals(Kieli.EN)).findFirst().orElseGet(() -> getKoodistoRyhmaMetadata(koodistoRyhma, Kieli.EN)).setNimi(updateKoodistoRyhma.getNimi().getEn());
+        koodistoRyhma.getKoodistoRyhmaMetadatas().stream().filter(a -> a.getKieli().equals(Kieli.SV)).findFirst().orElseGet(() -> getKoodistoRyhmaMetadata(koodistoRyhma, Kieli.SV)).setNimi(updateKoodistoRyhma.getNimi().getSv());
+        koodistoRyhma.getKoodistoRyhmaMetadatas().stream().filter(a -> a.getKieli().equals(Kieli.FI)).findFirst().orElseGet(() -> getKoodistoRyhmaMetadata(koodistoRyhma, Kieli.FI)).setNimi(updateKoodistoRyhma.getNimi().getFi());
+        return koodistoRyhma;
+    }
+
+    private KoodistoRyhmaMetadata getKoodistoRyhmaMetadata(KoodistoRyhma koodistoRyhma, Kieli kieli) {
+        KoodistoRyhmaMetadata a = KoodistoRyhmaMetadata.builder().kieli(kieli).build();
+        koodistoRyhma.addKoodistoRyhmaMetadata(a);
+        return a;
+    }
+
+
+    @Override
     public KoodistoRyhma getKoodistoRyhmaById(final Long id) {
         if (id == null) {
             throw new KoodistoRyhmaNotFoundException();
@@ -104,9 +141,28 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     }
 
     @Override
+    public List<KoodistoRyhma> getEmptyKoodistoRyhma() {
+        return koodistoRyhmaRepository.findEmptyKoodistoRyhma();
+    }
+
+    @Override
     public void delete(final Long id) {
         try {
-            KoodistoRyhma koodistoRyhma = koodistoRyhmaRepository.findById(id).orElseThrow();
+            KoodistoRyhma koodistoRyhma = koodistoRyhmaRepository.findById(id).orElseThrow(KoodistoRyhmaNotFoundException::new);
+            if (koodistoRyhma.getKoodistos().isEmpty()) {
+                koodistoRyhmaRepository.delete(koodistoRyhma);
+            } else {
+                throw new KoodistoRyhmaNotEmptyException();
+            }
+        } catch (NoSuchElementException e) {
+            throw new KoodistoRyhmaNotFoundException();
+        }
+    }
+
+    @Override
+    public void delete(String uri) {
+        try {
+            KoodistoRyhma koodistoRyhma = koodistoRyhmaRepository.findByKoodistoRyhmaUri(uri).orElseThrow(KoodistoRyhmaNotFoundException::new);
             if (koodistoRyhma.getKoodistos().isEmpty()) {
                 koodistoRyhmaRepository.delete(koodistoRyhma);
             } else {

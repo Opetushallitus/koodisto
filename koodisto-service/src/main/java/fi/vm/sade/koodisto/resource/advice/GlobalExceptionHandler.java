@@ -10,9 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -94,16 +96,28 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        logger.debug(DEBUG_LOG_MESSAGE, e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("error.validation.%s", e.getParameter().getParameterName()).toLowerCase());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e) {
+        logger.debug(DEBUG_LOG_MESSAGE, e);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("error.authorization");
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(Exception e) {
-        logger.debug(DEBUG_LOG_MESSAGE, e);
+        logger.info(DEBUG_LOG_MESSAGE, e);
         return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
     }
 
     @ExceptionHandler(RequestRejectedException.class)
     public ResponseEntity<Object> handleRequestRejectedException(RequestRejectedException e) {
         logger.debug(DEBUG_LOG_MESSAGE, e);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(GENERIC_ERROR_CODE);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("error.authorization");
     }
 
 }

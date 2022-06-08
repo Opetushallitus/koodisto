@@ -38,13 +38,13 @@ class CodesGroupResourceTest {
     void testGetCodesByCodesUriInvalid() throws Exception {
         this.mockMvc.perform(get(String.format("/rest/codesgroup/%s", 0L)))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("error.codesgroup.not.found"));
+                .andExpect(content().string("error.koodistoryhma.not.found"));
         this.mockMvc.perform(get(String.format("/rest/codesgroup/%s", "")))
                 .andExpect(status().is(405))
                 .andExpect(content().string("error.method.not.supported"));
         this.mockMvc.perform(get(String.format("/rest/codesgroup/%s", 99999L)))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("error.codesgroup.not.found"));
+                .andExpect(content().string("error.koodistoryhma.not.found"));
     }
 
     @Test
@@ -149,10 +149,10 @@ class CodesGroupResourceTest {
         this.mockMvc.perform(post(String.format("/rest/codesgroup/delete/%s", 0L))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("error.codesgroup.not.found"));
+                .andExpect(content().string("error.koodistoryhma.not.found"));
         this.mockMvc.perform(post(String.format("/rest/codesgroup/delete/%s", 99999L))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("error.codesgroup.not.found"));
+                .andExpect(content().string("error.koodistoryhma.not.found"));
     }
 }
