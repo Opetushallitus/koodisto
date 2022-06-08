@@ -49,7 +49,7 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                 }
             }
         })();
-    }, [koodistoRyhmaUri]);
+    }, [koodistoRyhmaUri, setValue]);
 
     const update = async (nimi: { fi: string; sv: string; en: string }) => {
         if (koodistoRyhmaUri) {
