@@ -133,7 +133,7 @@ export const fetchKoodistoRyhma = async (koodistoRyhmaUri: string): Promise<Kood
 export const deleteKoodistoRyhma = async (koodistoRyhmaUri: string): Promise<KoodistoRyhma[] | undefined> => {
     return errorHandlingWrapper(async () => {
         await axios.delete(`${API_INTERNAL_PATH}/koodistoryhma/${koodistoRyhmaUri}`);
-        return await fetchEmptyKoodistoRyhma();
+        return fetchEmptyKoodistoRyhma();
     });
 };
 export const fetchEmptyKoodistoRyhma = async (): Promise<KoodistoRyhma[] | undefined> => {
