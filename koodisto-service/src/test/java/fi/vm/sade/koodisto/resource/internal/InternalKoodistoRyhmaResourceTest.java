@@ -69,6 +69,15 @@ class InternalKoodistoRyhmaResourceTest {
 
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_READ_UPDATE})
+    void getKoodistoRyhma() throws Exception {
+        mockMvc.perform(get(BASE_PATH + "/a")).andExpectAll(
+                status().isOk(),
+                content().json("{\"koodistoRyhmaUri\":\"a\"}")
+        );
+    }
+
+    @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_READ_UPDATE})
     void getEmptyKoodistoRyhma() throws Exception {
         mockMvc.perform(get(BASE_PATH + "/empty")).andExpectAll(
                 status().isOk(),

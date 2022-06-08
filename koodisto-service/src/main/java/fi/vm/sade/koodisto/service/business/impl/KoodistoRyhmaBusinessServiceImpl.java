@@ -141,6 +141,11 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     }
 
     @Override
+    public KoodistoRyhma getKoodistoRyhmaByUri(String koodistoRyhmaUri) {
+        return koodistoRyhmaRepository.findByKoodistoRyhmaUri(koodistoRyhmaUri).orElseThrow(KoodistoRyhmaNotFoundException::new);
+    }
+
+    @Override
     public List<KoodistoRyhma> getEmptyKoodistoRyhma() {
         return koodistoRyhmaRepository.findEmptyKoodistoRyhma();
     }

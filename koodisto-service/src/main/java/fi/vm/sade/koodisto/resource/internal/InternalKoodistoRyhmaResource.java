@@ -36,7 +36,12 @@ public class InternalKoodistoRyhmaResource {
         KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.createKoodistoRyhma(insertKoodistoRyhma);
         return ResponseEntity.status(HttpStatus.CREATED).body(conversionService.convert(koodistoRyhma, InternalKoodistoRyhmaDto.class));
     }
-
+    @GetMapping(path = "/{koodistoRyhmaUri}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<InternalKoodistoRyhmaDto> getKoodistoRyhma(@PathVariable String koodistoRyhmaUri) {
+        KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.getKoodistoRyhmaByUri(koodistoRyhmaUri);
+        return ResponseEntity.ok(conversionService.convert(koodistoRyhma, InternalKoodistoRyhmaDto.class));
+    }
     @PutMapping(path = "/{koodistoRyhmaUri}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
