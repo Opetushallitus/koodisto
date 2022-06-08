@@ -23,6 +23,7 @@ const App: React.FC = () => {
                 <React.Suspense fallback={<Loading />}>
                     <Routes>
                         <Route path={'/'} element={<KoodistoTablePage />} />
+                        <Route path={'/koodistoRyhma/:koodistoRyhmaUri'} element={<KoodistoTablePage />} />
                         <Route path="/koodisto/:koodistoUri/:versio" element={<KoodistoPage />} />
                     </Routes>
                 </React.Suspense>

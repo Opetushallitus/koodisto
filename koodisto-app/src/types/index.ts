@@ -31,6 +31,17 @@ export type UpsertKoodi = {
     metadata: Metadata[];
 };
 
+export type InsertKoodistoRyhma = {
+    nimi: {
+        fi: string;
+        sv: string;
+        en: string;
+    };
+};
+export type KoodistoRyhma = InsertKoodistoRyhma & {
+    koodistoRyhmaUri: string;
+};
+
 export type CsvKoodiObject = {
     koodistoUri: string;
     koodiArvo: string;
@@ -73,7 +84,7 @@ type BaseKoodisto = {
 export type ListKoodisto = BaseKoodisto & {
     nimi?: string;
     ryhmaNimi?: string;
-    ryhmaId?: number;
+    ryhmaUri?: string;
     koodiCount: number;
 };
 export type KoodistoRelation = {

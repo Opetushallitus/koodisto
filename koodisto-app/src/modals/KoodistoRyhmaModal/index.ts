@@ -1,0 +1,1 @@
+export { KoodistoRyhmaModal } from './KoodistoRyhmaModal';

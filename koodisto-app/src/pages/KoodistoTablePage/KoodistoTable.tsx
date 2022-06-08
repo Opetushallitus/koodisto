@@ -12,9 +12,7 @@ import { Link } from 'react-router-dom';
 import { Table, SelectFilterComponent, TextFilterComponent } from '../../components/Table';
 import { ListKoodisto, SelectOptionType } from '../../types';
 
-type KoodistoTableProps = {
-    handleLisaaKoodistoRyhma: () => void;
-};
+type KoodistoTableProps = unknown;
 
 const HeaderContentDivider = styled.div`
     display: inline-flex;
@@ -35,7 +33,7 @@ const TableCellText = styled.span`
     color: #0a789c;
 `;
 
-const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma }) => {
+const KoodistoTable: React.FC<KoodistoTableProps> = () => {
     const [atomData] = useAtom(koodistoListAtom);
     const { formatMessage } = useIntl();
     const data = useMemo<ListKoodisto[]>(() => {
@@ -50,7 +48,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                 columns: [
                     {
                         id: 'ryhmaTieto',
-                        accessor: (values: ListKoodisto) => ({ label: values.ryhmaNimi, value: values.ryhmaId }),
+                        accessor: (values: ListKoodisto) => ({ label: values.ryhmaNimi, value: values.ryhmaUri }),
                         Filter: SelectFilterComponent,
                         filter: (rows, _columnIds: string[], filterValue: SelectOptionType[]) =>
                             rows.filter((row) =>
@@ -61,7 +59,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                                     : rows
                             ),
                         Cell: ({ value, row }: { value: SelectOptionType; row: Row<ListKoodisto> }) => (
-                            <Link to={`koodistoRyhma/${row.original.ryhmaId}`}>{value.label}</Link>
+                            <Link to={`/koodistoRyhma/${row.original.ryhmaUri}`}>{value.label}</Link>
                         ),
                     },
                 ],
@@ -117,7 +115,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                 ],
             },
             {
-                Header: formatMessage({ id: 'TAULUKKO_KOODIMAARA', defaultMessage: 'Koodian lkm' }),
+                Header: formatMessage({ id: 'TAULUKKO_KOODIMAARA', defaultMessage: 'Koodien lkm' }),
                 columns: [
                     {
                         id: 'koodiCount',
@@ -147,7 +145,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                         />
                     </InfoText>
                 </HeaderContentDivider>
-                <Button onClick={handleLisaaKoodistoRyhma}>
+                <Button>
                     <ButtonLabelPrefix>
                         <IconWrapper icon="el:plus" inline={true} fontSize={'0.6rem'} />
                     </ButtonLabelPrefix>

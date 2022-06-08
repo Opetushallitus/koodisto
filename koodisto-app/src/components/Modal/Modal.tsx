@@ -35,6 +35,13 @@ const StyledModalFooterFrame = styled.div`
     flex-wrap: wrap;
     justify-content: flex-end;
 `;
+export const Footer = styled.div`
+    > * {
+        :not(:last-child) {
+            margin-right: 0.5rem;
+        }
+    }
+`;
 type Props = {
     onClose?: () => void;
     header?: React.ReactNode;
