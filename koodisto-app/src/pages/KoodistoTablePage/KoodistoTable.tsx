@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import { useAtom } from 'jotai';
 import { Column, Row } from 'react-table';
 import { koodistoListAtom } from '../../api/koodisto';
@@ -43,6 +42,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
         return [...atomData];
     }, [atomData]);
     const [filteredRows, setFilteredRows] = useState<Row<ListKoodisto>[]>([]);
+    const resetFilters = useRef<() => void | undefined>();
     const columns = React.useMemo<Column<ListKoodisto>[]>(
         () => [
             {
@@ -141,10 +141,19 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                         tagName={'h2'}
                     />
                     <InfoText>
-                        <FormattedMessage
-                            id={'TAULUKKO_KUVAUS_OTSIKKO'}
-                            defaultMessage={'Voit rajata koodistoryhmällä tai nimellä'}
-                        />
+                        {resetFilters.current ? (
+                            <Button id="resetFilters" variant="text" onClick={resetFilters.current}>
+                                <FormattedMessage
+                                    id={'TAULUKKO_NOLLAA_SUODATTIMET'}
+                                    defaultMessage={'Tyhjennä hakuehdot'}
+                                />
+                            </Button>
+                        ) : (
+                            <FormattedMessage
+                                id={'TAULUKKO_KUVAUS_OTSIKKO'}
+                                defaultMessage={'Voit rajata koodistoryhmällä tai nimellä'}
+                            />
+                        )}
                     </InfoText>
                 </HeaderContentDivider>
                 <Button onClick={handleLisaaKoodistoRyhma}>
@@ -160,6 +169,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                 onFilter={(rows) => {
                     setFilteredRows(rows);
                 }}
+                resetFilters={resetFilters}
             />
         </>
     );

@@ -111,20 +111,27 @@ export const Table = <T extends object>({
     columns,
     data,
     onFilter,
-}: TableProps<T> & { onFilter?: (rows: Row<T>[]) => void }) => {
+    resetFilters,
+}: TableProps<T> & {
+    onFilter?: (rows: Row<T>[]) => void;
+    resetFilters?: React.MutableRefObject<(() => void) | undefined>;
+}) => {
     const defaultColumn = React.useMemo(
         () => ({
             Filter: <></>,
         }),
         []
     );
-    const { filteredRows, getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable<T>(
-        { columns, data, defaultColumn },
-        useFilters
-    );
+    const { state, filteredRows, getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, setAllFilters } =
+        useTable<T>({ columns, data, defaultColumn }, useFilters);
     useEffect(() => {
         onFilter && onFilter(filteredRows);
     }, [filteredRows, onFilter]);
+    useEffect(() => {
+        if (resetFilters) {
+            resetFilters.current = state.filters.length ? () => setAllFilters([]) : undefined;
+        }
+    }, [resetFilters, state.filters.length, setAllFilters]);
     return (
         <TableContainer>
             <TableElement {...getTableProps()}>

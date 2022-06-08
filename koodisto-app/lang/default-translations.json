@@ -119,6 +119,9 @@
   "TAULUKKO_NIMI_PUUTTUU_KOODISTOLTA": {
     "defaultMessage": "Nimi puuttuu {koodistoUri}"
   },
+  "TAULUKKO_NOLLAA_SUODATTIMET": {
+    "defaultMessage": "Tyhjennä hakuehdot"
+  },
   "TAULUKKO_OTSIKKO": {
     "defaultMessage": "Koodistot ({filteredCount} / {totalCount})"
   },
