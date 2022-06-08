@@ -50,6 +50,48 @@
   "KOODISTOVERSIO_DROPDOWN": {
     "defaultMessage": "Koodistoversio"
   },
+  "KOODISTO_RYHMA_EN": {
+    "defaultMessage": "EN"
+  },
+  "KOODISTO_RYHMA_FI": {
+    "defaultMessage": "FI"
+  },
+  "KOODISTO_RYHMA_LUONTI_MESSAGE": {
+    "defaultMessage": "Luotiin koodistorymä uri:lla {koodistoRyhmaUri}"
+  },
+  "KOODISTO_RYHMA_LUONTI_MESSAGE_TITLE": {
+    "defaultMessage": "Uusi koodistoryhmä luotiin onnistuneesti."
+  },
+  "KOODISTO_RYHMA_LUO_UUSI": {
+    "defaultMessage": "Luo ryhmä"
+  },
+  "KOODISTO_RYHMA_SULJE": {
+    "defaultMessage": "Sulje"
+  },
+  "KOODISTO_RYHMA_SV": {
+    "defaultMessage": "SV"
+  },
+  "KOODISTO_RYHMA_TALLENNA": {
+    "defaultMessage": "Tallenna"
+  },
+  "KOODISTO_RYHMA_TALLENNUS_MESSAGE": {
+    "defaultMessage": "Tallennettiin koodistorymä uri:lla {koodistoRyhmaUri}"
+  },
+  "KOODISTO_RYHMA_TALLENNUS_MESSAGE_TITLE": {
+    "defaultMessage": "Koodistoryhmä tallennettiin onnistuneesti."
+  },
+  "KOODISTO_RYHMA_TITLE": {
+    "defaultMessage": "Muokkaa koodistoryhmää"
+  },
+  "KOODISTO_RYHMA_TITLE_UUSI": {
+    "defaultMessage": "Luo uusi koodistoryhmä"
+  },
+  "KOODISTO_RYHMA_TYHJAT_TITLE": {
+    "defaultMessage": "Tyhjät koodistoryhmät ({emptyRyhmaCount})"
+  },
+  "KOPIOI_MUIHIN_NIMIIN": {
+    "defaultMessage": "Kopioi muihin kieliin"
+  },
   "LATAA_CSV_LATAA": {
     "defaultMessage": "Lataa CSV"
   },
@@ -78,7 +120,7 @@
     "defaultMessage": "Valitse arvo listalta"
   },
   "TAULUKKO_KOODIMAARA": {
-    "defaultMessage": "Koodian lkm"
+    "defaultMessage": "Koodien lkm"
   },
   "TAULUKKO_KOODISTORYHMA_OTSIKKO": {
     "defaultMessage": "Koodistoryhma"

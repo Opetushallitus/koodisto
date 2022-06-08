@@ -1,8 +1,8 @@
 {
-  "koodistoRyhmaUri": "haunkoodistot",
-  "nimi": {
-    "fi": "Haun koodistot",
-    "sv": "Haun koodistot",
-    "en": "Haun koodistot"
-  }
+    "koodistoRyhmaUri": "haunkoodistot",
+    "nimi": {
+        "fi": "Haun koodistot",
+        "sv": "Haun koodistot",
+        "en": "Haun koodistot"
+    }
 }
