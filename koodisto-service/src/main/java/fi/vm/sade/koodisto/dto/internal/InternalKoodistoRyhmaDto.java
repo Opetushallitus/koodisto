@@ -1,11 +1,10 @@
 package fi.vm.sade.koodisto.dto.internal;
 
 import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@Data
 @Builder
+@Getter
 public class InternalKoodistoRyhmaDto {
     private String koodistoRyhmaUri;
     private InternalNimiDto nimi;

@@ -61,6 +61,12 @@ class InternalKoodistoRyhmaResourceTest {
         mockMvc.perform(delete(BASE_PATH + "/{koodistoRyhmaUri}", "a")).andExpectAll(
                 status().isNoContent()
         );
+        mockMvc.perform(delete(BASE_PATH + "/{koodistoRyhmaUri}", "dummy")).andExpectAll(
+                status().isBadRequest()
+        );
+        mockMvc.perform(delete(BASE_PATH + "/{koodistoRyhmaUri}", "foo")).andExpectAll(
+                status().isNotFound()
+        );
         mockMvc.perform(get(BASE_PATH + "/empty")).andExpectAll(
                 status().isOk(),
                 jsonPath("$.length()").value(2)

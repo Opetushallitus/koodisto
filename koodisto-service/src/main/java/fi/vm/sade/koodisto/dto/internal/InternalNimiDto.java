@@ -1,13 +1,11 @@
 package fi.vm.sade.koodisto.dto.internal;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 import javax.validation.constraints.NotBlank;
-
-
-@Data
 @Builder
+@Getter
 public class InternalNimiDto {
     @NotBlank
     private String fi;

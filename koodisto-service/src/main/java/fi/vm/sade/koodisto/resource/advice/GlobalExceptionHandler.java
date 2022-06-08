@@ -3,6 +3,7 @@ package fi.vm.sade.koodisto.resource.advice;
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,6 +119,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleRequestRejectedException(RequestRejectedException e) {
         logger.debug(DEBUG_LOG_MESSAGE, e);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("error.authorization");
+    }
+
+    @ExceptionHandler(KoodistoRyhmaNotEmptyException.class)
+    public ResponseEntity<Object> handleKoodistoRyhmaNotEmptyException(KoodistoRyhmaNotEmptyException e) {
+        logger.debug(DEBUG_LOG_MESSAGE, e);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("error.koodistoryhma.not.empty");
     }
 
 }
