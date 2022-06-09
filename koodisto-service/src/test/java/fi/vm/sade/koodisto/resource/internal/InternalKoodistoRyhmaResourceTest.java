@@ -117,19 +117,16 @@ class InternalKoodistoRyhmaResourceTest {
     void unAuthorized() throws Exception {
         mockMvc.perform(post(BASE_PATH).contentType(MediaType.APPLICATION_JSON).content("{\"nimi\":{\"fi\":\"uusi\",\"sv\":\"uusi\",\"en\":\"uusi\"}}"))
                 .andExpectAll(
-                        status().is(HttpStatus.UNAUTHORIZED.value()),
-                        content().string("error.authorization")
+                        status().is(HttpStatus.FORBIDDEN.value())
                 );
         mockMvc.perform(put(BASE_PATH + "/{koodistoRyhmaUri}", "a")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nimi\":{\"fi\":\"uusi\",\"sv\":\"uusi\",\"en\":\"uusi\"}}"))
                 .andExpectAll(
-                        status().is(HttpStatus.UNAUTHORIZED.value()),
-                        content().string("error.authorization")
+                        status().is(HttpStatus.FORBIDDEN.value())
                 );
         mockMvc.perform(delete(BASE_PATH + "/{koodistoRyhmaUri}", "a")).andExpectAll(
-                status().is(HttpStatus.UNAUTHORIZED.value()),
-                content().string("error.authorization")
+                status().is(HttpStatus.FORBIDDEN.value())
         );
     }
 
