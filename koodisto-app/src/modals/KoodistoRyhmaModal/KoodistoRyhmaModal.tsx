@@ -54,39 +54,41 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
 
     const update = async (uri: string, nimi: { fi: string; sv: string; en: string }) => {
         const updated = await updateKoodistoRyhma(uri, { nimi });
-        success({
-            title: (
-                <FormattedMessage
-                    id={'KOODISTO_RYHMA_TALLENNUS_MESSAGE_TITLE'}
-                    defaultMessage={'Koodistoryhmä tallennettiin onnistuneesti.'}
-                />
-            ),
-            message: (
-                <FormattedMessage
-                    id={'KOODISTO_RYHMA_TALLENNUS_MESSAGE'}
-                    defaultMessage={'Tallennettiin koodistorymä uri:lla {koodistoRyhmaUri}'}
-                    values={{ koodistoRyhmaUri: updated?.koodistoRyhmaUri }}
-                />
-            ),
-        });
+        updated &&
+            success({
+                title: (
+                    <FormattedMessage
+                        id={'KOODISTO_RYHMA_TALLENNUS_MESSAGE_TITLE'}
+                        defaultMessage={'Koodistoryhmä tallennettiin onnistuneesti.'}
+                    />
+                ),
+                message: (
+                    <FormattedMessage
+                        id={'KOODISTO_RYHMA_TALLENNUS_MESSAGE'}
+                        defaultMessage={'Tallennettiin koodistorymä uri:lla {koodistoRyhmaUri}'}
+                        values={{ koodistoRyhmaUri: updated?.koodistoRyhmaUri }}
+                    />
+                ),
+            });
     };
     const create = async (nimi: { fi: string; sv: string; en: string }) => {
         const created = await createKoodistoRyhma({ nimi });
-        success({
-            title: (
-                <FormattedMessage
-                    id={'KOODISTO_RYHMA_LUONTI_MESSAGE_TITLE'}
-                    defaultMessage={'Uusi koodistoryhmä luotiin onnistuneesti.'}
-                />
-            ),
-            message: (
-                <FormattedMessage
-                    id={'KOODISTO_RYHMA_LUONTI_MESSAGE'}
-                    defaultMessage={'Luotiin koodistorymä uri:lla {koodistoRyhmaUri}'}
-                    values={{ koodistoRyhmaUri: created?.koodistoRyhmaUri }}
-                />
-            ),
-        });
+        created &&
+            success({
+                title: (
+                    <FormattedMessage
+                        id={'KOODISTO_RYHMA_LUONTI_MESSAGE_TITLE'}
+                        defaultMessage={'Uusi koodistoryhmä luotiin onnistuneesti.'}
+                    />
+                ),
+                message: (
+                    <FormattedMessage
+                        id={'KOODISTO_RYHMA_LUONTI_MESSAGE'}
+                        defaultMessage={'Luotiin koodistorymä uri:lla {koodistoRyhmaUri}'}
+                        values={{ koodistoRyhmaUri: created?.koodistoRyhmaUri }}
+                    />
+                ),
+            });
         const data = await fetchEmptyKoodistoRyhma();
         data && setEmptyKoodistoRyhma(data);
         reset();

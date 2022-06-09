@@ -4,6 +4,7 @@ import { deleteKoodistoRyhma } from '../../api/koodisto';
 import { FormattedMessage } from 'react-intl';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
+import { success } from '../../components/Notification';
 
 export const EmptyKoodistoRyhmaList: React.FC<{
     emptyKoodistoRyhma: KoodistoRyhma[];
@@ -11,6 +12,23 @@ export const EmptyKoodistoRyhmaList: React.FC<{
 }> = ({ emptyKoodistoRyhma, setEmptyKoodistoRyhma }) => {
     const onDelete = async (uri: string) => {
         const data = await deleteKoodistoRyhma(uri);
+        console.log(data);
+        data &&
+            success({
+                title: (
+                    <FormattedMessage
+                        id={'KOODISTO_RYHMA_POISTO_MESSAGE_TITLE'}
+                        defaultMessage={'Koodistoryhmän poisto.'}
+                    />
+                ),
+                message: (
+                    <FormattedMessage
+                        id={'KOODISTO_RYHMA_POISTO_MESSAGE'}
+                        defaultMessage={'Poistettiin koodistorymä uri:lla {uri}'}
+                        values={{ uri: uri }}
+                    />
+                ),
+            });
         data && setEmptyKoodistoRyhma(data);
     };
     return (

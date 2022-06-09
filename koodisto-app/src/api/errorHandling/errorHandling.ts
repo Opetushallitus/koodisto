@@ -6,10 +6,8 @@ const handleError = <T>(error: AxiosError<T> | unknown) => {
         const axiosError = error;
         if (axiosError.response) {
             console.error('axiosError', axiosError.response);
-            if (axiosError.response.data?.errorKey) {
-                warning({ title: axiosError.response.data.errorKey, message: axiosError.response.data.errorMessage });
-            } else if (axiosError.response.data?.errorMessage) {
-                danger({ title: axiosError.response.statusText, message: axiosError.response.data.errorMessage });
+            if (axiosError.response.data) {
+                warning({ title: axiosError.response.statusText, message: axiosError.response.data });
             } else {
                 danger({ message: axiosError.response.statusText });
             }
