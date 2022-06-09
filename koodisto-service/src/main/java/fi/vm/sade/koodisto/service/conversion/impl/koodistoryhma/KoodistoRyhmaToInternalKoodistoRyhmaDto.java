@@ -14,10 +14,14 @@ public class KoodistoRyhmaToInternalKoodistoRyhmaDto extends AbstractFromDomainC
         return InternalKoodistoRyhmaDto.builder()
                 .koodistoRyhmaUri(source.getKoodistoRyhmaUri())
                 .nimi(InternalNimiDto.builder()
-                        .fi(source.getKoodistoRyhmaMetadatas().stream().filter(a -> a.getKieli().equals(Kieli.FI)).findFirst().orElseGet(KoodistoRyhmaMetadata::new).getNimi())
-                        .sv(source.getKoodistoRyhmaMetadatas().stream().filter(a -> a.getKieli().equals(Kieli.SV)).findFirst().orElseGet(KoodistoRyhmaMetadata::new).getNimi())
-                        .en(source.getKoodistoRyhmaMetadatas().stream().filter(a -> a.getKieli().equals(Kieli.EN)).findFirst().orElseGet(KoodistoRyhmaMetadata::new).getNimi())
+                        .fi(getNimi(source, Kieli.FI))
+                        .sv(getNimi(source, Kieli.SV))
+                        .en(getNimi(source, Kieli.EN))
                         .build())
                 .build();
+    }
+
+    private String getNimi(KoodistoRyhma source, Kieli kieli) {
+        return source.getKoodistoRyhmaMetadatas().stream().filter(a -> a.getKieli().equals(kieli)).findFirst().orElseGet(KoodistoRyhmaMetadata::new).getNimi();
     }
 }
