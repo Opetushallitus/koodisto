@@ -2,7 +2,7 @@ name: koodisto-service
 on:
   workflow_dispatch:
   push:
-    branches: [ master ]
+    branches: [ master, spring_boot ]
   pull_request:
 jobs:
   build:
