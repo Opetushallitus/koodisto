@@ -59,7 +59,7 @@ public class InternalKoodistoRyhmaResource {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/empty")
+    @GetMapping("/empty/")
     public ResponseEntity<List<InternalKoodistoRyhmaDto>> getEmptyKoodistoRyhma() {
         return ResponseEntity.ok(conversionService.convertAll(koodistoRyhmaBusinessService.getEmptyKoodistoRyhma(), InternalKoodistoRyhmaDto.class));
 

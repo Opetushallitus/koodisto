@@ -31,7 +31,7 @@ class InternalKoodistoRyhmaResourceTest {
                         status().isCreated(),
                         jsonPath("$.koodistoRyhmaUri").value("uusi")
                 );
-        mockMvc.perform(get(BASE_PATH + "/empty")).andExpectAll(
+        mockMvc.perform(get(BASE_PATH + "/empty/")).andExpectAll(
                 status().isOk(),
                 jsonPath("$.length()").value(4)
         );
@@ -53,7 +53,7 @@ class InternalKoodistoRyhmaResourceTest {
                         jsonPath("$.koodistoRyhmaUri").value("a"),
                         jsonPath("$.nimi.fi").value("uusi")
                 );
-        mockMvc.perform(get(BASE_PATH + "/empty")).andExpectAll(
+        mockMvc.perform(get(BASE_PATH + "/empty/")).andExpectAll(
                 status().isOk(),
                 jsonPath("$.length()").value(3),
                 content().json("[{\"koodistoRyhmaUri\":\"a\",\"nimi\": {\"fi\":\"uusi\"}},{\"koodistoRyhmaUri\":\"b\"},{\"koodistoRyhmaUri\":\"c\"}]")
@@ -72,7 +72,7 @@ class InternalKoodistoRyhmaResourceTest {
         mockMvc.perform(delete(BASE_PATH + "/{koodistoRyhmaUri}", "foo")).andExpectAll(
                 status().isNotFound()
         );
-        mockMvc.perform(get(BASE_PATH + "/empty")).andExpectAll(
+        mockMvc.perform(get(BASE_PATH + "/empty/")).andExpectAll(
                 status().isOk(),
                 jsonPath("$.length()").value(2)
         );
@@ -90,7 +90,7 @@ class InternalKoodistoRyhmaResourceTest {
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_READ_UPDATE})
     void getEmptyKoodistoRyhma() throws Exception {
-        mockMvc.perform(get(BASE_PATH + "/empty")).andExpectAll(
+        mockMvc.perform(get(BASE_PATH + "/empty/")).andExpectAll(
                 status().isOk(),
                 jsonPath("$.length()").value(3),
                 content().json("[{\"koodistoRyhmaUri\":\"a\"},{\"koodistoRyhmaUri\":\"b\"},{\"koodistoRyhmaUri\":\"c\"}]")
@@ -112,7 +112,7 @@ class InternalKoodistoRyhmaResourceTest {
         mockMvc.perform(delete(BASE_PATH + "/{koodistoRyhmaUri}", "a")).andExpectAll(
                 status().is(HttpStatus.FOUND.value())
         );
-        mockMvc.perform(get(BASE_PATH + "/empty")).andExpectAll(
+        mockMvc.perform(get(BASE_PATH + "/empty/")).andExpectAll(
                 status().is(HttpStatus.FOUND.value())
         );
     }
