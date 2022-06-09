@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import KoodistoTable from './KoodistoTable';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { IconWrapper } from '../../components/IconWapper';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
+import { KoodistoRyhmaModal } from '../../modals/KoodistoRyhmaModal';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const MainContainer = styled.div`
     flex-grow: 1;
@@ -40,7 +42,12 @@ export const ButtonLabelPrefix = styled.span`
     padding-right: 0.3rem;
 `;
 export const KoodistoTablePage: React.FC = () => {
+    const { koodistoRyhmaUri } = useParams();
+    const navigate = useNavigate();
     const [koodistoRyhmaModalVisible, setKoodistoRyhmaModalVisible] = useState<boolean>(false);
+    useEffect(() => {
+        setKoodistoRyhmaModalVisible(!!koodistoRyhmaUri);
+    }, [koodistoRyhmaUri]);
     const handleLisaaKoodistoRyhma = () => {
         setKoodistoRyhmaModalVisible(true);
     };
@@ -48,7 +55,11 @@ export const KoodistoTablePage: React.FC = () => {
         <>
             <MainHeaderContainer>
                 <FormattedMessage id={'TAULUKKOSIVU_OTSIKKO'} defaultMessage={'Koodistojen ylläpito'} tagName={'h1'} />
-                <Button variant={'text'}>
+                <Button
+                    variant={'text'}
+                    onClick={handleLisaaKoodistoRyhma}
+                    name={'TAULUKKO_LISAA_KOODISTORYHMA_BUTTON'}
+                >
                     <ButtonLabelPrefix>
                         <IconWrapper icon="el:plus" inline={true} fontSize={'0.6rem'} />
                     </ButtonLabelPrefix>
@@ -60,8 +71,16 @@ export const KoodistoTablePage: React.FC = () => {
             </MainHeaderContainer>
             <MainContainer>
                 <ContentContainer>
-                    <KoodistoTable handleLisaaKoodistoRyhma={handleLisaaKoodistoRyhma} />
-                    {koodistoRyhmaModalVisible && <div>FOO</div>}
+                    <KoodistoTable />
+                    {koodistoRyhmaModalVisible && (
+                        <KoodistoRyhmaModal
+                            koodistoRyhmaUri={koodistoRyhmaUri}
+                            closeModal={() => {
+                                setKoodistoRyhmaModalVisible(false);
+                                navigate('/');
+                            }}
+                        />
+                    )}
                 </ContentContainer>
             </MainContainer>
         </>

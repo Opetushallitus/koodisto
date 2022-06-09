@@ -1,4 +1,4 @@
-import { Modal } from '../../components/Modal';
+import { Modal, Footer } from '../../components/Modal';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { KoodiCSVReader } from './KoodiCSVReader';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
@@ -36,13 +36,7 @@ const UploadContainer = styled.div`
     }
 `;
 const UploadContainerItem = styled.div``;
-const Footer = styled.div`
-    > * {
-        :not(:last-child) {
-            margin-right: 0.5rem;
-        }
-    }
-`;
+
 type Props = {
     koodistoUri: string;
     koodistoVersio?: number;

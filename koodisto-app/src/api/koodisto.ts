@@ -1,6 +1,17 @@
 import { API_BASE_PATH, API_INTERNAL_PATH } from '../context/constants';
 import { atom, Getter } from 'jotai';
-import { ApiDate, Kieli, Koodi, ListKoodisto, Metadata, PageKoodisto, UpsertKoodi, KoodistoRelation } from '../types';
+import {
+    ApiDate,
+    Kieli,
+    Koodi,
+    ListKoodisto,
+    Metadata,
+    PageKoodisto,
+    UpsertKoodi,
+    KoodistoRelation,
+    InsertKoodistoRyhma,
+    KoodistoRyhma,
+} from '../types';
 import { casMeLangAtom } from './kayttooikeus';
 import { parseApiDate, translateMetadata } from '../utils';
 import { errorHandlingWrapper } from './errorHandling';
@@ -46,7 +57,7 @@ const apiKoodistoListToKoodistoList = (a: ApiListKoodisto, lang: Kieli): ListKoo
     const nimi = translateMetadata({ metadata: a.metadata, lang })?.nimi;
     const ryhmaNimi = translateMetadata({ metadata: a.koodistoRyhmaMetadata, lang })?.nimi;
     return {
-        ryhmaId: a.koodistoRyhmaMetadata?.[0]?.id || undefined,
+        ryhmaUri: a.koodistoRyhmaMetadata?.[0]?.uri || undefined,
         koodistoUri: a.koodistoUri,
         versio: a.versio,
         voimassaAlkuPvm: a.voimassaAlkuPvm && parseApiDate(a.voimassaAlkuPvm),
@@ -91,6 +102,43 @@ export const createKoodisto = async (koodistoUri: string, koodi: UpsertKoodi): P
 export const updateKoodisto = async (koodi: UpsertKoodi): Promise<number | undefined> => {
     return errorHandlingWrapper(async () => {
         const { data } = await axios.put<number>(`${API_BASE_PATH}/codeelement/save`, koodi);
+        return data;
+    });
+};
+
+export const createKoodistoRyhma = async (koodistoRyhma: InsertKoodistoRyhma): Promise<KoodistoRyhma | undefined> => {
+    return errorHandlingWrapper(async () => {
+        const { data } = await axios.post<KoodistoRyhma>(`${API_INTERNAL_PATH}/koodistoryhma`, koodistoRyhma);
+        return data;
+    });
+};
+export const updateKoodistoRyhma = async (
+    koodistoRyhmaUri: string,
+    koodistoRyhma: InsertKoodistoRyhma
+): Promise<KoodistoRyhma | undefined> => {
+    return errorHandlingWrapper(async () => {
+        const { data } = await axios.put<KoodistoRyhma>(
+            `${API_INTERNAL_PATH}/koodistoryhma/${koodistoRyhmaUri}`,
+            koodistoRyhma
+        );
+        return data;
+    });
+};
+export const fetchKoodistoRyhma = async (koodistoRyhmaUri: string): Promise<KoodistoRyhma | undefined> => {
+    return errorHandlingWrapper(async () => {
+        const { data } = await axios.get<KoodistoRyhma>(`${API_INTERNAL_PATH}/koodistoryhma/${koodistoRyhmaUri}`);
+        return data;
+    });
+};
+export const deleteKoodistoRyhma = async (koodistoRyhmaUri: string): Promise<KoodistoRyhma[] | undefined> => {
+    return errorHandlingWrapper(async () => {
+        await axios.delete(`${API_INTERNAL_PATH}/koodistoryhma/${koodistoRyhmaUri}`);
+        return fetchEmptyKoodistoRyhma();
+    });
+};
+export const fetchEmptyKoodistoRyhma = async (): Promise<KoodistoRyhma[] | undefined> => {
+    return errorHandlingWrapper(async () => {
+        const { data } = await axios.get<KoodistoRyhma[]>(`${API_INTERNAL_PATH}/koodistoryhma/empty/`);
         return data;
     });
 };
