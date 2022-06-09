@@ -14,11 +14,17 @@ describe('The Koodisto View page', () => {
         cy.visit(`${BASE_PATH}/koodisto/kunta/2`);
         cy.get('.accordion > div').last().click();
         cy.get('tbody > tr:visible').should('have.length', 630);
-        cy.get('input').last().type('mouhijärvi');
+
         // filter by name
+        cy.get('input').last().type('mouhijärvi');
         cy.get('tbody > tr:visible').should('have.length', 1);
-        cy.focused().clear().type('493');
+
+        // clear filter
+        cy.get('#clear-filter').click();
+        cy.get('tbody > tr:visible').should('have.length', 630);
+
         // filter by koodiArvo
+        cy.get('input').last().type('493');
         cy.get('tbody > tr:visible').should('have.length', 1);
     });
 });

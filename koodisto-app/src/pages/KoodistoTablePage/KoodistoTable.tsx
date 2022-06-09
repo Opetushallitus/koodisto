@@ -41,7 +41,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
         atomData.sort((a, b) => a.koodistoUri.localeCompare(b.koodistoUri));
         return [...atomData];
     }, [atomData]);
-    const [filteredRows, setFilteredRows] = useState<Row<ListKoodisto>[]>([]);
+    const [filteredCount, setFilteredCount] = useState<number>(data.length);
     const resetFilters = useRef<() => void | undefined>();
     const columns = React.useMemo<Column<ListKoodisto>[]>(
         () => [
@@ -137,7 +137,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
                     <FormattedMessage
                         id={'TAULUKKO_OTSIKKO'}
                         defaultMessage={'Koodistot ({filteredCount} / {totalCount})'}
-                        values={{ filteredCount: filteredRows.length, totalCount: data.length }}
+                        values={{ filteredCount, totalCount: data.length }}
                         tagName={'h2'}
                     />
                     <InfoText>
@@ -166,9 +166,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ handleLisaaKoodistoRyhma 
             <Table<ListKoodisto>
                 columns={columns}
                 data={data}
-                onFilter={(rows) => {
-                    setFilteredRows(rows);
-                }}
+                onFilter={(rows) => setFilteredCount(rows.length)}
                 resetFilters={resetFilters}
             />
         </>
