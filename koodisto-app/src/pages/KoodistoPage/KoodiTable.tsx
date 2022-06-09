@@ -16,6 +16,12 @@ export const KoodiTable: React.FC<Props> = ({ koodiList }) => {
         return [...koodiList];
     }, [koodiList]);
 
+    // this is for message extraction to work properly
+    formatMessage({
+        id: 'KOODI_TAULUKKO_FILTTERI_PLACEHOLDER',
+        defaultMessage: 'Hae nimellä tai koodiarvolla',
+    });
+
     const columns = React.useMemo<Column<Koodi>[]>(
         () => [
             {

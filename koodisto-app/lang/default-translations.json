@@ -50,6 +50,9 @@
   "KOODISTOVERSIO_DROPDOWN": {
     "defaultMessage": "Koodistoversio"
   },
+  "KOODI_TAULUKKO_FILTTERI_PLACEHOLDER": {
+    "defaultMessage": "Hae nimellä tai koodiarvolla"
+  },
   "LATAA_CSV_LATAA": {
     "defaultMessage": "Lataa CSV"
   },
@@ -133,6 +136,9 @@
   },
   "TAULUKKO_SISALTYY_KOODISTOIHIN_OTSIKKO": {
     "defaultMessage": "Sisältyy koodistoihin ({count})"
+  },
+  "TAULUKKO_VAKIO_FILTTERI": {
+    "defaultMessage": "Haetaan {count} koodistosta"
   },
   "TAULUKKO_VERSIO_KUVAUS": {
     "defaultMessage": "Kuvaus"

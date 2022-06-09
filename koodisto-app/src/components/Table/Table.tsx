@@ -69,6 +69,14 @@ export const TextFilterComponent = <T extends Record<string, unknown>>({
 }: FilterProps<T> & { placeholder?: MessageDescriptor }) => {
     const count = preFilteredRows.length;
     const { formatMessage } = useIntl();
+    // this is for message extraction to work properly
+    formatMessage(
+        {
+            id: 'TAULUKKO_VAKIO_FILTTERI',
+            defaultMessage: 'Haetaan {count} koodistosta',
+        },
+        { count: 0 }
+    );
     return (
         <InputContainer>
             <Input
