@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-@Table(name = KoodistoRyhma.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistoRyhma.TABLE_NAME + "_01", columnNames = { KoodistoRyhma.KOODISTO_RYHMA_URI_COLUMN_NAME }))
+@Table(name = KoodistoRyhma.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistoRyhma.TABLE_NAME + "_01", columnNames = {KoodistoRyhma.KOODISTO_RYHMA_URI_COLUMN_NAME}))
 @org.hibernate.annotations.Table(appliesTo = KoodistoRyhma.TABLE_NAME, comment = "Koodistoryhmä sisältää aina tietyn tyyppisiä koodistoja, esim. alueet. Koodisto voi kuulua useaan koodistoryhmään.")
 @Entity
 @Cacheable
@@ -35,7 +35,7 @@ public class KoodistoRyhma extends BaseEntity {
     private Set<Koodisto> koodistos = new HashSet<>();
 
     @NotEmpty
-    @OneToMany(mappedBy = "koodistoRyhma", fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @OneToMany(mappedBy = "koodistoRyhma", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = new HashSet<>();
 
@@ -69,4 +69,7 @@ public class KoodistoRyhma extends BaseEntity {
         this.koodistos.remove(koodisto);
     }
 
+    public String getNimi(Kieli kieli) {
+        return getKoodistoRyhmaMetadatas().stream().filter(a -> a.getKieli().equals(kieli)).findFirst().orElseGet(KoodistoRyhmaMetadata::new).getNimi();
+    }
 }
