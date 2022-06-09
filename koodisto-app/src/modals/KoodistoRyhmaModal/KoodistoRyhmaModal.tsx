@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Footer } from '../../components/Modal';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -8,13 +9,12 @@ import { IconWrapper } from '../../components/IconWapper';
 import {
     createKoodistoRyhma,
     fetchEmptyKoodistoRyhma,
-    deleteKoodistoRyhma,
     fetchKoodistoRyhma,
     updateKoodistoRyhma,
 } from '../../api/koodisto';
 import { success } from '../../components/Notification';
-import { useEffect, useState } from 'react';
 import { KoodistoRyhma } from '../../types';
+import { EmptyKoodistoRyhmaList } from './EmptyKoodistoRyhmaList';
 
 type Props = {
     koodistoRyhmaUri?: string;
@@ -25,6 +25,7 @@ type AddKoodistoRyhma = {
     sv: string;
     en: string;
 };
+
 export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeModal }) => {
     const { formatMessage } = useIntl();
 
@@ -92,10 +93,7 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
         data && setEmptyKoodistoRyhma(data);
         reset();
     };
-    const onDelete = async (uri: string) => {
-        const data = await deleteKoodistoRyhma(uri);
-        data && setEmptyKoodistoRyhma(data);
-    };
+
     const copyToNames = (): void => {
         const muutosTiedot = getValues();
         setValue('sv', muutosTiedot['fi']);
@@ -118,7 +116,12 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                     <form>
                         <FormattedMessage id={'KOODISTO_RYHMA_FI'} defaultMessage={'FI'} />
                         <Input
-                            {...register('fi', { required: 'Please enter your first name.' })} // custom message
+                            {...register('fi', {
+                                required: formatMessage({
+                                    id: 'FI_NIMI_PAKOLLINEN',
+                                    defaultMessage: 'Syötä suomenkielinen nimi.',
+                                }),
+                            })} // custom message
                             suffix={
                                 copyToNames && (
                                     <div
@@ -139,9 +142,23 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                             }
                         />
                         <FormattedMessage id={'KOODISTO_RYHMA_SV'} defaultMessage={'SV'} />
-                        <Input {...register('sv', { required: 'Please enter your first name.' })} />
+                        <Input
+                            {...register('sv', {
+                                required: formatMessage({
+                                    id: 'SV_NIMI_PAKOLLINEN',
+                                    defaultMessage: 'Syötä ruotsinkielinen nimi',
+                                }),
+                            })}
+                        />
                         <FormattedMessage id={'KOODISTO_RYHMA_EN'} defaultMessage={'EN'} />
-                        <Input {...register('en', { required: 'Please enter your first name.' })} />
+                        <Input
+                            {...register('en', {
+                                required: formatMessage({
+                                    id: 'EN_NIMI_PAKOLLINEN',
+                                    defaultMessage: 'Syötä englanninkielinen nimi',
+                                }),
+                            })}
+                        />
                         {(koodistoRyhmaUri && (
                             <Button disabled={false} onClick={handleSubmit(update)} name={'KOODISTO_RYHMA_TALLENNA'}>
                                 <FormattedMessage id={'KOODISTO_RYHMA_TALLENNA'} defaultMessage={'Tallenna'} />
@@ -153,28 +170,10 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                         )}
                     </form>
                     {emptyKoodistoRyhma.length > 0 && (
-                        <>
-                            <h2>
-                                <FormattedMessage
-                                    id={'KOODISTO_RYHMA_TYHJAT_TITLE'}
-                                    defaultMessage={'Tyhjät koodistoryhmät ({emptyRyhmaCount})'}
-                                    values={{ emptyRyhmaCount: emptyKoodistoRyhma.length }}
-                                />
-                            </h2>
-                            {emptyKoodistoRyhma.map((a) => (
-                                <div key={a.koodistoRyhmaUri}>
-                                    {a.koodistoRyhmaUri}
-                                    <Button variant={'text'} name={`POISTA_KOODISTORYHMA-${a.koodistoRyhmaUri}`}>
-                                        <IconWrapper
-                                            onClick={() => onDelete(a.koodistoRyhmaUri)}
-                                            icon="ci:trash-full"
-                                            color={'gray'}
-                                            height={'1.5rem'}
-                                        />
-                                    </Button>
-                                </div>
-                            ))}
-                        </>
+                        <EmptyKoodistoRyhmaList
+                            setEmptyKoodistoRyhma={setEmptyKoodistoRyhma}
+                            emptyKoodistoRyhma={emptyKoodistoRyhma}
+                        />
                     )}
                 </>
             }
