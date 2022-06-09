@@ -121,7 +121,7 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                                     id: 'FI_NIMI_PAKOLLINEN',
                                     defaultMessage: 'Syötä suomenkielinen nimi.',
                                 }),
-                            })} // custom message
+                            })}
                             suffix={
                                 copyToNames && (
                                     <div

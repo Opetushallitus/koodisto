@@ -17,6 +17,12 @@
   "CSV_UPLOAD_SUCCESS_MESSAGE": {
     "defaultMessage": "{koodistoUri} koodiston koodit tuotiin onnistuneesti."
   },
+  "EN_NIMI_PAKOLLINEN": {
+    "defaultMessage": "Syötä englanninkielinen nimi"
+  },
+  "FI_NIMI_PAKOLLINEN": {
+    "defaultMessage": "Syötä suomenkielinen nimi."
+  },
   "KOODISTOPALVELU_OTSIKKO": {
     "defaultMessage": "Koodistopalvelu"
   },
@@ -112,6 +118,9 @@
   },
   "LATAA_CVS_VALITSE_TIEDOSTO_ALUE": {
     "defaultMessage": "Tai raahaa tiedosto tähän"
+  },
+  "SV_NIMI_PAKOLLINEN": {
+    "defaultMessage": "Syötä ruotsinkielinen nimi"
   },
   "TAULUKKOSIVU_OTSIKKO": {
     "defaultMessage": "Koodistojen ylläpito"
