@@ -103,6 +103,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("error.validation.%s", e.getParameter().getParameterName()).toLowerCase());
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public void handleAccessDeniedException(AccessDeniedException e) {
+        logger.debug(DEBUG_LOG_MESSAGE, e);
+        throw e;
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(Exception e) {
