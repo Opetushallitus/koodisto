@@ -35,6 +35,11 @@ class InternalKoodistoRyhmaResourceTest {
                 status().isOk(),
                 jsonPath("$.length()").value(4)
         );
+        mockMvc.perform(post(BASE_PATH).contentType(MediaType.APPLICATION_JSON).content("{\"nimi\":{\"fi\":\"uusi\",\"sv\":\"uusi\",\"en\":\"uusi\"}}"))
+                .andExpectAll(
+                        status().isBadRequest(),
+                        content().string("error.koodistoryhma.already.exists")
+                );
     }
 
     @Test

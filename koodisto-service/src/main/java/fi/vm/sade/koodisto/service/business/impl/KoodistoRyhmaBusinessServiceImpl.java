@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
 import com.google.common.base.Strings;
+import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.dto.internal.InternalInsertKoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.Kieli;
@@ -49,11 +50,8 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     @Override
     public KoodistoRyhma createKoodistoRyhma(InternalInsertKoodistoRyhmaDto insertKoodistoRyhma) {
         String koodistoRyhmaUri = insertKoodistoRyhma.getNimi().getFi();
-        String baseKoodistoRyhmaUri = koodistoRyhmaUri;
-        int i = 1;
-        while (koodistoRyhmaRepository.existsByKoodistoRyhmaUri(koodistoRyhmaUri)) {
-            koodistoRyhmaUri = baseKoodistoRyhmaUri + "-" + i;
-            ++i;
+        if (koodistoRyhmaRepository.existsByKoodistoRyhmaUri(koodistoRyhmaUri)) {
+            throw new KoodistoRyhmaExistsException();
         }
         KoodistoRyhma koodistoRyhma = new KoodistoRyhma();
         koodistoRyhma.setKoodistoRyhmaUri(koodistoRyhmaUri);
