@@ -60,11 +60,6 @@ type TableProps<T extends object> = {
     data: T[];
 };
 
-export const getTextFilterComponent =
-    <T extends Record<string, unknown>>(placeholder: MessageDescriptor) =>
-    (props: FilterProps<T>) =>
-        TextFilterComponent({ ...props, placeholder });
-
 export const TextFilterComponent = <T extends Record<string, unknown>>({
     column: { filterValue, preFilteredRows, setFilter },
     placeholder = {

@@ -1,1 +1,1 @@
-export { Table, SelectFilterComponent, TextFilterComponent, getTextFilterComponent } from './Table';
+export { Table, SelectFilterComponent, TextFilterComponent } from './Table';
