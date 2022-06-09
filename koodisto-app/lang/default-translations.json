@@ -71,6 +71,12 @@
   "KOODISTO_RYHMA_LUO_UUSI": {
     "defaultMessage": "Luo ryhmä"
   },
+  "KOODISTO_RYHMA_POISTO_MESSAGE": {
+    "defaultMessage": "Poistettiin koodistorymä uri:lla {uri}"
+  },
+  "KOODISTO_RYHMA_POISTO_MESSAGE_TITLE": {
+    "defaultMessage": "Koodistoryhmän poisto."
+  },
   "KOODISTO_RYHMA_SULJE": {
     "defaultMessage": "Sulje"
   },

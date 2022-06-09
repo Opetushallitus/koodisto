@@ -41,7 +41,7 @@ describe('Errors', () => {
             req.reply({
                 statusCode: 404,
                 delay: 10,
-                body: { errorMessage: 'custom message' },
+                body: 'custom message',
             });
         });
         cy.get(`[name="${koodistoUri}-csv"]`).click();
@@ -55,11 +55,11 @@ describe('Errors', () => {
             req.reply({
                 statusCode: 404,
                 delay: 10,
-                body: { errorKey: 'custom key', errorMessage: 'custom message' },
+                body: 'custom message',
             });
         });
         cy.get(`[name="${koodistoUri}-csv"]`).click();
-        cy.contains('custom key').should('be.visible');
+        cy.contains('Not Found').should('be.visible');
         cy.contains('custom message').should('be.visible');
     });
 });
