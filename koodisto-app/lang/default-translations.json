@@ -134,9 +134,6 @@
   "TAULUKKO_SISALTYY_KOODISTOIHIN_OTSIKKO": {
     "defaultMessage": "Sisältyy koodistoihin ({count})"
   },
-  "TAULUKKO_VAKIO_FILTTERI": {
-    "defaultMessage": "Haetaan {count} koodistosta"
-  },
   "TAULUKKO_VERSIO_KUVAUS": {
     "defaultMessage": "Kuvaus"
   },

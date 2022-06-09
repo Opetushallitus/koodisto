@@ -19,38 +19,59 @@ export const KoodiTable: React.FC<Props> = ({ koodiList }) => {
     const columns = React.useMemo<Column<Koodi>[]>(
         () => [
             {
-                id: 'koodiarvo',
-                accessor: (values: Koodi) =>
-                    `${values.koodiArvo} ${translateMetadata({ metadata: values.metadata, lang })?.nimi || ''}`,
                 Header: formatMessage({ id: 'TAULUKKO_KOODI_KOODIARVO', defaultMessage: 'Koodiarvo' }),
-                Cell: ({ row }: { row: Row<Koodi> }) => <div>{row.original.koodiArvo}</div>,
-                Filter: getTextFilterComponent({
-                    id: 'KOODI_TAULUKKO_FILTTERI_PLACEHOLDER',
-                    defaultMessage: 'Hae nimellä tai koodiarvolla',
-                }),
-                filter: 'text',
+                columns: [
+                    {
+                        id: 'koodiarvo',
+                        accessor: (values: Koodi) =>
+                            `${values.koodiArvo} ${translateMetadata({ metadata: values.metadata, lang })?.nimi || ''}`,
+
+                        Cell: ({ row }: { row: Row<Koodi> }) => <div>{row.original.koodiArvo}</div>,
+                        Filter: getTextFilterComponent({
+                            id: 'KOODI_TAULUKKO_FILTTERI_PLACEHOLDER',
+                            defaultMessage: 'Hae nimellä tai koodiarvolla',
+                        }),
+                        filter: 'text',
+                    },
+                ],
             },
             {
-                id: 'versio',
                 Header: formatMessage({ id: 'TAULUKKO_KOODI_VERSIO', defaultMessage: 'Versio' }),
-                Cell: ({ row }: { row: Row<Koodi> }) => <div>{row.original.versio}</div>,
+                columns: [
+                    {
+                        id: 'versio',
+                        Cell: ({ row }: { row: Row<Koodi> }) => <div>{row.original.versio}</div>,
+                    },
+                ],
             },
             {
-                id: 'nimi',
                 Header: formatMessage({ id: 'TAULUKKO_KOODI_NIMI', defaultMessage: 'Nimi' }),
-                Cell: ({ row }: { row: Row<Koodi> }) => (
-                    <div>{translateMetadata({ metadata: row.original.metadata, lang })?.nimi}</div>
-                ),
+                columns: [
+                    {
+                        id: 'nimi',
+                        Cell: ({ row }: { row: Row<Koodi> }) => (
+                            <div>{translateMetadata({ metadata: row.original.metadata, lang })?.nimi}</div>
+                        ),
+                    },
+                ],
             },
             {
-                id: 'voimassa',
                 Header: formatMessage({ id: 'TAULUKKO_KOODI_VOIMASSA', defaultMessage: 'Voimassa' }),
-                Cell: ({ row }: { row: Row<Koodi> }) => <FormattedDate value={row.original.voimassaAlkuPvm} />,
+                columns: [
+                    {
+                        id: 'voimassa',
+                        Cell: ({ row }: { row: Row<Koodi> }) => <FormattedDate value={row.original.voimassaAlkuPvm} />,
+                    },
+                ],
             },
             {
-                id: 'paivitetty',
                 Header: formatMessage({ id: 'TAULUKKO_KOODI_PAIVITETTY', defaultMessage: 'Päivitetty' }),
-                Cell: ({ row }: { row: Row<Koodi> }) => <FormattedDate value={row.original.paivitysPvm} />,
+                columns: [
+                    {
+                        id: 'paivitetty',
+                        Cell: ({ row }: { row: Row<Koodi> }) => <FormattedDate value={row.original.paivitysPvm} />,
+                    },
+                ],
             },
         ],
         [formatMessage, lang]
