@@ -52,4 +52,15 @@ class KoodistoUiApplicationTests {
                         forwardedUrl("/index.html")
                 );
     }
+
+    @Test
+    @WithMockUser
+    void randomPathRedirectsToIndex() throws Exception {
+        mockMvc
+                .perform(get("/this/should/be/handled/by/frontend"))
+                .andExpectAll(
+                        status().isOk(),
+                        forwardedUrl("/index.html")
+                );
+    }
 }
