@@ -103,11 +103,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(String.format("error.validation.%s", e.getParameter().getParameterName()).toLowerCase());
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException e) {
-        logger.debug(DEBUG_LOG_MESSAGE, e);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("error.authorization");
-    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(Exception e) {
@@ -115,11 +110,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.internalServerError().body(GENERIC_ERROR_CODE);
     }
 
-    @ExceptionHandler(RequestRejectedException.class)
-    public ResponseEntity<Object> handleRequestRejectedException(RequestRejectedException e) {
-        logger.debug(DEBUG_LOG_MESSAGE, e);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("error.authorization");
-    }
 
     @ExceptionHandler(KoodistoRyhmaNotEmptyException.class)
     public ResponseEntity<Object> handleKoodistoRyhmaNotEmptyException(KoodistoRyhmaNotEmptyException e) {

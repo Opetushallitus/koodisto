@@ -152,8 +152,18 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
 
     @Override
     public void delete(final Long id) {
+        delete(koodistoRyhmaRepository::findById, id);
+    }
+
+    @Override
+    public void delete(String uri) {
+
+        delete(koodistoRyhmaRepository::findByKoodistoRyhmaUri, uri);
+    }
+
+    private <T> void delete(KoodistoRyhmaFinder<T> finder, T a) {
         try {
-            KoodistoRyhma koodistoRyhma = koodistoRyhmaRepository.findById(id).orElseThrow(KoodistoRyhmaNotFoundException::new);
+            KoodistoRyhma koodistoRyhma = finder.find(a).orElseThrow(KoodistoRyhmaNotFoundException::new);
             if (koodistoRyhma.getKoodistos().isEmpty()) {
                 koodistoRyhmaRepository.delete(koodistoRyhma);
             } else {
@@ -164,17 +174,9 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
         }
     }
 
-    @Override
-    public void delete(String uri) {
-        try {
-            KoodistoRyhma koodistoRyhma = koodistoRyhmaRepository.findByKoodistoRyhmaUri(uri).orElseThrow(KoodistoRyhmaNotFoundException::new);
-            if (koodistoRyhma.getKoodistos().isEmpty()) {
-                koodistoRyhmaRepository.delete(koodistoRyhma);
-            } else {
-                throw new KoodistoRyhmaNotEmptyException();
-            }
-        } catch (NoSuchElementException e) {
-            throw new KoodistoRyhmaNotFoundException();
-        }
+    private interface KoodistoRyhmaFinder<T> {
+        Optional<KoodistoRyhma> find(T a);
     }
 }
+
+
