@@ -52,25 +52,23 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
         })();
     }, [koodistoRyhmaUri, setValue]);
 
-    const update = async (nimi: { fi: string; sv: string; en: string }) => {
-        if (koodistoRyhmaUri) {
-            const updated = await updateKoodistoRyhma(koodistoRyhmaUri, { nimi });
-            success({
-                title: (
-                    <FormattedMessage
-                        id={'KOODISTO_RYHMA_TALLENNUS_MESSAGE_TITLE'}
-                        defaultMessage={'Koodistoryhmä tallennettiin onnistuneesti.'}
-                    />
-                ),
-                message: (
-                    <FormattedMessage
-                        id={'KOODISTO_RYHMA_TALLENNUS_MESSAGE'}
-                        defaultMessage={'Tallennettiin koodistorymä uri:lla {koodistoRyhmaUri}'}
-                        values={{ koodistoRyhmaUri: updated?.koodistoRyhmaUri }}
-                    />
-                ),
-            });
-        }
+    const update = async (uri: string, nimi: { fi: string; sv: string; en: string }) => {
+        const updated = await updateKoodistoRyhma(uri, { nimi });
+        success({
+            title: (
+                <FormattedMessage
+                    id={'KOODISTO_RYHMA_TALLENNUS_MESSAGE_TITLE'}
+                    defaultMessage={'Koodistoryhmä tallennettiin onnistuneesti.'}
+                />
+            ),
+            message: (
+                <FormattedMessage
+                    id={'KOODISTO_RYHMA_TALLENNUS_MESSAGE'}
+                    defaultMessage={'Tallennettiin koodistorymä uri:lla {koodistoRyhmaUri}'}
+                    values={{ koodistoRyhmaUri: updated?.koodistoRyhmaUri }}
+                />
+            ),
+        });
     };
     const create = async (nimi: { fi: string; sv: string; en: string }) => {
         const created = await createKoodistoRyhma({ nimi });
@@ -160,7 +158,11 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                             })}
                         />
                         {(koodistoRyhmaUri && (
-                            <Button disabled={false} onClick={handleSubmit(update)} name={'KOODISTO_RYHMA_TALLENNA'}>
+                            <Button
+                                disabled={false}
+                                onClick={handleSubmit((a) => update(koodistoRyhmaUri, a))}
+                                name={'KOODISTO_RYHMA_TALLENNA'}
+                            >
                                 <FormattedMessage id={'KOODISTO_RYHMA_TALLENNA'} defaultMessage={'Tallenna'} />
                             </Button>
                         )) || (
