@@ -49,7 +49,7 @@ public class InternalKoodistoRyhmaResource {
     public ResponseEntity<InternalKoodistoRyhmaDto> updateKoodistoRyhma(
             @PathVariable String koodistoRyhmaUri, @RequestBody @Valid InternalInsertKoodistoRyhmaDto insertKoodistoRyhma) {
         KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.updateKoodistoRyhma(koodistoRyhmaUri, insertKoodistoRyhma);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(conversionService.convert(koodistoRyhma, InternalKoodistoRyhmaDto.class));
+        return ResponseEntity.ok(conversionService.convert(koodistoRyhma, InternalKoodistoRyhmaDto.class));
     }
 
     @DeleteMapping(path = "/{koodistoRyhmaUri}")

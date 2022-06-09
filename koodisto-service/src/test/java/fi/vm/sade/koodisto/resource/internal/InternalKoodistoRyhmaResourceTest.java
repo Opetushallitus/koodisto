@@ -44,7 +44,7 @@ class InternalKoodistoRyhmaResourceTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nimi\":{\"fi\":\"uusi\",\"sv\":\"uusi\",\"en\":\"uusi\"}}"))
                 .andExpectAll(
-                        status().isAccepted(),
+                        status().isOk(),
                         jsonPath("$.koodistoRyhmaUri").value("a"),
                         jsonPath("$.nimi.fi").value("uusi")
                 );
