@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Koodi } from '../../types';
 import { Column, Row } from 'react-table';
 import { useIntl, FormattedDate } from 'react-intl';
-import { Table, TextFilterComponent } from '../../components/Table';
+import { Table, getTextFilterComponent } from '../../components/Table';
 import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLangAtom } from '../../api/kayttooikeus';
@@ -24,7 +24,10 @@ export const KoodiTable: React.FC<Props> = ({ koodiList }) => {
                     `${values.koodiArvo} ${translateMetadata({ metadata: values.metadata, lang })?.nimi || ''}`,
                 Header: formatMessage({ id: 'TAULUKKO_KOODI_KOODIARVO', defaultMessage: 'Koodiarvo' }),
                 Cell: ({ row }: { row: Row<Koodi> }) => <div>{row.original.koodiArvo}</div>,
-                Filter: TextFilterComponent,
+                Filter: getTextFilterComponent({
+                    id: 'KOODI_TAULUKKO_FILTTERI_PLACEHOLDER',
+                    defaultMessage: 'Hae nimellä tai koodiarvolla',
+                }),
                 filter: 'text',
             },
             {

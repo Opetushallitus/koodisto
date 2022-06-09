@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { Cell, Column, FilterProps, HeaderGroup, Row, useFilters, useTable } from 'react-table';
 import { useEffect } from 'react';
-import { useIntl } from 'react-intl';
+import { useIntl, MessageDescriptor } from 'react-intl';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { ValueType } from 'react-select';
@@ -60,9 +60,18 @@ type TableProps<T extends object> = {
     data: T[];
 };
 
+export const getTextFilterComponent =
+    <T extends Record<string, unknown>>(placeholder: MessageDescriptor) =>
+    (props: FilterProps<T>) =>
+        TextFilterComponent({ ...props, placeholder });
+
 export const TextFilterComponent = <T extends Record<string, unknown>>({
     column: { filterValue, preFilteredRows, setFilter },
-}: FilterProps<T>) => {
+    placeholder = {
+        id: 'TAULUKKO_VAKIO_FILTTERI',
+        defaultMessage: 'Haetaan {count} koodistosta',
+    },
+}: FilterProps<T> & { placeholder?: MessageDescriptor }) => {
     const count = preFilteredRows.length;
     const { formatMessage } = useIntl();
     return (
@@ -72,13 +81,7 @@ export const TextFilterComponent = <T extends Record<string, unknown>>({
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setFilter(e.target.value || undefined);
                 }}
-                placeholder={formatMessage(
-                    {
-                        id: 'TAULUKKO_VAKIO_FILTTERI',
-                        defaultMessage: 'Haetaan {count} koodistosta',
-                    },
-                    { count }
-                )}
+                placeholder={formatMessage(placeholder, { count })}
             />
         </InputContainer>
     );
