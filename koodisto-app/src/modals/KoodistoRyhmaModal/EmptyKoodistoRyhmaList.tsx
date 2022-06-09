@@ -12,7 +12,6 @@ export const EmptyKoodistoRyhmaList: React.FC<{
 }> = ({ emptyKoodistoRyhma, setEmptyKoodistoRyhma }) => {
     const onDelete = async (uri: string) => {
         const data = await deleteKoodistoRyhma(uri);
-        console.log(data);
         data &&
             success({
                 title: (
