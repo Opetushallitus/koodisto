@@ -32,7 +32,7 @@ describe('Errors', () => {
             });
         });
         cy.get(`[name="${koodistoUri}-csv"]`).click();
-        cy.contains('Server Error').should('be.visible');
+        cy.contains('server.error.500').should('be.visible');
     });
     it('error if 404 with key', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, { fixture: 'kuntaKoodisto.json' });
@@ -45,7 +45,7 @@ describe('Errors', () => {
             });
         });
         cy.get(`[name="${koodistoUri}-csv"]`).click();
-        cy.contains('Not Found').should('be.visible');
+        cy.contains('client.error.404').should('be.visible');
         cy.contains('custom message').should('be.visible');
     });
     it('error if 404 with key and message', () => {
@@ -59,7 +59,7 @@ describe('Errors', () => {
             });
         });
         cy.get(`[name="${koodistoUri}-csv"]`).click();
-        cy.contains('Not Found').should('be.visible');
+        cy.contains('client.error.404').should('be.visible');
         cy.contains('custom message').should('be.visible');
     });
 });

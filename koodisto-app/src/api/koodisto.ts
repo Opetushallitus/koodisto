@@ -138,7 +138,7 @@ export const deleteKoodistoRyhma = async (koodistoRyhmaUri: string): Promise<Koo
 };
 export const fetchEmptyKoodistoRyhma = async (): Promise<KoodistoRyhma[] | undefined> => {
     return errorHandlingWrapper(async () => {
-        const { data } = await axios.get<KoodistoRyhma[]>(`${API_INTERNAL_PATH}/koodistoryhma/empty`);
+        const { data } = await axios.get<KoodistoRyhma[]>(`${API_INTERNAL_PATH}/koodistoryhma/empty/`);
         return data;
     });
 };

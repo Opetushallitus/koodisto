@@ -7,9 +7,9 @@ const handleError = <T>(error: AxiosError<T> | unknown) => {
         if (axiosError.response) {
             console.error('axiosError', axiosError.response);
             if (axiosError.response.data) {
-                warning({ title: axiosError.response.statusText, message: axiosError.response.data });
+                warning({ title: `client.error.${axiosError.response.status}`, message: axiosError.response.data });
             } else {
-                danger({ message: axiosError.response.statusText });
+                danger({ message: `server.error.${axiosError.response.status}` });
             }
         }
     } else {
