@@ -101,6 +101,9 @@
   "KOODISTO_RYHMA_TYHJAT_TITLE": {
     "defaultMessage": "Tyhjät koodistoryhmät ({emptyRyhmaCount})"
   },
+  "KOODI_TAULUKKO_FILTTERI_PLACEHOLDER": {
+    "defaultMessage": "Hae nimellä tai koodiarvolla"
+  },
   "KOPIOI_MUIHIN_NIMIIN": {
     "defaultMessage": "Kopioi muihin kieliin"
   },
