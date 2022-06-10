@@ -5,8 +5,7 @@ package fi.vm.sade.koodisto.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.util.FieldLengths;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -24,6 +23,9 @@ import javax.validation.constraints.Size;
 @Cacheable
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class KoodistoRyhmaMetadata extends BaseEntity {
 
     private static final long serialVersionUID = 287785307475416064L;

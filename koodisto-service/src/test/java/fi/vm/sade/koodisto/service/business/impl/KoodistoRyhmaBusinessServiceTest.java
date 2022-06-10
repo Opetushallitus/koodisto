@@ -52,7 +52,7 @@ public class KoodistoRyhmaBusinessServiceTest {
     public void testCreateInvalidKoodistoRyhmaFails() {
         KoodistoRyhma group = null;
         try {
-            group = resource.createKoodistoRyhma(null);
+            group = resource.createKoodistoRyhma((KoodistoRyhmaDto) null);
             fail("Null DTO accepted.");
         } catch (KoodistoRyhmaUriEmptyException e) {
         }

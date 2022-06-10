@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.repository;
 
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +17,10 @@ public interface KoodistoRyhmaRepository extends CrudRepository<KoodistoRyhma, L
 
     Optional<KoodistoRyhma> findById(Long id);
 
+    Optional<KoodistoRyhma> findByKoodistoRyhmaUri(String koodistoRyhmaUris);
+
     boolean existsByKoodistoRyhmaUri(String koodistoRyhmaUri);
 
+    @Query(value = "SELECT * FROM koodistoryhma kr WHERE NOT EXISTS(SELECT 1 FROM koodistoryhma_koodisto kk WHERE kk.koodistoryhma_id = kr.id )", nativeQuery = true)
+    List<KoodistoRyhma> findEmptyKoodistoRyhma();
 }

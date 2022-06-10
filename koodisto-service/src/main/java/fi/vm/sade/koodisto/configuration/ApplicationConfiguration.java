@@ -9,6 +9,7 @@ import fi.vm.sade.koodisto.service.conversion.impl.KoodistoConversionServiceImpl
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.*;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.*;
 import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaToInternalKoodistoRyhmaDto;
 import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaToKoodistoRyhmaListDtoConverter;
 import fi.vm.sade.properties.OphProperties;
 import org.springframework.context.annotation.Bean;
@@ -68,6 +69,7 @@ public class ApplicationConfiguration {
                 new KoodistoMetadataToKoodistoMetadataDtoConverter(),
                 new KoodiVersioToInternalKoodiVersioDtoConverter(
                         new KoodiMetadataToKoodiMetadataDtoConverter())));
+        ks.addConverter(new KoodistoRyhmaToInternalKoodistoRyhmaDto());
         return ks;
     }
 }
