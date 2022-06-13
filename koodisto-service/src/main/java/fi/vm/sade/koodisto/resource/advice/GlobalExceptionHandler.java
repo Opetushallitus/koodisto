@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.resource.advice;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.google.gson.JsonArray;
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
