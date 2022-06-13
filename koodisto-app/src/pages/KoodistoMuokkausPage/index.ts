@@ -1,0 +1,1 @@
+export { KoodistoMuokkausPage } from './KoodistoMuokkausPage';

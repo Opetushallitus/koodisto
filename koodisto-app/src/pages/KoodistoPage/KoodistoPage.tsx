@@ -145,7 +145,7 @@ export const KoodistoPage: React.FC = () => {
                     </SelectContainer>
                 </HeadingDivider>
                 <MainHeaderButtonsContainer>
-                    <Button variant={'outlined'}>
+                    <Button variant={'outlined'} onClick={() => navigate(`/koodisto/edit/${koodistoUri}/${versio}`)}>
                         <FormattedMessage
                             id={'KOODISTOSIVU_MUOKKAA_KOODISTOA_BUTTON'}
                             defaultMessage={'Muokkaa koodistoa'}

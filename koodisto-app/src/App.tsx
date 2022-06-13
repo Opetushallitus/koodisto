@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import { Notification } from './components/Notification';
 import { KoodistoPage } from './pages/KoodistoPage';
 import { Loading } from './components/Loading';
+import { KoodistoMuokkausPage } from './pages/KoodistoMuokkausPage';
+import { KoodiMuokkausPage } from './pages/KoodiMuokkausPage';
 
 export const PageBase = styled.div`
     width: 100%;
@@ -25,6 +27,10 @@ const App: React.FC = () => {
                         <Route path={'/'} element={<KoodistoTablePage />} />
                         <Route path={'/koodistoRyhma/:koodistoRyhmaUri'} element={<KoodistoTablePage />} />
                         <Route path="/koodisto/:koodistoUri/:versio" element={<KoodistoPage />} />
+                        <Route path="/koodisto/edit/:koodistoUri/:versio" element={<KoodistoMuokkausPage />} />
+                        <Route path="/koodisto/edit" element={<KoodistoMuokkausPage />} />
+                        <Route path="/koodi/edit/:koodistoUri/:versio" element={<KoodiMuokkausPage />} />
+                        <Route path="/koodi/edit" element={<KoodiMuokkausPage />} />
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
                 </React.Suspense>

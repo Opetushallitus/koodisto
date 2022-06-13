@@ -173,6 +173,9 @@
   "TAULUKKO_LISAA_KOODISTO_BUTTON": {
     "defaultMessage": "Luo uusi koodisto"
   },
+  "TAULUKKO_LISAA_KOODI_BUTTON": {
+    "defaultMessage": "Luo uusi koodi"
+  },
   "TAULUKKO_NIMI_OTSIKKO": {
     "defaultMessage": "Nimi"
   },

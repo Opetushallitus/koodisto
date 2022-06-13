@@ -7,7 +7,7 @@ import { ButtonLabelPrefix, HeaderContainer } from './KoodistoTablePage';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Table, SelectFilterComponent, TextFilterComponent } from '../../components/Table';
 import { ListKoodisto, SelectOptionType } from '../../types';
 
@@ -33,6 +33,7 @@ const TableCellText = styled.span`
 `;
 
 const KoodistoTable: React.FC<KoodistoTableProps> = () => {
+    const navigate = useNavigate();
     const [atomData] = useAtom(koodistoListAtom);
     const { formatMessage } = useIntl();
     const data = useMemo<ListKoodisto[]>(() => {
@@ -154,7 +155,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = () => {
                         )}
                     </InfoText>
                 </HeaderContentDivider>
-                <Button>
+                <Button onClick={() => navigate('/koodisto/edit/')}>
                     <ButtonLabelPrefix>
                         <IconWrapper icon="el:plus" inline={true} fontSize={'0.6rem'} />
                     </ButtonLabelPrefix>

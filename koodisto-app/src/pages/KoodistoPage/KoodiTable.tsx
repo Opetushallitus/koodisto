@@ -7,6 +7,8 @@ import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLangAtom } from '../../api/kayttooikeus';
 import { IconWrapper } from '../../components/IconWapper';
+import Button from '@opetushallitus/virkailija-ui-components/Button';
+import { useNavigate } from 'react-router-dom';
 
 const ResetFilter = ({ resetFilters }: { resetFilters: React.MutableRefObject<(() => void) | undefined> }) =>
     resetFilters.current ? (
@@ -23,6 +25,7 @@ const ResetFilter = ({ resetFilters }: { resetFilters: React.MutableRefObject<((
 
 type Props = { koodiList: Koodi[] };
 export const KoodiTable: React.FC<Props> = ({ koodiList }) => {
+    const navigate = useNavigate();
     const { formatMessage } = useIntl();
     const [lang] = useAtom(casMeLangAtom);
     const data = useMemo<Koodi[]>(
@@ -77,7 +80,12 @@ export const KoodiTable: React.FC<Props> = ({ koodiList }) => {
                     {
                         id: 'nimi',
                         Cell: ({ row }: { row: Row<Koodi> }) => (
-                            <div>{translateMetadata({ metadata: row.original.metadata, lang })?.nimi}</div>
+                            <Button
+                                variant={'text'}
+                                onClick={() => navigate(`/koodi/edit/${row.original.koodiArvo}/${row.original.versio}`)}
+                            >
+                                <div>{translateMetadata({ metadata: row.original.metadata, lang })?.nimi}</div>
+                            </Button>
                         ),
                     },
                 ],
@@ -101,7 +109,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList }) => {
                 ],
             },
         ],
-        [formatMessage, lang]
+        [formatMessage, lang, navigate]
     );
 
     return (

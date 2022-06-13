@@ -1,9 +1,13 @@
 import React from 'react';
 import { Accordion } from '../../components/Accordion';
-import { useIntl } from 'react-intl';
+import { useIntl, FormattedMessage } from 'react-intl';
 import KoodistoRelationsTable from './KoodistoRelationsTable';
 import { KoodiTable } from './KoodiTable';
 import { PageKoodisto } from '../../types';
+import Button from '@opetushallitus/virkailija-ui-components/Button';
+import { ButtonLabelPrefix } from '../KoodistoTablePage/KoodistoTablePage';
+import { IconWrapper } from '../../components/IconWapper';
+import { useNavigate } from 'react-router-dom';
 
 const SISALTYY_KOODISTOIHIN_ID = 0;
 const SISALTAA_KOODISTOT_ID = 1;
@@ -16,6 +20,7 @@ type KoodistoPageAccordionProps = {
 
 const KoodistoPageAccordion = ({ koodisto }: KoodistoPageAccordionProps) => {
     const { rinnastuuKoodistoihin, sisaltyyKoodistoihin, sisaltaaKoodistot, koodiList } = koodisto;
+    const navigate = useNavigate();
     const { formatMessage } = useIntl();
     const data = [
         {
@@ -53,12 +58,20 @@ const KoodistoPageAccordion = ({ koodisto }: KoodistoPageAccordionProps) => {
         },
         {
             id: KOODIT_ID,
-            localizedHeadingTitle: formatMessage(
-                {
-                    id: 'TAULUKKO_KOODIT_OTSIKKO',
-                    defaultMessage: 'Koodit ({count})',
-                },
-                { count: koodiList.length }
+            localizedHeadingTitle: (
+                <>
+                    <FormattedMessage
+                        id={'TAULUKKO_KOODIT_OTSIKKO'}
+                        defaultMessage={'Koodit ({count})'}
+                        values={{ count: koodiList.length }}
+                    />
+                    <Button onClick={() => navigate('/koodi/edit/')}>
+                        <ButtonLabelPrefix>
+                            <IconWrapper icon="el:plus" inline={true} fontSize={'0.6rem'} />
+                        </ButtonLabelPrefix>
+                        <FormattedMessage id={'TAULUKKO_LISAA_KOODI_BUTTON'} defaultMessage={'Luo uusi koodi'} />
+                    </Button>
+                </>
             ),
             panelComponent: <KoodiTable koodiList={koodiList} />,
         },

@@ -33,7 +33,7 @@ const StyledAccordionItemButton = styled(AccordionItemButton)`
 
 type AccordionDataItem = {
     id: number | string;
-    localizedHeadingTitle: string;
+    localizedHeadingTitle: ReactNode;
     panelComponent: ReactNode;
 };
 
