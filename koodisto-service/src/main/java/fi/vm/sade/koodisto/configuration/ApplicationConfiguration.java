@@ -37,9 +37,11 @@ public class ApplicationConfiguration {
     public KoodistoConversionService conversionService(OphProperties ophProperties) {
         KoodistoToKoodistoListDtoConverter koodistoToKoodistoListDtoConverter = new KoodistoToKoodistoListDtoConverter(ophProperties, new KoodistoVersioToKoodistoVersioListDtoConverter());
         KoodistoConversionServiceImpl ks = new KoodistoConversionServiceImpl();
+        KoodistoMetadataDtoToKoodistoMetadataTypeConverter koodistoMetadataDtoToKoodistoMetadataTypeConverter = new KoodistoMetadataDtoToKoodistoMetadataTypeConverter();
         ks.addConverter(koodistoToKoodistoListDtoConverter);
         ks.addConverter(new KoodiMetadataDtoToKoodiMetadataTypeConverter());
         ks.addConverter(new KoodistoMetadataToKoodistoMetadataTypeConverter());
+        ks.addConverter(new InternalKoodistoPageDtoToUpdateKoodistoDataTypeConverter(koodistoMetadataDtoToKoodistoMetadataTypeConverter));
         ks.addConverter(new KoodistoVersioToKoodistoDtoConverter(
                 ophProperties));
         ks.addConverter(new KoodistoTypeToKoodistoVersioConverter());

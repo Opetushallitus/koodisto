@@ -48,13 +48,15 @@ public class InternalKoodiResource {
         List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.getKoodisByKoodisto(koodistoUri, true);
         return ResponseEntity.ok(conversionService.convertAll(result, KoodiDto.class));
     }
+
     @PostMapping(path = "/{koodistoUri}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     public ResponseEntity<InternalKoodistoPageDto> upsertKoodiByKoodisto(
-            @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri, @NotEmpty(message = "error.koodi.list.empty") @RequestBody List<@Valid KoodiDto> koodis
+            @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri,
+            @NotEmpty(message = "error.koodi.list.empty") @RequestBody List<@Valid KoodiDto> koodis
     ) {
 
         List<UpdateKoodiDataType> koodiList = koodis.stream()

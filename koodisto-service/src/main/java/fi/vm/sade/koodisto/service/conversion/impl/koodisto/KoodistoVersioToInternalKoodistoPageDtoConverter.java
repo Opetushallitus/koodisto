@@ -3,9 +3,11 @@ package fi.vm.sade.koodisto.service.conversion.impl.koodisto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoSuhdeDto;
 import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaMissingException;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;
+import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.properties.OphProperties;
 import lombok.RequiredArgsConstructor;
 
@@ -23,10 +25,13 @@ public class KoodistoVersioToInternalKoodistoPageDtoConverter extends
     private final KoodistoMetadataToKoodistoMetadataDtoConverter koodistoMetadataToKoodistoMetadataDtoConverter;
     private final KoodiVersioToInternalKoodiVersioDtoConverter koodiVersioToInternalKoodiVersioDtoConverter;
 
+    private final List<Kieli> languageSortOrder = List.of(Kieli.FI, Kieli.SV, Kieli.EN);
+
     @Override
     public InternalKoodistoPageDto convert(KoodistoVersio source) {
         List<InternalKoodistoSuhdeDto> levelsWithCodes = getLevelsWithCodes(source);
         return InternalKoodistoPageDto.builder()
+                .koodistoRyhmaUri(source.getKoodisto().getKoodistoRyhmas().stream().findFirst().orElseThrow(KoodistoRyhmaMissingException::new).getKoodistoRyhmaUri())
                 .koodistoRyhmaMetadata(source.getKoodisto().getKoodistoRyhmas().stream()
                         .findFirst()
                         .map(KoodistoRyhma::getKoodistoRyhmaMetadatas)
@@ -37,15 +42,18 @@ public class KoodistoVersioToInternalKoodistoPageDtoConverter extends
                 .resourceUri(MessageFormat.format(ophProperties.url("koodistoUriFormat"), source.getKoodisto().getKoodistoUri()))
                 .koodistoUri(source.getKoodisto().getKoodistoUri())
                 .versio(source.getVersio())
+                .lockingVersion(source.getVersion())
                 .organisaatioOid(source.getKoodisto().getOrganisaatioOid())
                 .paivitysPvm(source.getPaivitysPvm())
                 .paivittajaOid(source.getPaivittajaOid())
                 .voimassaAlkuPvm(source.getVoimassaAlkuPvm())
                 .voimassaLoppuPvm(source.getVoimassaLoppuPvm())
-                .tila(source.getTila())
+                .tila(TilaType.valueOf(source.getTila().name()))
+                .omistaja(source.getKoodisto().getOmistaja())
                 .metadata(source.getMetadatas().stream()
                         .map(koodistoMetadataToKoodistoMetadataDtoConverter::convert)
-                        .collect(Collectors.toList()))
+                        .sorted(((a, b) -> a != null && a.equals(b) ? 0 : languageSortOrder.indexOf(a.getKieli()) < languageSortOrder.indexOf(b.getKieli()) ? -1 : 1))
+                        .collect(Collectors.toCollection(LinkedHashSet::new)))
                 .koodiVersio(source.getKoodisto().getKoodistoVersios().stream()
                         .map(KoodistoVersio::getVersio)
                         .collect(Collectors.toList()))
