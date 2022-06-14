@@ -11,10 +11,12 @@ VALUES ('-1', '0', '2012-03-22 13:23:41.414000', '2013-01-01', 'HYVAKSYTTY', '1'
        ('-4', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'LUONNOS', '1', '-4', '2012-11-20');
 
 INSERT INTO koodistoryhma (id, koodistoryhmauri, version)
-VALUES ('-1', 'general', '0');
+VALUES ('-1', 'general', '0'),
+       ('-2', 'dummy', '0');
 
 INSERT INTO koodistoryhmametadata (id, version, kieli, nimi, koodistoryhma_id)
-VALUES (-1, 0, 'FI', 'general', -1);
+VALUES (-1, 0, 'FI', 'general', -1),
+       (-2, 0, 'FI', 'dummy', -2);
 
 INSERT INTO koodistoryhma_koodisto (koodistoryhma_id, koodisto_id)
 VALUES ('-1', '-1'),

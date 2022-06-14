@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
 import com.google.common.base.Strings;
-import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
 import fi.vm.sade.koodisto.dto.internal.InternalInsertKoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.Kieli;

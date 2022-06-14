@@ -10,6 +10,7 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
+import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
@@ -54,6 +56,16 @@ public class InternalKoodistoResource {
             @PathVariable @NotBlank String koodistoUri,
             @PathVariable @Min(1) Integer koodistoVersio) {
         KoodistoVersio result = koodistoBusinessService.getKoodistoVersio(koodistoUri, koodistoVersio);
+        return ResponseEntity.ok(conversionService.convert(result, InternalKoodistoPageDto.class));
+    }
+
+    @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView({JsonViews.Internal.class})
+    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
+    public @ResponseBody ResponseEntity<InternalKoodistoPageDto> updateKoodisto(
+            @RequestBody @Valid InternalKoodistoPageDto koodisto) {
+        KoodistoVersio result = koodistoBusinessService.updateKoodisto(conversionService.convert(koodisto, UpdateKoodistoDataType.class));
         return ResponseEntity.ok(conversionService.convert(result, InternalKoodistoPageDto.class));
     }
 }
