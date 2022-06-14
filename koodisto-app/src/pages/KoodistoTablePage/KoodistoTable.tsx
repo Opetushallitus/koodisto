@@ -82,7 +82,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = () => {
                         Filter: TextFilterComponent,
                         filter: 'text',
                         Cell: ({ value, row }: { value: string; row: Row<ListKoodisto> }) => (
-                            <Link to={`koodisto/${row.original.koodistoUri}/${row.original.versio}`}>{value}</Link>
+                            <Link to={`koodisto/view/${row.original.koodistoUri}/${row.original.versio}`}>{value}</Link>
                         ),
                     },
                 ],

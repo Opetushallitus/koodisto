@@ -24,7 +24,7 @@ describe('Errors', () => {
     });
     it('error if 500', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, { fixture: 'kuntaKoodisto.json' });
-        cy.visit(`${BASE_PATH}/koodisto/${koodistoUri}/2`);
+        cy.visit(`${BASE_PATH}/koodisto/view/${koodistoUri}/2`);
         cy.intercept(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, (req) => {
             req.reply({
                 statusCode: 500,
@@ -36,7 +36,7 @@ describe('Errors', () => {
     });
     it('error if 404 with key', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, { fixture: 'kuntaKoodisto.json' });
-        cy.visit(`${BASE_PATH}/koodisto/${koodistoUri}/2`);
+        cy.visit(`${BASE_PATH}/koodisto/view/${koodistoUri}/2`);
         cy.intercept(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, (req) => {
             req.reply({
                 statusCode: 404,
@@ -50,7 +50,7 @@ describe('Errors', () => {
     });
     it('error if 404 with key and message', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, { fixture: 'kuntaKoodisto.json' });
-        cy.visit(`${BASE_PATH}/koodisto/${koodistoUri}/2`);
+        cy.visit(`${BASE_PATH}/koodisto/view/${koodistoUri}/2`);
         cy.intercept(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, (req) => {
             req.reply({
                 statusCode: 404,

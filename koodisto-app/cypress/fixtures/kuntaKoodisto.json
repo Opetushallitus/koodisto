@@ -7,6 +7,7 @@
             "kieli": "FI"
         }
     ],
+    "koodistoRyhmaUri": "alueet",
     "resourceUri": "https://virkailija.hahtuvaopintopolku.fi/koodisto-service/rest/codes/kunta",
     "koodistoUri": "kunta",
     "versio": 2,
@@ -18,6 +19,11 @@
     "tila": "LUONNOS",
     "metadata": [
         {
+            "kieli": "FI",
+            "nimi": "kunta",
+            "kuvaus": "kunta"
+        },
+        {
             "kieli": "SV",
             "nimi": "kommun",
             "kuvaus": "kommun"
@@ -26,11 +32,6 @@
             "kieli": "EN",
             "nimi": "municipality",
             "kuvaus": "municipality"
-        },
-        {
-            "kieli": "FI",
-            "nimi": "kunta",
-            "kuvaus": "Kunta on tietyn alueen ja sen asukkaiden muodostama yhteisö. Kunta on rajoiltaan määrätty alue niin, että kunkin kunnan toiminta kohdistuu sen alueeseen, siellä asuviin ja oleskeleviin ihmisiin ja siellä tapahtuvaan toimintaan. Uusien kuntien perustamisesta päättää valtioneuvosto ja uusista kuntanumeroista valtiovarainministeriön kuntaosasto. Vuonna 1995 voimaan tullut kuntalaki tuntee virallisena kuntamuotona vain kunnan, mutta kunta voi käyttää kaupunki-nimitystä, jos se itse katsoo täyttävänsä kaupunkimaiselle yhdyskunnalle asetettavat vaatimukset. Koodistoa ylläpidetään Opetushallituksessa (Heidi Bergström)"
         }
     ],
     "koodiVersio": [1, 2],

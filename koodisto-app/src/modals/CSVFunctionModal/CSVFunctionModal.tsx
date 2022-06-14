@@ -8,11 +8,12 @@ import { Table } from '../../components/Table';
 import { Column } from 'react-table';
 import { CsvKoodiObject, Koodi, MessageFormatter } from '../../types';
 import { getHeaders, mapCsvToKoodi, mapHeadersToColumns, validData } from './uploadCsv';
-import { batchUpsertKoodi, fetchKoodiListByKoodisto } from '../../api/koodisto';
+import { fetchKoodiListByKoodisto } from '../../api/koodisto';
 import { Loading } from '../../components/Loading';
 import { danger, success } from '../../components/Notification';
 import { downloadCsv } from '../../utils';
 import styled from 'styled-components';
+import { batchUpsertKoodi } from '../../api/koodi';
 
 const DownloadContainer = styled.div`
     padding-bottom: 1rem;
@@ -99,7 +100,7 @@ const persistData = async ({
                     id: 'CSV_UPLOAD_SUCCESS_MESSAGE',
                     defaultMessage: '{koodistoUri} koodiston koodit tuotiin onnistuneesti.',
                 },
-                { koodistoUri: result.koodistoUri }
+                { koodistoUri: result }
             ),
         });
     }

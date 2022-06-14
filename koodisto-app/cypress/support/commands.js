@@ -27,5 +27,5 @@ import 'cypress-file-upload';
 import { API_STATUS_PATH } from '../../src/context/constants';
 
 Cypress.Commands.add('mockBaseIntercepts', () => {
-    cy.intercept(`${API_STATUS_PATH}`, { fixture: 'status.json' });
+    return cy.intercept(`${API_STATUS_PATH}`, { fixture: 'status.json' });
 });

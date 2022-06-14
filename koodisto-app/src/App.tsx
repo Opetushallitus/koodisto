@@ -26,7 +26,7 @@ const App: React.FC = () => {
                     <Routes>
                         <Route path={'/'} element={<KoodistoTablePage />} />
                         <Route path={'/koodistoRyhma/:koodistoRyhmaUri'} element={<KoodistoTablePage />} />
-                        <Route path="/koodisto/:koodistoUri/:versio" element={<KoodistoPage />} />
+                        <Route path="/koodisto/view/:koodistoUri/:versio" element={<KoodistoPage />} />
                         <Route path="/koodisto/edit/:koodistoUri/:versio" element={<KoodistoMuokkausPage />} />
                         <Route path="/koodisto/edit" element={<KoodistoMuokkausPage />} />
                         <Route path="/koodi/edit/:koodistoUri/:versio" element={<KoodiMuokkausPage />} />

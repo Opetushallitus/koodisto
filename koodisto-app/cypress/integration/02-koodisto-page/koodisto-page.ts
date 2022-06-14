@@ -6,12 +6,12 @@ describe('The Koodisto View page', () => {
     });
     it('shows testi koodisto on koodisto view page', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'kuntaKoodisto.json' });
-        cy.visit(`${BASE_PATH}/koodisto/kunta/2`);
+        cy.visit(`${BASE_PATH}/koodisto/view/kunta/2`);
         cy.contains('kunta').should('be.visible');
     });
     it('Koodi list may be filtered', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'kuntaKoodisto.json' });
-        cy.visit(`${BASE_PATH}/koodisto/kunta/2`);
+        cy.visit(`${BASE_PATH}/koodisto/view/kunta/2`);
         cy.get('.accordion > div').last().click();
         cy.get('tbody > tr:visible').should('have.length', 630);
 

@@ -1,6 +1,7 @@
 body {
     font-family: Roboto, Arial Unicode MS, Arial, sans-serif;
     font-size: 16px;
+    margin: 0px;
 }
 
 h1,
@@ -29,4 +30,27 @@ a:visited {
 
 [role='dialog'] > div > div:first-child {
     background-color: transparent;
+}
+
+@font-face {
+    font-family: 'material-icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(fonts/material-icons.woff2) format('woff2');
+}
+
+.material-icons {
+    font-family: 'material-icons', sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
 }

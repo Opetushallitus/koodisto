@@ -1,17 +1,6 @@
 import { API_BASE_PATH, API_INTERNAL_PATH } from '../context/constants';
 import { atom, Getter } from 'jotai';
-import {
-    ApiDate,
-    Kieli,
-    Koodi,
-    ListKoodisto,
-    Metadata,
-    PageKoodisto,
-    UpsertKoodi,
-    KoodistoRelation,
-    InsertKoodistoRyhma,
-    KoodistoRyhma,
-} from '../types';
+import { ApiDate, Kieli, Koodi, ListKoodisto, Metadata, PageKoodisto, UpsertKoodi, KoodistoRelation } from '../types';
 import { casMeLangAtom } from './kayttooikeus';
 import { parseApiDate, translateMetadata } from '../utils';
 import { errorHandlingWrapper } from './errorHandling';
@@ -33,7 +22,8 @@ type ApiBaseKoodisto = {
     voimassaLoppuPvm: ApiDate;
     metadata: Metadata[];
 };
-type ApiPageKoodisto = ApiBaseKoodisto & {
+export type ApiPageKoodisto = ApiBaseKoodisto & {
+    koodistoRyhmaUri: string;
     resourceUri: string;
     omistaja: string | null;
     organisaatioOid: string;
@@ -99,65 +89,28 @@ export const createKoodisto = async (koodistoUri: string, koodi: UpsertKoodi): P
         return data;
     });
 };
-export const updateKoodisto = async (koodi: UpsertKoodi): Promise<number | undefined> => {
+export const updateKoodisto = async (koodi: PageKoodisto): Promise<PageKoodisto | undefined> => {
     return errorHandlingWrapper(async () => {
-        const { data } = await axios.put<number>(`${API_BASE_PATH}/codeelement/save`, koodi);
-        return data;
-    });
-};
-
-export const createKoodistoRyhma = async (koodistoRyhma: InsertKoodistoRyhma): Promise<KoodistoRyhma | undefined> => {
-    return errorHandlingWrapper(async () => {
-        const { data } = await axios.post<KoodistoRyhma>(`${API_INTERNAL_PATH}/koodistoryhma`, koodistoRyhma);
-        return data;
-    });
-};
-export const updateKoodistoRyhma = async (
-    koodistoRyhmaUri: string,
-    koodistoRyhma: InsertKoodistoRyhma
-): Promise<KoodistoRyhma | undefined> => {
-    return errorHandlingWrapper(async () => {
-        const { data } = await axios.put<KoodistoRyhma>(
-            `${API_INTERNAL_PATH}/koodistoryhma/${koodistoRyhmaUri}`,
-            koodistoRyhma
-        );
-        return data;
-    });
-};
-export const fetchKoodistoRyhma = async (koodistoRyhmaUri: string): Promise<KoodistoRyhma | undefined> => {
-    return errorHandlingWrapper(async () => {
-        const { data } = await axios.get<KoodistoRyhma>(`${API_INTERNAL_PATH}/koodistoryhma/${koodistoRyhmaUri}`);
-        return data;
-    });
-};
-export const deleteKoodistoRyhma = async (koodistoRyhmaUri: string): Promise<KoodistoRyhma[] | undefined> => {
-    return errorHandlingWrapper(async () => {
-        await axios.delete(`${API_INTERNAL_PATH}/koodistoryhma/${koodistoRyhmaUri}`);
-        return fetchEmptyKoodistoRyhma();
-    });
-};
-export const fetchEmptyKoodistoRyhma = async (): Promise<KoodistoRyhma[] | undefined> => {
-    return errorHandlingWrapper(async () => {
-        const { data } = await axios.get<KoodistoRyhma[]>(`${API_INTERNAL_PATH}/koodistoryhma/empty/`);
-        return data;
+        const { data: apiPageKoodisto } = await axios.put<ApiPageKoodisto>(`${API_INTERNAL_PATH}/koodisto`, koodi);
+        if (apiPageKoodisto) {
+            const organisaatioNimi = await fetchOrganisaatioNimi(apiPageKoodisto.organisaatioOid);
+            return { ...mapApiPageKoodistoToPageKoodisto(apiPageKoodisto), organisaatioNimi };
+        } else {
+            return undefined;
+        }
     });
 };
 
 const mapApiPageKoodistoToPageKoodisto = (api: ApiPageKoodisto): PageKoodisto => {
+    const metadata = [...api.metadata];
+    (['FI', 'SV', 'EN'] as Kieli[]).forEach(
+        (kieli) => metadata.find((a) => a.kieli === kieli) || api.metadata.push({ ...metadata[0], kieli })
+    );
     return {
         ...api,
         voimassaAlkuPvm: api.voimassaAlkuPvm && parseApiDate(api.voimassaAlkuPvm),
         voimassaLoppuPvm: api.voimassaLoppuPvm && parseApiDate(api.voimassaLoppuPvm),
     };
-};
-export const batchUpsertKoodi = async (
-    koodistoUri: string,
-    koodi: UpsertKoodi[]
-): Promise<PageKoodisto | undefined> => {
-    return errorHandlingWrapper(async () => {
-        const { data } = await axios.post<ApiPageKoodisto>(`${API_INTERNAL_PATH}/koodi/${koodistoUri}`, koodi);
-        return mapApiPageKoodistoToPageKoodisto(data);
-    });
 };
 
 export const fetchPageKoodisto = async (koodistoUri: string, versio: number): Promise<PageKoodisto | undefined> => {

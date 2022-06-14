@@ -6,15 +6,15 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { useForm } from 'react-hook-form';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import { IconWrapper } from '../../components/IconWapper';
-import {
-    createKoodistoRyhma,
-    fetchEmptyKoodistoRyhma,
-    fetchKoodistoRyhma,
-    updateKoodistoRyhma,
-} from '../../api/koodisto';
 import { success } from '../../components/Notification';
 import { KoodistoRyhma } from '../../types';
 import { EmptyKoodistoRyhmaList } from './EmptyKoodistoRyhmaList';
+import {
+    fetchEmptyKoodistoRyhma,
+    fetchKoodistoRyhma,
+    updateKoodistoRyhma,
+    createKoodistoRyhma,
+} from '../../api/koodistoRyhma';
 
 type Props = {
     koodistoRyhmaUri?: string;
@@ -123,22 +123,20 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                                 }),
                             })}
                             suffix={
-                                copyToNames && (
-                                    <div
-                                        title={formatMessage({
-                                            id: 'KOPIOI_MUIHIN_NIMIIN',
-                                            defaultMessage: 'Kopioi muihin kieliin',
-                                        })}
-                                        onClick={() => copyToNames()}
-                                    >
-                                        <IconWrapper
-                                            icon="ci:copy"
-                                            color={'gray'}
-                                            height={'1.5rem'}
-                                            name={'KOPIOI_MUIHIN_NIMIIN'}
-                                        />
-                                    </div>
-                                )
+                                <div
+                                    title={formatMessage({
+                                        id: 'KOPIOI_MUIHIN_NIMIIN',
+                                        defaultMessage: 'Kopioi muihin kieliin',
+                                    })}
+                                    onClick={() => copyToNames()}
+                                >
+                                    <IconWrapper
+                                        icon="ci:copy"
+                                        color={'gray'}
+                                        height={'1.5rem'}
+                                        name={'KOPIOI_MUIHIN_NIMIIN'}
+                                    />
+                                </div>
                             }
                         />
                         <FormattedMessage id={'KOODISTO_RYHMA_SV'} defaultMessage={'SV'} />

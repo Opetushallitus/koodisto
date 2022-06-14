@@ -6,11 +6,13 @@ export type Kieli = 'EN' | 'FI' | 'SV';
 export type Locale = Lowercase<Kieli>;
 export type ApiDate = `${number}${number}${number}${number}-${number}${number}-${number}${number}`;
 
+export type KoodiMetadata = Metadata & {
+    lyhytnimi?: string;
+};
 export type Metadata = {
     kieli: Kieli;
     nimi: string;
     kuvaus?: string;
-    lyhytnimi?: string;
 };
 
 export type Koodi = UpsertKoodi & {
@@ -103,6 +105,7 @@ export type KoodistoRelation = {
     };
 };
 export type PageKoodisto = BaseKoodisto & {
+    koodistoRyhmaUri: string;
     resourceUri: string;
     omistaja: string | null;
     organisaatioOid: string;
