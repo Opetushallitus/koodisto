@@ -93,7 +93,7 @@ class InternalKoodistoResourceTest {
                                 "\"error.koodistoRyhmaUri.blank\"," +
                                 "\"error.koodistoUri.blank\"," +
                                 "\"error.versio.less.than.one\"," +
-                                "\"error.lockingVersion.less.than.one\"," +
+                                "\"error.lockingVersion.less.than.zero\"," +
                                 "\"error.tila.empty\"," +
                                 "\"error.metadata.empty\"" +
                                 "]")
