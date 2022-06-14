@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import type { PageKoodi } from '../../types';
 import { InfoFields } from './InfoFields';
 import DateRange from '../../components/DateRange';
+import UpdatedAt from '../../components/UpdatedAt';
 
 const NameContainer = styled.ul`
     list-style-type: none;
@@ -65,7 +66,7 @@ export const KoodiInfo: React.FC<Pick<PageKoodi, 'koodi'>> = ({ koodi }: Pick<Pa
                 id: 'UPDATED',
                 defaultMessage: 'Päivitetty',
             },
-            value: `${koodi.paivitysPvm} (${koodi.paivittajaOid})`,
+            value: <UpdatedAt at={koodi.paivitysPvm} by={koodi.paivittajaOid} />,
         },
     ];
 
