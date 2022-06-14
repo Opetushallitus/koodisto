@@ -1,6 +1,16 @@
 import { API_BASE_PATH, API_INTERNAL_PATH } from '../context/constants';
 import { atom, Getter } from 'jotai';
-import { ApiDate, Kieli, Koodi, ListKoodisto, Metadata, PageKoodisto, UpsertKoodi, KoodistoRelation } from '../types';
+import {
+    ApiDate,
+    Kieli,
+    Koodi,
+    ListKoodisto,
+    Metadata,
+    PageKoodisto,
+    UpsertKoodi,
+    KoodistoRelation,
+    PageKoodi,
+} from '../types';
 import { casMeLangAtom } from './kayttooikeus';
 import { parseApiDate, translateMetadata, parseUIDate } from '../utils';
 import { errorHandlingWrapper } from './errorHandling';
@@ -153,5 +163,12 @@ export const fetchPageKoodisto = async ({
         } else {
             return undefined;
         }
+    });
+};
+
+export const fetchPageKoodi = async (koodiUri: string, versio: number): Promise<PageKoodi | undefined> => {
+    return errorHandlingWrapper(async () => {
+        const { data: pageData } = await axios.get<PageKoodi>(`${API_INTERNAL_PATH}/koodi/${koodiUri}/${versio}`);
+        return pageData;
     });
 };

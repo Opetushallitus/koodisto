@@ -29,6 +29,9 @@
   "FI_ORGANISAATIO_PAKOLLINEN": {
     "defaultMessage": "Valitse organisaatio."
   },
+  "KOODISIVU_MUOKKAA_KOODIA_BUTTON": {
+    "defaultMessage": "Muokkaa koodia"
+  },
   "KOODISTOPALVELU_OTSIKKO": {
     "defaultMessage": "Koodistopalvelu"
   },
@@ -128,6 +131,9 @@
   "KOODISTO_VERSIOI": {
     "defaultMessage": "Versioi koodisto"
   },
+  "KOODIVERSIO_DROPDOWN": {
+    "defaultMessage": "Koodiversio"
+  },
   "KOODI_TAULUKKO_FILTTERI_PLACEHOLDER": {
     "defaultMessage": "Hae nimellä tai koodiarvolla"
   },
@@ -218,11 +224,20 @@
   "TAULUKKO_OTSIKKO": {
     "defaultMessage": "Koodistot ({filteredCount} / {totalCount})"
   },
+  "TAULUKKO_RINNASTUU_KOODEIHIN_OTSIKKO": {
+    "defaultMessage": "Sisältää koodistot ({count})"
+  },
   "TAULUKKO_RINNASTUU_KOODISTOIHIN_OTSIKKO": {
     "defaultMessage": "Rinnastuu koodistoihin ({count})"
   },
   "TAULUKKO_SISALTAA_KOODISTOT_OTSIKKO": {
     "defaultMessage": "Sisältää koodistot ({count})"
+  },
+  "TAULUKKO_SISALTAA_KOODIT_OTSIKKO": {
+    "defaultMessage": "Sisältää koodit ({count})"
+  },
+  "TAULUKKO_SISALTYY_KOODEIHIN_OTSIKKO": {
+    "defaultMessage": "Sisältyy koodeihin ({count})"
   },
   "TAULUKKO_SISALTYY_KOODISTOIHIN_OTSIKKO": {
     "defaultMessage": "Sisältyy koodistoihin ({count})"
