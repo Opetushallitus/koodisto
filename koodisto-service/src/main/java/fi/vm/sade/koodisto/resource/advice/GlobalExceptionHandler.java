@@ -1,6 +1,6 @@
 package fi.vm.sade.koodisto.resource.advice;
 
-import com.google.gson.JsonArray;
+
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
@@ -23,8 +23,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -102,10 +104,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         logger.debug(DEBUG_LOG_MESSAGE, e);
-        JsonArray errorsJson = new JsonArray();
-        List<FieldError> errors = e.getFieldErrors();
-        errors.forEach(error -> errorsJson.add(error.getDefaultMessage()));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorsJson.toString());
+        List<String> errors = e.getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

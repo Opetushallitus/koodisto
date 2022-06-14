@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.resource.internal;
 
-import com.google.gson.JsonObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
