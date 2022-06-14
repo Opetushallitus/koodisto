@@ -42,7 +42,7 @@ public class InternalKoodistoPageDto {
     @JsonView({JsonViews.Internal.class})
     private int versio;
 
-    @Min(value = 1, message = "error.lockingVersion.less.than.one")
+    @Min(value = 0, message = "error.lockingVersion.less.than.zero")
     @JsonView({JsonViews.Internal.class})
     private long lockingVersion;
 
