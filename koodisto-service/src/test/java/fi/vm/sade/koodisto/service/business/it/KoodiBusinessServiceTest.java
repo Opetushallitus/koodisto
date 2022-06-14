@@ -4,6 +4,7 @@ import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
@@ -24,6 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @org.springframework.test.context.jdbc.Sql(
         scripts = "classpath:test-data.sql",
@@ -234,6 +238,16 @@ public class KoodiBusinessServiceTest {
         assertEquals(1, kv.getVersio().intValue());
         assertEquals(1, kv.getAlakoodis().size());
         assertRelationsArePassive(kv, false);
+    }
+
+    @Test
+    public void getKoodi() {
+        assertNotNull(koodiBusinessService.getKoodi("3", 1));
+    }
+
+    @Test(expected = KoodiNotFoundException.class)
+    public void getKoodiNotFound() {
+        koodiBusinessService.getKoodi("this-should-not-exists", 0);
     }
 
     public void assertRelationsArePassive(KoodiVersio latest, boolean passive) {

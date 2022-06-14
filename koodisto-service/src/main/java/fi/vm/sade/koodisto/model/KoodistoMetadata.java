@@ -26,13 +26,13 @@ public class KoodistoMetadata extends BaseEntity {
 
     private static final long serialVersionUID = -6880293349203597691L;
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class })
     @NotNull
     @Column(name = KIELI_COLUMN_NAME, nullable = false, length = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Enumerated(EnumType.STRING)
     private Kieli kieli;
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class })
     @NotBlank
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "nimi", length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = false)

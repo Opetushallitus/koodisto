@@ -933,6 +933,13 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return versios;
     }
 
+    @Override
+    @Transactional
+    public KoodiVersioWithKoodistoItem getKoodi(String koodiUri, int koodiVersio) {
+        SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(koodiUri, koodiVersio);
+        return searchKoodis(searchType).stream().findFirst().orElseThrow(KoodiNotFoundException::new);
+    }
+
     private List<KoodiVersioWithKoodistoItem> searchKoodisWithoutInitialize(SearchKoodisCriteriaType searchCriteria) {
         if (searchCriteria != null) {
             if (searchCriteria.getKoodiVersioSelection() == null) {

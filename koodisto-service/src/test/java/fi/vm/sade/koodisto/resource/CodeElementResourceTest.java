@@ -209,12 +209,10 @@ class CodeElementResourceTest {
     @Test
     void testGetCodeElementByUriAndVersionInvalid() throws Exception {
         getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", 0)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("error.validation.codeelementversion"));
+                .andExpect(status().isNotFound());
 
         getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", -1)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("error.validation.codeelementversion"));
+                .andExpect(status().isNotFound());
 
         getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", 9999)
                 .andExpect(status().isNotFound())
@@ -256,10 +254,6 @@ class CodeElementResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(3));
-
-        getAllCodeElementsByCodesUriAndVersion("lisaasisaltyy3", 0)
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("error.validation.koodi.versio"));
     }
 
     @Test

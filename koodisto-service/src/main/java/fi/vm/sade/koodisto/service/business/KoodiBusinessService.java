@@ -75,6 +75,8 @@ public interface KoodiBusinessService {
 
     List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisCriteriaType searchCriteria);
 
+    KoodiVersioWithKoodistoItem getKoodi(String koodiUri, int koodiVersio);
+
     KoodiVersioWithKoodistoItem createKoodi(String koodistoUri, CreateKoodiDataType createKoodiData);
 
     KoodiVersioWithKoodistoItem updateKoodi(UpdateKoodiDataType updateKoodiData);

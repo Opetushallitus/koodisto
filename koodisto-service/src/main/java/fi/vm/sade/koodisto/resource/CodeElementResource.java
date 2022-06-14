@@ -72,7 +72,7 @@ public class CodeElementResource {
         return ResponseEntity.ok(koodiVersioWithKoodistoItemToSimpleKoodiDtoConverter.convertAll(codeElements));
     }
 
-    @GetMapping(path = "/{codeElementUri}/{codeElementVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{koodiUri:[\\p{Alnum}_-]+}/{koodiVersio:[1-9]\\d*}", produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Extended.class})
     @Transactional(readOnly = true)
     @Operation(
@@ -80,19 +80,9 @@ public class CodeElementResource {
             summary = "sisältää koodiversion koodinsuhteet"
     )
     public ResponseEntity<Object> getCodeElementByUriAndVersion(
-            @Parameter(description = "Koodin URI") @PathVariable String codeElementUri,
-            @Parameter(description = "Koodin versio") @PathVariable int codeElementVersion) {
-        String[] errors = {KOODIURI, KOODIVERSIO};
-        ValidatorUtil.validateArgs(errors, codeElementUri, codeElementVersion);
-        ValidatorUtil.checkForGreaterThan(codeElementVersion, 0, new KoodistoValidationException(KOODISTO_VALIDATION_ERROR_CODE));
-
-        SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiByUriAndVersion(codeElementUri, codeElementVersion);
-        List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
-
-        if (codeElements.isEmpty()) {
-            throw new KoodiNotFoundException();
-        }
-        return ResponseEntity.ok(koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(codeElements.get(0)));
+            @Parameter(description = "Koodin URI") @PathVariable final String koodiUri,
+            @Parameter(description = "Koodin versio") @PathVariable final int koodiVersio) {
+        return ResponseEntity.ok(koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(koodiBusinessService.getKoodi(koodiUri, koodiVersio)));
     }
 
     @GetMapping(path = "/{codesUri}/{codesVersion}/{codeElementUri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})

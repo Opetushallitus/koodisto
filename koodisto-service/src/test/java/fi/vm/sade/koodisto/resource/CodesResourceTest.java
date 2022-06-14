@@ -226,7 +226,7 @@ class CodesResourceTest {
         assertThat(koodistoV1c).isEqualToIgnoringGivenFields(koodistoV1b, "codesVersions");
         ExtendedKoodiDto koodiV1d = helper.getKoodi(koodiV1a.getKoodiUri(), koodiV1b.getVersio());
         assertThat(koodiV1d).isEqualToIgnoringGivenFields(koodiV1b,
-                "version", "koodisto", "paivitysPvm", "tila",
+                "versions", "version", "koodisto", "paivitysPvm", "tila",
                 "withinCodeElements", "includesCodeElements", "levelsWithCodeElements", "metadata");
     }
 

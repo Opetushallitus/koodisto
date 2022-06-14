@@ -23,7 +23,7 @@ public class KoodistoDto extends AbstractKoodistoDto {
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     private Long version;
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class })
     private int versio;
 
     @JsonFormat(pattern="yyyy-MM-dd")
@@ -42,7 +42,7 @@ public class KoodistoDto extends AbstractKoodistoDto {
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class })
     private Tila tila;
 
-    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class })
+    @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class })
     private List<KoodistoMetadata> metadata = new ArrayList<KoodistoMetadata>();
 
     @JsonView(JsonViews.Extended.class)

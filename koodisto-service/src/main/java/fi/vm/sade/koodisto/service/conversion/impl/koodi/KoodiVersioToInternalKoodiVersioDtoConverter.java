@@ -19,6 +19,7 @@ private final KoodiMetadataToKoodiMetadataDtoConverter koodiMetadataToKoodiMetad
         InternalKoodiVersioDto.builder()
                 .koodiArvo(source.getKoodiarvo())
                 .versio(source.getVersio())
+                .koodiUri(source.getKoodi().getKoodiUri())
                 .paivitysPvm(source.getPaivitysPvm())
                 .paivittajaOid(source.getPaivittajaOid())
                 .voimassaAlkuPvm(source.getVoimassaAlkuPvm())

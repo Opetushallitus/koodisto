@@ -9,19 +9,19 @@ import lombok.Setter;
 @Setter
 public abstract class AbstractKoodistoDto {
 
-    @JsonView({JsonViews.Extended.class,JsonViews.Basic.class,JsonViews.Simple.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
     private String koodistoUri;
 
-    @JsonView({JsonViews.Extended.class,JsonViews.Basic.class,JsonViews.Basic.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Basic.class})
     private String resourceUri;
 
-    @JsonView({JsonViews.Extended.class,JsonViews.Basic.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private String omistaja;
 
-    @JsonView({JsonViews.Extended.class,JsonViews.Basic.class,JsonViews.Simple.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
     private String organisaatioOid;
 
-    @JsonView({JsonViews.Extended.class,JsonViews.Basic.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private Boolean lukittu;
 
 }
