@@ -2,16 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
-import Select from '@opetushallitus/virkailija-ui-components/Select';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
 import type { PageKoodi } from '../../types';
 import { fetchPageKoodi } from '../../api/koodisto';
-import { Loading } from '../../components/Loading';
 import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLangAtom } from '../../api/kayttooikeus';
+import Select from '@opetushallitus/virkailija-ui-components/Select';
+import Button from '@opetushallitus/virkailija-ui-components/Button';
+import { Loading } from '../../components/Loading';
 import { KoodiPageAccordion } from './KoodiPageAccordion';
 import { KoodiInfo } from './KoodiInfo';
+import { CrumbTrail } from './CrumbTrail';
 
 const MainContainer = styled.div`
     flex-grow: 1;
@@ -61,6 +62,7 @@ const KoodiPresentation: React.FC<PageKoodi> = ({ koodi, koodisto }: PageKoodi) 
     const [lang] = useAtom(casMeLangAtom);
     return (
         <>
+            <CrumbTrail koodi={koodi} koodisto={koodisto} />
             <MainHeaderContainer>
                 <HeadingDivider>
                     <h1>{translateMetadata({ metadata: koodi.metadata, lang })?.nimi}</h1>

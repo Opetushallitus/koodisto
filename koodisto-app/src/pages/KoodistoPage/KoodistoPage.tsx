@@ -67,7 +67,7 @@ export const KoodistoPage: React.FC = () => {
     });
     return (
         <>
-            <KoodistoPathContainer path={[koodistonMetadata?.nimi || '']} />
+            <KoodistoPathContainer trail={[{ label: koodistonMetadata?.nimi || '' }]} />
             <MainHeaderContainer>
                 <HeadingDivider>
                     <h1>{koodistonMetadata?.nimi}</h1>
