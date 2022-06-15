@@ -34,7 +34,7 @@ export const KoodiPageAccordion: React.FC<Pick<PageKoodi, 'koodi'>> = ({ koodi }
             localizedHeadingTitle: formatMessage(
                 {
                     id: 'TAULUKKO_RINNASTUU_KOODEIHIN_OTSIKKO',
-                    defaultMessage: 'Sisältää koodistot ({count})',
+                    defaultMessage: 'Rinnastuu koodeihin ({count})',
                 },
                 { count: koodi.levelsWithCodeElements.length }
             ),
