@@ -139,6 +139,7 @@ export type PageKoodi = {
         koodiUri: string;
         resourceUri: string;
         versio: number;
+        versions: number;
         koodiArvo: string;
         paivitysPvm: ApiDate;
         paivittajaOid: string;
