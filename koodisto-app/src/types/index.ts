@@ -105,7 +105,7 @@ export type KoodistoRelation = {
     };
 };
 export type PageKoodisto = BaseKoodisto & {
-    koodistoRyhmaUri: string;
+    koodistoRyhmaUri: SelectOption;
     resourceUri: string;
     omistaja: string | null;
     organisaatioOid: string;
@@ -122,3 +122,5 @@ export type PageKoodisto = BaseKoodisto & {
     rinnastuuKoodistoihin: KoodistoRelation[];
     koodiList: Koodi[];
 };
+
+export type SelectOption = { label: string; value: string };

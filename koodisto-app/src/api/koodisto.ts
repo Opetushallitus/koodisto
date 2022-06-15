@@ -2,7 +2,7 @@ import { API_BASE_PATH, API_INTERNAL_PATH } from '../context/constants';
 import { atom, Getter } from 'jotai';
 import { ApiDate, Kieli, Koodi, ListKoodisto, Metadata, PageKoodisto, UpsertKoodi, KoodistoRelation } from '../types';
 import { casMeLangAtom } from './kayttooikeus';
-import { parseApiDate, translateMetadata } from '../utils';
+import { parseApiDate, translateMetadata, parseUIDate } from '../utils';
 import { errorHandlingWrapper } from './errorHandling';
 import axios from 'axios';
 import { fetchOrganisaatioNimi } from './organisaatio';
@@ -19,7 +19,7 @@ type ApiBaseKoodisto = {
     koodistoUri: string;
     versio: number;
     voimassaAlkuPvm: ApiDate;
-    voimassaLoppuPvm: ApiDate;
+    voimassaLoppuPvm?: ApiDate;
     metadata: Metadata[];
 };
 export type ApiPageKoodisto = ApiBaseKoodisto & {
@@ -89,38 +89,67 @@ export const createKoodisto = async (koodistoUri: string, koodi: UpsertKoodi): P
         return data;
     });
 };
-export const updateKoodisto = async (koodi: PageKoodisto): Promise<PageKoodisto | undefined> => {
+export const updateKoodisto = async ({
+    koodisto,
+    lang,
+}: {
+    koodisto: PageKoodisto;
+    lang: Kieli;
+}): Promise<PageKoodisto | undefined> => {
     return errorHandlingWrapper(async () => {
-        const { data: apiPageKoodisto } = await axios.put<ApiPageKoodisto>(`${API_INTERNAL_PATH}/koodisto`, koodi);
+        const apiKoodisto = mapPageKoodistoToApiPageKoodisto(koodisto);
+        const { data: apiPageKoodisto } = await axios.put<ApiPageKoodisto>(
+            `${API_INTERNAL_PATH}/koodisto`,
+            apiKoodisto
+        );
         if (apiPageKoodisto) {
             const organisaatioNimi = await fetchOrganisaatioNimi(apiPageKoodisto.organisaatioOid);
-            return { ...mapApiPageKoodistoToPageKoodisto(apiPageKoodisto), organisaatioNimi };
+            return { ...mapApiPageKoodistoToPageKoodisto({ api: apiPageKoodisto, lang }), organisaatioNimi };
         } else {
             return undefined;
         }
     });
 };
 
-const mapApiPageKoodistoToPageKoodisto = (api: ApiPageKoodisto): PageKoodisto => {
+const mapApiPageKoodistoToPageKoodisto = ({ api, lang }: { api: ApiPageKoodisto; lang: Kieli }): PageKoodisto => {
     const metadata = [...api.metadata];
     (['FI', 'SV', 'EN'] as Kieli[]).forEach(
         (kieli) => metadata.find((a) => a.kieli === kieli) || api.metadata.push({ ...metadata[0], kieli })
     );
     return {
         ...api,
+        koodistoRyhmaUri: {
+            label: translateMetadata({ metadata: api.koodistoRyhmaMetadata, lang })?.nimi || api.koodistoRyhmaUri,
+            value: api.koodistoRyhmaUri,
+        },
         voimassaAlkuPvm: api.voimassaAlkuPvm && parseApiDate(api.voimassaAlkuPvm),
         voimassaLoppuPvm: api.voimassaLoppuPvm && parseApiDate(api.voimassaLoppuPvm),
     };
 };
-
-export const fetchPageKoodisto = async (koodistoUri: string, versio: number): Promise<PageKoodisto | undefined> => {
+function mapPageKoodistoToApiPageKoodisto(koodisto: PageKoodisto): ApiPageKoodisto {
+    return {
+        ...koodisto,
+        koodistoRyhmaUri: koodisto.koodistoRyhmaUri.value,
+        voimassaAlkuPvm: koodisto.voimassaAlkuPvm && parseUIDate(koodisto.voimassaAlkuPvm),
+        voimassaLoppuPvm: koodisto.voimassaLoppuPvm && parseUIDate(koodisto.voimassaLoppuPvm),
+    };
+}
+export const fetchPageKoodisto = async ({
+    koodistoUri,
+    versio,
+    lang,
+}: {
+    koodistoUri: string;
+    versio: number;
+    lang: Kieli;
+}): Promise<PageKoodisto | undefined> => {
     return errorHandlingWrapper(async () => {
         const { data: apiPageKoodisto } = await axios.get<ApiPageKoodisto>(
             `${API_INTERNAL_PATH}/koodisto/${koodistoUri}/${versio}`
         );
         if (apiPageKoodisto) {
             const organisaatioNimi = await fetchOrganisaatioNimi(apiPageKoodisto.organisaatioOid);
-            return { ...mapApiPageKoodistoToPageKoodisto(apiPageKoodisto), organisaatioNimi };
+            return { ...mapApiPageKoodistoToPageKoodisto({ api: apiPageKoodisto, lang }), organisaatioNimi };
         } else {
             return undefined;
         }

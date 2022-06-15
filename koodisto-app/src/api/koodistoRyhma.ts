@@ -2,6 +2,10 @@ import { KoodistoRyhma, InsertKoodistoRyhma } from '../types';
 import { errorHandlingWrapper } from './errorHandling';
 import axios from 'axios';
 import { API_INTERNAL_PATH } from '../context/constants';
+import { atom, Getter } from 'jotai';
+import { casMeLocaleAtom } from './kayttooikeus';
+
+const urlAtom = atom<string>(`${API_INTERNAL_PATH}/koodistoryhma`);
 
 export const fetchEmptyKoodistoRyhma = async (): Promise<KoodistoRyhma[] | undefined> => {
     return errorHandlingWrapper(async () => {
@@ -40,3 +44,18 @@ export const deleteKoodistoRyhma = async (koodistoRyhmaUri: string): Promise<Koo
         return fetchEmptyKoodistoRyhma();
     });
 };
+
+export const koodistoRyhmaListAtom = atom<Promise<KoodistoRyhma[]>>(async (get: Getter) => {
+    const { data } = await axios.get<KoodistoRyhma[]>(get(urlAtom));
+    return data;
+});
+export const koodistoRyhmaOptionsAtom = atom<{ label: string; value: string }[]>((get: Getter) => {
+    const locale = get(casMeLocaleAtom);
+    const data = get(koodistoRyhmaListAtom);
+    return data.map((a) => {
+        return {
+            label: a.nimi[locale] || a.nimi.fi,
+            value: a.koodistoRyhmaUri,
+        };
+    });
+});

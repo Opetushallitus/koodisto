@@ -12,4 +12,7 @@ export const translateMetadata = ({
 export const parseApiDate = (a: ApiDate): Date => {
     return !!a && moment(a).toDate();
 };
+export const parseUIDate = (a: Date): ApiDate => {
+    return !!a && (moment(a).format('YYYY-MM-DD') as ApiDate);
+};
 export { downloadCsv } from './downloadCsv';

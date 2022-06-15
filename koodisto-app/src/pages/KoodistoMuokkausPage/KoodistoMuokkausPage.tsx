@@ -26,12 +26,15 @@ import {
     FooterRightContainer,
 } from '../../components/Containers';
 import { IconWrapper } from '../../components/IconWapper';
+import { koodistoRyhmaOptionsAtom } from '../../api/koodistoRyhma';
+import { SelectController } from '../../controllers/SelectController';
 
 export const KoodistoMuokkausPage: React.FC = () => {
     const navigate = useNavigate();
     const { formatMessage } = useIntl();
     const { versio, koodistoUri } = useParams();
     const [lang] = useAtom(casMeLangAtom);
+    const [koodistoRyhmaOptions] = useAtom(koodistoRyhmaOptionsAtom);
     const [loading, setLoading] = useState<boolean>(false);
     const versioNumber = versio ? +versio : undefined;
     const {
@@ -51,15 +54,15 @@ export const KoodistoMuokkausPage: React.FC = () => {
         (async () => {
             if (koodistoUri && versioNumber) {
                 setLoading(true);
-                const koodistoData = await fetchPageKoodisto(koodistoUri, versioNumber);
+                const koodistoData = await fetchPageKoodisto({ koodistoUri, versio: versioNumber, lang });
                 reset(koodistoData);
                 setLoading(false);
             }
         })();
-    }, [koodistoUri, reset, versioNumber]);
-    const update = async (props: PageKoodisto) => {
+    }, [koodistoUri, lang, reset, versioNumber]);
+    const update = async (koodisto: PageKoodisto) => {
         setLoading(true);
-        const updated = await updateKoodisto(props);
+        const updated = await updateKoodisto({ koodisto, lang });
         reset(updated);
         setLoading(false);
         updated &&
@@ -98,13 +101,17 @@ export const KoodistoMuokkausPage: React.FC = () => {
                                 defaultMessage={'Koodistoryhmä*'}
                             />
                             <MainContainerRowContent>
-                                <Input
-                                    {...register('koodistoRyhmaUri', {
+                                <SelectController
+                                    control={control}
+                                    validationErrors={errors}
+                                    name={'koodistoRyhmaUri'}
+                                    options={koodistoRyhmaOptions}
+                                    rules={{
                                         required: formatMessage({
-                                            id: 'FI_RYHMA_PAKOLLINEN',
+                                            id: 'RYHMA_PAKOLLINEN',
                                             defaultMessage: 'Valitse koodisto-ryhmä.',
                                         }),
-                                    })}
+                                    }}
                                 />
                             </MainContainerRowContent>
                         </MainContainerRow>
@@ -123,8 +130,14 @@ export const KoodistoMuokkausPage: React.FC = () => {
                             <MainContainerRowContent>
                                 <DatePickerController<PageKoodisto>
                                     name={'voimassaAlkuPvm'}
-                                    form={control}
+                                    control={control}
                                     validationErrors={errors}
+                                    rules={{
+                                        required: formatMessage({
+                                            id: 'ALKUPVM_PAKOLLINEN',
+                                            defaultMessage: 'Valitse aloitus päivämäärä.',
+                                        }),
+                                    }}
                                 />
                             </MainContainerRowContent>
                         </MainContainerRow>
@@ -136,7 +149,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                             <MainContainerRowContent>
                                 <DatePickerController<PageKoodisto>
                                     name={'voimassaLoppuPvm'}
-                                    form={control}
+                                    control={control}
                                     validationErrors={errors}
                                 />
                             </MainContainerRowContent>
