@@ -1,14 +1,10 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useIntl } from 'react-intl';
-import styled from 'styled-components';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import type { ValueType } from 'react-select';
 import type { SelectOption } from '../../types';
-
-const SelectContainer = styled.div`
-    width: 8rem;
-`;
+import { SelectContainer } from '../../components/Containers';
 
 type Props = {
     version: number;

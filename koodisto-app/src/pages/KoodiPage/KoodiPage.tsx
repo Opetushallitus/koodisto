@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import styled from 'styled-components';
 import type { PageKoodi } from '../../types';
 import { fetchPageKoodi } from '../../api/koodisto';
 import { translateMetadata } from '../../utils';
@@ -13,45 +12,12 @@ import { KoodiPageAccordion } from './KoodiPageAccordion';
 import { KoodiInfo } from './KoodiInfo';
 import { CrumbTrail } from './CrumbTrail';
 import { VersionPicker } from './VersionPicker';
-
-const MainContainer = styled.div`
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    box-sizing: border-box;
-    background-color: #ffffff;
-    padding: 0 15rem 0 15rem;
-`;
-const MainHeaderContainer = styled.div`
-    display: inline-flex;
-    flex-direction: row;
-    align-items: baseline;
-    padding: 0 15rem 0 15rem;
-    justify-content: space-between;
-`;
-
-const MainHeaderButtonsContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-
-    > * {
-        :not(:last-child) {
-            margin: 0 0 1rem 0;
-        }
-    }
-`;
-
-const HeadingDivider = styled.div`
-    display: flex;
-    align-items: center;
-
-    > * {
-        &:first-child {
-            margin-right: 3rem;
-        }
-    }
-`;
+import {
+    MainHeaderContainer,
+    HeadingDivider,
+    MainHeaderButtonsContainer,
+    MainContainer,
+} from '../../components/Containers';
 
 const KoodiPresentation: React.FC<PageKoodi> = ({ koodi, koodisto }: PageKoodi) => {
     const [lang] = useAtom(casMeLangAtom);
