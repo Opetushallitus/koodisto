@@ -10,6 +10,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 
 import static org.hamcrest.Matchers.containsString;
@@ -26,6 +29,15 @@ class InternalKoodiResourceTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Test
+    @Description("Test get endpoint")
+    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testGetInternalKoodiPage() throws Exception {
+        this.mockMvc.perform(get("/internal/koodi/get_1/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(readFile("/fixtures/resource/internal/koodi/koodiPage.json")));
+    }
 
     @Test
     @Description("Test get endpoint")
@@ -257,4 +269,7 @@ class InternalKoodiResourceTest {
                 .andExpect(status().isNotFound());
     }
 
+    private String readFile(String fileName) throws Exception {
+        return Files.readString(Paths.get(getClass().getResource(fileName).toURI()), StandardCharsets.UTF_8);
+    }
 }
