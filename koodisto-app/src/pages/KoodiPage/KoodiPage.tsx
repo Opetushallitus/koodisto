@@ -77,7 +77,7 @@ const KoodiPresentation: React.FC<PageKoodi> = ({ koodi, koodisto }: PageKoodi) 
     );
 };
 
-const KoodiContainer: React.FC = () => {
+const KoodiPage: React.FC = () => {
     const { koodiUri, koodiVersio } = useParams();
     const [pageData, setPageData] = useState<PageKoodi | undefined>();
 
@@ -94,4 +94,4 @@ const KoodiContainer: React.FC = () => {
     return pageData ? <KoodiPresentation {...pageData} /> : <Loading />;
 };
 
-export default KoodiContainer;
+export default KoodiPage;
