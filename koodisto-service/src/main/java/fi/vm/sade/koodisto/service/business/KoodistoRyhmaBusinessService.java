@@ -15,6 +15,7 @@ public interface KoodistoRyhmaBusinessService {
     KoodistoRyhma getKoodistoRyhmaById(Long id);
     KoodistoRyhma getKoodistoRyhmaByUri(String koodistoRyhmaUri);
     List<KoodistoRyhma> getEmptyKoodistoRyhma();
+    List<KoodistoRyhma> getKoodistoRyhma();
     void delete(Long id);
     void delete(String uri);
 }

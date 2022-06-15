@@ -96,6 +96,20 @@ class InternalKoodistoRyhmaResourceTest {
                 content().json("[{\"koodistoRyhmaUri\":\"a\"},{\"koodistoRyhmaUri\":\"b\"},{\"koodistoRyhmaUri\":\"c\"}]")
         );
     }
+    @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_READ_UPDATE})
+    void getAllKoodistoRyhma() throws Exception {
+        mockMvc.perform(get(BASE_PATH + "")).andExpectAll(
+                status().isOk(),
+                jsonPath("$.length()").value(4),
+                content().json("[" +
+                        "{\"koodistoRyhmaUri\":\"dummy\"}," +
+                        "{\"koodistoRyhmaUri\":\"a\"}," +
+                        "{\"koodistoRyhmaUri\":\"b\"}," +
+                        "{\"koodistoRyhmaUri\":\"c\"}" +
+                        "]")
+        );
+    }
 
     @Test
     void unAuthenticated() throws Exception {

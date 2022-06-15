@@ -148,6 +148,11 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
     }
 
     @Override
+    public List<KoodistoRyhma> getKoodistoRyhma() {
+        return koodistoRyhmaRepository.findAll();
+    }
+
+    @Override
     public void delete(final Long id) {
         delete(koodistoRyhmaRepository::findById, id);
     }

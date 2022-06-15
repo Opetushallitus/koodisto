@@ -28,6 +28,11 @@ public class InternalKoodistoRyhmaResource {
     private final KoodistoRyhmaBusinessService koodistoRyhmaBusinessService;
     private final KoodistoConversionService conversionService;
 
+    @GetMapping("")
+    public ResponseEntity<List<InternalKoodistoRyhmaDto>> getKoodistoRyhma() {
+        return ResponseEntity.ok(conversionService.convertAll(koodistoRyhmaBusinessService.getKoodistoRyhma(), InternalKoodistoRyhmaDto.class));
+    }
+
     @PostMapping(path = "",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
