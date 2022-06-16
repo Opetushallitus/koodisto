@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.Objects;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,12 +32,20 @@ class InternalKoodiResourceTest {
     private MockMvc mockMvc;
 
     @Test
-    @Description("Test get endpoint")
+    @Description("Test get koodiPage")
     @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testGetInternalKoodiPage() throws Exception {
         this.mockMvc.perform(get("/internal/koodi/get_1/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(readFile("/fixtures/resource/internal/koodi/koodiPage.json")));
+    }
+
+    @Test
+    @Description("Test get koodiPage with invalid version")
+    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testGetInternalKoodiPageBadRequest() throws Exception {
+        this.mockMvc.perform(get("/internal/koodi/get_1/0"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -270,6 +279,6 @@ class InternalKoodiResourceTest {
     }
 
     private String readFile(String fileName) throws Exception {
-        return Files.readString(Paths.get(getClass().getResource(fileName).toURI()), StandardCharsets.UTF_8);
+        return Files.readString(Paths.get(Objects.requireNonNull(getClass().getResource(fileName)).toURI()), StandardCharsets.UTF_8);
     }
 }

@@ -29,6 +29,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @RestController
@@ -45,12 +47,8 @@ public class CodeElementResource {
 
     private static final String GENERIC_ERROR_CODE = "error.codes.generic";
     private static final String KOODISTO_VALIDATION_ERROR_CODE = "error.validation.codeelementversion";
-
-    private final KoodiBusinessService koodiBusinessService;
-
-
     final KoodiChangesService changesService;
-
+    private final KoodiBusinessService koodiBusinessService;
     private final CodeElementResourceConverter codeElementResourceConverter;
     private final KoodiVersioWithKoodistoItemToSimpleKoodiDtoConverter koodiVersioWithKoodistoItemToSimpleKoodiDtoConverter;
     private final KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter;
@@ -72,7 +70,7 @@ public class CodeElementResource {
         return ResponseEntity.ok(koodiVersioWithKoodistoItemToSimpleKoodiDtoConverter.convertAll(codeElements));
     }
 
-    @GetMapping(path = "/{koodiUri:[\\p{Alnum}_-]+}/{koodiVersio:[1-9]\\d*}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/{koodiUri}/{koodiVersio}", produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Extended.class})
     @Transactional(readOnly = true)
     @Operation(
@@ -80,8 +78,8 @@ public class CodeElementResource {
             summary = "sisältää koodiversion koodinsuhteet"
     )
     public ResponseEntity<Object> getCodeElementByUriAndVersion(
-            @Parameter(description = "Koodin URI") @PathVariable final String koodiUri,
-            @Parameter(description = "Koodin versio") @PathVariable final int koodiVersio) {
+            @Parameter(description = "Koodin URI") @PathVariable @NotEmpty final String koodiUri,
+            @Parameter(description = "Koodin versio") @PathVariable @Min(1) final int koodiVersio) {
         return ResponseEntity.ok(koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(koodiBusinessService.getKoodi(koodiUri, koodiVersio)));
     }
 

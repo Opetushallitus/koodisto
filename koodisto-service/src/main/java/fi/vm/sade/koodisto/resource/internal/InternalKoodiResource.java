@@ -27,6 +27,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.Collections;
 import java.util.List;
@@ -49,12 +50,13 @@ public class InternalKoodiResource {
     private final KoodiVersioWithKoodistoItemToKoodiDtoConverter koodiVersioWithKoodistoItemToKoodiDtoConverter;
     private final KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter;
 
-    @GetMapping(path = "/{koodiUri:[\\p{Alnum}_]+}/{koodiVersio:[1-9]\\d*}",
+    @GetMapping(path = "/{koodiUri}/{koodiVersio}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})
-    public @ResponseBody ResponseEntity<InternalKoodiPageDto> getKoodi(
-            @Parameter(description = "Koodin URI") @PathVariable final String koodiUri,
-            @Parameter(description = "Koodin versio") @PathVariable final int koodiVersio
+    public @ResponseBody
+    ResponseEntity<InternalKoodiPageDto> getKoodi(
+            @Parameter(description = "Koodin URI") @PathVariable @NotEmpty final String koodiUri,
+            @Parameter(description = "Koodin versio") @PathVariable @Min(1) final int koodiVersio
     ) {
         KoodiVersioWithKoodistoItem versio = koodiBusinessService.getKoodi(koodiUri, koodiVersio);
         ExtendedKoodiDto koodi = Optional.ofNullable(koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(versio)).orElseThrow(RuntimeException::new);
@@ -66,7 +68,8 @@ public class InternalKoodiResource {
     @GetMapping(path = "/{koodistoUri}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})
-    public @ResponseBody ResponseEntity<List<KoodiDto>> getKoodiListForKoodisto(
+    public @ResponseBody
+    ResponseEntity<List<KoodiDto>> getKoodiListForKoodisto(
             @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri
     ) {
         List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.getKoodisByKoodisto(koodistoUri, true);
