@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class KoodistoVersioToInternalKoodistoListDtoConverter extends
+public class KoodistoVersioToInternalKoodistoListDtoConverter implements
         AbstractFromDomainConverter<KoodistoVersio, InternalKoodistoListDto> {
     private final KoodistoMetadataToKoodistoMetadataDtoConverter koodistoMetadataToKoodistoMetadataDtoConverter;
     private final KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter koodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collections;
 
 @Component("koodistoToKoodistoListTypeConverter")
-public class KoodistoToKoodistoListTypeConverter extends AbstractFromDomainConverter<Koodisto, KoodistoListType> {
+public class KoodistoToKoodistoListTypeConverter implements AbstractFromDomainConverter<Koodisto, KoodistoListType> {
 
     @Override
     public KoodistoListType convert(Koodisto source) {

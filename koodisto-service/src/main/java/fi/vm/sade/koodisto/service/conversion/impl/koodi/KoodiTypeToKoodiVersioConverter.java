@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 @Component
-public class KoodiTypeToKoodiVersioConverter extends AbstractToDomainConverter<KoodiType, KoodiVersio> {
+public class KoodiTypeToKoodiVersioConverter implements AbstractToDomainConverter<KoodiType, KoodiVersio> {
 
     @Override
     public KoodiVersio convert(KoodiType source) {

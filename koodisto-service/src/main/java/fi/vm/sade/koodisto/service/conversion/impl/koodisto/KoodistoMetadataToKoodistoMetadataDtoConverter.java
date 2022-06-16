@@ -6,7 +6,7 @@ import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KoodistoMetadataToKoodistoMetadataDtoConverter extends
+public class KoodistoMetadataToKoodistoMetadataDtoConverter implements
         AbstractFromDomainConverter<KoodistoMetadata, KoodistoMetadataDto> {
 
     @Override

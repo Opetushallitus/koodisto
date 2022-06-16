@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class KoodistoRyhmaToInternalKoodistoRyhmaDto extends AbstractFromDomainConverter<KoodistoRyhma, InternalKoodistoRyhmaDto> {
+public class KoodistoRyhmaToInternalKoodistoRyhmaDto implements AbstractFromDomainConverter<KoodistoRyhma, InternalKoodistoRyhmaDto> {
     @Override
     public InternalKoodistoRyhmaDto convert(KoodistoRyhma source) {
         return InternalKoodistoRyhmaDto.builder()

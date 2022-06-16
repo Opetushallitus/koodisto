@@ -13,7 +13,7 @@ import java.text.MessageFormat;
 import java.util.Optional;
 
 @Component("koodistoVersioToKoodistoTypeConverter")
-public class KoodistoVersioToKoodistoTypeConverter extends AbstractFromDomainConverter<KoodistoVersio, KoodistoType> {
+public class KoodistoVersioToKoodistoTypeConverter implements AbstractFromDomainConverter<KoodistoVersio, KoodistoType> {
 
     private OphProperties ophProperties;
 

@@ -6,7 +6,7 @@ import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import org.springframework.stereotype.Component;
 
 @Component("koodistoVersioToKoodistoVersioListDtoConverter")
-public class KoodistoVersioToKoodistoVersioListDtoConverter extends
+public class KoodistoVersioToKoodistoVersioListDtoConverter implements
         AbstractFromDomainConverter<KoodistoVersio, KoodistoVersioListDto> {
 
     @Override

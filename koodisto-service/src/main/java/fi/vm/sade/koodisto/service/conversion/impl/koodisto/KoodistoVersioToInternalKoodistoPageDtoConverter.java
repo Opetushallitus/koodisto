@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class KoodistoVersioToInternalKoodistoPageDtoConverter extends
+public class KoodistoVersioToInternalKoodistoPageDtoConverter implements
         AbstractFromDomainConverter<KoodistoVersio, InternalKoodistoPageDto> {
 
     private final OphProperties ophProperties;

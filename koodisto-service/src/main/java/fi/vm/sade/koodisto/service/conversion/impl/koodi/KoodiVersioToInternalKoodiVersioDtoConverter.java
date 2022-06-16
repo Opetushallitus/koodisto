@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class KoodiVersioToInternalKoodiVersioDtoConverter extends
+public class KoodiVersioToInternalKoodiVersioDtoConverter implements
         AbstractFromDomainConverter<KoodiVersio, InternalKoodiVersioDto> {
 private final KoodiMetadataToKoodiMetadataDtoConverter koodiMetadataToKoodiMetadataDtoConverter;
     @Override

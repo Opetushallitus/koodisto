@@ -14,7 +14,7 @@ import java.util.Collections;
 
 @Component("koodistoToKoodistoListDtoConverter")
 @RequiredArgsConstructor
-public class KoodistoToKoodistoListDtoConverter extends AbstractFromDomainConverter<Koodisto, KoodistoListDto> {
+public class KoodistoToKoodistoListDtoConverter implements AbstractFromDomainConverter<Koodisto, KoodistoListDto> {
 
     private final OphProperties ophProperties;
 

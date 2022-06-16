@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component("koodistoTypeToKoodistoVersioConverter")
-public class KoodistoTypeToKoodistoVersioConverter extends AbstractToDomainConverter<KoodistoType, KoodistoVersio> {
+public class KoodistoTypeToKoodistoVersioConverter implements AbstractToDomainConverter<KoodistoType, KoodistoVersio> {
 
     @Override
     public KoodistoVersio convert(KoodistoType source) {
