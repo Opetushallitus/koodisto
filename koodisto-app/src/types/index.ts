@@ -113,7 +113,7 @@ export type PageKoodisto = BaseKoodisto & {
     organisaatioNimi?: OrganisaatioNimi;
     lukittu: boolean | null;
     koodistoRyhmaMetadata: Metadata[];
-    paivitysPvm: ApiDate;
+    paivitysPvm: Date;
     paivittajaOid: string;
     tila: string;
     metadata: Metadata[];

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import type { PageKoodi } from '../../types';
-import { InfoFields } from './InfoFields';
+import InfoFields from '../../components/InfoFields';
 import DateRange from '../../components/DateRange';
 import UpdatedAt from '../../components/UpdatedAt';
 

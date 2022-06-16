@@ -7,7 +7,7 @@ import { fetchPageKoodisto } from '../../api/koodisto';
 import { translateMetadata } from '../../utils';
 import { PageKoodisto, SelectOptionType } from '../../types';
 import { Loading } from '../../components/Loading';
-import InfoFields from './InfoFields';
+import { KoodistoInfo } from './KoodistoInfo';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
 import { CSVFunctionModal } from '../../modals/CSVFunctionModal';
 import { useAtom } from 'jotai';
@@ -107,7 +107,7 @@ export const KoodistoPage: React.FC = () => {
                 </MainHeaderButtonsContainer>
             </MainHeaderContainer>
             <MainContainer>
-                <InfoFields koodisto={koodisto} />
+                <KoodistoInfo {...koodisto} />
                 <KoodistoPageAccordion koodisto={koodisto} />
             </MainContainer>
             {uploadCsvVisible && koodistoUri && (

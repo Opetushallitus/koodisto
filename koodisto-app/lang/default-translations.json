@@ -35,24 +35,6 @@
   "KOODISTOPALVELU_OTSIKKO": {
     "defaultMessage": "Koodistopalvelu"
   },
-  "KOODISTOSIVU_AVAIN_KOODISTORYHMA": {
-    "defaultMessage": "Koodistoryhmä"
-  },
-  "KOODISTOSIVU_AVAIN_KUVAUS": {
-    "defaultMessage": "Kuvaus"
-  },
-  "KOODISTOSIVU_AVAIN_ORGANISAATIO": {
-    "defaultMessage": "Organisaatio"
-  },
-  "KOODISTOSIVU_AVAIN_PAIVITETTY": {
-    "defaultMessage": "Päivitetty"
-  },
-  "KOODISTOSIVU_AVAIN_URI_TUNNUS": {
-    "defaultMessage": "URI-tunnus"
-  },
-  "KOODISTOSIVU_AVAIN_VOIMASSA": {
-    "defaultMessage": "Voimassa"
-  },
   "KOODISTOSIVU_MUOKKAA_KOODISTOA_BUTTON": {
     "defaultMessage": "Muokkaa koodistoa"
   },
