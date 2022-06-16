@@ -12,7 +12,10 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToKoodistoDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaToKoodistoRyhmaListDtoConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisVersioSelectionType;
@@ -48,8 +51,10 @@ public class KoodistoResource {
 
     private final KoodiBusinessService koodiBusinessService;
 
-    private final KoodistoConversionService conversionService;
-
+    private final KoodistoRyhmaToKoodistoRyhmaListDtoConverter koodistoRyhmaToKoodistoRyhmaListDtoConverter;
+    private final KoodistoVersioToKoodistoDtoConverter koodistoVersioToKoodistoDtoConverter;
+    private final KoodiVersioWithKoodistoItemToKoodiDtoConverter koodiVersioWithKoodistoItemToKoodiDtoConverter;
+    private final KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter koodiVersioWithKoodistoVersioItemsToKoodiTypeConverter;
 
     @JsonView(JsonViews.Basic.class)
     @GetMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -57,7 +62,7 @@ public class KoodistoResource {
     @Operation(description = "Listaa kaikki koodistoryhmät",
             summary = "Palauttaa kaikki koodistoryhmät ja niiden sisältämät koodistot")
     public List<KoodistoRyhmaListDto> listAllKoodistoRyhmas() {
-        return conversionService.convertAll(koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class);
+        return koodistoRyhmaToKoodistoRyhmaListDtoConverter.convertAll(koodistoBusinessService.listAllKoodistoRyhmas());
     }
 
     @JsonView(JsonViews.Basic.class)
@@ -76,7 +81,7 @@ public class KoodistoResource {
             koodisto = koodistoBusinessService.getKoodistoVersio(koodistoUri, koodistoVersio);
         }
 
-        return conversionService.convert(koodisto, KoodistoDto.class);
+        return koodistoVersioToKoodistoDtoConverter.convert(koodisto);
     }
 
     @JsonView(JsonViews.Basic.class)
@@ -96,7 +101,7 @@ public class KoodistoResource {
             koodis = koodiBusinessService.getKoodisByKoodistoVersio(koodistoUri, koodistoVersio, onlyValidKoodis);
         }
 
-        return conversionService.convertAll(koodis, KoodiDto.class);
+        return koodiVersioWithKoodistoItemToKoodiDtoConverter.convertAll(koodis);
     }
 
     @JsonView(JsonViews.Basic.class)
@@ -115,7 +120,7 @@ public class KoodistoResource {
             koodis = koodiBusinessService.getKoodisByKoodistoVersioWithKoodiArvo(koodistoUri, koodistoVersio, koodiArvo);
         }
 
-        return conversionService.convertAll(koodis, KoodiDto.class);
+        return koodiVersioWithKoodistoItemToKoodiDtoConverter.convertAll(koodis);
     }
 
     @JsonView(JsonViews.Basic.class)
@@ -135,7 +140,7 @@ public class KoodistoResource {
             koodi = koodiBusinessService.getKoodiByKoodistoVersio(koodistoUri, koodistoVersio, koodiUri);
         }
 
-        return conversionService.convert(koodi, KoodiDto.class);
+        return koodiVersioWithKoodistoItemToKoodiDtoConverter.convert(koodi);
     }
 
     @JsonView(JsonViews.Basic.class)
@@ -190,7 +195,7 @@ public class KoodistoResource {
         } else {
             koodis = koodiBusinessService.listByRelation(koodiUri, koodiVersio, isChild, suhteenTyyppi);
         }
-        return conversionService.convertAll(koodis, KoodiDto.class);
+        return koodiVersioWithKoodistoItemToKoodiDtoConverter.convertAll(koodis);
     }
 
     /**
@@ -227,7 +232,7 @@ public class KoodistoResource {
         }
 
         List<KoodiVersioWithKoodistoItem> koodis = koodiBusinessService.searchKoodis(searchCriteria);
-        return conversionService.convertAll(koodis, KoodiDto.class);
+        return koodiVersioWithKoodistoItemToKoodiDtoConverter.convertAll(koodis);
     }
 
     @GetMapping(path = "/{koodistoUri}.properties", produces = MediaType.TEXT_PLAIN_VALUE)
@@ -295,7 +300,7 @@ public class KoodistoResource {
             koodi = koodiBusinessService.createKoodi(koodistoUri, createKoodiData);
         }
         // convert
-        KoodiType koodiType = conversionService.convert(koodi, KoodiType.class);
+        KoodiType koodiType = koodiVersioWithKoodistoVersioItemsToKoodiTypeConverter.convert(koodi);
         // prepare update data
         UpdateKoodiDataType updateKoodiData = new UpdateKoodiDataType();
         KoodistoHelper.copyFields(koodiType, updateKoodiData);
@@ -318,7 +323,7 @@ public class KoodistoResource {
 
         // update koodi
         koodi = koodiBusinessService.updateKoodi(updateKoodiData);
-        return conversionService.convert(koodi, KoodiDto.class);
+        return koodiVersioWithKoodistoItemToKoodiDtoConverter.convert(koodi);
     }
 
     private KoodiMetadataType createKoodiMetadata(String lang, String nimi, String kuvaus) {

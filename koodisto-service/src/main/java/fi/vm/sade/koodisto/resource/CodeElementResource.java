@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
-import fi.vm.sade.koodisto.dto.SimpleKoodiDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
@@ -12,7 +11,9 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToSimpleKoodiDtoConverter;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import fi.vm.sade.koodisto.validator.*;
@@ -47,12 +48,13 @@ public class CodeElementResource {
 
     private final KoodiBusinessService koodiBusinessService;
 
-    private final KoodistoConversionService conversionService;
 
     final KoodiChangesService changesService;
 
-    private final CodeElementResourceConverter converter;
-
+    private final CodeElementResourceConverter codeElementResourceConverter;
+    private final KoodiVersioWithKoodistoItemToSimpleKoodiDtoConverter koodiVersioWithKoodistoItemToSimpleKoodiDtoConverter;
+    private final KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter;
+    private final KoodiVersioWithKoodistoItemToKoodiDtoConverter koodiVersioWithKoodistoItemToKoodiDtoConverter;
     private final CodeElementValidator codesValidator = new CodeElementValidator();
     private final CodeElementRelationListValidator relationValidator = new CodeElementRelationListValidator();
     private final ExtendedCodeElementValidator extendedValidator = new ExtendedCodeElementValidator();
@@ -67,7 +69,7 @@ public class CodeElementResource {
 
         SearchKoodisCriteriaType searchType = KoodiServiceSearchCriteriaBuilder.koodiVersiosByUri(codeElementUri);
         List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.searchKoodis(searchType);
-        return ResponseEntity.ok(conversionService.convertAll(codeElements, SimpleKoodiDto.class));
+        return ResponseEntity.ok(koodiVersioWithKoodistoItemToSimpleKoodiDtoConverter.convertAll(codeElements));
     }
 
     @GetMapping(path = "/{codeElementUri}/{codeElementVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -90,7 +92,7 @@ public class CodeElementResource {
         if (codeElements.isEmpty()) {
             throw new KoodiNotFoundException();
         }
-        return ResponseEntity.ok(conversionService.convert(codeElements.get(0), ExtendedKoodiDto.class));
+        return ResponseEntity.ok(koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(codeElements.get(0)));
     }
 
     @GetMapping(path = "/{codesUri}/{codesVersion}/{codeElementUri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
@@ -105,7 +107,7 @@ public class CodeElementResource {
         ValidatorUtil.checkForGreaterThan(codesVersion, 0, new KoodistoValidationException("error.validation.codesversion"));
 
         KoodiVersioWithKoodistoItem codeElement = koodiBusinessService.getKoodiByKoodistoVersio(codesUri, codesVersion, codeElementUri);
-        return ResponseEntity.ok(conversionService.convert(codeElement, KoodiDto.class));
+        return ResponseEntity.ok(koodiVersioWithKoodistoItemToKoodiDtoConverter.convert(codeElement));
     }
 
     @JsonView({JsonViews.Simple.class})
@@ -124,7 +126,7 @@ public class CodeElementResource {
         } else {
             codeElements = koodiBusinessService.getKoodisByKoodistoVersio(codesUri, codesVersion, false);
         }
-        return ResponseEntity.ok(conversionService.convertAll(codeElements, SimpleKoodiDto.class));
+        return ResponseEntity.ok(koodiVersioWithKoodistoItemToSimpleKoodiDtoConverter.convertAll(codeElements));
     }
 
     @Operation(description = "Palauttaa uusimman koodiversion")
@@ -140,7 +142,7 @@ public class CodeElementResource {
         if (codeElements.isEmpty()) {
             throw new KoodiNotFoundException();
         }
-        return ResponseEntity.ok(conversionService.convert(codeElements.get(0), KoodiDto.class));
+        return ResponseEntity.ok(koodiVersioWithKoodistoItemToKoodiDtoConverter.convert(codeElements.get(0)));
 
     }
 
@@ -189,8 +191,8 @@ public class CodeElementResource {
         codesValidator.validate(codeelementDTO, ValidationType.INSERT);
         // aika huono toteutus
         KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem = koodiBusinessService.createKoodi(codesUri,
-                converter.convertFromDTOToCreateKoodiDataType(codeelementDTO));
-        return ResponseEntity.status(201).body(conversionService.convert(koodiVersioWithKoodistoItem, KoodiDto.class));
+                codeElementResourceConverter.convertFromDTOToCreateKoodiDataType(codeelementDTO));
+        return ResponseEntity.status(201).body(koodiVersioWithKoodistoItemToKoodiDtoConverter.convert(koodiVersioWithKoodistoItem));
 
     }
 
@@ -287,8 +289,8 @@ public class CodeElementResource {
 
         codesValidator.validate(codeElementDTO, ValidationType.UPDATE);
         KoodiVersioWithKoodistoItem koodiVersio =
-                koodiBusinessService.updateKoodi(converter.convertFromDTOToUpdateKoodiDataType(codeElementDTO));
-        return ResponseEntity.status(201).body(conversionService.convert(koodiVersio, KoodiDto.class));
+                koodiBusinessService.updateKoodi(codeElementResourceConverter.convertFromDTOToUpdateKoodiDataType(codeElementDTO));
+        return ResponseEntity.status(201).body(koodiVersioWithKoodistoItemToKoodiDtoConverter.convert(koodiVersio));
 
     }
 

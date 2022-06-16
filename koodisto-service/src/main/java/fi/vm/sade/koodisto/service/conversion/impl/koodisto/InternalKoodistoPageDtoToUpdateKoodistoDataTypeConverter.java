@@ -5,9 +5,11 @@ import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
+@Component
 @RequiredArgsConstructor
 public class InternalKoodistoPageDtoToUpdateKoodistoDataTypeConverter
         implements Converter<InternalKoodistoPageDto, UpdateKoodistoDataType> {

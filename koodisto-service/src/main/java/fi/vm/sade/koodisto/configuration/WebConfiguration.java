@@ -15,4 +15,5 @@ public class WebConfiguration implements WebMvcConfigurer {
         registry.addViewController("/")
                 .setViewName("forward:/actuator/health");
     }
+
 }

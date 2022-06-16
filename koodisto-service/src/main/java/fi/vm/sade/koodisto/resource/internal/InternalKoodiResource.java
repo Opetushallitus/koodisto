@@ -7,9 +7,9 @@ import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.resource.CodeElementResourceConverter;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
-import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -35,9 +35,9 @@ public class InternalKoodiResource {
 
 
     private final KoodiBusinessService koodiBusinessService;
-    private final KoodistoBusinessService koodistoBusinessService;
-    private final KoodistoConversionService conversionService;
     private final CodeElementResourceConverter converter;
+    private final KoodistoVersioToInternalKoodistoPageDtoConverter koodistoVersioToInternalKoodistoPageDtoConverter;
+    private final KoodiVersioWithKoodistoItemToKoodiDtoConverter koodiVersioWithKoodistoItemToKoodiDtoConverter;
 
     @GetMapping(path = "/{koodistoUri}",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,7 +46,7 @@ public class InternalKoodiResource {
             @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri
     ) {
         List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.getKoodisByKoodisto(koodistoUri, true);
-        return ResponseEntity.ok(conversionService.convertAll(result, KoodiDto.class));
+        return ResponseEntity.ok(koodiVersioWithKoodistoItemToKoodiDtoConverter.convertAll(result));
     }
 
     @PostMapping(path = "/{koodistoUri}",
@@ -64,7 +64,7 @@ public class InternalKoodiResource {
                 .map(converter::convertFromDTOToUpdateKoodiDataType)
                 .collect(Collectors.toList());
         KoodistoVersio koodisto = koodiBusinessService.massCreate(koodistoUri, koodiList);
-        return ResponseEntity.ok(conversionService.convert(koodisto, InternalKoodistoPageDto.class));
+        return ResponseEntity.ok(koodistoVersioToInternalKoodistoPageDtoConverter.convert(koodisto));
 
     }
 

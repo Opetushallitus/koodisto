@@ -3,7 +3,9 @@ package fi.vm.sade.koodisto.service.conversion.impl.koodi;
 import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class KoodiMetadataToKoodiMetadataDtoConverter implements
         Converter<KoodiMetadata, KoodiMetadataDto> {
 

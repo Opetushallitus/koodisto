@@ -14,6 +14,7 @@ import fi.vm.sade.koodisto.service.conversion.impl.MetadataToSimpleMetadataConve
 import fi.vm.sade.properties.OphProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Component
 @RequiredArgsConstructor
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
         Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {

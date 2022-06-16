@@ -7,7 +7,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodistoRyhmaMetadataType;
 import org.springframework.stereotype.Component;
 
 @Component("koodistoRyhmaMetadataToKoodistoRyhmaMetadataTypeConverter")
-public class KoodistoRyhmaMetadataToKoodistoRyhmaMetadataTypeConverter extends AbstractFromDomainConverter<KoodistoRyhmaMetadata, KoodistoRyhmaMetadataType> {
+public class KoodistoRyhmaMetadataToKoodistoRyhmaMetadataTypeConverter implements AbstractFromDomainConverter<KoodistoRyhmaMetadata, KoodistoRyhmaMetadataType> {
 
     @Override
     public KoodistoRyhmaMetadataType convert(KoodistoRyhmaMetadata source) {

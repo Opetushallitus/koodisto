@@ -8,7 +8,7 @@ import fi.vm.sade.koodisto.service.types.common.TilaType;
 import org.springframework.stereotype.Component;
 
 @Component("koodistoVersioToKoodistoVersioListTypeConverter")
-public class KoodistoVersioToKoodistoVersioListTypeConverter extends
+public class KoodistoVersioToKoodistoVersioListTypeConverter implements
         AbstractFromDomainConverter<KoodistoVersio, KoodistoVersioListType> {
 
     @Override

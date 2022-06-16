@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-public class KoodistoVersioToKoodistoDtoConverter extends AbstractFromDomainConverter<KoodistoVersio, KoodistoDto> {
+public class KoodistoVersioToKoodistoDtoConverter implements AbstractFromDomainConverter<KoodistoVersio, KoodistoDto> {
     private OphProperties ophProperties;
 
     public KoodistoVersioToKoodistoDtoConverter(OphProperties ophProperties) {

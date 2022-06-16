@@ -5,9 +5,11 @@ import fi.vm.sade.koodisto.dto.internal.InternalNimiDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
+import org.springframework.stereotype.Component;
 
 
-public class KoodistoRyhmaToInternalKoodistoRyhmaDto extends AbstractFromDomainConverter<KoodistoRyhma, InternalKoodistoRyhmaDto> {
+@Component
+public class KoodistoRyhmaToInternalKoodistoRyhmaDto implements AbstractFromDomainConverter<KoodistoRyhma, InternalKoodistoRyhmaDto> {
     @Override
     public InternalKoodistoRyhmaDto convert(KoodistoRyhma source) {
         return InternalKoodistoRyhmaDto.builder()

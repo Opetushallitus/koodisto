@@ -7,7 +7,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import org.springframework.stereotype.Component;
 
 @Component("koodiMetadataToKoodiMetadataTypeConverter")
-public class KoodiMetadataToKoodiMetadataTypeConverter extends
+public class KoodiMetadataToKoodiMetadataTypeConverter implements
         AbstractFromDomainConverter<KoodiMetadata, KoodiMetadataType> {
 
     @Override

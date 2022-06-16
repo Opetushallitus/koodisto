@@ -9,7 +9,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodistoRyhmaListType;
 import org.springframework.stereotype.Component;
 
 @Component("koodistoRyhmaToKoodistoRyhmaListTypeConverter")
-public class KoodistoRyhmaToKoodistoRyhmaListTypeConverter extends AbstractFromDomainConverter<KoodistoRyhma, KoodistoRyhmaListType> {
+public class KoodistoRyhmaToKoodistoRyhmaListTypeConverter implements AbstractFromDomainConverter<KoodistoRyhma, KoodistoRyhmaListType> {
 
     @Override
     public KoodistoRyhmaListType convert(KoodistoRyhma source) {

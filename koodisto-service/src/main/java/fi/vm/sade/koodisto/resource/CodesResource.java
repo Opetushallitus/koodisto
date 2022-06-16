@@ -2,16 +2,16 @@ package fi.vm.sade.koodisto.resource;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.dto.KoodistoListDto;
-import fi.vm.sade.koodisto.dto.KoodistoRyhmaListDto;
-import fi.vm.sade.koodisto.dto.KoodistoVersioListDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.KoodistoChangesService;
-import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoToKoodistoListDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToKoodistoDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToKoodistoVersioListDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaToKoodistoRyhmaListDtoConverter;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import fi.vm.sade.koodisto.validator.CodesValidator;
@@ -43,10 +43,15 @@ public class CodesResource {
     private static final String RELATIONTYPE = "relationtype";
     private static final String GENERIC_ERROR_CODE = "error.codes.generic";
     private final KoodistoBusinessService koodistoBusinessService;
-    private final KoodistoConversionService conversionService;
+    
     private final CodesResourceConverter converter;
     private final KoodistoChangesService changesService;
     private final CodesValidator codesValidator = new CodesValidator();
+
+    private final KoodistoVersioToKoodistoDtoConverter koodistoVersioToKoodistoDtoConverter;
+    private final KoodistoVersioToKoodistoVersioListDtoConverter koodistoVersioToKoodistoVersioListDtoConverter;
+    private final KoodistoRyhmaToKoodistoRyhmaListDtoConverter koodistoRyhmaToKoodistoRyhmaListDtoConverter;
+    private final KoodistoToKoodistoListDtoConverter koodistoToKoodistoListDtoConverter;
 
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @JsonView({JsonViews.Extended.class})
@@ -116,7 +121,7 @@ public class CodesResource {
             List<String> codesGroupUris = new ArrayList<>();
             codesGroupUris.add(codesDTO.getCodesGroupUri());
             KoodistoVersio koodistoVersio = koodistoBusinessService.createKoodisto(codesGroupUris, converter.convertFromDTOToCreateKoodistoDataType(codesDTO));
-            return ResponseEntity.status(201).body(conversionService.convert(koodistoVersio, KoodistoDto.class));
+            return ResponseEntity.status(201).body(koodistoVersioToKoodistoDtoConverter.convert(koodistoVersio));
       }
 
 
@@ -124,7 +129,7 @@ public class CodesResource {
     @JsonView(JsonViews.Simple.class)
     @GetMapping(path = "", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<Object> listAllCodesGroups() {
-            return ResponseEntity.ok(conversionService.convertAll(koodistoBusinessService.listAllKoodistoRyhmas(), KoodistoRyhmaListDto.class));
+            return ResponseEntity.ok(koodistoRyhmaToKoodistoRyhmaListDtoConverter.convertAll(koodistoBusinessService.listAllKoodistoRyhmas()));
       }
 
     @Operation(description = "Palauttaa kaikki koodistoryhmät ja niiden sisältämät koodistot")
@@ -132,7 +137,7 @@ public class CodesResource {
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> listAllCodesInAllCodeGroups() {
              SearchKoodistosCriteriaType searchType = KoodistoServiceSearchCriteriaBuilder.latestCodes();
-            return ResponseEntity.ok(conversionService.convertAll(koodistoBusinessService.searchKoodistos(searchType), KoodistoVersioListDto.class));
+            return ResponseEntity.ok(koodistoVersioToKoodistoVersioListDtoConverter.convertAll(koodistoBusinessService.searchKoodistos(searchType)));
       }
 
     @Operation(description = "Palauttaa koodiston")
@@ -143,7 +148,7 @@ public class CodesResource {
             String[] errors = {KOODISTOURI};
             ValidatorUtil.validateArgs(errors, codesUri);
             Koodisto koodisto = koodistoBusinessService.getKoodistoByKoodistoUri(codesUri);
-            return ResponseEntity.ok(conversionService.convert(koodisto, KoodistoListDto.class));
+            return ResponseEntity.ok(koodistoToKoodistoListDtoConverter.convert(koodisto));
      }
 
     @Operation(description = "Palauttaa tietyn koodistoversion")
@@ -160,7 +165,7 @@ public class CodesResource {
             } else {
                 koodistoVersio = koodistoBusinessService.getKoodistoVersio(codesUri, codesVersion);
             }
-            return ResponseEntity.ok(conversionService.convert(koodistoVersio, KoodistoDto.class));
+            return ResponseEntity.ok(koodistoVersioToKoodistoDtoConverter.convert(koodistoVersio));
 
      }
 

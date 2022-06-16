@@ -8,7 +8,7 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoToKoodistoLi
 import org.springframework.stereotype.Component;
 
 @Component("koodistoRyhmaToKoodistoRyhmaListDtoConverter")
-public class KoodistoRyhmaToKoodistoRyhmaListDtoConverter extends AbstractFromDomainConverter<KoodistoRyhma, KoodistoRyhmaListDto> {
+public class KoodistoRyhmaToKoodistoRyhmaListDtoConverter implements AbstractFromDomainConverter<KoodistoRyhma, KoodistoRyhmaListDto> {
 
     private KoodistoToKoodistoListDtoConverter koodistoToKoodistoListDtoConverter;
 

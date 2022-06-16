@@ -5,12 +5,11 @@ import fi.vm.sade.koodisto.dto.internal.InternalKoodistoListDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.resource.CodeElementResourceConverter;
-import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
-import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.InternalKoodistoPageDtoToUpdateKoodistoDataTypeConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoListDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
@@ -34,11 +33,10 @@ import java.util.List;
 public class InternalKoodistoResource {
 
 
-    private final KoodiBusinessService koodiBusinessService;
     private final KoodistoBusinessService koodistoBusinessService;
-    private final KoodistoConversionService conversionService;
-    private final CodeElementResourceConverter converter;
-
+    private final KoodistoVersioToInternalKoodistoListDtoConverter koodistoVersioToInternalKoodistoListDtoConverter;
+    private final KoodistoVersioToInternalKoodistoPageDtoConverter koodistoVersioToInternalKoodistoPageDtoConverter;
+    private final InternalKoodistoPageDtoToUpdateKoodistoDataTypeConverter internalKoodistoPageDtoToUpdateKoodistoDataTypeConverter;
 
     @GetMapping(path = "",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,7 +44,7 @@ public class InternalKoodistoResource {
     public @ResponseBody ResponseEntity<List<InternalKoodistoListDto>> getKoodistoList() {
         SearchKoodistosCriteriaType criteria = KoodistoServiceSearchCriteriaBuilder.latestCodes();
         List<KoodistoVersio> result = koodistoBusinessService.searchKoodistos(criteria);
-        return ResponseEntity.ok(conversionService.convertAll(result, InternalKoodistoListDto.class));
+        return ResponseEntity.ok(koodistoVersioToInternalKoodistoListDtoConverter.convertAll(result));
     }
 
     @GetMapping(path = "/{koodistoUri}/{koodistoVersio}",
@@ -56,7 +54,7 @@ public class InternalKoodistoResource {
             @PathVariable @NotBlank String koodistoUri,
             @PathVariable @Min(1) Integer koodistoVersio) {
         KoodistoVersio result = koodistoBusinessService.getKoodistoVersio(koodistoUri, koodistoVersio);
-        return ResponseEntity.ok(conversionService.convert(result, InternalKoodistoPageDto.class));
+        return ResponseEntity.ok(koodistoVersioToInternalKoodistoPageDtoConverter.convert(result));
     }
 
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -65,7 +63,7 @@ public class InternalKoodistoResource {
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     public @ResponseBody ResponseEntity<InternalKoodistoPageDto> updateKoodisto(
             @RequestBody @Valid InternalKoodistoPageDto koodisto) {
-        KoodistoVersio result = koodistoBusinessService.updateKoodisto(conversionService.convert(koodisto, UpdateKoodistoDataType.class));
-        return ResponseEntity.ok(conversionService.convert(result, InternalKoodistoPageDto.class));
+        KoodistoVersio result = koodistoBusinessService.updateKoodisto(internalKoodistoPageDtoToUpdateKoodistoDataTypeConverter.convert(koodisto));
+        return ResponseEntity.ok(koodistoVersioToInternalKoodistoPageDtoConverter.convert(result));
     }
 }
