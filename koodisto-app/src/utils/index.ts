@@ -1,6 +1,17 @@
-import { ApiDate, Kieli, Metadata } from '../types';
+import { ApiDate, Kieli, Metadata, Locale } from '../types';
 import moment from 'moment';
 
+export const translateMultiLocaleText = ({
+    multiLocaleText,
+    locale,
+    defaultValue,
+}: {
+    multiLocaleText?: Record<Locale, string>;
+    locale: Locale;
+    defaultValue: string;
+}): string => {
+    return multiLocaleText?.[locale] || defaultValue;
+};
 export const translateMetadata = ({
     metadata = [{ kieli: 'FI', nimi: 'N/A', kuvaus: 'N/A' }],
     lang,

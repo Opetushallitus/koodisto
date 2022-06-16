@@ -72,11 +72,7 @@ export type SelectOptionType = {
     value: string;
     label: string;
 };
-export type OrganisaatioNimi = {
-    fi: string;
-    sv: string;
-    en: string;
-};
+export type OrganisaatioNimi = Record<Locale, string>;
 type BaseKoodisto = {
     koodistoUri: string;
     versio: number;
@@ -108,7 +104,7 @@ export type PageKoodisto = BaseKoodisto & {
     koodistoRyhmaUri: SelectOption;
     resourceUri: string;
     omistaja: string | null;
-    organisaatioOid: string;
+    organisaatioOid: SelectOption;
     organisaatioNimi?: OrganisaatioNimi;
     lukittu: boolean | null;
     koodistoRyhmaMetadata: Metadata[];

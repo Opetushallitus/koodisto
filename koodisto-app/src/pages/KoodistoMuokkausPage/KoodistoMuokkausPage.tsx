@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { fetchPageKoodisto, updateKoodisto } from '../../api/koodisto';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { PageKoodisto } from '../../types';
+import { PageKoodisto, SelectOption } from '../../types';
 import { Loading } from '../../components/Loading';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
@@ -28,13 +28,15 @@ import {
 import { IconWrapper } from '../../components/IconWapper';
 import { koodistoRyhmaOptionsAtom } from '../../api/koodistoRyhma';
 import { SelectController } from '../../controllers/SelectController';
+import { organisaatioSelectAtom } from '../../api/organisaatio';
 
 export const KoodistoMuokkausPage: React.FC = () => {
     const navigate = useNavigate();
     const { formatMessage } = useIntl();
     const { versio, koodistoUri } = useParams();
     const [lang] = useAtom(casMeLangAtom);
-    const [koodistoRyhmaOptions] = useAtom(koodistoRyhmaOptionsAtom);
+    const [koodistoRyhmaOptions] = useAtom<SelectOption[]>(koodistoRyhmaOptionsAtom);
+    const [organisaatioSelect] = useAtom<SelectOption[]>(organisaatioSelectAtom);
     const [loading, setLoading] = useState<boolean>(false);
     const versioNumber = versio ? +versio : undefined;
     const {
@@ -81,6 +83,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                     />
                 ),
             });
+        navigate(`/koodisto/view/${koodistoUri}/${versio}`);
     };
     return (
         (!loading && (
@@ -159,14 +162,18 @@ export const KoodistoMuokkausPage: React.FC = () => {
                                 id={'FIELD_TITLE_organisaatioNimi'}
                                 defaultMessage={'Organisaatio*'}
                             />
-                            <MainContainerRowContent>
-                                <Input
-                                    {...register('organisaatioNimi.fi', {
+                            <MainContainerRowContent width={25}>
+                                <SelectController
+                                    control={control}
+                                    validationErrors={errors}
+                                    name={'organisaatioOid'}
+                                    options={organisaatioSelect}
+                                    rules={{
                                         required: formatMessage({
-                                            id: 'FI_ORGANISAATIO_PAKOLLINEN',
-                                            defaultMessage: 'Valitse organisaatio.',
+                                            id: 'ORGANISAATIO_PAKOLLINEN',
+                                            defaultMessage: 'organisaatio.',
                                         }),
-                                    })}
+                                    }}
                                 />
                             </MainContainerRowContent>
                         </MainContainerRow>
@@ -178,6 +185,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                         </MainContainerRow>
                         <MainContainerRow>
                             <InputArray
+                                large={true}
                                 control={control}
                                 register={register}
                                 getValues={getValues}

@@ -26,9 +26,6 @@
   "FI_NIMI_PAKOLLINEN": {
     "defaultMessage": "Syötä suomenkielinen nimi."
   },
-  "FI_ORGANISAATIO_PAKOLLINEN": {
-    "defaultMessage": "Valitse organisaatio."
-  },
   "KOODISTOPALVELU_OTSIKKO": {
     "defaultMessage": "Koodistopalvelu"
   },
@@ -154,6 +151,9 @@
   },
   "LATAA_CVS_VALITSE_TIEDOSTO_ALUE": {
     "defaultMessage": "Tai raahaa tiedosto tähän"
+  },
+  "ORGANISAATIO_PAKOLLINEN": {
+    "defaultMessage": "organisaatio."
   },
   "RYHMA_PAKOLLINEN": {
     "defaultMessage": "Valitse koodisto-ryhmä."

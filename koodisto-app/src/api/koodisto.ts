@@ -1,8 +1,19 @@
 import { API_BASE_PATH, API_INTERNAL_PATH } from '../context/constants';
 import { atom, Getter } from 'jotai';
-import { ApiDate, Kieli, Koodi, ListKoodisto, Metadata, PageKoodisto, UpsertKoodi, KoodistoRelation } from '../types';
+import {
+    ApiDate,
+    Kieli,
+    Koodi,
+    ListKoodisto,
+    Metadata,
+    PageKoodisto,
+    UpsertKoodi,
+    KoodistoRelation,
+    OrganisaatioNimi,
+    Locale,
+} from '../types';
 import { casMeLangAtom } from './kayttooikeus';
-import { parseApiDate, translateMetadata, parseUIDate } from '../utils';
+import { parseApiDate, translateMetadata, parseUIDate, translateMultiLocaleText } from '../utils';
 import { errorHandlingWrapper } from './errorHandling';
 import axios from 'axios';
 import { fetchOrganisaatioNimi } from './organisaatio';
@@ -104,23 +115,40 @@ export const updateKoodisto = async ({
         );
         if (apiPageKoodisto) {
             const organisaatioNimi = await fetchOrganisaatioNimi(apiPageKoodisto.organisaatioOid);
-            return { ...mapApiPageKoodistoToPageKoodisto({ api: apiPageKoodisto, lang }), organisaatioNimi };
+            return { ...mapApiPageKoodistoToPageKoodisto({ api: apiPageKoodisto, lang, organisaatioNimi }) };
         } else {
             return undefined;
         }
     });
 };
 
-const mapApiPageKoodistoToPageKoodisto = ({ api, lang }: { api: ApiPageKoodisto; lang: Kieli }): PageKoodisto => {
+const mapApiPageKoodistoToPageKoodisto = ({
+    api,
+    lang,
+    organisaatioNimi,
+}: {
+    api: ApiPageKoodisto;
+    lang: Kieli;
+    organisaatioNimi?: OrganisaatioNimi;
+}): PageKoodisto => {
     const metadata = [...api.metadata];
     (['FI', 'SV', 'EN'] as Kieli[]).forEach(
         (kieli) => metadata.find((a) => a.kieli === kieli) || api.metadata.push({ ...metadata[0], kieli })
     );
     return {
         ...api,
+        organisaatioNimi,
         koodistoRyhmaUri: {
             label: translateMetadata({ metadata: api.koodistoRyhmaMetadata, lang })?.nimi || api.koodistoRyhmaUri,
             value: api.koodistoRyhmaUri,
+        },
+        organisaatioOid: {
+            label: `${translateMultiLocaleText({
+                multiLocaleText: organisaatioNimi,
+                locale: lang.toLowerCase() as Locale,
+                defaultValue: api.organisaatioOid,
+            })} ${api.organisaatioOid}`,
+            value: api.organisaatioOid,
         },
         voimassaAlkuPvm: api.voimassaAlkuPvm && parseApiDate(api.voimassaAlkuPvm),
         voimassaLoppuPvm: api.voimassaLoppuPvm && parseApiDate(api.voimassaLoppuPvm),
@@ -130,6 +158,7 @@ function mapPageKoodistoToApiPageKoodisto(koodisto: PageKoodisto): ApiPageKoodis
     return {
         ...koodisto,
         koodistoRyhmaUri: koodisto.koodistoRyhmaUri.value,
+        organisaatioOid: koodisto.organisaatioOid.value,
         voimassaAlkuPvm: koodisto.voimassaAlkuPvm && parseUIDate(koodisto.voimassaAlkuPvm),
         voimassaLoppuPvm: koodisto.voimassaLoppuPvm && parseUIDate(koodisto.voimassaLoppuPvm),
     };
@@ -149,7 +178,7 @@ export const fetchPageKoodisto = async ({
         );
         if (apiPageKoodisto) {
             const organisaatioNimi = await fetchOrganisaatioNimi(apiPageKoodisto.organisaatioOid);
-            return { ...mapApiPageKoodistoToPageKoodisto({ api: apiPageKoodisto, lang }), organisaatioNimi };
+            return { ...mapApiPageKoodistoToPageKoodisto({ api: apiPageKoodisto, lang, organisaatioNimi }) };
         } else {
             return undefined;
         }

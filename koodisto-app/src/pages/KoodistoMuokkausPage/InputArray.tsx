@@ -2,10 +2,10 @@ import { MessageDescriptor, useIntl, FormattedMessage } from 'react-intl';
 import { FieldPath, Control, UseFormRegister, UseFormGetValues, UseFormSetValue, useFieldArray } from 'react-hook-form';
 import { Metadata, PageKoodisto } from '../../types';
 import styled from 'styled-components';
-import Input from '@opetushallitus/virkailija-ui-components/Input';
 import { IconWrapper } from '../../components/IconWapper';
 import * as React from 'react';
-import { MainContainerRowTitle, MainContainerRowContent } from '../../components/Containers';
+import { MainContainerRowTitle } from '../../components/Containers';
+import Textarea from '@opetushallitus/virkailija-ui-components/Textarea';
 
 const Container = styled.div`
     display: flex;
@@ -15,6 +15,16 @@ const Container = styled.div`
 const Column = styled.div`
     margin-right: 1rem;
 `;
+export const Direction = styled.div<{ large?: boolean }>`
+    display: flex;
+    flex-direction: ${(props) => (props.large ? 'column' : 'row')};
+    textarea {
+        resize: none;
+        box-sizing: border-box;
+        width: 60vw;
+        width: ${(props) => (props.large ? 60 : 19)}vw;
+    }
+`;
 export const InputArray = ({
     title,
     fieldPath,
@@ -22,6 +32,7 @@ export const InputArray = ({
     register,
     getValues,
     setValue,
+    large,
 }: {
     title: MessageDescriptor;
     fieldPath: FieldPath<Metadata>;
@@ -29,6 +40,7 @@ export const InputArray = ({
     register: UseFormRegister<PageKoodisto>;
     getValues: UseFormGetValues<PageKoodisto>;
     setValue: UseFormSetValue<PageKoodisto>;
+    large?: boolean;
 }) => {
     const { formatMessage } = useIntl();
     const { fields } = useFieldArray({
@@ -43,11 +55,12 @@ export const InputArray = ({
     return (
         <Container>
             <MainContainerRowTitle {...title} />
-            {fields.map((field, index) => (
-                <Column key={field.id}>
-                    <FormattedMessage id={`FIELD_TITLE_${field.kieli}`} defaultMessage={field.kieli} />
-                    <MainContainerRowContent>
-                        <Input
+            <Direction large={large}>
+                {fields.map((field, index) => (
+                    <Column key={field.id}>
+                        <FormattedMessage id={`FIELD_TITLE_${field.kieli}`} defaultMessage={field.kieli} />{' '}
+                        <Textarea
+                            rows={(large && 5) || 1}
                             {...register(`metadata.${index}.${fieldPath}`)}
                             suffix={
                                 index === 0 && (
@@ -68,9 +81,9 @@ export const InputArray = ({
                                 )
                             }
                         />
-                    </MainContainerRowContent>
-                </Column>
-            ))}
+                    </Column>
+                ))}
+            </Direction>
         </Container>
     );
 };
