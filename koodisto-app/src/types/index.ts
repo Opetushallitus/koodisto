@@ -141,10 +141,10 @@ export type PageKoodi = {
         versio: number;
         versions: number;
         koodiArvo: string;
-        paivitysPvm: ApiDate;
+        paivitysPvm: Date;
         paivittajaOid: string;
-        voimassaAlkuPvm: ApiDate;
-        voimassaLoppuPvm?: ApiDate;
+        voimassaAlkuPvm: Date;
+        voimassaLoppuPvm?: Date;
         tila: Tila;
         metadata: Metadata[];
         withinCodeElements: PageKoodiRelation[];

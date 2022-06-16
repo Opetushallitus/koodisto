@@ -1,10 +1,9 @@
 import React from 'react';
 import { FormattedDate } from 'react-intl';
-import { ApiDate } from '../../types';
 
 type Props = {
-    from: ApiDate;
-    to?: ApiDate;
+    from: Date;
+    to?: Date;
 };
 
 export const DateRange: React.FC<Props> = ({ from, to }: Props) => (

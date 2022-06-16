@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import type { PageKoodi } from '../../types';
-import { fetchPageKoodi } from '../../api/koodisto';
+import { fetchPageKoodi } from '../../api/koodi';
 import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLangAtom } from '../../api/kayttooikeus';

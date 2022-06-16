@@ -1,9 +1,8 @@
 import React from 'react';
 import { FormattedDate } from 'react-intl';
-import { ApiDate } from '../../types';
 
 type Props = {
-    at: ApiDate;
+    at: Date;
     by?: string;
 };
 
