@@ -4,7 +4,9 @@ import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class KoodiMetadataDtoToKoodiMetadataTypeConverter implements
         Converter<KoodiMetadataDto, KoodiMetadataType> {
 

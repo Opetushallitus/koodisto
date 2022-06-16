@@ -4,7 +4,7 @@ import fi.vm.sade.koodisto.dto.internal.InternalInsertKoodistoRyhmaDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
-import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
+import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaToInternalKoodistoRyhmaDto;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,11 +26,11 @@ import java.util.List;
 public class InternalKoodistoRyhmaResource {
 
     private final KoodistoRyhmaBusinessService koodistoRyhmaBusinessService;
-    private final KoodistoConversionService conversionService;
+    private final KoodistoRyhmaToInternalKoodistoRyhmaDto koodistoRyhmaToInternalKoodistoRyhmaDto;
 
     @GetMapping("")
     public ResponseEntity<List<InternalKoodistoRyhmaDto>> getKoodistoRyhma() {
-        return ResponseEntity.ok(conversionService.convertAll(koodistoRyhmaBusinessService.getKoodistoRyhma(), InternalKoodistoRyhmaDto.class));
+        return ResponseEntity.ok(koodistoRyhmaToInternalKoodistoRyhmaDto.convertAll(koodistoRyhmaBusinessService.getKoodistoRyhma()));
     }
 
     @PostMapping(path = "",
@@ -39,14 +39,16 @@ public class InternalKoodistoRyhmaResource {
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     public ResponseEntity<InternalKoodistoRyhmaDto> insertKoodistoRyhma(@RequestBody @Valid InternalInsertKoodistoRyhmaDto insertKoodistoRyhma) {
         KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.createKoodistoRyhma(insertKoodistoRyhma);
-        return ResponseEntity.status(HttpStatus.CREATED).body(conversionService.convert(koodistoRyhma, InternalKoodistoRyhmaDto.class));
+        return ResponseEntity.status(HttpStatus.CREATED).body(koodistoRyhmaToInternalKoodistoRyhmaDto.convert(koodistoRyhma));
     }
+
     @GetMapping(path = "/{koodistoRyhmaUri}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<InternalKoodistoRyhmaDto> getKoodistoRyhma(@PathVariable String koodistoRyhmaUri) {
         KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.getKoodistoRyhmaByUri(koodistoRyhmaUri);
-        return ResponseEntity.ok(conversionService.convert(koodistoRyhma, InternalKoodistoRyhmaDto.class));
+        return ResponseEntity.ok(koodistoRyhmaToInternalKoodistoRyhmaDto.convert(koodistoRyhma));
     }
+
     @PutMapping(path = "/{koodistoRyhmaUri}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,7 +56,7 @@ public class InternalKoodistoRyhmaResource {
     public ResponseEntity<InternalKoodistoRyhmaDto> updateKoodistoRyhma(
             @PathVariable String koodistoRyhmaUri, @RequestBody @Valid InternalInsertKoodistoRyhmaDto insertKoodistoRyhma) {
         KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.updateKoodistoRyhma(koodistoRyhmaUri, insertKoodistoRyhma);
-        return ResponseEntity.ok(conversionService.convert(koodistoRyhma, InternalKoodistoRyhmaDto.class));
+        return ResponseEntity.ok(koodistoRyhmaToInternalKoodistoRyhmaDto.convert(koodistoRyhma));
     }
 
     @DeleteMapping(path = "/{koodistoRyhmaUri}")
@@ -66,7 +68,7 @@ public class InternalKoodistoRyhmaResource {
 
     @GetMapping("/empty/")
     public ResponseEntity<List<InternalKoodistoRyhmaDto>> getEmptyKoodistoRyhma() {
-        return ResponseEntity.ok(conversionService.convertAll(koodistoRyhmaBusinessService.getEmptyKoodistoRyhma(), InternalKoodistoRyhmaDto.class));
+        return ResponseEntity.ok(koodistoRyhmaToInternalKoodistoRyhmaDto.convertAll(koodistoRyhmaBusinessService.getEmptyKoodistoRyhma()));
 
     }
 }

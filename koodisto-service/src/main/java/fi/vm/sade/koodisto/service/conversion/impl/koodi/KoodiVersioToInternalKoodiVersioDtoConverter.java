@@ -4,9 +4,11 @@ import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioDto;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
+@Component
 @RequiredArgsConstructor
 public class KoodiVersioToInternalKoodiVersioDtoConverter extends
         AbstractFromDomainConverter<KoodiVersio, InternalKoodiVersioDto> {

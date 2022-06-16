@@ -4,17 +4,19 @@ import com.google.common.base.Strings;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
+import fi.vm.sade.koodisto.service.conversion.ExtendedConverter;
 import fi.vm.sade.properties.OphProperties;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.text.MessageFormat;
 import java.util.stream.Collectors;
 
+@Component
 @RequiredArgsConstructor
 public class KoodiVersioWithKoodistoItemToKoodiDtoConverter implements
-        Converter<KoodiVersioWithKoodistoItem, KoodiDto> {
+        ExtendedConverter<KoodiVersioWithKoodistoItem, KoodiDto> {
 
     private final OphProperties ophProperties;
     private final KoodiMetadataToKoodiMetadataDtoConverter koodistoVersioToKoodistoVersioListDtoConverter;

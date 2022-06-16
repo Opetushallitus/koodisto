@@ -6,9 +6,11 @@ import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.stream.Collectors;
 
+@Component
 @RequiredArgsConstructor
 public class KoodistoVersioToInternalKoodistoListDtoConverter extends
         AbstractFromDomainConverter<KoodistoVersio, InternalKoodistoListDto> {

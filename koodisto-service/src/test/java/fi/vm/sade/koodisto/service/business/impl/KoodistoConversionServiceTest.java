@@ -3,7 +3,10 @@ package fi.vm.sade.koodisto.service.business.impl;
 import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiMetadataDtoToKoodiMetadataTypeConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiMetadataTypeToKoodiMetadataConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiTypeToKoodiVersioConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.*;
 import fi.vm.sade.koodisto.service.types.common.*;
 import junit.framework.Assert;
 import org.junit.Before;
@@ -35,13 +38,27 @@ public class KoodistoConversionServiceTest {
         weekLater.add(Calendar.DATE, DAYS_IN_WEEK);
     }
 
-    @Autowired()
-    private KoodistoConversionService conversionService;
+    @Autowired
+    KoodiTypeToKoodiVersioConverter koodiTypeToKoodiVersioConverter;
+    @Autowired
+    KoodiMetadataTypeToKoodiMetadataConverter koodiMetadataTypeToKoodiMetadataConverter;
+    @Autowired
+    KoodiMetadataDtoToKoodiMetadataTypeConverter koodiMetadataDtoToKoodiMetadataTypeConverter;
+    @Autowired
+    KoodistoTypeToKoodistoVersioConverter koodistoTypeToKoodistoVersioConverter;
+    @Autowired
+    KoodistoMetadataTypeToKoodistoMetadataConverter koodistoMetadataTypeToKoodistoMetadataConverter;
+    @Autowired
+    KoodistoMetadataToKoodistoMetadataTypeConverter koodistoMetadataToKoodistoMetadataTypeConverter;
+    @Autowired
+    KoodistoVersioToKoodistoTypeConverter koodistoVersioToKoodistoTypeConverter;
+    @Autowired
+    KoodistoVersioToKoodistoDtoConverter koodistoVersioToKoodistoDtoConverter;
 
     @Test
     public void testKoodiTypeToKoodiVersioConverter() {
         KoodiType dto = createKoodiType();
-        KoodiVersio versio = conversionService.convert(dto, KoodiVersio.class);
+        KoodiVersio versio = koodiTypeToKoodiVersioConverter.convert(dto);
         assertNotNull(versio);
         checkConvertedFields(versio, KoodiVersio.class, "id", "version", "luotu", "paivittajaOid");
     }
@@ -49,7 +66,7 @@ public class KoodistoConversionServiceTest {
     @Test
     public void testKoodiMetadataTypeToKoodiMetadataConverter() {
         KoodiMetadataType dto = createKoodiMetatadataDTO();
-        KoodiMetadata metadata = conversionService.convert(dto, KoodiMetadata.class);
+        KoodiMetadata metadata = koodiMetadataTypeToKoodiMetadataConverter.convert(dto);
         assertNotNull(metadata);
         checkConvertedFields(metadata, KoodiMetadata.class, "version", "id");
     }
@@ -57,7 +74,7 @@ public class KoodistoConversionServiceTest {
     @Test
     public void testKoodiMetadataDtoToKoodiMetadataTypeConverter() {
         KoodiMetadataDto meta = createKoodiMetatadata();
-        KoodiMetadataType dto = conversionService.convert(meta, KoodiMetadataType.class);
+        KoodiMetadataType dto = koodiMetadataDtoToKoodiMetadataTypeConverter.convert(meta);
         assertNotNull(dto);
         checkConvertedFields(dto, KoodiMetadataType.class);
     }
@@ -65,7 +82,7 @@ public class KoodistoConversionServiceTest {
     @Test
     public void testKoodistoTypeToKoodistoVersioConverter() {
         KoodistoType dto = createKoodistoType();
-        KoodistoVersio versio = conversionService.convert(dto, KoodistoVersio.class);
+        KoodistoVersio versio = koodistoTypeToKoodistoVersioConverter.convert(dto);
         assertNotNull(versio);
         checkConvertedFields(versio, KoodistoVersio.class, "id", "version", "luotu", "paivittajaOid");
     }
@@ -73,7 +90,7 @@ public class KoodistoConversionServiceTest {
     @Test
     public void testKoodistoMetadataTypeToKoodistoMetadataConverter() {
         KoodistoMetadataType dto = createKoodistoMetadataType();
-        KoodistoMetadata metadata = conversionService.convert(dto, KoodistoMetadata.class);
+        KoodistoMetadata metadata = koodistoMetadataTypeToKoodistoMetadataConverter.convert(dto);
         assertNotNull(metadata);
         checkConvertedFields(metadata, KoodistoMetadata.class, "version", "id");
     }
@@ -81,7 +98,7 @@ public class KoodistoConversionServiceTest {
     @Test
     public void testKoodistoMetadataToKoodistoMetadataTypeConverter() {
         KoodistoMetadata metadata = createKoodistoMetadata();
-        KoodistoMetadataType dto = conversionService.convert(metadata, KoodistoMetadataType.class);
+        KoodistoMetadataType dto = koodistoMetadataToKoodistoMetadataTypeConverter.convert(metadata);
         assertNotNull(dto);
         checkConvertedFields(dto, KoodistoMetadataType.class);
     }
@@ -89,23 +106,23 @@ public class KoodistoConversionServiceTest {
     @Test
     public void testKoodistoVersioToKoodistoTypeConverter() {
         KoodistoVersio versio = createKoodistoVersio(createKoodisto());
-        KoodistoType dto = conversionService.convert(versio, KoodistoType.class);
+        KoodistoType dto = koodistoVersioToKoodistoTypeConverter.convert(versio);
         assertNotNull(dto);
         checkConvertedFields(dto, KoodistoType.class);
     }
-    
+
     @Test
     public void testKoodistoVersioToKoodistoDtoConverter() {
         KoodistoVersio versio = createKoodistoVersio(createKoodisto());
-        KoodistoDto dto = conversionService.convert(versio, KoodistoDto.class);
+        KoodistoDto dto = koodistoVersioToKoodistoDtoConverter.convert(versio);
         assertNotNull(dto);
         checkConvertedFields(dto, KoodistoDto.class);
     }
-    
+
     @Test
     public void testKoodistoVersioToKoodistoDtoConverterWithRelations() {
         KoodistoVersio versio = createKoodistoVersioWithKoodinSuhdes(createKoodisto());
-        KoodistoDto dto = conversionService.convert(versio, KoodistoDto.class);
+        KoodistoDto dto = koodistoVersioToKoodistoDtoConverter.convert(versio);
         assertNotNull(dto);
         assertEquals(1, dto.getIncludesCodes().size());
         assertEquals(2, dto.getLevelsWithCodes().size());
@@ -115,7 +132,8 @@ public class KoodistoConversionServiceTest {
 
     private <T> void checkConvertedFields(T instance, Class<T> clazz, String... ignoredFields) {
         try {
-            methods: for (Method m : clazz.getMethods()) {
+            methods:
+            for (Method m : clazz.getMethods()) {
 
                 // Skip getClass method and methods whose name does not start
                 // with "get". Also skip methods with parameters and methods
@@ -140,7 +158,7 @@ public class KoodistoConversionServiceTest {
                 }
 
                 // Call the method and check it does not return null value
-                Object a = m.invoke(instance, new Object[] {});
+                Object a = m.invoke(instance, new Object[]{});
                 assertNotNull(a);
             }
         } catch (Exception e) {
@@ -233,8 +251,8 @@ public class KoodistoConversionServiceTest {
         versio.setPaivittajaOid("oid");
         return versio;
     }
-    
-    private KoodistoVersio createKoodistoVersioWithKoodinSuhdes(Koodisto koodisto) {        
+
+    private KoodistoVersio createKoodistoVersioWithKoodinSuhdes(Koodisto koodisto) {
         KoodistoVersio versio = createKoodistoVersio(koodisto);
         //Note that relations created here are very atypical and actually invalid, but useful for quick conversion testing purposes. 
         Set<KoodistonSuhde> alaKoodistos = new HashSet<KoodistonSuhde>();
@@ -247,12 +265,12 @@ public class KoodistoConversionServiceTest {
         versio.setYlakoodistos(ylaKoodistos);
         return versio;
     }
-    
+
     private KoodistonSuhde createKoodistonSuhde(KoodistoVersio yla, KoodistoVersio ala, SuhteenTyyppi tyyppi) {
         KoodistonSuhde suhde = new KoodistonSuhde();
         suhde.setAlakoodistoVersio(ala);
         suhde.setSuhteenTyyppi(tyyppi);
-        suhde.setYlakoodistoVersio(yla);        
+        suhde.setYlakoodistoVersio(yla);
         return suhde;
     }
 

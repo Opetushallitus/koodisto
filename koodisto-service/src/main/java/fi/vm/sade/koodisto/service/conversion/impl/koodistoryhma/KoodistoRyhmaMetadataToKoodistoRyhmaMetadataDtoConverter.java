@@ -3,7 +3,9 @@ package fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaMetadataDto;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
+import org.springframework.stereotype.Component;
 
+@Component
 public class KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter extends
         AbstractFromDomainConverter<KoodistoRyhmaMetadata, KoodistoRyhmaMetadataDto> {
 

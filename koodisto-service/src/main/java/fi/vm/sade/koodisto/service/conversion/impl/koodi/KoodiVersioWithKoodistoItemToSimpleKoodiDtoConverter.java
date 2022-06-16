@@ -2,11 +2,12 @@ package fi.vm.sade.koodisto.service.conversion.impl.koodi;
 
 import fi.vm.sade.koodisto.dto.SimpleKoodiDto;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import org.springframework.core.convert.converter.Converter;
+import fi.vm.sade.koodisto.service.conversion.ExtendedConverter;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class KoodiVersioWithKoodistoItemToSimpleKoodiDtoConverter implements
-        Converter<KoodiVersioWithKoodistoItem, SimpleKoodiDto> {
+        ExtendedConverter<KoodiVersioWithKoodistoItem, SimpleKoodiDto> {
 
 
     @Override

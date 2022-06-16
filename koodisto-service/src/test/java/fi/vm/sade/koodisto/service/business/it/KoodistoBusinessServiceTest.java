@@ -8,7 +8,7 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.*;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToKoodistoDtoConverter;
 import fi.vm.sade.koodisto.service.it.DataUtils;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
@@ -54,10 +54,8 @@ public class KoodistoBusinessServiceTest {
 
     @Autowired
     private KoodistonSuhdeRepository suhdeRepository;
-    
     @Autowired
-    private KoodistoConversionService conversionService;
-
+    KoodistoVersioToKoodistoDtoConverter koodistoVersioToKoodistoDtoConverter;
     private static final Long KOODISTON_SUHDE = -6L;
 
     @Test
@@ -208,50 +206,53 @@ public class KoodistoBusinessServiceTest {
     public void willFetchRelationsForOlderVersions() {
         assertEquals(2, koodistoBusinessService.getKoodistoVersio("vaintuoreimmatrelaatiot", 1).getAlakoodistos().size());
     }
-	@Test
+
+    @Test
     public void doesNotSetStartDateToNewDateWhenUpdatingKoodistoVersioThatIsInLuonnosTila() {
         KoodistoVersio kv = koodistoBusinessService.getLatestKoodistoVersio("koodisto15");
         Date startDate = kv.getVoimassaAlkuPvm();
         UpdateKoodistoDataType type = DataUtils.createUpdateKoodistoDataType(kv.getKoodisto().getKoodistoUri(), kv.getKoodisto().getOmistaja(), TilaType.LUONNOS,
-                kv.getKoodisto().getOrganisaatioOid(), startDate, kv.getVoimassaLoppuPvm(), "NewName", kv.getVersio(), kv.getVersion());        
+                kv.getKoodisto().getOrganisaatioOid(), startDate, kv.getVoimassaLoppuPvm(), "NewName", kv.getVersio(), kv.getVersion());
         koodistoBusinessService.updateKoodisto(type);
         assertEquals(startDate, koodistoBusinessService.getLatestKoodistoVersio("koodisto15").getVoimassaAlkuPvm());
     }
 
-	@Test
-	public void testSavingKoodisto() {
-	    String koodistoUri = "koodistonSaveTestiKoodisto0";
-	    int versio = 1;
-	    List<RelationCodes> includesCodes = List.of(new RelationCodes("koodistonSaveTestiKoodisto1", 1, false, new HashMap<>(), new HashMap<>()));
-	    List<RelationCodes> withinCodes = List.of(new RelationCodes("koodistonSaveTestiKoodisto2", 1, false, new HashMap<>(), new HashMap<>()));
-	    List<RelationCodes> levelsWithCodes = List.of(new RelationCodes("koodistonSaveTestiKoodisto3", 1, false, new HashMap<>(), new HashMap<>()));
-	    KoodistoDto codesDTO = createKoodistoDtoForSave(koodistoUri, versio, includesCodes, withinCodes, levelsWithCodes);
+    @Test
+    public void testSavingKoodisto() {
+        String koodistoUri = "koodistonSaveTestiKoodisto0";
+        int versio = 1;
+        List<RelationCodes> includesCodes = List.of(new RelationCodes("koodistonSaveTestiKoodisto1", 1, false, new HashMap<>(), new HashMap<>()));
+        List<RelationCodes> withinCodes = List.of(new RelationCodes("koodistonSaveTestiKoodisto2", 1, false, new HashMap<>(), new HashMap<>()));
+        List<RelationCodes> levelsWithCodes = List.of(new RelationCodes("koodistonSaveTestiKoodisto3", 1, false, new HashMap<>(), new HashMap<>()));
+        KoodistoDto codesDTO = createKoodistoDtoForSave(koodistoUri, versio, includesCodes, withinCodes, levelsWithCodes);
 
-	    KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+        KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
 
-	    assertEquals(2, result.getAlakoodistos().size());
-	    assertEquals(2, result.getYlakoodistos().size());
+        assertEquals(2, result.getAlakoodistos().size());
+        assertEquals(2, result.getYlakoodistos().size());
 
         koodistoBusinessService.saveKoodisto(codesDTO);
         result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
 
-	    assertEquals(2, result.getAlakoodistos().size());
-	    assertEquals(1, result.getYlakoodistos().size());
+        assertEquals(2, result.getAlakoodistos().size());
+        assertEquals(1, result.getYlakoodistos().size());
 
-	    assertEquals(codesDTO.getKoodistoUri(), result.getKoodisto().getKoodistoUri());
-	    assertEquals(versio + 1, result.getVersio().intValue());
-	    assertEquals(Tila.LUONNOS, result.getTila());
-	    KoodistoMetadata expectedMeta = codesDTO.getMetadata().get(0);
-	    assertEquals(expectedMeta.getKieli(), result.getMetadatas().iterator().next().getKieli());
-	    assertEquals(expectedMeta.getNimi(), result.getMetadatas().iterator().next().getNimi());
-	    assertEquals(expectedMeta.getKuvaus(), result.getMetadatas().iterator().next().getKuvaus());
-	}
+        assertEquals(codesDTO.getKoodistoUri(), result.getKoodisto().getKoodistoUri());
+        assertEquals(versio + 1, result.getVersio().intValue());
+        assertEquals(Tila.LUONNOS, result.getTila());
+        KoodistoMetadata expectedMeta = codesDTO.getMetadata().get(0);
+        assertEquals(expectedMeta.getKieli(), result.getMetadatas().iterator().next().getKieli());
+        assertEquals(expectedMeta.getNimi(), result.getMetadatas().iterator().next().getNimi());
+        assertEquals(expectedMeta.getKuvaus(), result.getMetadatas().iterator().next().getKuvaus());
+    }
 
-	@Test
-	public void savesKoodistoWithoutCopyingPassiveRelations() {
-	    String koodistoUri = "passiivisuhdeeikopioidu";
+
+
+    @Test
+    public void savesKoodistoWithoutCopyingPassiveRelations() {
+        String koodistoUri = "passiivisuhdeeikopioidu";
         KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
-        KoodistoDto dto = conversionService.convert(result, KoodistoDto.class);
+        KoodistoDto dto = koodistoVersioToKoodistoDtoConverter.convert(result);
         assertEquals(1, dto.getWithinCodes().size());
         dto.getMetadata().get(0).setNimi("Uusi");
         koodistoBusinessService.saveKoodisto(dto);
@@ -259,19 +260,19 @@ public class KoodistoBusinessServiceTest {
         assertTrue(result.getYlakoodistos().isEmpty());
     }
 
-    @Test(expected=KoodistoTilaException.class)
+    @Test(expected = KoodistoTilaException.class)
     public void doesNotAllowTilaUpdateFromHyvaksyttyToLuonnos() {
         KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio("koodisto12");
-        KoodistoDto dto = conversionService.convert(result, KoodistoDto.class);
+        KoodistoDto dto = koodistoVersioToKoodistoDtoConverter.convert(result);
         dto.setTila(Tila.LUONNOS);
         koodistoBusinessService.saveKoodisto(dto);
     }
 
-	@Test
-	public void setsOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsCreated() throws Exception {
-	    String koodistoUri = "vanhasuhdepassivoidaan";
-	    koodistoBusinessService.createNewVersion(koodistoUri);
-	    assertRelationsArePassive(koodistoBusinessService.getKoodistoVersio("vanhasuhdepassivoidaan", 2), false);
+    @Test
+    public void setsOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsCreated() throws Exception {
+        String koodistoUri = "vanhasuhdepassivoidaan";
+        koodistoBusinessService.createNewVersion(koodistoUri);
+        assertRelationsArePassive(koodistoBusinessService.getKoodistoVersio("vanhasuhdepassivoidaan", 2), false);
         SearchKoodisCriteriaType criteriaType = new SearchKoodisCriteriaType();
         criteriaType.setKoodiArvo("tamansuhdepassivoidaan");
         List<KoodiVersioWithKoodistoItem> koodiVersioWithKoodistoItems = koodiBusinessService.searchKoodis(criteriaType);
@@ -283,14 +284,14 @@ public class KoodistoBusinessServiceTest {
         }
     }
 
-	@Test
-	public void setsLowerOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsCreated() throws Exception {
-	    koodistoBusinessService.createNewVersion(CODES_WITH_RELATIONS);
-	    Set<KoodistonSuhde> relations = koodistoBusinessService.getKoodistoVersio(CODES_WITH_RELATIONS, 1).getYlakoodistos();
-	    assertEquals(2, relations.size());
-	    for (KoodistonSuhde ks : relations) {
-	        assertTrue(ks.isPassive());
-	    }
+    @Test
+    public void setsLowerOldCodesAndCodeElementRelationsToPassiveWhenNewVersionIsCreated() throws Exception {
+        koodistoBusinessService.createNewVersion(CODES_WITH_RELATIONS);
+        Set<KoodistonSuhde> relations = koodistoBusinessService.getKoodistoVersio(CODES_WITH_RELATIONS, 1).getYlakoodistos();
+        assertEquals(2, relations.size());
+        for (KoodistonSuhde ks : relations) {
+            assertTrue(ks.isPassive());
+        }
 
         SearchKoodisCriteriaType criteriaType = new SearchKoodisCriteriaType();
         criteriaType.setKoodiArvo("sisaltyy706ja707");
@@ -298,66 +299,66 @@ public class KoodistoBusinessServiceTest {
         assertEquals(koodiVersioWithKoodistoItems.size(), 1);
         KoodiVersio kv = koodiVersioWithKoodistoItems.get(0).getKoodiVersio();
 
-	    Set<KoodinSuhde> codeRelations = kv.getYlakoodis();
-	    // Passive relations don't follow to the new version (initially 2 relations)
-	    assertEquals(1, codeRelations.size());
-	    for (KoodinSuhde ks : codeRelations) {
+        Set<KoodinSuhde> codeRelations = kv.getYlakoodis();
+        // Passive relations don't follow to the new version (initially 2 relations)
+        assertEquals(1, codeRelations.size());
+        for (KoodinSuhde ks : codeRelations) {
             assertFalse(ks.isPassive());
         }
-	}
+    }
 
     @Test
     public void setsRelationsToPassiveWhenKoodistoIsSetToPassive() throws Exception {
-	    assertRelationsArePassive(givenKoodistoWithRelationsAndTila("vanhasuhdepassivoidaan", TilaType.PASSIIVINEN), false);
+        assertRelationsArePassive(givenKoodistoWithRelationsAndTila("vanhasuhdepassivoidaan", TilaType.PASSIIVINEN), false);
     }
 
-	@Test
-	public void activatesRelationsInPreviousVersion() throws Exception {
-	    koodistoBusinessService.delete("vanhatsuhteetaktivoituupoistossa", 2);
-	    KoodistoVersio latest = koodistoBusinessService.getLatestKoodistoVersio("vanhatsuhteetaktivoituupoistossa");
-	    assertEquals(1, latest.getVersio().intValue());
-	    assertRelationsAreActive(latest);
-	    assertCodeElementRelationsAreActive(koodiBusinessService.getKoodi("wanhasuhdeaktivoituupoistossa").getKoodiVersios().iterator().next());
-	}
+    @Test
+    public void activatesRelationsInPreviousVersion() throws Exception {
+        koodistoBusinessService.delete("vanhatsuhteetaktivoituupoistossa", 2);
+        KoodistoVersio latest = koodistoBusinessService.getLatestKoodistoVersio("vanhatsuhteetaktivoituupoistossa");
+        assertEquals(1, latest.getVersio().intValue());
+        assertRelationsAreActive(latest);
+        assertCodeElementRelationsAreActive(koodiBusinessService.getKoodi("wanhasuhdeaktivoituupoistossa").getKoodiVersios().iterator().next());
+    }
 
-	private void assertCodeElementRelationsAreActive(KoodiVersio koodiVersio) {
-	    assertFalse(koodiVersio.getAlakoodis().isEmpty());
-	    for (KoodinSuhde ks : koodiVersio.getAlakoodis()) {
-	        assertFalse(ks.isPassive());
-	    }
+    private void assertCodeElementRelationsAreActive(KoodiVersio koodiVersio) {
+        assertFalse(koodiVersio.getAlakoodis().isEmpty());
+        for (KoodinSuhde ks : koodiVersio.getAlakoodis()) {
+            assertFalse(ks.isPassive());
+        }
     }
 
     private KoodistoVersio givenKoodistoWithRelationsAndTila(String koodistoUri, TilaType tila) {
-	    UpdateKoodistoDataType dataType = DataUtils.convert(koodistoBusinessService.getLatestKoodistoVersio(koodistoUri));
-	    dataType.setTila(tila);
-	    koodistoBusinessService.updateKoodisto(dataType);
-	    return koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
-	}
-	
-	private void assertRelationsAreActive(KoodistoVersio kv) {
-	    assertFalse(kv.getAlakoodistos().isEmpty());
-        for(KoodistonSuhde ks : kv.getAlakoodistos()) {
-             assertFalse(ks.isPassive());
-         }
+        UpdateKoodistoDataType dataType = DataUtils.convert(koodistoBusinessService.getLatestKoodistoVersio(koodistoUri));
+        dataType.setTila(tila);
+        koodistoBusinessService.updateKoodisto(dataType);
+        return koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+    }
+
+    private void assertRelationsAreActive(KoodistoVersio kv) {
+        assertFalse(kv.getAlakoodistos().isEmpty());
+        for (KoodistonSuhde ks : kv.getAlakoodistos()) {
+            assertFalse(ks.isPassive());
+        }
     }
 
     private void assertRelationsArePassive(KoodistoVersio kv, boolean lowerPassive) {
         assertFalse(kv.getAlakoodistos().isEmpty());
-        for(KoodistonSuhde ks : kv.getAlakoodistos()) {
-             assertRelationIsPassive(lowerPassive, ks);
-         }
+        for (KoodistonSuhde ks : kv.getAlakoodistos()) {
+            assertRelationIsPassive(lowerPassive, ks);
+        }
     }
 
     private void assertRelationIsPassive(boolean lowerPassive, KoodistonSuhde ks) {
         assertTrue(ks.isPassive());
-        assertTrue((!lowerPassive && ks.isYlaKoodistoPassive()) || lowerPassive && ! ks.isYlaKoodistoPassive());
+        assertTrue((!lowerPassive && ks.isYlaKoodistoPassive()) || lowerPassive && !ks.isYlaKoodistoPassive());
         assertTrue((lowerPassive && ks.isAlaKoodistoPassive()) || !lowerPassive && !ks.isAlaKoodistoPassive());
     }
 
     private void assertCodeElementRelationIsPassive(boolean lowerPassive, KoodinSuhde ks) {
         assertTrue(ks.isPassive());
-         assertTrue((!lowerPassive && ks.isYlaKoodiPassive()) || lowerPassive && ! ks.isYlaKoodiPassive());
-         assertTrue((lowerPassive && ks.isAlaKoodiPassive()) || !lowerPassive && !ks.isAlaKoodiPassive());
+        assertTrue((!lowerPassive && ks.isYlaKoodiPassive()) || lowerPassive && !ks.isYlaKoodiPassive());
+        assertTrue((lowerPassive && ks.isAlaKoodiPassive()) || !lowerPassive && !ks.isAlaKoodiPassive());
     }
 
     private KoodistoDto createKoodistoDtoForSave(String koodistoUri, int versio, List<RelationCodes> includesCodes, List<RelationCodes> withinCodes, List<RelationCodes> levelsWithCodes) {
@@ -367,11 +368,11 @@ public class KoodistoBusinessServiceTest {
         d.setVersion(0L);
         d.setKoodistoUri(koodistoUri);
         d.setOrganisaatioOid("1.2.2004.6");
-        
+
         d.setPaivitysPvm(new Date());
         d.setVoimassaAlkuPvm(new Date());
         d.setVoimassaLoppuPvm(new Date());
-        
+
         ArrayList<KoodistoMetadata> metadata = new ArrayList<KoodistoMetadata>();
         KoodistoMetadata md = new KoodistoMetadata();
         md.setKieli(Kieli.FI);
@@ -379,11 +380,11 @@ public class KoodistoBusinessServiceTest {
         md.setNimi("UusiNimi");
         metadata.add(md);
         d.setMetadata(metadata);
-        
+
         d.setIncludesCodes(includesCodes);
         d.setLevelsWithCodes(levelsWithCodes);
         d.setWithinCodes(withinCodes);
-        
+
         return d;
     }
 }

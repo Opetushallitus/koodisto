@@ -10,12 +10,14 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaMe
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.properties.OphProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Component
 @RequiredArgsConstructor
 public class KoodistoVersioToInternalKoodistoPageDtoConverter extends
         AbstractFromDomainConverter<KoodistoVersio, InternalKoodistoPageDto> {

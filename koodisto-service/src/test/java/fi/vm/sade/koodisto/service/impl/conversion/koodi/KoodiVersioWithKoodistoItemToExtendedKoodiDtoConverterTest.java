@@ -7,7 +7,7 @@ import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
-import fi.vm.sade.koodisto.service.conversion.KoodistoConversionService;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,16 +29,16 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
 
     @Mock
     private KoodiVersioRepository koodiVersioRepository;
-    
+
     @Autowired
-    private KoodistoConversionService conversionService;
+    KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter;
 
     private Integer koodiVersio = 1;
 
     @Test
     public void convertsKoodinSuhdeToRelationCodeElement() {
         KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
-        ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
+        ExtendedKoodiDto dto = koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(kv);
         assertEquals(1, dto.getIncludesCodeElements().size());
         assertEquals(2, dto.getLevelsWithCodeElements().size());
         assertEquals(1, dto.getWithinCodeElements().size());
@@ -47,7 +47,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
     @Test
     public void storesCodeElementNameLanguageDescriptionAndValueToRelationCodeElement() {
         KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
-        ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
+        ExtendedKoodiDto dto = koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(kv);
         RelationCodeElement rel = dto.getIncludesCodeElements().get(0);
         SimpleMetadataDto data = rel.getRelationMetadata().get(0);
         KoodiMetadata givenKoodiMetadata = givenKoodiMetadata();
@@ -60,7 +60,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
     @Test
     public void storesParentCodesMetadataToRelationCodeElement() {
         KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
-        ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
+        ExtendedKoodiDto dto = koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(kv);
         assertEquals(Kieli.EN, dto.getIncludesCodeElements().get(0).getParentMetadata().get(0).kieli);
     }
 
@@ -72,7 +72,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
         dummyResponse.put("penaali", 1);
         when(koodiVersioRepository.getLatestVersionNumbersForUris("penaali")).thenReturn(dummyResponse);
         when(koodiVersioRepository.isLatestKoodiVersio("kynä", 1)).thenReturn(true);
-        ExtendedKoodiDto dto = conversionService.convert(new KoodiVersioWithKoodistoItem(child, new KoodistoItem()), ExtendedKoodiDto.class);
+        ExtendedKoodiDto dto = koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(new KoodiVersioWithKoodistoItem(child, new KoodistoItem()));
         assertEquals(1, dto.getWithinCodeElements().size());
     }
 
