@@ -60,7 +60,7 @@ public class InternalKoodistoResource {
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})
-    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
+    @PreAuthorize("hasRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     public @ResponseBody ResponseEntity<InternalKoodistoPageDto> updateKoodisto(
             @RequestBody @Valid UpdateKoodistoDataType koodisto) {
         KoodistoVersio result = koodistoBusinessService.updateKoodisto(koodisto);
@@ -69,7 +69,7 @@ public class InternalKoodistoResource {
 
     @PostMapping(path = "/{koodistoRyhmaUri}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
+    @PreAuthorize("hasRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     public @ResponseBody ResponseEntity<InternalKoodistoPageDto> createKoodisto(
             @PathVariable @NotBlank String koodistoRyhmaUri,
             @RequestBody @Valid CreateKoodistoDataType koodisto) {
