@@ -431,7 +431,7 @@ class CodeElementResourceTest {
         String codeElementUriToAddWithoutCodesRelation = "sisaltyysuhde4kanssa1";
         String relationType = "RINNASTEINEN";
 
-        addRelation(codeElementUri, codeElementUriToAdd, "doenostexist").andExpect(status().isInternalServerError()).andExpect(content().string("error.codes.generic"));
+        addRelation(codeElementUri, codeElementUriToAdd, "doenostexist").andExpect(status().isBadRequest()).andExpect(content().string("error.validation.relationtype"));
         addRelation(codeElementUri, codeElementUri, relationType).andExpect(status().isBadRequest()).andExpect(content().string("error.codeelement.relation.to.self"));
         addRelation("doenotexist", codeElementUriToAdd, relationType).andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
         addRelation(codeElementUri, "doesnotexist", relationType).andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
@@ -444,7 +444,7 @@ class CodeElementResourceTest {
         codeElementUriToAddWithoutCodesRelation = "sisaltyysuhde4kanssa1";
         relationType = "SISALTYY";
 
-        addRelation(codeElementUri, codeElementUriToAdd, "doenostexist").andExpect(status().isInternalServerError()).andExpect(content().string("error.codes.generic"));
+        addRelation(codeElementUri, codeElementUriToAdd, "doenostexist").andExpect(status().isBadRequest()).andExpect(content().string("error.validation.relationtype"));
         addRelation(codeElementUri, codeElementUri, relationType).andExpect(status().isBadRequest()).andExpect(content().string("error.codeelement.relation.to.self"));
         addRelation("doenotexist", codeElementUriToAdd, relationType).andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
         addRelation(codeElementUri, "doesnotexist", relationType).andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
@@ -514,7 +514,7 @@ class CodeElementResourceTest {
         String codeElementUri = "sisaltaakoodisto1koodit";
         String codeElementUriToRemove = "rinnastuu4kanssa1";
         String relationType = "RINNASTEINEN";
-        removeRelation(codeElementUri, codeElementUriToRemove, "doenostexist").andExpect(status().isInternalServerError());
+        removeRelation(codeElementUri, codeElementUriToRemove, "doenostexist").andExpect(status().isBadRequest());
 
         removeRelation("doenotexist", codeElementUriToRemove, relationType).andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
         removeRelation(codeElementUri, "doesnotexist", relationType).andExpect(status().isNotFound()).andExpect(content().string("error.codeelement.relation.list.empty"));

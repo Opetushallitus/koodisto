@@ -56,8 +56,8 @@ public class CodesResource {
     public ResponseEntity<Object> addRelation(
             @Parameter(description = "Koodiston URI") @PathVariable @NotEmpty final String codesUri,
             @Parameter(description = "Linkitettävän koodiston URI") @PathVariable @NotEmpty final String codesUriToAdd,
-            @Parameter(description = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathVariable final String relationType) {
-        koodistoBusinessService.addRelation(codesUri, codesUriToAdd, SuhteenTyyppi.valueOf(relationType));
+            @Parameter(description = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathVariable final SuhteenTyyppi relationType) {
+        koodistoBusinessService.addRelation(codesUri, codesUriToAdd, relationType);
         return ResponseEntity.ok(null);
     }
 
@@ -68,8 +68,8 @@ public class CodesResource {
     public ResponseEntity<Object> removeRelation(
             @Parameter(description = "Koodiston URI") @PathVariable @NotEmpty final String codesUri,
             @Parameter(description = "Irrotettavan koodiston URI") @PathVariable @NotEmpty final String codesUriToRemove,
-            @Parameter(description = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathVariable @NotEmpty final String relationType) {
-        koodistoBusinessService.removeRelation(codesUri, List.of(codesUriToRemove), SuhteenTyyppi.valueOf(relationType));
+            @Parameter(description = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathVariable final SuhteenTyyppi relationType) {
+        koodistoBusinessService.removeRelation(codesUri, List.of(codesUriToRemove), relationType);
         return ResponseEntity.ok(null);
     }
 
