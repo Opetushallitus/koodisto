@@ -8,6 +8,7 @@ import org.hibernate.annotations.BatchSize;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -59,6 +60,9 @@ public class Koodisto extends BaseEntity {
 
     public void addKoodistoRyhma(KoodistoRyhma joukko) {
         this.koodistoRyhmas.add(joukko);
+    }
+    public void addAllKoodistoRyhma(Collection<KoodistoRyhma> joukko) {
+        this.koodistoRyhmas.addAll(joukko);
     }
 
     public void removeKoodistoRyhma(KoodistoRyhma joukko) {

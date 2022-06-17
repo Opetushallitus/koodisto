@@ -103,6 +103,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         authorizer.checkOrganisationAccess(createKoodistoData.getOrganisaatioOid(), ROLE_APP_KOODISTO_CRUD);
 
         Koodisto koodisto = new Koodisto();
+        koodisto.addAllKoodistoRyhma(koodistoRyhmas);
         EntityUtils.copyFields(createKoodistoData, koodisto);
         koodisto.setKoodistoUri(uriTransliterator.generateKoodistoUriByMetadata(createKoodistoData.getMetadataList()));
         koodisto = koodistoRepository.save(koodisto);

@@ -75,7 +75,7 @@ public class InternalKoodistoPageDto {
     private Set<@Valid KoodistoMetadataDto> metadata;
 
     @JsonView({JsonViews.Internal.class})
-    private List<Integer> koodiVersio;
+    private List<Integer> koodistoVersio;
 
     @JsonView({JsonViews.Internal.class})
     private List<InternalKoodistoSuhdeDto> sisaltyyKoodistoihin;

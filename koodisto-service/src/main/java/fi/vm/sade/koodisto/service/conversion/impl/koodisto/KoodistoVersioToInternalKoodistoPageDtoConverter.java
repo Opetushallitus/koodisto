@@ -56,7 +56,7 @@ public class KoodistoVersioToInternalKoodistoPageDtoConverter implements
                         .map(koodistoMetadataToKoodistoMetadataDtoConverter::convert)
                         .sorted(((a, b) -> a != null && a.equals(b) ? 0 : languageSortOrder.indexOf(a.getKieli()) < languageSortOrder.indexOf(b.getKieli()) ? -1 : 1))
                         .collect(Collectors.toCollection(LinkedHashSet::new)))
-                .koodiVersio(source.getKoodisto().getKoodistoVersios().stream()
+                .koodistoVersio(source.getKoodisto().getKoodistoVersios().stream()
                         .map(KoodistoVersio::getVersio)
                         .collect(Collectors.toList()))
                 .rinnastuuKoodistoihin(levelsWithCodes)
