@@ -17,6 +17,7 @@ import { parseApiDate, translateMetadata, parseUIDate, translateMultiLocaleText 
 import { errorHandlingWrapper } from './errorHandling';
 import axios from 'axios';
 import { fetchOrganisaatioNimi } from './organisaatio';
+import type { MapToApiObject, BaseKoodisto } from '../types';
 
 const urlAtom = atom<string>(`${API_INTERNAL_PATH}/koodisto`);
 
@@ -26,13 +27,9 @@ type ApiRyhmaMetadata = {
     kieli: Kieli;
     nimi: string;
 };
-type ApiBaseKoodisto = {
-    koodistoUri: string;
-    versio: number;
-    voimassaAlkuPvm: ApiDate;
-    voimassaLoppuPvm?: ApiDate;
-    metadata: Metadata[];
-};
+
+type ApiBaseKoodisto = MapToApiObject<BaseKoodisto>;
+
 export type ApiPageKoodisto = ApiBaseKoodisto & {
     koodistoRyhmaUri: string;
     resourceUri: string;
@@ -48,8 +45,10 @@ export type ApiPageKoodisto = ApiBaseKoodisto & {
     sisaltaaKoodistot: KoodistoRelation[];
     rinnastuuKoodistoihin: KoodistoRelation[];
     koodiList: Koodi[];
+    metadata: Metadata[];
 };
 type ApiListKoodisto = ApiBaseKoodisto & {
+    metadata: Metadata[];
     koodistoRyhmaMetadata: ApiRyhmaMetadata[];
     koodiCount: number;
 };

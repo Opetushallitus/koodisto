@@ -1,15 +1,9 @@
-import type { UpsertKoodi, PageKoodi, ApiDate } from '../types';
+import type { UpsertKoodi, PageKoodi, MapToApiObject } from '../types';
 import { errorHandlingWrapper } from './errorHandling';
 import axios from 'axios';
 import { API_INTERNAL_PATH } from '../context/constants';
 import { ApiPageKoodisto } from './koodisto';
 import { parseApiDate } from '../utils';
-
-type MapDateToApiDate<PropType> = PropType extends Date ? ApiDate : PropType;
-
-type MapToApiObject<T> = {
-    [PropertyKey in keyof T]: MapDateToApiDate<T[PropertyKey]>;
-};
 
 type ApiPageKoodi = {
     koodi: MapToApiObject<PageKoodi['koodi']>;

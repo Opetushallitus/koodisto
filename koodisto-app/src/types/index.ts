@@ -7,6 +7,12 @@ export type Locale = Lowercase<Kieli>;
 export type ApiDate = `${number}${number}${number}${number}-${number}${number}-${number}${number}`;
 type Tila = 'PASSIIVINEN' | 'LUONNOS' | 'HYVAKSYTTY';
 
+type MapDateToApiDate<PropType> = PropType extends Date ? ApiDate : PropType;
+
+export type MapToApiObject<T> = {
+    [PropertyKey in keyof T]: MapDateToApiDate<T[PropertyKey]>;
+};
+
 export type KoodiMetadata = Metadata & {
     lyhytnimi?: string;
 };
@@ -74,7 +80,7 @@ export type SelectOptionType = {
     label: string;
 };
 export type OrganisaatioNimi = Record<Locale, string>;
-type BaseKoodisto = {
+export type BaseKoodisto = {
     koodistoUri: string;
     versio: number;
     voimassaAlkuPvm: Date;
