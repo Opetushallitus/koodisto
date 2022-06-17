@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.validator;
 
-import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.model.constraint.exception.KoodistoValidatorRuntimeException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;

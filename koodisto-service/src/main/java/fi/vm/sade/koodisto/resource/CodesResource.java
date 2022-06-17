@@ -28,6 +28,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,9 +38,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CodesResource {
 
-    private static final String KOODISTOURI = "codesuri";
-    private static final String KOODISTOVERSIO = "codesversion";
-    private static final String RELATIONTYPE = "relationtype";
     private final KoodistoBusinessService koodistoBusinessService;
 
     private final CodesResourceConverter converter;
@@ -56,13 +54,9 @@ public class CodesResource {
     @PostMapping(path = "/addrelation/{codesUri}/{codesUriToAdd}/{relationType}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Lisää relaatio koodistojen välille")
     public ResponseEntity<Object> addRelation(
-            @Parameter(description = "Koodiston URI") @PathVariable final String codesUri,
-            @Parameter(description = "Linkitettävän koodiston URI") @PathVariable final String codesUriToAdd,
+            @Parameter(description = "Koodiston URI") @PathVariable @NotEmpty final String codesUri,
+            @Parameter(description = "Linkitettävän koodiston URI") @PathVariable @NotEmpty final String codesUriToAdd,
             @Parameter(description = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathVariable final String relationType) {
-
-        String[] errors = {KOODISTOURI, "codesuritoadd", RELATIONTYPE};
-        ValidatorUtil.validateArgs(errors, codesUri, codesUriToAdd, relationType);
-
         koodistoBusinessService.addRelation(codesUri, codesUriToAdd, SuhteenTyyppi.valueOf(relationType));
         return ResponseEntity.ok(null);
     }
@@ -72,12 +66,9 @@ public class CodesResource {
     @PostMapping(path = "/removerelation/{codesUri}/{codesUriToRemove}/{relationType}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Poistaa relaatio koodistojen väliltä")
     public ResponseEntity<Object> removeRelation(
-            @Parameter(description = "Koodiston URI") @PathVariable final String codesUri,
-            @Parameter(description = "Irrotettavan koodiston URI") @PathVariable final String codesUriToRemove,
-            @Parameter(description = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathVariable final String relationType) {
-
-        String[] errors = {KOODISTOURI, "codesuritoremove", RELATIONTYPE};
-        ValidatorUtil.validateArgs(errors, codesUri, codesUriToRemove, relationType);
+            @Parameter(description = "Koodiston URI") @PathVariable @NotEmpty final String codesUri,
+            @Parameter(description = "Irrotettavan koodiston URI") @PathVariable @NotEmpty final String codesUriToRemove,
+            @Parameter(description = "Relaation tyyppi (SISALTYY, RINNASTEINEN)") @PathVariable @NotEmpty final String relationType) {
         koodistoBusinessService.removeRelation(codesUri, List.of(codesUriToRemove), SuhteenTyyppi.valueOf(relationType));
         return ResponseEntity.ok(null);
     }
@@ -139,9 +130,7 @@ public class CodesResource {
     @JsonView({JsonViews.Basic.class})
     @GetMapping(path = "/{codesUri}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getCodesByCodesUri(
-            @Parameter(description = "Koodiston URI") @PathVariable final String codesUri) {
-        String[] errors = {KOODISTOURI};
-        ValidatorUtil.validateArgs(errors, codesUri);
+            @Parameter(description = "Koodiston URI") @PathVariable @NotEmpty final String codesUri) {
         Koodisto koodisto = koodistoBusinessService.getKoodistoByKoodistoUri(codesUri);
         return ResponseEntity.ok(koodistoToKoodistoListDtoConverter.convert(koodisto));
     }
@@ -150,10 +139,8 @@ public class CodesResource {
     @JsonView({JsonViews.Extended.class})
     @GetMapping(path = "/{codesUri}/{codesVersion}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getCodesByCodesUriAndVersion(
-            @Parameter(description = "Koodiston URI") @PathVariable final String codesUri,
+            @Parameter(description = "Koodiston URI") @PathVariable @NotEmpty final String codesUri,
             @Parameter(description = "Koodiston Versio") @PathVariable @Min(0) final int codesVersion) {
-        String[] errors = {KOODISTOURI, KOODISTOVERSIO};
-        ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
         KoodistoVersio koodistoVersio;
         if (codesVersion == 0) {
             koodistoVersio = koodistoBusinessService.getLatestKoodistoVersio(codesUri);
@@ -199,10 +186,8 @@ public class CodesResource {
     @JsonView({JsonViews.Simple.class})
     @PostMapping(path = "/delete/{codesUri}/{codesVersion}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> delete(
-            @Parameter(description = "Koodiston URI") @PathVariable final String codesUri,
+            @Parameter(description = "Koodiston URI") @PathVariable @NotEmpty final String codesUri,
             @Parameter(description = "Koodiston Versio") @PathVariable @Min(1) final int codesVersion) {
-        String[] errors = {KOODISTOURI, KOODISTOVERSIO};
-        ValidatorUtil.validateArgs(errors, codesUri, codesVersion);
         koodistoBusinessService.delete(codesUri, codesVersion);
         return ResponseEntity.status(202).body(null);
     }

@@ -9,7 +9,6 @@ import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoRyhmaToKoodistoRyhmaDtoConverter;
 import fi.vm.sade.koodisto.validator.CodesGroupValidator;
 import fi.vm.sade.koodisto.validator.ValidationType;
-import fi.vm.sade.koodisto.validator.ValidatorUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -18,15 +17,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Validated
 @RestController
 @RequestMapping({"/rest/codesgroup"})
 @RequiredArgsConstructor
 public class CodesGroupResource {
     protected static final Logger logger = LoggerFactory.getLogger(CodesGroupResource.class);
-
-    private static final String GENERIC_ERROR_CODE = "error.codes.generic";
 
     private final KoodistoRyhmaBusinessService koodistoRyhmaBusinessService;
 
@@ -40,9 +39,7 @@ public class CodesGroupResource {
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Palauttaa koodistoryhmän")
     public ResponseEntity<Object> getCodesByCodesUri(
-            @Parameter(description = "Koodistoryhman id") @PathVariable("id") Long id) {
-        String[] errors = {"id"};
-        ValidatorUtil.validateArgs(errors, id);
+            @Parameter(description = "Koodistoryhman id") @PathVariable("id") final long id) {
         KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.getKoodistoRyhmaById(id);
         return ResponseEntity.ok(koodistoRyhmaToKoodistoRyhmaDtoConverter.convert(koodistoRyhma));
     }
@@ -68,7 +65,6 @@ public class CodesGroupResource {
         codesGroupDTO.setKoodistoRyhmaUri(uriTransliterator.generateKoodistoGroupUriByMetadata(codesGroupDTO.getKoodistoRyhmaMetadatas()));
         KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.createKoodistoRyhma(codesGroupDTO);
         return ResponseEntity.status(201).body(koodistoRyhmaToKoodistoRyhmaDtoConverter.convert(koodistoRyhma));
-
     }
 
     @JsonView({JsonViews.Simple.class})
@@ -76,11 +72,8 @@ public class CodesGroupResource {
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @Operation(description = "Poistaa koodistoryhmän")
     public ResponseEntity<Object> delete(
-            @Parameter(description = "Koodistoryhmän id") @PathVariable Long id) {
-        String[] errors = {"id"};
-        ValidatorUtil.validateArgs(errors, id);
+            @Parameter(description = "Koodistoryhmän id") @PathVariable final long id) {
         koodistoRyhmaBusinessService.delete(id);
         return ResponseEntity.accepted().build();
-
     }
 }

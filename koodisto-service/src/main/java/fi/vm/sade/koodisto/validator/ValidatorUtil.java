@@ -36,18 +36,6 @@ public class ValidatorUtil {
         }
     }
 
-    public static void validateArgs(String[] keys, Object... values) {
-        int i = 0;
-        for (Object object : values) {
-            KoodistoValidationException toThrow = new KoodistoValidationException("error.validation." + keys[i]);
-            checkForNull(object, toThrow);
-            if (object.getClass().equals(String.class)) {
-                checkForBlank((String) object, toThrow);
-            }
-            i++;
-        }
-    }
-
     public static void checkBeginDateBeforeEndDate(Date start, Date end, RuntimeException toThrow) {
         if (start != null && end != null && end.before(start)) {
             logger.warn("Failure during date validation: {}", toThrow.getMessage());
