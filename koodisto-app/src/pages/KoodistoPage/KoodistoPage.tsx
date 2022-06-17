@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { useNavigate, useParams } from 'react-router-dom';
-import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { fetchPageKoodisto } from '../../api/koodisto';
 import { translateMetadata } from '../../utils';
-import { PageKoodisto, SelectOptionType } from '../../types';
+import { PageKoodisto } from '../../types';
 import { Loading } from '../../components/Loading';
 import { KoodistoInfo } from './KoodistoInfo';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
@@ -15,31 +14,20 @@ import { casMeLangAtom } from '../../api/kayttooikeus';
 import {
     MainHeaderContainer,
     HeadingDivider,
-    SelectContainer,
     MainHeaderButtonsContainer,
     MainContainer,
 } from '../../components/Containers';
 import { KoodistoPathContainer } from '../../components/KoodistoPathContainer';
+import VersionPicker from '../../components/VersionPicker';
 
 export const KoodistoPage: React.FC = () => {
     const { versio, koodistoUri } = useParams();
     const versioNumber = versio ? +versio : undefined;
     const navigate = useNavigate();
-    const { formatMessage } = useIntl();
     const [lang] = useAtom(casMeLangAtom);
     const [koodisto, setKoodisto] = useState<PageKoodisto | undefined>();
     const [uploadCsvVisible, setUploadCsvVisible] = useState<boolean>(false);
 
-    const incomingVersioOption: SelectOptionType = {
-        label: formatMessage(
-            {
-                id: 'KOODISTOSIVU_VERSIO_DROPDOWN_LABEL',
-                defaultMessage: 'Versio {versio}',
-            },
-            { versio: versio || '' }
-        ),
-        value: versio || '',
-    };
     useEffect(() => {
         (async () => {
             if (koodistoUri && versioNumber) {
@@ -53,39 +41,14 @@ export const KoodistoPage: React.FC = () => {
         return <Loading />;
     }
     const koodistonMetadata = translateMetadata({ metadata: koodisto.metadata, lang });
-    const versioOptions = koodisto.koodiVersio.map((a) => {
-        return {
-            label: formatMessage(
-                {
-                    id: 'KOODISTOSIVU_VERSIO_DROPDOWN_LABEL',
-                    defaultMessage: 'Versio {versio}',
-                },
-                { versio: a }
-            ),
-            value: a.toString(),
-        };
-    });
+
     return (
         <>
             <KoodistoPathContainer trail={[{ label: koodistonMetadata?.nimi || '' }]} />
             <MainHeaderContainer>
                 <HeadingDivider>
                     <h1>{koodistonMetadata?.nimi}</h1>
-                    <SelectContainer>
-                        <Select
-                            onChange={(value) => {
-                                if ((value as SelectOptionType).value !== incomingVersioOption.value) {
-                                    navigate(`/koodisto/${koodisto.koodistoUri}/${(value as SelectOptionType).value}`);
-                                }
-                            }}
-                            placeholder={formatMessage({
-                                id: 'KOODISTOVERSIO_DROPDOWN',
-                                defaultMessage: 'Koodistoversio',
-                            })}
-                            value={incomingVersioOption}
-                            options={versioOptions}
-                        />
-                    </SelectContainer>
+                    <VersionPicker version={+(versio || 1)} versions={koodisto.koodiVersio.length} />
                 </HeadingDivider>
                 <MainHeaderButtonsContainer>
                     <Button
