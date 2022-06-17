@@ -11,7 +11,7 @@ import { Loading } from '../../components/Loading';
 import { KoodiPageAccordion } from './KoodiPageAccordion';
 import { KoodiInfo } from './KoodiInfo';
 import { CrumbTrail } from './CrumbTrail';
-import { VersionPicker } from './VersionPicker';
+import VersionPicker from '../../components/VersionPicker';
 import {
     MainHeaderContainer,
     HeadingDivider,

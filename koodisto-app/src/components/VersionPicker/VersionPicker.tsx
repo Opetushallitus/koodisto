@@ -1,10 +1,11 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useIntl } from 'react-intl';
+import { dropRight } from 'lodash';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import type { ValueType } from 'react-select';
 import type { SelectOption } from '../../types';
-import { SelectContainer } from '../../components/Containers';
+import { SelectContainer } from '..//Containers';
 
 type Props = {
     version: number;
@@ -16,7 +17,13 @@ export const VersionPicker: React.FC<Props> = ({ version, versions }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const options: SelectOption[] = [...Array.from(Array(versions).keys())].map((v) => ({
-        label: `${v + 1}`,
+        label: formatMessage(
+            {
+                id: 'VERSIO_DROPDOWN_LABEL',
+                defaultMessage: 'Versio {versio}',
+            },
+            { versio: v + 1 }
+        ),
         value: `${v + 1}`,
     }));
     return (
@@ -29,11 +36,7 @@ export const VersionPicker: React.FC<Props> = ({ version, versions }) => {
                 value={options.find((option) => option.value === `${version}`)}
                 options={options}
                 onChange={(value: ValueType<SelectOption>) => {
-                    navigate(
-                        [(value as SelectOption).value, ...location.pathname.split('/').reverse().slice(1)]
-                            .reverse()
-                            .join('/')
-                    );
+                    navigate([...dropRight(location.pathname.split('/')), (value as SelectOption).value].join('/'));
                 }}
             />
         </SelectContainer>

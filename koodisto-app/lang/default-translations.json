@@ -38,12 +38,6 @@
   "KOODISTOSIVU_TUO_VIE_KOODISTO_BUTTON": {
     "defaultMessage": "Lataa / tuo koodisto"
   },
-  "KOODISTOSIVU_VERSIO_DROPDOWN_LABEL": {
-    "defaultMessage": "Versio {versio}"
-  },
-  "KOODISTOVERSIO_DROPDOWN": {
-    "defaultMessage": "Koodistoversio"
-  },
   "KOODISTO_MUOKKAA_SIVU_TITLE": {
     "defaultMessage": "Muokkaa koodistoa"
   },
@@ -238,5 +232,8 @@
   },
   "TAULUKKO_VOIMASSA_LOPPU_PVM_OTSIKKO": {
     "defaultMessage": "Voimassa asti"
+  },
+  "VERSIO_DROPDOWN_LABEL": {
+    "defaultMessage": "Versio {versio}"
   }
 }
