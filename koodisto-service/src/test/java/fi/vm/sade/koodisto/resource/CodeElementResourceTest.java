@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -209,10 +210,10 @@ class CodeElementResourceTest {
     @Test
     void testGetCodeElementByUriAndVersionInvalid() throws Exception {
         getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", 0)
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
 
         getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", -1)
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
 
         getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", 9999)
                 .andExpect(status().isNotFound())
@@ -239,8 +240,8 @@ class CodeElementResourceTest {
     void testGetCodeElementByCodeElementUriInvalid() throws Exception {
         getCodeElementByCodeElementUri("invalidcodeelementuri", 1, "sisaltyysuhde4kanssa1").andExpect(status().isNotFound()).andExpect(content().string("error.koodisto.not.found"));
 
-        getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 0, "sisaltyysuhde4kanssa1").andExpect(status().isBadRequest()).andExpect(content().string("error.validation.codesversion"));
-        getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", -1, "sisaltyysuhde4kanssa1").andExpect(status().isBadRequest()).andExpect(content().string("error.validation.codesversion"));
+        getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 0, "sisaltyysuhde4kanssa1").andExpect(status().isBadRequest()).andExpect(content().string(containsString("error.validation.version")));
+        getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", -1, "sisaltyysuhde4kanssa1").andExpect(status().isBadRequest()).andExpect(content().string(containsString("error.validation.version")));
         getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 9999, "sisaltyysuhde4kanssa1").andExpect(status().isNotFound()).andExpect(content().string("error.koodisto.not.found"));
 
         getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, "invalidcodesuri").andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
@@ -260,7 +261,7 @@ class CodeElementResourceTest {
     void testGetAllCodeElementsByCodesUriAndVersionInvalid() throws Exception {
         getAllCodeElementsByCodesUriAndVersion("lisaarinnasteinen2", -1)
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("error.validation.codeelementversion"));
+                .andExpect(content().string(containsString("error.validation.version")));
         getAllCodeElementsByCodesUriAndVersion("uridoesnotexist", 1)
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("error.koodisto.not.found"));
@@ -543,8 +544,8 @@ class CodeElementResourceTest {
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     void testDeleteInvalid() throws Exception {
-        delete("tuhottavatestikoodi", 0).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.codeelementversion"));
-        delete("tuhottavatestikoodi", -1).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.codeelementversion"));
+        delete("tuhottavatestikoodi", 0).andExpect(status().isBadRequest()).andExpect(content().string(containsString("error.validation.version")));
+        delete("tuhottavatestikoodi", -1).andExpect(status().isBadRequest()).andExpect(content().string(containsString("error.validation.version")));
         delete("thisisnotexistinguri", 1).andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
         delete("sisaltaakoodisto1koodit", 1).andExpect(status().isBadRequest()).andExpect(content().string("error.codeelement.not.passive"));
         getCodeElementByUriAndVersion("tuhottavatestikoodi", 1).andExpect(status().isOk()).andExpect(content().json("{}"));
@@ -872,7 +873,7 @@ class CodeElementResourceTest {
         save(codeElementToBeSaved).andExpect(status().isOk());
 
 
-        getCodeElementByUriAndVersion(koodiUri, versio + 1) .andExpectAll(
+        getCodeElementByUriAndVersion(koodiUri, versio + 1).andExpectAll(
                 status().isOk(),
                 jsonPath("$.includesCodeElements.length()").value(1),
                 jsonPath("$.includesCodeElements.[0].passive").value(false),
@@ -881,7 +882,6 @@ class CodeElementResourceTest {
                 jsonPath("$.withinCodeElements.length()").value(0)
         );
     }
-
 
 
     private ResultActions addRelations(String codeElementUri, String st, JSONObject ob) throws Exception {

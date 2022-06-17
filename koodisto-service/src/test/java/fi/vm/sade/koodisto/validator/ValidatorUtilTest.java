@@ -50,7 +50,7 @@ public class ValidatorUtilTest {
     @Test
     public void throwsExceptionWithGivenMessageWhenObjectThatIsCheckedIsNull() {
         try {
-            ValidatorUtil.checkForNull((Tila) null, ERROR);
+            ValidatorUtil.checkForNull(null, ERROR);
         } catch (KoodistoValidationException e) {
             assertEquals(ERROR.getMessage(), e.getMessage());
         }
@@ -85,71 +85,61 @@ public class ValidatorUtilTest {
         ValidatorUtil.checkCollectionIsNotNullOrEmpty(new ArrayList<String>(), new MetadataEmptyException(ERROR));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsExceptionWithNullInteger() {
-        ValidatorUtil.checkForGreaterThan((Integer) null, 1, new IllegalArgumentException());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsExceptionWithIntegerThatIsNotGreaterThanTheValueGiven() {
-        ValidatorUtil.checkForGreaterThan(1, 1, new IllegalArgumentException());
-    }
-    
     @Test(expected = KoodistoValidationException.class)
     public void throwsExceptionWhenDayOfMonthIsLessThanOne() {
         ValidatorUtil.validateDateParameters(0, 1, 2000, 0, 0, 0);
     }
-    
+
     @Test(expected = KoodistoValidationException.class)
     public void throwsExceptionWhenDayOfMonthIsGreaterThan31() {
         ValidatorUtil.validateDateParameters(32, 1, 2000, 0, 0, 0);
     }
-    
+
     @Test(expected = KoodistoValidationException.class)
     public void throwsExceptionWhenMonthIsLessThanOne() {
         ValidatorUtil.validateDateParameters(1, 0, 2000, 0, 0, 0);
     }
-    
+
     @Test(expected = KoodistoValidationException.class)
     public void throwsExceptionWhenDayOfMonthIsOverTwelve() {
         ValidatorUtil.validateDateParameters(2, 13, 2000, 0, 0, 0);
     }
-    
+
     @Test(expected = KoodistoValidationException.class)
     public void throwsExceptionWhenYearIsNegative() {
         ValidatorUtil.validateDateParameters(1, 1, -2000, 0, 0, 0);
     }
-    
+
     @Test(expected = KoodistoValidationException.class)
     public void throwsExceptionWhenHourOfDayIsNegative() {
         ValidatorUtil.validateDateParameters(1, 1, 2000, -1, 0, 0);
     }
-    
+
     @Test(expected = KoodistoValidationException.class)
     public void throwsExceptionWhenHourOfDayIsOver23() {
         ValidatorUtil.validateDateParameters(1, 1, 2000, 24, 0, 0);
     }
-    
+
     @Test(expected = KoodistoValidationException.class)
     public void throwsExceptionWhenMinuteIsNegative() {
         ValidatorUtil.validateDateParameters(1, 1, 2000, 0, -1, 0);
     }
-    
+
     @Test(expected = KoodistoValidationException.class)
     public void throwsExceptionWhenMinuteIsOver59() {
         ValidatorUtil.validateDateParameters(1, 1, 2000, 0, 60, 0);
     }
-    
+
     @Test(expected = KoodistoValidationException.class)
     public void throwsExceptionWhenSecondIsNegative() {
         ValidatorUtil.validateDateParameters(1, 1, 2000, 0, 0, -1);
     }
-    
+
     @Test(expected = KoodistoValidationException.class)
     public void throwsExceptionWhenSecondIsOver59() {
         ValidatorUtil.validateDateParameters(1, 1, 2000, 0, 0, 60);
     }
-    
+
     @Test
     public void passesWithCorrectDateParameters() {
         ValidatorUtil.validateDateParameters(1, 1, 2010, 0, 0, 0);
