@@ -26,26 +26,11 @@
   "FI_NIMI_PAKOLLINEN": {
     "defaultMessage": "Syötä suomenkielinen nimi."
   },
+  "KOODISIVU_MUOKKAA_KOODIA_BUTTON": {
+    "defaultMessage": "Muokkaa koodia"
+  },
   "KOODISTOPALVELU_OTSIKKO": {
     "defaultMessage": "Koodistopalvelu"
-  },
-  "KOODISTOSIVU_AVAIN_KOODISTORYHMA": {
-    "defaultMessage": "Koodistoryhmä"
-  },
-  "KOODISTOSIVU_AVAIN_KUVAUS": {
-    "defaultMessage": "Kuvaus"
-  },
-  "KOODISTOSIVU_AVAIN_ORGANISAATIO": {
-    "defaultMessage": "Organisaatio"
-  },
-  "KOODISTOSIVU_AVAIN_PAIVITETTY": {
-    "defaultMessage": "Päivitetty"
-  },
-  "KOODISTOSIVU_AVAIN_URI_TUNNUS": {
-    "defaultMessage": "URI-tunnus"
-  },
-  "KOODISTOSIVU_AVAIN_VOIMASSA": {
-    "defaultMessage": "Voimassa"
   },
   "KOODISTOSIVU_MUOKKAA_KOODISTOA_BUTTON": {
     "defaultMessage": "Muokkaa koodistoa"
@@ -124,6 +109,9 @@
   },
   "KOODISTO_VERSIOI": {
     "defaultMessage": "Versioi koodisto"
+  },
+  "KOODIVERSIO_DROPDOWN": {
+    "defaultMessage": "Koodiversio"
   },
   "KOODI_TAULUKKO_FILTTERI_PLACEHOLDER": {
     "defaultMessage": "Hae nimellä tai koodiarvolla"
@@ -218,11 +206,20 @@
   "TAULUKKO_OTSIKKO": {
     "defaultMessage": "Koodistot ({filteredCount} / {totalCount})"
   },
+  "TAULUKKO_RINNASTUU_KOODEIHIN_OTSIKKO": {
+    "defaultMessage": "Rinnastuu koodeihin ({count})"
+  },
   "TAULUKKO_RINNASTUU_KOODISTOIHIN_OTSIKKO": {
     "defaultMessage": "Rinnastuu koodistoihin ({count})"
   },
   "TAULUKKO_SISALTAA_KOODISTOT_OTSIKKO": {
     "defaultMessage": "Sisältää koodistot ({count})"
+  },
+  "TAULUKKO_SISALTAA_KOODIT_OTSIKKO": {
+    "defaultMessage": "Sisältää koodit ({count})"
+  },
+  "TAULUKKO_SISALTYY_KOODEIHIN_OTSIKKO": {
+    "defaultMessage": "Sisältyy koodeihin ({count})"
   },
   "TAULUKKO_SISALTYY_KOODISTOIHIN_OTSIKKO": {
     "defaultMessage": "Sisältyy koodistoihin ({count})"

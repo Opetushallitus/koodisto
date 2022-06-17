@@ -45,7 +45,7 @@ export const Accordion = (props: AccordionProps) => {
     const { data } = props;
     const [activeAcIds, setActiveAcIds] = useState<UUID[]>([]);
     return (
-        <AC onChange={setActiveAcIds}>
+        <AC onChange={setActiveAcIds} allowZeroExpanded allowMultipleExpanded>
             {data.map((item) => {
                 return (
                     <StyledAccordionItem key={item.id} uuid={item.id}>

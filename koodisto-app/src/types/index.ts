@@ -5,6 +5,7 @@ import { Options as IntlMessageFormatOptions } from 'intl-messageformat/src/core
 export type Kieli = 'EN' | 'FI' | 'SV';
 export type Locale = Lowercase<Kieli>;
 export type ApiDate = `${number}${number}${number}${number}-${number}${number}-${number}${number}`;
+type Tila = 'PASSIIVINEN' | 'LUONNOS' | 'HYVAKSYTTY';
 
 export type KoodiMetadata = Metadata & {
     lyhytnimi?: string;
@@ -108,7 +109,7 @@ export type PageKoodisto = BaseKoodisto & {
     organisaatioNimi?: OrganisaatioNimi;
     lukittu: boolean | null;
     koodistoRyhmaMetadata: Metadata[];
-    paivitysPvm: ApiDate;
+    paivitysPvm: Date;
     paivittajaOid: string;
     tila: string;
     metadata: Metadata[];
@@ -120,3 +121,35 @@ export type PageKoodisto = BaseKoodisto & {
 };
 
 export type SelectOption = { label: string; value: string };
+
+export type PageKoodiRelation = {
+    codeElementUri: string;
+    codeElementVersion: number;
+    codeElementValue: string;
+    relationMetadata: Metadata[];
+    parentMetadata: Metadata[];
+};
+
+export type PageKoodi = {
+    koodi: {
+        koodiUri: string;
+        resourceUri: string;
+        versio: number;
+        versions: number;
+        koodiArvo: string;
+        paivitysPvm: Date;
+        paivittajaOid: string;
+        voimassaAlkuPvm: Date;
+        voimassaLoppuPvm?: Date;
+        tila: Tila;
+        metadata: Metadata[];
+        withinCodeElements: PageKoodiRelation[];
+        includesCodeElements: PageKoodiRelation[];
+        levelsWithCodeElements: PageKoodiRelation[];
+    };
+    koodisto: {
+        koodistoUri: string;
+        versio: number;
+        metadata: Metadata[];
+    };
+};

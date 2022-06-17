@@ -88,7 +88,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
     return (
         (!loading && (
             <>
-                <KoodistoPathContainer path={[koodistonMetadata?.nimi || '']} />
+                <KoodistoPathContainer trail={[{ label: koodistonMetadata?.nimi || '' }]} />
                 <MainHeaderContainer>
                     <FormattedMessage
                         id={'KOODISTO_MUOKKAA_SIVU_TITLE'}

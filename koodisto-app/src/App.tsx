@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Notification } from './components/Notification';
 import { KoodistoPage } from './pages/KoodistoPage';
+import KoodiPage from './pages/KoodiPage';
 import { Loading } from './components/Loading';
 import { KoodistoMuokkausPage } from './pages/KoodistoMuokkausPage';
 import { KoodiMuokkausPage } from './pages/KoodiMuokkausPage';
@@ -31,6 +32,7 @@ const App: React.FC = () => {
                         <Route path="/koodisto/edit" element={<KoodistoMuokkausPage />} />
                         <Route path="/koodi/edit/:koodistoUri/:versio" element={<KoodiMuokkausPage />} />
                         <Route path="/koodi/edit" element={<KoodiMuokkausPage />} />
+                        <Route path="/koodi/:koodiUri/:koodiVersio" element={<KoodiPage />} />
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
                 </React.Suspense>

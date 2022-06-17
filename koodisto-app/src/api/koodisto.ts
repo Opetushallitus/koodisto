@@ -152,6 +152,7 @@ const mapApiPageKoodistoToPageKoodisto = ({
         },
         voimassaAlkuPvm: api.voimassaAlkuPvm && parseApiDate(api.voimassaAlkuPvm),
         voimassaLoppuPvm: api.voimassaLoppuPvm && parseApiDate(api.voimassaLoppuPvm),
+        paivitysPvm: parseApiDate(api.paivitysPvm),
     };
 };
 function mapPageKoodistoToApiPageKoodisto(koodisto: PageKoodisto): ApiPageKoodisto {
@@ -161,6 +162,7 @@ function mapPageKoodistoToApiPageKoodisto(koodisto: PageKoodisto): ApiPageKoodis
         organisaatioOid: koodisto.organisaatioOid.value,
         voimassaAlkuPvm: koodisto.voimassaAlkuPvm && parseUIDate(koodisto.voimassaAlkuPvm),
         voimassaLoppuPvm: koodisto.voimassaLoppuPvm && parseUIDate(koodisto.voimassaLoppuPvm),
+        paivitysPvm: parseUIDate(koodisto.paivitysPvm),
     };
 }
 export const fetchPageKoodisto = async ({
