@@ -6,7 +6,6 @@ import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
-import fi.vm.sade.koodisto.service.conversion.impl.koodisto.InternalKoodistoPageDtoToCreateKoodistoDataTypeConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoListDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
@@ -38,7 +37,6 @@ public class InternalKoodistoResource {
     private final KoodistoBusinessService koodistoBusinessService;
     private final KoodistoVersioToInternalKoodistoListDtoConverter koodistoVersioToInternalKoodistoListDtoConverter;
     private final KoodistoVersioToInternalKoodistoPageDtoConverter koodistoVersioToInternalKoodistoPageDtoConverter;
-    private final InternalKoodistoPageDtoToCreateKoodistoDataTypeConverter internalKoodistoPageDtoToCreateKoodistoDataTypeConverter;
 
     @GetMapping(path = "",
             produces = MediaType.APPLICATION_JSON_VALUE)
