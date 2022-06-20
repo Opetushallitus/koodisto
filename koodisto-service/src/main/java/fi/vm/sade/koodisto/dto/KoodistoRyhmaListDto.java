@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.views.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import lombok.Getter;
 import lombok.Setter;

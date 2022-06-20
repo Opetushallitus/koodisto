@@ -5,6 +5,7 @@ package fi.vm.sade.koodisto.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.util.FieldLengths;
+import fi.vm.sade.koodisto.views.JsonViews;
 import lombok.*;
 
 import javax.persistence.*;

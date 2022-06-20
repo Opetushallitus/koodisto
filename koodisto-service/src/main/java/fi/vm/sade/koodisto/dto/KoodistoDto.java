@@ -3,14 +3,16 @@ package fi.vm.sade.koodisto.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.koodisto.model.JsonViews;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.Tila;
+import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
+import fi.vm.sade.koodisto.views.JsonViews;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.Valid;
 import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.*;
@@ -25,6 +27,7 @@ public class KoodistoDto extends AbstractKoodistoDto {
     @JsonView({JsonViews.Extended.class})
     protected List<RelationCodes> levelsWithCodes = new ArrayList<>();
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
+    @NotBlank
     private String codesGroupUri;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private Long version;
@@ -44,7 +47,8 @@ public class KoodistoDto extends AbstractKoodistoDto {
     private Tila tila;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
     @NotEmpty(message = "error.metadata.empty")
-    private List<KoodistoMetadata> metadata = new ArrayList<>();
+    @Valid
+    private List<KoodistoMetadataType> metadata = new ArrayList<>();
     @JsonView(JsonViews.Extended.class)
     private List<Integer> codesVersions;
 

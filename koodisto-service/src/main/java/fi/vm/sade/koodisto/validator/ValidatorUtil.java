@@ -12,13 +12,6 @@ public class ValidatorUtil {
         throw new IllegalStateException("Utility class");
     }
 
-    public static void checkForNull(Object toCheck, RuntimeException toThrow) {
-        if (toCheck == null) {
-            logger.warn("Failure during null check:{}", toThrow.getMessage());
-            throw toThrow;
-        }
-    }
-
     public static void checkForBlank(String toCheck, RuntimeException toThrow) {
         if (Strings.isNullOrEmpty(toCheck) || toCheck.isBlank()) {
             logger.warn("Failure during isBlank check:{} ", toThrow.getMessage());

@@ -1,12 +1,13 @@
 package fi.vm.sade.koodisto.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.views.JsonViews;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import lombok.*;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotEmpty;
 
 public class KoodiMetadataDto {
 
-    @NotEmpty(message = "error.nimi.empty")
+    @NotBlank(message = "error.nimi.empty")
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
     private String nimi;
 
@@ -45,6 +46,7 @@ public class KoodiMetadataDto {
     private String sisaltaaKoodiston;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
+    @NotNull
     private Kieli kieli;
 
     private KoodiVersio koodiVersio;

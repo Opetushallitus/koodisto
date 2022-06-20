@@ -14,42 +14,13 @@ public class CodesGroupValidatorTest {
 
     public static class ValidateInsert {
 
-        @Test(expected = KoodistoValidationException.class)
-        public void throwsExceptionIfCOdesGroupIsNull() {
-            validator.validateInsert(null);
-        }
-
-        @Test(expected = KoodistoValidationException.class)
-        public void throwsExceptionIfMissingMetadata() {
-            validator.validateInsert(new KoodistoRyhmaDto());
-        }
-
-        @Test(expected = KoodistoValidationException.class)
-        public void throwsExceptionIfLanguageIsNotGiven() {
-            KoodistoRyhmaDto dto = new KoodistoRyhmaDto();
-            KoodistoRyhmaMetadata data = new KoodistoRyhmaMetadata();
-            data.setNimi("name");
-            dto.setKoodistoRyhmaMetadatas(new HashSet<KoodistoRyhmaMetadata>(Arrays.asList(data)));
-            validator.validateInsert(dto);
-        }
-
-        @Test(expected = KoodistoValidationException.class)
-        public void throwsExceptionIfNameIsNotGiven() {
-            KoodistoRyhmaDto dto = new KoodistoRyhmaDto();
-            KoodistoRyhmaMetadata data = new KoodistoRyhmaMetadata();
-            data.setNimi(" ");
-            data.setKieli(Kieli.EN);
-            dto.setKoodistoRyhmaMetadatas(new HashSet<KoodistoRyhmaMetadata>(Arrays.asList(data)));
-            validator.validateInsert(dto);
-        }
-
         @Test
         public void passes() {
             KoodistoRyhmaDto dto = new KoodistoRyhmaDto();
             KoodistoRyhmaMetadata data = new KoodistoRyhmaMetadata();
             data.setNimi("name");
             data.setKieli(Kieli.EN);
-            dto.setKoodistoRyhmaMetadatas(new HashSet<KoodistoRyhmaMetadata>(Arrays.asList(data)));
+            dto.setKoodistoRyhmaMetadatas(new HashSet<>(Arrays.asList(data)));
             validator.validateInsert(dto);
         }
     }
@@ -75,7 +46,7 @@ public class CodesGroupValidatorTest {
             KoodistoRyhmaMetadata data = new KoodistoRyhmaMetadata();
             data.setNimi("name");
             data.setKieli(Kieli.EN);
-            dto.setKoodistoRyhmaMetadatas(new HashSet<KoodistoRyhmaMetadata>(Arrays.asList(data)));
+            dto.setKoodistoRyhmaMetadatas(new HashSet<>(Arrays.asList(data)));
             validator.validateUpdate(dto);
         }
     }

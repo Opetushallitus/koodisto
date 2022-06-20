@@ -2,7 +2,7 @@ package fi.vm.sade.koodisto.resource;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.views.JsonViews;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;

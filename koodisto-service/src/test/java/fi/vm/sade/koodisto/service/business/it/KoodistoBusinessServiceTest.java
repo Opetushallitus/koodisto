@@ -14,6 +14,8 @@ import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
+import fi.vm.sade.koodisto.service.types.common.KieliType;
+import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import org.junit.Test;
@@ -240,8 +242,8 @@ public class KoodistoBusinessServiceTest {
         assertEquals(codesDTO.getKoodistoUri(), result.getKoodisto().getKoodistoUri());
         assertEquals(versio + 1, result.getVersio().intValue());
         assertEquals(Tila.LUONNOS, result.getTila());
-        KoodistoMetadata expectedMeta = codesDTO.getMetadata().get(0);
-        assertEquals(expectedMeta.getKieli(), result.getMetadatas().iterator().next().getKieli());
+        KoodistoMetadataType expectedMeta = codesDTO.getMetadata().get(0);
+        assertEquals(expectedMeta.getKieli().value(), result.getMetadatas().iterator().next().getKieli().name());
         assertEquals(expectedMeta.getNimi(), result.getMetadatas().iterator().next().getNimi());
         assertEquals(expectedMeta.getKuvaus(), result.getMetadatas().iterator().next().getKuvaus());
     }
@@ -373,9 +375,9 @@ public class KoodistoBusinessServiceTest {
         d.setVoimassaAlkuPvm(new Date());
         d.setVoimassaLoppuPvm(new Date());
 
-        ArrayList<KoodistoMetadata> metadata = new ArrayList<KoodistoMetadata>();
-        KoodistoMetadata md = new KoodistoMetadata();
-        md.setKieli(Kieli.FI);
+        ArrayList<KoodistoMetadataType> metadata = new ArrayList<>();
+        KoodistoMetadataType md = new KoodistoMetadataType();
+        md.setKieli(KieliType.FI);
         md.setKuvaus("UusiKuvaus");
         md.setNimi("UusiNimi");
         metadata.add(md);

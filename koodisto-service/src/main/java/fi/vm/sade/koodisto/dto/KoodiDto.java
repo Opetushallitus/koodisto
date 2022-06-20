@@ -3,7 +3,7 @@ package fi.vm.sade.koodisto.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.views.JsonViews;
 import fi.vm.sade.koodisto.model.Tila;
 import lombok.Getter;
 import lombok.Setter;
@@ -70,5 +70,17 @@ public class KoodiDto {
     @AssertTrue(message = "error.validation.enddate")
     public boolean startBeforeEnd() {
         return Optional.ofNullable(voimassaLoppuPvm).map(date -> date.after(voimassaAlkuPvm)).orElse(true);
+    }
+
+    @JsonIgnore
+    @AssertTrue(message = "error.validation.versio")
+    public boolean versioSetForUpdate() {
+        return Optional.ofNullable(koodiUri).map(uri -> versio > 0).orElse(true);
+    }
+
+    @JsonIgnore
+    @AssertTrue(message = "error.validation.tila")
+    public boolean tilaSetForUpdate() {
+        return Optional.ofNullable(koodiUri).map(uri -> tila != null).orElse(true);
     }
 }

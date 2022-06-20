@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.dto.internal;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.views.JsonViews;
 import lombok.Builder;
 
 import java.util.Map;

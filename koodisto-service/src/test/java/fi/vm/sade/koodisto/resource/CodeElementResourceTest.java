@@ -65,7 +65,7 @@ class CodeElementResourceTest {
 
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
-    void returns500IfErrorOccurs() throws Exception {
+    void meaningfulResponseCodeIfErrorOccurs() throws Exception {
         JSONObject kr = new JSONObject();
         kr.put("relations", new JSONArray(List.of("koodi")));
         addRelations("codeelementuri", "SISALTYY", kr)
@@ -76,11 +76,11 @@ class CodeElementResourceTest {
                 .andExpect(content().string("error.koodi.not.found"));
         kr.put("relations", new JSONArray(List.of("rinnastuu4kanssa1", "rinnastuu4kanssa2", "rinnastuu4kanssa3")));
         addRelations("codeelementuri", "asd", kr)
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().string("error.codes.generic"));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("error.http.message.not.readable"));
         removeRelations("codeelementuri", "asd", kr)
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().string("error.codes.generic"));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("error.http.message.not.readable"));
     }
 
     @Test
@@ -324,28 +324,35 @@ class CodeElementResourceTest {
         insert("totallyInvalidKoodistoUri", validDto).andExpect(status().isNotFound()).andExpect(content().string("error.koodisto.not.found"));
 
         insert("lisaasisaltyy3", null).andExpect(status().isBadRequest()).andExpect(content().string("error.http.message.not.readable"));
-        insert("lisaasisaltyy3", new JSONObject()).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.value"));
+        insert("lisaasisaltyy3", new JSONObject()).andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("error.koodiarvo.empty")))
+                .andExpect(content().string(containsString("error.metadata.empty")));
 
         JSONObject invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         invalidDto.put("koodiArvo", "");
-        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.value"));
+        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("error.koodiarvo.empty")));
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         invalidDto.put("koodiArvo", null);
-        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.value"));
+        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("error.koodiarvo.empty")));
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         invalidDto.put("metadata", null);
-        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("error.metadata.empty"));
+        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("error.metadata.empty")));
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         ArrayList<JSONObject> metadatas = new ArrayList<>();
         invalidDto.put("metadata", new JSONArray(metadatas));
-        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("error.metadata.empty"));
+        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("error.metadata.empty")));
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         invalidDto.put("voimassaLoppuPvm", "1970-01-01");
-        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("validateDates: error.validation.enddate"));
+        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest())
+                .andExpect(content().string("validateDates: error.validation.enddate"));
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         JSONObject invalidMd = new JSONObject();

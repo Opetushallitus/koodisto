@@ -127,7 +127,7 @@ class CodesGroupResourceTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"koodistoRyhmaMetadatas\":[{\"nimi\":\"\",\"kieli\":\"FI\"}]}"))
                 .andExpect(status().is(400))
-                .andExpect(content().string("error.validation.metadata"));
+                .andExpect(content().string("error.metadata.empty"));
     }
 
     @Test

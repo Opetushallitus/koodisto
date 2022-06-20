@@ -42,22 +42,8 @@ public class ValidatorUtilTest {
         }
     }
 
-    @Test
-    public void throwsExceptionWithGivenMessageWhenObjectThatIsCheckedIsNull() {
-        try {
-            ValidatorUtil.checkForNull(null, ERROR);
-        } catch (KoodistoValidationException e) {
-            assertEquals(ERROR.getMessage(), e.getMessage());
-        }
-    }
-
     @Test(expected = KoodistoNimiEmptyException.class)
     public void throwsGivenExceptionWhenCheckingForBlank() {
         ValidatorUtil.checkForBlank("  ", new KoodistoNimiEmptyException(ERROR));
-    }
-
-    @Test(expected = KoodistoValidatorRuntimeException.class)
-    public void throwsGivenExceptionWhenCheckingForNull() {
-        ValidatorUtil.checkForNull(null, new KoodistoValidatorRuntimeException(ERROR));
     }
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.KoodistoMetadataDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaMetadataDto;
-import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.views.JsonViews;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import lombok.Builder;
 import lombok.Getter;

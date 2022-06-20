@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
-import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.views.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
@@ -47,8 +47,6 @@ public class CodeElementResource {
     private final KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter;
     private final KoodiVersioWithKoodistoItemToKoodiDtoConverter koodiVersioWithKoodistoItemToKoodiDtoConverter;
     private final CodeElementValidator codesValidator = new CodeElementValidator();
-    private final CodeElementRelationListValidator relationValidator = new CodeElementRelationListValidator();
-    private final ExtendedCodeElementValidator extendedValidator = new ExtendedCodeElementValidator();
 
     @JsonView({JsonViews.Simple.class}) // tarvitaanko?
     @Operation(description = "Palauttaa koodiversiot tietystä koodista")
@@ -140,8 +138,7 @@ public class CodeElementResource {
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     public ResponseEntity<Object> insert(
             @Parameter(description = "Koodiston URI") @PathVariable @NotEmpty final String codesUri,
-            @Parameter(description = "Koodi") @RequestBody final KoodiDto codeelementDTO) {
-        codesValidator.validate(codeelementDTO, ValidationType.INSERT);
+            @Parameter(description = "Koodi") @RequestBody @Valid final KoodiDto codeelementDTO) {
         // aika huono toteutus
         KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem = koodiBusinessService.createKoodi(codesUri,
                 codeElementResourceConverter.convertFromDTOToCreateKoodiDataType(codeelementDTO));
@@ -167,8 +164,6 @@ public class CodeElementResource {
     public ResponseEntity<String> addRelations(
             @Parameter(description = "Relaation tiedot JSON muodossa") @RequestBody @Valid final KoodiRelaatioListaDto koodiRelaatioDto
     ) {
-        relationValidator.validate(koodiRelaatioDto, ValidationType.INSERT);
-
         koodiBusinessService.addRelation(koodiRelaatioDto);
         return ResponseEntity.ok(null);
     }
@@ -194,7 +189,6 @@ public class CodeElementResource {
     public ResponseEntity<String> removeRelations(
             @Parameter(description = "Relaation tiedot JSON muodossa") @RequestBody @Valid final KoodiRelaatioListaDto koodiRelaatioDto
     ) {
-        relationValidator.validate(koodiRelaatioDto, ValidationType.UPDATE);
         koodiBusinessService.removeRelation(koodiRelaatioDto);
         return ResponseEntity.ok(null);
     }
@@ -216,7 +210,7 @@ public class CodeElementResource {
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> update(
-            @Parameter(description = "Koodi") @RequestBody final KoodiDto codeElementDTO) {
+            @Parameter(description = "Koodi") @RequestBody @Valid final KoodiDto codeElementDTO) {
 
         codesValidator.validate(codeElementDTO, ValidationType.UPDATE);
 
@@ -231,9 +225,6 @@ public class CodeElementResource {
     @PutMapping(path = "/save", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> save(
             @Parameter(description = "Koodi") @RequestBody @Valid final ExtendedKoodiDto koodiDTO) {
-
-        extendedValidator.validate(koodiDTO, ValidationType.UPDATE);
-
         KoodiVersio koodiVersio = koodiBusinessService.saveKoodi(koodiDTO);
         return ResponseEntity.ok(koodiVersio.getVersio().toString());
     }

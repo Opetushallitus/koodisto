@@ -34,9 +34,7 @@ public class CodesResourceConverter {
         updateKoodistoDataType.setVersio(koodistoDto.getVersio());
         updateKoodistoDataType.setTila(TilaType.fromValue(koodistoDto.getTila().toString()));
         updateKoodistoDataType.setLockingVersion(koodistoDto.getVersion());
-        for (KoodistoMetadata koodistoMetadata : koodistoDto.getMetadata()) {
-            updateKoodistoDataType.getMetadataList().add(koodistoMetadataToKoodistoMetadataTypeConverter.convert(koodistoMetadata));
-        }
+        updateKoodistoDataType.getMetadataList().addAll(koodistoDto.getMetadata());
 
         return updateKoodistoDataType;
     }
@@ -52,11 +50,8 @@ public class CodesResourceConverter {
         createKoodistoDataType.setVoimassaLoppuPvm(endDate);
         createKoodistoDataType.setOmistaja(koodistoDto.getOmistaja());
         createKoodistoDataType.setOrganisaatioOid(koodistoDto.getOrganisaatioOid());
-        for (KoodistoMetadata koodistoMetadata : koodistoDto.getMetadata()) {
-            createKoodistoDataType.getMetadataList().add(koodistoMetadataToKoodistoMetadataTypeConverter.convert(koodistoMetadata));
-        }
+        createKoodistoDataType.getMetadataList().addAll(koodistoDto.getMetadata());
 
         return createKoodistoDataType;
     }
-
 }

@@ -2,6 +2,7 @@ package fi.vm.sade.koodisto.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.util.FieldLengths;
+import fi.vm.sade.koodisto.views.JsonViews;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +28,7 @@ public class KoodistoMetadata extends BaseEntity {
     private static final long serialVersionUID = -6880293349203597691L;
 
     @JsonView({ JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class })
-    @NotNull
+    @NotNull(message = "error.validation.language")
     @Column(name = KIELI_COLUMN_NAME, nullable = false, length = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Enumerated(EnumType.STRING)
     private Kieli kieli;
