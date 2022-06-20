@@ -52,25 +52,10 @@ public class CodeElementValidatorTest {
             validator.validateInsert(dto);
         }
 
-        @Test(expected = KoodistoValidationException.class)
-        public void doesNotAllowCreatingCodeElementWithoutBeginDate() {
-            KoodiDto dto = givenCorrectKoodiDto();
-            dto.setVoimassaAlkuPvm(null);
-            validator.validateInsert(dto);
-        }
-
-        @Test(expected = KoodistoValidationException.class)
-        public void doesNotAllowCreatingCodeElementWithInvalidEndDate() {
-            KoodiDto dto = givenCorrectKoodiDto();
-            dto.setVoimassaLoppuPvm(new Date(0L));
-            validator.validateInsert(dto);
-        }
-
         @Test
         public void passessWithAllDataGiven() {
             validator.validateInsert(givenCorrectKoodiDto());
         }
-
     }
 
     public static class ValidatingUpdate {

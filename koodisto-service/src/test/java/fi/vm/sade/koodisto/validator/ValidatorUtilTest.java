@@ -6,7 +6,6 @@ import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 
@@ -50,15 +49,6 @@ public class ValidatorUtilTest {
     public void throwsExceptionWithGivenMessageWhenObjectThatIsCheckedIsNull() {
         try {
             ValidatorUtil.checkForNull(null, ERROR);
-        } catch (KoodistoValidationException e) {
-            assertEquals(ERROR.getMessage(), e.getMessage());
-        }
-    }
-
-    @Test
-    public void throwsExceptionWithGivenMessageWhenStartDateIsAfterEndDate() {
-        try {
-            ValidatorUtil.checkBeginDateBeforeEndDate(new Date(), new Date(0L), ERROR);
         } catch (KoodistoValidationException e) {
             assertEquals(ERROR.getMessage(), e.getMessage());
         }

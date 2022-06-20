@@ -42,20 +42,6 @@ public class ExtendedCodeElementValidatorTest {
         }
 
         @Test(expected = KoodistoValidationException.class)
-        public void doesNotAllowCreatingCodeElementWithoutBeginDate() {
-            ExtendedKoodiDto dto = givenCorrectExtendedKoodiDto();
-            dto.setVoimassaAlkuPvm(null);
-            validator.validateInsert(dto);
-        }
-
-        @Test(expected = KoodistoValidationException.class)
-        public void doesNotAllowCreatingCodeElementWithInvalidEndDate() {
-            ExtendedKoodiDto dto = givenCorrectExtendedKoodiDto();
-            dto.setVoimassaLoppuPvm(new Date(0L));
-            validator.validateInsert(dto);
-        }
-
-        @Test(expected = KoodistoValidationException.class)
         public void doesNotAllowCreatingCodeElementWithoutName() {
             ExtendedKoodiDto dto = new ExtendedKoodiDto();
             KoodiMetadataDto data = new KoodiMetadataDto();

@@ -30,9 +30,6 @@ public class ExtendedCodeElementValidator implements RestValidator<ExtendedKoodi
             ValidatorUtil.checkForNull(validatable.getMetadata(), new KoodistoValidationException("error.validation.metadata"));
 
             checkMetadatas(validatable.getMetadata());
-
-            ValidatorUtil.checkForNull(validatable.getVoimassaAlkuPvm(), new KoodistoValidationException("error.validation.startdate"));
-            ValidatorUtil.checkBeginDateBeforeEndDate(validatable.getVoimassaAlkuPvm(), validatable.getVoimassaLoppuPvm(),  new KoodistoValidationException("error.validation.enddate"));
     }
 
     @Override

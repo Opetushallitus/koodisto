@@ -35,11 +35,4 @@ public class ValidatorUtil {
             throw toThrow;
         }
     }
-
-    public static void checkBeginDateBeforeEndDate(Date start, Date end, RuntimeException toThrow) {
-        if (start != null && end != null && end.before(start)) {
-            logger.warn("Failure during date validation: {}", toThrow.getMessage());
-            throw toThrow;
-        }
-    }
 }

@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
@@ -9,9 +10,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -43,6 +47,7 @@ public class ExtendedKoodiDto {
     protected String paivittajaOid;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
+    @NotNull
     protected Date voimassaAlkuPvm;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
@@ -66,6 +71,12 @@ public class ExtendedKoodiDto {
     @JsonView({JsonViews.Internal.class})
     @JsonInclude(JsonInclude.Include.NON_NULL)
     protected Integer versions;
+
+    @JsonIgnore
+    @AssertTrue(message = "error.validation.enddate")
+    public boolean startBeforeEnd() {
+        return Optional.ofNullable(voimassaLoppuPvm).map(date -> date.after(voimassaAlkuPvm)).orElse(true);
+    }
 
     @Getter
     @RequiredArgsConstructor
