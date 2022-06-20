@@ -1,7 +1,5 @@
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAnotherDateAsserter;
-import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import fi.vm.sade.koodisto.util.UserData;
 import lombok.Getter;
@@ -20,7 +18,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
-@FieldAssert(field1 = "voimassaAlkuPvm", field2 = "voimassaLoppuPvm", asserter = DateIsNullOrNotBeforeAnotherDateAsserter.class, message = "{voimassaLoppuPvm.invalid}")
 @Entity
 @Table(name = KoodistoVersio.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistoVersio.TABLE_NAME
         + "_01", columnNames = { KoodistoVersio.VERSIO_COLUMN_NAME, KoodistoVersio.KOODISTO_COLUMN_NAME }))
