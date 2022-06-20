@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
-import fi.vm.sade.koodisto.views.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
@@ -16,7 +15,8 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodisto
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToSimpleKoodiDtoConverter;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
-import fi.vm.sade.koodisto.validator.*;
+import fi.vm.sade.koodisto.validator.KoodistoValidationException;
+import fi.vm.sade.koodisto.views.JsonViews;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +33,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.Optional;
 
 @Validated
 @RestController
@@ -46,7 +47,6 @@ public class CodeElementResource {
     private final KoodiVersioWithKoodistoItemToSimpleKoodiDtoConverter koodiVersioWithKoodistoItemToSimpleKoodiDtoConverter;
     private final KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter;
     private final KoodiVersioWithKoodistoItemToKoodiDtoConverter koodiVersioWithKoodistoItemToKoodiDtoConverter;
-    private final CodeElementValidator codesValidator = new CodeElementValidator();
 
     @JsonView({JsonViews.Simple.class}) // tarvitaanko?
     @Operation(description = "Palauttaa koodiversiot tietystä koodista")
@@ -211,9 +211,9 @@ public class CodeElementResource {
     @PutMapping(path = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> update(
             @Parameter(description = "Koodi") @RequestBody @Valid final KoodiDto codeElementDTO) {
-
-        codesValidator.validate(codeElementDTO, ValidationType.UPDATE);
-
+        if (Optional.ofNullable(codeElementDTO.getKoodiUri()).map(String::isBlank).orElse(true)) {
+            throw new KoodistoValidationException("error.validation.codeelementuri");
+        }
         KoodiVersioWithKoodistoItem koodiVersio =
                 koodiBusinessService.updateKoodi(codeElementResourceConverter.convertFromDTOToUpdateKoodiDataType(codeElementDTO));
         return ResponseEntity.status(201).body(koodiVersioWithKoodistoItemToKoodiDtoConverter.convert(koodiVersio));

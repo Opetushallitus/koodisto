@@ -1,49 +1,7 @@
 package fi.vm.sade.koodisto.validator;
 
-import fi.vm.sade.koodisto.model.constraint.exception.KoodistoValidatorRuntimeException;
-import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-
 public class ValidatorUtilTest {
 
     private static final KoodistoValidationException ERROR = new KoodistoValidationException("error");
 
-    @Test(expected = KoodistoValidationException.class)
-    public void throwsExceptionWhenGivenStringIsEmpty() {
-        ValidatorUtil.checkForBlank("", ERROR);
-    }
-
-    @Test
-    public void throwsExceptionWithGivenMessageWhenGivenStringIsNull() {
-        try {
-            ValidatorUtil.checkForBlank(null, ERROR);
-        } catch (KoodistoValidationException e) {
-            assertEquals(ERROR.getMessage(), e.getMessage());
-        }
-    }
-
-    @Test
-    public void throwsExceptionWithGivenMessageWhenGivenStringIsEmpty() {
-        try {
-            ValidatorUtil.checkForBlank("", ERROR);
-        } catch (KoodistoValidationException e) {
-            assertEquals(ERROR.getMessage(), e.getMessage());
-        }
-    }
-
-    @Test
-    public void throwsExceptionWithGivenMessageWhenGivenStringHasOnlySpaces() {
-        try {
-            ValidatorUtil.checkForBlank("    ", ERROR);
-        } catch (KoodistoValidationException e) {
-            assertEquals(ERROR.getMessage(), e.getMessage());
-        }
-    }
-
-    @Test(expected = KoodistoNimiEmptyException.class)
-    public void throwsGivenExceptionWhenCheckingForBlank() {
-        ValidatorUtil.checkForBlank("  ", new KoodistoNimiEmptyException(ERROR));
-    }
 }

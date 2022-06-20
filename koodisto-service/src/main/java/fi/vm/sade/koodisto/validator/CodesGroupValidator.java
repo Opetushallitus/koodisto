@@ -24,7 +24,10 @@ public class CodesGroupValidator implements RestValidator<KoodistoRyhmaDto> {
     @Override
     public void validateUpdate(KoodistoRyhmaDto validatable) {
         try {
-            ValidatorUtil.checkForBlank(validatable.getKoodistoRyhmaUri(), new KoodistoRyhmaUriEmptyException());
+            //         if ( !Optional.ofNullable(koodisto.getKoodistoUri()).map(String::isBlank).orElse(false) ) {
+            //            throw new KoodistoRyhmaUriEmptyException();
+            //        }
+            // ValidatorUtil.checkForBlank(validatable.getKoodistoRyhmaUri(), new KoodistoRyhmaUriEmptyException());
         } catch (Exception e) {
             throw new KoodistoValidationException(e.getMessage(), e);
         }

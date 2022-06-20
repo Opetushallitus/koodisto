@@ -43,11 +43,6 @@ public class CodeElementValidatorTest {
 
     public static class ValidatingUpdate {
 
-        @Test(expected = KoodistoValidationException.class)
-        public void doesNotAllowUpdatingCodeElementWithoutUri() {
-            validator.validateUpdate(new KoodiDto());
-        }
-
         @Test
         public void passessWithAllDataGiven() {
             validator.validateUpdate(givenCorrectKoodiDto());

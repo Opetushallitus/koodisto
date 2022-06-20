@@ -2,7 +2,6 @@ package fi.vm.sade.koodisto.resource;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.views.JsonViews;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
@@ -15,7 +14,9 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaTo
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import fi.vm.sade.koodisto.validator.CodesValidator;
+import fi.vm.sade.koodisto.validator.KoodistoValidationException;
 import fi.vm.sade.koodisto.validator.ValidationType;
+import fi.vm.sade.koodisto.views.JsonViews;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Validated
 @RestController
@@ -74,6 +76,11 @@ public class CodesResource {
         return ResponseEntity.ok(null);
     }
 
+    private void ensureUriIsPresent(KoodistoDto koodisto) {
+        if (Optional.ofNullable(koodisto.getKoodistoUri()).map(String::isBlank).orElse(true)) {
+            throw new KoodistoValidationException("error.validation.codesuri");
+        }
+    }
 
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @JsonView({JsonViews.Basic.class})
@@ -81,7 +88,7 @@ public class CodesResource {
     @Operation(description = "Päivittää koodistoa")
     public ResponseEntity<Object> update(
             @Parameter(description = "Koodisto") @RequestBody @Valid final KoodistoDto codesDTO) {
-        codesValidator.validate(codesDTO, ValidationType.UPDATE);
+        ensureUriIsPresent(codesDTO);
         KoodistoVersio koodistoVersio = koodistoBusinessService.updateKoodisto(converter.convertFromDTOToUpdateKoodistoDataType(codesDTO));
         return ResponseEntity.status(201).body(koodistoVersio.getVersio());
     }
@@ -93,7 +100,7 @@ public class CodesResource {
     @PutMapping(path = "/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> save(
             @Parameter(description = "Koodisto") @RequestBody @Valid final KoodistoDto codesDTO) {
-        codesValidator.validate(codesDTO, ValidationType.UPDATE);
+        ensureUriIsPresent(codesDTO);
         KoodistoVersio koodistoVersio = koodistoBusinessService.saveKoodisto(codesDTO);
         return ResponseEntity.ok(koodistoVersio.getVersio().toString());
     }

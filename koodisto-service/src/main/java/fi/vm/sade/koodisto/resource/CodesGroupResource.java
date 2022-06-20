@@ -2,13 +2,14 @@ package fi.vm.sade.koodisto.resource;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
-import fi.vm.sade.koodisto.views.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoRyhmaToKoodistoRyhmaDtoConverter;
 import fi.vm.sade.koodisto.validator.CodesGroupValidator;
+import fi.vm.sade.koodisto.validator.KoodistoValidationException;
 import fi.vm.sade.koodisto.validator.ValidationType;
+import fi.vm.sade.koodisto.views.JsonViews;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Validated
 @RestController
@@ -52,7 +54,9 @@ public class CodesGroupResource {
     @Operation(description = "Päivittää koodistoryhmää")
     public ResponseEntity<Object> update(
             @Parameter(description = "Koodistoryhmä") @RequestBody @Valid KoodistoRyhmaDto codesGroupDTO) {
-        codesGroupValidator.validate(codesGroupDTO, ValidationType.UPDATE);
+        if (Optional.ofNullable(codesGroupDTO.getKoodistoRyhmaUri()).map(String::isBlank).orElse(true)) {
+            throw new KoodistoValidationException("error.codesgroup.uri.empty");
+        }
         KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.updateKoodistoRyhma(codesGroupDTO);
         return ResponseEntity.status(201).body(koodistoRyhmaToKoodistoRyhmaDtoConverter.convert(koodistoRyhma));
     }

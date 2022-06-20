@@ -22,6 +22,6 @@ public class CodeElementValidator implements RestValidator<KoodiDto> {
 
     @Override
     public void validateUpdate(KoodiDto validatable) {
-        ValidatorUtil.checkForBlank(validatable.getKoodiUri(), new KoodistoValidationException("error.validation.codeelementuri"));
+        // ValidatorUtil.checkForBlank(validatable.getKoodiUri(), new KoodistoValidationException("error.validation.codeelementuri"));
     }
 }

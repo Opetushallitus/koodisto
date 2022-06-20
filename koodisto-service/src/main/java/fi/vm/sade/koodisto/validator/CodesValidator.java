@@ -22,6 +22,5 @@ public class CodesValidator implements RestValidator<KoodistoDto> {
 
     @Override
     public void validateUpdate(KoodistoDto validatable) {
-        ValidatorUtil.checkForBlank(validatable.getKoodistoUri(), new KoodistoValidationException("error.validation.codesuri"));
     }
 }

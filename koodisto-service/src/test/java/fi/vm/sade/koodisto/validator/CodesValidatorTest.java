@@ -44,12 +44,6 @@ public class CodesValidatorTest {
 
     public static class ValidatingUpdate {
 
-        @Test(expected = KoodistoValidationException.class)
-        public void doesNotAllowUpdatingCodesWithoutCodesUri() {
-            KoodistoDto dto = new KoodistoDto();
-            validator.validateUpdate(dto);
-        }
-
         @Test
         public void passessWithAllDataGiven() {
             KoodistoDto dto = givenKoodistoDtoWithBasicFields();

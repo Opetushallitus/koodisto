@@ -27,18 +27,6 @@ public class CodesGroupValidatorTest {
 
     public static class ValidateUpdate {
 
-        @Test(expected = KoodistoValidationException.class)
-        public void throwsExceptionIfCodesGroupIsNull() {
-            validator.validateUpdate(null);
-        }
-
-        @Test(expected = KoodistoValidationException.class)
-        public void throwsExceptionIfCodesGroupUriIsBlank() {
-            KoodistoRyhmaDto dto = new KoodistoRyhmaDto();
-            dto.setKoodistoRyhmaUri(" ");
-            validator.validateUpdate(dto);
-        }
-
         @Test
         public void passes() {
             KoodistoRyhmaDto dto = new KoodistoRyhmaDto();
