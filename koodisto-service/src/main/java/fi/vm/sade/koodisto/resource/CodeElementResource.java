@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -164,7 +165,7 @@ public class CodeElementResource {
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @PostMapping(path = "/addrelations", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> addRelations(
-            @Parameter(description = "Relaation tiedot JSON muodossa") @RequestBody final KoodiRelaatioListaDto koodiRelaatioDto
+            @Parameter(description = "Relaation tiedot JSON muodossa") @RequestBody @Valid final KoodiRelaatioListaDto koodiRelaatioDto
     ) {
         relationValidator.validate(koodiRelaatioDto, ValidationType.INSERT);
 
@@ -191,7 +192,7 @@ public class CodeElementResource {
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @PostMapping(path = "/removerelations", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> removeRelations(
-            @Parameter(description = "Relaation tiedot JSON muodossa") @RequestBody final KoodiRelaatioListaDto koodiRelaatioDto
+            @Parameter(description = "Relaation tiedot JSON muodossa") @RequestBody @Valid final KoodiRelaatioListaDto koodiRelaatioDto
     ) {
         relationValidator.validate(koodiRelaatioDto, ValidationType.UPDATE);
         koodiBusinessService.removeRelation(koodiRelaatioDto);
@@ -229,7 +230,7 @@ public class CodeElementResource {
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @PutMapping(path = "/save", produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> save(
-            @Parameter(description = "Koodi") @RequestBody final ExtendedKoodiDto koodiDTO) {
+            @Parameter(description = "Koodi") @RequestBody @Valid final ExtendedKoodiDto koodiDTO) {
 
         extendedValidator.validate(koodiDTO, ValidationType.UPDATE);
 

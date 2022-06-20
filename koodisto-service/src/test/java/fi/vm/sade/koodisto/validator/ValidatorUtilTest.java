@@ -2,10 +2,7 @@ package fi.vm.sade.koodisto.validator;
 
 import fi.vm.sade.koodisto.model.constraint.exception.KoodistoValidatorRuntimeException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNimiEmptyException;
-import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 import org.junit.Test;
-
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
@@ -62,15 +59,5 @@ public class ValidatorUtilTest {
     @Test(expected = KoodistoValidatorRuntimeException.class)
     public void throwsGivenExceptionWhenCheckingForNull() {
         ValidatorUtil.checkForNull(null, new KoodistoValidatorRuntimeException(ERROR));
-    }
-
-    @Test(expected = MetadataEmptyException.class)
-    public void throwsExceptionWithNullCollection() {
-        ValidatorUtil.checkCollectionIsNotNullOrEmpty(null, new MetadataEmptyException(ERROR));
-    }
-
-    @Test(expected = MetadataEmptyException.class)
-    public void throwsExceptionWithEmptyCollection() {
-        ValidatorUtil.checkCollectionIsNotNullOrEmpty(new ArrayList<String>(), new MetadataEmptyException(ERROR));
     }
 }

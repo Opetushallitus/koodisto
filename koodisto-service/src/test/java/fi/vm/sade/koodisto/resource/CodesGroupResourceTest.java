@@ -72,7 +72,7 @@ class CodesGroupResourceTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{}"))
                 .andExpect(status().is(400))
-                .andExpect(content().string("error.codesgroup.uri.empty"));
+                .andExpect(content().string("[\"error.metadata.empty\"]"));
         this.mockMvc.perform(
                         put("/rest/codesgroup/")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -84,7 +84,7 @@ class CodesGroupResourceTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"koodistoRyhmaUri\":\"totallyvaliduri\"}"))
                 .andExpect(status().is(400))
-                .andExpect(content().string("error.metadata.empty"));
+                .andExpect(content().string("[\"error.metadata.empty\"]"));
     }
 
     @Test
@@ -115,13 +115,13 @@ class CodesGroupResourceTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{}"))
                 .andExpect(status().is(400))
-                .andExpect(content().string("error.metadata.empty"));
+                .andExpect(content().string("[\"error.metadata.empty\"]"));
         this.mockMvc.perform(
                         post("/rest/codesgroup/")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"koodistoRyhmaUri\":\"totallyvaliduri\"}"))
                 .andExpect(status().is(400))
-                .andExpect(content().string("error.metadata.empty"));
+                .andExpect(content().string("[\"error.metadata.empty\"]"));
         this.mockMvc.perform(
                         post("/rest/codesgroup/")
                                 .contentType(MediaType.APPLICATION_JSON)

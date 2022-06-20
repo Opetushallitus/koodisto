@@ -16,7 +16,6 @@ import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import fi.vm.sade.koodisto.validator.CodesValidator;
 import fi.vm.sade.koodisto.validator.ValidationType;
-import fi.vm.sade.koodisto.validator.ValidatorUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +26,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
@@ -80,7 +80,7 @@ public class CodesResource {
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Päivittää koodistoa")
     public ResponseEntity<Object> update(
-            @Parameter(description = "Koodisto") @RequestBody final KoodistoDto codesDTO) {
+            @Parameter(description = "Koodisto") @RequestBody @Valid final KoodistoDto codesDTO) {
         codesValidator.validate(codesDTO, ValidationType.UPDATE);
         KoodistoVersio koodistoVersio = koodistoBusinessService.updateKoodisto(converter.convertFromDTOToUpdateKoodistoDataType(codesDTO));
         return ResponseEntity.status(201).body(koodistoVersio.getVersio());
@@ -92,7 +92,7 @@ public class CodesResource {
     @JsonView({JsonViews.Basic.class})
     @PutMapping(path = "/save", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> save(
-            @Parameter(description = "Koodisto") @RequestBody final KoodistoDto codesDTO) {
+            @Parameter(description = "Koodisto") @RequestBody @Valid final KoodistoDto codesDTO) {
         codesValidator.validate(codesDTO, ValidationType.UPDATE);
         KoodistoVersio koodistoVersio = koodistoBusinessService.saveKoodisto(codesDTO);
         return ResponseEntity.ok(koodistoVersio.getVersio().toString());
@@ -103,7 +103,7 @@ public class CodesResource {
     @PostMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(description = "Lisää koodiston")
     public ResponseEntity<Object> insert(
-            @Parameter(description = "Koodisto") @RequestBody final KoodistoDto codesDTO) {
+            @Parameter(description = "Koodisto") @RequestBody @Valid final KoodistoDto codesDTO) {
         codesValidator.validate(codesDTO, ValidationType.INSERT);
         List<String> codesGroupUris = new ArrayList<>();
         codesGroupUris.add(codesDTO.getCodesGroupUri());
@@ -162,7 +162,6 @@ public class CodesResource {
         return ResponseEntity.ok(changesService.getChangesDto(codesUri, codesVersion, compareToLatestAccepted));
     }
 
-
     @Operation(description = "Palauttaa tehdyt muutokset uusimpaan koodistoversioon käyttäen lähintä päivämäärään osuvaa koodistoversiota vertailussa",
             summary = "Toimii vain, jos koodisto on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.")
     @JsonView({JsonViews.Basic.class})
@@ -174,7 +173,7 @@ public class CodesResource {
             @Parameter(description = "Vuosi") @PathVariable @Min(1) final int year,
             @Parameter(description = "Tunti") @PathVariable @Min(0) @Max(23) final int hour,
             @Parameter(description = "Minuutti") @PathVariable @Min(0) @Max(59) final int minute,
-            @Parameter(description = "Sekunti") @PathVariable @Min(0) @Max(59)  final int second,
+            @Parameter(description = "Sekunti") @PathVariable @Min(0) @Max(59) final int second,
             @Parameter(description = "Verrataanko viimeiseen hyväksyttyyn versioon") @RequestParam(defaultValue = "false") boolean compareToLatestAccepted) {
         DateTime date = new DateTime(year, month, dayofmonth, hour, minute, second);
         return ResponseEntity.ok(changesService.getChangesDto(codesUri, date, compareToLatestAccepted));

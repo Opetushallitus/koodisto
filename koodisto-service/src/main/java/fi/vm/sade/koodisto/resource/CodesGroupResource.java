@@ -20,6 +20,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @Validated
 @RestController
 @RequestMapping({"/rest/codesgroup"})
@@ -49,7 +51,7 @@ public class CodesGroupResource {
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_READ_UPDATE,T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @Operation(description = "Päivittää koodistoryhmää")
     public ResponseEntity<Object> update(
-            @Parameter(description = "Koodistoryhmä") @RequestBody KoodistoRyhmaDto codesGroupDTO) {
+            @Parameter(description = "Koodistoryhmä") @RequestBody @Valid KoodistoRyhmaDto codesGroupDTO) {
         codesGroupValidator.validate(codesGroupDTO, ValidationType.UPDATE);
         KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.updateKoodistoRyhma(codesGroupDTO);
         return ResponseEntity.status(201).body(koodistoRyhmaToKoodistoRyhmaDtoConverter.convert(koodistoRyhma));
@@ -60,7 +62,7 @@ public class CodesGroupResource {
     @PreAuthorize("hasAnyRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     @Operation(description = "Luo uuden koodistoryhmän")
     public ResponseEntity<Object> insert(
-            @Parameter(description = "Koodistoryhmä") @RequestBody KoodistoRyhmaDto codesGroupDTO) {
+            @Parameter(description = "Koodistoryhmä") @RequestBody @Valid KoodistoRyhmaDto codesGroupDTO) {
         codesGroupValidator.validate(codesGroupDTO, ValidationType.INSERT);
         codesGroupDTO.setKoodistoRyhmaUri(uriTransliterator.generateKoodistoGroupUriByMetadata(codesGroupDTO.getKoodistoRyhmaMetadatas()));
         KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.createKoodistoRyhma(codesGroupDTO);

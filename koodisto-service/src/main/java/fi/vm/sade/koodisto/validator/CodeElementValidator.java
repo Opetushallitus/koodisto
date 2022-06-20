@@ -43,7 +43,6 @@ public class CodeElementValidator implements RestValidator<KoodiDto> {
     }
 
     private void checkMetadatas(Collection<KoodiMetadataDto> metadatas) {
-        ValidatorUtil.checkCollectionIsNotNullOrEmpty(metadatas, new KoodistoValidationException("error.validation.metadata"));
         checkRequiredMetadataFields(metadatas);
     }
 

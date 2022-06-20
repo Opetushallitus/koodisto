@@ -336,12 +336,12 @@ class CodeElementResourceTest {
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         invalidDto.put("metadata", null);
-        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.metadata"));
+        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("error.metadata.empty"));
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         ArrayList<JSONObject> metadatas = new ArrayList<>();
         invalidDto.put("metadata", new JSONArray(metadatas));
-        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.metadata"));
+        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("error.metadata.empty"));
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         invalidDto.put("voimassaLoppuPvm", "1970-01-01");

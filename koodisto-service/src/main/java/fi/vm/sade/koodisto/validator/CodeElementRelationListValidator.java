@@ -15,7 +15,6 @@ public class CodeElementRelationListValidator implements RestValidator<KoodiRela
     public void validateInsert(KoodiRelaatioListaDto validatable) {
         ValidatorUtil.checkForNull(validatable, TO_THROW);
         ValidatorUtil.checkForBlank(validatable.getCodeElementUri(), TO_THROW);
-        ValidatorUtil.checkCollectionIsNotNullOrEmpty(validatable.getRelations(), TO_THROW);
         ValidatorUtil.checkForBlank(validatable.getRelationType(), TO_THROW);
     }
 
