@@ -103,6 +103,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         authorizer.checkOrganisationAccess(createKoodistoData.getOrganisaatioOid(), ROLE_APP_KOODISTO_CRUD);
 
         Koodisto koodisto = new Koodisto();
+        koodisto.addAllKoodistoRyhma(koodistoRyhmas);
         EntityUtils.copyFields(createKoodistoData, koodisto);
         koodisto.setKoodistoUri(uriTransliterator.generateKoodistoUriByMetadata(createKoodistoData.getMetadataList()));
         koodisto = koodistoRepository.save(koodisto);
@@ -355,7 +356,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     public Koodisto getKoodistoByKoodistoUri(String koodistoUri) {
         Koodisto result = koodistoRepository.findByKoodistoUri(koodistoUri);
         if (result == null) {
-            logger.error("No koodisto found for URI {}", koodistoUri);
             throw new KoodistoNotFoundException();
         }
         Iterator<KoodistoVersio> itr = result.getKoodistoVersios().iterator();
@@ -383,7 +383,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
         SearchKoodistosCriteriaType searchCriteria = KoodistoServiceSearchCriteriaBuilder.latestKoodistoByUri(koodistoUri);
         List<KoodistoVersio> result = koodistoVersioRepository.searchKoodistos(searchCriteria);
         if (result.size() != 1) {
-            logger.error("No koodisto found for URI {}", koodistoUri);
             throw new KoodistoNotFoundException();
         }
         if (initialize) {

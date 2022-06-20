@@ -13,8 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -66,7 +65,7 @@ class InternalKoodistoResourceTest {
                                 "\"voimassaLoppuPvm\":null," +
                                 "\"tila\":\"HYVAKSYTTY\"," +
                                 "\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"get\",\"kuvaus\":\"get\"}]," +
-                                "\"koodiVersio\":[1]," +
+                                "\"koodistoVersio\":[1]," +
                                 "\"sisaltyyKoodistoihin\":[]," +
                                 "\"sisaltaaKoodistot\":[]," +
                                 "\"rinnastuuKoodistoihin\":[]," +
@@ -89,11 +88,11 @@ class InternalKoodistoResourceTest {
                         status().isBadRequest(),
                         content().json("[" +
                                 "\"error.organisaatioOid.blank\"," +
-                                "\"error.koodistoRyhmaUri.blank\"," +
+                                "\"error.codesGroupUri.blank\"," +
                                 "\"error.koodistoUri.blank\"," +
                                 "\"error.versio.less.than.one\"," +
                                 "\"error.tila.empty\"," +
-                                "\"error.metadata.empty\"" +
+                                "\"error.metadataList.empty\"" +
                                 "]")
                 );
     }
@@ -111,12 +110,12 @@ class InternalKoodistoResourceTest {
         metadata.put(metadata1);
         JSONObject o = new JSONObject();
         o.put("koodistoUri", koodistoUri);
-        o.put("koodistoRyhmaUri", "dummy");
+        o.put("codesGroupUri", "dummy");
         o.put("organisaatioOid", "1.2.2004.6");
         o.put("versio", koodistoVersio);
         o.put("lockingVersion", "1");
         o.put("tila", "LUONNOS");
-        o.put("metadata", metadata);
+        o.put("metadataList", metadata);
 
         mockMvc.perform(get(BASE_PATH + "/{koodistoUri}/{koodistoVersio}", koodistoUri, koodistoVersio))
                 .andExpectAll(
@@ -165,6 +164,33 @@ class InternalKoodistoResourceTest {
                         jsonPath("$.koodistoRyhmaUri").value("dummy"),
                         jsonPath("$.tila").value("LUONNOS"),
                         jsonPath("$.metadata[0].nimi").value("muokattu3")
+                );
+    }
+
+    @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void createKoodisto() throws Exception {
+        String koodistoUri = "new";
+        JSONArray metadata = new JSONArray();
+        JSONObject metadata1 = new JSONObject();
+        metadata1.put("kieli", "FI");
+        metadata1.put("nimi", "newnimi");
+        metadata.put(metadata1);
+        JSONObject o = new JSONObject();
+        o.put("koodistoUri", koodistoUri);
+        o.put("koodistoRyhmaUri", "dummy");
+        o.put("organisaatioOid", "1.2.2004.6");
+        o.put("metadataList", metadata);
+        o.put("voimassaAlkuPvm","2022-01-01");
+        mockMvc.perform(post(BASE_PATH + "/dummy")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(o.toString()))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.versio").value("1"),
+                        jsonPath("$.koodistoRyhmaUri").value("dummy"),
+                        jsonPath("$.tila").value("LUONNOS"),
+                        jsonPath("$.metadata[0].nimi").value("newnimi")
                 );
     }
 }
