@@ -13,9 +13,7 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToKood
 import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaToKoodistoRyhmaListDtoConverter;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
-import fi.vm.sade.koodisto.validator.CodesValidator;
 import fi.vm.sade.koodisto.validator.KoodistoValidationException;
-import fi.vm.sade.koodisto.validator.ValidationType;
 import fi.vm.sade.koodisto.views.JsonViews;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -45,7 +43,6 @@ public class CodesResource {
 
     private final CodesResourceConverter converter;
     private final KoodistoChangesService changesService;
-    private final CodesValidator codesValidator = new CodesValidator();
 
     private final KoodistoVersioToKoodistoDtoConverter koodistoVersioToKoodistoDtoConverter;
     private final KoodistoVersioToKoodistoVersioListDtoConverter koodistoVersioToKoodistoVersioListDtoConverter;
@@ -111,7 +108,6 @@ public class CodesResource {
     @Operation(description = "Lisää koodiston")
     public ResponseEntity<Object> insert(
             @Parameter(description = "Koodisto") @RequestBody @Valid final KoodistoDto codesDTO) {
-        codesValidator.validate(codesDTO, ValidationType.INSERT);
         List<String> codesGroupUris = new ArrayList<>();
         codesGroupUris.add(codesDTO.getCodesGroupUri());
         KoodistoVersio koodistoVersio = koodistoBusinessService.createKoodisto(codesGroupUris, converter.convertFromDTOToCreateKoodistoDataType(codesDTO));

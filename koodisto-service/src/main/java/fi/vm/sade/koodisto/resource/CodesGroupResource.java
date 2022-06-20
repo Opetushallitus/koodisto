@@ -6,9 +6,7 @@ import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoRyhmaToKoodistoRyhmaDtoConverter;
-import fi.vm.sade.koodisto.validator.CodesGroupValidator;
 import fi.vm.sade.koodisto.validator.KoodistoValidationException;
-import fi.vm.sade.koodisto.validator.ValidationType;
 import fi.vm.sade.koodisto.views.JsonViews;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,8 +34,6 @@ public class CodesGroupResource {
     private final KoodistoRyhmaToKoodistoRyhmaDtoConverter koodistoRyhmaToKoodistoRyhmaDtoConverter;
 
     private final UriTransliterator uriTransliterator;
-
-    private final CodesGroupValidator codesGroupValidator = new CodesGroupValidator();
 
     @JsonView({JsonViews.Basic.class})
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -67,7 +63,6 @@ public class CodesGroupResource {
     @Operation(description = "Luo uuden koodistoryhmän")
     public ResponseEntity<Object> insert(
             @Parameter(description = "Koodistoryhmä") @RequestBody @Valid KoodistoRyhmaDto codesGroupDTO) {
-        codesGroupValidator.validate(codesGroupDTO, ValidationType.INSERT);
         codesGroupDTO.setKoodistoRyhmaUri(uriTransliterator.generateKoodistoGroupUriByMetadata(codesGroupDTO.getKoodistoRyhmaMetadatas()));
         KoodistoRyhma koodistoRyhma = koodistoRyhmaBusinessService.createKoodistoRyhma(codesGroupDTO);
         return ResponseEntity.status(201).body(koodistoRyhmaToKoodistoRyhmaDtoConverter.convert(koodistoRyhma));
