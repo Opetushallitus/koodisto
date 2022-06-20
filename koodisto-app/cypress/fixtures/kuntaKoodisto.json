@@ -34,7 +34,7 @@
             "kuvaus": "municipality"
         }
     ],
-    "koodiVersio": [1, 2],
+    "koodistoVersio": [1, 2],
     "sisaltyyKoodistoihin": [
         {
             "koodistoUri": "oppilaitosnumero",

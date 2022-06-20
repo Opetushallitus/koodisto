@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { fetchPageKoodisto, updateKoodisto } from '../../api/koodisto';
+import { fetchPageKoodisto, updateKoodisto, createKoodisto } from '../../api/koodisto';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { PageKoodisto, SelectOption } from '../../types';
@@ -62,12 +62,15 @@ export const KoodistoMuokkausPage: React.FC = () => {
             }
         })();
     }, [koodistoUri, lang, reset, versioNumber]);
+    const save = async (koodisto: PageKoodisto) => {
+        if (koodistoUri) await update(koodisto);
+        else await create(koodisto);
+    };
     const update = async (koodisto: PageKoodisto) => {
         setLoading(true);
         const updated = await updateKoodisto({ koodisto, lang });
-        reset(updated);
         setLoading(false);
-        updated &&
+        if (updated) {
             success({
                 title: (
                     <FormattedMessage
@@ -83,7 +86,33 @@ export const KoodistoMuokkausPage: React.FC = () => {
                     />
                 ),
             });
-        navigate(`/koodisto/view/${koodistoUri}/${versio}`);
+            reset(updated);
+            navigate(`/koodisto/view/${updated.koodistoUri}/${updated.versio}`);
+        }
+    };
+    const create = async (koodisto: PageKoodisto) => {
+        setLoading(true);
+        const created = await createKoodisto({ koodisto, lang });
+        setLoading(false);
+        if (created) {
+            success({
+                title: (
+                    <FormattedMessage
+                        id={'KOODISTO_TALLENNUS_MESSAGE_TITLE'}
+                        defaultMessage={'Koodisto tallennettiin onnistuneesti.'}
+                    />
+                ),
+                message: (
+                    <FormattedMessage
+                        id={'KOODISTO_TALLENNUS_MESSAGE'}
+                        defaultMessage={'Tallennettiin koodisto uri:lla {koodistoUri}'}
+                        values={{ koodistoUri: created?.koodistoUri }}
+                    />
+                ),
+            });
+            reset(created);
+            navigate(`/koodisto/view/${created.koodistoUri}/${created.versio}`);
+        }
     };
     return (
         (!loading && (
@@ -126,6 +155,12 @@ export const KoodistoMuokkausPage: React.FC = () => {
                                 setValue={setValue}
                                 title={{ id: 'FIELD_ROW_TITLE_NIMI', defaultMessage: 'Nimi*' }}
                                 fieldPath={'nimi'}
+                                options={{
+                                    required: formatMessage({
+                                        id: 'NIMI_PAKOLLINEN',
+                                        defaultMessage: 'Syötä nimi',
+                                    }),
+                                }}
                             />
                         </MainContainerRow>
                         <MainContainerRow>
@@ -214,7 +249,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                         >
                             <FormattedMessage id={'KOODISTO_PERUUTA'} defaultMessage={'Peruuta'} />
                         </Button>
-                        <Button name={'KOODISTO_TALLENNA'} onClick={handleSubmit((a) => update(a))}>
+                        <Button name={'KOODISTO_TALLENNA'} onClick={handleSubmit((a) => save(a))}>
                             <FormattedMessage id={'KOODISTO_TALLENNA'} defaultMessage={'Tallenna'} />
                         </Button>
                     </FooterRightContainer>

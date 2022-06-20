@@ -1,5 +1,6 @@
 import { API_BASE_PATH, API_INTERNAL_PATH } from '../context/constants';
 import { atom, Getter } from 'jotai';
+import type { MapToApiObject, BaseKoodisto } from '../types';
 import {
     ApiDate,
     Kieli,
@@ -7,17 +8,16 @@ import {
     ListKoodisto,
     Metadata,
     PageKoodisto,
-    UpsertKoodi,
     KoodistoRelation,
     OrganisaatioNimi,
     Locale,
+    Tila,
 } from '../types';
 import { casMeLangAtom } from './kayttooikeus';
 import { parseApiDate, translateMetadata, parseUIDate, translateMultiLocaleText } from '../utils';
 import { errorHandlingWrapper } from './errorHandling';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { fetchOrganisaatioNimi } from './organisaatio';
-import type { MapToApiObject, BaseKoodisto } from '../types';
 
 const urlAtom = atom<string>(`${API_INTERNAL_PATH}/koodisto`);
 
@@ -31,16 +31,16 @@ type ApiRyhmaMetadata = {
 type ApiBaseKoodisto = MapToApiObject<BaseKoodisto>;
 
 export type ApiPageKoodisto = ApiBaseKoodisto & {
+    lockingVersion: number;
     koodistoRyhmaUri: string;
     resourceUri: string;
-    omistaja: string | null;
+    omistaja: string;
     organisaatioOid: string;
-    lukittu: boolean | null;
     koodistoRyhmaMetadata: Metadata[];
     paivitysPvm: ApiDate;
     paivittajaOid: string;
-    tila: string;
-    koodiVersio: number[];
+    tila: Tila;
+    koodistoVersio: number[];
     sisaltyyKoodistoihin: KoodistoRelation[];
     sisaltaaKoodistot: KoodistoRelation[];
     rinnastuuKoodistoihin: KoodistoRelation[];
@@ -53,7 +53,23 @@ type ApiListKoodisto = ApiBaseKoodisto & {
     koodiCount: number;
 };
 
+type CreateKoodistoDataType = {
+    voimassaAlkuPvm: ApiDate;
+    voimassaLoppuPvm?: ApiDate;
+    omistaja: string;
+    organisaatioOid: string;
+    metadataList: Metadata[];
+};
+type UpdateKoodistoDataType = CreateKoodistoDataType & {
+    tila: Tila;
+    codesGroupUri: string;
+    koodistoUri: string;
+    versio: number;
+    lockingVersion: number;
+};
+
 const apiKoodistoListToKoodistoList = (a: ApiListKoodisto, lang: Kieli): ListKoodisto => {
+    console.log(a.metadata, a.koodistoRyhmaMetadata);
     const nimi = translateMetadata({ metadata: a.metadata, lang })?.nimi;
     const ryhmaNimi = translateMetadata({ metadata: a.koodistoRyhmaMetadata, lang })?.nimi;
     return {
@@ -93,12 +109,6 @@ export const fetchKoodiListByKoodisto = async ({
     });
 };
 
-export const createKoodisto = async (koodistoUri: string, koodi: UpsertKoodi): Promise<number | undefined> => {
-    return errorHandlingWrapper(async () => {
-        const { data } = await axios.post<number>(`${API_BASE_PATH}/codeelement/${koodistoUri}`, koodi);
-        return data;
-    });
-};
 export const updateKoodisto = async ({
     koodisto,
     lang,
@@ -106,18 +116,53 @@ export const updateKoodisto = async ({
     koodisto: PageKoodisto;
     lang: Kieli;
 }): Promise<PageKoodisto | undefined> => {
+    return upsertKoodisto<UpdateKoodistoDataType>({
+        koodisto,
+        lang,
+        mapper: mapPageKoodistoToUpdatePageKoodisto,
+        path: `${API_INTERNAL_PATH}/koodisto`,
+        axiosFunc: axios.put,
+    });
+};
+export const createKoodisto = async ({
+    koodisto,
+    lang,
+}: {
+    koodisto: PageKoodisto;
+    lang: Kieli;
+}): Promise<PageKoodisto | undefined> => {
+    return upsertKoodisto<CreateKoodistoDataType>({
+        koodisto,
+        lang,
+        mapper: mapPageKoodistoToCreatePageKoodisto,
+        path: `${API_INTERNAL_PATH}/koodisto/${koodisto.koodistoRyhmaUri.value}`,
+        axiosFunc: axios.post,
+    });
+};
+const upsertKoodisto = async <X>({
+    koodisto,
+    lang,
+    mapper,
+    path,
+    axiosFunc,
+}: {
+    koodisto: PageKoodisto;
+    lang: Kieli;
+    mapper: (a: PageKoodisto) => X;
+    path: string;
+    axiosFunc: <T, R = AxiosResponse<T>>(url: string, data?: X) => Promise<R>;
+}): Promise<PageKoodisto | undefined> => {
     return errorHandlingWrapper(async () => {
-        const apiKoodisto = mapPageKoodistoToApiPageKoodisto(koodisto);
-        const { data: apiPageKoodisto } = await axios.put<ApiPageKoodisto>(
-            `${API_INTERNAL_PATH}/koodisto`,
-            apiKoodisto
+        const { data: apiKoodisto } = await axiosFunc(path, mapper(koodisto));
+        return (
+            apiKoodisto && {
+                ...mapApiPageKoodistoToPageKoodisto({
+                    api: apiKoodisto,
+                    lang,
+                    organisaatioNimi: await fetchOrganisaatioNimi(apiKoodisto.organisaatioOid),
+                }),
+            }
         );
-        if (apiPageKoodisto) {
-            const organisaatioNimi = await fetchOrganisaatioNimi(apiPageKoodisto.organisaatioOid);
-            return { ...mapApiPageKoodistoToPageKoodisto({ api: apiPageKoodisto, lang, organisaatioNimi }) };
-        } else {
-            return undefined;
-        }
     });
 };
 
@@ -154,16 +199,28 @@ const mapApiPageKoodistoToPageKoodisto = ({
         paivitysPvm: parseApiDate(api.paivitysPvm),
     };
 };
-function mapPageKoodistoToApiPageKoodisto(koodisto: PageKoodisto): ApiPageKoodisto {
+
+function mapPageKoodistoToCreatePageKoodisto(koodisto: PageKoodisto): CreateKoodistoDataType {
     return {
-        ...koodisto,
-        koodistoRyhmaUri: koodisto.koodistoRyhmaUri.value,
+        omistaja: koodisto.omistaja,
+        metadataList: koodisto.metadata,
         organisaatioOid: koodisto.organisaatioOid.value,
         voimassaAlkuPvm: koodisto.voimassaAlkuPvm && parseUIDate(koodisto.voimassaAlkuPvm),
         voimassaLoppuPvm: koodisto.voimassaLoppuPvm && parseUIDate(koodisto.voimassaLoppuPvm),
-        paivitysPvm: parseUIDate(koodisto.paivitysPvm),
     };
 }
+
+function mapPageKoodistoToUpdatePageKoodisto(koodisto: PageKoodisto): UpdateKoodistoDataType {
+    return {
+        lockingVersion: koodisto.lockingVersion,
+        tila: koodisto.tila,
+        versio: koodisto.versio,
+        codesGroupUri: koodisto.koodistoRyhmaUri.value,
+        koodistoUri: koodisto.koodistoUri,
+        ...mapPageKoodistoToCreatePageKoodisto(koodisto),
+    };
+}
+
 export const fetchPageKoodisto = async ({
     koodistoUri,
     versio,

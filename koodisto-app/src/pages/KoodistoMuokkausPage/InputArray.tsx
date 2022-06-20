@@ -6,6 +6,7 @@ import { IconWrapper } from '../../components/IconWapper';
 import * as React from 'react';
 import { MainContainerRowTitle } from '../../components/Containers';
 import Textarea from '@opetushallitus/virkailija-ui-components/Textarea';
+import { RegisterOptions } from 'react-hook-form/dist/types/validator';
 
 const Container = styled.div`
     display: flex;
@@ -14,6 +15,13 @@ const Container = styled.div`
 `;
 const Column = styled.div`
     margin-right: 1rem;
+`;
+const TitleContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    > div {
+        padding-right: 1rem;
+    }
 `;
 export const Direction = styled.div<{ large?: boolean }>`
     display: flex;
@@ -33,6 +41,7 @@ export const InputArray = ({
     getValues,
     setValue,
     large,
+    options,
 }: {
     title: MessageDescriptor;
     fieldPath: FieldPath<Metadata>;
@@ -41,6 +50,7 @@ export const InputArray = ({
     getValues: UseFormGetValues<PageKoodisto>;
     setValue: UseFormSetValue<PageKoodisto>;
     large?: boolean;
+    options?: RegisterOptions;
 }) => {
     const { formatMessage } = useIntl();
     const { fields } = useFieldArray({
@@ -58,29 +68,30 @@ export const InputArray = ({
             <Direction large={large}>
                 {fields.map((field, index) => (
                     <Column key={field.id}>
-                        <FormattedMessage id={`FIELD_TITLE_${field.kieli}`} defaultMessage={field.kieli} />{' '}
-                        <Textarea
-                            rows={(large && 5) || 1}
-                            {...register(`metadata.${index}.${fieldPath}`)}
-                            suffix={
-                                index === 0 && (
-                                    <div
-                                        title={formatMessage({
-                                            id: 'KOPIOI_MUIHIN_NIMIIN',
-                                            defaultMessage: 'Kopioi muihin kieliin',
-                                        })}
-                                        onClick={() => copyToNames()}
-                                    >
-                                        <IconWrapper
-                                            icon="ci:copy"
-                                            color={'gray'}
-                                            height={'1.5rem'}
-                                            name={'KOPIOI_MUIHIN_NIMIIN'}
-                                        />
-                                    </div>
-                                )
-                            }
-                        />
+                        <TitleContainer>
+                            <FormattedMessage
+                                id={`FIELD_TITLE_${field.kieli}`}
+                                defaultMessage={field.kieli}
+                                tagName={'div'}
+                            />
+                            {index === 0 && (
+                                <div
+                                    title={formatMessage({
+                                        id: 'KOPIOI_MUIHIN_NIMIIN',
+                                        defaultMessage: 'Kopioi muihin kieliin',
+                                    })}
+                                    onClick={() => copyToNames()}
+                                >
+                                    <IconWrapper
+                                        icon="ci:copy"
+                                        color={'gray'}
+                                        height={'1rem'}
+                                        name={'KOPIOI_MUIHIN_NIMIIN'}
+                                    />
+                                </div>
+                            )}
+                        </TitleContainer>
+                        <Textarea rows={(large && 5) || 1} {...register(`metadata.${index}.${fieldPath}`, options)} />
                     </Column>
                 ))}
             </Direction>

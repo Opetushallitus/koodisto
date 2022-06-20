@@ -64,8 +64,7 @@ export const FooterContainer = styled.div`
     flex-direction: row;
     height: 7rem;
     width: 100%;
-    position: absolute;
-    bottom: 0;
+
     box-sizing: border-box;
     border-style: solid;
     border-width: 0.2rem 0 0 0;

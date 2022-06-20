@@ -26,13 +26,12 @@ export const FastSelect: React.FC<{
             ...filteredOptions.slice(0, MAX_DISPLAYED_OPTIONS),
             ...(filteredOptions.findIndex((a) => {
                 return value && a.value === value.value;
-            }) >= 0
+            }) >= 0 || !value
                 ? []
                 : [value]),
         ],
         [filteredOptions, value]
     );
-
     return (
         <Select
             {...props}

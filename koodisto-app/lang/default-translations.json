@@ -134,6 +134,9 @@
   "LATAA_CVS_VALITSE_TIEDOSTO_ALUE": {
     "defaultMessage": "Tai raahaa tiedosto tähän"
   },
+  "NIMI_PAKOLLINEN": {
+    "defaultMessage": "Syötä nimi"
+  },
   "ORGANISAATIO_PAKOLLINEN": {
     "defaultMessage": "organisaatio."
   },

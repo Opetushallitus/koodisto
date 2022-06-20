@@ -5,7 +5,7 @@ import { Options as IntlMessageFormatOptions } from 'intl-messageformat/src/core
 export type Kieli = 'EN' | 'FI' | 'SV';
 export type Locale = Lowercase<Kieli>;
 export type ApiDate = `${number}${number}${number}${number}-${number}${number}-${number}${number}`;
-type Tila = 'PASSIIVINEN' | 'LUONNOS' | 'HYVAKSYTTY';
+export type Tila = 'PASSIIVINEN' | 'LUONNOS' | 'HYVAKSYTTY';
 
 type MapDateToApiDate<PropType> = PropType extends Date ? ApiDate : PropType;
 
@@ -107,19 +107,20 @@ export type KoodistoRelation = {
         en: string;
     };
 };
+
 export type PageKoodisto = BaseKoodisto & {
+    lockingVersion: number;
     koodistoRyhmaUri: SelectOption;
     resourceUri: string;
-    omistaja: string | null;
+    omistaja: string;
     organisaatioOid: SelectOption;
     organisaatioNimi?: OrganisaatioNimi;
-    lukittu: boolean | null;
     koodistoRyhmaMetadata: Metadata[];
     paivitysPvm: Date;
     paivittajaOid: string;
-    tila: string;
+    tila: Tila;
     metadata: Metadata[];
-    koodiVersio: number[];
+    koodistoVersio: number[];
     sisaltyyKoodistoihin: KoodistoRelation[];
     sisaltaaKoodistot: KoodistoRelation[];
     rinnastuuKoodistoihin: KoodistoRelation[];

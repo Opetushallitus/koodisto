@@ -1,6 +1,6 @@
 import { BASE_PATH, API_INTERNAL_PATH } from '../../../src/context/constants';
 
-describe('The Koodisto View page', () => {
+describe('The Koodisto Edit page', () => {
     beforeEach(() => {
         cy.mockBaseIntercepts();
     });
@@ -9,14 +9,14 @@ describe('The Koodisto View page', () => {
         cy.visit(`${BASE_PATH}/koodisto/view/kunta/2`);
         cy.contains('kunta').should('be.visible');
     });
-    it('shows edit button and can click', () => {
+    it('shows edit button and can click 1', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'kuntaKoodisto.json' });
         cy.get('button[name="KOODISTOSIVU_MUOKKAA_KOODISTOA_BUTTON"]').should('be.visible').click();
         cy.contains('Muokkaa koodistoa').should('be.visible');
     });
     it('shows edit button and can click', () => {
         cy.intercept('PUT', `${API_INTERNAL_PATH}/koodisto`, (req) => {
-            expect(req.body.metadata).to.eqls([
+            expect(req.body.metadataList).to.eqls([
                 { kieli: 'FI', nimi: 'kunta muokattu', kuvaus: 'kunta' },
                 { kieli: 'SV', nimi: 'kommun', kuvaus: 'kommun' },
                 { kieli: 'EN', nimi: 'municipality', kuvaus: 'municipality' },
@@ -32,13 +32,13 @@ describe('The Koodisto View page', () => {
         cy.get('button[name="KOODISTO_TALLENNA"]').should('be.visible').click();
         cy.contains('Tallennettiin koodisto uri:lla kunta').should('be.visible');
     });
-    it('shows edit button and can click', () => {
+    it('shows edit button and can click 2', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'kuntaKoodisto.json' });
         cy.get('button[name="KOODISTOSIVU_MUOKKAA_KOODISTOA_BUTTON"]').should('be.visible').click();
         cy.contains('Muokkaa koodistoa').should('be.visible');
         cy.intercept('PUT', `${API_INTERNAL_PATH}/koodisto`, (req) => {
             expect(req.body.organisaatioOid).to.eq('1.2.246.562.10.2013112012294919827487');
-            expect(req.body.koodistoRyhmaUri).to.eq('varda');
+            expect(req.body.codesGroupUri).to.eq('varda');
             req.reply({ fixture: 'kuntaKoodisto.json' });
         });
         cy.get('div[id="organisaatioOid"]')
