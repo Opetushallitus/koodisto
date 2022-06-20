@@ -1,8 +1,6 @@
 package fi.vm.sade.koodisto.resource;
 
 import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
-import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoMetadataToKoodistoMetadataTypeConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
@@ -14,8 +12,6 @@ import java.util.Date;
 @Component
 @RequiredArgsConstructor
 public class CodesResourceConverter {
-
-    private final KoodistoMetadataToKoodistoMetadataTypeConverter koodistoMetadataToKoodistoMetadataTypeConverter;
 
     public UpdateKoodistoDataType convertFromDTOToUpdateKoodistoDataType(KoodistoDto koodistoDto) {
         UpdateKoodistoDataType updateKoodistoDataType = new UpdateKoodistoDataType();
