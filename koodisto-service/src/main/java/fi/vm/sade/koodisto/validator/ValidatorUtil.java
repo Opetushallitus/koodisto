@@ -42,12 +42,4 @@ public class ValidatorUtil {
             throw toThrow;
         }
     }
-
-    public static void validateDateParameters(Integer dayOfMonth, Integer month, Integer year, Integer hourOfDay, Integer minute, Integer second) {
-        if (dayOfMonth < 1 || dayOfMonth > 31 || month < 1 || month > 12 || year < 1 || hourOfDay < 0 || hourOfDay > 23 || minute < 0 || minute > 59 || second < 0 || second > 59) {
-            throw new KoodistoValidationException("Parameters provided for date were invalid.");
-        }
-
-    }
-
 }

@@ -27,6 +27,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
@@ -168,14 +169,13 @@ public class CodesResource {
     @GetMapping(path = "/changes/withdate/{codesUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getChangesToCodesWithDate(
             @Parameter(description = "Koodiston URI") @PathVariable String codesUri,
-            @Parameter(description = "Kuukauden päivä") @PathVariable Integer dayofmonth,
-            @Parameter(description = "Kuukausi") @PathVariable Integer month,
-            @Parameter(description = "Vuosi") @PathVariable Integer year,
-            @Parameter(description = "Tunti") @PathVariable Integer hour,
-            @Parameter(description = "Minuutti") @PathVariable Integer minute,
-            @Parameter(description = "Sekunti") @PathVariable Integer second,
+            @Parameter(description = "Kuukauden päivä") @PathVariable @Min(1) @Max(31) final int dayofmonth,
+            @Parameter(description = "Kuukausi") @PathVariable @Min(1) @Max(12) final int month,
+            @Parameter(description = "Vuosi") @PathVariable @Min(1) final int year,
+            @Parameter(description = "Tunti") @PathVariable @Min(0) @Max(23) final int hour,
+            @Parameter(description = "Minuutti") @PathVariable @Min(0) @Max(59) final int minute,
+            @Parameter(description = "Sekunti") @PathVariable @Min(0) @Max(59)  final int second,
             @Parameter(description = "Verrataanko viimeiseen hyväksyttyyn versioon") @RequestParam(defaultValue = "false") boolean compareToLatestAccepted) {
-        ValidatorUtil.validateDateParameters(dayofmonth, month, year, hour, minute, second);
         DateTime date = new DateTime(year, month, dayofmonth, hour, minute, second);
         return ResponseEntity.ok(changesService.getChangesDto(codesUri, date, compareToLatestAccepted));
     }

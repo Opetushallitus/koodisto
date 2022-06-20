@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
@@ -121,15 +122,13 @@ public class CodeElementResource {
             summary = "Toimii vain, jos koodi on versioitunut muutoksista, eli sitä ei ole jätetty luonnostilaan.")
     @GetMapping(path = "/changes/withdate/{codeElementUri}/{dayofmonth}/{month}/{year}/{hour}/{minute}/{second}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getChangesToCodeElementWithDate(@PathVariable String codeElementUri,
-                                                                  @Parameter(description = "Kuukauden päivä") @PathVariable Integer dayofmonth,
-                                                                  @Parameter(description = "Kuukausi") @PathVariable Integer month,
-                                                                  @Parameter(description = "Vuosi") @PathVariable Integer year,
-                                                                  @Parameter(description = "Tunti") @PathVariable Integer hour,
-                                                                  @Parameter(description = "Minuutti") @PathVariable Integer minute,
-                                                                  @Parameter(description = "Sekunti") @PathVariable Integer second,
+                                                                  @Parameter(description = "Kuukauden päivä") @PathVariable @Min(1) @Max(31) final int dayofmonth,
+                                                                  @Parameter(description = "Kuukausi") @PathVariable @Min(1) @Max(12) final int month,
+                                                                  @Parameter(description = "Vuosi") @PathVariable @Min(1) final int year,
+                                                                  @Parameter(description = "Tunti") @PathVariable @Min(0) @Max(23) final int hour,
+                                                                  @Parameter(description = "Minuutti") @PathVariable @Min(0) @Max(59) final int minute,
+                                                                  @Parameter(description = "Sekunti") @PathVariable @Min(0) @Max(59) final int second,
                                                                   @Parameter(description = "Verrataanko viimeiseen hyväksyttyyn versioon") @RequestParam(defaultValue = "false") Boolean compareToLatestAccepted) {
-
-        ValidatorUtil.validateDateParameters(dayofmonth, month, year, hour, minute, second);
         DateTime dateTime = new DateTime(year, month, dayofmonth, hour, minute, second);
         return ResponseEntity.ok(changesService.getChangesDto(codeElementUri, dateTime, compareToLatestAccepted));
     }
