@@ -34,10 +34,10 @@ class InternalKoodistoResourceTest {
                 .perform(get(BASE_PATH))
                 .andExpect(content().string(containsString("{" +
                         "\"koodistoRyhmaMetadata\":[{\"id\":-1,\"uri\":\"general\",\"nimi\":\"general\",\"kieli\":\"FI\"}]," +
-                        "\"koodistoUri\":\"dummy\",\"versio\":1," +
+                        "\"koodistoUri\":\"dummy\",\"versio\":2," +
                         "\"voimassaAlkuPvm\":\"2012-11-20\"," +
                         "\"voimassaLoppuPvm\":null," +
-                        "\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Dummy\",\"kuvaus\":\"kuvaus\"}]," +
+                        "\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"new version\",\"kuvaus\":\"new version\"}]," +
                         "\"koodiCount\":0}")))
                 .andExpect(status().isOk());
     }
@@ -185,6 +185,20 @@ class InternalKoodistoResourceTest {
                         jsonPath("$.koodistoRyhmaUri").value("dummy"),
                         jsonPath("$.tila").value("LUONNOS"),
                         jsonPath("$.metadata[0].nimi").value("newnimi")
+                );
+    }
+
+    @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void getLatestKoodisto() throws Exception {
+        String koodistoUri = "dummy";
+        mockMvc.perform(get(BASE_PATH + "/{koodistoUri}", koodistoUri))
+                .andExpectAll(
+                        status().isOk(),
+                        jsonPath("$.versio").value("2"),
+                        jsonPath("$.koodistoRyhmaUri").value("general"),
+                        jsonPath("$.tila").value("LUONNOS"),
+                        jsonPath("$.metadata[0].nimi").value("new version")
                 );
     }
 }

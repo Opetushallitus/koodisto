@@ -8,7 +8,9 @@ INSERT INTO koodistoversio (id, version, paivityspvm, luotu, tila, versio, koodi
 VALUES ('-1', '0', '2012-03-22 13:23:41.414000', '2013-01-01', 'HYVAKSYTTY', '1', '-1', '2012-11-20'),
        ('-2', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'LUONNOS', '1', '-2', '2012-11-20'),
        ('-3', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'HYVAKSYTTY', '1', '-3', '2012-11-20'),
-       ('-4', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'LUONNOS', '1', '-4', '2012-11-20');
+       ('-4', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'LUONNOS', '1', '-4', '2012-11-20'),
+       ('-5', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'LUONNOS', '2', '-1', '2012-11-20');
+
 
 INSERT INTO koodistoryhma (id, koodistoryhmauri, version)
 VALUES ('-1', 'general', '0'),
@@ -28,7 +30,8 @@ INSERT INTO koodistometadata (id, kieli, nimi, version, koodistoversio_id, kuvau
 VALUES ('-1', 'FI', 'Dummy', '0', '-1', 'kuvaus'),
        ('-2', 'FI', 'One', '1', '-2', 'kuvaus'),
        ('-3', 'FI', 'get', '1', '-3', 'get'),
-       ('-4', 'FI', 'Twot', '1', '-4', 'Two kuvaus');
+       ('-4', 'FI', 'Twot', '1', '-4', 'Two kuvaus'),
+       ('-5', 'FI', 'new version', '1', '-5', 'new version');
 
 
 INSERT INTO koodi (id, koodisto_id, version, koodiuri)
