@@ -17,6 +17,9 @@ import java.util.List;
 public class InternalKoodiVersioDto {
 
     @JsonView({JsonViews.Internal.class})
+    private String koodistoUri;
+
+    @JsonView({JsonViews.Internal.class})
     private String koodiArvo;
 
     @JsonView({JsonViews.Internal.class})
@@ -37,4 +40,13 @@ public class InternalKoodiVersioDto {
 
     @JsonView({JsonViews.Internal.class})
     private List<KoodiMetadataDto> metadata;
+
+    @JsonView({JsonViews.Internal.class})
+    private List<InternalKoodiSuhdeDto> sisaltyyKoodeihin;
+
+    @JsonView({JsonViews.Internal.class})
+    private List<InternalKoodiSuhdeDto> sisaltaaKoodit;
+
+    @JsonView({JsonViews.Internal.class})
+    private List<InternalKoodiSuhdeDto> rinnastuuKoodeihin;
 }

@@ -31,7 +31,6 @@ public class KoodistoVersioToInternalKoodistoPageDtoConverter implements
 
     @Override
     public InternalKoodistoPageDto convert(KoodistoVersio source) {
-        List<InternalKoodistoSuhdeDto> levelsWithCodes = getLevelsWithCodes(source);
         return InternalKoodistoPageDto.builder()
                 .koodistoRyhmaUri(source.getKoodisto().getKoodistoRyhmas().stream().findFirst().orElseThrow(KoodistoRyhmaMissingException::new).getKoodistoRyhmaUri())
                 .koodistoRyhmaMetadata(source.getKoodisto().getKoodistoRyhmas().stream()
@@ -59,13 +58,9 @@ public class KoodistoVersioToInternalKoodistoPageDtoConverter implements
                 .koodistoVersio(source.getKoodisto().getKoodistoVersios().stream()
                         .map(KoodistoVersio::getVersio)
                         .collect(Collectors.toList()))
-                .rinnastuuKoodistoihin(levelsWithCodes)
+                .rinnastuuKoodistoihin(getLevelsWithCodes(source))
                 .sisaltaaKoodistot(extractBySuhde(source.getAlakoodistos(), SuhteenTyyppi.SISALTYY, KoodistonSuhde::getAlakoodistoVersio))
                 .sisaltyyKoodistoihin(extractBySuhde(source.getYlakoodistos(), SuhteenTyyppi.SISALTYY, KoodistonSuhde::getYlakoodistoVersio))
-                .koodiList(source.getKoodiVersios().stream()
-                        .map(KoodistoVersioKoodiVersio::getKoodiVersio)
-                        .map(koodiVersioToInternalKoodiVersioDtoConverter::convert)
-                        .collect(Collectors.toList()))
                 .build();
     }
 

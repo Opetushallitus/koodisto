@@ -1,34 +1,19 @@
 {
-  "koodi": {
-    "koodiUri": "get_1",
-    "resourceUri": "http://localhost/8080/koodisto-service/rest/codeelement/get_1",
-    "versio": 1,
-    "koodiArvo": "1",
-    "paivitysPvm": "2012-03-22",
-    "paivittajaOid": null,
-    "voimassaAlkuPvm": "1990-01-01",
-    "voimassaLoppuPvm": null,
-    "tila": "HYVAKSYTTY",
-    "metadata": [
-      {
-        "nimi": "get1",
-        "kuvaus": "Get 1",
-        "kieli": "FI"
-      }
-    ],
-    "withinCodeElements": [],
-    "includesCodeElements": [],
-    "levelsWithCodeElements": [],
-    "versions": 1
-  },
-  "koodisto": {
-    "koodistoUri": "get",
-    "versio": 1,
-    "metadata": [
-      {
-        "kieli": "FI",
-        "nimi": "get"
-      }
-    ]
-  }
+  "koodistoUri": "get",
+  "koodiArvo": "1",
+  "versio": 1,
+  "koodiUri": "get_1",
+  "paivitysPvm": "2012-03-22",
+  "paivittajaOid": null,
+  "voimassaAlkuPvm": "1990-01-01",
+  "metadata": [
+    {
+      "nimi": "get1",
+      "kuvaus": "Get 1",
+      "kieli": "FI"
+    }
+  ],
+  "sisaltyyKoodeihin": [],
+  "sisaltaaKoodit": [],
+  "rinnastuuKoodeihin": []
 }

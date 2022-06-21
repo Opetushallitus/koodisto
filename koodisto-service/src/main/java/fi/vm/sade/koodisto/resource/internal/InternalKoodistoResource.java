@@ -47,6 +47,15 @@ public class InternalKoodistoResource {
         return ResponseEntity.ok(koodistoVersioToInternalKoodistoListDtoConverter.convertAll(result));
     }
 
+    @GetMapping(path = "/{koodistoUri}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView({JsonViews.Internal.class})
+    public @ResponseBody ResponseEntity<InternalKoodistoPageDto> getLatestKoodisto(
+            @PathVariable @NotBlank String koodistoUri) {
+        KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+        return ResponseEntity.ok(koodistoVersioToInternalKoodistoPageDtoConverter.convert(result));
+    }
+
     @GetMapping(path = "/{koodistoUri}/{koodistoVersio}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})

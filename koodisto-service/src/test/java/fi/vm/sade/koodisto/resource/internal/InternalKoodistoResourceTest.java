@@ -68,14 +68,8 @@ class InternalKoodistoResourceTest {
                                 "\"koodistoVersio\":[1]," +
                                 "\"sisaltyyKoodistoihin\":[]," +
                                 "\"sisaltaaKoodistot\":[]," +
-                                "\"rinnastuuKoodistoihin\":[]," +
-                                "\"koodiList\":[{" +
-                                "\"koodiArvo\":\"1\"," +
-                                "\"versio\":1," +
-                                "\"paivitysPvm\":\"2012-03-22\"," +
-                                "\"paivittajaOid\":null," +
-                                "\"voimassaAlkuPvm\":\"1990-01-01\"," +
-                                "\"metadata\":[{\"nimi\":\"get1\",\"kieli\":\"FI\"}]}]}"));
+                                "\"rinnastuuKoodistoihin\":[]" +
+                                "}"));
     }
 
     @Test
