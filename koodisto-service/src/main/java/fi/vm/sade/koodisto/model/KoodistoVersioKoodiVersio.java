@@ -1,8 +1,7 @@
 package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.koodisto.model.constraint.KoodistoVersioKoodiVersioConstraint;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
