@@ -1,4 +1,4 @@
-package fi.vm.sade.koodisto.views;
+package fi.vm.sade.koodisto.model;
 
 public class JsonViews {
 

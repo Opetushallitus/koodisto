@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.dto;
 
-import fi.vm.sade.koodisto.service.types.common.KieliType;
-import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
+import fi.vm.sade.koodisto.model.Kieli;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -28,14 +27,16 @@ class KoodistoDtoTest extends DtoTest {
     }
 
     private static KoodistoDtoBuilder getValid() {
-        KoodistoMetadataType meta = new KoodistoMetadataType();
-        meta.setKieli(KieliType.FI);
         return KoodistoDtoBuilder
                 .builder()
                 .codesGroupUri("codesGroupUri")
                 .organisaatioOid("organisaatioOid")
                 .voimassaAlkuPvm(dateOf(2022, 6, 21))
-                .metadata(List.of(meta));
+                .metadata(List.of(KoodistoMetadataDto
+                        .builder()
+                        .kieli(Kieli.FI)
+                        .nimi("nimi")
+                        .build()));
     }
 
     @Setter
@@ -47,7 +48,7 @@ class KoodistoDtoTest extends DtoTest {
         private String organisaatioOid;
         private Date voimassaAlkuPvm;
         private Date voimassaLoppuPvm;
-        private List<KoodistoMetadataType> metadata;
+        private List<KoodistoMetadataDto> metadata;
 
         public static KoodistoDtoBuilder builder() {
             return new KoodistoDtoBuilder();

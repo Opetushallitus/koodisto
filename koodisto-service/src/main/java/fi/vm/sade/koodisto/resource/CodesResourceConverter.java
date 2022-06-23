@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.resource;
 
 import fi.vm.sade.koodisto.dto.KoodistoDto;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoMetadataDtoToKoodistoMetadataTypeConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
@@ -8,10 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class CodesResourceConverter {
+
+    private final KoodistoMetadataDtoToKoodistoMetadataTypeConverter koodistoMetadataDtoToKoodistoMetadataTypeConverter;
 
     public UpdateKoodistoDataType convertFromDTOToUpdateKoodistoDataType(KoodistoDto koodistoDto) {
         UpdateKoodistoDataType updateKoodistoDataType = new UpdateKoodistoDataType();
@@ -30,7 +34,7 @@ public class CodesResourceConverter {
         updateKoodistoDataType.setVersio(koodistoDto.getVersio());
         updateKoodistoDataType.setTila(TilaType.fromValue(koodistoDto.getTila().toString()));
         updateKoodistoDataType.setLockingVersion(koodistoDto.getVersion());
-        updateKoodistoDataType.getMetadataList().addAll(koodistoDto.getMetadata());
+        updateKoodistoDataType.getMetadataList().addAll(koodistoDto.getMetadata().stream().map(koodistoMetadataDtoToKoodistoMetadataTypeConverter::convert).collect(Collectors.toList()));
 
         return updateKoodistoDataType;
     }
@@ -46,7 +50,7 @@ public class CodesResourceConverter {
         createKoodistoDataType.setVoimassaLoppuPvm(endDate);
         createKoodistoDataType.setOmistaja(koodistoDto.getOmistaja());
         createKoodistoDataType.setOrganisaatioOid(koodistoDto.getOrganisaatioOid());
-        createKoodistoDataType.getMetadataList().addAll(koodistoDto.getMetadata());
+        createKoodistoDataType.getMetadataList().addAll(koodistoDto.getMetadata().stream().map(koodistoMetadataDtoToKoodistoMetadataTypeConverter::convert).collect(Collectors.toList()));
 
         return createKoodistoDataType;
     }

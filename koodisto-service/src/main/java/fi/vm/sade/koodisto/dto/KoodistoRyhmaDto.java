@@ -1,12 +1,11 @@
 package fi.vm.sade.koodisto.dto;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.koodisto.views.JsonViews;
+import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import lombok.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;

@@ -6,7 +6,7 @@ import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodiPageDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
-import fi.vm.sade.koodisto.views.JsonViews;
+import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.resource.CodeElementResourceConverter;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;

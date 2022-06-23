@@ -3,7 +3,7 @@ package fi.vm.sade.koodisto.dto.internal;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
-import fi.vm.sade.koodisto.views.JsonViews;
+import fi.vm.sade.koodisto.model.JsonViews;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

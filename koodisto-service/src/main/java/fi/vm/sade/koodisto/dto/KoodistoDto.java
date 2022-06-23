@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
-import fi.vm.sade.koodisto.views.JsonViews;
+import fi.vm.sade.koodisto.model.JsonViews;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -48,7 +48,7 @@ public class KoodistoDto extends AbstractKoodistoDto {
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
     @NotEmpty(message = "error.metadata.empty")
     @Valid
-    private List<KoodistoMetadataType> metadata = new ArrayList<>();
+    private List<KoodistoMetadataDto> metadata = new ArrayList<>();
     @JsonView(JsonViews.Extended.class)
     private List<Integer> codesVersions;
 

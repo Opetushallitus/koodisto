@@ -1,16 +1,10 @@
 package fi.vm.sade.koodisto.resource;
 
-import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
-import fi.vm.sade.koodisto.dto.KoodiDto;
-import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
-import fi.vm.sade.koodisto.dto.KoodistoDto;
+import fi.vm.sade.koodisto.dto.*;
 import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
-import fi.vm.sade.koodisto.service.types.common.KieliType;
-import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 import static java.util.Collections.singletonList;
@@ -160,7 +155,7 @@ class CodesResourceTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(codesToBeInserted))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string(containsString("error.validation.language")));
+                .andExpect(content().string(containsString("error.koodistometadata.kieli.empty")));
     }
 
     @Test
@@ -550,10 +545,10 @@ class CodesResourceTest {
         dto.setCodesGroupUri(koodistoRyhmaUri);
         dto.setOrganisaatioOid(organisaatioOid);
         dto.setKoodistoUri(koodistoUri);
-        KoodistoMetadataType metadata = new KoodistoMetadataType();
-        metadata.setKieli(KieliType.FI);
-        metadata.setNimi(nimiFi);
-        dto.setMetadata(singletonList(metadata));
+        dto.setMetadata(List.of(KoodistoMetadataDto.builder()
+                .kieli(Kieli.FI)
+                .nimi(nimiFi)
+                .build()));
         dto.setVoimassaAlkuPvm(java.sql.Date.valueOf(alkuPvm));
         dto.setVoimassaLoppuPvm(java.sql.Date.valueOf(loppuPvm));
         return dto;

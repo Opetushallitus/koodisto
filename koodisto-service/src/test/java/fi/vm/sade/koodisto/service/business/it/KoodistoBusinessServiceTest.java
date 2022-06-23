@@ -2,6 +2,7 @@ package fi.vm.sade.koodisto.service.business.it;
 
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
+import fi.vm.sade.koodisto.dto.KoodistoMetadataDto;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.repository.KoodistonSuhdeRepository;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
@@ -14,8 +15,6 @@ import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
-import fi.vm.sade.koodisto.service.types.common.KieliType;
-import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import org.junit.Test;
@@ -47,18 +46,15 @@ import static org.junit.Assert.*;
 public class KoodistoBusinessServiceTest {
 
     private static final String CODES_WITH_RELATIONS = "809suhdetahan";
-
-    @Autowired
-    private KoodistoBusinessService koodistoBusinessService;
-
-    @Autowired
-    private KoodiBusinessService koodiBusinessService;
-
-    @Autowired
-    private KoodistonSuhdeRepository suhdeRepository;
+    private static final Long KOODISTON_SUHDE = -6L;
     @Autowired
     KoodistoVersioToKoodistoDtoConverter koodistoVersioToKoodistoDtoConverter;
-    private static final Long KOODISTON_SUHDE = -6L;
+    @Autowired
+    private KoodistoBusinessService koodistoBusinessService;
+    @Autowired
+    private KoodiBusinessService koodiBusinessService;
+    @Autowired
+    private KoodistonSuhdeRepository suhdeRepository;
 
     @Test
     public void testCreate() {
@@ -242,12 +238,11 @@ public class KoodistoBusinessServiceTest {
         assertEquals(codesDTO.getKoodistoUri(), result.getKoodisto().getKoodistoUri());
         assertEquals(versio + 1, result.getVersio().intValue());
         assertEquals(Tila.LUONNOS, result.getTila());
-        KoodistoMetadataType expectedMeta = codesDTO.getMetadata().get(0);
-        assertEquals(expectedMeta.getKieli().value(), result.getMetadatas().iterator().next().getKieli().name());
+        KoodistoMetadataDto expectedMeta = codesDTO.getMetadata().get(0);
+        assertEquals(expectedMeta.getKieli(), result.getMetadatas().iterator().next().getKieli());
         assertEquals(expectedMeta.getNimi(), result.getMetadatas().iterator().next().getNimi());
         assertEquals(expectedMeta.getKuvaus(), result.getMetadatas().iterator().next().getKuvaus());
     }
-
 
 
     @Test
@@ -375,13 +370,11 @@ public class KoodistoBusinessServiceTest {
         d.setVoimassaAlkuPvm(new Date());
         d.setVoimassaLoppuPvm(new Date());
 
-        ArrayList<KoodistoMetadataType> metadata = new ArrayList<>();
-        KoodistoMetadataType md = new KoodistoMetadataType();
-        md.setKieli(KieliType.FI);
-        md.setKuvaus("UusiKuvaus");
-        md.setNimi("UusiNimi");
-        metadata.add(md);
-        d.setMetadata(metadata);
+        d.setMetadata(List.of(KoodistoMetadataDto.builder()
+                .kieli(Kieli.FI)
+                .nimi("UusiNimi")
+                .kuvaus("UusiKuvaus")
+                .build()));
 
         d.setIncludesCodes(includesCodes);
         d.setLevelsWithCodes(levelsWithCodes);

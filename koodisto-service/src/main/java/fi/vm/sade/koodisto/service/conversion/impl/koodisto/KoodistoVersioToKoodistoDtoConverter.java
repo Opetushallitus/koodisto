@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class KoodistoVersioToKoodistoDtoConverter implements AbstractFromDomainConverter<KoodistoVersio, KoodistoDto> {
     private final OphProperties ophProperties;
-    private final KoodistoMetadataToKoodistoMetadataTypeConverter koodistoMetadataToKoodistoMetadataTypeConverter;
+    private final KoodistoMetadataToKoodistoMetadataDtoConverter koodistoMetadataToKoodistoMetadataDtoConverter;
 
     @Override
     public KoodistoDto convert(KoodistoVersio source) {
@@ -85,7 +85,7 @@ public class KoodistoVersioToKoodistoDtoConverter implements AbstractFromDomainC
         converted.setVoimassaAlkuPvm(source.getVoimassaAlkuPvm());
         converted.setVoimassaLoppuPvm(source.getVoimassaLoppuPvm());
         converted.setVersion(source.getVersion());
-        converted.setMetadata(source.getMetadatas().stream().map(koodistoMetadataToKoodistoMetadataTypeConverter::convert).collect(Collectors.toList()));
+        converted.setMetadata(source.getMetadatas().stream().map(koodistoMetadataToKoodistoMetadataDtoConverter::convert).collect(Collectors.toList()));
         List<Integer> codesVersions = new ArrayList<>();
         if (sourceKoodisto.getKoodistoVersios() != null) {
             for (KoodistoVersio koodistoVersio : sourceKoodisto.getKoodistoVersios()) {

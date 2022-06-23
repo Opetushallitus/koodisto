@@ -3,7 +3,7 @@ package fi.vm.sade.koodisto.resource.internal;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoListDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
-import fi.vm.sade.koodisto.views.JsonViews;
+import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoListDtoConverter;

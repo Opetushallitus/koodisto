@@ -1,18 +1,11 @@
 package fi.vm.sade.koodisto.service.types.common;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.koodisto.views.JsonViews;
-
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 public class MetadataType implements Serializable {
 
-    @JsonView({JsonViews.Internal.class, JsonViews.Extended.class})
-    @NotNull(message = "error.validation.language")
     protected KieliType kieli;
 
-    @JsonView({JsonViews.Internal.class, JsonViews.Extended.class})
     protected String nimi;
     protected String kuvaus;
 
