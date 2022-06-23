@@ -128,7 +128,7 @@ public class KoodiChangesServiceImplTest {
     @Test
     public void metadataWhereDescriptionAndShortNameIsRemovedIsShownAsRemoved() {
         KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO + 1, NAME, null, null, Kieli.FI);
-        KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);;
+        KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
         assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, ChangesService.REMOVED_METADATA_FIELD, ChangesService.REMOVED_METADATA_FIELD));
     }
     

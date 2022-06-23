@@ -15,7 +15,7 @@ import java.util.Optional;
 @Component("koodistoVersioToKoodistoTypeConverter")
 public class KoodistoVersioToKoodistoTypeConverter implements AbstractFromDomainConverter<KoodistoVersio, KoodistoType> {
 
-    private OphProperties ophProperties;
+    private final OphProperties ophProperties;
 
     public KoodistoVersioToKoodistoTypeConverter(OphProperties ophProperties) {
         this.ophProperties = ophProperties;

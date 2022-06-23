@@ -11,12 +11,16 @@ import static org.junit.Assert.assertEquals;
 
 public class ChangesDateComparatorTest {
 
-    private static long DATE_23_9_2013 = 1379883600000l, DATE_13_10_2013 = 1381611600000l, DATE_15_11_2013 = 1384466400000l;
+    private static final long DATE_23_9_2013 = 1379883600000l;
+    private static final long DATE_13_10_2013 = 1381611600000l;
+    private static final long DATE_15_11_2013 = 1384466400000l;
     
-    private static long DATE_BEFORE_FIRST = 1379883500000l, DATE_AFTER_FIRST = 1379883602000l, DATE_AFTER_SECOND = 1384066400000l;
-    private static long DATE_AFTER_THIRD = 1384466490000l;
+    private static final long DATE_BEFORE_FIRST = 1379883500000l;
+    private static final long DATE_AFTER_FIRST = 1379883602000l;
+    private static final long DATE_AFTER_SECOND = 1384066400000l;
+    private static final long DATE_AFTER_THIRD = 1384466490000l;
     
-    private ChangesDateComparator<TestEntity> comparator = new DummyDateComparator();
+    private final ChangesDateComparator<TestEntity> comparator = new DummyDateComparator();
     
     @Test
     public void returnsFirstVersionWhenDateGivenIsBeforeChangedDatesInEntities() {

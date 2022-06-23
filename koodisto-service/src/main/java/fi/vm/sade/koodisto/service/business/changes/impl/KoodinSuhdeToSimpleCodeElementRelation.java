@@ -13,7 +13,7 @@ class KoodinSuhdeToSimpleCodeElementRelation implements Function<KoodinSuhde, Si
 
     @Override
     public SimpleCodeElementRelation apply(KoodinSuhde input) {
-        boolean isChild = koodiUri.equals(input.getYlakoodiVersio().getKoodi().getKoodiUri()) ? true : false;
+        boolean isChild = koodiUri.equals(input.getYlakoodiVersio().getKoodi().getKoodiUri());
         String uri = isChild ? input.getAlakoodiVersio().getKoodi().getKoodiUri() : input.getYlakoodiVersio().getKoodi().getKoodiUri();
         Integer versio = isChild ? input.getAlakoodiVersio().getVersio() : input.getYlakoodiVersio().getVersio();
         return new SimpleCodeElementRelation(uri, versio, input.getSuhteenTyyppi(), isChild);

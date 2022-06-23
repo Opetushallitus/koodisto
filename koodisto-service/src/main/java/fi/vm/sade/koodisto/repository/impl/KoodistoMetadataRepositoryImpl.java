@@ -30,7 +30,7 @@ public class KoodistoMetadataRepositoryImpl implements
         Root<KoodistoMetadata> root = query.from(KoodistoMetadata.class);
         Join<KoodistoVersio, Koodisto> koodisto = root.join("koodistoVersio").join("koodisto");
 
-        Predicate nimiEquals = cb.equal(cb.lower(root.<String>get(NIMI)), nimi.toLowerCase());
+        Predicate nimiEquals = cb.equal(cb.lower(root.get(NIMI)), nimi.toLowerCase());
         Predicate koodistoUriNotEquals = cb.not(cb.equal(koodisto.get("koodistoUri"), koodistoUri));
 
         query.select(cb.count(root.<String>get(NIMI))).where(cb.and(nimiEquals, koodistoUriNotEquals));

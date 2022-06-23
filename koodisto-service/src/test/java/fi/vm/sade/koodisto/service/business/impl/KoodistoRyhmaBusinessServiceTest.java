@@ -193,15 +193,6 @@ public class KoodistoRyhmaBusinessServiceTest {
         return dto;
     }
 
-    private void assertEqualRyhmas(KoodistoRyhma kr1, KoodistoRyhma kr2) {
-        assertEquals(kr1.getId(), kr2.getId());
-        assertEquals(kr1.getKoodistoRyhmaUri(), kr2.getKoodistoRyhmaUri());
-        assertEquals(kr1.getKoodistoJoukkoMetadatas().size(), kr2.getKoodistoJoukkoMetadatas().size());
-        assertEquals(kr1.getKoodistos().size(), kr2.getKoodistos().size());
-        assertEquals(kr1.getKoodistoJoukkoMetadatas(), kr2.getKoodistoJoukkoMetadatas());
-        assertEquals(kr1.getKoodistos(), kr2.getKoodistos());
-    }
-
     private KoodistoRyhmaMetadataDto convert(final KoodistoRyhmaMetadata metadata) {
         return KoodistoRyhmaMetadataDto.builder()
                 .id(metadata.getId())

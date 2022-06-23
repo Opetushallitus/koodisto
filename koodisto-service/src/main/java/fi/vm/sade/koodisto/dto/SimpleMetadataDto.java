@@ -55,11 +55,8 @@ public class SimpleMetadataDto {
         } else if (!kuvaus.equals(other.kuvaus))
             return false;
         if (nimi == null) {
-            if (other.nimi != null)
-                return false;
-        } else if (!nimi.equals(other.nimi))
-            return false;
-        return true;
+            return other.nimi == null;
+        } else return nimi.equals(other.nimi);
     }
     
     

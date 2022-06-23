@@ -8,5 +8,5 @@ package fi.vm.sade.koodisto.model;
  */
 public enum Tila {
 
-    PASSIIVINEN, LUONNOS, HYVAKSYTTY;
+    PASSIIVINEN, LUONNOS, HYVAKSYTTY
 }

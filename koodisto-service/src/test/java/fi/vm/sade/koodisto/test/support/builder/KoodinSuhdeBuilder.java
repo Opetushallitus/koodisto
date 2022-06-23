@@ -6,7 +6,7 @@ import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 
 public class KoodinSuhdeBuilder implements Builder<KoodinSuhde> {
 
-    private KoodinSuhde relation;
+    private final KoodinSuhde relation;
     
     public KoodinSuhdeBuilder() {
         relation = new KoodinSuhde();

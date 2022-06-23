@@ -83,7 +83,7 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
                 concatenatedYlaList.add(yk.getKoodiUri() + SEPARATOR + yk.getVersio());
             }
             Predicate concatenatedYlakoodiUriAndVersioRestriction =
-                    cb.concat(ylakoodiJoin.get(KOODI_URI), cb.concat(SEPARATOR, ylakoodiVersioJoin.<String> get(VERSIO)))
+                    cb.concat(ylakoodiJoin.get(KOODI_URI), cb.concat(SEPARATOR, ylakoodiVersioJoin.get(VERSIO)))
                             .in(concatenatedYlaList);
 
             Predicate alakoodiRestriction = cb.and(
@@ -122,7 +122,7 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
             throw new KoodiNotFoundException("error.codeelement.relation.list.empty");
         }
         Predicate concatenatedAlakoodiUriAndVersioRestriction =
-                cb.concat(ylakoodiJoin.<String> get(KOODI_URI), cb.concat(SEPARATOR, ylakoodiVersioJoin.<String> get(VERSIO)))
+                cb.concat(ylakoodiJoin.get(KOODI_URI), cb.concat(SEPARATOR, ylakoodiVersioJoin.get(VERSIO)))
                         .in(concatenatedYlaList);
 
         Predicate ylakoodiRestriction = cb.and(

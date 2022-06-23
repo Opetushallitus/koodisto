@@ -158,7 +158,7 @@ public class KoodistoConversionServiceTest {
                 }
 
                 // Call the method and check it does not return null value
-                Object a = m.invoke(instance, new Object[]{});
+                Object a = m.invoke(instance);
                 assertNotNull(a);
             }
         } catch (Exception e) {

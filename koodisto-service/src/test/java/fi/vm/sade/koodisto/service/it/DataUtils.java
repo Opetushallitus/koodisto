@@ -21,8 +21,8 @@ public final class DataUtils {
         CreateKoodistoDataType type = new CreateKoodistoDataType();
         type.setOmistaja(omistaja);
         type.setOrganisaatioOid(organisaatioOid);
-        type.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? voimassaAlkuPvm : null);
-        type.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? voimassaLoppuPvm : null);
+        type.setVoimassaAlkuPvm(voimassaAlkuPvm);
+        type.setVoimassaLoppuPvm(voimassaLoppuPvm);
 
         for (KieliType k : KieliType.values()) {
             KoodistoMetadataType m = new KoodistoMetadataType();
@@ -42,8 +42,8 @@ public final class DataUtils {
         type.setOmistaja(omistaja);
         type.setTila(tila);
         type.setOrganisaatioOid(organisaatioOid);
-        type.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? voimassaAlkuPvm : null);
-        type.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? voimassaLoppuPvm : null);
+        type.setVoimassaAlkuPvm(voimassaAlkuPvm);
+        type.setVoimassaLoppuPvm(voimassaLoppuPvm);
 
         for (KieliType k : KieliType.values()) {
             KoodistoMetadataType m = new KoodistoMetadataType();
@@ -79,8 +79,8 @@ public final class DataUtils {
                                                                 String nimi) {
         CreateKoodiDataType koodiDataType = new CreateKoodiDataType();
         koodiDataType.setKoodiArvo(koodiArvo);
-        koodiDataType.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? voimassaAlkuPvm : null);
-        koodiDataType.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? voimassaLoppuPvm : null);
+        koodiDataType.setVoimassaAlkuPvm(voimassaAlkuPvm);
+        koodiDataType.setVoimassaLoppuPvm(voimassaLoppuPvm);
         for (KieliType k : KieliType.values()) {
             KoodiMetadataType metadataType = new KoodiMetadataType();
             metadataType.setNimi(nimi);
@@ -100,8 +100,8 @@ public final class DataUtils {
         koodiDataType.setKoodiUri(koodiUri);
         koodiDataType.setKoodiArvo(koodiArvo);
         koodiDataType.setTila(tila);
-        koodiDataType.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? voimassaAlkuPvm : null);
-        koodiDataType.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? voimassaLoppuPvm : null);
+        koodiDataType.setVoimassaAlkuPvm(voimassaAlkuPvm);
+        koodiDataType.setVoimassaLoppuPvm(voimassaLoppuPvm);
         for (KieliType k : KieliType.values()) {
             KoodiMetadataType metadataType = new KoodiMetadataType();
             metadataType.setNimi(nimi);

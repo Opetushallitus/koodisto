@@ -129,14 +129,6 @@ public class KoodiVersio extends BaseEntity {
         this.alakoodis.add(alakoodi);
     }
     
-    public void removeYlakoodi(KoodinSuhde ylakoodi) {
-        this.ylakoodis.remove(ylakoodi);
-    }
-    
-    public void removeAlakoodi(KoodinSuhde alakoodi) {
-        this.alakoodis.remove(alakoodi);
-    }
-
     public void removeKoodistoVersio(KoodistoVersioKoodiVersio koodistoVersio) {
         this.koodistoVersios.remove(koodistoVersio);
     }

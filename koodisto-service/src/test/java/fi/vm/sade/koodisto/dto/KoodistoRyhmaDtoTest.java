@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.dto;
 
 import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
