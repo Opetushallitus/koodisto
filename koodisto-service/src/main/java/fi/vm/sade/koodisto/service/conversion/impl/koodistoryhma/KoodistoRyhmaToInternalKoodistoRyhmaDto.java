@@ -7,7 +7,6 @@ import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import org.springframework.stereotype.Component;
 
-
 @Component
 public class KoodistoRyhmaToInternalKoodistoRyhmaDto implements AbstractFromDomainConverter<KoodistoRyhma, InternalKoodistoRyhmaDto> {
     @Override
@@ -21,5 +20,4 @@ public class KoodistoRyhmaToInternalKoodistoRyhmaDto implements AbstractFromDoma
                         .build())
                 .build();
     }
-
 }

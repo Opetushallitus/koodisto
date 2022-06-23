@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.service.business;
 
+import fi.vm.sade.koodisto.dto.KoodistoRyhmaMetadataDto;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 
@@ -11,5 +12,5 @@ public interface UriTransliterator {
 
     String generateKoodistoUriByMetadata(Collection<KoodistoMetadataType> metadatas);
 
-    String generateKoodistoGroupUriByMetadata(Collection<KoodistoRyhmaMetadata> metadatas);
+    String generateKoodistoGroupUriByMetadata(Collection<KoodistoRyhmaMetadataDto> metadatas);
 }

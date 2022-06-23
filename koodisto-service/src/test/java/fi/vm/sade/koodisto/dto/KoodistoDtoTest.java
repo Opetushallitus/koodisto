@@ -22,7 +22,8 @@ class KoodistoDtoTest extends DtoTest {
                 Arguments.of("Fail if voimassaAlkuPvm is not set", getValid().voimassaAlkuPvm(null).build(), false),
                 Arguments.of("Fail if voimassaLoppuPvm is before voimassaAlkuPvm", getValid().voimassaLoppuPvm(dateOf(2022, 6, 20)).build(), false),
                 Arguments.of("Fail if metadata is not set", getValid().metadata(null).build(), false),
-                Arguments.of("Fail if metadata is empty", getValid().metadata(List.of()).build(), false)
+                Arguments.of("Fail if metadata is empty", getValid().metadata(List.of()).build(), false),
+                Arguments.of("Fail if invalid metadata", getValid().metadata(List.of(KoodistoMetadataDto.builder().build())).build(), false)
         );
     }
 

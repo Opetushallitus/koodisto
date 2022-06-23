@@ -14,13 +14,17 @@ class KoodistoRyhmaDtoTest extends DtoTest {
         return Stream.of(
                 Arguments.of("Should be valid", getValid().build(), true),
                 Arguments.of("Metadata must be set", getValid().koodistoRyhmaMetadatas(null).build(), false),
-                Arguments.of("Metadata cannot be empty", getValid().koodistoRyhmaMetadatas(of()).build(), false)
-                // Arguments.of("Metadata is validated", getValid().koodistoRyhmaMetadatas(of(KoodistoRyhmaMetadata.builder().build())).build(), false)
+                Arguments.of("Metadata cannot be empty", getValid().koodistoRyhmaMetadatas(of()).build(), false),
+                Arguments.of("Metadata is validated", getValid().koodistoRyhmaMetadatas(of(KoodistoRyhmaMetadataDto.builder().build())).build(), false)
         );
     }
 
     private static KoodistoRyhmaDto.KoodistoRyhmaDtoBuilder getValid() {
         return KoodistoRyhmaDto.builder()
-                .koodistoRyhmaMetadatas(of(KoodistoRyhmaMetadata.builder().kieli(Kieli.FI).nimi("nimi").build()));
+                .koodistoRyhmaMetadatas(of(
+                        KoodistoRyhmaMetadataDto.builder()
+                                .kieli(Kieli.FI)
+                                .nimi("nimi")
+                                .build()));
     }
 }

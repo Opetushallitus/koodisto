@@ -6,6 +6,7 @@ import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import lombok.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,8 +23,8 @@ public class KoodistoRyhmaDto {
     private String koodistoRyhmaUri;
     @JsonView(JsonViews.Basic.class)
     @NotEmpty(message = "error.metadata.empty")
-    // @Valid
-    private Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = new HashSet<>();
+    @Valid
+    private Set<KoodistoRyhmaMetadataDto> koodistoRyhmaMetadatas = new HashSet<>();
     @JsonView(JsonViews.Basic.class)
     private Set<Koodisto> koodistos = new HashSet<>();
 }

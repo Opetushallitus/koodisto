@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import com.google.common.base.Strings;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
+import fi.vm.sade.koodisto.dto.KoodistoRyhmaMetadataDto;
 import fi.vm.sade.koodisto.dto.internal.InternalInsertKoodistoRyhmaDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
@@ -9,41 +9,47 @@ import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.repository.KoodistoRyhmaMetadataRepository;
 import fi.vm.sade.koodisto.repository.KoodistoRyhmaRepository;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
-import fi.vm.sade.koodisto.service.business.exception.*;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaExistsException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service("koodistoRyhmaBusinessService")
 public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessService {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+    @Autowired
+    private Converter<KoodistoRyhmaMetadataDto, KoodistoRyhmaMetadata> koodistoRyhmaMetadataDtoToKoodistoRyhmaMetadataConverter;
     @Autowired
     private KoodistoRyhmaRepository koodistoRyhmaRepository;
     @Autowired
     private KoodistoRyhmaMetadataRepository koodistoRyhmaMetadataRepository;
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
-
     @Override
     @Transactional
     public KoodistoRyhma createKoodistoRyhma(final KoodistoRyhmaDto koodistoRyhmaDto) {
-        if (koodistoRyhmaDto == null || Strings.isNullOrEmpty(koodistoRyhmaDto.getKoodistoRyhmaUri())) {
-            throw new KoodistoRyhmaUriEmptyException();
-        }
-        checkMetadatas(new ArrayList<>(koodistoRyhmaDto.getKoodistoRyhmaMetadatas()));
-
-        KoodistoRyhma koodistoRyhma = new KoodistoRyhma();
+        final KoodistoRyhma koodistoRyhma = new KoodistoRyhma();
         koodistoRyhma.setKoodistoRyhmaUri(koodistoRyhmaDto.getKoodistoRyhmaUri());
+        koodistoRyhma.setKoodistoRyhmaMetadatas(convertMetadata(koodistoRyhma, koodistoRyhmaDto));
+        return koodistoRyhmaRepository.save(koodistoRyhma);
+    }
 
-        for (KoodistoRyhmaMetadata koodistoRyhmaMetadata : koodistoRyhmaDto.getKoodistoRyhmaMetadatas()) {
-            koodistoRyhma.addKoodistoRyhmaMetadata(koodistoRyhmaMetadata);
-        }
-        koodistoRyhma = koodistoRyhmaRepository.save(koodistoRyhma);
-        return koodistoRyhma;
+    private Set<KoodistoRyhmaMetadata> convertMetadata(final KoodistoRyhma koodistoRyhma, KoodistoRyhmaDto dto) {
+        return dto.getKoodistoRyhmaMetadatas().stream()
+                .map(koodistoRyhmaMetadataDtoToKoodistoRyhmaMetadataConverter::convert)
+                .map(metadata -> {
+                    metadata.setKoodistoRyhma(koodistoRyhma);
+                    return metadata;
+                })
+                .collect(Collectors.toSet());
     }
 
     @Override
@@ -62,31 +68,10 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
         return koodistoRyhmaRepository.save(koodistoRyhma);
     }
 
-    private void checkRequiredMetadataFields(List<KoodistoRyhmaMetadata> metadatas) {
-        for (KoodistoRyhmaMetadata md : metadatas) {
-            if (md.getNimi().isBlank()) {
-                logger.error("No koodistoryhmä nimi defined for language {}", md.getKieli().name());
-                throw new KoodistoRyhmaNimiEmptyException();
-            }
-        }
-    }
-
-    private void checkMetadatas(List<KoodistoRyhmaMetadata> metadatas) {
-        if (metadatas == null || metadatas.isEmpty()) {
-            throw new MetadataEmptyException();
-        } else {
-            checkRequiredMetadataFields(metadatas);
-        }
-    }
-
     @Override
     public KoodistoRyhma updateKoodistoRyhma(final KoodistoRyhmaDto koodistoRyhmaDto) {
-        if (koodistoRyhmaDto == null || koodistoRyhmaDto.getKoodistoRyhmaUri().isBlank()) {
-            throw new KoodistoRyhmaUriEmptyException();
-        }
-
         KoodistoRyhma koodistoRyhma = getKoodistoRyhmaById(koodistoRyhmaDto.getId());
-        Set<KoodistoRyhmaMetadata> koodistoRyhmaDtoMetadatas = koodistoRyhmaDto.getKoodistoRyhmaMetadatas();
+        Set<KoodistoRyhmaMetadata> koodistoRyhmaDtoMetadatas = convertMetadata(koodistoRyhma, koodistoRyhmaDto);
         Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = koodistoRyhma.getKoodistoJoukkoMetadatas();
         Set<KoodistoRyhmaMetadata> removeKoodistoRyhmaMetadatas = new HashSet<KoodistoRyhmaMetadata>();
         koodistoRyhma.setKoodistoRyhmaUri(koodistoRyhmaDto.getKoodistoRyhmaUri());
@@ -127,7 +112,6 @@ public class KoodistoRyhmaBusinessServiceImpl implements KoodistoRyhmaBusinessSe
         koodistoRyhma.addKoodistoRyhmaMetadata(a);
         return a;
     }
-
 
     @Override
     public KoodistoRyhma getKoodistoRyhmaById(final Long id) {
