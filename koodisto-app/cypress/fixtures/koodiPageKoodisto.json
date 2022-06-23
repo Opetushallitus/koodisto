@@ -11,17 +11,19 @@
     "resourceUri": "https://virkailija.hahtuvaopintopolku.fi/koodisto-service/rest/codes/kunta",
     "koodistoUri": "kunta",
     "versio": 2,
+    "lockingVersion": 5,
     "organisaatioOid": "1.2.246.562.10.00000000001",
-    "paivitysPvm": "2021-01-04T07:48:08.335+00:00",
+    "paivitysPvm": "2021-01-04",
     "paivittajaOid": "1.2.246.562.24.25909319372",
     "voimassaAlkuPvm": "2018-02-08",
     "voimassaLoppuPvm": null,
+    "omistaja": "Opetushallitus",
     "tila": "LUONNOS",
     "metadata": [
         {
             "kieli": "FI",
             "nimi": "kunta",
-            "kuvaus": "kunta"
+            "kuvaus": "Kunta on tietyn alueen ja sen asukkaiden muodostama yhteisö. Kunta on rajoiltaan määrätty alue niin, että kunkin kunnan toiminta kohdistuu sen alueeseen, siellä asuviin ja oleskeleviin ihmisiin ja siellä tapahtuvaan toimintaan. Uusien kuntien perustamisesta päättää valtioneuvosto ja uusista kuntanumeroista valtiovarainministeriön kuntaosasto. Vuonna 1995 voimaan tullut kuntalaki tuntee virallisena kuntamuotona vain kunnan, mutta kunta voi käyttää kaupunki-nimitystä, jos se itse katsoo täyttävänsä kaupunkimaiselle yhdyskunnalle asetettavat vaatimukset. Koodistoa ylläpidetään Opetushallituksessa (Heidi Bergström)"
         },
         {
             "kieli": "SV",
@@ -182,7 +184,7 @@
             "koodistoUri": "maakunta",
             "koodistoVersio": 2,
             "nimi": {
-                "fi": "maakunta",
+                "fi": "MAAKUNTA",
                 "sv": "landskapen",
                 "en": "regions"
             },

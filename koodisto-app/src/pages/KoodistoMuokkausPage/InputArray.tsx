@@ -19,6 +19,7 @@ const Column = styled.div`
 const TitleContainer = styled.div`
     display: flex;
     flex-direction: row;
+
     > div {
         padding-right: 1rem;
     }
@@ -26,10 +27,10 @@ const TitleContainer = styled.div`
 export const Direction = styled.div<{ large?: boolean }>`
     display: flex;
     flex-direction: ${(props) => (props.large ? 'column' : 'row')};
+
     textarea {
         resize: none;
         box-sizing: border-box;
-        width: 60vw;
         width: ${(props) => (props.large ? 60 : 19)}vw;
     }
 `;

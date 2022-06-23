@@ -6,9 +6,8 @@ import { useForm } from 'react-hook-form';
 import { PageKoodisto, SelectOption } from '../../types';
 import { Loading } from '../../components/Loading';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { KoodistoPathContainer } from '../../components/KoodistoPathContainer';
+import { CrumbTrail } from '../../components/KoodistoPathContainer';
 import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLangAtom } from '../../api/kayttooikeus';
@@ -19,21 +18,36 @@ import {
     MainHeaderContainer,
     MainContainerRow,
     MainContainer,
-    FooterContainer,
-    FooterLeftContainer,
     MainContainerRowTitle,
     MainContainerRowContent,
-    FooterRightContainer,
 } from '../../components/Containers';
-import { IconWrapper } from '../../components/IconWapper';
 import { koodistoRyhmaOptionsAtom } from '../../api/koodistoRyhma';
 import { SelectController } from '../../controllers/SelectController';
 import { organisaatioSelectAtom } from '../../api/organisaatio';
+import { Footer } from '../../components/Footer';
+
+const successNotification = (koodistoUri: string) => {
+    success({
+        title: (
+            <FormattedMessage
+                id={'KOODISTO_TALLENNUS_MESSAGE_TITLE'}
+                defaultMessage={'Koodisto tallennettiin onnistuneesti.'}
+            />
+        ),
+        message: (
+            <FormattedMessage
+                id={'KOODISTO_TALLENNUS_MESSAGE'}
+                defaultMessage={'Tallennettiin koodisto uri:lla {koodistoUri}'}
+                values={{ koodistoUri }}
+            />
+        ),
+    });
+};
 
 export const KoodistoMuokkausPage: React.FC = () => {
+    const { versio, koodistoUri } = useParams();
     const navigate = useNavigate();
     const { formatMessage } = useIntl();
-    const { versio, koodistoUri } = useParams();
     const [lang] = useAtom(casMeLangAtom);
     const [koodistoRyhmaOptions] = useAtom<SelectOption[]>(koodistoRyhmaOptionsAtom);
     const [organisaatioSelect] = useAtom<SelectOption[]>(organisaatioSelectAtom);
@@ -62,6 +76,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
             }
         })();
     }, [koodistoUri, lang, reset, versioNumber]);
+    if (loading) return <Loading />;
     const save = async (koodisto: PageKoodisto) => {
         if (koodistoUri) await update(koodisto);
         else await create(koodisto);
@@ -71,21 +86,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
         const updated = await updateKoodisto({ koodisto, lang });
         setLoading(false);
         if (updated) {
-            success({
-                title: (
-                    <FormattedMessage
-                        id={'KOODISTO_TALLENNUS_MESSAGE_TITLE'}
-                        defaultMessage={'Koodisto tallennettiin onnistuneesti.'}
-                    />
-                ),
-                message: (
-                    <FormattedMessage
-                        id={'KOODISTO_TALLENNUS_MESSAGE'}
-                        defaultMessage={'Tallennettiin koodisto uri:lla {koodistoUri}'}
-                        values={{ koodistoUri: updated?.koodistoUri }}
-                    />
-                ),
-            });
+            successNotification(updated.koodistoUri);
             reset(updated);
             navigate(`/koodisto/view/${updated.koodistoUri}/${updated.versio}`);
         }
@@ -95,166 +96,123 @@ export const KoodistoMuokkausPage: React.FC = () => {
         const created = await createKoodisto({ koodisto, lang });
         setLoading(false);
         if (created) {
-            success({
-                title: (
-                    <FormattedMessage
-                        id={'KOODISTO_TALLENNUS_MESSAGE_TITLE'}
-                        defaultMessage={'Koodisto tallennettiin onnistuneesti.'}
-                    />
-                ),
-                message: (
-                    <FormattedMessage
-                        id={'KOODISTO_TALLENNUS_MESSAGE'}
-                        defaultMessage={'Tallennettiin koodisto uri:lla {koodistoUri}'}
-                        values={{ koodistoUri: created?.koodistoUri }}
-                    />
-                ),
-            });
+            successNotification(created.koodistoUri);
             reset(created);
             navigate(`/koodisto/view/${created.koodistoUri}/${created.versio}`);
         }
     };
     return (
-        (!loading && (
-            <>
-                <KoodistoPathContainer trail={[{ label: koodistonMetadata?.nimi || '' }]} />
-                <MainHeaderContainer>
-                    <FormattedMessage
-                        id={'KOODISTO_MUOKKAA_SIVU_TITLE'}
-                        defaultMessage={'Muokkaa koodistoa'}
-                        tagName={'h1'}
-                    />
-                </MainHeaderContainer>
-                <MainContainer>
-                    <form>
-                        <MainContainerRow>
-                            <MainContainerRowTitle
-                                id={'FIELD_TITLE_koodistoRyhmaUri'}
-                                defaultMessage={'Koodistoryhmä*'}
-                            />
-                            <MainContainerRowContent>
-                                <SelectController
-                                    control={control}
-                                    validationErrors={errors}
-                                    name={'koodistoRyhmaUri'}
-                                    options={koodistoRyhmaOptions}
-                                    rules={{
-                                        required: formatMessage({
-                                            id: 'RYHMA_PAKOLLINEN',
-                                            defaultMessage: 'Valitse koodisto-ryhmä.',
-                                        }),
-                                    }}
-                                />
-                            </MainContainerRowContent>
-                        </MainContainerRow>
-                        <MainContainerRow>
-                            <InputArray
+        <>
+            <CrumbTrail trail={[{ key: koodistoUri || 'new', label: koodistonMetadata?.nimi || '' }]} />
+            <MainHeaderContainer>
+                <FormattedMessage
+                    id={'KOODISTO_MUOKKAA_SIVU_TITLE'}
+                    defaultMessage={'Muokkaa koodistoa'}
+                    tagName={'h1'}
+                />
+            </MainHeaderContainer>
+            <MainContainer>
+                <form>
+                    <MainContainerRow>
+                        <MainContainerRowTitle id={'FIELD_TITLE_koodistoRyhmaUri'} defaultMessage={'Koodistoryhmä*'} />
+                        <MainContainerRowContent>
+                            <SelectController
                                 control={control}
-                                register={register}
-                                getValues={getValues}
-                                setValue={setValue}
-                                title={{ id: 'FIELD_ROW_TITLE_NIMI', defaultMessage: 'Nimi*' }}
-                                fieldPath={'nimi'}
-                                options={{
+                                validationErrors={errors}
+                                name={'koodistoRyhmaUri'}
+                                options={koodistoRyhmaOptions}
+                                rules={{
                                     required: formatMessage({
-                                        id: 'NIMI_PAKOLLINEN',
-                                        defaultMessage: 'Syötä nimi',
+                                        id: 'RYHMA_PAKOLLINEN',
+                                        defaultMessage: 'Valitse koodisto-ryhmä.',
                                     }),
                                 }}
                             />
-                        </MainContainerRow>
-                        <MainContainerRow>
-                            <MainContainerRowTitle id={'FIELD_TITLE_voimassaAlkuPvm'} defaultMessage={'Voimassa'} />
-                            <MainContainerRowContent>
-                                <DatePickerController<PageKoodisto>
-                                    name={'voimassaAlkuPvm'}
-                                    control={control}
-                                    validationErrors={errors}
-                                    rules={{
-                                        required: formatMessage({
-                                            id: 'ALKUPVM_PAKOLLINEN',
-                                            defaultMessage: 'Valitse aloitus päivämäärä.',
-                                        }),
-                                    }}
-                                />
-                            </MainContainerRowContent>
-                        </MainContainerRow>
-                        <MainContainerRow>
-                            <MainContainerRowTitle
-                                id={'FIELD_TITLE_voimassaLoppuPvm'}
-                                defaultMessage={'Voimassa loppu'}
-                            />
-                            <MainContainerRowContent>
-                                <DatePickerController<PageKoodisto>
-                                    name={'voimassaLoppuPvm'}
-                                    control={control}
-                                    validationErrors={errors}
-                                />
-                            </MainContainerRowContent>
-                        </MainContainerRow>
-                        <MainContainerRow>
-                            <MainContainerRowTitle
-                                id={'FIELD_TITLE_organisaatioNimi'}
-                                defaultMessage={'Organisaatio*'}
-                            />
-                            <MainContainerRowContent width={25}>
-                                <SelectController
-                                    control={control}
-                                    validationErrors={errors}
-                                    name={'organisaatioOid'}
-                                    options={organisaatioSelect}
-                                    rules={{
-                                        required: formatMessage({
-                                            id: 'ORGANISAATIO_PAKOLLINEN',
-                                            defaultMessage: 'organisaatio.',
-                                        }),
-                                    }}
-                                />
-                            </MainContainerRowContent>
-                        </MainContainerRow>
-                        <MainContainerRow>
-                            <MainContainerRowTitle id={'FIELD_TITLE_omistaja'} defaultMessage={'Omistaja'} />
-                            <MainContainerRowContent>
-                                <Input {...register('omistaja')} />
-                            </MainContainerRowContent>
-                        </MainContainerRow>
-                        <MainContainerRow>
-                            <InputArray
-                                large={true}
+                        </MainContainerRowContent>
+                    </MainContainerRow>
+                    <MainContainerRow>
+                        <InputArray
+                            control={control}
+                            register={register}
+                            getValues={getValues}
+                            setValue={setValue}
+                            title={{ id: 'FIELD_ROW_TITLE_NIMI', defaultMessage: 'Nimi*' }}
+                            fieldPath={'nimi'}
+                            options={{
+                                required: formatMessage({
+                                    id: 'NIMI_PAKOLLINEN',
+                                    defaultMessage: 'Syötä nimi',
+                                }),
+                            }}
+                        />
+                    </MainContainerRow>
+                    <MainContainerRow>
+                        <MainContainerRowTitle id={'FIELD_TITLE_voimassaAlkuPvm'} defaultMessage={'Voimassa'} />
+                        <MainContainerRowContent>
+                            <DatePickerController<PageKoodisto>
+                                name={'voimassaAlkuPvm'}
                                 control={control}
-                                register={register}
-                                getValues={getValues}
-                                setValue={setValue}
-                                title={{ id: 'FIELD_ROW_TITLE_KUVAUS', defaultMessage: 'Kuvaus' }}
-                                fieldPath={'kuvaus'}
+                                validationErrors={errors}
+                                rules={{
+                                    required: formatMessage({
+                                        id: 'ALKUPVM_PAKOLLINEN',
+                                        defaultMessage: 'Valitse aloitus päivämäärä.',
+                                    }),
+                                }}
                             />
-                        </MainContainerRow>
-                    </form>
-                </MainContainer>
-                <FooterContainer>
-                    <FooterLeftContainer>
-                        <Button variant={'outlined'} name={'KOODISTO_VERSIOI'}>
-                            <FormattedMessage id={'KOODISTO_VERSIOI'} defaultMessage={'Versioi koodisto'} />
-                        </Button>
-                        <Button variant={'outlined'} name={'KOODISTO_POISTA'}>
-                            <IconWrapper icon={'ci:trash-full'} inline={true} height={'1.2rem'} />
-                            <FormattedMessage id={'KOODISTO_POISTA'} defaultMessage={'Poista koodisto'} />
-                        </Button>
-                    </FooterLeftContainer>
-                    <FooterRightContainer>
-                        <Button
-                            variant={'outlined'}
-                            name={'KOODISTO_PERUUTA'}
-                            onClick={() => navigate(`/koodisto/view/${koodistoUri}/${versio}`)}
-                        >
-                            <FormattedMessage id={'KOODISTO_PERUUTA'} defaultMessage={'Peruuta'} />
-                        </Button>
-                        <Button name={'KOODISTO_TALLENNA'} onClick={handleSubmit((a) => save(a))}>
-                            <FormattedMessage id={'KOODISTO_TALLENNA'} defaultMessage={'Tallenna'} />
-                        </Button>
-                    </FooterRightContainer>
-                </FooterContainer>
-            </>
-        )) || <Loading />
+                        </MainContainerRowContent>
+                    </MainContainerRow>
+                    <MainContainerRow>
+                        <MainContainerRowTitle id={'FIELD_TITLE_voimassaLoppuPvm'} defaultMessage={'Voimassa loppu'} />
+                        <MainContainerRowContent>
+                            <DatePickerController<PageKoodisto>
+                                name={'voimassaLoppuPvm'}
+                                control={control}
+                                validationErrors={errors}
+                            />
+                        </MainContainerRowContent>
+                    </MainContainerRow>
+                    <MainContainerRow>
+                        <MainContainerRowTitle id={'FIELD_TITLE_organisaatioNimi'} defaultMessage={'Organisaatio*'} />
+                        <MainContainerRowContent width={25}>
+                            <SelectController
+                                control={control}
+                                validationErrors={errors}
+                                name={'organisaatioOid'}
+                                options={organisaatioSelect}
+                                rules={{
+                                    required: formatMessage({
+                                        id: 'ORGANISAATIO_PAKOLLINEN',
+                                        defaultMessage: 'organisaatio.',
+                                    }),
+                                }}
+                            />
+                        </MainContainerRowContent>
+                    </MainContainerRow>
+                    <MainContainerRow>
+                        <MainContainerRowTitle id={'FIELD_TITLE_omistaja'} defaultMessage={'Omistaja'} />
+                        <MainContainerRowContent>
+                            <Input {...register('omistaja')} />
+                        </MainContainerRowContent>
+                    </MainContainerRow>
+                    <MainContainerRow>
+                        <InputArray
+                            large={true}
+                            control={control}
+                            register={register}
+                            getValues={getValues}
+                            setValue={setValue}
+                            title={{ id: 'FIELD_ROW_TITLE_KUVAUS', defaultMessage: 'Kuvaus' }}
+                            fieldPath={'kuvaus'}
+                        />
+                    </MainContainerRow>
+                </form>
+            </MainContainer>
+            <Footer
+                returnPath={(koodistoUri && `/koodisto/view/${koodistoUri}/${versio}`) || '/'}
+                save={handleSubmit((a) => save(a))}
+                localisationPrefix={'KOODISTO'}
+            />
+        </>
     );
 };

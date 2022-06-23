@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import type { PageKoodi } from '../../types';
+import type { Koodi } from '../../types';
 import { fetchPageKoodi } from '../../api/koodi';
 import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
@@ -10,7 +10,7 @@ import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { Loading } from '../../components/Loading';
 import { KoodiPageAccordion } from './KoodiPageAccordion';
 import { KoodiInfo } from './KoodiInfo';
-import { CrumbTrail } from './CrumbTrail';
+import { KoodiCrumbTrail } from './KoodiCrumbTrail';
 import VersionPicker from '../../components/VersionPicker';
 import {
     MainHeaderContainer,
@@ -19,18 +19,23 @@ import {
     MainContainer,
 } from '../../components/Containers';
 
-const KoodiPresentation: React.FC<PageKoodi> = ({ koodi, koodisto }: PageKoodi) => {
+const KoodiPresentation: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
     const [lang] = useAtom(casMeLangAtom);
+    const navigate = useNavigate();
     return (
         <>
-            <CrumbTrail koodi={koodi} koodisto={koodisto} />
+            <KoodiCrumbTrail koodi={koodi} />
             <MainHeaderContainer>
                 <HeadingDivider>
                     <h1>{translateMetadata({ metadata: koodi.metadata, lang })?.nimi}</h1>
                     <VersionPicker version={koodi.versio} versions={koodi.versions} />
                 </HeadingDivider>
                 <MainHeaderButtonsContainer>
-                    <Button variant={'outlined'}>
+                    <Button
+                        name={'KOODISIVU_MUOKKAA_KOODIA_BUTTON'}
+                        variant={'outlined'}
+                        onClick={() => navigate(`/koodi/edit/${koodi.koodiUri}/${koodi.versio}`)}
+                    >
                         <FormattedMessage id={'KOODISIVU_MUOKKAA_KOODIA_BUTTON'} defaultMessage={'Muokkaa koodia'} />
                     </Button>
                 </MainHeaderButtonsContainer>
@@ -45,7 +50,7 @@ const KoodiPresentation: React.FC<PageKoodi> = ({ koodi, koodisto }: PageKoodi) 
 
 const KoodiPage: React.FC = () => {
     const { koodiUri, koodiVersio } = useParams();
-    const [pageData, setPageData] = useState<PageKoodi | undefined>();
+    const [pageData, setPageData] = useState<Koodi | undefined>();
 
     useEffect(() => {
         setPageData(undefined);
@@ -57,7 +62,7 @@ const KoodiPage: React.FC = () => {
         }
     }, [koodiUri, koodiVersio]);
 
-    return pageData ? <KoodiPresentation {...pageData} /> : <Loading />;
+    return pageData ? <KoodiPresentation koodi={pageData} /> : <Loading />;
 };
 
 export default KoodiPage;

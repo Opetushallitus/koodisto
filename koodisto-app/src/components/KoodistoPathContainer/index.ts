@@ -1,1 +1,1 @@
-export { KoodistoPathContainer } from './KoodistoPathContainer';
+export { CrumbTrail } from './CrumbTrail';

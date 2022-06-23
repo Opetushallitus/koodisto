@@ -3,51 +3,63 @@ import { Column, Row } from 'react-table';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Table } from '../../components/Table';
-import { translateMetadata } from '../../utils';
+import { translateMultiLocaleText } from '../../utils';
 import { useAtom } from 'jotai';
-import { casMeLangAtom } from '../../api/kayttooikeus';
-import type { PageKoodiRelation } from '../../types';
+import { casMeLocaleAtom } from '../../api/kayttooikeus';
+import type { KoodiRelation } from '../../types';
 
-export const RelationTable: React.FC<{ relations: PageKoodiRelation[] }> = ({
+export const RelationTable: React.FC<{ relations: KoodiRelation[] }> = ({
     relations,
 }: {
-    relations: PageKoodiRelation[];
+    relations: KoodiRelation[];
 }) => {
     const { formatMessage } = useIntl();
-    const [lang] = useAtom(casMeLangAtom);
-    const data = useMemo<PageKoodiRelation[]>(() => {
+    const [locale] = useAtom(casMeLocaleAtom);
+    const data = useMemo<KoodiRelation[]>(() => {
         return [...relations];
     }, [relations]);
-    const columns = useMemo<Column<PageKoodiRelation>[]>(
+    const columns = useMemo<Column<KoodiRelation>[]>(
         () => [
             {
                 id: 'koodisto',
                 Header: formatMessage({ id: 'TAULUKKO_KOODISTO_OTSIKKO', defaultMessage: 'Koodisto' }),
-                accessor: (relation: PageKoodiRelation) =>
-                    translateMetadata({ metadata: relation.parentMetadata, lang })?.nimi,
+                accessor: (relation: KoodiRelation) =>
+                    translateMultiLocaleText({
+                        multiLocaleText: relation.koodistoNimi,
+                        locale,
+                        defaultValue: relation.koodistoNimi.fi,
+                    }),
             },
             {
                 id: 'nimi',
                 Header: formatMessage({ id: 'TAULUKKO_NIMI_OTSIKKO', defaultMessage: 'Nimi' }),
-                Cell: ({ row }: { row: Row<PageKoodiRelation> }) => (
-                    <Link to={`/koodi/${row.original.codeElementUri}/${row.original.codeElementVersion}`}>
-                        {translateMetadata({ metadata: row.original.relationMetadata, lang })?.nimi}
+                Cell: ({ row }: { row: Row<KoodiRelation> }) => (
+                    <Link to={`/koodi/view/${row.original.koodiUri}/${row.original.koodiVersio}`}>
+                        {translateMultiLocaleText({
+                            multiLocaleText: row.original.nimi,
+                            locale,
+                            defaultValue: row.original.koodiUri,
+                        })}
                     </Link>
                 ),
             },
             {
                 id: 'versio',
                 Header: formatMessage({ id: 'TAULUKKO_VERSIO_OTSIKKO', defaultMessage: 'Versio' }),
-                accessor: (relation: PageKoodiRelation) => relation.codeElementVersion,
+                accessor: (relation: KoodiRelation) => relation.koodiVersio,
             },
             {
                 id: 'kuvaus',
                 Header: formatMessage({ id: 'TAULUKKO_VERSIO_KUVAUS', defaultMessage: 'Kuvaus' }),
-                accessor: (relation: PageKoodiRelation) =>
-                    relation.relationMetadata.find((x) => x.kieli === lang)?.kuvaus || '-',
+                accessor: (relation: KoodiRelation) =>
+                    translateMultiLocaleText({
+                        multiLocaleText: relation.kuvaus,
+                        locale,
+                        defaultValue: relation.koodiUri,
+                    }),
             },
         ],
-        [formatMessage, lang]
+        [formatMessage, locale]
     );
-    return <Table<PageKoodiRelation> columns={columns} data={data} />;
+    return <Table<KoodiRelation> columns={columns} data={data} />;
 };

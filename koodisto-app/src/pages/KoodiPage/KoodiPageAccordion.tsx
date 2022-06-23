@@ -2,9 +2,9 @@ import React from 'react';
 import { Accordion } from '../../components/Accordion';
 import { useIntl } from 'react-intl';
 import { RelationTable } from './RelationTable';
-import type { PageKoodi } from '../../types';
+import { Koodi } from '../../types';
 
-export const KoodiPageAccordion: React.FC<Pick<PageKoodi, 'koodi'>> = ({ koodi }: Pick<PageKoodi, 'koodi'>) => {
+export const KoodiPageAccordion: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
     const { formatMessage } = useIntl();
     const data = [
         {
@@ -14,9 +14,9 @@ export const KoodiPageAccordion: React.FC<Pick<PageKoodi, 'koodi'>> = ({ koodi }
                     id: 'TAULUKKO_SISALTYY_KOODEIHIN_OTSIKKO',
                     defaultMessage: 'Sisältyy koodeihin ({count})',
                 },
-                { count: koodi.withinCodeElements.length }
+                { count: koodi.sisaltyyKoodeihin.length }
             ),
-            panelComponent: <RelationTable relations={koodi.withinCodeElements} />,
+            panelComponent: <RelationTable relations={koodi.sisaltyyKoodeihin} />,
         },
         {
             id: 'includes',
@@ -25,9 +25,9 @@ export const KoodiPageAccordion: React.FC<Pick<PageKoodi, 'koodi'>> = ({ koodi }
                     id: 'TAULUKKO_SISALTAA_KOODIT_OTSIKKO',
                     defaultMessage: 'Sisältää koodit ({count})',
                 },
-                { count: koodi.includesCodeElements.length }
+                { count: koodi.sisaltaaKoodit.length }
             ),
-            panelComponent: <RelationTable relations={koodi.includesCodeElements} />,
+            panelComponent: <RelationTable relations={koodi.sisaltaaKoodit} />,
         },
         {
             id: 'levels-with',
@@ -36,9 +36,9 @@ export const KoodiPageAccordion: React.FC<Pick<PageKoodi, 'koodi'>> = ({ koodi }
                     id: 'TAULUKKO_RINNASTUU_KOODEIHIN_OTSIKKO',
                     defaultMessage: 'Rinnastuu koodeihin ({count})',
                 },
-                { count: koodi.levelsWithCodeElements.length }
+                { count: koodi.rinnastuuKoodeihin.length }
             ),
-            panelComponent: <RelationTable relations={koodi.levelsWithCodeElements} />,
+            panelComponent: <RelationTable relations={koodi.rinnastuuKoodeihin} />,
         },
     ];
 

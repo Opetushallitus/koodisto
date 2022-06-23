@@ -6,7 +6,7 @@ import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Table } from '../../components/Table';
 import { Column } from 'react-table';
-import { CsvKoodiObject, Koodi, MessageFormatter } from '../../types';
+import { CsvKoodiObject, MessageFormatter, Koodi } from '../../types';
 import { getHeaders, mapCsvToKoodi, mapHeadersToColumns, validData } from './uploadCsv';
 import { fetchKoodiListByKoodisto } from '../../api/koodisto';
 import { Loading } from '../../components/Loading';

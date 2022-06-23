@@ -1,0 +1,3270 @@
+[
+    {
+        "koodiArvo": "864",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:34.577+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Toijala",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Toijala",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "785",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:11.439+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Vaala",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Vaala",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "562",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:03.766+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Orivesi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Orivesi",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "582",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:41.887+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Pattijoki",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Pattijoki",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "589",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:41.745+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Peräseinäjoki",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Peräseinäjoki",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "609",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:50.491+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Björneborg",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Pori",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "583",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:57.566+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Pelkosenniemi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Pelkosenniemi",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "284",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:08.781+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Koski Tl",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Koski (Ål)",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "475",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:14.090+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Maalahti",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Malax",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "254",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:53.898+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kiikoinen",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kiikoinen",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "541",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:04.928+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Nurmes",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Nurmes",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "086",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:41.024+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Hausjärvi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Hausjärvi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "418",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:44.281+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Lempäälä",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Lempäälä",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "577",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:08.767+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Pemar",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Paimio",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "602",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:15.485+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Piikkiö",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Pikis",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "210",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:22.070+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kalvola",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Kalvola",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "737",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:39.553+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Sammatti",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Sammatti",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "225",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:13.044+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Karkku",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Karkku",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "282",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:55.157+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Koskenpää",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Koskenpää",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "048",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:58.630+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Eräjärvi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Eräjärvi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "297",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:26.055+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kuopio",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kuopio",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "758",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:14.874+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Sodankylä",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Sodankylä",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "620",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:20.135+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Puolanka",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Puolanka",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "907",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:30.261+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Vahviala",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Vahviala",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "740",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:50.188+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Savonlinna",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Nyslott",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "762",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:06.603+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Sonkajärvi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Sonkajärvi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "209",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:10.497+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Kalanti",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kalanti",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "896",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:29.386+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Uusikaupunki mlk",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Nystad lk",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "586",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:12.469+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Perniö",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Bjärnå",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "895",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:57.470+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Uusikaupunki",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Nystad",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "837",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:53.374+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Tammerfors",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Tampere",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "742",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:11.820+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Savukoski",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Savukoski",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "505",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:33.350+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Mäntsälä",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Mäntsälä",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "072",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:05.551+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Karlö",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Hailuoto",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "615",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:01.155+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Pudasjärvi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Pudasjärvi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "105",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:35.292+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Hyrynsalmi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Hyrynsalmi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "886",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:54.723+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Ulvsby",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Ulvila",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "033",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:55.556+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Björköby",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Björköby",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "320",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:38.905+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kemijärvi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kemijärvi",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "788",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:22.563+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Sääksmäki",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Sääksmäki",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "182",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:01.337+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Jämsä",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Jämsä",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "290",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:43.191+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kuhmo",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Kuhmo",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "001",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:50.512+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Ahlainen",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Ahlainen",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "109",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:36.920+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Hämeenlinna",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Tavastehus",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "597",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:02.498+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Pielisjärvi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Pielisjärvi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "311",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:56.306+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Kymi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kymmene",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "988",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:53.903+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Äetsä",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Äetsä",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "943",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:47.379+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Värtsilä",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Värtsilä",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "317",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:12.985+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kärsämäki",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Kärsämäki",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "848",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:47.360+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Tohmajärvi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Tohmajärvi",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "938",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:30.704+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Vuoksela",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Vuoksela",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "594",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:04.665+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Pieksämäki mlk",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Pieksämäki Lk",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "481",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:26.985+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Masku",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Masku",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "184",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:41.609+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Jäppilä",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Jäppilä",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "749",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:42.985+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Siilinjärvi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Siilinjärvi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "416",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:53.720+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Lemi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Lemi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "257",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:07.770+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kyrkslätt",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Kirkkonummi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "229",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:53.102+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Karunki",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Karunki",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "303",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:37.695+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kuru",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Kuru",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "759",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:56.560+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Soini",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Soini",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "942",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:58.294+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Lillkyro",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Vähäkyrö",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "245",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:08.454+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kerava",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kervo",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "743",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:41.744+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Seinäjoki",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Seinäjoki",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "705",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:02.939+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Rimito",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Rymättylä",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "258",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:54.294+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Kirvu",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kirvu",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "234",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:53.255+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Kaukola",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kaukola",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "043",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:45.239+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Eckerö",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Eckerö",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "015",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:40.593+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Artjärvi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Artsjö",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "580",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:11.519+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Parikkala",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Parikkala",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "687",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:58.631+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Rautavaara",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Rautavaara",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "060",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:36.366+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Finström",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Finström",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "494",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:17.917+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Muhos",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Muhos",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "152",
+        "versio": 2,
+        "paivitysPvm": "2021-01-01T09:40:41.360+00:00",
+        "paivittajaOid": "1.2.246.562.24.25909319372",
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Storkyro",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Isokyrö",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "288",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:57.210+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kruunupyy",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kronoby",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "564",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:12.991+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Uleåborg",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Oulu",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "733",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:12.716+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Salmi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Salmi",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "685",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:05.802+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Rauman mlk",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Raumo lk",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "153",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:10.650+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Imatra",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Imatra",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "150",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:37.124+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Iniö",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Iniö",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "926",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:48.882+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Vihanti",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Vihanti",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "766",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:01.066+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Sottunga",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Sottunga",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "544",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:39.150+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Nurmo",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Nurmo",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "542",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:00.848+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Nurmeksen mlk",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Nurmes lk",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "440",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:30.225+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Larsmo",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Luoto",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "941",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:47.236+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Vårdö",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Vårdö",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "076",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:42.319+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Hammarland",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Hammarland",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "640",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:08.370+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "2004-01-01",
+        "metadata": [
+            {
+                "nimi": "Pieksänmaa",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Pieksänmaa",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "493",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:53.903+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Mouhijärvi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Mouhijärvi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "851",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:33.955+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Tornio",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Torneå",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "771",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:34.259+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Sund",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Sund",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "736",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:02.720+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Saltvik",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Saltvik",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "496",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:59.383+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Munsala",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Munsala",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "974",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:32.731+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Ylimarkku",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Övermark",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "885",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:03.784+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Ullava",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Ullava",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "945",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:29.699+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "2007-01-01",
+        "metadata": [
+            {
+                "nimi": "Vöyri-Maksmaa",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Vörå-Maxmo",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "741",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:50.197+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Savonranta",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Savonranta",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "891",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:11.506+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Uukuniemi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Uukuniemi",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "051",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:02.527+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Euraåminne",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Eurajoki",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "694",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:01.556+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Riihimäki",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Riihimäki",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "755",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:11.727+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Siuntio",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Sjundeå",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "680",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:20.377+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Reso",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Raisio",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "215",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:11.039+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Kanneljärvi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kanneljärvi",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "994",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:34.468+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Pirkkala",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Pirkkala",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "477",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:58.682+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "S:t Marie",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Maaria",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "543",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:00.673+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Nurmijärvi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Nurmijärvi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "835",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:44.944+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Ekenäs",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Tammisaari",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "979",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:21.310+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Yläne",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Yläne",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "894",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:28.773+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Uudenkaarlepyyn mlk",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Nykarleby lk",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "211",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:31.250+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kangasala",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kangasala",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "845",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:18.138+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Tervola",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Tervola",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "110",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:03.133+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Hämeenlinna mlk",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Hämeenlinna mlk",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "400",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:23.070+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Laitila",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Laitila",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "708",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:36.495+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Ruukki",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Ruukki",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "751",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:23.663+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Simo",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Simo",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "412",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:58.111+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Lavansaari",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Lavansaari",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "408",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:19.392+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Lappo",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Lapua",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "688",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:06.790+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Rautio",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Rautio",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "419",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:26.964+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Lemu",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Lemu",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "946",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:36.189+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "2011-01-01",
+        "metadata": [
+            {
+                "nimi": "Vörå",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Vöyri",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "009",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:51.400+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Alavieska",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Alavieska",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "689",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:28.153+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Rautjärvi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Rautjärvi",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "914",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:29.629+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Vanaja",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Vanaja",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "498",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:05.045+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Muonio",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Muonio",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "079",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:07.748+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Harjavalta",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Harjavalta",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "285",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:54.765+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kotka",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kotka",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "735",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:13.558+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Saloinen",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Saloinen",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "255",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:48.558+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kiiminki",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Kiiminki",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "065",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:03.051+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Geta",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Geta",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "734",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:13.691+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Salo",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Salo",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "681",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:38.342+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Rantasalmi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Rantasalmi",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "905",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:58.296+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Vasa",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Vaasa",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "501",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:13.692+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Muurla",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Muurla",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "831",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:22.335+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Taipalsaari",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Taipalsaari",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "684",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:36.805+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Raumo",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Rauma",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "438",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:20.601+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Lumparland",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Lumparland",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "916",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:29.465+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Varpaisjärvi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Varpaisjärvi",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "248",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:24.707+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kesälahti",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Kesälahti",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "923",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:17.343+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Västanfjärd",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Västanfjärd",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "096",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:00.919+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Hinnerjoki",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Hinnerjoki",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "978",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:29.350+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Ylämaa",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Ylämaa",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "761",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:08.982+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Somero",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Somero",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "247",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:54.494+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kestilä",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Kestilä",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "242",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:53.538+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Kemijärven mlk",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kemijärvi lk",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "600",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:03.403+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Pihlajavesi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Pihlajavesi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "702",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:46.457+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Ruovesi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Ruovesi",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "682",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:54.471+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Rantsila",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Rantsila",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "999",
+        "versio": 2,
+        "paivitysPvm": "2019-09-04T11:51:24.966+00:00",
+        "paivittajaOid": "1.2.246.562.24.42485718933",
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Ei tiedossa (kunta)",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Okänd kommun",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Not known",
+                "kieli": "EN"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "925",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:55.686+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Vieremä",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Vieremä",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "575",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:02.022+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Paavola",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Paavola",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "398",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:09.724+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Lahtis",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Lahti",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "576",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:06.833+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Padasjoki",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Padasjoki",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "101",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:40.867+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Houtskär",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Houtskari",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "928",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:58.135+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Viiala",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Viiala",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "789",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:22.767+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Sääminki",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Sääminki",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "007",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:51.982+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Alatornio",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Nedertorneå",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "011",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:55.244+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Angelniemi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Angelniemi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "691",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:44.098+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Reisjärvi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Reisjärvi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "262",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:31.398+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kiukainen",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kiukainen",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "629",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:05.511+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Pyhämaa",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Pyhämaa",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "003",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:53.417+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Akaa",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Akaa",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "273",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:57.026+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kolari",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kolari",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "220",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:44.926+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Karis",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Karjaa",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "532",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:09.723+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Nastola",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Nastola",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "139",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:21.391+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Ii",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Ii",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "091",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:09.753+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Helsinki",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Helsingfors",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "205",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:48.327+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kajaani",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kajana",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "236",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:07.404+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kaustby",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Kaustinen",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "259",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:12.495+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kisko",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kisko",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "018",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:12.574+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Askola",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Askola",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "319",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:48.124+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Köyliö",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kjulo",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "503",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:26.401+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Mynämäki",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Mynämäki",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "405",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:29.331+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Villmanstrand",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Lappeenranta",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "560",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:40.577+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Orimattila",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Orimattila",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "859",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:04.740+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Tyrnävä",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Tyrnävä",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "545",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:05.735+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Närpiö",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Närpes",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "227",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:18.617+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Karttula",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Karttula",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "920",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:12.675+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Velkua",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Velkua",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "436",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:08.361+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Lumijoki",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Lumijoki",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "638",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:58.780+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1997-01-01",
+        "metadata": [
+            {
+                "nimi": "Porvoo",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Borgå",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "784",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:12.489+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Finby",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Särkisalo",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "975",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:39.161+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Ylistaro",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Ylistaro",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "244",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:36:53.791+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kempele",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kempele",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "208",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:58.336+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Kalajoki",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kalajoki",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "686",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:13.640+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Rautalampi",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Rautalampi",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "578",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:51.734+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Paltamo",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Paltamo",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "168",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:06.462+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Johannes",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Johannes",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "628",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:05.321+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Pyhäjärvi Vi",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Pyhäjärvi Vi",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "045",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:43.777+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Eno",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Eno",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "897",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:28.062+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Uusikirkko",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Uusikirkko",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "489",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:37:40.299+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1990-01-01",
+        "metadata": [
+            {
+                "nimi": "Miehikkälä",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Miehikkälä",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "094",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:02.086+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Hitis",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Hiittinen",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiArvo": "162",
+        "versio": 2,
+        "paivitysPvm": "2018-02-08T09:38:07.259+00:00",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "1900-01-01",
+        "metadata": [
+            {
+                "nimi": "Jaakkima",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Jaakkima",
+                "kieli": "SV"
+            }
+        ]
+    }
+]

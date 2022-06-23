@@ -78,7 +78,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList }) => {
                     {
                         id: 'nimi',
                         Cell: ({ row }: { row: Row<Koodi> }) => (
-                            <Link to={`/koodi/${row.original.koodiUri}/${row.original.versio}`}>
+                            <Link to={`/koodi/view/${row.original.koodiUri}/${row.original.versio}`}>
                                 {translateMetadata({ metadata: row.original.metadata, lang })?.nimi}
                             </Link>
                         ),

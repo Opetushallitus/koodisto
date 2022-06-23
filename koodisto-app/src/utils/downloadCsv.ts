@@ -1,5 +1,5 @@
 import Papa from 'papaparse';
-import { Kieli, Koodi, Metadata } from '../types';
+import { Kieli, Metadata, Koodi } from '../types';
 import { fetchKoodiListByKoodisto } from '../api/koodisto';
 import { info } from '../components/Notification/Notification';
 
@@ -18,7 +18,7 @@ export const mapKoodiToCSV = (koodi: Koodi) => {
         return { ...p, ...languageKeyedMetadata };
     }, {});
     return {
-        koodistoUri: koodi.koodisto?.koodistoUri,
+        koodistoUri: koodi.koodistoUri,
         koodiArvo: koodi.koodiArvo,
         versio: koodi.versio,
         voimassaAlkuPvm: koodi.voimassaAlkuPvm,

@@ -22,7 +22,7 @@ export type Metadata = {
     kuvaus?: string;
 };
 
-export type Koodi = UpsertKoodi & {
+export type CSVKoodi = CSVUpsertKoodi & {
     versio: number;
     version: number;
     koodiUri: string;
@@ -32,7 +32,7 @@ export type Koodi = UpsertKoodi & {
     koodisto?: { koodistoUri: string };
 };
 
-export type UpsertKoodi = {
+export type CSVUpsertKoodi = {
     koodiArvo: string;
     versio?: number;
     voimassaAlkuPvm?: string;
@@ -124,39 +124,45 @@ export type PageKoodisto = BaseKoodisto & {
     sisaltyyKoodistoihin: KoodistoRelation[];
     sisaltaaKoodistot: KoodistoRelation[];
     rinnastuuKoodistoihin: KoodistoRelation[];
-    koodiList: Koodi[];
 };
 
 export type SelectOption = { label: string; value: string };
 
-export type PageKoodiRelation = {
-    codeElementUri: string;
-    codeElementVersion: number;
-    codeElementValue: string;
-    relationMetadata: Metadata[];
-    parentMetadata: Metadata[];
+export type KoodiRelation = {
+    koodiUri: string;
+    koodiVersio: number;
+    // codeElementValue: string;
+    koodistoNimi: {
+        fi: string;
+        sv: string;
+        en: string;
+    };
+    nimi: {
+        fi: string;
+        sv: string;
+        en: string;
+    };
+    kuvaus: {
+        fi: string;
+        sv: string;
+        en: string;
+    };
 };
-
-export type PageKoodi = {
-    koodi: {
-        koodiUri: string;
-        resourceUri: string;
-        versio: number;
-        versions: number;
-        koodiArvo: string;
-        paivitysPvm: Date;
-        paivittajaOid: string;
-        voimassaAlkuPvm: Date;
-        voimassaLoppuPvm?: Date;
-        tila: Tila;
-        metadata: Metadata[];
-        withinCodeElements: PageKoodiRelation[];
-        includesCodeElements: PageKoodiRelation[];
-        levelsWithCodeElements: PageKoodiRelation[];
-    };
-    koodisto: {
-        koodistoUri: string;
-        versio: number;
-        metadata: Metadata[];
-    };
+export type Koodi = {
+    koodistoUri: string;
+    koodiUri: string;
+    resourceUri: string;
+    versio: number;
+    version: number;
+    versions: number;
+    koodiArvo: string;
+    paivitysPvm: Date;
+    paivittajaOid: string;
+    voimassaAlkuPvm: Date;
+    voimassaLoppuPvm?: Date;
+    tila: Tila;
+    metadata: Metadata[];
+    sisaltyyKoodeihin: KoodiRelation[];
+    sisaltaaKoodit: KoodiRelation[];
+    rinnastuuKoodeihin: KoodiRelation[];
 };

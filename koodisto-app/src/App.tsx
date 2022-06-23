@@ -30,9 +30,10 @@ const App: React.FC = () => {
                         <Route path="/koodisto/view/:koodistoUri/:versio" element={<KoodistoPage />} />
                         <Route path="/koodisto/edit/:koodistoUri/:versio" element={<KoodistoMuokkausPage />} />
                         <Route path="/koodisto/edit" element={<KoodistoMuokkausPage />} />
-                        <Route path="/koodi/edit/:koodistoUri/:versio" element={<KoodiMuokkausPage />} />
+                        <Route path="/koodi/view/:koodiUri/:koodiVersio" element={<KoodiPage />} />
+                        <Route path="/koodi/edit/:koodiUri/:koodiVersio" element={<KoodiMuokkausPage />} />
                         <Route path="/koodi/edit" element={<KoodiMuokkausPage />} />
-                        <Route path="/koodi/:koodiUri/:koodiVersio" element={<KoodiPage />} />
+
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
                 </React.Suspense>

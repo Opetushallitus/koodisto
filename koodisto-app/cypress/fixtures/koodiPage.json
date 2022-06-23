@@ -1,34 +1,352 @@
 {
-    "koodi": {
-        "koodiUri": "get_1",
-        "resourceUri": "http://localhost/8080/koodisto-service/rest/codeelement/get_1",
-        "versio": 1,
-        "koodiArvo": "1",
-        "paivitysPvm": "2012-03-22",
-        "paivittajaOid": null,
-        "voimassaAlkuPvm": "1990-01-01",
-        "voimassaLoppuPvm": null,
-        "tila": "HYVAKSYTTY",
-        "metadata": [
-            {
-                "nimi": "get1",
-                "kuvaus": "Get 1",
-                "kieli": "FI"
+    "koodistoUri": "kunta",
+    "koodiArvo": "020",
+    "versio": 2,
+    "koodiUri": "kunta_020",
+    "paivitysPvm": "2020-12-28",
+    "paivittajaOid": "1.2.246.562.24.25909319372",
+    "voimassaAlkuPvm": "2007-01-01",
+    "metadata": [
+        {
+            "nimi": "Akaa",
+            "kuvaus": "",
+            "kieli": "SV"
+        },
+        {
+            "nimi": "Akaa",
+            "kuvaus": "",
+            "kieli": "EN"
+        },
+        {
+            "nimi": "Akaa",
+            "kuvaus": "",
+            "kieli": "FI"
+        }
+    ],
+    "sisaltyyKoodeihin": [
+        {
+            "koodiUri": "koulutustoimija_20508645",
+            "koodiVersio": 1,
+            "nimi": {
+                "fi": "Akaan kaupunki"
+            },
+            "kuvaus": {
+                "fi": "Akaan kaupunki"
+            },
+            "koodistoNimi": {
+                "fi": "koulutustoimija",
+                "sv": "koulutustoimija",
+                "en": "koulutustoimija"
             }
-        ],
-        "withinCodeElements": [],
-        "includesCodeElements": [],
-        "levelsWithCodeElements": [],
-        "versions": 1
-    },
-    "koodisto": {
-        "koodistoUri": "get",
-        "versio": 1,
-        "metadata": [
-            {
-                "kieli": "FI",
-                "nimi": "get"
+        },
+        {
+            "koodiUri": "aluehallintovirasto_4",
+            "koodiVersio": 1,
+            "nimi": {
+                "sv": "Västra och Inre Finlands Regionalförvaltningsverk",
+                "fi": "Länsi- ja Sisä-Suomen Aluehallintovirasto",
+                "en": "Western and Inland Finland AVI"
+            },
+            "kuvaus": {
+                "sv": "Västra och Inre Finlands Regionalförvaltningsverk",
+                "fi": "Länsi- ja Sisä-Suomen Aluehallintovirasto",
+                "en": "Western and Inland Finland AVI"
+            },
+            "koodistoNimi": {
+                "fi": "aluehallintovirasto (AVI)",
+                "sv": "regionförvaltningsverken (RFV)",
+                "en": "regional State Administrative Agencies (AVI)"
             }
-        ]
-    }
+        },
+        {
+            "koodiUri": "koulutustoimija_01482005",
+            "koodiVersio": 1,
+            "nimi": {
+                "fi": "Kylmäkosken kunta"
+            },
+            "kuvaus": {
+                "fi": "Kylmäkosken kunta"
+            },
+            "koodistoNimi": {
+                "fi": "koulutustoimija",
+                "sv": "koulutustoimija",
+                "en": "koulutustoimija"
+            }
+        },
+        {
+            "koodiUri": "oppilaitosnumero_07988",
+            "koodiVersio": 1,
+            "nimi": {
+                "sv": "Kurisjärven koulu",
+                "fi": "Kurisjärven koulu",
+                "en": "Kurisjärven koulu"
+            },
+            "kuvaus": {
+                "sv": "Kurisjärven koulu",
+                "fi": "Kurisjärven koulu",
+                "en": "Kurisjärven koulu"
+            },
+            "koodistoNimi": {
+                "fi": "oppilaitosnumero",
+                "sv": "oppilaitosnumero",
+                "en": "oppilaitosnumero"
+            }
+        },
+        {
+            "koodiUri": "oppilaitosnumero_00904",
+            "koodiVersio": 1,
+            "nimi": {
+                "fi": "Viialan lukio",
+                "sv": "Viialan lukio",
+                "en": "Viialan lukio"
+            },
+            "kuvaus": {
+                "fi": "Viialan lukio",
+                "sv": "Viialan lukio",
+                "en": "Viialan lukio"
+            },
+            "koodistoNimi": {
+                "fi": "oppilaitosnumero",
+                "sv": "oppilaitosnumero",
+                "en": "oppilaitosnumero"
+            }
+        }
+    ],
+    "sisaltaaKoodit": [
+        {
+            "koodiUri": "seutukunta_063",
+            "koodiVersio": 1,
+            "nimi": {
+                "sv": "Södra Birkaland",
+                "fi": "Etelä-Pirkanmaa"
+            },
+            "kuvaus": {
+                "sv": "Södra Birkaland",
+                "fi": "Etelä-Pirkanmaa"
+            },
+            "koodistoNimi": {
+                "fi": "seutukunta",
+                "sv": "de ekonomiska regionerna",
+                "en": "Sub-regional units"
+            }
+        },
+        {
+            "koodiUri": "maakunta_06",
+            "koodiVersio": 1,
+            "nimi": {
+                "sv": "Birkaland",
+                "fi": "Pirkanmaa",
+                "en": "Pirkanmaa"
+            },
+            "kuvaus": {
+                "sv": "Birkaland",
+                "fi": "Pirkanmaa",
+                "en": "Pirkanmaa"
+            },
+            "koodistoNimi": {
+                "fi": "MAAKUNTA",
+                "sv": "landskapen",
+                "en": "regions"
+            }
+        },
+        {
+            "koodiUri": "elykeskus_05",
+            "koodiVersio": 1,
+            "nimi": {
+                "fi": "Pirkanmaan ELY-keskus",
+                "sv": "NTM-centralen i Birkaland",
+                "en": "Pirkanmaa ELY Centre"
+            },
+            "kuvaus": {
+                "fi": "Pirkanmaan ELY-keskus",
+                "sv": "NTM-centralen i Birkaland",
+                "en": "Pirkanmaa ELY Centre"
+            },
+            "koodistoNimi": {
+                "fi": "elinkeino-, liikenne- ja ympäristökeskukset (ELY-keskukset)",
+                "sv": "närings-, trafik- och miljöcentralerna (NTM-centralerna)",
+                "en": "Centres for Economic Development, Transport and the Environment (ELY Centres)"
+            }
+        },
+        {
+            "koodiUri": "kielisuhde_0",
+            "koodiVersio": 1,
+            "nimi": {
+                "sv": "Enspråkigt finska kommuner",
+                "fi": "Yksikielinen suomenkielinen kunta",
+                "en": "Monolingual Finnish-speaking municipality"
+            },
+            "kuvaus": {
+                "sv": "Enspråkigt finska kommuner",
+                "fi": "Yksikielinen suomenkielinen kunta",
+                "en": "Monolingual Finnish-speaking municipality"
+            },
+            "koodistoNimi": {
+                "sv": "språklig",
+                "fi": "kielisuhde",
+                "en": "language distribution"
+            }
+        },
+        {
+            "koodiUri": "kuntaryhma_2",
+            "koodiVersio": 1,
+            "nimi": {
+                "fi": "Taajaan asutut kunnat",
+                "sv": "Tätortskommuner",
+                "en": "Semi urban municipalities"
+            },
+            "kuvaus": {
+                "fi": "Taajaan asutut kunnat",
+                "sv": "Tätortskommuner",
+                "en": "Semi urban municipalities"
+            },
+            "koodistoNimi": {
+                "fi": "tilastollinen kuntaryhmä",
+                "sv": "statistisk kommungruppering",
+                "en": "statistical grouping of municipalities"
+            }
+        },
+        {
+            "koodiUri": "maakunta_06",
+            "koodiVersio": 2,
+            "nimi": {
+                "fi": "Pirkanmaa",
+                "sv": "Birkaland",
+                "en": "Tampere Region"
+            },
+            "kuvaus": {
+                "fi": "Pirkanmaa",
+                "sv": "Birkaland",
+                "en": "Pirkanmaa"
+            },
+            "koodistoNimi": {
+                "fi": "MAAKUNTA",
+                "sv": "landskapen",
+                "en": "regions"
+            }
+        },
+        {
+            "koodiUri": "kielisuhde_0",
+            "koodiVersio": 2,
+            "nimi": {
+                "fi": "Yksikielinen suomenkielinen kunta",
+                "sv": "Enspråkigt finska kommuner",
+                "en": "Monolingual Finnish-speaking municipality"
+            },
+            "kuvaus": {
+                "fi": "Yksikielinen suomenkielinen kunta",
+                "sv": "Enspråkigt finska kommuner",
+                "en": "Monolingual Finnish-speaking municipality"
+            },
+            "koodistoNimi": {
+                "sv": "språklig",
+                "fi": "kielisuhde",
+                "en": "language distribution"
+            }
+        }
+    ],
+    "rinnastuuKoodeihin": [
+        {
+            "koodiUri": "kunta_864",
+            "koodiVersio": 2,
+            "nimi": {
+                "fi": "Toijala",
+                "sv": "Toijala"
+            },
+            "kuvaus": {
+                "fi": "",
+                "sv": ""
+            },
+            "koodistoNimi": {
+                "sv": "kommun",
+                "fi": "kunta",
+                "en": "municipality"
+            }
+        },
+        {
+            "koodiUri": "kunta_928",
+            "koodiVersio": 2,
+            "nimi": {
+                "sv": "Viiala",
+                "fi": "Viiala"
+            },
+            "kuvaus": {
+                "sv": "",
+                "fi": ""
+            },
+            "koodistoNimi": {
+                "sv": "kommun",
+                "fi": "kunta",
+                "en": "municipality"
+            }
+        },
+        {
+            "koodiUri": "kunta_310",
+            "koodiVersio": 2,
+            "nimi": {
+                "sv": "Kylmäkoski",
+                "fi": "Kylmäkoski"
+            },
+            "kuvaus": {
+                "sv": "",
+                "fi": ""
+            },
+            "koodistoNimi": {
+                "sv": "kommun",
+                "fi": "kunta",
+                "en": "municipality"
+            }
+        },
+        {
+            "koodiUri": "kunta_864",
+            "koodiVersio": 1,
+            "nimi": {
+                "sv": "Toijala",
+                "fi": "Toijala"
+            },
+            "kuvaus": {
+                "sv": "",
+                "fi": ""
+            },
+            "koodistoNimi": {
+                "sv": "kommun",
+                "fi": "kunta",
+                "en": "municipality"
+            }
+        },
+        {
+            "koodiUri": "kunta_928",
+            "koodiVersio": 1,
+            "nimi": {
+                "sv": "Viiala",
+                "fi": "Viiala"
+            },
+            "kuvaus": {
+                "sv": "",
+                "fi": ""
+            },
+            "koodistoNimi": {
+                "sv": "kommun",
+                "fi": "kunta",
+                "en": "municipality"
+            }
+        },
+        {
+            "koodiUri": "kunta_310",
+            "koodiVersio": 1,
+            "nimi": {
+                "sv": "Kylmäkoski",
+                "fi": "Kylmäkoski"
+            },
+            "kuvaus": {
+                "sv": "",
+                "fi": ""
+            },
+            "koodistoNimi": {
+                "sv": "kommun",
+                "fi": "kunta",
+                "en": "municipality"
+            }
+        }
+    ]
 }

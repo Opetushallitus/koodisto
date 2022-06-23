@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
-import type { PageKoodi } from '../../types';
 import InfoFields from '../../components/InfoFields';
 import DateRange from '../../components/DateRange';
 import UpdatedAt from '../../components/UpdatedAt';
+import { Koodi } from '../../types';
 
 const NameContainer = styled.ul`
     list-style-type: none;
@@ -15,7 +15,7 @@ const NameContainer = styled.ul`
     }
 `;
 
-export const KoodiInfo: React.FC<Pick<PageKoodi, 'koodi'>> = ({ koodi }: Pick<PageKoodi, 'koodi'>) => {
+export const KoodiInfo: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
     const fields = [
         {
             header: {

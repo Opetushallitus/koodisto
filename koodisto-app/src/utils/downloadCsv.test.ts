@@ -1,19 +1,23 @@
 import { mapKoodiToCSV } from './downloadCsv';
+import { Tila } from '../types';
 
 const cleanKoodi = {
+    versions: 1,
+    paivittajaOid: '1.2.3.4.5',
+    koodistoUri: 'koodistoUri',
+    sisaltyyKoodeihin: [],
+    sisaltaaKoodit: [],
+    rinnastuuKoodeihin: [],
     koodiArvo: '',
     koodiUri: '',
     metadata: [],
-    paivitysPvm: '',
+    paivitysPvm: new Date(),
     resourceUri: '',
-    tila: '',
+    tila: 'LUONNOS' as Tila,
     versio: 0,
     version: 0,
-    voimassaAlkuPvm: '',
-    voimassaLoppuPvm: '',
-    koodisto: {
-        koodistoUri: 'koodistoUri',
-    },
+    voimassaAlkuPvm: new Date('2022-01-01'),
+    voimassaLoppuPvm: undefined,
 };
 describe('downloadCsv', () => {
     describe('mapKoodiToCSV', () => {
@@ -22,8 +26,8 @@ describe('downloadCsv', () => {
                 koodistoUri: 'koodistoUri',
                 koodiArvo: '',
                 versio: 0,
-                voimassaAlkuPvm: '',
-                voimassaLoppuPvm: '',
+                voimassaAlkuPvm: new Date('2022-01-01'),
+                voimassaLoppuPvm: undefined,
                 nimi_FI: '',
                 nimi_SV: '',
                 nimi_EN: '',
@@ -40,8 +44,8 @@ describe('downloadCsv', () => {
                 koodistoUri: 'koodistoUri',
                 koodiArvo: '',
                 versio: 0,
-                voimassaAlkuPvm: '',
-                voimassaLoppuPvm: '',
+                voimassaAlkuPvm: new Date('2022-01-01'),
+                voimassaLoppuPvm: undefined,
                 nimi_FI: 'bar',
                 nimi_SV: '',
                 nimi_EN: '',

@@ -1,10 +1,9 @@
 import { API_BASE_PATH, API_INTERNAL_PATH } from '../context/constants';
 import { atom, Getter } from 'jotai';
-import type { MapToApiObject, BaseKoodisto } from '../types';
+import type { MapToApiObject, BaseKoodisto, Koodi } from '../types';
 import {
     ApiDate,
     Kieli,
-    Koodi,
     ListKoodisto,
     Metadata,
     PageKoodisto,
@@ -18,6 +17,7 @@ import { parseApiDate, translateMetadata, parseUIDate, translateMultiLocaleText 
 import { errorHandlingWrapper } from './errorHandling';
 import axios, { AxiosResponse } from 'axios';
 import { fetchOrganisaatioNimi } from './organisaatio';
+import { ApiKoodi, mapApiKoodi } from './koodi';
 
 const urlAtom = atom<string>(`${API_INTERNAL_PATH}/koodisto`);
 
@@ -44,7 +44,6 @@ export type ApiPageKoodisto = ApiBaseKoodisto & {
     sisaltyyKoodistoihin: KoodistoRelation[];
     sisaltaaKoodistot: KoodistoRelation[];
     rinnastuuKoodistoihin: KoodistoRelation[];
-    koodiList: Koodi[];
     metadata: Metadata[];
 };
 type ApiListKoodisto = ApiBaseKoodisto & {
@@ -69,7 +68,6 @@ type UpdateKoodistoDataType = CreateKoodistoDataType & {
 };
 
 const apiKoodistoListToKoodistoList = (a: ApiListKoodisto, lang: Kieli): ListKoodisto => {
-    console.log(a.metadata, a.koodistoRyhmaMetadata);
     const nimi = translateMetadata({ metadata: a.metadata, lang })?.nimi;
     const ryhmaNimi = translateMetadata({ metadata: a.koodistoRyhmaMetadata, lang })?.nimi;
     return {
@@ -102,10 +100,10 @@ export const fetchKoodiListByKoodisto = async ({
     koodistoVersio?: number;
 }): Promise<Koodi[] | undefined> => {
     return errorHandlingWrapper(async () => {
-        const { data } = await axios.get<Koodi[]>(`${API_BASE_PATH}/json/${koodistoUri}/koodi`, {
+        const { data } = await axios.get<ApiKoodi[]>(`${API_BASE_PATH}/json/${koodistoUri}/koodi`, {
             params: koodistoVersio !== undefined ? { koodistoVersio } : {},
         });
-        return data;
+        return data.map(mapApiKoodi);
     });
 };
 
@@ -227,12 +225,12 @@ export const fetchPageKoodisto = async ({
     lang,
 }: {
     koodistoUri: string;
-    versio: number;
+    versio?: number;
     lang: Kieli;
 }): Promise<PageKoodisto | undefined> => {
     return errorHandlingWrapper(async () => {
         const { data: apiPageKoodisto } = await axios.get<ApiPageKoodisto>(
-            `${API_INTERNAL_PATH}/koodisto/${koodistoUri}/${versio}`
+            [API_INTERNAL_PATH, 'koodisto', koodistoUri, ...(versio ? [versio] : [])].join('/')
         );
         if (apiPageKoodisto) {
             const organisaatioNimi = await fetchOrganisaatioNimi(apiPageKoodisto.organisaatioOid);

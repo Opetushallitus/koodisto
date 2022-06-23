@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Accordion } from '../../components/Accordion';
 import { useIntl, FormattedMessage } from 'react-intl';
 import KoodistoRelationsTable from './KoodistoRelationsTable';
 import { KoodiTable } from './KoodiTable';
-import { PageKoodisto } from '../../types';
+import { PageKoodisto, Koodi } from '../../types';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { ButtonLabelPrefix } from '../KoodistoTablePage/KoodistoTablePage';
 import { IconWrapper } from '../../components/IconWapper';
 import { useNavigate } from 'react-router-dom';
+import Spin from '@opetushallitus/virkailija-ui-components/Spin';
+import { fetchKoodistoKoodis } from '../../api/koodi';
 
 const SISALTYY_KOODISTOIHIN_ID = 0;
 const SISALTAA_KOODISTOT_ID = 1;
@@ -19,7 +21,12 @@ type KoodistoPageAccordionProps = {
 };
 
 const KoodistoPageAccordion = ({ koodisto }: KoodistoPageAccordionProps) => {
-    const { rinnastuuKoodistoihin, sisaltyyKoodistoihin, sisaltaaKoodistot, koodiList } = koodisto;
+    const { rinnastuuKoodistoihin, sisaltyyKoodistoihin, sisaltaaKoodistot } = koodisto;
+    const [koodiList, setKoodiList] = useState<Koodi[] | undefined>(undefined);
+    useEffect(() => {
+        (async () => setKoodiList(await fetchKoodistoKoodis(koodisto.koodistoUri, koodisto.versio)))();
+    }, [koodisto]);
+
     const navigate = useNavigate();
     const { formatMessage } = useIntl();
     const data = [
@@ -58,12 +65,12 @@ const KoodistoPageAccordion = ({ koodisto }: KoodistoPageAccordionProps) => {
         },
         {
             id: KOODIT_ID,
-            localizedHeadingTitle: (
+            localizedHeadingTitle: (koodiList && (
                 <>
                     <FormattedMessage
                         id={'TAULUKKO_KOODIT_OTSIKKO'}
                         defaultMessage={'Koodit ({count})'}
-                        values={{ count: koodiList.length }}
+                        values={{ count: koodiList?.length || 0 }}
                     />
                     <Button onClick={() => navigate('/koodi/edit/')}>
                         <ButtonLabelPrefix>
@@ -72,8 +79,8 @@ const KoodistoPageAccordion = ({ koodisto }: KoodistoPageAccordionProps) => {
                         <FormattedMessage id={'TAULUKKO_LISAA_KOODI_BUTTON'} defaultMessage={'Luo uusi koodi'} />
                     </Button>
                 </>
-            ),
-            panelComponent: <KoodiTable koodiList={koodiList} />,
+            )) || <Spin size={'small'} />,
+            panelComponent: (koodiList && <KoodiTable koodiList={koodiList} />) || <Spin />,
         },
     ];
 

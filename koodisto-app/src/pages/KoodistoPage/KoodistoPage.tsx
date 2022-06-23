@@ -17,8 +17,9 @@ import {
     MainHeaderButtonsContainer,
     MainContainer,
 } from '../../components/Containers';
-import { KoodistoPathContainer } from '../../components/KoodistoPathContainer';
+import { CrumbTrail } from '../../components/KoodistoPathContainer';
 import VersionPicker from '../../components/VersionPicker';
+import { ErrorPage } from '../ErrorPage';
 
 export const KoodistoPage: React.FC = () => {
     const { versio, koodistoUri } = useParams();
@@ -37,6 +38,7 @@ export const KoodistoPage: React.FC = () => {
         })();
     }, [koodistoUri, lang, versioNumber]);
 
+    if (!(koodistoUri && versio)) return <ErrorPage />;
     if (!koodisto) {
         return <Loading />;
     }
@@ -44,7 +46,7 @@ export const KoodistoPage: React.FC = () => {
 
     return (
         <>
-            <KoodistoPathContainer trail={[{ label: koodistonMetadata?.nimi || '' }]} />
+            <CrumbTrail trail={[{ key: koodistoUri, label: koodistonMetadata?.nimi || '' }]} />
             <MainHeaderContainer>
                 <HeadingDivider>
                     <h1>{koodistonMetadata?.nimi}</h1>

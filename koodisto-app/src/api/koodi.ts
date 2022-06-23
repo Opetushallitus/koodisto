@@ -1,33 +1,42 @@
-import type { UpsertKoodi, PageKoodi, MapToApiObject } from '../types';
+import type { CSVUpsertKoodi, MapToApiObject, Koodi } from '../types';
 import { errorHandlingWrapper } from './errorHandling';
 import axios from 'axios';
 import { API_INTERNAL_PATH } from '../context/constants';
 import { ApiPageKoodisto } from './koodisto';
 import { parseApiDate } from '../utils';
 
-type ApiPageKoodi = {
-    koodi: MapToApiObject<PageKoodi['koodi']>;
-    koodisto: PageKoodi['koodisto'];
+export type ApiKoodi = MapToApiObject<Koodi> & {
+    koodisto: ApiPageKoodisto;
 };
 
-export const batchUpsertKoodi = async (koodistoUri: string, koodi: UpsertKoodi[]): Promise<string | undefined> => {
+export const batchUpsertKoodi = async (koodistoUri: string, koodi: CSVUpsertKoodi[]): Promise<string | undefined> => {
     return errorHandlingWrapper(async () => {
         const { data } = await axios.post<ApiPageKoodisto>(`${API_INTERNAL_PATH}/koodi/${koodistoUri}`, koodi);
         return data.koodistoUri;
     });
 };
-
-export const fetchPageKoodi = async (koodiUri: string, versio: number): Promise<PageKoodi | undefined> => {
+export const mapApiKoodi = (koodi: ApiKoodi): Koodi => {
+    return {
+        ...koodi,
+        paivitysPvm: parseApiDate(koodi.paivitysPvm),
+        voimassaAlkuPvm: parseApiDate(koodi.voimassaAlkuPvm),
+        voimassaLoppuPvm: koodi.voimassaLoppuPvm && parseApiDate(koodi.voimassaLoppuPvm),
+    };
+};
+export const fetchKoodistoKoodis = async (
+    koodistoUri: string,
+    koodistoVersio: number
+): Promise<Koodi[] | undefined> => {
     return errorHandlingWrapper(async () => {
-        const { data: pageData } = await axios.get<ApiPageKoodi>(`${API_INTERNAL_PATH}/koodi/${koodiUri}/${versio}`);
-        return {
-            koodi: {
-                ...pageData.koodi,
-                paivitysPvm: parseApiDate(pageData.koodi.paivitysPvm),
-                voimassaAlkuPvm: parseApiDate(pageData.koodi.voimassaAlkuPvm),
-                voimassaLoppuPvm: pageData.koodi.voimassaLoppuPvm && parseApiDate(pageData.koodi.voimassaLoppuPvm),
-            },
-            koodisto: pageData.koodisto,
-        };
+        const { data: pageData } = await axios.get<ApiKoodi[]>(
+            `${API_INTERNAL_PATH}/koodi/koodisto/${koodistoUri}/${koodistoVersio}`
+        );
+        return pageData.map(mapApiKoodi);
+    });
+};
+export const fetchPageKoodi = async (koodiUri: string, versio: number): Promise<Koodi | undefined> => {
+    return errorHandlingWrapper(async () => {
+        const { data: pageData } = await axios.get<ApiKoodi>(`${API_INTERNAL_PATH}/koodi/${koodiUri}/${versio}`);
+        return mapApiKoodi(pageData);
     });
 };

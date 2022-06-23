@@ -1,4 +1,7 @@
 {
+  "/FfZeC": {
+    "defaultMessage": "Peruuta"
+  },
   "ALKUPVM_PAKOLLINEN": {
     "defaultMessage": "Valitse aloitus päivämäärä."
   },
@@ -40,12 +43,6 @@
   },
   "KOODISTO_MUOKKAA_SIVU_TITLE": {
     "defaultMessage": "Muokkaa koodistoa"
-  },
-  "KOODISTO_PERUUTA": {
-    "defaultMessage": "Peruuta"
-  },
-  "KOODISTO_POISTA": {
-    "defaultMessage": "Poista koodisto"
   },
   "KOODISTO_RYHMA_EN": {
     "defaultMessage": "EN"
@@ -92,20 +89,17 @@
   "KOODISTO_RYHMA_TYHJAT_TITLE": {
     "defaultMessage": "Tyhjät koodistoryhmät ({emptyRyhmaCount})"
   },
-  "KOODISTO_TALLENNA": {
-    "defaultMessage": "Tallenna"
-  },
   "KOODISTO_TALLENNUS_MESSAGE": {
     "defaultMessage": "Tallennettiin koodisto uri:lla {koodistoUri}"
   },
   "KOODISTO_TALLENNUS_MESSAGE_TITLE": {
     "defaultMessage": "Koodisto tallennettiin onnistuneesti."
   },
-  "KOODISTO_VERSIOI": {
-    "defaultMessage": "Versioi koodisto"
-  },
   "KOODIVERSIO_DROPDOWN": {
     "defaultMessage": "Koodiversio"
+  },
+  "KOODI_MUOKKAA_SIVU_TITLE": {
+    "defaultMessage": "Muokkaa koodia"
   },
   "KOODI_TAULUKKO_FILTTERI_PLACEHOLDER": {
     "defaultMessage": "Hae nimellä tai koodiarvolla"
@@ -238,5 +232,8 @@
   },
   "VERSIO_DROPDOWN_LABEL": {
     "defaultMessage": "Versio {versio}"
+  },
+  "riHrtl": {
+    "defaultMessage": "Tallenna"
   }
 }

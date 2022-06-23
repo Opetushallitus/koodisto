@@ -1,4 +1,4 @@
-import { CsvKoodiObject, Kieli, MessageFormatter, UpsertKoodi } from '../../types';
+import { CsvKoodiObject, Kieli, MessageFormatter, CSVUpsertKoodi } from '../../types';
 import { Column } from 'react-table';
 
 export const getHeaders = (data?: CsvKoodiObject[]): (keyof CsvKoodiObject)[] =>
@@ -50,7 +50,7 @@ const mapCsvRowToMetadata = (csvRow: CsvKoodiObject, kieli: Kieli) => {
           ]
         : [];
 };
-export const mapCsvToKoodi = (csvRow: CsvKoodiObject): UpsertKoodi => {
+export const mapCsvToKoodi = (csvRow: CsvKoodiObject): CSVUpsertKoodi => {
     return {
         koodiArvo: csvRow.koodiArvo,
         versio: !csvRow.versio || isNaN(+csvRow.versio) ? undefined : +csvRow.versio,
