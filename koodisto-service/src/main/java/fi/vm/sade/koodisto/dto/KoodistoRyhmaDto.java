@@ -3,7 +3,6 @@ package fi.vm.sade.koodisto.dto;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Koodisto;
-import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import lombok.*;
 
 import javax.validation.Valid;
