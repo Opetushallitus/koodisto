@@ -142,7 +142,7 @@ public class KoodiVersio extends BaseEntity {
     }
 
     @AssertTrue(message = "error.validation.enddate")
-    public boolean getValidateDates() {
+    public boolean isStartDateBeforeEndDate() {
         return Optional.ofNullable(voimassaLoppuPvm).map(date -> date.after(voimassaAlkuPvm)).orElse(true);
     }
 }

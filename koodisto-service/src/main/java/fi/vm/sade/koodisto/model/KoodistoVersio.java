@@ -138,10 +138,6 @@ public class KoodistoVersio extends BaseEntity {
         return Collections.unmodifiableSet(metadatas);
     }
 
-    public void removeKoodiVersios(Collection<KoodistoVersioKoodiVersio> koodiVersios) {
-        this.koodiVersios.removeAll(koodiVersios);
-    }
-
     public void removeKoodiVersio(KoodistoVersioKoodiVersio koodiVersio) {
         this.koodiVersios.remove(koodiVersio);
     }
@@ -159,9 +155,9 @@ public class KoodistoVersio extends BaseEntity {
         return new ToStringCreator(this).append(this.getId()).append(this.versio).toString();
     }
 
-    @AssertTrue(message = "Validation end date must not be before start date")
-    private boolean getValidateDates() {
-        return voimassaAlkuPvm != null && (voimassaLoppuPvm == null || !voimassaLoppuPvm.before(voimassaAlkuPvm));
+    @AssertTrue(message = "error.validation.enddate")
+    public boolean isStartDateBeforeEndDate() {
+        return Optional.ofNullable(voimassaLoppuPvm).map(date -> date.after(voimassaAlkuPvm)).orElse(true);
     }
 
     public int getKoodiCount(){
