@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.resource.internal;
 
+import fi.vm.sade.koodisto.util.KoodistoRole;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -276,6 +277,19 @@ class InternalKoodiResourceTest {
                                 "\"kieli\":\"SV\"}]" +
                                 "}]"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {KoodistoRole.ROLE_APP_KOODISTO_READ_UPDATE})
+    @Description("Test getting koodi-list for koodisto")
+    void getKoodistoKoodis() throws Exception {
+        this.mockMvc.perform(get("/internal/koodi/koodisto/two/1"))
+                .andExpectAll(
+                        status().isOk(),
+                        content().json(
+                                "[{\"koodistoUri\":\"two\",\"koodiArvo\":\"1\",\"versio\":1,\"koodiUri\":\"two_1\",\"paivitysPvm\":\"2012-03-22\",\"paivittajaOid\":null,\"voimassaAlkuPvm\":\"1990-01-01\",\"metadata\":[{\"nimi\":\"two1\",\"kuvaus\":\"Two 1\",\"kieli\":\"FI\"}],\"sisaltyyKoodeihin\":[],\"sisaltaaKoodit\":[],\"rinnastuuKoodeihin\":[]}]")
+                );
+
     }
 
     private String readFile(String fileName) throws Exception {

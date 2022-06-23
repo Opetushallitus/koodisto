@@ -86,6 +86,4 @@ public class InternalKoodistoPageDto {
     @JsonView({JsonViews.Internal.class})
     private List<InternalKoodistoSuhdeDto> rinnastuuKoodistoihin;
 
-    @JsonView({JsonViews.Internal.class})
-    private List<InternalKoodiVersioDto> koodiList;
 }
