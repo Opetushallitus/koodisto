@@ -352,7 +352,7 @@ class CodeElementResourceTest {
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         invalidDto.put("voimassaLoppuPvm", "1970-01-01");
         insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest())
-                .andExpect(content().string("validateDates: error.validation.enddate"));
+                .andExpect(content().string(containsString("error.validation.enddate")));
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         JSONObject invalidMd = new JSONObject();

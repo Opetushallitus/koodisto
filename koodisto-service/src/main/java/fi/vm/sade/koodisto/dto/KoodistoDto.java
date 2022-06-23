@@ -54,7 +54,7 @@ public class KoodistoDto extends AbstractKoodistoDto {
 
     @JsonIgnore
     @AssertTrue(message = "error.validation.enddate")
-    public boolean startBeforeEnd() {
+    public boolean isStartBeforeEnd() {
         return Optional.ofNullable(voimassaLoppuPvm).map(date -> date.after(voimassaAlkuPvm)).orElse(true);
     }
 

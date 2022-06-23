@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.views.JsonViews;
 import fi.vm.sade.koodisto.model.Tila;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.AssertTrue;
@@ -24,6 +23,9 @@ import java.util.Optional;
  */
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class KoodiDto {
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
@@ -68,19 +70,19 @@ public class KoodiDto {
 
     @JsonIgnore
     @AssertTrue(message = "error.validation.enddate")
-    public boolean startBeforeEnd() {
+    public boolean isStartBeforeEnd() {
         return Optional.ofNullable(voimassaLoppuPvm).map(date -> date.after(voimassaAlkuPvm)).orElse(true);
     }
 
     @JsonIgnore
     @AssertTrue(message = "error.validation.versio")
-    public boolean versioSetForUpdate() {
+    public boolean isVersioSetForUpdate() {
         return Optional.ofNullable(koodiUri).map(uri -> versio > 0).orElse(true);
     }
 
     @JsonIgnore
     @AssertTrue(message = "error.validation.tila")
-    public boolean tilaSetForUpdate() {
+    public boolean isTilaSetForUpdate() {
         return Optional.ofNullable(koodiUri).map(uri -> tila != null).orElse(true);
     }
 }

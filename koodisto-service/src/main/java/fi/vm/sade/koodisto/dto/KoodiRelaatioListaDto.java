@@ -3,6 +3,7 @@ package fi.vm.sade.koodisto.dto;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.views.JsonViews;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@Builder
 public class KoodiRelaatioListaDto {
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
@@ -27,6 +29,6 @@ public class KoodiRelaatioListaDto {
     private boolean isChild;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-    @NotEmpty(message = "error.metadata.empty")
+    @NotEmpty(message = "error.relations.empty")
     private List<String> relations;
 }
