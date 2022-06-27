@@ -16,5 +16,4 @@ public class KoodistoRyhmaMetadataToKoodistoRyhmaMetadataTypeConverter implement
         converted.setNimi(source.getNimi());
         return converted;
     }
-
 }

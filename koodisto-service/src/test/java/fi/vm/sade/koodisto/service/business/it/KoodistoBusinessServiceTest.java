@@ -2,6 +2,7 @@ package fi.vm.sade.koodisto.service.business.it;
 
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
+import fi.vm.sade.koodisto.dto.KoodistoMetadataDto;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.repository.KoodistonSuhdeRepository;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
@@ -45,18 +46,15 @@ import static org.junit.Assert.*;
 public class KoodistoBusinessServiceTest {
 
     private static final String CODES_WITH_RELATIONS = "809suhdetahan";
-
-    @Autowired
-    private KoodistoBusinessService koodistoBusinessService;
-
-    @Autowired
-    private KoodiBusinessService koodiBusinessService;
-
-    @Autowired
-    private KoodistonSuhdeRepository suhdeRepository;
+    private static final Long KOODISTON_SUHDE = -6L;
     @Autowired
     KoodistoVersioToKoodistoDtoConverter koodistoVersioToKoodistoDtoConverter;
-    private static final Long KOODISTON_SUHDE = -6L;
+    @Autowired
+    private KoodistoBusinessService koodistoBusinessService;
+    @Autowired
+    private KoodiBusinessService koodiBusinessService;
+    @Autowired
+    private KoodistonSuhdeRepository suhdeRepository;
 
     @Test
     public void testCreate() {
@@ -240,12 +238,11 @@ public class KoodistoBusinessServiceTest {
         assertEquals(codesDTO.getKoodistoUri(), result.getKoodisto().getKoodistoUri());
         assertEquals(versio + 1, result.getVersio().intValue());
         assertEquals(Tila.LUONNOS, result.getTila());
-        KoodistoMetadata expectedMeta = codesDTO.getMetadata().get(0);
+        KoodistoMetadataDto expectedMeta = codesDTO.getMetadata().get(0);
         assertEquals(expectedMeta.getKieli(), result.getMetadatas().iterator().next().getKieli());
         assertEquals(expectedMeta.getNimi(), result.getMetadatas().iterator().next().getNimi());
         assertEquals(expectedMeta.getKuvaus(), result.getMetadatas().iterator().next().getKuvaus());
     }
-
 
 
     @Test
@@ -373,13 +370,11 @@ public class KoodistoBusinessServiceTest {
         d.setVoimassaAlkuPvm(new Date());
         d.setVoimassaLoppuPvm(new Date());
 
-        ArrayList<KoodistoMetadata> metadata = new ArrayList<KoodistoMetadata>();
-        KoodistoMetadata md = new KoodistoMetadata();
-        md.setKieli(Kieli.FI);
-        md.setKuvaus("UusiKuvaus");
-        md.setNimi("UusiNimi");
-        metadata.add(md);
-        d.setMetadata(metadata);
+        d.setMetadata(List.of(KoodistoMetadataDto.builder()
+                .kieli(Kieli.FI)
+                .nimi("UusiNimi")
+                .kuvaus("UusiKuvaus")
+                .build()));
 
         d.setIncludesCodes(includesCodes);
         d.setLevelsWithCodes(levelsWithCodes);

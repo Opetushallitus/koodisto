@@ -122,7 +122,7 @@ public class UriTransliteratorTest {
 
         when(koodistoRepository.existsByKoodistoUri(anyString())).thenReturn(false);
         String generatedUri = uriTransliterator.generateKoodistoUriByMetadata(
-                Arrays.asList(new KoodistoMetadataType[]{createMetadata(KieliType.FI, nimi)}));
+                Arrays.asList(createMetadata(KieliType.FI, nimi)));
 
         verify(koodistoRepository, times(1)).existsByKoodistoUri(anyString());
         assertEquals(expectedUri, generatedUri);

@@ -5,6 +5,8 @@ import fi.vm.sade.koodisto.model.JsonViews;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
 public abstract class AbstractKoodistoDto {
@@ -19,6 +21,7 @@ public abstract class AbstractKoodistoDto {
     private String omistaja;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+    @NotBlank
     private String organisaatioOid;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})

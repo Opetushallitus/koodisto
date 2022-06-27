@@ -34,11 +34,8 @@ public class SimpleKoodiMetadataDto extends SimpleMetadataDto {
             return false;
         SimpleKoodiMetadataDto other = (SimpleKoodiMetadataDto) obj;
         if (lyhytNimi == null) {
-            if (other.lyhytNimi != null)
-                return false;
-        } else if (!lyhytNimi.equals(other.lyhytNimi))
-            return false;
-        return true;
+            return other.lyhytNimi == null;
+        } else return lyhytNimi.equals(other.lyhytNimi);
     }
     
     

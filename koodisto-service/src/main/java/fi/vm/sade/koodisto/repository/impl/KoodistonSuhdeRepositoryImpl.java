@@ -25,7 +25,7 @@ import java.util.Set;
 
 public class KoodistonSuhdeRepositoryImpl implements KoodistonSuhdeRepositoryCustom {
 
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private static final String VERSIO = "versio";
     private static final String KOODISTO_URI = "koodistoUri";

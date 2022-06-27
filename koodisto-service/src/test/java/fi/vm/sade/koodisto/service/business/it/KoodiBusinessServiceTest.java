@@ -25,9 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @org.springframework.test.context.jdbc.Sql(
         scripts = "classpath:test-data.sql",

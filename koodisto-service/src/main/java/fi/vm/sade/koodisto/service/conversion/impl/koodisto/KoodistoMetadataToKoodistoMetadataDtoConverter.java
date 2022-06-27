@@ -17,5 +17,4 @@ public class KoodistoMetadataToKoodistoMetadataDtoConverter implements
                 .kuvaus(source.getKuvaus())
                 .build();
     }
-
 }

@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 
 import static org.junit.Assert.assertEquals;
 
-;
-
 @Component
 public class ResourceHelper {
 
@@ -56,5 +54,4 @@ public class ResourceHelper {
         assertEquals(201, response.getStatusCodeValue());
         return (KoodiDto) response.getBody();
     }
-
 }

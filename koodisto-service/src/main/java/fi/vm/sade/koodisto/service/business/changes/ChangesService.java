@@ -4,10 +4,10 @@ import org.joda.time.DateTime;
 
 public interface ChangesService<T> {
     
-    public static final String REMOVED_METADATA_FIELD = "POISTETTU";
+    String REMOVED_METADATA_FIELD = "POISTETTU";
 
-    public T getChangesDto(String uri, Integer versio, boolean compareToLatestAccepted);
+    T getChangesDto(String uri, Integer versio, boolean compareToLatestAccepted);
     
-    public T getChangesDto(String uri, DateTime date, boolean compareToLatestAccepted);
+    T getChangesDto(String uri, DateTime date, boolean compareToLatestAccepted);
 
 }

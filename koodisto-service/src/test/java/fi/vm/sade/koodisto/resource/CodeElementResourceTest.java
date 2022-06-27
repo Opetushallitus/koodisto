@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -64,7 +65,7 @@ class CodeElementResourceTest {
 
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
-    void returns500IfErrorOccurs() throws Exception {
+    void meaningfulResponseCodeIfErrorOccurs() throws Exception {
         JSONObject kr = new JSONObject();
         kr.put("relations", new JSONArray(List.of("koodi")));
         addRelations("codeelementuri", "SISALTYY", kr)
@@ -75,11 +76,11 @@ class CodeElementResourceTest {
                 .andExpect(content().string("error.koodi.not.found"));
         kr.put("relations", new JSONArray(List.of("rinnastuu4kanssa1", "rinnastuu4kanssa2", "rinnastuu4kanssa3")));
         addRelations("codeelementuri", "asd", kr)
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().string("error.codes.generic"));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("error.http.message.not.readable"));
         removeRelations("codeelementuri", "asd", kr)
-                .andExpect(status().isInternalServerError())
-                .andExpect(content().string("error.codes.generic"));
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("error.http.message.not.readable"));
     }
 
     @Test
@@ -209,10 +210,10 @@ class CodeElementResourceTest {
     @Test
     void testGetCodeElementByUriAndVersionInvalid() throws Exception {
         getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", 0)
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
 
         getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", -1)
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
 
         getCodeElementByUriAndVersion("sisaltyysuhde4kanssa1", 9999)
                 .andExpect(status().isNotFound())
@@ -239,8 +240,8 @@ class CodeElementResourceTest {
     void testGetCodeElementByCodeElementUriInvalid() throws Exception {
         getCodeElementByCodeElementUri("invalidcodeelementuri", 1, "sisaltyysuhde4kanssa1").andExpect(status().isNotFound()).andExpect(content().string("error.koodisto.not.found"));
 
-        getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 0, "sisaltyysuhde4kanssa1").andExpect(status().isBadRequest()).andExpect(content().string("error.validation.codesversion"));
-        getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", -1, "sisaltyysuhde4kanssa1").andExpect(status().isBadRequest()).andExpect(content().string("error.validation.codesversion"));
+        getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 0, "sisaltyysuhde4kanssa1").andExpect(status().isBadRequest()).andExpect(content().string(containsString("error.validation.version")));
+        getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", -1, "sisaltyysuhde4kanssa1").andExpect(status().isBadRequest()).andExpect(content().string(containsString("error.validation.version")));
         getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 9999, "sisaltyysuhde4kanssa1").andExpect(status().isNotFound()).andExpect(content().string("error.koodisto.not.found"));
 
         getCodeElementByCodeElementUri("sisaltyysuhde2kanssa", 1, "invalidcodesuri").andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
@@ -260,7 +261,7 @@ class CodeElementResourceTest {
     void testGetAllCodeElementsByCodesUriAndVersionInvalid() throws Exception {
         getAllCodeElementsByCodesUriAndVersion("lisaarinnasteinen2", -1)
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("error.validation.codeelementversion"));
+                .andExpect(content().string(containsString("error.validation.version")));
         getAllCodeElementsByCodesUriAndVersion("uridoesnotexist", 1)
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("error.koodisto.not.found"));
@@ -323,28 +324,35 @@ class CodeElementResourceTest {
         insert("totallyInvalidKoodistoUri", validDto).andExpect(status().isNotFound()).andExpect(content().string("error.koodisto.not.found"));
 
         insert("lisaasisaltyy3", null).andExpect(status().isBadRequest()).andExpect(content().string("error.http.message.not.readable"));
-        insert("lisaasisaltyy3", new JSONObject()).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.value"));
+        insert("lisaasisaltyy3", new JSONObject()).andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("error.koodiarvo.empty")))
+                .andExpect(content().string(containsString("error.metadata.empty")));
 
         JSONObject invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         invalidDto.put("koodiArvo", "");
-        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.value"));
+        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("error.koodiarvo.empty")));
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         invalidDto.put("koodiArvo", null);
-        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.value"));
+        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("error.koodiarvo.empty")));
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         invalidDto.put("metadata", null);
-        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.metadata"));
+        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("error.metadata.empty")));
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         ArrayList<JSONObject> metadatas = new ArrayList<>();
         invalidDto.put("metadata", new JSONArray(metadatas));
-        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.metadata"));
+        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("error.metadata.empty")));
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         invalidDto.put("voimassaLoppuPvm", "1970-01-01");
-        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.enddate"));
+        insert("lisaasisaltyy3", invalidDto).andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("error.validation.enddate")));
 
         invalidDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         JSONObject invalidMd = new JSONObject();
@@ -430,7 +438,7 @@ class CodeElementResourceTest {
         String codeElementUriToAddWithoutCodesRelation = "sisaltyysuhde4kanssa1";
         String relationType = "RINNASTEINEN";
 
-        addRelation(codeElementUri, codeElementUriToAdd, "doenostexist").andExpect(status().isInternalServerError()).andExpect(content().string("error.codes.generic"));
+        addRelation(codeElementUri, codeElementUriToAdd, "doenostexist").andExpect(status().isBadRequest()).andExpect(content().string("error.validation.relationtype"));
         addRelation(codeElementUri, codeElementUri, relationType).andExpect(status().isBadRequest()).andExpect(content().string("error.codeelement.relation.to.self"));
         addRelation("doenotexist", codeElementUriToAdd, relationType).andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
         addRelation(codeElementUri, "doesnotexist", relationType).andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
@@ -443,7 +451,7 @@ class CodeElementResourceTest {
         codeElementUriToAddWithoutCodesRelation = "sisaltyysuhde4kanssa1";
         relationType = "SISALTYY";
 
-        addRelation(codeElementUri, codeElementUriToAdd, "doenostexist").andExpect(status().isInternalServerError()).andExpect(content().string("error.codes.generic"));
+        addRelation(codeElementUri, codeElementUriToAdd, "doenostexist").andExpect(status().isBadRequest()).andExpect(content().string("error.validation.relationtype"));
         addRelation(codeElementUri, codeElementUri, relationType).andExpect(status().isBadRequest()).andExpect(content().string("error.codeelement.relation.to.self"));
         addRelation("doenotexist", codeElementUriToAdd, relationType).andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
         addRelation(codeElementUri, "doesnotexist", relationType).andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
@@ -513,7 +521,7 @@ class CodeElementResourceTest {
         String codeElementUri = "sisaltaakoodisto1koodit";
         String codeElementUriToRemove = "rinnastuu4kanssa1";
         String relationType = "RINNASTEINEN";
-        removeRelation(codeElementUri, codeElementUriToRemove, "doenostexist").andExpect(status().isInternalServerError());
+        removeRelation(codeElementUri, codeElementUriToRemove, "doenostexist").andExpect(status().isBadRequest());
 
         removeRelation("doenotexist", codeElementUriToRemove, relationType).andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
         removeRelation(codeElementUri, "doesnotexist", relationType).andExpect(status().isNotFound()).andExpect(content().string("error.codeelement.relation.list.empty"));
@@ -543,8 +551,8 @@ class CodeElementResourceTest {
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     void testDeleteInvalid() throws Exception {
-        delete("tuhottavatestikoodi", 0).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.codeelementversion"));
-        delete("tuhottavatestikoodi", -1).andExpect(status().isBadRequest()).andExpect(content().string("error.validation.codeelementversion"));
+        delete("tuhottavatestikoodi", 0).andExpect(status().isBadRequest()).andExpect(content().string(containsString("error.validation.version")));
+        delete("tuhottavatestikoodi", -1).andExpect(status().isBadRequest()).andExpect(content().string(containsString("error.validation.version")));
         delete("thisisnotexistinguri", 1).andExpect(status().isNotFound()).andExpect(content().string("error.koodi.not.found"));
         delete("sisaltaakoodisto1koodit", 1).andExpect(status().isBadRequest()).andExpect(content().string("error.codeelement.not.passive"));
         getCodeElementByUriAndVersion("tuhottavatestikoodi", 1).andExpect(status().isOk()).andExpect(content().json("{}"));
@@ -872,7 +880,7 @@ class CodeElementResourceTest {
         save(codeElementToBeSaved).andExpect(status().isOk());
 
 
-        getCodeElementByUriAndVersion(koodiUri, versio + 1) .andExpectAll(
+        getCodeElementByUriAndVersion(koodiUri, versio + 1).andExpectAll(
                 status().isOk(),
                 jsonPath("$.includesCodeElements.length()").value(1),
                 jsonPath("$.includesCodeElements.[0].passive").value(false),
@@ -881,7 +889,6 @@ class CodeElementResourceTest {
                 jsonPath("$.withinCodeElements.length()").value(0)
         );
     }
-
 
 
     private ResultActions addRelations(String codeElementUri, String st, JSONObject ob) throws Exception {

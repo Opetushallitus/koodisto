@@ -1,11 +1,7 @@
 package fi.vm.sade.koodisto.resource;
 
-import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
-import fi.vm.sade.koodisto.dto.KoodiDto;
-import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
-import fi.vm.sade.koodisto.dto.KoodistoDto;
+import fi.vm.sade.koodisto.dto.*;
 import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
@@ -22,10 +18,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 
 import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -157,7 +155,7 @@ class CodesResourceTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(codesToBeInserted))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("error.validation.language"));
+                .andExpect(content().string(containsString("error.koodistometadata.kieli.empty")));
     }
 
     @Test
@@ -223,7 +221,7 @@ class CodesResourceTest {
 
         // tarkastetaan että v1 on vielä kunnossa
         KoodistoDto koodistoV1c = helper.getKoodisto(koodistoV1a.getKoodistoUri(), koodistoV1b.getVersio());
-        assertThat(koodistoV1c).isEqualToIgnoringGivenFields(koodistoV1b, "codesVersions");
+        assertThat(koodistoV1c).isEqualToIgnoringGivenFields(koodistoV1b, "codesVersions", "metadata");
         ExtendedKoodiDto koodiV1d = helper.getKoodi(koodiV1a.getKoodiUri(), koodiV1b.getVersio());
         assertThat(koodiV1d).isEqualToIgnoringGivenFields(koodiV1b,
                 "versions", "version", "koodisto", "paivitysPvm", "tila",
@@ -250,7 +248,7 @@ class CodesResourceTest {
     void listCodes() throws Exception {
         mockMvc.perform(get(BASE_PATH))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"id\":-99,\"koodistoRyhmaUri\":\"dummy\",\"metadata\":[{\"nimi\":\"Dummy\",\"kieli\":\"FI\"}],\"koodistos\":[{\"koodistoUri\":\"dummy\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Dummy\"}]}}]},{\"id\":-6,\"koodistoRyhmaUri\":\"montametadataa\",\"metadata\":[{\"nimi\":\"Koodistoryhmä jolla monta metadataa\",\"kieli\":\"FI\"},{\"nimi\":\"Koodistoryhmä jolla monta metadataa\",\"kieli\":\"SV\"},{\"nimi\":\"Koodistoryhmä jolla monta metadataa\",\"kieli\":\"EN\"}],\"koodistos\":[]},{\"id\":-5,\"koodistoRyhmaUri\":\"koodistoryhmanpaivittaminen2\",\"metadata\":[{\"nimi\":\"Koodistoryhmän päivittäminen\",\"kieli\":\"FI\"}],\"koodistos\":[{\"koodistoUri\":\"koodistoryhmatestikoodisto\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Update koodistoryhmä testi\"}]}}]},{\"id\":-4,\"koodistoRyhmaUri\":\"koodistoryhmanpaivittaminen\",\"metadata\":[{\"nimi\":\"Tyhjän koodistoryhmän päivittäminen\",\"kieli\":\"FI\"}],\"koodistos\":[]},{\"id\":-3,\"koodistoRyhmaUri\":\"koodistoryhmantuhoaminen\",\"metadata\":[{\"nimi\":\"Tyhjän koodistoryhmän tuhoaminen\",\"kieli\":\"FI\"}],\"koodistos\":[]},{\"id\":-2,\"koodistoRyhmaUri\":\"koodistojenlisaaminenkoodistoryhmaan\",\"metadata\":[{\"nimi\":\"Koodistojen lisääminen koodistoryhmään\",\"kieli\":\"FI\"}],\"koodistos\":[]},{\"id\":-1,\"koodistoRyhmaUri\":\"relaatioidenlisaaminen\",\"metadata\":[{\"nimi\":\"Relaatioiden lisääminen\",\"kieli\":\"FI\"}],\"koodistos\":[{\"koodistoUri\":\"paljonmuutoksia\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":3,\"voimassaAlkuPvm\":\"2013-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Paljon muutettu\"},{\"kieli\":\"EN\",\"nimi\":\"Plenty of changes\"}]}},{\"koodistoUri\":\"eisuhteitaviela1\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"1 sisaltaa 2 -testi\"}]}},{\"koodistoUri\":\"eisuhteitaviela2\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"2 sisältyy 1 -testi\"}]}},{\"koodistoUri\":\"eisuhteitaviela3\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"3 rinnastuu 4 -testi\"}]}},{\"koodistoUri\":\"eisuhteitaviela4\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"4 rinnastuu 3 -testi\"}]}}]}]"));
+                .andExpect(content().json("[{\"id\":-99,\"koodistoRyhmaUri\":\"dummy\",\"metadata\":[{\"nimi\":\"Dummy\",\"kieli\":\"FI\"}],\"koodistos\":[{\"koodistoUri\":\"dummy\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Dummy\"}]}},{\"koodistoUri\":\"updatekoodisto\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Update testi\"}]}}]},{\"id\":-6,\"koodistoRyhmaUri\":\"montametadataa\",\"metadata\":[{\"nimi\":\"Koodistoryhmä jolla monta metadataa\",\"kieli\":\"FI\"},{\"nimi\":\"Koodistoryhmä jolla monta metadataa\",\"kieli\":\"SV\"},{\"nimi\":\"Koodistoryhmä jolla monta metadataa\",\"kieli\":\"EN\"}],\"koodistos\":[]},{\"id\":-5,\"koodistoRyhmaUri\":\"koodistoryhmanpaivittaminen2\",\"metadata\":[{\"nimi\":\"Koodistoryhmän päivittäminen\",\"kieli\":\"FI\"}],\"koodistos\":[{\"koodistoUri\":\"koodistoryhmatestikoodisto\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Update koodistoryhmä testi\"}]}}]},{\"id\":-4,\"koodistoRyhmaUri\":\"koodistoryhmanpaivittaminen\",\"metadata\":[{\"nimi\":\"Tyhjän koodistoryhmän päivittäminen\",\"kieli\":\"FI\"}],\"koodistos\":[]},{\"id\":-3,\"koodistoRyhmaUri\":\"koodistoryhmantuhoaminen\",\"metadata\":[{\"nimi\":\"Tyhjän koodistoryhmän tuhoaminen\",\"kieli\":\"FI\"}],\"koodistos\":[]},{\"id\":-2,\"koodistoRyhmaUri\":\"koodistojenlisaaminenkoodistoryhmaan\",\"metadata\":[{\"nimi\":\"Koodistojen lisääminen koodistoryhmään\",\"kieli\":\"FI\"}],\"koodistos\":[]},{\"id\":-1,\"koodistoRyhmaUri\":\"relaatioidenlisaaminen\",\"metadata\":[{\"nimi\":\"Relaatioiden lisääminen\",\"kieli\":\"FI\"}],\"koodistos\":[{\"koodistoUri\":\"paljonmuutoksia\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":3,\"voimassaAlkuPvm\":\"2013-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"Paljon muutettu\"},{\"kieli\":\"EN\",\"nimi\":\"Plenty of changes\"}]}},{\"koodistoUri\":\"eisuhteitaviela1\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"1 sisaltaa 2 -testi\"}]}},{\"koodistoUri\":\"eisuhteitaviela2\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"2 sisältyy 1 -testi\"}]}},{\"koodistoUri\":\"eisuhteitaviela3\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"3 rinnastuu 4 -testi\"}]}},{\"koodistoUri\":\"eisuhteitaviela4\",\"organisaatioOid\":\"1.2.2004.6\",\"latestKoodistoVersio\":{\"versio\":1,\"voimassaAlkuPvm\":\"2012-11-20\",\"voimassaLoppuPvm\":null,\"metadata\":[{\"kieli\":\"FI\",\"nimi\":\"4 rinnastuu 3 -testi\"}]}}]}]"));
         mockMvc.perform(get(BASE_PATH + "/all"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[" +
@@ -285,7 +283,7 @@ class CodesResourceTest {
                 .andExpect(content().json("{\"metadata\":[{\"nimi\": \"Update testi\"}]}"))
                 .andReturn().getResponse().getContentAsString();
         codes1 = codes1.replaceFirst("\"nimi\":\"Update testi\"", "\"nimi\": \"Päivitetty Testinimi\"");
-        System.out.println(codes1);
+
         mockMvc.perform(put(BASE_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(codes1))
@@ -314,7 +312,7 @@ class CodesResourceTest {
         mockMvc.perform(put(BASE_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(codes1)).andExpect(status().isBadRequest())
-                .andExpect(content().string("error.validation.metadata"));
+                .andExpect(content().string(containsString("error.metadata.empty")));
 
         mockMvc.perform(get(BASE_PATH + "/{codesUri}/{codesVersion}", koodistoUri, 1))
                 .andExpect(status().isOk())
@@ -530,7 +528,7 @@ class CodesResourceTest {
                 "}";
     }
 
-  private String createKoodistoString(String koodistoUri, String codesGroupUri) throws Exception {
+    private String createKoodistoString(String koodistoUri, String codesGroupUri) throws Exception {
         //{"koodistoUri":"dummy","resourceUri":"localhost/8080/koodisto-service/rest/codes/dummy","omistaja":null,"organisaatioOid":"1.2.2004.6","lukittu":null,"codesGroupUri":"dummy","version":0,"versio":1,"paivitysPvm":"2012-03-21","paivittajaOid":null,"voimassaAlkuPvm":"2012-11-20","voimassaLoppuPvm":null,"tila":"HYVAKSYTTY","metadata":[{"kieli":"FI","nimi":"Dummy","kuvaus":"kuvaus","kayttoohje":null,"kasite":null,"kohdealue":null,"sitovuustaso":null,"kohdealueenOsaAlue":null,"toimintaymparisto":null,"tarkentaaKoodistoa":null,"huomioitavaKoodisto":null,"koodistonLahde":null}],"codesVersions":[],"withinCodes":[],"includesCodes":[],"levelsWithCodes":[]}
         return mockMvc.perform(get(BASE_PATH + "/{codesUri}/{codesVersion}", "dummy", 1))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString()
@@ -547,10 +545,10 @@ class CodesResourceTest {
         dto.setCodesGroupUri(koodistoRyhmaUri);
         dto.setOrganisaatioOid(organisaatioOid);
         dto.setKoodistoUri(koodistoUri);
-        KoodistoMetadata metadata = new KoodistoMetadata();
-        metadata.setKieli(Kieli.FI);
-        metadata.setNimi(nimiFi);
-        dto.setMetadata(singletonList(metadata));
+        dto.setMetadata(List.of(KoodistoMetadataDto.builder()
+                .kieli(Kieli.FI)
+                .nimi(nimiFi)
+                .build()));
         dto.setVoimassaAlkuPvm(java.sql.Date.valueOf(alkuPvm));
         dto.setVoimassaLoppuPvm(java.sql.Date.valueOf(loppuPvm));
         return dto;

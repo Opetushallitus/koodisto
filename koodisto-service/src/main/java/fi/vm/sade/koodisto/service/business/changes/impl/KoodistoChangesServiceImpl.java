@@ -313,7 +313,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
 
         @Override
         public SimpleCodesRelation apply(KoodistonSuhde input) {
-            boolean isChild = koodistoUri.equals(input.getYlakoodistoVersio().getKoodisto().getKoodistoUri()) ? true : false;
+            boolean isChild = koodistoUri.equals(input.getYlakoodistoVersio().getKoodisto().getKoodistoUri());
             String uri = isChild ? input.getAlakoodistoVersio().getKoodisto().getKoodistoUri() : input.getYlakoodistoVersio().getKoodisto().getKoodistoUri();
             Integer versio = isChild ? input.getAlakoodistoVersio().getVersio() : input.getYlakoodistoVersio().getVersio();
             return new SimpleCodesRelation(uri, versio, input.getSuhteenTyyppi(), isChild);

@@ -1,12 +1,13 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaDto;
+import fi.vm.sade.koodisto.dto.KoodistoRyhmaMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
-import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
-import fi.vm.sade.koodisto.service.business.exception.*;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotEmptyException;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import static java.util.Set.of;
 import static org.junit.Assert.*;
 
 @org.springframework.test.context.jdbc.Sql(
@@ -48,66 +51,10 @@ public class KoodistoRyhmaBusinessServiceTest {
         assertEquals(0, group.getKoodistos().size());
     }
 
-    @Test
+    @Test(expected = DataIntegrityViolationException.class)
     public void testCreateInvalidKoodistoRyhmaFails() {
-        KoodistoRyhma group = null;
-        try {
-            group = resource.createKoodistoRyhma((KoodistoRyhmaDto) null);
-            fail("Null DTO accepted.");
-        } catch (KoodistoRyhmaUriEmptyException e) {
-        }
-        assertNull(group);
-
-        try {
-            KoodistoRyhmaDto dto = createRyhma("relaatioidenlisaaminen");
-            group = resource.createKoodistoRyhma(dto);
-            fail("Same koodistoryhma uri accepted.");
-        } catch (DataIntegrityViolationException e) { // This was persistenceError in previous spring, hope it is ok.
-
-        }
-        assertNull(group);
-
-        try {
-            KoodistoRyhmaDto dto = createRyhma("thisshouldfail");
-            dto.setKoodistoRyhmaUri(null);
-            group = resource.createKoodistoRyhma(dto);
-            fail("Koodistoryhmä without uri accepted.");
-        } catch (KoodistoRyhmaUriEmptyException e) {
-        }
-        assertNull(group);
-
-        try {
-            KoodistoRyhmaDto dto = createRyhma("thisshouldfail");
-            dto.setKoodistoRyhmaUri("");
-            group = resource.createKoodistoRyhma(dto);
-            fail("Koodistoryhmä with empty uri accepted.");
-        } catch (KoodistoRyhmaUriEmptyException e) {
-        }
-        assertNull(group);
-
-        try {
-            KoodistoRyhmaDto dto = createRyhma("thisshouldfail");
-            dto.setKoodistoRyhmaMetadatas(new HashSet<KoodistoRyhmaMetadata>());
-            group = resource.createKoodistoRyhma(dto);
-            fail("Koodistoryhmä without metadata accepted.");
-        } catch (MetadataEmptyException e) {
-        }
-        assertNull(group);
-        
-        try {
-            KoodistoRyhmaDto dto = createRyhma("thisshouldfail");
-            Set<KoodistoRyhmaMetadata> emptyMetadatas = new HashSet<KoodistoRyhmaMetadata>();
-            KoodistoRyhmaMetadata emptyMetadata = new KoodistoRyhmaMetadata();
-            emptyMetadata.setKieli(Kieli.FI);
-            emptyMetadata.setNimi("");
-            emptyMetadatas.add(emptyMetadata);
-            dto.setKoodistoRyhmaMetadatas(emptyMetadatas);
-            group = resource.createKoodistoRyhma(dto);
-            fail("Koodistoryhmä with empty metadata accepted.");
-        } catch (KoodistoRyhmaNimiEmptyException e) {
-        }
-        assertNull(group);
-
+        KoodistoRyhmaDto dto = createRyhma("relaatioidenlisaaminen");
+        resource.createKoodistoRyhma(dto);
     }
 
     @Test
@@ -118,14 +65,14 @@ public class KoodistoRyhmaBusinessServiceTest {
         KoodistoRyhmaMetadata sv = new KoodistoRyhmaMetadata();
         sv.setKieli(Kieli.SV);
         sv.setNimi("SV Name");
+        sv.setKoodistoRyhma(group);
         Set<KoodistoRyhmaMetadata> md = new HashSet<KoodistoRyhmaMetadata>();
         md.addAll(group.getKoodistoJoukkoMetadatas());
         md.add(sv);
-        dto.setKoodistoRyhmaMetadatas(md);
+        dto.setKoodistoRyhmaMetadatas(md.stream().map(this::convert).collect(Collectors.toSet()));
 
         KoodistoRyhma response = resource.updateKoodistoRyhma(dto);
         assertNotNull(response);
-
     }
 
     @Test
@@ -153,7 +100,6 @@ public class KoodistoRyhmaBusinessServiceTest {
         assertEquals(3, group.getKoodistoJoukkoMetadatas().size());
 
         boolean first = true;
-        ;
         for (KoodistoRyhmaMetadata metadata : group.getKoodistoJoukkoMetadatas()) {
             if (first) {
                 first = false;
@@ -172,67 +118,6 @@ public class KoodistoRyhmaBusinessServiceTest {
 
     @Test
     @Transactional
-    public void testInvalidUpdateKoodistoRyhmaShouldFail() {
-        KoodistoRyhma koodistoRyhma = resource.getKoodistoRyhmaById(-6L);
-        KoodistoRyhmaDto dto = null;
-
-        KoodistoRyhma group = null;
-        try {
-            group = resource.updateKoodistoRyhma(null);
-            fail("Null DTO on update accepted.");
-        } catch (KoodistoRyhmaUriEmptyException e) {
-        }
-        assertNull(group);
-        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(-6L));
-
-        try {
-            dto = createRyhma(koodistoRyhma);
-            dto.setKoodistoRyhmaUri(null);
-            group = resource.createKoodistoRyhma(dto);
-            fail("Koodistoryhmä without uri accepted.");
-        } catch (KoodistoRyhmaUriEmptyException e) {
-        }
-        assertNull(group);
-        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(-6L));
-
-        try {
-            dto = createRyhma(koodistoRyhma);
-            dto.setKoodistoRyhmaUri("");
-            group = resource.createKoodistoRyhma(dto);
-            fail("Koodistoryhmä with empty uri accepted.");
-        } catch (KoodistoRyhmaUriEmptyException e) {
-        }
-        assertNull(group);
-        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(-6L));
-
-        try {
-            dto = createRyhma(koodistoRyhma);
-            dto.setKoodistoRyhmaMetadatas(new HashSet<>());
-            group = resource.createKoodistoRyhma(dto);
-            fail("Koodistoryhmä without metadata accepted.");
-        } catch (MetadataEmptyException e) {
-        }
-        assertNull(group);
-        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(-6L));
-        
-        try {
-            dto = createRyhma(koodistoRyhma);
-            Set<KoodistoRyhmaMetadata> emptyMetadatas = new HashSet<KoodistoRyhmaMetadata>();
-            KoodistoRyhmaMetadata emptyMetadata = new KoodistoRyhmaMetadata();
-            emptyMetadata.setKieli(Kieli.FI);
-            emptyMetadata.setNimi("");
-            emptyMetadatas.add(emptyMetadata);
-            dto.setKoodistoRyhmaMetadatas(emptyMetadatas);
-            group = resource.createKoodistoRyhma(dto);
-            fail("Koodistoryhmä with empty metadata accepted.");
-        } catch (KoodistoRyhmaNimiEmptyException e) {
-        }
-        assertNull(group);
-        assertEqualRyhmas(koodistoRyhma, resource.getKoodistoRyhmaById(-6L));
-    }
-
-    @Test
-    @Transactional
     public void testGetKoodistoRyhmaById() {
         KoodistoRyhma group = resource.getKoodistoRyhmaById(-1L);
         assertNotNull(group);
@@ -243,7 +128,7 @@ public class KoodistoRyhmaBusinessServiceTest {
 
     @Test(expected = KoodistoRyhmaNotFoundException.class)
     public void testGetKoodistoRyhmaByNullId() {
-       resource.getKoodistoRyhmaById(null);
+        resource.getKoodistoRyhmaById(null);
     }
 
     @Test(expected = KoodistoRyhmaNotFoundException.class)
@@ -288,34 +173,32 @@ public class KoodistoRyhmaBusinessServiceTest {
     private KoodistoRyhmaDto createRyhma(String koodistoRyhmaUri) {
         KoodistoRyhmaDto dto = new KoodistoRyhmaDto();
         dto.setKoodistoRyhmaUri(koodistoRyhmaUri);
-
-        Set<KoodistoRyhmaMetadata> metadataSet = new HashSet<>();
-        KoodistoRyhmaMetadata fi = new KoodistoRyhmaMetadata();
-        fi.setKieli(Kieli.FI);
-        fi.setNimi(koodistoRyhmaUri);
-        metadataSet.add(fi);
-        dto.setKoodistoRyhmaMetadatas(metadataSet);
-
-        Set<Koodisto> emptyKoodistoSet = new HashSet<>();
-        dto.setKoodistos(emptyKoodistoSet);
+        dto.setKoodistoRyhmaMetadatas(of(
+                KoodistoRyhmaMetadataDto.builder()
+                        .kieli(Kieli.FI)
+                        .nimi(koodistoRyhmaUri)
+                        .build()));
+        dto.setKoodistos(of());
         return dto;
     }
 
     private KoodistoRyhmaDto createRyhma(KoodistoRyhma g) {
         KoodistoRyhmaDto dto = new KoodistoRyhmaDto();
         dto.setId(g.getId());
-        dto.setKoodistoRyhmaMetadatas(g.getKoodistoJoukkoMetadatas());
+        dto.setKoodistoRyhmaMetadatas(g.getKoodistoJoukkoMetadatas().stream()
+                .map(this::convert)
+                .collect(Collectors.toSet()));
         dto.setKoodistoRyhmaUri(g.getKoodistoRyhmaUri());
         dto.setKoodistos(g.getKoodistos());
         return dto;
     }
 
-    private void assertEqualRyhmas(KoodistoRyhma kr1, KoodistoRyhma kr2) {
-        assertEquals(kr1.getId(), kr2.getId());
-        assertEquals(kr1.getKoodistoRyhmaUri(), kr2.getKoodistoRyhmaUri());
-        assertEquals(kr1.getKoodistoJoukkoMetadatas().size(), kr2.getKoodistoJoukkoMetadatas().size());
-        assertEquals(kr1.getKoodistos().size(), kr2.getKoodistos().size());
-        assertEquals(kr1.getKoodistoJoukkoMetadatas(), kr2.getKoodistoJoukkoMetadatas());
-        assertEquals(kr1.getKoodistos(), kr2.getKoodistos());
+    private KoodistoRyhmaMetadataDto convert(final KoodistoRyhmaMetadata metadata) {
+        return KoodistoRyhmaMetadataDto.builder()
+                .id(metadata.getId())
+                .uri(metadata.getKoodistoRyhma().getKoodistoRyhmaUri())
+                .nimi(metadata.getNimi())
+                .kieli(metadata.getKieli())
+                .build();
     }
 }

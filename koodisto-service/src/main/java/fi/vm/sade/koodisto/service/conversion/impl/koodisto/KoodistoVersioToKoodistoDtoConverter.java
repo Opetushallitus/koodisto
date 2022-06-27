@@ -9,6 +9,7 @@ import fi.vm.sade.koodisto.model.KoodistoRyhma;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.properties.OphProperties;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
@@ -19,12 +20,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class KoodistoVersioToKoodistoDtoConverter implements AbstractFromDomainConverter<KoodistoVersio, KoodistoDto> {
-    private OphProperties ophProperties;
-
-    public KoodistoVersioToKoodistoDtoConverter(OphProperties ophProperties) {
-        this.ophProperties = ophProperties;
-    }
+    private final OphProperties ophProperties;
+    private final KoodistoMetadataToKoodistoMetadataDtoConverter koodistoMetadataToKoodistoMetadataDtoConverter;
 
     @Override
     public KoodistoDto convert(KoodistoVersio source) {
@@ -86,7 +85,7 @@ public class KoodistoVersioToKoodistoDtoConverter implements AbstractFromDomainC
         converted.setVoimassaAlkuPvm(source.getVoimassaAlkuPvm());
         converted.setVoimassaLoppuPvm(source.getVoimassaLoppuPvm());
         converted.setVersion(source.getVersion());
-        converted.getMetadata().addAll(source.getMetadatas());
+        converted.setMetadata(source.getMetadatas().stream().map(koodistoMetadataToKoodistoMetadataDtoConverter::convert).collect(Collectors.toList()));
         List<Integer> codesVersions = new ArrayList<>();
         if (sourceKoodisto.getKoodistoVersios() != null) {
             for (KoodistoVersio koodistoVersio : sourceKoodisto.getKoodistoVersios()) {

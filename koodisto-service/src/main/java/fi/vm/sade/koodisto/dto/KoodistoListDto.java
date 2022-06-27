@@ -16,6 +16,5 @@ public class KoodistoListDto extends AbstractKoodistoDto {
     private KoodistoVersioListDto latestKoodistoVersio;
 
     @JsonView(JsonViews.Basic.class)
-    private List<KoodistoVersioListDto> koodistoVersios = new ArrayList<KoodistoVersioListDto>();
-
+    private List<KoodistoVersioListDto> koodistoVersios = new ArrayList<>();
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component("koodistoRyhmaToKoodistoRyhmaListDtoConverter")
 public class KoodistoRyhmaToKoodistoRyhmaListDtoConverter implements AbstractFromDomainConverter<KoodistoRyhma, KoodistoRyhmaListDto> {
 
-    private KoodistoToKoodistoListDtoConverter koodistoToKoodistoListDtoConverter;
+    private final KoodistoToKoodistoListDtoConverter koodistoToKoodistoListDtoConverter;
 
     public KoodistoRyhmaToKoodistoRyhmaListDtoConverter(KoodistoToKoodistoListDtoConverter koodistoToKoodistoListDtoConverter) {
         this.koodistoToKoodistoListDtoConverter = koodistoToKoodistoListDtoConverter;

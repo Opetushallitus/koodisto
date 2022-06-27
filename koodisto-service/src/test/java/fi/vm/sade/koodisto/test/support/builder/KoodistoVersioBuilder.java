@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class KoodistoVersioBuilder implements Builder<KoodistoVersio> {
 
-    private KoodistoVersio kv;
+    private final KoodistoVersio kv;
     
     private static long id = 1;
 

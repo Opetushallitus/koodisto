@@ -6,7 +6,7 @@ import fi.vm.sade.koodisto.model.KoodiVersio;
 
 public class KoodiMetadataBuilder implements Builder<KoodiMetadata> {
 
-    private KoodiMetadata metadata;
+    private final KoodiMetadata metadata;
 
     public KoodiMetadataBuilder() {
         this.metadata = new KoodiMetadata();

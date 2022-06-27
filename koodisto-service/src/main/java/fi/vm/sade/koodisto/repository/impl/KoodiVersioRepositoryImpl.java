@@ -82,7 +82,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
         Join<KoodiVersio, Koodi> koodi = root.join(KOODI);
 
         Predicate koodiUriEqual = cb.equal(koodi.<String> get(KOODI_URI), koodiUri);
-        Predicate koodiVersioLessThan = cb.lessThan(root.<Integer> get(VERSIO), koodiVersio);
+        Predicate koodiVersioLessThan = cb.lessThan(root.get(VERSIO), koodiVersio);
 
         query.select(root).where(cb.and(koodiUriEqual, koodiVersioLessThan)).orderBy(cb.desc(root.<Integer> get(VERSIO)));
 
@@ -119,7 +119,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
 
         final Join<KoodistoVersio, Koodisto> koodisto = root.join(KOODISTO);
         List<Predicate> restrictions = createRestrictionsForKoodistoCriteria(cb, searchCriteria, koodisto, root);
-        criteriaQuery.select(root.<Integer> get(VERSIO)).where(cb.and(restrictions.toArray(new Predicate[restrictions.size()])));
+        criteriaQuery.select(root.get(VERSIO)).where(cb.and(restrictions.toArray(new Predicate[restrictions.size()])));
         criteriaQuery.distinct(true);
         criteriaQuery.orderBy(cb.desc(root.get(VERSIO)));
 
@@ -378,7 +378,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
         final Root<KoodiVersio> koodiVersioRoot = subquery.from(KoodiVersio.class);
 
         final Join<KoodiVersio, Koodi> koodi = koodiVersioRoot.join(KOODI, JoinType.INNER);
-        final Expression<Integer> versioMax = cb.max(koodiVersioRoot.<Integer> get(VERSIO));
+        final Expression<Integer> versioMax = cb.max(koodiVersioRoot.get(VERSIO));
 
         List<Predicate> restrictions = createSecondaryRestrictionsForKoodiSearchCriteria(cb, searchCriteria, koodiVersioRoot);
         restrictions.add(cb.equal(koodi.get(ID), koodiPath.get(ID)));

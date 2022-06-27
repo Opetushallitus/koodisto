@@ -1,8 +1,7 @@
 package fi.vm.sade.koodisto.resource;
 
 import fi.vm.sade.koodisto.dto.KoodistoDto;
-import fi.vm.sade.koodisto.model.KoodistoMetadata;
-import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoMetadataToKoodistoMetadataTypeConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoMetadataDtoToKoodistoMetadataTypeConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
@@ -10,12 +9,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class CodesResourceConverter {
 
-    private final KoodistoMetadataToKoodistoMetadataTypeConverter koodistoMetadataToKoodistoMetadataTypeConverter;
+    private final KoodistoMetadataDtoToKoodistoMetadataTypeConverter koodistoMetadataDtoToKoodistoMetadataTypeConverter;
 
     public UpdateKoodistoDataType convertFromDTOToUpdateKoodistoDataType(KoodistoDto koodistoDto) {
         UpdateKoodistoDataType updateKoodistoDataType = new UpdateKoodistoDataType();
@@ -34,9 +34,7 @@ public class CodesResourceConverter {
         updateKoodistoDataType.setVersio(koodistoDto.getVersio());
         updateKoodistoDataType.setTila(TilaType.fromValue(koodistoDto.getTila().toString()));
         updateKoodistoDataType.setLockingVersion(koodistoDto.getVersion());
-        for (KoodistoMetadata koodistoMetadata : koodistoDto.getMetadata()) {
-            updateKoodistoDataType.getMetadataList().add(koodistoMetadataToKoodistoMetadataTypeConverter.convert(koodistoMetadata));
-        }
+        updateKoodistoDataType.getMetadataList().addAll(koodistoDto.getMetadata().stream().map(koodistoMetadataDtoToKoodistoMetadataTypeConverter::convert).collect(Collectors.toList()));
 
         return updateKoodistoDataType;
     }
@@ -52,11 +50,8 @@ public class CodesResourceConverter {
         createKoodistoDataType.setVoimassaLoppuPvm(endDate);
         createKoodistoDataType.setOmistaja(koodistoDto.getOmistaja());
         createKoodistoDataType.setOrganisaatioOid(koodistoDto.getOrganisaatioOid());
-        for (KoodistoMetadata koodistoMetadata : koodistoDto.getMetadata()) {
-            createKoodistoDataType.getMetadataList().add(koodistoMetadataToKoodistoMetadataTypeConverter.convert(koodistoMetadata));
-        }
+        createKoodistoDataType.getMetadataList().addAll(koodistoDto.getMetadata().stream().map(koodistoMetadataDtoToKoodistoMetadataTypeConverter::convert).collect(Collectors.toList()));
 
         return createKoodistoDataType;
     }
-
 }

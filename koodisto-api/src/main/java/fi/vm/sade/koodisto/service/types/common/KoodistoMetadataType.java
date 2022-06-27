@@ -88,5 +88,4 @@ public class KoodistoMetadataType extends MetadataType implements Serializable
     public void setKoodistonLahde(String value) {
         this.koodistonLahde = value;
     }
-
 }

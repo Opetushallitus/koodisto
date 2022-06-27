@@ -1,6 +1,6 @@
 package fi.vm.sade.koodisto.service.business.impl;
 
-import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
+import fi.vm.sade.koodisto.dto.KoodistoRyhmaMetadataDto;
 import fi.vm.sade.koodisto.repository.KoodiRepository;
 import fi.vm.sade.koodisto.repository.KoodistoRepository;
 import fi.vm.sade.koodisto.repository.KoodistoRyhmaRepository;
@@ -20,23 +20,14 @@ import java.util.Map;
 @Component
 public class UriTransliteratorImpl implements UriTransliterator {
 
-    @Autowired
-    @Lazy
-    private KoodiRepository koodiRepository;
-
-    @Autowired
-    private KoodistoRepository koodistoRepository;
-
-    @Autowired
-    private KoodistoRyhmaRepository koodistoRyhmaRepository;
-
-    private static final Map<String, String> TRANSLITERATION = new HashMap<String, String>();
+    private static final Map<String, String> TRANSLITERATION = new HashMap<>();
+    private static final KieliType[] PREFERRED_ORDER = {KieliType.FI, KieliType.SV, KieliType.EN};
 
     static {
-        String[][] specialCharacters = new String[][] { { "å", "o" }, { "ä", "a" }, { "ö", "o" } };
+        String[][] specialCharacters = new String[][]{{"å", "o"}, {"ä", "a"}, {"ö", "o"}};
 
-        String[] allowedCharacters = new String[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
-                "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+        String[] allowedCharacters = new String[]{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
+                "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
 
         for (String c : allowedCharacters) {
             TRANSLITERATION.put(c, c);
@@ -47,14 +38,20 @@ public class UriTransliteratorImpl implements UriTransliterator {
         }
     }
 
-    private static final KieliType[] PREFERRED_ORDER = { KieliType.FI, KieliType.SV, KieliType.EN };
+    @Autowired
+    @Lazy
+    private KoodiRepository koodiRepository;
+    @Autowired
+    private KoodistoRepository koodistoRepository;
+    @Autowired
+    private KoodistoRyhmaRepository koodistoRyhmaRepository;
 
     private static String transliterate(String value) {
         StringBuilder b = new StringBuilder();
 
         value = value.toLowerCase();
         for (int i = 0; i < value.length(); ++i) {
-            String c = value.substring(i, i+1);
+            String c = value.substring(i, i + 1);
 
             if (TRANSLITERATION.containsKey(c)) {
                 b.append(TRANSLITERATION.get(c));
@@ -62,6 +59,18 @@ public class UriTransliteratorImpl implements UriTransliterator {
         }
 
         return b.toString();
+    }
+
+    private static KoodistoRyhmaMetadataDto getKoodistoRyhmaMetadataForLanguage(Collection<KoodistoRyhmaMetadataDto> metadatas, KieliType kieli) {
+        KoodistoRyhmaMetadataDto found = null;
+
+        for (KoodistoRyhmaMetadataDto m : metadatas) {
+            if (kieli.value().equals(m.getKieli().name())) {
+                found = m;
+                break;
+            }
+        }
+        return found;
     }
 
     @Override
@@ -95,22 +104,10 @@ public class UriTransliteratorImpl implements UriTransliterator {
         return koodistoUri;
     }
 
-    private static KoodistoRyhmaMetadata getKoodistoRyhmaMetadataForLanguage(Collection<KoodistoRyhmaMetadata> metadatas, KieliType kieli) {
-        KoodistoRyhmaMetadata found = null;
-
-        for (KoodistoRyhmaMetadata m : metadatas) {
-            if (kieli.value().equals(m.getKieli().name())) {
-                found = m;
-                break;
-            }
-        }
-        return found;
-    }
-
     @Override
-    public String generateKoodistoGroupUriByMetadata(Collection<KoodistoRyhmaMetadata> metadatas) {
+    public String generateKoodistoGroupUriByMetadata(Collection<KoodistoRyhmaMetadataDto> metadatas) {
 
-        KoodistoRyhmaMetadata meta = null;
+        KoodistoRyhmaMetadataDto meta = null;
         for (KieliType k : PREFERRED_ORDER) {
             meta = getKoodistoRyhmaMetadataForLanguage(metadatas, k);
             if (meta != null && !meta.getNimi().isBlank()) {
@@ -136,7 +133,6 @@ public class UriTransliteratorImpl implements UriTransliterator {
 
         return koodistoRyhmaUri;
     }
-
 
 
     @Override
