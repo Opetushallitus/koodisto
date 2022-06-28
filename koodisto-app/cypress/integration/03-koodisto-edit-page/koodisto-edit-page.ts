@@ -24,7 +24,7 @@ describe('The Koodisto Edit page', () => {
             ]);
             req.reply({ fixture: 'kuntaKoodisto.json' });
         });
-        cy.get('textarea[name="metadata.0.nimi"]')
+        cy.get('input[name="metadata[0][nimi]"]')
             .should('be.visible')
             .should('have.value', 'kunta')
             .clear()

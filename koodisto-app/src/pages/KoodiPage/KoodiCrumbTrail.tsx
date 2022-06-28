@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLangAtom } from '../../api/kayttooikeus';
-import { CrumbTrail } from '../../components/KoodistoPathContainer';
+import { CrumbTrail } from '../../components/CrumbTrail';
 import type { Koodi, PageKoodisto } from '../../types';
 import { fetchPageKoodisto } from '../../api/koodisto';
 import Spin from '@opetushallitus/virkailija-ui-components/Spin';

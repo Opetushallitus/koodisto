@@ -17,7 +17,7 @@ import {
     MainHeaderButtonsContainer,
     MainContainer,
 } from '../../components/Containers';
-import { CrumbTrail } from '../../components/KoodistoPathContainer';
+import { CrumbTrail } from '../../components/CrumbTrail';
 import VersionPicker from '../../components/VersionPicker';
 import { ErrorPage } from '../ErrorPage';
 

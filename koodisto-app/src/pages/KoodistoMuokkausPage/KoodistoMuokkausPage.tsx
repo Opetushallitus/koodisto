@@ -7,12 +7,11 @@ import { PageKoodisto, SelectOption } from '../../types';
 import { Loading } from '../../components/Loading';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { CrumbTrail } from '../../components/KoodistoPathContainer';
+import { CrumbTrail } from '../../components/CrumbTrail';
 import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLangAtom } from '../../api/kayttooikeus';
-import { DatePickerController } from '../../controllers/DatePickerController';
-import { InputArray } from './InputArray';
+import { DatePickerController, SelectController, InputArrayController } from '../../components/controllers';
 import { success } from '../../components/Notification';
 import {
     MainHeaderContainer,
@@ -22,7 +21,6 @@ import {
     MainContainerRowContent,
 } from '../../components/Containers';
 import { koodistoRyhmaOptionsAtom } from '../../api/koodistoRyhma';
-import { SelectController } from '../../controllers/SelectController';
 import { organisaatioSelectAtom } from '../../api/organisaatio';
 import { Footer } from '../../components/Footer';
 
@@ -53,15 +51,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
     const [organisaatioSelect] = useAtom<SelectOption[]>(organisaatioSelectAtom);
     const [loading, setLoading] = useState<boolean>(false);
     const versioNumber = versio ? +versio : undefined;
-    const {
-        control,
-        register,
-        handleSubmit,
-        reset,
-        getValues,
-        setValue,
-        formState: { errors },
-    } = useForm<PageKoodisto>({
+    const { control, register, handleSubmit, reset, getValues } = useForm<PageKoodisto>({
         shouldUseNativeValidation: true,
         defaultValues: { metadata: [{ kieli: 'FI' }, { kieli: 'SV' }, { kieli: 'EN' }] },
     });
@@ -118,7 +108,6 @@ export const KoodistoMuokkausPage: React.FC = () => {
                         <MainContainerRowContent>
                             <SelectController
                                 control={control}
-                                validationErrors={errors}
                                 name={'koodistoRyhmaUri'}
                                 options={koodistoRyhmaOptions}
                                 rules={{
@@ -131,14 +120,12 @@ export const KoodistoMuokkausPage: React.FC = () => {
                         </MainContainerRowContent>
                     </MainContainerRow>
                     <MainContainerRow>
-                        <InputArray
+                        <InputArrayController<PageKoodisto>
                             control={control}
-                            register={register}
                             getValues={getValues}
-                            setValue={setValue}
                             title={{ id: 'FIELD_ROW_TITLE_NIMI', defaultMessage: 'Nimi*' }}
                             fieldPath={'nimi'}
-                            options={{
+                            rules={{
                                 required: formatMessage({
                                     id: 'NIMI_PAKOLLINEN',
                                     defaultMessage: 'Syötä nimi',
@@ -152,11 +139,10 @@ export const KoodistoMuokkausPage: React.FC = () => {
                             <DatePickerController<PageKoodisto>
                                 name={'voimassaAlkuPvm'}
                                 control={control}
-                                validationErrors={errors}
                                 rules={{
                                     required: formatMessage({
                                         id: 'ALKUPVM_PAKOLLINEN',
-                                        defaultMessage: 'Valitse aloitus päivämäärä.',
+                                        defaultMessage: 'Valitse aloituspäivämäärä.',
                                     }),
                                 }}
                             />
@@ -165,11 +151,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                     <MainContainerRow>
                         <MainContainerRowTitle id={'FIELD_TITLE_voimassaLoppuPvm'} defaultMessage={'Voimassa loppu'} />
                         <MainContainerRowContent>
-                            <DatePickerController<PageKoodisto>
-                                name={'voimassaLoppuPvm'}
-                                control={control}
-                                validationErrors={errors}
-                            />
+                            <DatePickerController<PageKoodisto> name={'voimassaLoppuPvm'} control={control} />
                         </MainContainerRowContent>
                     </MainContainerRow>
                     <MainContainerRow>
@@ -177,7 +159,6 @@ export const KoodistoMuokkausPage: React.FC = () => {
                         <MainContainerRowContent width={25}>
                             <SelectController
                                 control={control}
-                                validationErrors={errors}
                                 name={'organisaatioOid'}
                                 options={organisaatioSelect}
                                 rules={{
@@ -196,12 +177,10 @@ export const KoodistoMuokkausPage: React.FC = () => {
                         </MainContainerRowContent>
                     </MainContainerRow>
                     <MainContainerRow>
-                        <InputArray
+                        <InputArrayController<PageKoodisto>
                             large={true}
                             control={control}
-                            register={register}
                             getValues={getValues}
-                            setValue={setValue}
                             title={{ id: 'FIELD_ROW_TITLE_KUVAUS', defaultMessage: 'Kuvaus' }}
                             fieldPath={'kuvaus'}
                         />

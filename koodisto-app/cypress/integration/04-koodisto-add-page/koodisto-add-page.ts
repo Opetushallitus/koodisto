@@ -1,6 +1,6 @@
 import { BASE_PATH, API_INTERNAL_PATH } from '../../../src/context/constants';
 
-describe('The Koodisto Edit page', () => {
+describe('The Koodisto Add page', () => {
     beforeEach(() => {
         cy.mockBaseIntercepts();
     });
@@ -32,9 +32,9 @@ describe('The Koodisto Edit page', () => {
         cy.intercept('POST', `${API_INTERNAL_PATH}/koodisto/koute`, (req) => {
             console.log(req.body.metadataList);
             expect(req.body.metadataList).to.eqls([
-                { kieli: 'FI', nimi: 'nimi-1655458944744', kuvaus: '' },
-                { kieli: 'SV', nimi: 'nimi-1655458944744', kuvaus: '' },
-                { kieli: 'EN', nimi: 'nimi-1655458944744', kuvaus: '' },
+                { kieli: 'FI', nimi: 'nimi-1655458944744', kuvaus: 'nimi-1655458944744' },
+                { kieli: 'SV', nimi: 'nimi-1655458944744' },
+                { kieli: 'EN', nimi: 'nimi-1655458944744' },
             ]);
             req.reply({ fixture: 'koodistoPostResponse.json' });
         });
@@ -42,9 +42,10 @@ describe('The Koodisto Edit page', () => {
             fixture: 'koodistoPostGetResponse.json',
         });
 
-        cy.get('textarea[name="metadata.0.nimi"]').should('be.visible').type('nimi-1655458944744');
-        cy.get('textarea[name="metadata.1.nimi"]').should('be.visible').type('nimi-1655458944744');
-        cy.get('textarea[name="metadata.2.nimi"]').should('be.visible').type('nimi-1655458944744');
+        cy.get('input[name="metadata[0][nimi]"]').should('be.visible').type('nimi-1655458944744');
+        cy.get('input[name="metadata[1][nimi]"]').should('be.visible').type('nimi-1655458944744');
+        cy.get('input[name="metadata[2][nimi]"]').should('be.visible').type('nimi-1655458944744');
+        cy.get('textarea[name="metadata[0][kuvaus]"]').should('be.visible').type('nimi-1655458944744');
         cy.get('button[name="KOODISTO_TALLENNA"]').should('be.visible').click();
         cy.get('h1').contains('nimi-1655458944744').should('be.visible');
     });

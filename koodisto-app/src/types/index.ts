@@ -1,6 +1,7 @@
 import { MessageDescriptor } from '@formatjs/intl/src/types';
 import { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat';
 import { Options as IntlMessageFormatOptions } from 'intl-messageformat/src/core';
+import { Control, Path } from 'react-hook-form';
 
 export type Kieli = 'EN' | 'FI' | 'SV';
 export type Locale = Lowercase<Kieli>;
@@ -14,7 +15,7 @@ export type MapToApiObject<T> = {
 };
 
 export type KoodiMetadata = Metadata & {
-    lyhytnimi?: string;
+    lyhytNimi?: string;
 };
 export type Metadata = {
     kieli: Kieli;
@@ -161,8 +162,15 @@ export type Koodi = {
     voimassaAlkuPvm: Date;
     voimassaLoppuPvm?: Date;
     tila: Tila;
-    metadata: Metadata[];
+    metadata: KoodiMetadata[];
     sisaltyyKoodeihin: KoodiRelation[];
     sisaltaaKoodit: KoodiRelation[];
     rinnastuuKoodeihin: KoodiRelation[];
+};
+
+export type ControllerProps<T> = {
+    control: Control<T>;
+    name: Path<T>;
+    disabled?: boolean;
+    rules?: { required: boolean | string };
 };

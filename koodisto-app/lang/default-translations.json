@@ -3,7 +3,7 @@
     "defaultMessage": "Peruuta"
   },
   "ALKUPVM_PAKOLLINEN": {
-    "defaultMessage": "Valitse aloitus päivämäärä."
+    "defaultMessage": "Valitse aloituspäivämäärä."
   },
   "CSV_UPLOAD_INVALID_KOODISTORI_MESSAGE": {
     "defaultMessage": "Tiedostosta löytyi koodistoUri {wrongKoodistoUri}"
@@ -103,6 +103,9 @@
   },
   "KOODI_TAULUKKO_FILTTERI_PLACEHOLDER": {
     "defaultMessage": "Hae nimellä tai koodiarvolla"
+  },
+  "KOPIOI_MUIHIN_KIELIIN": {
+    "defaultMessage": "Kopioi muihin kieliin"
   },
   "KOPIOI_MUIHIN_NIMIIN": {
     "defaultMessage": "Kopioi muihin kieliin"
