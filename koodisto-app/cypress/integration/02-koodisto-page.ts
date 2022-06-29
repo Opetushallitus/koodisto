@@ -1,4 +1,4 @@
-import { BASE_PATH, API_INTERNAL_PATH } from '../../../src/context/constants';
+import { BASE_PATH, API_INTERNAL_PATH } from '../../src/context/constants';
 
 describe('The Koodisto View page', () => {
     beforeEach(() => {

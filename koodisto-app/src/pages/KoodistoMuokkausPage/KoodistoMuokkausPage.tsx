@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { fetchPageKoodisto, updateKoodisto, createKoodisto } from '../../api/koodisto';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { PageKoodisto, SelectOption } from '../../types';
+import { PageKoodisto, SelectOption, Kieli } from '../../types';
 import { Loading } from '../../components/Loading';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -51,6 +51,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
     const [organisaatioSelect] = useAtom<SelectOption[]>(organisaatioSelectAtom);
     const [loading, setLoading] = useState<boolean>(false);
     const versioNumber = versio ? +versio : undefined;
+    const isEditing = koodistoUri && versioNumber;
     const { control, register, handleSubmit, reset, getValues } = useForm<PageKoodisto>({
         shouldUseNativeValidation: true,
         defaultValues: { metadata: [{ kieli: 'FI' }, { kieli: 'SV' }, { kieli: 'EN' }] },
@@ -58,37 +59,30 @@ export const KoodistoMuokkausPage: React.FC = () => {
     const koodistonMetadata = translateMetadata({ metadata: getValues('metadata'), lang });
     useEffect(() => {
         (async () => {
-            if (koodistoUri && versioNumber) {
+            if (isEditing) {
                 setLoading(true);
                 const koodistoData = await fetchPageKoodisto({ koodistoUri, versio: versioNumber, lang });
                 reset(koodistoData);
                 setLoading(false);
             }
         })();
-    }, [koodistoUri, lang, reset, versioNumber]);
+    }, [isEditing, koodistoUri, lang, reset, versioNumber]);
     if (loading) return <Loading />;
     const save = async (koodisto: PageKoodisto) => {
-        if (koodistoUri) await update(koodisto);
-        else await create(koodisto);
+        if (isEditing) await persist(koodisto, updateKoodisto);
+        else await persist(koodisto, createKoodisto);
     };
-    const update = async (koodisto: PageKoodisto) => {
+    const persist = async (
+        koodisto: PageKoodisto,
+        persistFunction: (props: { koodisto: PageKoodisto; lang: Kieli }) => Promise<PageKoodisto | undefined>
+    ) => {
         setLoading(true);
-        const updated = await updateKoodisto({ koodisto, lang });
+        const updated = await persistFunction({ koodisto, lang });
         setLoading(false);
         if (updated) {
             successNotification(updated.koodistoUri);
             reset(updated);
             navigate(`/koodisto/view/${updated.koodistoUri}/${updated.versio}`);
-        }
-    };
-    const create = async (koodisto: PageKoodisto) => {
-        setLoading(true);
-        const created = await createKoodisto({ koodisto, lang });
-        setLoading(false);
-        if (created) {
-            successNotification(created.koodistoUri);
-            reset(created);
-            navigate(`/koodisto/view/${created.koodistoUri}/${created.versio}`);
         }
     };
     return (

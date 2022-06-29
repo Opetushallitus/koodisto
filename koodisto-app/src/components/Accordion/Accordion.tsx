@@ -30,7 +30,14 @@ const StyledAccordionItemButton = styled(AccordionItemButton)`
     align-items: center;
     background: #f5f5f5;
 `;
-
+const AccordionHeader = styled.div`
+    flex: 1;
+    justify-content: space-between;
+    display: inline-flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin: 1rem;
+`;
 type AccordionDataItem = {
     id: number | string;
     localizedHeadingTitle: ReactNode;
@@ -52,7 +59,7 @@ export const Accordion = (props: AccordionProps) => {
                         <AccordionItemHeading>
                             <StyledAccordionItemButton>
                                 <ChevronIcon activeIds={activeAcIds} id={item.id} />
-                                <span>{item.localizedHeadingTitle}</span>
+                                <AccordionHeader>{item.localizedHeadingTitle}</AccordionHeader>
                             </StyledAccordionItemButton>
                         </AccordionItemHeading>
                         <AccordionItemPanel>{item.panelComponent}</AccordionItemPanel>

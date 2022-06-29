@@ -59,7 +59,7 @@ export const InputArrayController = <T extends { metadata: KoodiMetadata[] }>({
     large,
 }: Props<T>) => {
     const { formatMessage } = useIntl();
-    const { fields, update } = useFieldArray<T>({
+    const { fields, update } = useFieldArray<T, ArrayPath<T>, keyof KoodiMetadata | 'id'>({
         control,
         name: 'metadata' as ArrayPath<T>,
     });
@@ -80,8 +80,8 @@ export const InputArrayController = <T extends { metadata: KoodiMetadata[] }>({
                     <Column key={field.id}>
                         <TitleContainer>
                             <FormattedMessage
-                                id={`FIELD_TITLE_${(field as unknown as KoodiMetadata).kieli}`}
-                                defaultMessage={(field as unknown as KoodiMetadata).kieli}
+                                id={`FIELD_TITLE_${field.kieli}`}
+                                defaultMessage={field.kieli}
                                 tagName={'div'}
                             />
                             {index === 0 && (

@@ -1,4 +1,4 @@
-import { API_BASE_PATH, API_INTERNAL_PATH, BASE_PATH } from '../../../src/context/constants';
+import { API_BASE_PATH, API_INTERNAL_PATH, BASE_PATH } from '../../src/context/constants';
 import path from 'path';
 
 const koodistoUri = 'arvosanat';

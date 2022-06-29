@@ -7,7 +7,7 @@ import { PageKoodisto, Koodi } from '../../types';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { ButtonLabelPrefix } from '../KoodistoTablePage/KoodistoTablePage';
 import { IconWrapper } from '../../components/IconWapper';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, createSearchParams } from 'react-router-dom';
 import Spin from '@opetushallitus/virkailija-ui-components/Spin';
 import { fetchKoodistoKoodis } from '../../api/koodi';
 
@@ -72,7 +72,15 @@ const KoodistoPageAccordion = ({ koodisto }: KoodistoPageAccordionProps) => {
                         defaultMessage={'Koodit ({count})'}
                         values={{ count: koodiList?.length || 0 }}
                     />
-                    <Button onClick={() => navigate('/koodi/edit/')}>
+                    <Button
+                        name={'TAULUKKO_LISAA_KOODI_BUTTON'}
+                        onClick={() =>
+                            navigate({
+                                pathname: '/koodi/edit/',
+                                search: `?${createSearchParams({ koodistoUri: koodisto.koodistoUri })}`,
+                            })
+                        }
+                    >
                         <ButtonLabelPrefix>
                             <IconWrapper icon="el:plus" inline={true} fontSize={'0.6rem'} />
                         </ButtonLabelPrefix>

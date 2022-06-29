@@ -8,6 +8,11 @@
     "voimassaAlkuPvm": "2007-01-01",
     "metadata": [
         {
+            "nimi": "Akaa loytyy",
+            "kuvaus": "",
+            "kieli": "FI"
+        },
+        {
             "nimi": "Akaa",
             "kuvaus": "",
             "kieli": "SV"
@@ -16,11 +21,6 @@
             "nimi": "Akaa",
             "kuvaus": "",
             "kieli": "EN"
-        },
-        {
-            "nimi": "Akaa",
-            "kuvaus": "",
-            "kieli": "FI"
         }
     ],
     "sisaltyyKoodeihin": [

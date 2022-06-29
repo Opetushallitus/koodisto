@@ -103,7 +103,7 @@ export const fetchKoodiListByKoodisto = async ({
         const { data } = await axios.get<ApiKoodi[]>(`${API_BASE_PATH}/json/${koodistoUri}/koodi`, {
             params: koodistoVersio !== undefined ? { koodistoVersio } : {},
         });
-        return data.map(mapApiKoodi);
+        return data.map((api) => mapApiKoodi({ api }));
     });
 };
 

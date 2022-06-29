@@ -101,6 +101,12 @@
   "KOODI_MUOKKAA_SIVU_TITLE": {
     "defaultMessage": "Muokkaa koodia"
   },
+  "KOODI_TALLENNUS_MESSAGE": {
+    "defaultMessage": "Tallennettiin koodi uri:lla {koodiUri}"
+  },
+  "KOODI_TALLENNUS_MESSAGE_TITLE": {
+    "defaultMessage": "Koodi tallennettiin onnistuneesti."
+  },
   "KOODI_TAULUKKO_FILTTERI_PLACEHOLDER": {
     "defaultMessage": "Hae nimellä tai koodiarvolla"
   },

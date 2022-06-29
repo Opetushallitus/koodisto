@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
     MainHeaderContainer,
     MainContainer,
@@ -10,23 +10,49 @@ import {
 } from '../../components/Containers';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { CrumbTrail } from '../../components/CrumbTrail';
-import { fetchPageKoodi } from '../../api/koodi';
+import { fetchPageKoodi, updateKoodi, createKoodi } from '../../api/koodi';
 import { useForm, UseFormReturn } from 'react-hook-form';
 import { Koodi } from '../../types';
 import { Loading } from '../../components/Loading';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import { Footer } from '../../components/Footer';
 import { DatePickerController, InputArrayController } from '../../components/controllers';
+import { success } from '../../components/Notification';
+
+const successNotification = (koodiUri: string) => {
+    success({
+        title: (
+            <FormattedMessage
+                id={'KOODI_TALLENNUS_MESSAGE_TITLE'}
+                defaultMessage={'Koodi tallennettiin onnistuneesti.'}
+            />
+        ),
+        message: (
+            <FormattedMessage
+                id={'KOODI_TALLENNUS_MESSAGE'}
+                defaultMessage={'Tallennettiin koodi uri:lla {koodiUri}'}
+                values={{ koodiUri }}
+            />
+        ),
+    });
+};
 
 export const KoodiMuokkausPage: React.FC = () => {
     const { koodiUri, koodiVersio } = useParams();
+    const isEditing = koodiUri && koodiVersio;
+    const [searchParams] = useSearchParams();
+    const newKoodiKoodistoUri = searchParams.get('koodistoUri');
+    const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
     const formReturn = useForm<Koodi>({
         shouldUseNativeValidation: true,
-        defaultValues: { metadata: [{ kieli: 'FI' }, { kieli: 'SV' }, { kieli: 'EN' }] },
+        defaultValues: {
+            metadata: [{ kieli: 'FI' }, { kieli: 'SV' }, { kieli: 'EN' }],
+            koodistoUri: newKoodiKoodistoUri || '',
+        },
     });
     useEffect(() => {
-        if (koodiUri && koodiVersio) {
+        if (isEditing) {
             (async () => {
                 setLoading(true);
                 const data = await fetchPageKoodi(koodiUri, +koodiVersio);
@@ -34,9 +60,20 @@ export const KoodiMuokkausPage: React.FC = () => {
                 setLoading(false);
             })();
         }
-    }, [koodiUri, koodiVersio, formReturn]);
-    const save = (a: Koodi) => {
-        console.log(a);
+    }, [koodiUri, koodiVersio, formReturn, isEditing]);
+    const save = async (koodi: Koodi) => {
+        if (isEditing) await persist(koodi, updateKoodi);
+        else await persist(koodi, createKoodi);
+    };
+    const persist = async (koodi: Koodi, persistFunction: (koodi: Koodi) => Promise<Koodi | undefined>) => {
+        setLoading(true);
+        const data = await persistFunction(koodi);
+        setLoading(false);
+        if (data) {
+            successNotification(data.koodiUri);
+            formReturn.reset(data);
+            navigate(`/koodi/view/${data.koodiUri}/${data.versio}`);
+        }
     };
     return (loading && <Loading />) || <KoodiMuokkausPageComponent {...formReturn} save={save} />;
 };

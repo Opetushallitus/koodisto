@@ -1,4 +1,4 @@
-import { API_BASE_PATH, API_INTERNAL_PATH, BASE_PATH } from '../../../src/context/constants';
+import { API_BASE_PATH, API_INTERNAL_PATH, BASE_PATH } from '../../src/context/constants';
 
 const koodistoUri = 'kunta';
 Cypress.on('uncaught:exception', (err, runnable) => {

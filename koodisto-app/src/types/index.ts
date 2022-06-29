@@ -154,7 +154,7 @@ export type Koodi = {
     koodiUri: string;
     resourceUri: string;
     versio: number;
-    version: number;
+    lockingVersion: number;
     versions: number;
     koodiArvo: string;
     paivitysPvm: Date;

@@ -1,6 +1,6 @@
-import { BASE_PATH, API_INTERNAL_PATH } from '../../../src/context/constants';
+import { BASE_PATH, API_INTERNAL_PATH } from '../../src/context/constants';
 
-describe('Koodi edit page', () => {
+describe('Koodi view page', () => {
     beforeEach(() => {
         cy.mockBaseIntercepts();
     });
@@ -9,7 +9,6 @@ describe('Koodi edit page', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta`, { fixture: 'koodiPageKoodisto.json' });
         cy.visit(`${BASE_PATH}/koodi/view/get_1/1`);
         cy.contains('Akaa').should('be.visible');
-        cy.get('button[name=KOODISIVU_MUOKKAA_KOODIA_BUTTON]').should('be.visible').click();
-        cy.contains('Muokkaa koodia').should('be.visible');
+        cy.contains('a', 'kunta').and('have.attr', 'href').and('include', 'koodisto/view/kunta/2');
     });
 });

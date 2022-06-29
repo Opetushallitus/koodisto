@@ -1,4 +1,4 @@
-import { API_INTERNAL_PATH, BASE_PATH } from '../../../src/context/constants';
+import { API_INTERNAL_PATH, BASE_PATH } from '../../src/context/constants';
 
 describe('The landing page', () => {
     beforeEach(() => {
