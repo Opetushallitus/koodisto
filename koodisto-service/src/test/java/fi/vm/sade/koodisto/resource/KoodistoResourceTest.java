@@ -288,11 +288,10 @@ class KoodistoResourceTest {
 
         List<KoodiDto> koodis = koodistoResource.getYlakoodis(koodiUri, null);
         Assertions.assertEquals(2, koodis.size());
-        KoodiDto koodi = koodis.get(0);
 
         final String alakoodiUri = "475";
         final int alakoodiVersio = 1;
-
+        KoodiDto koodi = koodis.stream().filter(a->a.getKoodiUri().equals(alakoodiUri)).findFirst().orElseThrow();
         Assertions.assertEquals(alakoodiUri, koodi.getKoodiUri());
         Assertions.assertEquals(alakoodiVersio, koodi.getVersio());
     }
@@ -304,10 +303,10 @@ class KoodistoResourceTest {
 
         List<KoodiDto> koodis = koodistoResource.getYlakoodis(koodiUri, koodiVersio);
         Assertions.assertEquals(2, koodis.size());
-        KoodiDto koodi = koodis.get(0);
 
         final String alakoodiUri = "475";
         final int alakoodiVersio = 1;
+        KoodiDto koodi = koodis.stream().filter(a->a.getKoodiUri().equals(alakoodiUri)).findFirst().orElseThrow();
 
         Assertions.assertEquals(alakoodiUri, koodi.getKoodiUri());
         Assertions.assertEquals(alakoodiVersio, koodi.getVersio());

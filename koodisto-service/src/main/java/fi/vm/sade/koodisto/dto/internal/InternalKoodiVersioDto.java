@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.model.JsonViews;
+import fi.vm.sade.koodisto.model.Tila;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Min;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +27,13 @@ public class InternalKoodiVersioDto {
     @JsonView({JsonViews.Internal.class})
     private Integer versio;
 
+    @Min(value = 0, message = "error.lockingVersion.less.than.zero")
+    @JsonView({JsonViews.Internal.class})
+    private long lockingVersion;
+
+    @JsonView({JsonViews.Internal.class})
+    private Tila tila;
+
     @JsonView({JsonViews.Internal.class})
     private String koodiUri;
 
@@ -37,6 +46,9 @@ public class InternalKoodiVersioDto {
 
     @JsonView({JsonViews.Internal.class})
     private Date voimassaAlkuPvm;
+
+    @JsonView({JsonViews.Internal.class})
+    private Date voimassaLoppuPvm;
 
     @JsonView({JsonViews.Internal.class})
     private List<KoodiMetadataDto> metadata;
