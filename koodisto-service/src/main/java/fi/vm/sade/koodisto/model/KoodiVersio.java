@@ -1,7 +1,9 @@
 package fi.vm.sade.koodisto.model;
 
+import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import fi.vm.sade.koodisto.util.UserData;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -11,17 +13,19 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Entity
 @Table(name = KoodiVersio.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodiVersio.TABLE_NAME
-        + "_01", columnNames = { KoodiVersio.VERSIO_COLUMN_NAME, KoodiVersio.KOODI_COLUMN_NAME }))
+        + "_01", columnNames = {KoodiVersio.VERSIO_COLUMN_NAME, KoodiVersio.KOODI_COLUMN_NAME}))
 @org.hibernate.annotations.Table(appliesTo = KoodiVersio.TABLE_NAME, comment = "Koodiversio sisältää mm. koodiarvon, " +
         "voimassaolopäivämäärät ja koodin tilan.")
 @Cacheable
 @BatchSize(size = 100)
 @Getter
 @Setter
+@EqualsAndHashCode
 public class KoodiVersio extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -71,20 +75,20 @@ public class KoodiVersio extends BaseEntity {
     @Column(name = "tila", nullable = false, length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private Tila tila;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodiVersio", cascade = { CascadeType.ALL })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodiVersio", cascade = {CascadeType.ALL})
     private Set<KoodistoVersioKoodiVersio> koodistoVersios = new HashSet<>();
 
     @NotEmpty
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodiVersio", cascade = { CascadeType.ALL })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodiVersio", cascade = {CascadeType.ALL})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<KoodiMetadata> metadatas = new HashSet<>();
 
     @BatchSize(size = 100)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodiVersio", cascade = { CascadeType.ALL })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodiVersio", cascade = {CascadeType.ALL})
     private Set<KoodinSuhde> ylakoodis = new HashSet<>();
 
     @BatchSize(size = 100)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ylakoodiVersio", cascade = { CascadeType.ALL })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ylakoodiVersio", cascade = {CascadeType.ALL})
     private Set<KoodinSuhde> alakoodis = new HashSet<>();
 
     @PrePersist
@@ -92,7 +96,7 @@ public class KoodiVersio extends BaseEntity {
         luotu = luotu == null ? new Date() : luotu;
         onUpdate();
     }
-    
+
     @PreUpdate
     protected void onUpdate() {
         UserData.getCurrentUserOid().ifPresent(this::setPaivittajaOid);
@@ -128,10 +132,29 @@ public class KoodiVersio extends BaseEntity {
     public void addAlakoodi(KoodinSuhde alakoodi) {
         this.alakoodis.add(alakoodi);
     }
-    
+
     public void removeKoodistoVersio(KoodistoVersioKoodiVersio koodistoVersio) {
         this.koodistoVersios.remove(koodistoVersio);
     }
+
+    public Map<String, String> getKoodistoNimi() {
+        return this.getKoodi().getKoodisto().getKoodistoVersios().stream()
+                .reduce((a, b) -> a.getVersio() > b.getVersio() ? a : b)
+                .orElseThrow(KoodistoNotFoundException::new)
+                .getMetadatas().stream()
+                .collect(Collectors.toMap(metadata -> metadata.getKieli().name().toLowerCase(), KoodistoMetadata::getNimi));
+    }
+
+    public Map<String, String> getNimi() {
+        return this.getMetadatas().stream()
+                .collect(Collectors.toMap(metadata -> metadata.getKieli().name().toLowerCase(), KoodiMetadata::getNimi));
+    }
+
+    public Map<String, String> getKuvaus() {
+        return this.getMetadatas().stream()
+                .collect(Collectors.toMap(metadata -> metadata.getKieli().name().toLowerCase(), koodiMetadata -> Optional.ofNullable(koodiMetadata.getKuvaus()).orElse("")));
+    }
+
 
     @AssertTrue(message = "error.validation.enddate")
     public boolean isStartDateBeforeEndDate() {

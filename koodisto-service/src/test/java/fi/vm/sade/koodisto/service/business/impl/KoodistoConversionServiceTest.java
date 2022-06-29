@@ -60,7 +60,7 @@ public class KoodistoConversionServiceTest {
         KoodiType dto = createKoodiType();
         KoodiVersio versio = koodiTypeToKoodiVersioConverter.convert(dto);
         assertNotNull(versio);
-        checkConvertedFields(versio, KoodiVersio.class, "id", "version", "luotu", "paivittajaOid");
+        checkConvertedFields(versio, KoodiVersio.class, "id", "version", "luotu", "paivittajaOid", "koodistoNimi", "nimi", "kuvaus");
     }
 
     @Test

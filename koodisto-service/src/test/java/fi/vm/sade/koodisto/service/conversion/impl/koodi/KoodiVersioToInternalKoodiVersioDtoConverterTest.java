@@ -30,6 +30,7 @@ class KoodiVersioToInternalKoodiVersioDtoConverterTest {
         a.addKoodistoVersio(koodistoVersioKoodiVersio);
         Koodi koodi = new Koodi();
         koodi.setKoodisto(koodisto);
+        a.setVersion(5L);
         a.setKoodi(koodi);
     }
 
