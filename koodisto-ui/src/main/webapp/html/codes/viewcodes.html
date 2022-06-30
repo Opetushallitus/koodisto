@@ -88,18 +88,6 @@
         <div class="col-md-offset-2 col-md-4">
             <h3>{{ viewCodes.model.name }}</h3>
         </div>
-        <div class="col-md-6">
-            <button type="button" auth="update" auth-service="APP_KOODISTO"
-                    auth-org="{{viewCodes.model.codes.organisaatioOid}}" class="btn pull-left"
-                    ng-click="viewCodes.model.upload()">{{'codes.viewpage.uploadbutton' |
-                i18n}}</button>
-            <button type="button" class="btn pull-left"
-                    ng-click="viewCodes.model.download()">{{'codes.viewpage.downloadbutton'
-                | i18n}}</button>
-            <button type="button" class="btn pull-left"
-                    ng-click="viewCodes.downloadBlank()">{{'codes.viewpage.downloadblankbutton'
-                | i18n}}</button>
-        </div>
     </div>
 
     <div class="row">
