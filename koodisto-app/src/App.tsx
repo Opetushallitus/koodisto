@@ -3,10 +3,9 @@ import { KoodistoTablePage } from './pages/KoodistoTablePage';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Notification } from './components/Notification';
-import { KoodistoPage } from './pages/KoodistoPage';
+import { KoodistoPage, KoodistoMuokkausPage } from './pages/KoodistoPage';
 import KoodiPage from './pages/KoodiPage';
 import { Loading } from './components/Loading';
-import { KoodistoMuokkausPage } from './pages/KoodistoMuokkausPage';
 import { KoodiMuokkausPage } from './pages/KoodiMuokkausPage';
 
 export const PageBase = styled.div`

@@ -23,6 +23,7 @@ import {
 import { koodistoRyhmaOptionsAtom } from '../../api/koodistoRyhma';
 import { organisaatioSelectAtom } from '../../api/organisaatio';
 import { Footer } from '../../components/Footer';
+import KoodistoPageAccordion from './KoodistoPageAccordion';
 
 const successNotification = (koodistoUri: string) => {
     success({
@@ -179,6 +180,13 @@ export const KoodistoMuokkausPage: React.FC = () => {
                             fieldPath={'kuvaus'}
                         />
                     </MainContainerRow>
+                    <KoodistoPageAccordion
+                        editMode
+                        sisaltyyKoodistoihin={getValues('sisaltyyKoodistoihin') || []}
+                        rinnastuuKoodistoihin={getValues('rinnastuuKoodistoihin') || []}
+                        sisaltaaKoodistot={getValues('sisaltaaKoodistot') || []}
+                        koodiList={[]}
+                    />
                 </form>
             </MainContainer>
             <Footer

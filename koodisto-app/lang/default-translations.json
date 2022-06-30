@@ -185,6 +185,9 @@
   "TAULUKKO_KUVAUS_OTSIKKO": {
     "defaultMessage": "Voit rajata koodistoryhmällä tai nimellä"
   },
+  "TAULUKKO_LISAA_KOODISTOJA_BUTTON": {
+    "defaultMessage": "Lisää koodistoja"
+  },
   "TAULUKKO_LISAA_KOODISTORYHMA_BUTTON": {
     "defaultMessage": "Luo / poista koodistoryhmä"
   },

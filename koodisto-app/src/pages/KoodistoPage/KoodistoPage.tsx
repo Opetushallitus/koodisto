@@ -4,7 +4,7 @@ import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchPageKoodisto } from '../../api/koodisto';
 import { translateMetadata } from '../../utils';
-import { PageKoodisto } from '../../types';
+import { PageKoodisto, Koodi } from '../../types';
 import { Loading } from '../../components/Loading';
 import { KoodistoInfo } from './KoodistoInfo';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
@@ -20,6 +20,7 @@ import {
 import { CrumbTrail } from '../../components/CrumbTrail';
 import VersionPicker from '../../components/VersionPicker';
 import { ErrorPage } from '../ErrorPage';
+import { fetchKoodistoKoodis } from '../../api/koodi';
 
 export const KoodistoPage: React.FC = () => {
     const { versio, koodistoUri } = useParams();
@@ -28,14 +29,21 @@ export const KoodistoPage: React.FC = () => {
     const [lang] = useAtom(casMeLangAtom);
     const [koodisto, setKoodisto] = useState<PageKoodisto | undefined>();
     const [uploadCsvVisible, setUploadCsvVisible] = useState<boolean>(false);
-
+    const [koodiList, setKoodiList] = useState<Koodi[] | undefined>(undefined);
     useEffect(() => {
-        (async () => {
-            if (koodistoUri && versioNumber) {
+        if (koodistoUri && versioNumber) {
+            (async () => setKoodiList(await fetchKoodistoKoodis(koodistoUri, versioNumber)))();
+        } else {
+            setKoodiList([]);
+        }
+    }, [koodistoUri, versioNumber]);
+    useEffect(() => {
+        if (koodistoUri && versioNumber) {
+            (async () => {
                 const koodistoData = await fetchPageKoodisto({ koodistoUri, versio: versioNumber, lang });
                 setKoodisto(koodistoData);
-            }
-        })();
+            })();
+        }
     }, [koodistoUri, lang, versioNumber]);
 
     if (!(koodistoUri && versio)) return <ErrorPage />;
@@ -73,7 +81,12 @@ export const KoodistoPage: React.FC = () => {
             </MainHeaderContainer>
             <MainContainer>
                 <KoodistoInfo {...koodisto} />
-                <KoodistoPageAccordion koodisto={koodisto} />
+                <KoodistoPageAccordion
+                    koodiList={koodiList}
+                    rinnastuuKoodistoihin={koodisto.rinnastuuKoodistoihin}
+                    sisaltaaKoodistot={koodisto.sisaltaaKoodistot}
+                    sisaltyyKoodistoihin={koodisto.sisaltyyKoodistoihin}
+                />
             </MainContainer>
             {uploadCsvVisible && koodistoUri && (
                 <CSVFunctionModal

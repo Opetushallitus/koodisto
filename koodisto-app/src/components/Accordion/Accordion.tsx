@@ -48,7 +48,7 @@ type AccordionProps = {
     data: AccordionDataItem[];
 };
 
-export const Accordion = (props: AccordionProps) => {
+export const Accordion: React.FC<AccordionProps> = (props) => {
     const { data } = props;
     const [activeAcIds, setActiveAcIds] = useState<UUID[]>([]);
     return (
