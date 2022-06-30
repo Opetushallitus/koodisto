@@ -101,11 +101,11 @@ public class KoodistoVersioToKoodistoDtoConverter implements AbstractFromDomainC
 
     private Map<String, String> getNimi(KoodistoVersio koodistoVersio) {
         return koodistoVersio.getMetadatas().stream()
-                .collect(Collectors.toMap(metadata -> metadata.getKieli().name().toLowerCase(), KoodistoMetadata::getNimi));
+                .collect(Collectors.toMap(metadata -> metadata.getKieli().name(), KoodistoMetadata::getNimi));
     }
 
     private Map<String, String> getKuvaus(KoodistoVersio koodistoVersio) {
         return koodistoVersio.getMetadatas().stream()
-                .collect(Collectors.toMap(metadata -> metadata.getKieli().name().toLowerCase(), koodistoMetadata -> Optional.ofNullable(koodistoMetadata.getKuvaus()).orElse("")));
+                .collect(Collectors.toMap(metadata -> metadata.getKieli().name(), koodistoMetadata -> Optional.ofNullable(koodistoMetadata.getKuvaus()).orElse("")));
     }
 }
