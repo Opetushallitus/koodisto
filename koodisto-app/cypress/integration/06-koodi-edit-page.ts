@@ -60,6 +60,9 @@ describe('Koodi edit page', () => {
         cy.get('button[name=REMOVE_ACTION]').should('be.visible').should('be.disabled');
         cy.get('input[name=REMOVE_CONFIRMATION]').should('be.visible').click();
         cy.intercept('DELETE', `${API_INTERNAL_PATH}/koodi/kunta_020/2`, { statusCode: 204 });
+        cy.intercept(`${API_INTERNAL_PATH}/koodisto`, { fixture: 'codes.json' });
+        cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'kuntaKoodisto.json' });
+        cy.intercept(`${API_INTERNAL_PATH}/koodi/koodisto/kunta/2`, { fixture: 'kuntaKoodistoKoodit.json' });
         cy.get('button[name=REMOVE_ACTION]').should('be.visible').should('not.be.disabled').click();
     });
 });

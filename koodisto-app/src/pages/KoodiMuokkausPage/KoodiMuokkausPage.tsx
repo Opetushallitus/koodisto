@@ -87,7 +87,7 @@ export const KoodiMuokkausPage: React.FC = () => {
         setLoading(true);
         if (await deleteKoodi(koodi)) {
             deleteSuccess();
-            navigate(`/koodisto/view/${koodi.koodistoUri}/1`); // TODO: how to navigate to appropriate koodisto?
+            navigate(`/koodisto/view/${koodi.koodistoUri}`);
         } else {
             setLoading(false);
         }

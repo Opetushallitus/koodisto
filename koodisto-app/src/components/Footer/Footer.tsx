@@ -6,7 +6,6 @@ import { IconWrapper } from '../IconWapper';
 import { useNavigate } from 'react-router-dom';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
-//import RemovalDialog from './RemoveDialog';
 
 type Props = {
     returnPath: string;
