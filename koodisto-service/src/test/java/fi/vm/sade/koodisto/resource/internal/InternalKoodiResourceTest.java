@@ -63,6 +63,46 @@ class InternalKoodiResourceTest {
     }
 
     @Test
+    @Description("Delete with invalid access rights")
+    void testDeleteInternalKoodiNoAccess() throws Exception {
+        this.mockMvc.perform(delete("/internal/koodi/get_1/1"))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @Description("Delete with invalid version")
+    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testDeleteInternalKoodiBadRequest() throws Exception {
+        this.mockMvc.perform(delete("/internal/koodi/nonexistent/0"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Description("Delete with non-existent koodi")
+    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testDeleteInternalKoodiNotFound() throws Exception {
+        this.mockMvc.perform(delete("/internal/koodi/nonexistent/1"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Description("Delete with non-removable koodi")
+    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testDeleteInternalKoodiCannotDelete() throws Exception {
+        this.mockMvc.perform(delete("/internal/koodi/get_1/1"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Description("Delete OK")
+    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testDeleteInternalKoodi() throws Exception {
+        this.mockMvc.perform(delete("/internal/koodi/removable/1"))
+                .andExpect(status().isNoContent())
+                .andExpect(content().string(""));
+    }
+
+    @Test
     @Description("Post to not found koodisto")
     @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal01() throws Exception {

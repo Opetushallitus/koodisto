@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,11 +50,22 @@ public class InternalKoodiResource {
     @JsonView({JsonViews.Internal.class})
     public @ResponseBody
     ResponseEntity<InternalKoodiVersioDto> getKoodi(
-            @Parameter(description = "Koodin URI") @PathVariable @NotEmpty final String koodiUri,
+            @Parameter(description = "Koodin URI") @PathVariable final String koodiUri,
             @Parameter(description = "Koodin versio") @PathVariable @Min(1) final int koodiVersio
     ) {
         KoodiVersioWithKoodistoItem versio = koodiBusinessService.getKoodi(koodiUri, koodiVersio);
         return ResponseEntity.ok(koodiVersioToInternalKoodiVersioDtoConverter.convert(versio.getKoodiVersio()));
+    }
+
+    @DeleteMapping(path = "/{koodiUri}/{koodiVersio}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<Void> deleteKoodi(
+            @Parameter(description = "Koodin URI") @PathVariable final String koodiUri,
+            @Parameter(description = "Koodin versio") @PathVariable @Min(1) final int koodiVersio
+    ) {
+        koodiBusinessService.delete(koodiUri, koodiVersio);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(path = "/{koodistoUri}",
@@ -72,14 +82,14 @@ public class InternalKoodiResource {
     @GetMapping(path = "/koodisto/{koodistoUri}/{koodistoVersio}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})
-    public @ResponseBody ResponseEntity<List<InternalKoodiVersioDto>> getKoodistoKoodis(
-            @PathVariable @NotBlank String koodistoUri,
+    public @ResponseBody
+    ResponseEntity<List<InternalKoodiVersioDto>> getKoodistoKoodis(
+            @PathVariable String koodistoUri,
             @PathVariable @Min(1) Integer koodistoVersio) {
         List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.getKoodisByKoodistoVersio(koodistoUri, koodistoVersio, true);
         return ResponseEntity.ok(koodiVersioToInternalKoodiVersioDtoConverter.convertAll(
                 result.stream().map(KoodiVersioWithKoodistoItem::getKoodiVersio).collect(Collectors.toList())));
     }
-
 
     @PostMapping(path = "/upsert/{koodistoUri}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -97,14 +107,14 @@ public class InternalKoodiResource {
                 .collect(Collectors.toList());
         KoodistoVersio koodisto = koodiBusinessService.massCreate(koodistoUri, koodiList);
         return ResponseEntity.ok(koodistoVersioToInternalKoodistoPageDtoConverter.convert(koodisto));
-
     }
 
     @PutMapping(path = "", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})
     @PreAuthorize("hasRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
-    public @ResponseBody ResponseEntity<InternalKoodiVersioDto> updateKoodi(
+    public @ResponseBody
+    ResponseEntity<InternalKoodiVersioDto> updateKoodi(
             @RequestBody @Valid UpdateKoodiDataType koodi) {
         KoodiVersioWithKoodistoItem result = koodiBusinessService.updateKoodi(koodi);
         return ResponseEntity.ok(koodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter.convert(result));
@@ -114,8 +124,9 @@ public class InternalKoodiResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})
     @PreAuthorize("hasRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
-    public @ResponseBody ResponseEntity<InternalKoodiVersioDto> createKoodi(
-            @PathVariable @NotBlank String koodistoUri,
+    public @ResponseBody
+    ResponseEntity<InternalKoodiVersioDto> createKoodi(
+            @PathVariable String koodistoUri,
             @RequestBody @Valid CreateKoodiDataType koodi) {
         KoodiVersioWithKoodistoItem result = koodiBusinessService.createKoodi((koodistoUri), koodi);
         return ResponseEntity.ok(koodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter.convert(result));
@@ -131,5 +142,4 @@ public class InternalKoodiResource {
     private String generateKoodiUri(String koodistoUri, KoodiDto koodi) {
         return (koodistoUri + "_" + (koodi.getKoodiArvo().replaceAll("[^A-Za-z0-9]", "").toLowerCase()));
     }
-
 }
