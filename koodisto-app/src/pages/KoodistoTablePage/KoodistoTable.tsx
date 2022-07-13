@@ -120,8 +120,7 @@ const KoodistoTable: React.FC<KoodistoTableProps> = () => {
                 columns: [
                     {
                         id: 'koodiCount',
-                        accessor: (values: ListKoodisto) =>
-                            values.koodiCount && <TableCellText>{values.koodiCount}</TableCellText>,
+                        accessor: (values: ListKoodisto) => <TableCellText>{values.koodiCount}</TableCellText>,
                     },
                 ],
             },
