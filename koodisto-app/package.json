@@ -4,7 +4,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "@opetushallitus/virkailija-ui-components": "^0.4.6",
+        "@opetushallitus/virkailija-ui-components": "^0.4.7",
         "axios": "^0.26.0",
         "jotai": "^1.6.0",
         "lodash": "^4.17.21",
