@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { fetchPageKoodisto, updateKoodisto, createKoodisto } from '../../api/koodisto';
+import { fetchPageKoodisto, updateKoodisto, createKoodisto, deleteKoodisto } from '../../api/koodisto';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { PageKoodisto, SelectOption, Kieli } from '../../types';
@@ -24,6 +24,7 @@ import { koodistoRyhmaOptionsAtom } from '../../api/koodistoRyhma';
 import { organisaatioSelectAtom } from '../../api/organisaatio';
 import { Footer } from '../../components/Footer';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
+import RemovalConfirmationDialog from '../../components/Footer/RemovalConfirmationDialog';
 
 const successNotification = (koodistoUri: string) => {
     success({
@@ -40,6 +41,15 @@ const successNotification = (koodistoUri: string) => {
                 values={{ koodistoUri }}
             />
         ),
+    });
+};
+
+const deleteSuccess = () => {
+    success({
+        title: (
+            <FormattedMessage id={'KOODISTO_POISTA_OK_TITLE'} defaultMessage={'Koodisto poistettiin onnistuneesti.'} />
+        ),
+        message: <FormattedMessage id={'KOODISTO_POISTA_OK_MESSAGE'} defaultMessage={'Koodisto on poistettu'} />,
     });
 };
 
@@ -84,6 +94,15 @@ export const KoodistoMuokkausPage: React.FC = () => {
             successNotification(updated.koodistoUri);
             reset(updated);
             navigate(`/koodisto/view/${updated.koodistoUri}/${updated.versio}`);
+        }
+    };
+    const remove = async (koodisto: PageKoodisto) => {
+        setLoading(true);
+        if (await deleteKoodisto(koodisto)) {
+            deleteSuccess();
+            navigate('/');
+        } else {
+            setLoading(false);
         }
     };
     return (
@@ -193,7 +212,54 @@ export const KoodistoMuokkausPage: React.FC = () => {
                 returnPath={(koodistoUri && `/koodisto/view/${koodistoUri}/${versio}`) || '/'}
                 save={handleSubmit((a) => save(a))}
                 localisationPrefix={'KOODISTO'}
-            />
+            >
+                {(close: () => void) => (
+                    <RemovalConfirmationDialog
+                        action={() => {
+                            remove(getValues());
+                            close();
+                        }}
+                        close={close}
+                        msgkey={{
+                            id: 'KOODISTO_POISTA_CONFIRMATION',
+                            defaultMessage:
+                                'Kyllä, koodisto sekä kaikki koodit ja koodistojen suhteet poistetaan lopullisesti',
+                        }}
+                    >
+                        <>
+                            <FormattedMessage
+                                id={'KOODISTO_POISTA_TITLE'}
+                                defaultMessage={'Poista koodisto'}
+                                tagName={'h2'}
+                            />
+                            <FormattedMessage
+                                id={'KOODISTO_POISTA_DESCRIPTION'}
+                                defaultMessage={'Koodisto sisältää:'}
+                                tagName={'p'}
+                            />
+                            <ul>
+                                <FormattedMessage
+                                    id={'KOODISTO_POISTA_SISALTAA_KOODIA'}
+                                    defaultMessage={'{count} koodia'}
+                                    values={{ count: '?' }} // TODO: how to resolve amount of codes?
+                                    tagName={'li'}
+                                />
+                                <FormattedMessage
+                                    id={'KOODISTO_POISTA_SISALTAA_SUHTEITA'}
+                                    defaultMessage={'{count} koodistojen välistä suhdetta'}
+                                    values={{
+                                        count:
+                                            getValues().sisaltaaKoodistot?.length +
+                                            getValues().sisaltyyKoodistoihin?.length +
+                                            getValues().rinnastuuKoodistoihin?.length,
+                                    }}
+                                    tagName={'li'}
+                                />
+                            </ul>
+                        </>
+                    </RemovalConfirmationDialog>
+                )}
+            </Footer>
         </>
     );
 };
