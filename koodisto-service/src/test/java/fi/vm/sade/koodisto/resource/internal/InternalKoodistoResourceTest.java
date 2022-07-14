@@ -1,11 +1,13 @@
 package fi.vm.sade.koodisto.resource.internal;
 
+import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Description;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -25,6 +27,8 @@ class InternalKoodistoResourceTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
+    private Authorizer authorizer;
 
     @Test
     @Description("Get koodisto list")
@@ -175,7 +179,7 @@ class InternalKoodistoResourceTest {
         o.put("koodistoRyhmaUri", "dummy");
         o.put("organisaatioOid", "1.2.2004.6");
         o.put("metadataList", metadata);
-        o.put("voimassaAlkuPvm","2022-01-01");
+        o.put("voimassaAlkuPvm", "2022-01-01");
         mockMvc.perform(post(BASE_PATH + "/dummy")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(o.toString()))
@@ -200,5 +204,45 @@ class InternalKoodistoResourceTest {
                         jsonPath("$.tila").value("LUONNOS"),
                         jsonPath("$.metadata[0].nimi").value("new version")
                 );
+    }
+
+    @Test
+    @Description("Delete with invalid access rights")
+    void testDeleteInternalKoodistoNoAccess() throws Exception {
+        this.mockMvc.perform(delete("/internal/koodisto/dummy/1"))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @Description("Delete with invalid version")
+    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testDeleteInternalKoodistoBadRequest() throws Exception {
+        this.mockMvc.perform(delete("/internal/koodisto/dummy/0"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Description("Delete with non-existent koodisto")
+    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testDeleteInternalKoodistoNotFound() throws Exception {
+        this.mockMvc.perform(delete("/internal/koodisto/nonexistent/1"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Description("Delete with non-removable koodisto")
+    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testDeleteInternalKoodiCannotDelete() throws Exception {
+        this.mockMvc.perform(delete("/internal/koodisto/get/1"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Description("Delete OK")
+    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testDeleteInternalKoodisto() throws Exception {
+        this.mockMvc.perform(delete("/internal/koodisto/removable/1"))
+                .andExpect(status().isNoContent())
+                .andExpect(content().string(""));
     }
 }

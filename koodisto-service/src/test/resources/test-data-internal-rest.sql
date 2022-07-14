@@ -2,14 +2,16 @@ INSERT INTO koodisto (id, koodistouri, version, organisaatioOid)
 VALUES ('-1', 'dummy', '0', '1.2.2004.6'),
        ('-2', 'one', '1', '1.2.2004.6'),
        ('-3', 'get', '1', '1.2.2004.6'),
-       ('-4', 'two', '1', '1.2.2004.6');
+       ('-4', 'two', '1', '1.2.2004.6'),
+       ('-5', 'removable', '1', '1.2.2004.6');
 
 INSERT INTO koodistoversio (id, version, paivityspvm, luotu, tila, versio, koodisto_id, voimassaalkupvm)
 VALUES ('-1', '0', '2012-03-22 13:23:41.414000', '2013-01-01', 'HYVAKSYTTY', '1', '-1', '2012-11-20'),
        ('-2', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'LUONNOS', '1', '-2', '2012-11-20'),
        ('-3', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'HYVAKSYTTY', '1', '-3', '2012-11-20'),
        ('-4', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'LUONNOS', '1', '-4', '2012-11-20'),
-       ('-5', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'LUONNOS', '2', '-1', '2012-11-20');
+       ('-5', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'LUONNOS', '2', '-1', '2012-11-20'),
+       ('-6', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'PASSIIVINEN', '1', '-5', '2012-11-20');
 
 
 INSERT INTO koodistoryhma (id, koodistoryhmauri, version)
@@ -52,4 +54,4 @@ VALUES ('-1', 'FI', 'get1', '1', '-1', 'Get 1', 'Get 1'),
 INSERT INTO koodistoversio_koodiversio (id, version, koodistoversio_id, koodiversio_id)
 VALUES ('-3', '1', '-3', '-1'),
        ('-4', '1', '-4', '-2'),
-       ('-5', '1', '-1', '-3');
+       ('-5', '1', '-6', '-3');

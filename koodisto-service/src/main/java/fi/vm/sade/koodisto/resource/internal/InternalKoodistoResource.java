@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Hidden
@@ -33,7 +32,6 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 public class InternalKoodistoResource {
 
-
     private final KoodistoBusinessService koodistoBusinessService;
     private final KoodistoVersioToInternalKoodistoListDtoConverter koodistoVersioToInternalKoodistoListDtoConverter;
     private final KoodistoVersioToInternalKoodistoPageDtoConverter koodistoVersioToInternalKoodistoPageDtoConverter;
@@ -41,7 +39,8 @@ public class InternalKoodistoResource {
     @GetMapping(path = "",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})
-    public @ResponseBody ResponseEntity<List<InternalKoodistoListDto>> getKoodistoList() {
+    public @ResponseBody
+    ResponseEntity<List<InternalKoodistoListDto>> getKoodistoList() {
         SearchKoodistosCriteriaType criteria = KoodistoServiceSearchCriteriaBuilder.latestCodes();
         List<KoodistoVersio> result = koodistoBusinessService.searchKoodistos(criteria);
         return ResponseEntity.ok(koodistoVersioToInternalKoodistoListDtoConverter.convertAll(result));
@@ -50,18 +49,30 @@ public class InternalKoodistoResource {
     @GetMapping(path = "/{koodistoUri}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})
-    public @ResponseBody ResponseEntity<InternalKoodistoPageDto> getLatestKoodisto(
-            @PathVariable @NotBlank String koodistoUri) {
+    public @ResponseBody
+    ResponseEntity<InternalKoodistoPageDto> getLatestKoodisto(
+            @PathVariable final String koodistoUri) {
         KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
         return ResponseEntity.ok(koodistoVersioToInternalKoodistoPageDtoConverter.convert(result));
+    }
+
+    @DeleteMapping(path = "/{koodistoUri}/{koodistoVersio}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<Void> deleteKoodisto(
+            @PathVariable final String koodistoUri,
+            @PathVariable @Min(1) final int koodistoVersio) {
+        koodistoBusinessService.delete(koodistoUri, koodistoVersio);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(path = "/{koodistoUri}/{koodistoVersio}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})
-    public @ResponseBody ResponseEntity<InternalKoodistoPageDto> getKoodisto(
-            @PathVariable @NotBlank String koodistoUri,
-            @PathVariable @Min(1) Integer koodistoVersio) {
+    public @ResponseBody
+    ResponseEntity<InternalKoodistoPageDto> getKoodisto(
+            @PathVariable final String koodistoUri,
+            @PathVariable @Min(1) final int koodistoVersio) {
         KoodistoVersio result = koodistoBusinessService.getKoodistoVersio(koodistoUri, koodistoVersio);
         return ResponseEntity.ok(koodistoVersioToInternalKoodistoPageDtoConverter.convert(result));
     }
@@ -70,7 +81,8 @@ public class InternalKoodistoResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})
     @PreAuthorize("hasRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
-    public @ResponseBody ResponseEntity<InternalKoodistoPageDto> updateKoodisto(
+    public @ResponseBody
+    ResponseEntity<InternalKoodistoPageDto> updateKoodisto(
             @RequestBody @Valid UpdateKoodistoDataType koodisto) {
         KoodistoVersio result = koodistoBusinessService.updateKoodisto(koodisto);
         return ResponseEntity.ok(koodistoVersioToInternalKoodistoPageDtoConverter.convert(result));
@@ -79,8 +91,9 @@ public class InternalKoodistoResource {
     @PostMapping(path = "/{koodistoRyhmaUri}", consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
-    public @ResponseBody ResponseEntity<InternalKoodistoPageDto> createKoodisto(
-            @PathVariable @NotBlank String koodistoRyhmaUri,
+    public @ResponseBody
+    ResponseEntity<InternalKoodistoPageDto> createKoodisto(
+            @PathVariable final String koodistoRyhmaUri,
             @RequestBody @Valid CreateKoodistoDataType koodisto) {
         KoodistoVersio result = koodistoBusinessService.createKoodisto(List.of(koodistoRyhmaUri), koodisto);
         return ResponseEntity.ok(koodistoVersioToInternalKoodistoPageDtoConverter.convert(result));
