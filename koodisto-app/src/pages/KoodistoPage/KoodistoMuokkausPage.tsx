@@ -22,9 +22,8 @@ import {
 } from '../../components/Containers';
 import { koodistoRyhmaOptionsAtom } from '../../api/koodistoRyhma';
 import { organisaatioSelectAtom } from '../../api/organisaatio';
-import { Footer } from '../../components/Footer';
+import { Footer, ConfirmationDialog } from '../../components/Footer';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
-import RemovalConfirmationDialog from '../../components/Footer/RemovalConfirmationDialog';
 
 const successNotification = (koodistoUri: string) => {
     success({
@@ -212,9 +211,8 @@ export const KoodistoMuokkausPage: React.FC = () => {
                 returnPath={(koodistoUri && `/koodisto/view/${koodistoUri}/${versio}`) || '/'}
                 save={handleSubmit((a) => save(a))}
                 localisationPrefix={'KOODISTO'}
-            >
-                {(close: () => void) => (
-                    <RemovalConfirmationDialog
+                removeDialog={(close: () => void) => (
+                    <ConfirmationDialog
                         action={() => {
                             remove(getValues());
                             close();
@@ -257,9 +255,9 @@ export const KoodistoMuokkausPage: React.FC = () => {
                                 />
                             </ul>
                         </>
-                    </RemovalConfirmationDialog>
+                    </ConfirmationDialog>
                 )}
-            </Footer>
+            />
         </>
     );
 };
