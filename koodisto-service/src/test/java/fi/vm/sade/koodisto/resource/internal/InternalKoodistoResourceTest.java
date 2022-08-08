@@ -27,9 +27,6 @@ class InternalKoodistoResourceTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private Authorizer authorizer;
-
     @Test
     @Description("Get koodisto list")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
@@ -215,7 +212,7 @@ class InternalKoodistoResourceTest {
 
     @Test
     @Description("Delete with invalid version")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.2004.6", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodistoBadRequest() throws Exception {
         this.mockMvc.perform(delete("/internal/koodisto/dummy/0"))
                 .andExpect(status().isBadRequest());
@@ -223,7 +220,7 @@ class InternalKoodistoResourceTest {
 
     @Test
     @Description("Delete with non-existent koodisto")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.2004.6", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodistoNotFound() throws Exception {
         this.mockMvc.perform(delete("/internal/koodisto/nonexistent/1"))
                 .andExpect(status().isNotFound());
@@ -231,7 +228,7 @@ class InternalKoodistoResourceTest {
 
     @Test
     @Description("Delete with non-removable koodisto")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.2004.6", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodiCannotDelete() throws Exception {
         this.mockMvc.perform(delete("/internal/koodisto/get/1"))
                 .andExpect(status().isBadRequest());
@@ -239,7 +236,7 @@ class InternalKoodistoResourceTest {
 
     @Test
     @Description("Delete OK")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.2004.6", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodisto() throws Exception {
         this.mockMvc.perform(delete("/internal/koodisto/removable/1"))
                 .andExpect(status().isNoContent())
