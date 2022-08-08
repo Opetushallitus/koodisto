@@ -62,14 +62,14 @@ describe('Koodi edit page', () => {
         // checkbox needs to be checked for button to activate
         cy.get('button[name=KOODI_POISTA]').should('be.visible').click();
         cy.get('button[name=CONFIRMATION_ACTION]').should('be.visible').should('be.disabled');
-        cy.get('input[name=CONFIRMATION_CHECK]').should('be.visible').click();
+        cy.get('input[name=CONFIRMATION_CHECK]').should('be.visible').click({ force: true });
         cy.intercept('DELETE', `${API_INTERNAL_PATH}/koodi/kunta_020/2`, { statusCode: 400 });
         cy.get('button[name=CONFIRMATION_ACTION]').should('be.visible').should('not.be.disabled').click();
         cy.contains('server.error.400').should('be.visible');
         // successful delete
         cy.get('button[name=KOODI_POISTA]').should('be.visible').click();
         cy.get('button[name=CONFIRMATION_ACTION]').should('be.visible').should('be.disabled');
-        cy.get('input[name=CONFIRMATION_CHECK]').should('be.visible').click();
+        cy.get('input[name=CONFIRMATION_CHECK]').should('be.visible').click({ force: true });
         cy.intercept('DELETE', `${API_INTERNAL_PATH}/koodi/kunta_020/2`, { statusCode: 204 });
         cy.intercept(`${API_INTERNAL_PATH}/koodisto`, { fixture: 'codes.json' });
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'kuntaKoodisto.json' });

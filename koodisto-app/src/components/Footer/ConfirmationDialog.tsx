@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Checkbox from '@opetushallitus/virkailija-ui-components/Checkbox';
 import { FormattedMessage, MessageDescriptor } from 'react-intl';
 
 const CloseWrapper = styled.div`
@@ -13,12 +14,12 @@ const CloseWrapper = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-    margin-top: 1rem 0;
+    margin: 1rem 0;
 `;
 
 const ContentWrapper = styled.div`
     margin: 1rem;
-    > p > input {
+    > div > label {
         margin-right: 0.5rem;
     }
 `;
@@ -32,17 +33,16 @@ export const ConfirmationDialog: React.FC<{
 }> = ({ close, action, confirmationMessage, buttonText, children }) => {
     const [confirmed, setConfirmed] = React.useState<boolean>(false);
     const toggle = () => setConfirmed(!confirmed);
-    // id="VAHVISTA_POISTO" defaultMessage={'Vahvista poisto'}
     return (
         <ContentWrapper>
             <CloseWrapper id="close-dialog" role="button" onClick={close}>
                 &times;
             </CloseWrapper>
             {children}
-            <p>
-                <input name="CONFIRMATION_CHECK" type="checkbox" onChange={toggle} checked={confirmed} />
+            <div>
+                <Checkbox name="CONFIRMATION_CHECK" onChange={toggle} checked={confirmed} />
                 <FormattedMessage {...confirmationMessage} />
-            </p>
+            </div>
             <ButtonWrapper>
                 <Button name="CONFIRMATION_ACTION" onClick={action} disabled={!confirmed}>
                     <FormattedMessage {...buttonText} />
