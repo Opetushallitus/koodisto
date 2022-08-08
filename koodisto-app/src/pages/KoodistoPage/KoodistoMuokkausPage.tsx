@@ -260,28 +260,11 @@ export const KoodistoMuokkausPage: React.FC = () => {
                             />
                             <FormattedMessage
                                 id={'KOODISTO_POISTA_DESCRIPTION'}
-                                defaultMessage={'Koodisto sisältää:'}
+                                defaultMessage={
+                                    'Koodisto ja kaikki sen sisältämät koodit suhteineen poistetaan lopullisesti. Operaatiota ei voi peruuttaa.'
+                                }
                                 tagName={'p'}
                             />
-                            <ul>
-                                <FormattedMessage
-                                    id={'KOODISTO_POISTA_SISALTAA_KOODIA'}
-                                    defaultMessage={'{count} koodia'}
-                                    values={{ count: '?' }} // TODO: how to resolve amount of codes?
-                                    tagName={'li'}
-                                />
-                                <FormattedMessage
-                                    id={'KOODISTO_POISTA_SISALTAA_SUHTEITA'}
-                                    defaultMessage={'{count} koodistojen välistä suhdetta'}
-                                    values={{
-                                        count:
-                                            getValues().sisaltaaKoodistot?.length +
-                                            getValues().sisaltyyKoodistoihin?.length +
-                                            getValues().rinnastuuKoodistoihin?.length,
-                                    }}
-                                    tagName={'li'}
-                                />
-                            </ul>
                         </>
                     </ConfirmationDialog>
                 )}
