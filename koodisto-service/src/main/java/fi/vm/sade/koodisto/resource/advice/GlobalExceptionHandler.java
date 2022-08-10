@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.resource.advice;
 
 
+import fi.vm.sade.authorization.NotAuthorizedException;
 import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
@@ -105,6 +106,12 @@ public class GlobalExceptionHandler {
         logger.debug(DEBUG_LOG_MESSAGE, e);
         List<String> errors = e.getFieldErrors().stream().map(FieldError::getDefaultMessage).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    @ExceptionHandler(NotAuthorizedException.class)
+    public ResponseEntity<Object> handleNotAuthorizedException(NotAuthorizedException e) {
+        logger.debug(DEBUG_LOG_MESSAGE, e);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("error.codes.insufficient.access.rights");
     }
 
     @ExceptionHandler(AccessDeniedException.class)

@@ -431,6 +431,12 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     @Override
+    public FindOrCreateWrapper<KoodistoVersio> newVersion(KoodistoVersio latest) {
+        latest.setTila(Tila.HYVAKSYTTY);
+        return createNewVersion(latest);
+    }
+
+    @Override
     public FindOrCreateWrapper<KoodistoVersio> createNewVersion(KoodistoVersio latest) {
         authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), ROLE_APP_KOODISTO_CRUD, ROLE_APP_KOODISTO_READ_UPDATE);
         if (latest.getTila() != Tila.HYVAKSYTTY) {
