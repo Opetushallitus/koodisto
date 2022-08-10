@@ -60,11 +60,15 @@ export const KoodistoMuokkausPage: React.FC = () => {
     const [koodistoRyhmaOptions] = useAtom<SelectOption[]>(koodistoRyhmaOptionsAtom);
     const [organisaatioSelect] = useAtom<SelectOption[]>(organisaatioSelectAtom);
     const [loading, setLoading] = useState<boolean>(false);
+    const [disabled, setDisabled] = useState<boolean>(false);
     const versioNumber = versio ? +versio : undefined;
     const isEditing = koodistoUri && versioNumber;
     const { control, register, handleSubmit, reset, getValues } = useForm<PageKoodisto>({
         shouldUseNativeValidation: true,
-        defaultValues: { metadata: [{ kieli: 'FI' }, { kieli: 'SV' }, { kieli: 'EN' }] },
+        defaultValues: {
+            tila: 'LUONNOS',
+            metadata: [{ kieli: 'FI' }, { kieli: 'SV' }, { kieli: 'EN' }],
+        },
     });
     const sisaltyyKoodistoihinFieldArray = useFieldArray<
         PageKoodisto,
@@ -97,6 +101,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                 setLoading(true);
                 const koodistoData = await fetchPageKoodisto({ koodistoUri, versio: versioNumber, lang });
                 reset(koodistoData);
+                setDisabled(koodistoData?.tila !== 'LUONNOS');
                 setLoading(false);
             }
         })();
@@ -153,6 +158,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                                         defaultMessage: 'Valitse koodisto-ryhmä.',
                                     }),
                                 }}
+                                disabled={disabled}
                             />
                         </MainContainerRowContent>
                     </MainContainerRow>
@@ -168,6 +174,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                                     defaultMessage: 'Syötä nimi',
                                 }),
                             }}
+                            disabled={disabled}
                         />
                     </MainContainerRow>
                     <MainContainerRow>
@@ -182,13 +189,18 @@ export const KoodistoMuokkausPage: React.FC = () => {
                                         defaultMessage: 'Valitse aloituspäivämäärä.',
                                     }),
                                 }}
+                                disabled={disabled}
                             />
                         </MainContainerRowContent>
                     </MainContainerRow>
                     <MainContainerRow>
                         <MainContainerRowTitle id={'FIELD_TITLE_voimassaLoppuPvm'} defaultMessage={'Voimassa loppu'} />
                         <MainContainerRowContent>
-                            <DatePickerController<PageKoodisto> name={'voimassaLoppuPvm'} control={control} />
+                            <DatePickerController<PageKoodisto>
+                                name={'voimassaLoppuPvm'}
+                                control={control}
+                                disabled={disabled}
+                            />
                         </MainContainerRowContent>
                     </MainContainerRow>
                     <MainContainerRow>
@@ -204,13 +216,14 @@ export const KoodistoMuokkausPage: React.FC = () => {
                                         defaultMessage: 'organisaatio.',
                                     }),
                                 }}
+                                disabled={disabled}
                             />
                         </MainContainerRowContent>
                     </MainContainerRow>
                     <MainContainerRow>
                         <MainContainerRowTitle id={'FIELD_TITLE_omistaja'} defaultMessage={'Omistaja'} />
                         <MainContainerRowContent>
-                            <Input {...register('omistaja')} />
+                            <Input {...register('omistaja')} disabled={disabled} />
                         </MainContainerRowContent>
                     </MainContainerRow>
                     <MainContainerRow>
@@ -220,6 +233,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                             getValues={getValues}
                             title={{ id: 'FIELD_ROW_TITLE_KUVAUS', defaultMessage: 'Kuvaus' }}
                             fieldPath={'kuvaus'}
+                            disabled={disabled}
                         />
                     </MainContainerRow>
                     {isEditing && (
@@ -232,11 +246,13 @@ export const KoodistoMuokkausPage: React.FC = () => {
                             sisaltaaKoodistot={getValues('sisaltaaKoodistot') || []}
                             sisaltaaKoodistotReturn={sisaltaaKoodistotFieldArray}
                             koodiList={[]}
+                            disabled={disabled}
                         />
                     )}
                 </form>
             </MainContainer>
             <Footer
+                state={getValues().tila}
                 returnPath={(koodistoUri && `/koodisto/view/${koodistoUri}/${versio}`) || '/'}
                 save={handleSubmit((a) => save(a))}
                 localisationPrefix={'KOODISTO'}

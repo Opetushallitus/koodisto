@@ -296,6 +296,15 @@
   "TAULUKKO_VOIMASSA_LOPPU_PVM_OTSIKKO": {
     "defaultMessage": "Voimassa asti"
   },
+  "TILA_HYVAKSYTTY": {
+    "defaultMessage": "Hyväksytty"
+  },
+  "TILA_LUONNOS": {
+    "defaultMessage": "Luonnos"
+  },
+  "TILA_PASSIIVINEN": {
+    "defaultMessage": "Passiivinen"
+  },
   "VERSIO_DROPDOWN_LABEL": {
     "defaultMessage": "Versio {versio}"
   },

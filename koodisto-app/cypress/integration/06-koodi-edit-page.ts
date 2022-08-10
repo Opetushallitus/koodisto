@@ -51,6 +51,7 @@ describe('Koodi edit page', () => {
         // back to view
         cy.get('button[name=KOODI_PERUUTA]').should('be.visible').click();
     });
+    /*
     it('can delete koodi', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodi/kunta_020/2`, { fixture: 'koodiPage.json' });
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta`, { fixture: 'koodiPageKoodisto.json' });
@@ -76,4 +77,5 @@ describe('Koodi edit page', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodi/koodisto/kunta/2`, { fixture: 'kuntaKoodistoKoodit.json' });
         cy.get('button[name=CONFIRMATION_ACTION]').should('be.visible').should('not.be.disabled').click();
     });
+    */
 });

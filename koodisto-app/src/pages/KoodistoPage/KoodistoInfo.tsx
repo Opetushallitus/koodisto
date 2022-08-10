@@ -1,4 +1,5 @@
 import React from 'react';
+import { useIntl } from 'react-intl';
 import type { PageKoodisto } from '../../types';
 import InfoFields from '../../components/InfoFields';
 import DateRange from '../../components/DateRange';
@@ -16,10 +17,21 @@ export const KoodistoInfo: React.FC<PageKoodisto> = ({
     organisaatioNimi,
     paivitysPvm,
     paivittajaOid,
+    tila,
 }) => {
+    const { formatMessage } = useIntl();
     const [lang] = useAtom(casMeLangAtom);
     const [locale] = useAtom(casMeLocaleAtom);
     const fields = [
+        {
+            header: {
+                id: 'KOODISTOSIVU_AVAIN_TILA',
+                defaultMessage: 'Tila',
+            },
+            value: formatMessage({
+                id: `TILA_${tila}`,
+            }),
+        },
         {
             header: {
                 id: 'KOODISTOSIVU_AVAIN_URI_TUNNUS',

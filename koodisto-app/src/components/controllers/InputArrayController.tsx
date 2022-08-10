@@ -96,6 +96,7 @@ export const InputArrayController = <T extends { metadata: KoodiMetadata[] }>({
                                 return (
                                     (large && (
                                         <Textarea
+                                            disabled={disabled}
                                             rows={5}
                                             value={value || ''}
                                             error={invalid}
@@ -105,6 +106,7 @@ export const InputArrayController = <T extends { metadata: KoodiMetadata[] }>({
                                     )) || (
                                         <MainContainerRowContent>
                                             <Input
+                                                disabled={disabled}
                                                 value={value || ''}
                                                 error={invalid}
                                                 inputProps={{ disabled }}

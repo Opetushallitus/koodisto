@@ -71,6 +71,7 @@ describe('The Koodisto Edit page', () => {
         // back to view
         cy.get('button[name=KOODISTO_PERUUTA]').should('be.visible').click();
     });
+    /*
     it('can delete koodisto', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'kuntaKoodisto.json' });
         cy.intercept(`${API_INTERNAL_PATH}/koodi/koodisto/kunta/2`, { fixture: 'kuntaKoodistoKoodit.json' });
@@ -94,4 +95,5 @@ describe('The Koodisto Edit page', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto`, { fixture: 'codes.json' });
         cy.get('button[name=CONFIRMATION_ACTION]').should('be.visible').should('not.be.disabled').click();
     });
+    */
 });

@@ -51,6 +51,7 @@ export const KoodistoPage: React.FC = () => {
         return <Loading />;
     }
     const koodistonMetadata = translateMetadata({ metadata: koodisto.metadata, lang });
+    const disabled = koodisto.tila !== 'LUONNOS';
 
     return (
         <>
@@ -71,7 +72,12 @@ export const KoodistoPage: React.FC = () => {
                             defaultMessage={'Muokkaa koodistoa'}
                         />
                     </Button>
-                    <Button variant={'outlined'} onClick={() => setUploadCsvVisible(true)} name={`${koodistoUri}-csv`}>
+                    <Button
+                        variant={'outlined'}
+                        onClick={() => setUploadCsvVisible(true)}
+                        name={`${koodistoUri}-csv`}
+                        disabled={disabled}
+                    >
                         <FormattedMessage
                             id={'KOODISTOSIVU_TUO_VIE_KOODISTO_BUTTON'}
                             defaultMessage={'Lataa / tuo koodisto'}
@@ -86,6 +92,7 @@ export const KoodistoPage: React.FC = () => {
                     rinnastuuKoodistoihin={koodisto.rinnastuuKoodistoihin}
                     sisaltaaKoodistot={koodisto.sisaltaaKoodistot}
                     sisaltyyKoodistoihin={koodisto.sisaltyyKoodistoihin}
+                    disabled={disabled}
                 />
             </MainContainer>
             {uploadCsvVisible && koodistoUri && (
