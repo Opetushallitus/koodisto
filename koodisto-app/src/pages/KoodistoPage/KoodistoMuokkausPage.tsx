@@ -1,6 +1,12 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { fetchPageKoodisto, updateKoodisto, createKoodisto, deleteKoodisto } from '../../api/koodisto';
+import {
+    fetchPageKoodisto,
+    updateKoodisto,
+    createKoodisto,
+    deleteKoodisto,
+    createKoodistoVersion,
+} from '../../api/koodisto';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, useFieldArray, ArrayPath } from 'react-hook-form';
 import { PageKoodisto, SelectOption, Kieli, KoodistoRelation } from '../../types';
@@ -122,6 +128,15 @@ export const KoodistoMuokkausPage: React.FC = () => {
             successNotification(updated.koodistoUri);
             reset(updated);
             navigate(`/koodisto/view/${updated.koodistoUri}/${updated.versio}`);
+        }
+    };
+    const createVersion = async (koodisto: PageKoodisto) => {
+        setLoading(true);
+        const pageKoodisto = await createKoodistoVersion(koodisto.koodistoUri, versioNumber || 1, lang);
+        if (pageKoodisto) {
+            navigate(`/koodisto/view/${koodisto.koodistoUri}/${koodisto.versio}`);
+        } else {
+            setLoading(false);
         }
     };
     const remove = async (koodisto: PageKoodisto) => {
@@ -259,7 +274,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                 versionDialog={(close: () => void) => (
                     <ConfirmationDialog
                         action={() => {
-                            console.log('Not implemented...');
+                            createVersion(getValues());
                             close();
                         }}
                         close={close}

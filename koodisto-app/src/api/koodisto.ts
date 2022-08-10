@@ -232,17 +232,19 @@ const mapPageKoodistoToUpdatePageKoodisto = (koodisto: PageKoodisto): UpdateKood
     ...mapPageKoodistoToCreatePageKoodisto(koodisto),
 });
 
-export const fetchPageKoodisto = async ({
+const pageKoodistoAccessor = async <X>({
     koodistoUri,
     versio,
     lang,
+    axiosFunc,
 }: {
     koodistoUri: string;
     versio?: number;
     lang: Kieli;
+    axiosFunc: <T, R = AxiosResponse<T>>(url: string, data?: X) => Promise<R>;
 }): Promise<PageKoodisto | undefined> =>
     errorHandlingWrapper(async () => {
-        const { data: apiPageKoodisto } = await axios.get<ApiPageKoodisto>(
+        const { data: apiPageKoodisto } = await axiosFunc<ApiPageKoodisto>(
             [API_INTERNAL_PATH, 'koodisto', koodistoUri, ...(versio ? [versio] : [])].join('/')
         );
         if (apiPageKoodisto) {
@@ -252,6 +254,22 @@ export const fetchPageKoodisto = async ({
             return undefined;
         }
     });
+
+export const fetchPageKoodisto = async ({
+    koodistoUri,
+    versio,
+    lang,
+}: {
+    koodistoUri: string;
+    versio?: number;
+    lang: Kieli;
+}): Promise<PageKoodisto | undefined> => pageKoodistoAccessor({ koodistoUri, versio, lang, axiosFunc: axios.get });
+
+export const createKoodistoVersion = async (
+    koodistoUri: string,
+    versio: number,
+    lang: Kieli
+): Promise<PageKoodisto | undefined> => pageKoodistoAccessor({ koodistoUri, versio, lang, axiosFunc: axios.post });
 
 export const deleteKoodisto = async (koodisto: PageKoodisto): Promise<boolean | undefined> =>
     errorHandlingWrapper(async () => {
