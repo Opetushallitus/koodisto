@@ -6,14 +6,17 @@ import fi.vm.sade.koodisto.dto.internal.InternalKoodistoListDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoListDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import fi.vm.sade.koodisto.validator.KoodistoValidationException;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -64,6 +67,30 @@ public class InternalKoodistoResource {
             @PathVariable @Min(1) final int koodistoVersio) {
         koodistoBusinessService.delete(koodistoUri, koodistoVersio);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(path = "/{koodistoUri}/{koodistoVersio}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<InternalKoodistoPageDto> createKoodistoVersion(
+            @PathVariable final String koodistoUri,
+            @PathVariable @Min(1) final int koodistoVersio) {
+
+        KoodistoVersio latest = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+
+        if (latest.getVersio() != koodistoVersio) {
+            throw new KoodistoValidationException("Latest version required");
+        }
+
+        if (latest.getTila() != Tila.LUONNOS) {
+            throw new KoodistoValidationException("Incorrect status");
+        }
+
+        latest = koodistoBusinessService.newVersion(latest).getData();
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(koodistoVersioToInternalKoodistoPageDtoConverter.convert(latest));
     }
 
     @GetMapping(path = "/{koodistoUri}/{koodistoVersio}",
