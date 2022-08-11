@@ -37,7 +37,7 @@ class InternalKoodiResourceTest {
 
     @Test
     @Description("Test get koodiPage")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testGetInternalKoodiPage() throws Exception {
         this.mockMvc.perform(get("/internal/koodi/get_1/1"))
                 .andExpect(status().isOk())
@@ -46,7 +46,7 @@ class InternalKoodiResourceTest {
 
     @Test
     @Description("Test get koodiPage with invalid version")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testGetInternalKoodiPageBadRequest() throws Exception {
         this.mockMvc.perform(get("/internal/koodi/get_1/0"))
                 .andExpect(status().isBadRequest());
@@ -54,7 +54,7 @@ class InternalKoodiResourceTest {
 
     @Test
     @Description("Test get endpoint")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testGetInternalKoodi() throws Exception {
         this.mockMvc.perform(get("/internal/koodi/get"))
                 .andExpect(status().isOk())
@@ -71,7 +71,7 @@ class InternalKoodiResourceTest {
 
     @Test
     @Description("Delete with invalid version")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodiBadRequest() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/nonexistent/0"))
                 .andExpect(status().isBadRequest());
@@ -79,7 +79,7 @@ class InternalKoodiResourceTest {
 
     @Test
     @Description("Delete with non-existent koodi")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodiNotFound() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/nonexistent/1"))
                 .andExpect(status().isNotFound());
@@ -87,7 +87,7 @@ class InternalKoodiResourceTest {
 
     @Test
     @Description("Delete with non-removable koodi")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodiCannotDelete() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/get_1/1"))
                 .andExpect(status().isBadRequest());
@@ -95,7 +95,7 @@ class InternalKoodiResourceTest {
 
     @Test
     @Description("Delete OK")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodi() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/removable/1"))
                 .andExpect(status().isNoContent())
@@ -104,7 +104,7 @@ class InternalKoodiResourceTest {
 
     @Test
     @Description("Post to not found koodisto")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal01() throws Exception {
         this.mockMvc.perform(post("/internal/koodi/upsert/notfound")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -130,7 +130,7 @@ class InternalKoodiResourceTest {
 
     @Test
     @Description("Post empty rows is bad request")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal02() throws Exception {
         this.mockMvc.perform(post("/internal/koodi/upsert/dummy")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -141,7 +141,7 @@ class InternalKoodiResourceTest {
 
     @Test
     @Description("Post null body is bad request")
-    @WithMockUser(authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal03() throws Exception {
         this.mockMvc.perform(post("/internal/koodi/upsert/dummy")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -351,7 +351,7 @@ class InternalKoodiResourceTest {
         o.put("koodiUri", koodiUri);
         o.put("versio", koodiVersio);
         o.put("koodiArvo", "two1");
-        o.put("voimassaAlkuPvm","2022-01-01");
+        o.put("voimassaAlkuPvm", "2022-01-01");
         o.put("lockingVersion", "1");
         o.put("tila", "LUONNOS");
         o.put("metadata", metadata);
@@ -404,7 +404,7 @@ class InternalKoodiResourceTest {
         metadata.put(metadata1);
         JSONObject o = new JSONObject();
         o.put("koodiArvo", koodiArvo);
-        o.put("voimassaAlkuPvm","2022-01-01");
+        o.put("voimassaAlkuPvm", "2022-01-01");
         o.put("metadata", metadata);
         mockMvc.perform(post(BASE_PATH + "/dummy")
                         .contentType(MediaType.APPLICATION_JSON)
