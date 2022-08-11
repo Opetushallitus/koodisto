@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 public abstract class AbstractKoodistoDto {
 
+    @NotBlank(message = "error.koodistoUri.blank")
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
     private String koodistoUri;
 
@@ -21,7 +22,7 @@ public abstract class AbstractKoodistoDto {
     private String omistaja;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-    @NotBlank
+    @NotBlank(message = "error.organisaatioOid.blank")
     private String organisaatioOid;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
