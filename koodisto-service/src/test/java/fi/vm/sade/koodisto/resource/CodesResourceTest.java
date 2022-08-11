@@ -543,6 +543,8 @@ class CodesResourceTest {
                                        LocalDate alkuPvm, LocalDate loppuPvm) {
         KoodistoDto dto = new KoodistoDto();
         dto.setCodesGroupUri(koodistoRyhmaUri);
+        dto.setVersio(1);
+        dto.setTila(Tila.LUONNOS);
         dto.setOrganisaatioOid(organisaatioOid);
         dto.setKoodistoUri(koodistoUri);
         dto.setMetadata(List.of(KoodistoMetadataDto.builder()
