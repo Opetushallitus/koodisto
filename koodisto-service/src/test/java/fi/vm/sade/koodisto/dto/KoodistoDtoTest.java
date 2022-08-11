@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.dto;
 
 import fi.vm.sade.koodisto.model.Kieli;
+import fi.vm.sade.koodisto.model.Tila;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -30,7 +31,10 @@ class KoodistoDtoTest extends DtoTest {
     private static KoodistoDtoBuilder getValid() {
         return KoodistoDtoBuilder
                 .builder()
+                .versio(1)
+                .tila(Tila.LUONNOS)
                 .codesGroupUri("codesGroupUri")
+                .koodistoUri("koodistoUri")
                 .organisaatioOid("organisaatioOid")
                 .voimassaAlkuPvm(dateOf(2022, 6, 21))
                 .metadata(List.of(KoodistoMetadataDto
@@ -46,10 +50,13 @@ class KoodistoDtoTest extends DtoTest {
     public static class KoodistoDtoBuilder {
 
         private String codesGroupUri;
+        private String koodistoUri;
         private String organisaatioOid;
         private Date voimassaAlkuPvm;
         private Date voimassaLoppuPvm;
         private List<KoodistoMetadataDto> metadata;
+        private int versio;
+        private Tila tila;
 
         public static KoodistoDtoBuilder builder() {
             return new KoodistoDtoBuilder();
@@ -58,10 +65,13 @@ class KoodistoDtoTest extends DtoTest {
         public KoodistoDto build() {
             KoodistoDto koodisto = new KoodistoDto();
             koodisto.setCodesGroupUri(codesGroupUri);
+            koodisto.setKoodistoUri(koodistoUri);
             koodisto.setOrganisaatioOid(organisaatioOid);
             koodisto.setVoimassaAlkuPvm(voimassaAlkuPvm);
             koodisto.setVoimassaLoppuPvm(voimassaLoppuPvm);
             koodisto.setMetadata(metadata);
+            koodisto.setVersio(versio);
+            koodisto.setTila(tila);
             return koodisto;
         }
     }
