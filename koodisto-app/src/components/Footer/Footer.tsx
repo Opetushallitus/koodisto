@@ -15,6 +15,7 @@ type Props = {
     versionDialog: (close: () => void) => React.ReactNode;
     removeDialog: (close: () => void) => React.ReactNode;
     state: Tila;
+    latest: boolean;
 };
 
 const contentStyle = { width: '300px' };
@@ -26,6 +27,7 @@ export const Footer: React.FC<Props> = ({
     versionDialog,
     removeDialog,
     state,
+    latest,
 }) => {
     const navigate = useNavigate();
     return (
@@ -34,11 +36,7 @@ export const Footer: React.FC<Props> = ({
                 <Popup
                     position="top left"
                     trigger={
-                        <Button
-                            variant={'outlined'}
-                            name={`${localisationPrefix}_VERSIOI`}
-                            disabled={state !== 'LUONNOS'}
-                        >
+                        <Button variant={'outlined'} name={`${localisationPrefix}_VERSIOI`} disabled={!latest}>
                             <FormattedMessage
                                 id={`${localisationPrefix}_VERSIOI`}
                                 defaultMessage={`Versioi ${localisationPrefix.toLowerCase()}`}
@@ -52,11 +50,7 @@ export const Footer: React.FC<Props> = ({
                 <Popup
                     position="top left"
                     trigger={
-                        <Button
-                            variant={'outlined'}
-                            name={`${localisationPrefix}_POISTA`}
-                            disabled={state !== 'PASSIIVINEN'}
-                        >
+                        <Button variant={'outlined'} name={`${localisationPrefix}_POISTA`}>
                             <IconWrapper icon={'ci:trash-full'} inline={true} height={'1.2rem'} />
                             <FormattedMessage
                                 id={`${localisationPrefix}_POISTA`}

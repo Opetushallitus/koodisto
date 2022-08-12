@@ -193,6 +193,7 @@ const KoodiMuokkausPageComponent: React.FC<
             </MainContainer>
             <Footer
                 state={getValues().tila}
+                latest={getValues().tila === 'LUONNOS' /* TODO: NOT correct, need to resolve from version history */}
                 returnPath={(koodiUri && `/koodi/view/${koodiUri}/${koodiVersio}`) || '/'}
                 save={handleSubmit((a) => save(a))}
                 localisationPrefix={'KOODI'}

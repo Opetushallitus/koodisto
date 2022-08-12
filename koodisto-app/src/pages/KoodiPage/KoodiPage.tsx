@@ -22,13 +22,14 @@ import {
 const KoodiPresentation: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
     const [lang] = useAtom(casMeLangAtom);
     const navigate = useNavigate();
+    const versions = Array.from(Array(koodi.versions)).map((v) => v + 1); // TODO: NOT correct. code version history might not be continuous sequence.
     return (
         <>
             <KoodiCrumbTrail koodi={koodi} />
             <MainHeaderContainer>
                 <HeadingDivider>
                     <h1>{translateMetadata({ metadata: koodi.metadata, lang })?.nimi}</h1>
-                    <VersionPicker version={koodi.versio} versions={koodi.versions} />
+                    <VersionPicker version={koodi.versio} versions={versions} />
                 </HeadingDivider>
                 <MainHeaderButtonsContainer>
                     <Button

@@ -9,22 +9,22 @@ import { SelectContainer } from '..//Containers';
 
 type Props = {
     version: number;
-    versions: number;
+    versions: number[];
 };
 
 export const VersionPicker: React.FC<Props> = ({ version, versions }) => {
     const { formatMessage } = useIntl();
     const navigate = useNavigate();
     const location = useLocation();
-    const options: SelectOption[] = [...Array.from(Array(versions).keys())].map((v) => ({
+    const options: SelectOption[] = [...versions].sort().map((v) => ({
         label: formatMessage(
             {
                 id: 'VERSIO_DROPDOWN_LABEL',
                 defaultMessage: 'Versio {versio}',
             },
-            { versio: v + 1 }
+            { versio: v }
         ),
-        value: `${v + 1}`,
+        value: `${v}`,
     }));
     return (
         <SelectContainer>

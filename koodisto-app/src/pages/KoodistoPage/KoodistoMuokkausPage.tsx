@@ -268,6 +268,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
             </MainContainer>
             <Footer
                 state={getValues().tila}
+                latest={versioNumber === Math.max(...(getValues().koodistoVersio || []))}
                 returnPath={(koodistoUri && `/koodisto/view/${koodistoUri}/${versio}`) || '/'}
                 save={handleSubmit((a) => save(a))}
                 localisationPrefix={'KOODISTO'}

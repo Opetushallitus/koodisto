@@ -59,7 +59,7 @@ export const KoodistoPage: React.FC = () => {
             <MainHeaderContainer>
                 <HeadingDivider>
                     <h1>{koodistonMetadata?.nimi}</h1>
-                    <VersionPicker version={+(versio || 1)} versions={koodisto.koodistoVersio.length} />
+                    <VersionPicker version={+(versio || 1)} versions={koodisto.koodistoVersio} />
                 </HeadingDivider>
                 <MainHeaderButtonsContainer>
                     <Button
