@@ -23,6 +23,6 @@ public class KoodistoRyhmaMetadataDto {
     @NotEmpty(message = "error.metadata.empty")
     protected String nimi;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
-    @NotNull
+    @NotNull(message = "error.kieli.empty")
     protected Kieli kieli;
 }
