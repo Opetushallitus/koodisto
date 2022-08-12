@@ -86,7 +86,7 @@ public class InternalKoodiResource {
     ResponseEntity<List<InternalKoodiVersioDto>> getKoodistoKoodis(
             @PathVariable String koodistoUri,
             @PathVariable @Min(1) Integer koodistoVersio) {
-        List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.getKoodisByKoodistoVersio(koodistoUri, koodistoVersio, true);
+        List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.getKoodisByKoodistoVersio(koodistoUri, koodistoVersio, false);
         return ResponseEntity.ok(koodiVersioToInternalKoodiVersioDtoConverter.convertAll(
                 result.stream().map(KoodiVersioWithKoodistoItem::getKoodiVersio).collect(Collectors.toList())));
     }
