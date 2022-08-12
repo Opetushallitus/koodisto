@@ -18,11 +18,11 @@ import java.util.List;
 public class KoodiRelaatioListaDto {
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-    @NotBlank
+    @NotBlank(message = "error.codeElementUri.empty")
     private String codeElementUri;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
-    @NotNull
+    @NotNull(message = "error.relationType.empty")
     private SuhteenTyyppi relationType;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})

@@ -1,13 +1,11 @@
 package fi.vm.sade.koodisto.resource.internal;
 
-import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Description;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -87,7 +85,8 @@ class InternalKoodistoResourceTest {
                                 "\"error.koodistoUri.blank\"," +
                                 "\"error.versio.less.than.one\"," +
                                 "\"error.tila.empty\"," +
-                                "\"error.metadataList.empty\"" +
+                                "\"error.voimassaAlkuPvm.empty\"," +
+                                "\"error.metadata.empty\"" +
                                 "]")
                 );
     }
@@ -108,9 +107,10 @@ class InternalKoodistoResourceTest {
         o.put("codesGroupUri", "dummy");
         o.put("organisaatioOid", "1.2.2004.6");
         o.put("versio", koodistoVersio);
-        o.put("lockingVersion", "1");
+        o.put("version", "1");
+        o.put("voimassaAlkuPvm", "2022-01-01");
         o.put("tila", "LUONNOS");
-        o.put("metadataList", metadata);
+        o.put("metadata", metadata);
 
         mockMvc.perform(get(BASE_PATH + "/{koodistoUri}/{koodistoVersio}", koodistoUri, koodistoVersio))
                 .andExpectAll(
@@ -134,7 +134,7 @@ class InternalKoodistoResourceTest {
 
         o.put("tila", "HYVAKSYTTY");
         metadata1.put("nimi", "muokattu2");
-        o.put("lockingVersion", "2");
+        o.put("version", "2");
 
         mockMvc.perform(put(BASE_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -148,7 +148,7 @@ class InternalKoodistoResourceTest {
                 );
 
         metadata1.put("nimi", "muokattu3");
-        o.put("lockingVersion", "3");
+        o.put("version", "3");
 
         mockMvc.perform(put(BASE_PATH)
                         .contentType(MediaType.APPLICATION_JSON)

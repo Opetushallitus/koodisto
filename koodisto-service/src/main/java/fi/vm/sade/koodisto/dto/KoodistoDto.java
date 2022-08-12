@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.Valid;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.util.*;
 
 @Getter
@@ -26,10 +23,12 @@ public class KoodistoDto extends AbstractKoodistoDto {
     @JsonView({JsonViews.Extended.class})
     protected List<RelationCodes> levelsWithCodes = new ArrayList<>();
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
-    @NotBlank
+    @NotBlank(message = "error.codesGroupUri.blank")
     private String codesGroupUri;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
+    @Min(value = 0, message = "error.version.less.than.zero")
     private Long version;
+    @Min(value = 1, message = "error.versio.less.than.one")
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
     private int versio;
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -38,10 +37,11 @@ public class KoodistoDto extends AbstractKoodistoDto {
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private String paivittajaOid;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
-    @NotNull
+    @NotNull(message = "error.voimassaAlkuPvm.empty")
     private Date voimassaAlkuPvm;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private Date voimassaLoppuPvm;
+    @NotNull(message = "error.tila.empty")
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private Tila tila;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})

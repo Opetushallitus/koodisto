@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.resource.internal;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoListDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
 import fi.vm.sade.koodisto.model.JsonViews;
@@ -10,7 +11,6 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInte
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
-import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
@@ -83,8 +83,8 @@ public class InternalKoodistoResource {
     @PreAuthorize("hasRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     public @ResponseBody
     ResponseEntity<InternalKoodistoPageDto> updateKoodisto(
-            @RequestBody @Valid UpdateKoodistoDataType koodisto) {
-        KoodistoVersio result = koodistoBusinessService.updateKoodisto(koodisto);
+            @RequestBody @Valid KoodistoDto koodisto) {
+        KoodistoVersio result = koodistoBusinessService.saveKoodisto(koodisto);
         return ResponseEntity.ok(koodistoVersioToInternalKoodistoPageDtoConverter.convert(result));
     }
 
