@@ -78,7 +78,7 @@ public class InternalKoodistoResource {
         KoodistoVersio latest = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
 
         if (latest.getVersio() != koodistoVersio) {
-            throw new KoodistoValidationException("Latest version required");
+            throw new KoodistoValidationException("error.codes.latest.version.required");
         }
 
         latest = koodistoBusinessService.newVersion(latest).getData();
