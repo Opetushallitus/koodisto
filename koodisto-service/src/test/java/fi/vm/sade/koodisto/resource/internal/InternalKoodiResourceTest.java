@@ -86,15 +86,16 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Delete with non-removable koodi")
-    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    @Description("Delete not PASSIVINEN")
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodiCannotDelete() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/get_1/1"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNoContent())
+                .andExpect(content().string(""));
     }
 
     @Test
-    @Description("Delete OK")
+    @Description("Delete PASSIVINEN")
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodi() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/removable/1"))

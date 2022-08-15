@@ -851,6 +851,13 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     @Override
+    public void forceDelete(String koodiUri, int koodiVersio) {
+        KoodiVersio koodi = getKoodiVersio(koodiUri, koodiVersio);
+        koodi.setTila(Tila.PASSIIVINEN);
+        delete(koodiUri, koodiVersio, true);
+    }
+
+    @Override
     public void delete(String koodiUri, Integer koodiVersio) {
         delete(koodiUri, koodiVersio, false);
     }

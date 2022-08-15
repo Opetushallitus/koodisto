@@ -39,6 +39,14 @@ public interface KoodiBusinessService {
             boolean isChild);
 
     /**
+     * Deletes given code version permanently regardless of it's state
+     *
+     * @param koodiUri unique identifier for koodi
+     * @param koodiVersio koodi version
+     */
+    void forceDelete(String koodiUri, int koodiVersio);
+
+    /**
      * Deletes given code version permanently
      * 
      * @param koodiId
