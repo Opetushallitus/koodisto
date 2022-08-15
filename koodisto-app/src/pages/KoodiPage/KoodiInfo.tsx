@@ -1,4 +1,5 @@
 import React from 'react';
+import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 import InfoFields from '../../components/InfoFields';
 import DateRange from '../../components/DateRange';
@@ -16,7 +17,17 @@ const NameContainer = styled.ul`
 `;
 
 export const KoodiInfo: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
+    const { formatMessage } = useIntl();
     const fields = [
+        {
+            header: {
+                id: 'KOODISTOSIVU_AVAIN_TILA',
+                defaultMessage: 'Tila',
+            },
+            value: formatMessage({
+                id: `TILA_${koodi.tila}`,
+            }),
+        },
         {
             header: {
                 id: 'NIMI',
