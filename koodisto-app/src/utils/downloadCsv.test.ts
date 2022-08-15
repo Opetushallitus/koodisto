@@ -16,6 +16,7 @@ const cleanKoodi = {
     resourceUri: '',
     tila: 'LUONNOS' as Tila,
     versio: 0,
+    koodiVersio: [],
     lockingVersion: 0,
     voimassaAlkuPvm: new Date('2022-01-01'),
     voimassaLoppuPvm: undefined,

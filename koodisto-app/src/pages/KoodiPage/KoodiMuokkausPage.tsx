@@ -9,7 +9,7 @@ import {
     MainContainerRowContent,
 } from '../../components/Containers';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { CrumbTrail } from '../../components/CrumbTrail';
+import { KoodiCrumbTrail } from '../KoodiPage/KoodiCrumbTrail';
 import { fetchPageKoodi, updateKoodi, createKoodi, deleteKoodi } from '../../api/koodi';
 import { useForm, UseFormReturn, useFieldArray, ArrayPath } from 'react-hook-form';
 import { Koodi, KoodiRelation } from '../../types';
@@ -52,6 +52,7 @@ export const KoodiMuokkausPage: React.FC = () => {
     const newKoodiKoodistoUri = searchParams.get('koodistoUri');
     const navigate = useNavigate();
     const [loading, setLoading] = useState<boolean>(false);
+    const [disabled, setDisabled] = useState<boolean>(false);
     const formReturn = useForm<Koodi>({
         shouldUseNativeValidation: true,
         defaultValues: {
@@ -66,6 +67,7 @@ export const KoodiMuokkausPage: React.FC = () => {
                 setLoading(true);
                 const data = await fetchPageKoodi(koodiUri, +koodiVersio);
                 data && formReturn.reset(data);
+                setDisabled(data?.tila !== 'LUONNOS');
                 setLoading(false);
             })();
         }
@@ -84,24 +86,48 @@ export const KoodiMuokkausPage: React.FC = () => {
             navigate(`/koodi/view/${data.koodiUri}/${data.versio}`);
         }
     };
-    const remove = async (koodi: Koodi) => {
+
+    const modifyAction = async (
+        koodi: Koodi,
+        action: (koodi: Koodi) => Promise<Koodi | undefined>,
+        showNotification: () => void
+    ) => {
         setLoading(true);
-        if (await deleteKoodi(koodi)) {
-            deleteSuccess();
-            koodi.koodisto && navigate(`/koodisto/view/${koodi.koodisto.koodistoUri}`);
+        if (await action(koodi)) {
+            showNotification();
+            navigate(`/koodisto/view/${koodi.koodisto.koodistoUri}`);
         } else {
             setLoading(false);
         }
     };
+
+    const deleteAction = async (koodi: Koodi) =>
+        modifyAction(koodi, async (koodi) => ((await deleteKoodi(koodi)) ? koodi : undefined), deleteSuccess);
+
     return (
         (loading && <Loading />) || (
-            <KoodiMuokkausPageComponent {...formReturn} save={save} remove={remove} isEditing={!!isEditing} />
+            <KoodiMuokkausPageComponent
+                {...formReturn}
+                save={save}
+                deleteAction={deleteAction}
+                disabled={disabled}
+                koodistoUri={newKoodiKoodistoUri || undefined}
+                isEditing={!!isEditing}
+                versio={+(koodiVersio || 0)}
+            />
         )
     );
 };
 const KoodiMuokkausPageComponent: React.FC<
-    { save: (a: Koodi) => void; remove: (koodi: Koodi) => void; isEditing: boolean } & UseFormReturn<Koodi>
-> = ({ register, handleSubmit, save, remove, control, getValues, isEditing }) => {
+    {
+        save: (a: Koodi) => void;
+        deleteAction: (koodi: Koodi) => void;
+        disabled: boolean;
+        koodistoUri?: string;
+        isEditing: boolean;
+        versio: number;
+    } & UseFormReturn<Koodi>
+> = ({ register, handleSubmit, save, deleteAction, control, getValues, isEditing, versio, disabled, koodistoUri }) => {
     const { koodiUri, koodiVersio } = useParams();
     const { formatMessage } = useIntl();
     const sisaltyyKoodeihinReturn = useFieldArray<Koodi, ArrayPath<Koodi>, keyof KoodiRelation | 'id'>({
@@ -118,15 +144,21 @@ const KoodiMuokkausPageComponent: React.FC<
     });
     return (
         <>
-            <CrumbTrail trail={[{ key: koodiUri || 'newKoodiUri', label: koodiUri || '' }]} />
+            {<KoodiCrumbTrail koodi={getValues()} koodistoUriParam={koodistoUri} />}
             <MainHeaderContainer>
-                <FormattedMessage id={'KOODI_MUOKKAA_SIVU_TITLE'} defaultMessage={'Muokkaa koodia'} tagName={'h1'} />
+                {(isEditing && (
+                    <FormattedMessage
+                        id={'KOODI_MUOKKAA_SIVU_TITLE'}
+                        defaultMessage={'Muokkaa koodia'}
+                        tagName={'h1'}
+                    />
+                )) || <FormattedMessage id={'KOODI_LISAA_SIVU_TITLE'} defaultMessage={'Lisää koodi'} tagName={'h1'} />}
             </MainHeaderContainer>
             <MainContainer>
                 <MainContainerRow>
                     <MainContainerRowTitle id={'FIELD_TITLE_koodiArvo'} defaultMessage={'Arvo'} />
                     <MainContainerRowContent>
-                        <Input {...register('koodiArvo')} />
+                        <Input {...register('koodiArvo')} disabled={disabled} />
                     </MainContainerRowContent>
                 </MainContainerRow>
                 <MainContainerRow>
@@ -141,6 +173,7 @@ const KoodiMuokkausPageComponent: React.FC<
                                 defaultMessage: 'Syötä nimi',
                             }),
                         }}
+                        disabled={disabled}
                     />
                 </MainContainerRow>
                 <MainContainerRow>
@@ -149,6 +182,7 @@ const KoodiMuokkausPageComponent: React.FC<
                         getValues={getValues}
                         title={{ id: 'FIELD_ROW_TITLE_LYHYTNIMI', defaultMessage: 'Lyhenne' }}
                         fieldPath={'lyhytNimi'}
+                        disabled={disabled}
                     />
                 </MainContainerRow>
                 <MainContainerRow>
@@ -163,13 +197,14 @@ const KoodiMuokkausPageComponent: React.FC<
                                     defaultMessage: 'Valitse aloituspäivämäärä.',
                                 }),
                             }}
+                            disabled={disabled}
                         />
                     </MainContainerRowContent>
                 </MainContainerRow>
                 <MainContainerRow>
                     <MainContainerRowTitle id={'FIELD_TITLE_voimassaLoppuPvm'} defaultMessage={'Voimassa loppu'} />
                     <MainContainerRowContent>
-                        <DatePickerController<Koodi> name={'voimassaLoppuPvm'} control={control} />
+                        <DatePickerController<Koodi> name={'voimassaLoppuPvm'} control={control} disabled={disabled} />
                     </MainContainerRowContent>
                 </MainContainerRow>
                 <MainContainerRow>
@@ -179,6 +214,7 @@ const KoodiMuokkausPageComponent: React.FC<
                         getValues={getValues}
                         title={{ id: 'FIELD_ROW_TITLE_KUVAUS', defaultMessage: 'Kuvaus' }}
                         fieldPath={'kuvaus'}
+                        disabled={disabled}
                     />
                 </MainContainerRow>
                 {isEditing && (
@@ -193,41 +229,19 @@ const KoodiMuokkausPageComponent: React.FC<
             </MainContainer>
             <Footer
                 state={getValues().tila}
-                latest={getValues().tila === 'LUONNOS' /* TODO: NOT correct, need to resolve from version history */}
-                returnPath={(koodiUri && `/koodi/view/${koodiUri}/${koodiVersio}`) || '/'}
+                latest={versio === Math.max(...(getValues().koodiVersio || []))}
+                locked={getValues().tila === 'HYVAKSYTTY' || getValues().koodiUri === undefined}
+                returnPath={
+                    (koodiUri && `/koodi/view/${koodiUri}/${koodiVersio}`) ||
+                    (koodistoUri && `/koodisto/view/${koodistoUri}`) ||
+                    '/'
+                }
                 save={handleSubmit((a) => save(a))}
                 localisationPrefix={'KOODI'}
-                versionDialog={(close: () => void) => (
-                    <ConfirmationDialog
-                        action={() => {
-                            console.log('Not implemented...');
-                            close();
-                        }}
-                        close={close}
-                        confirmationMessage={{
-                            id: 'KOODI_VERSIOI_CONFIRMATION',
-                            defaultMessage: 'Kyllä, versioidaan koodi',
-                        }}
-                        buttonText={{ id: 'VAHVISTA_VERSIOINTI', defaultMessage: 'Vahvista versiointi' }}
-                    >
-                        <>
-                            <FormattedMessage
-                                id={'KOODI_VERSIOI_TITLE'}
-                                defaultMessage={'Versioi koodi'}
-                                tagName={'h2'}
-                            />
-                            <FormattedMessage
-                                id={'KOODI_VERSIOI_DESCRIPTION'}
-                                defaultMessage={'Koodista luodaan uusi versio'}
-                                tagName={'p'}
-                            />
-                        </>
-                    </ConfirmationDialog>
-                )}
                 removeDialog={(close: () => void) => (
                     <ConfirmationDialog
                         action={() => {
-                            remove(getValues());
+                            deleteAction(getValues());
                             close();
                         }}
                         close={close}

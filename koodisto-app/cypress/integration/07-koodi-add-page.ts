@@ -12,7 +12,7 @@ describe('Koodi add page', () => {
     });
     it('shows add new koodi button and can open page', () => {
         cy.get('button[name="TAULUKKO_LISAA_KOODI_BUTTON"]').should('be.visible').click();
-        cy.get('h1').contains('Muokkaa koodia').should('be.visible');
+        cy.get('h1').contains('Lisää koodi').should('be.visible');
     });
     it('can enter data', () => {
         cy.get('input[name="koodiArvo"]').type('arvo');

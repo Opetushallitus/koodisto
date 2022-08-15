@@ -4,6 +4,10 @@
     },
     "koodiArvo": "020",
     "versio": 2,
+    "koodiVersio": [
+        1,
+        2
+    ],
     "tila": "LUONNOS",
     "koodiUri": "kunta_020",
     "paivitysPvm": "2020-12-28",
@@ -44,7 +48,6 @@
         },
         {
             "koodiUri": "aluehallintovirasto_4",
-            "koodiVersio": 1,
             "nimi": {
                 "sv": "Västra och Inre Finlands Regionalförvaltningsverk",
                 "fi": "Länsi- ja Sisä-Suomen Aluehallintovirasto",
