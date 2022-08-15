@@ -615,6 +615,15 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     @Override
+    public void forceDelete(final String koodistoUri, final int  koodistoVersio) {
+        KoodistoVersio koodisto = getKoodistoVersio(koodistoUri, koodistoVersio);
+        koodisto.setTila(Tila.PASSIIVINEN);
+        koodiVersioRepository.getKoodiVersiosIncludedOnlyInKoodistoVersio(koodistoUri, koodistoVersio).stream()
+                .forEach(koodiVersio -> koodiVersio.setTila(Tila.PASSIIVINEN));
+        delete(koodistoUri, koodistoVersio);
+    }
+
+    @Override
     public void delete(String koodistoUri, Integer koodistoVersio) {
 
         KoodistoVersio versio = getKoodistoVersio(koodistoUri, koodistoVersio);

@@ -228,15 +228,16 @@ class InternalKoodistoResourceTest {
     }
 
     @Test
-    @Description("Delete with non-removable koodisto")
+    @Description("Delete !PASSIIVINEN koodisto")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.2004.6", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodiCannotDelete() throws Exception {
         this.mockMvc.perform(delete("/internal/koodisto/get/1"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNoContent())
+                .andExpect(content().string(""));
     }
 
     @Test
-    @Description("Delete OK")
+    @Description("Delete PASSIIVINEN koodisto")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.2004.6", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodisto() throws Exception {
         this.mockMvc.perform(delete("/internal/koodisto/removable/1"))
@@ -254,12 +255,14 @@ class InternalKoodistoResourceTest {
     }
 
     @Test
-    @Description("Versioning should fail when status is other than LUONNOS")
+    @Description("Versioning should succeed even when status is HYVAKSYTTY")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.2004.6", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testCreateKoodistoVersionDraftStatus() throws Exception {
         this.mockMvc.perform(post("/internal/koodisto/get/1"))
                 .andExpectAll(
-                        status().isBadRequest());
+                        status().isCreated(),
+                        jsonPath("$.versio").value("2"),
+                        jsonPath("$.tila").value(Tila.LUONNOS.name()));
     }
 
     @Test
