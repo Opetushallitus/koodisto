@@ -68,7 +68,7 @@ public class InternalKoodiResource {
             @Parameter(description = "Koodin URI") @PathVariable final String koodiUri,
             @Parameter(description = "Koodin versio") @PathVariable @Min(1) final int koodiVersio
     ) {
-        koodiBusinessService.delete(koodiUri, koodiVersio);
+        koodiBusinessService.forceDelete(koodiUri, koodiVersio);
         return ResponseEntity.noContent().build();
     }
 
