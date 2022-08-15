@@ -92,7 +92,19 @@ const apiKoodistoListToKoodistoList = (a: ApiListKoodisto, lang: Kieli): ListKoo
     };
 };
 
-const apiKoodistoListAtom = atom<Promise<ApiListKoodisto[]>>(async (get: Getter) => {
+const atomWithReset = <T>(fn: (get: Getter) => T) => {
+    const refreshCounter = atom(0);
+
+    return atom(
+        (get) => {
+            get(refreshCounter);
+            return fn(get);
+        },
+        (_, set) => set(refreshCounter, (i) => i + 1)
+    );
+};
+
+export const apiKoodistoListAtom = atomWithReset<Promise<ApiListKoodisto[]>>(async (get: Getter) => {
     const { data } = await axios.get<ApiListKoodisto[]>(get(urlAtom));
     return data;
 });

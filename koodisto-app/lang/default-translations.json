@@ -110,6 +110,12 @@
   "KOODISTO_TALLENNUS_MESSAGE_TITLE": {
     "defaultMessage": "Koodisto tallennettiin onnistuneesti."
   },
+  "KOODISTO_VERSIOINTI_OK_MESSAGE": {
+    "defaultMessage": "Koodistosta on luotu versio sekä luonnos."
+  },
+  "KOODISTO_VERSIOINTI_OK_TITLE": {
+    "defaultMessage": "Koodisto versioitiin onnistuneesti."
+  },
   "KOODISTO_VERSIOI_DESCRIPTION": {
     "defaultMessage": "Koodistosta ja kaikista sen koodeista luodaan uusi versio"
   },

@@ -49,6 +49,23 @@ const successNotification = (koodistoUri: string) => {
     });
 };
 
+const versioningSuccess = () => {
+    success({
+        title: (
+            <FormattedMessage
+                id={'KOODISTO_VERSIOINTI_OK_TITLE'}
+                defaultMessage={'Koodisto versioitiin onnistuneesti.'}
+            />
+        ),
+        message: (
+            <FormattedMessage
+                id={'KOODISTO_VERSIOINTI_OK_MESSAGE'}
+                defaultMessage={'Koodistosta on luotu versio sekä luonnos.'}
+            />
+        ),
+    });
+};
+
 const deleteSuccess = () => {
     success({
         title: (
@@ -130,24 +147,37 @@ export const KoodistoMuokkausPage: React.FC = () => {
             navigate(`/koodisto/view/${updated.koodistoUri}/${updated.versio}`);
         }
     };
-    const createVersion = async (koodisto: PageKoodisto) => {
+
+    const modifyAction = async (
+        koodisto: PageKoodisto,
+        action: (koodisto: PageKoodisto) => Promise<PageKoodisto | undefined>,
+        showNotification: () => void
+    ) => {
         setLoading(true);
-        const pageKoodisto = await createKoodistoVersion(koodisto.koodistoUri, versioNumber || 1, lang);
-        if (pageKoodisto) {
-            navigate(`/koodisto/view/${koodisto.koodistoUri}/${koodisto.versio}`);
+        if (await action(koodisto)) {
+            showNotification();
+            navigate(`/koodisto/view/${koodisto.koodistoUri}`);
         } else {
             setLoading(false);
         }
     };
-    const remove = async (koodisto: PageKoodisto) => {
-        setLoading(true);
-        if (await deleteKoodisto(koodisto)) {
-            deleteSuccess();
-            navigate('/');
-        } else {
-            setLoading(false);
-        }
-    };
+
+    const versioningAction = async (koodisto: PageKoodisto) =>
+        modifyAction(
+            koodisto,
+            async (koodisto) => createKoodistoVersion(koodisto.koodistoUri, versioNumber || 1, lang),
+            versioningSuccess
+        );
+
+    const deleteAction = async (koodisto: PageKoodisto) =>
+        modifyAction(
+            koodisto,
+            async (koodisto) => {
+                return (await deleteKoodisto(koodisto)) ? koodisto : undefined;
+            },
+            deleteSuccess
+        );
+
     return (
         <>
             <CrumbTrail trail={[{ key: koodistoUri || 'new', label: koodistonMetadata?.nimi || '' }]} />
@@ -275,7 +305,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                 versionDialog={(close: () => void) => (
                     <ConfirmationDialog
                         action={() => {
-                            createVersion(getValues());
+                            versioningAction(getValues());
                             close();
                         }}
                         close={close}
@@ -302,7 +332,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                 removeDialog={(close: () => void) => (
                     <ConfirmationDialog
                         action={() => {
-                            remove(getValues());
+                            deleteAction(getValues());
                             close();
                         }}
                         close={close}
