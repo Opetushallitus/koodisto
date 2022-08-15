@@ -6,7 +6,6 @@ import fi.vm.sade.koodisto.dto.internal.InternalKoodistoListDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoListDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
@@ -65,7 +64,7 @@ public class InternalKoodistoResource {
     ResponseEntity<Void> deleteKoodisto(
             @PathVariable final String koodistoUri,
             @PathVariable @Min(1) final int koodistoVersio) {
-        koodistoBusinessService.delete(koodistoUri, koodistoVersio);
+        koodistoBusinessService.forceDelete(koodistoUri, koodistoVersio);
         return ResponseEntity.noContent().build();
     }
 
@@ -80,10 +79,6 @@ public class InternalKoodistoResource {
 
         if (latest.getVersio() != koodistoVersio) {
             throw new KoodistoValidationException("Latest version required");
-        }
-
-        if (latest.getTila() != Tila.LUONNOS) {
-            throw new KoodistoValidationException("Incorrect status");
         }
 
         latest = koodistoBusinessService.newVersion(latest).getData();
