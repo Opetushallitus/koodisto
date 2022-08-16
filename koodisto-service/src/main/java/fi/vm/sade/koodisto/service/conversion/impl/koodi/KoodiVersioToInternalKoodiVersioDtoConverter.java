@@ -32,6 +32,7 @@ public class KoodiVersioToInternalKoodiVersioDtoConverter implements
                         )
                         .koodiArvo(source.getKoodiarvo())
                         .versio(source.getVersio())
+                        .koodiVersio(source.getKoodi().getKoodiVersios().stream().map(KoodiVersio::getVersio).collect(Collectors.toList()))
                         .lockingVersion(source.getVersion())
                         .tila(source.getTila())
                         .koodiUri(source.getKoodi().getKoodiUri())

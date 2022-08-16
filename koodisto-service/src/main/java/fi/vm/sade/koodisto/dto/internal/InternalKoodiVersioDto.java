@@ -28,6 +28,9 @@ public class InternalKoodiVersioDto {
     @JsonView({JsonViews.Internal.class})
     private Integer versio;
 
+    @JsonView({JsonViews.Internal.class})
+    private List<Integer> koodiVersio;
+
     @Min(value = 0, message = "error.lockingVersion.less.than.zero")
     @JsonView({JsonViews.Internal.class})
     private long lockingVersion;
