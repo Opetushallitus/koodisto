@@ -37,6 +37,7 @@ describe('The Koodisto Edit page can edit relations', () => {
         });
         cy.intercept(`${API_INTERNAL_PATH}/koodi/koodisto/kunta/2`, { fixture: 'kuntaKoodistoKoodit.json' });
         cy.get('button[name="KOODISTO_TALLENNA"]').should('be.visible').click();
+        cy.contains('Koodisto tallennettiin').should('be.visible').click();
     });
     it('shows edit button and can open edit page', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'kuntaKoodisto.json' });
@@ -59,5 +60,6 @@ describe('The Koodisto Edit page can edit relations', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'kuntaKoodisto.json' });
         cy.intercept(`${API_INTERNAL_PATH}/koodi/koodisto/kunta/2`, { fixture: 'kuntaKoodistoKoodit.json' });
         cy.get('button[name="KOODISTO_TALLENNA"]').should('be.visible').click();
+        cy.contains('Koodisto tallennettiin').should('be.visible').click();
     });
 });
