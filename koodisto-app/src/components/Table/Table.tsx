@@ -1,22 +1,46 @@
-import * as React from 'react';
+import React, { ReactNode, useEffect, useMemo, HTMLProps } from 'react';
 import styled from 'styled-components';
-import { Cell, Column, FilterProps, HeaderGroup, Row, useFilters, useTable } from 'react-table';
-import { useEffect } from 'react';
-import { useIntl, MessageDescriptor } from 'react-intl';
+import { useIntl } from 'react-intl';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { ValueType } from 'react-select';
 import { SelectOptionType } from '../../types';
+import {
+    Column,
+    Row,
+    useReactTable,
+    HeaderGroup,
+    Table as ReactTable,
+    getCoreRowModel,
+    flexRender,
+    ColumnDef,
+    ColumnFiltersState,
+    getFilteredRowModel,
+    getFacetedUniqueValues,
+    getFacetedRowModel,
+    CellContext,
+    HeaderContext,
+    RowData,
+} from '@tanstack/react-table';
+import { IconWrapper } from '../IconWapper';
+import { uniq, uniqBy } from 'lodash';
 
-const TableContainer = styled.div`
+declare module '@tanstack/table-core' {
+    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
+    interface ColumnMeta<TData extends RowData, TValue> {
+        filterPlaceHolder?: string;
+    }
+}
+
+const TableContainer = styled.div<{ modal: boolean }>`
     overflow-x: scroll;
     overflow-y: hidden;
-    padding: 1rem;
-    border: 1px solid #cccccc;
+    padding: ${(props) => (props.modal ? 0 : 1)}rem;
+    border: ${(props) => (props.modal ? 0 : 1)}px solid #cccccc;
 `;
 const TableElement = styled.table`
     width: 100%;
-    min-height: 20vh;
+    min-height: 5vh;
     max-height: 60vh;
     border-spacing: 0;
 `;
@@ -44,116 +68,133 @@ const Tbody = styled.tbody`
     }
 `;
 
-const SelectContainer = styled.div`
-    min-width: 17rem;
+const FilterContainer = styled.div`
+    margin-top: 1rem;
     margin-bottom: 1rem;
     margin-right: 1rem;
 `;
+const SelectContainer = styled(FilterContainer)`
+    min-width: 17rem;
+`;
 
-const InputContainer = styled.div`
+const InputContainer = styled(FilterContainer)`
     max-width: 25rem;
-    margin-bottom: 1rem;
 `;
 
 type TableProps<T extends object> = {
-    columns: Column<T>[];
+    columns: ColumnDef<T>[];
     data: T[];
-};
-
-export const TextFilterComponent = <T extends Record<string, unknown>>({
-    column: { filterValue, preFilteredRows, setFilter },
-    placeholder = {
-        id: 'TAULUKKO_VAKIO_FILTTERI',
-        defaultMessage: 'Haetaan {count} koodistosta',
-    },
-    suffix,
-}: FilterProps<T> & { placeholder?: MessageDescriptor; suffix?: JSX.Element }) => {
-    const count = preFilteredRows.length;
-    const { formatMessage } = useIntl();
-    // this is for message extraction to work properly
-    formatMessage(
-        {
-            id: 'TAULUKKO_VAKIO_FILTTERI',
-            defaultMessage: 'Haetaan {count} koodistosta',
-        },
-        { count: 0 }
-    );
-    return (
-        <InputContainer>
-            <Input
-                value={filterValue || ''}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    setFilter(e.target.value || undefined);
-                }}
-                placeholder={formatMessage(placeholder, { count })}
-                suffix={suffix}
-            />
-        </InputContainer>
-    );
-};
-
-export const SelectFilterComponent = <T extends Record<string, unknown>>({
-    column: { filterValue, preFilteredRows, setFilter, id },
-}: FilterProps<T>) => {
-    const { formatMessage } = useIntl();
-    const uniqueOptions = Array.from(
-        new Map(preFilteredRows.map(({ values }) => [values[id].value, values[id]])).values()
-    );
-    return (
-        <SelectContainer>
-            <Select
-                onChange={(values: ValueType<SelectOptionType>) => setFilter(values)}
-                placeholder={formatMessage({
-                    id: 'TAULUKKO_DROPDOWN_FILTTERI',
-                    defaultMessage: 'Valitse arvo listalta',
-                })}
-                isMulti={true}
-                value={filterValue || []}
-                options={uniqueOptions}
-            />
-        </SelectContainer>
-    );
 };
 
 export const Table = <T extends object>({
     columns,
     data,
     onFilter,
-    resetFilters,
+    children,
+    modal,
+    setSelected,
 }: TableProps<T> & {
+    children?: ReactNode;
+    modal?: boolean;
     onFilter?: (rows: Row<T>[]) => void;
-    resetFilters?: React.MutableRefObject<(() => void) | undefined>;
+    setSelected?: (selectedRows: T[]) => void;
 }) => {
-    const defaultColumn = React.useMemo(
-        () => ({
-            Filter: <></>,
-        }),
-        []
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+    const [rowSelection, setRowSelection] = React.useState({});
+    const appliedColumns = useMemo(
+        () => [
+            ...((setSelected && [
+                {
+                    id: 'select',
+                    header: (prop: HeaderContext<T, unknown>) => (
+                        <IndeterminateCheckbox
+                            {...{
+                                checked: prop.table.getIsAllRowsSelected(),
+                                indeterminate: prop.table.getIsSomeRowsSelected(),
+                                onChange: prop.table.getToggleAllRowsSelectedHandler(),
+                            }}
+                        />
+                    ),
+                    columns: [
+                        {
+                            id: 'select',
+                            cell: (prop: CellContext<T, unknown>) => (
+                                <div className="px-1">
+                                    <IndeterminateCheckbox
+                                        {...{
+                                            checked: prop.row.getIsSelected(),
+                                            indeterminate: prop.row.getIsSomeSelected(),
+                                            onChange: prop.row.getToggleSelectedHandler(),
+                                        }}
+                                    />
+                                </div>
+                            ),
+                        },
+                    ],
+                },
+            ]) ||
+                []),
+            ...columns,
+        ],
+        [columns, setSelected]
     );
-    const { state, filteredRows, getTableProps, getTableBodyProps, headerGroups, rows, prepareRow, setAllFilters } =
-        useTable<T>({ columns, data, defaultColumn }, useFilters);
-    useEffect(() => {
-        onFilter && onFilter(filteredRows);
-    }, [filteredRows, onFilter]);
-    useEffect(() => {
-        if (resetFilters) {
-            resetFilters.current = state.filters.length ? () => setAllFilters([]) : undefined;
-        }
-    }, [resetFilters, state.filters.length, setAllFilters]);
+    const table = useReactTable<T>({
+        columns: appliedColumns,
+        data,
+        state: {
+            columnFilters,
+            rowSelection,
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        getFacetedUniqueValues: getFacetedUniqueValues(),
+        getFacetedRowModel: getFacetedRowModel(),
+        onColumnFiltersChange: setColumnFilters,
+        onRowSelectionChange: setRowSelection,
+    });
+
+    useEffect(
+        () =>
+            onFilter &&
+            onFilter(
+                (columnFilters.length > 0 && table.getFilteredRowModel().rows) || table.getFilteredRowModel().rows
+            ),
+        [table, columnFilters, onFilter]
+    );
+
+    useEffect(
+        () =>
+            setSelected &&
+            setSelected(
+                (Object.keys(rowSelection).length > 0 && table.getSelectedRowModel().rows.map((a) => a.original)) || []
+            ),
+        [rowSelection, setSelected, table]
+    );
     return (
-        <TableContainer>
-            <TableElement {...getTableProps()}>
+        <TableContainer modal={!!modal}>
+            <TableElement>
                 <Thead>
-                    {headerGroups.map((headerGroup: HeaderGroup<T>) => {
-                        const { key: headerGroupKey, ...headerGroupRest } = headerGroup.getHeaderGroupProps();
+                    {table.getHeaderGroups().map((headerGroup: HeaderGroup<T>) => {
                         return (
-                            <Tr {...headerGroupRest} key={headerGroupKey}>
-                                {headerGroup.headers.map((column: HeaderGroup<T>) => {
-                                    const { key: getHeaderPropsKey, ...getHeaderPropsRest } = column.getHeaderProps();
+                            <Tr key={headerGroup.id}>
+                                {headerGroup.headers.map((header) => {
                                     return (
-                                        <Th {...getHeaderPropsRest} key={getHeaderPropsKey}>
-                                            {column.render('Header')}
-                                            <div>{column.canFilter ? column.render('Filter') : null}</div>
+                                        <Th key={header.id} colSpan={header.colSpan}>
+                                            {!header.isPlaceholder && (
+                                                <>
+                                                    <div>
+                                                        {flexRender(
+                                                            header.column.columnDef.header,
+                                                            header.getContext()
+                                                        )}
+                                                    </div>
+                                                    {header.column.getCanFilter() && (
+                                                        <div>
+                                                            <Filter column={header.column} table={table} />
+                                                        </div>
+                                                    )}
+                                                </>
+                                            )}
                                         </Th>
                                     );
                                 })}
@@ -161,17 +202,14 @@ export const Table = <T extends object>({
                         );
                     })}
                 </Thead>
-                <Tbody {...getTableBodyProps()}>
-                    {rows.map((row: Row<T>) => {
-                        prepareRow(row);
-                        const { key: rowKey, ...rowRest } = row.getRowProps();
+                <Tbody>
+                    {table.getRowModel().rows.map((row: Row<T>) => {
                         return (
-                            <Tr {...rowRest} key={rowKey}>
-                                {row.cells.map((cell: Cell<T>) => {
-                                    const { key: cellKey, ...cellRest } = cell.getCellProps();
+                            <Tr key={row.id}>
+                                {row.getVisibleCells().map((cell) => {
                                     return (
-                                        <Td {...cellRest} key={cellKey}>
-                                            {cell.render('Cell')}
+                                        <Td key={cell.id}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
                                         </Td>
                                     );
                                 })}
@@ -180,6 +218,115 @@ export const Table = <T extends object>({
                     })}
                 </Tbody>
             </TableElement>
+
+            {children}
         </TableContainer>
     );
 };
+const ResetFilter = ({ resetFilters }: { resetFilters: (() => void) | undefined }) =>
+    resetFilters ? (
+        <IconWrapper
+            id="clear-filter"
+            onClick={resetFilters}
+            icon="ci:off-outline-close"
+            color={'gray'}
+            height={'1.5rem'}
+        />
+    ) : (
+        <IconWrapper icon="ci:search" color={'gray'} height={'1.5rem'} />
+    );
+
+function Filter<T>({ column, table }: { column: Column<T, unknown>; table: ReactTable<T> }) {
+    const { formatMessage } = useIntl();
+    const columnFilterValue = column.getFilterValue();
+    const firstValue = table.getPreFilteredRowModel().flatRows[0]?.getValue(column.id);
+    const sortedUniqueValues = React.useMemo(
+        () =>
+            (typeof firstValue === 'number' && []) ||
+            (typeof firstValue === 'string' && uniq(Array.from(column.getFacetedUniqueValues().keys())).sort()) ||
+            uniqBy(Array.from(column.getFacetedUniqueValues().keys()), (a: SelectOptionType) => a.value).sort(
+                (a: SelectOptionType, b: SelectOptionType) => a.label.localeCompare(b.label)
+            ),
+        [column, firstValue]
+    );
+    return (
+        (typeof firstValue === 'string' && (
+            <InputContainer>
+                <DebouncedInput
+                    value={(columnFilterValue ?? '') as string}
+                    onChange={(value) => column.setFilterValue(value)}
+                    placeholder={column.columnDef.meta?.filterPlaceHolder}
+                    suffix={
+                        <ResetFilter
+                            resetFilters={column.getIsFiltered() ? () => column.setFilterValue(undefined) : undefined}
+                        ></ResetFilter>
+                    }
+                />
+            </InputContainer>
+        )) || (
+            <SelectContainer>
+                <Select
+                    onChange={(values: ValueType<SelectOptionType>) => column.setFilterValue(values)}
+                    placeholder={formatMessage({
+                        id: 'TAULUKKO_DROPDOWN_FILTTERI',
+                        defaultMessage: 'Valitse arvo listalta',
+                    })}
+                    isMulti={true}
+                    value={(column.getFilterValue() as ValueType<{ label: string; value: string }>) || []}
+                    options={sortedUniqueValues.map((a: SelectOptionType) => ({ label: a.label, value: a.value }))}
+                />
+            </SelectContainer>
+        )
+    );
+}
+
+function DebouncedInput({
+    value: initialValue,
+    onChange,
+    debounce = 500,
+    ...props
+}: {
+    value: string | number;
+    onChange: (value: string | number) => void;
+    debounce?: number;
+    suffix?: JSX.Element;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
+    const [value, setValue] = React.useState(initialValue);
+
+    React.useEffect(() => {
+        setValue(initialValue);
+    }, [initialValue]);
+
+    React.useEffect(() => {
+        const timeout = setTimeout(() => {
+            onChange(value);
+        }, debounce);
+
+        return () => clearTimeout(timeout);
+    }, [debounce, onChange, value]);
+
+    return (
+        <Input
+            {...props}
+            value={value}
+            onChange={(e: React.FormEvent<HTMLInputElement>) => setValue(e.currentTarget.value)}
+        />
+    );
+}
+
+function IndeterminateCheckbox({
+    indeterminate,
+    className = '',
+    ...rest
+}: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const ref = React.useRef<HTMLInputElement>(null!);
+
+    React.useEffect(() => {
+        if (typeof indeterminate === 'boolean') {
+            ref.current.indeterminate = !rest.checked && indeterminate;
+        }
+    }, [ref, indeterminate, rest.checked]);
+
+    return <input type="checkbox" ref={ref} className={className + ' cursor-pointer'} {...rest} />;
+}

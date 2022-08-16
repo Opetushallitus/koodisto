@@ -1,17 +1,16 @@
-import React, { useMemo, useState, useRef } from 'react';
-import { useAtom } from 'jotai';
-import { Column, Row } from 'react-table';
-import { koodistoListAtom } from '../../api/koodisto';
+import React, { useMemo, useState } from 'react';
 import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
 import { ButtonLabelPrefix, HeaderContainer } from './KoodistoTablePage';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { Table, SelectFilterComponent, TextFilterComponent } from '../../components/Table';
-import { ListKoodisto, SelectOptionType } from '../../types';
-
-type KoodistoTableProps = unknown;
+import { Table } from '../../components/Table';
+import { ListKoodisto, SelectOptionType, KoodistoRelation } from '../../types';
+import { koodistoListAtom } from '../../api/koodisto';
+import { useAtom } from 'jotai';
+import { ColumnDef, CellContext } from '@tanstack/react-table';
+import { sortBy } from 'lodash';
 
 const HeaderContentDivider = styled.div`
     display: inline-flex;
@@ -32,45 +31,53 @@ const TableCellText = styled.span`
     color: #0a789c;
 `;
 
-const KoodistoTable: React.FC<KoodistoTableProps> = () => {
+type KoodistoTableProps = {
+    modal?: boolean;
+    setSelected?: (selected: ListKoodisto[]) => void;
+    oldRelations?: KoodistoRelation[];
+};
+
+const KoodistoTable: React.FC<KoodistoTableProps> = ({ modal, setSelected, oldRelations = [] }) => {
     const navigate = useNavigate();
     const [atomData] = useAtom(koodistoListAtom);
     const { formatMessage } = useIntl();
-    const data = useMemo<ListKoodisto[]>(() => {
-        atomData.sort((a, b) => a.koodistoUri.localeCompare(b.koodistoUri));
-        return [...atomData];
-    }, [atomData]);
+    const data = useMemo<ListKoodisto[]>(
+        () =>
+            sortBy(
+                atomData.reduce(
+                    (p, c) => [...(oldRelations?.find((a) => a.koodistoUri === c.koodistoUri) ? [] : [c]), ...p],
+                    [] as ListKoodisto[]
+                ),
+                (o) => o.koodistoUri
+            ),
+        [atomData, oldRelations]
+    );
     const [filteredCount, setFilteredCount] = useState<number>(data.length);
-    const resetFilters = useRef<() => void | undefined>();
-    const columns = React.useMemo<Column<ListKoodisto>[]>(
+    const columns = React.useMemo<ColumnDef<ListKoodisto>[]>(
         () => [
             {
-                Header: formatMessage({ id: 'TAULUKKO_KOODISTORYHMA_OTSIKKO', defaultMessage: 'Koodistoryhma' }),
+                header: formatMessage({ id: 'TAULUKKO_KOODISTORYHMA_OTSIKKO', defaultMessage: 'Koodistoryhma' }),
                 columns: [
                     {
-                        id: 'ryhmaTieto',
-                        accessor: (values: ListKoodisto) => ({ label: values.ryhmaNimi, value: values.ryhmaUri }),
-                        Filter: SelectFilterComponent,
-                        filter: (rows, _columnIds: string[], filterValue: SelectOptionType[]) =>
-                            rows.filter((row) =>
-                                filterValue.length > 0
-                                    ? filterValue
-                                          .map((option: SelectOptionType) => option.value)
-                                          .includes(row.values.ryhmaTieto.value)
-                                    : rows
-                            ),
-                        Cell: ({ value, row }: { value: SelectOptionType; row: Row<ListKoodisto> }) => (
-                            <Link to={`/koodistoRyhma/${row.original.ryhmaUri}`}>{value.label}</Link>
+                        id: 'ryhmaUri',
+                        header: '',
+                        accessorFn: (values: ListKoodisto) => ({ label: values.ryhmaNimi, value: values.ryhmaUri }),
+                        filterFn: (row, columnId, value: SelectOptionType[]) =>
+                            !!value.find((a) => a.value === (row.getValue(columnId) as SelectOptionType).value) ||
+                            value.length === 0,
+                        cell: (info) => (
+                            <Link to={`/koodistoRyhma/${info.row.original.ryhmaUri}`}>{info.getValue().label}</Link>
                         ),
                     },
                 ],
             },
             {
-                Header: formatMessage({ id: 'TAULUKKO_NIMI_OTSIKKO', defaultMessage: 'Nimi' }),
+                header: formatMessage({ id: 'TAULUKKO_NIMI_OTSIKKO', defaultMessage: 'Nimi' }),
                 columns: [
                     {
-                        id: 'nimi',
-                        accessor: (values: ListKoodisto) =>
+                        id: 'koodistoUri',
+                        header: '',
+                        accessorFn: (values: ListKoodisto) =>
                             values.nimi ||
                             formatMessage(
                                 {
@@ -79,93 +86,117 @@ const KoodistoTable: React.FC<KoodistoTableProps> = () => {
                                 },
                                 { koodistoUri: values.koodistoUri }
                             ),
-                        Filter: TextFilterComponent,
-                        filter: 'text',
-                        Cell: ({ value, row }: { value: string; row: Row<ListKoodisto> }) => (
-                            <Link to={`koodisto/view/${row.original.koodistoUri}/${row.original.versio}`}>{value}</Link>
+                        meta: {
+                            filterPlaceHolder: formatMessage(
+                                {
+                                    id: 'TAULUKKO_HAKU_APUTEKSTI',
+                                    defaultMessage: 'Haetaan {koodistoCount} koodistosta',
+                                },
+                                { koodistoCount: data.length }
+                            ),
+                        },
+                        cell: (info) => (
+                            <Link to={`koodisto/view/${info.row.original.koodistoUri}/${info.row.original.versio}`}>
+                                {info.getValue()}
+                            </Link>
                         ),
                     },
                 ],
             },
+            ...(!modal
+                ? [
+                      {
+                          header: formatMessage({
+                              id: 'TAULUKKO_VOIMASSA_ALKU_PVM_OTSIKKO',
+                              defaultMessage: 'Voimassa alkaen',
+                          }),
+                          columns: [
+                              {
+                                  id: 'voimassaAlkuPvm',
+                                  cell: (info: CellContext<ListKoodisto, unknown>) =>
+                                      info.row.original.voimassaAlkuPvm && (
+                                          <TableCellText>
+                                              <FormattedDate value={info.row.original.voimassaAlkuPvm} />
+                                          </TableCellText>
+                                      ),
+                              },
+                          ],
+                      },
+                      {
+                          header: formatMessage({
+                              id: 'TAULUKKO_VOIMASSA_LOPPU_PVM_OTSIKKO',
+                              defaultMessage: 'Voimassa asti',
+                          }),
+                          columns: [
+                              {
+                                  id: 'voimassaLoppuPvm',
+                                  cell: (info: CellContext<ListKoodisto, unknown>) =>
+                                      info.row.original.voimassaLoppuPvm && (
+                                          <TableCellText>
+                                              <FormattedDate value={info.row.original.voimassaLoppuPvm} />
+                                          </TableCellText>
+                                      ),
+                              },
+                          ],
+                      },
+                      {
+                          header: formatMessage({ id: 'TAULUKKO_KOODIMAARA', defaultMessage: 'Koodien lkm' }),
+                          columns: [
+                              {
+                                  id: 'koodiCount',
+                                  cell: (info: CellContext<ListKoodisto, unknown>) => (
+                                      <TableCellText>{info.row.original.koodiCount}</TableCellText>
+                                  ),
+                              },
+                          ],
+                      },
+                  ]
+                : []),
             {
-                Header: formatMessage({ id: 'TAULUKKO_VOIMASSA_ALKU_PVM_OTSIKKO', defaultMessage: 'Voimassa alkaen' }),
+                header: formatMessage({ id: 'TAULUKKO_VERSIO', defaultMessage: 'Versio' }),
                 columns: [
                     {
-                        id: 'voimassaAlkuPvm',
-                        accessor: (values) =>
-                            values.voimassaAlkuPvm && (
-                                <TableCellText>
-                                    <FormattedDate value={values.voimassaAlkuPvm} />
-                                </TableCellText>
-                            ),
-                    },
-                ],
-            },
-            {
-                Header: formatMessage({ id: 'TAULUKKO_VOIMASSA_LOPPU_PVM_OTSIKKO', defaultMessage: 'Voimassa asti' }),
-                columns: [
-                    {
-                        id: 'voimassaLoppuPvm',
-                        accessor: (values: ListKoodisto) =>
-                            values.voimassaLoppuPvm && (
-                                <TableCellText>
-                                    <FormattedDate value={values.voimassaLoppuPvm} />
-                                </TableCellText>
-                            ),
-                    },
-                ],
-            },
-            {
-                Header: formatMessage({ id: 'TAULUKKO_KOODIMAARA', defaultMessage: 'Koodien lkm' }),
-                columns: [
-                    {
-                        id: 'koodiCount',
-                        accessor: (values: ListKoodisto) => <TableCellText>{values.koodiCount}</TableCellText>,
+                        id: 'versio',
+                        cell: (info: CellContext<ListKoodisto, unknown>) =>
+                            info.row.original.versio && <TableCellText>{info.row.original.versio}</TableCellText>,
                     },
                 ],
             },
         ],
-        [formatMessage]
+        [data.length, formatMessage, modal]
     );
-
     return (
         <>
-            <HeaderContainer>
-                <HeaderContentDivider>
-                    <FormattedMessage
-                        id={'TAULUKKO_OTSIKKO'}
-                        defaultMessage={'Koodistot ({filteredCount} / {totalCount})'}
-                        values={{ filteredCount, totalCount: data.length }}
-                        tagName={'h2'}
-                    />
-                    <InfoText>
-                        {resetFilters.current ? (
-                            <Button id="resetFilters" variant="text" onClick={resetFilters.current}>
-                                <FormattedMessage
-                                    id={'TAULUKKO_NOLLAA_SUODATTIMET'}
-                                    defaultMessage={'Tyhjennä hakuehdot'}
-                                />
-                            </Button>
-                        ) : (
+            {!modal && (
+                <HeaderContainer>
+                    <HeaderContentDivider>
+                        <FormattedMessage
+                            id={'TAULUKKO_OTSIKKO'}
+                            defaultMessage={'Koodistot ({filteredCount} / {totalCount})'}
+                            values={{ filteredCount, totalCount: data.length }}
+                            tagName={'h2'}
+                        />
+                        <InfoText>
                             <FormattedMessage
                                 id={'TAULUKKO_KUVAUS_OTSIKKO'}
                                 defaultMessage={'Voit rajata koodistoryhmällä tai nimellä'}
                             />
-                        )}
-                    </InfoText>
-                </HeaderContentDivider>
-                <Button onClick={() => navigate('/koodisto/edit/')}>
-                    <ButtonLabelPrefix>
-                        <IconWrapper icon="el:plus" inline={true} fontSize={'0.6rem'} />
-                    </ButtonLabelPrefix>
-                    <FormattedMessage id={'TAULUKKO_LISAA_KOODISTO_BUTTON'} defaultMessage={'Luo uusi koodisto'} />
-                </Button>
-            </HeaderContainer>
+                        </InfoText>
+                    </HeaderContentDivider>
+                    <Button onClick={() => navigate('/koodisto/edit/')}>
+                        <ButtonLabelPrefix>
+                            <IconWrapper icon="el:plus" inline={true} fontSize={'0.6rem'} />
+                        </ButtonLabelPrefix>
+                        <FormattedMessage id={'TAULUKKO_LISAA_KOODISTO_BUTTON'} defaultMessage={'Luo uusi koodisto'} />
+                    </Button>
+                </HeaderContainer>
+            )}
             <Table<ListKoodisto>
                 columns={columns}
                 data={data}
+                modal={modal}
                 onFilter={(rows) => setFilteredCount(rows.length)}
-                resetFilters={resetFilters}
+                setSelected={setSelected}
             />
         </>
     );

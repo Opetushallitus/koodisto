@@ -38,16 +38,15 @@ type Props<T> = {
 
 export const KoodiCSVReader = <T extends object>({ onUploadAccepted }: Props<T>) => {
     const { CSVReader } = useCSVReader();
+
     return (
         <CSVReader onUploadAccepted={onUploadAccepted} config={{ header: true }}>
             {({
                 getRootProps,
                 acceptedFile,
             }: {
-                getRootProps: () => never;
+                getRootProps: () => Record<string, unknown>;
                 acceptedFile: { name: string };
-                getRemoveFileProps: () => unknown;
-                Remove: React.FC<{ color: unknown }>;
             }) => (
                 <div>
                     <Reader>

@@ -18,7 +18,7 @@ export const mapKoodiToCSV = (koodi: Koodi) => {
         return { ...p, ...languageKeyedMetadata };
     }, {});
     return {
-        koodistoUri: koodi.koodistoUri,
+        koodistoUri: koodi.koodisto?.koodistoUri,
         koodiArvo: koodi.koodiArvo,
         versio: koodi.versio,
         voimassaAlkuPvm: koodi.voimassaAlkuPvm,

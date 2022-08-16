@@ -5,6 +5,7 @@ const cleanKoodi = {
     versions: 1,
     paivittajaOid: '1.2.3.4.5',
     koodistoUri: 'koodistoUri',
+    koodisto: { koodistoUri: 'koodistoUri' },
     sisaltyyKoodeihin: [],
     sisaltaaKoodit: [],
     rinnastuuKoodeihin: [],

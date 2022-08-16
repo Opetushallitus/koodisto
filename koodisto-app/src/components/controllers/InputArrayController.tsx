@@ -1,14 +1,5 @@
 import { MessageDescriptor, useIntl, FormattedMessage } from 'react-intl';
-import {
-    FieldPath,
-    UseFormGetValues,
-    useFieldArray,
-    Controller,
-    ArrayPath,
-    Path,
-    UnpackNestedValue,
-    FieldArray,
-} from 'react-hook-form';
+import { FieldPath, UseFormGetValues, useFieldArray, Controller, ArrayPath, Path, FieldArray } from 'react-hook-form';
 import { ControllerProps, KoodiMetadata } from '../../types';
 import styled from 'styled-components';
 import { IconWrapper } from '../IconWapper';
@@ -65,12 +56,8 @@ export const InputArrayController = <T extends { metadata: KoodiMetadata[] }>({
     });
     const copyToFields = (): void => {
         const firstValue = getValues(`metadata` as Path<T>) as KoodiMetadata[];
-        update(1, { ...firstValue[1], [fieldPath]: firstValue[0][fieldPath] } as UnpackNestedValue<
-            FieldArray<T, ArrayPath<T>>
-        >);
-        update(2, { ...firstValue[2], [fieldPath]: firstValue[0][fieldPath] } as UnpackNestedValue<
-            FieldArray<T, ArrayPath<T>>
-        >);
+        update(1, { ...firstValue[1], [fieldPath]: firstValue[0][fieldPath] } as FieldArray<T, ArrayPath<T>>);
+        update(2, { ...firstValue[2], [fieldPath]: firstValue[0][fieldPath] } as FieldArray<T, ArrayPath<T>>);
     };
     return (
         <Container>

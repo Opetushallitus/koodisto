@@ -5,7 +5,7 @@ import Button from '@opetushallitus/virkailija-ui-components/Button';
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Table } from '../../components/Table';
-import { Column } from 'react-table';
+
 import { CsvKoodiObject, MessageFormatter, Koodi } from '../../types';
 import { getHeaders, mapCsvToKoodi, mapHeadersToColumns, validData } from './uploadCsv';
 import { fetchKoodiListByKoodisto } from '../../api/koodisto';
@@ -14,6 +14,7 @@ import { danger, success } from '../../components/Notification';
 import { downloadCsv } from '../../utils';
 import styled from 'styled-components';
 import { batchUpsertKoodi } from '../../api/koodi';
+import { ColumnDef } from '@tanstack/react-table';
 
 const DownloadContainer = styled.div`
     padding-bottom: 1rem;
@@ -129,7 +130,7 @@ export const CSVFunctionModal: React.FC<Props> = ({ koodistoUri, koodistoVersio,
         [csvKoodiArray, persistedKoodiList]
     );
 
-    const columns = React.useMemo<Column<CsvKoodiObject>[]>(
+    const columns = React.useMemo<ColumnDef<CsvKoodiObject>[]>(
         () => mapHeadersToColumns({ headers: ['newRow' as keyof CsvKoodiObject, ...headers], formatMessage }),
         [formatMessage, headers]
     );

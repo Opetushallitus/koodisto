@@ -182,6 +182,15 @@
   "RYHMA_PAKOLLINEN": {
     "defaultMessage": "Valitse koodisto-ryhmä."
   },
+  "SUHDEMODAL_HEADER": {
+    "defaultMessage": "Valitse koodistot"
+  },
+  "SUHDEMODAL_LISAA": {
+    "defaultMessage": "Lisää valitut ({chosen})"
+  },
+  "SUHDEMODAL_SULJE": {
+    "defaultMessage": "Sulje"
+  },
   "SV_NIMI_PAKOLLINEN": {
     "defaultMessage": "Syötä ruotsinkielinen nimi"
   },
@@ -190,6 +199,9 @@
   },
   "TAULUKKO_DROPDOWN_FILTTERI": {
     "defaultMessage": "Valitse arvo listalta"
+  },
+  "TAULUKKO_HAKU_APUTEKSTI": {
+    "defaultMessage": "Haetaan {koodistoCount} koodistosta"
   },
   "TAULUKKO_KOODIMAARA": {
     "defaultMessage": "Koodien lkm"
@@ -239,9 +251,6 @@
   "TAULUKKO_NIMI_PUUTTUU_KOODISTOLTA": {
     "defaultMessage": "Nimi puuttuu {koodistoUri}"
   },
-  "TAULUKKO_NOLLAA_SUODATTIMET": {
-    "defaultMessage": "Tyhjennä hakuehdot"
-  },
   "TAULUKKO_OTSIKKO": {
     "defaultMessage": "Koodistot ({filteredCount} / {totalCount})"
   },
@@ -263,8 +272,8 @@
   "TAULUKKO_SISALTYY_KOODISTOIHIN_OTSIKKO": {
     "defaultMessage": "Sisältyy koodistoihin ({count})"
   },
-  "TAULUKKO_VAKIO_FILTTERI": {
-    "defaultMessage": "Haetaan {count} koodistosta"
+  "TAULUKKO_VERSIO": {
+    "defaultMessage": "Versio"
   },
   "TAULUKKO_VERSIO_KUVAUS": {
     "defaultMessage": "Kuvaus"

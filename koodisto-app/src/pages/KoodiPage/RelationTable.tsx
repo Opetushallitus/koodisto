@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { Column, Row } from 'react-table';
 import { useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Table } from '../../components/Table';
@@ -7,6 +6,7 @@ import { translateMultiLocaleText } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLocaleAtom } from '../../api/kayttooikeus';
 import type { KoodiRelation } from '../../types';
+import { ColumnDef } from '@tanstack/react-table';
 
 export const RelationTable: React.FC<{ relations: KoodiRelation[] }> = ({
     relations,
@@ -18,12 +18,12 @@ export const RelationTable: React.FC<{ relations: KoodiRelation[] }> = ({
     const data = useMemo<KoodiRelation[]>(() => {
         return [...relations];
     }, [relations]);
-    const columns = useMemo<Column<KoodiRelation>[]>(
+    const columns = useMemo<ColumnDef<KoodiRelation>[]>(
         () => [
             {
                 id: 'koodisto',
-                Header: formatMessage({ id: 'TAULUKKO_KOODISTO_OTSIKKO', defaultMessage: 'Koodisto' }),
-                accessor: (relation: KoodiRelation) =>
+                header: formatMessage({ id: 'TAULUKKO_KOODISTO_OTSIKKO', defaultMessage: 'Koodisto' }),
+                accessorFn: (relation: KoodiRelation) =>
                     translateMultiLocaleText({
                         multiLocaleText: relation.koodistoNimi,
                         locale,
@@ -32,26 +32,26 @@ export const RelationTable: React.FC<{ relations: KoodiRelation[] }> = ({
             },
             {
                 id: 'nimi',
-                Header: formatMessage({ id: 'TAULUKKO_NIMI_OTSIKKO', defaultMessage: 'Nimi' }),
-                Cell: ({ row }: { row: Row<KoodiRelation> }) => (
-                    <Link to={`/koodi/view/${row.original.koodiUri}/${row.original.koodiVersio}`}>
+                header: formatMessage({ id: 'TAULUKKO_NIMI_OTSIKKO', defaultMessage: 'Nimi' }),
+                cell: (info) => (
+                    <Link to={`/koodi/view/${info.row.original.koodiUri}/${info.row.original.koodiVersio}`}>
                         {translateMultiLocaleText({
-                            multiLocaleText: row.original.nimi,
+                            multiLocaleText: info.row.original.nimi,
                             locale,
-                            defaultValue: row.original.koodiUri,
+                            defaultValue: info.row.original.koodiUri,
                         })}
                     </Link>
                 ),
             },
             {
                 id: 'versio',
-                Header: formatMessage({ id: 'TAULUKKO_VERSIO_OTSIKKO', defaultMessage: 'Versio' }),
-                accessor: (relation: KoodiRelation) => relation.koodiVersio,
+                header: formatMessage({ id: 'TAULUKKO_VERSIO_OTSIKKO', defaultMessage: 'Versio' }),
+                accessorFn: (relation: KoodiRelation) => relation.koodiVersio,
             },
             {
                 id: 'kuvaus',
-                Header: formatMessage({ id: 'TAULUKKO_VERSIO_KUVAUS', defaultMessage: 'Kuvaus' }),
-                accessor: (relation: KoodiRelation) =>
+                header: formatMessage({ id: 'TAULUKKO_VERSIO_KUVAUS', defaultMessage: 'Kuvaus' }),
+                accessorFn: (relation: KoodiRelation) =>
                     translateMultiLocaleText({
                         multiLocaleText: relation.kuvaus,
                         locale,

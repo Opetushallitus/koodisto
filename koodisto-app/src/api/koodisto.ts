@@ -29,7 +29,6 @@ type ApiRyhmaMetadata = {
 };
 
 type ApiBaseKoodisto = MapToApiObject<BaseKoodisto>;
-
 export type ApiPageKoodisto = ApiBaseKoodisto & {
     lockingVersion: number;
     koodistoRyhmaUri: string;
@@ -59,16 +58,26 @@ type CreateKoodistoDataType = {
     organisaatioOid: string;
     metadataList: Metadata[];
 };
-type UpdateKoodistoDataType = CreateKoodistoDataType & {
+type ApiKoodistoRelation = {
+    codesUri: string;
+    codesVersion: number;
+    passive: boolean;
+};
+type UpdateKoodistoDataType = Omit<CreateKoodistoDataType, 'metadataList'> & {
     tila: Tila;
     codesGroupUri: string;
     koodistoUri: string;
     versio: number;
-    lockingVersion: number;
+    version: number;
+    metadata: Metadata[];
+    includesCodes: ApiKoodistoRelation[];
+    levelsWithCodes: ApiKoodistoRelation[];
+    withinCodes: ApiKoodistoRelation[];
 };
 
 const apiKoodistoListToKoodistoList = (a: ApiListKoodisto, lang: Kieli): ListKoodisto => {
     const nimi = translateMetadata({ metadata: a.metadata, lang })?.nimi;
+    const kuvaus = translateMetadata({ metadata: a.metadata, lang })?.kuvaus;
     const ryhmaNimi = translateMetadata({ metadata: a.koodistoRyhmaMetadata, lang })?.nimi;
     return {
         ryhmaUri: a.koodistoRyhmaMetadata?.[0]?.uri || undefined,
@@ -77,6 +86,7 @@ const apiKoodistoListToKoodistoList = (a: ApiListKoodisto, lang: Kieli): ListKoo
         voimassaAlkuPvm: a.voimassaAlkuPvm && parseApiDate(a.voimassaAlkuPvm),
         voimassaLoppuPvm: a.voimassaLoppuPvm && parseApiDate(a.voimassaLoppuPvm),
         nimi,
+        kuvaus,
         ryhmaNimi,
         koodiCount: a.koodiCount,
     };
@@ -113,15 +123,14 @@ export const updateKoodisto = async ({
 }: {
     koodisto: PageKoodisto;
     lang: Kieli;
-}): Promise<PageKoodisto | undefined> => {
-    return upsertKoodisto<UpdateKoodistoDataType>({
+}): Promise<PageKoodisto | undefined> =>
+    upsertKoodisto<UpdateKoodistoDataType>({
         koodisto,
         lang,
         mapper: mapPageKoodistoToUpdatePageKoodisto,
         path: `${API_INTERNAL_PATH}/koodisto`,
         axiosFunc: axios.put,
     });
-};
 export const createKoodisto = async ({
     koodisto,
     lang,
@@ -207,17 +216,24 @@ function mapPageKoodistoToCreatePageKoodisto(koodisto: PageKoodisto): CreateKood
         voimassaLoppuPvm: koodisto.voimassaLoppuPvm && parseUIDate(koodisto.voimassaLoppuPvm),
     };
 }
+const toApiRelation = (relation: KoodistoRelation): ApiKoodistoRelation => ({
+    codesUri: relation.koodistoUri,
+    codesVersion: relation.koodistoVersio,
+    passive: !!relation.passive,
+});
 
-function mapPageKoodistoToUpdatePageKoodisto(koodisto: PageKoodisto): UpdateKoodistoDataType {
-    return {
-        lockingVersion: koodisto.lockingVersion,
-        tila: koodisto.tila,
-        versio: koodisto.versio,
-        codesGroupUri: koodisto.koodistoRyhmaUri.value,
-        koodistoUri: koodisto.koodistoUri,
-        ...mapPageKoodistoToCreatePageKoodisto(koodisto),
-    };
-}
+const mapPageKoodistoToUpdatePageKoodisto = (koodisto: PageKoodisto): UpdateKoodistoDataType => ({
+    includesCodes: koodisto.sisaltaaKoodistot.map(toApiRelation),
+    levelsWithCodes: koodisto.rinnastuuKoodistoihin.map(toApiRelation),
+    withinCodes: koodisto.sisaltyyKoodistoihin.map(toApiRelation),
+    version: koodisto.lockingVersion,
+    tila: koodisto.tila,
+    versio: koodisto.versio,
+    codesGroupUri: koodisto.koodistoRyhmaUri.value,
+    koodistoUri: koodisto.koodistoUri,
+    metadata: koodisto.metadata,
+    ...mapPageKoodistoToCreatePageKoodisto(koodisto),
+});
 
 export const fetchPageKoodisto = async ({
     koodistoUri,
@@ -227,8 +243,8 @@ export const fetchPageKoodisto = async ({
     koodistoUri: string;
     versio?: number;
     lang: Kieli;
-}): Promise<PageKoodisto | undefined> => {
-    return errorHandlingWrapper(async () => {
+}): Promise<PageKoodisto | undefined> =>
+    errorHandlingWrapper(async () => {
         const { data: apiPageKoodisto } = await axios.get<ApiPageKoodisto>(
             [API_INTERNAL_PATH, 'koodisto', koodistoUri, ...(versio ? [versio] : [])].join('/')
         );
@@ -239,13 +255,11 @@ export const fetchPageKoodisto = async ({
             return undefined;
         }
     });
-};
 
-export const deleteKoodisto = async (koodisto: PageKoodisto): Promise<boolean | undefined> => {
-    return errorHandlingWrapper(async () => {
+export const deleteKoodisto = async (koodisto: PageKoodisto): Promise<boolean | undefined> =>
+    errorHandlingWrapper(async () => {
         const { status } = await axios.delete(
             `${API_INTERNAL_PATH}/koodisto/${koodisto.koodistoUri}/${koodisto.versio}`
         );
         return status === 204;
     });
-};
