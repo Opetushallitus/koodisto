@@ -157,18 +157,6 @@ public class KoodiBusinessServiceTest {
     }
 
     @Test
-    public void setsEndDatePreviousVersionWhenNewVersionIsSetToHyvaksytty() {
-        KoodiVersio latest = koodiBusinessService.getLatestKoodiVersio("436");
-        KoodiVersio updated = koodiBusinessService.createNewVersion(latest.getKoodi().getKoodiUri());
-        assertEquals(Tila.HYVAKSYTTY, latest.getTila());
-        assertNull(latest.getVoimassaLoppuPvm());
-        assertEquals(Tila.LUONNOS, updated.getTila());
-        koodiBusinessService.setKoodiTila(updated.getKoodi().getKoodiUri(), TilaType.HYVAKSYTTY);
-        latest = koodiVersioRepository.findById(latest.getId()).orElseThrow();
-        assertNotNull(latest.getVoimassaLoppuPvm());
-    }
-
-    @Test
     public void koodiIsCopiedIntoNewVersionOfKoodistoWhenNewKoodiIsAdded() {
         CreateKoodiDataType createKoodiData = fi.vm.sade.koodisto.service.it.DataUtils.createCreateKoodiDataType("new",
                 new Date(), null, "uusi");
@@ -192,13 +180,6 @@ public class KoodiBusinessServiceTest {
     @Test
     public void shouldFetchExactKoodiVersio() {
         assertEquals(2, koodiBusinessService.getKoodiVersio("455", 2).getVersio().intValue());
-    }
-
-    @Test
-    public void doesNotCopyPassiveRelationsWhenNewVersionIsCreated() {
-        String koodiUri = "passiivisuhdeeikopioidu";
-        koodiBusinessService.createNewVersion(koodiUri);
-        assertTrue(koodiBusinessService.listByRelation(koodiUri, true, SuhteenTyyppi.SISALTYY).isEmpty());
     }
 
     @Test

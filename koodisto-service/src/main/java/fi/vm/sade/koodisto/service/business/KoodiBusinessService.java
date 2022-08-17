@@ -91,11 +91,6 @@ public interface KoodiBusinessService {
 
     void delete(String koodiUri, Integer koodiVersio, boolean skipPassiivinenCheck);
 
-    KoodiVersio createNewVersion(String koodiUri);
-
-    void setKoodiTila(String koodiUri, TilaType tila);
-
-    void setKoodiTila(KoodiVersio latest, TilaType tila);
 
     List<KoodiVersioWithKoodistoItem> getKoodisByKoodistoVersio(String koodistoUri, Integer koodistoVersio, boolean onlyValidKoodis);
 

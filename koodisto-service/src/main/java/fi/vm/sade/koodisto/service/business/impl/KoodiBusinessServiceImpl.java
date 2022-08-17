@@ -721,32 +721,12 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     @Override
-    public KoodiVersio createNewVersion(String koodiUri) {
-        return createNewVersion(getLatestKoodiVersio(koodiUri), false).getData();
-    }
-
-    @Override
     public Set<KoodiVersio> createNewVersionsNonFlushing(Set<KoodistoVersioKoodiVersio> koodiVersios) {
         HashSet<KoodiVersio> inserted = new HashSet<>();
         for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
             inserted.add(this.createNewVersion(koodiVersio.getKoodiVersio(), true).getData());
         }
         return inserted;
-    }
-
-    @Override
-    public void setKoodiTila(KoodiVersio latest, TilaType tila) {
-        if (Tila.LUONNOS.equals(latest.getTila()) && TilaType.HYVAKSYTTY.equals(tila)) {
-            setPreviousVersionEndDateToNowOrKeepFutureDate(latest);
-            latest.setTila(Tila.valueOf(tila.name()));
-        }
-    }
-
-    private void setPreviousVersionEndDateToNowOrKeepFutureDate(KoodiVersio latest) {
-        KoodiVersio previousVersion = koodiVersioRepository.getPreviousKoodiVersio(latest.getKoodi().getKoodiUri(), latest.getVersio());
-        if (previousVersion != null) {
-            previousVersion.setVoimassaLoppuPvm(getValidEndDateForKoodiVersio(previousVersion, latest));
-        }
     }
 
     private Date getValidEndDateForKoodiVersio(KoodiVersio previous, KoodiVersio latest) {
@@ -756,12 +736,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             return latestStartDate;
         }
         return previousStartDate.after(new Date()) ? previousStartDate : new Date();
-    }
-
-    @Override
-    public void setKoodiTila(String koodiUri, TilaType tila) {
-        KoodiVersio latest = getLatestKoodiVersio(koodiUri);
-        setKoodiTila(latest, tila);
     }
 
     @Override
