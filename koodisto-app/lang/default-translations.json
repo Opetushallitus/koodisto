@@ -155,6 +155,12 @@
   "KOODI_VERSIOI_DESCRIPTION": {
     "defaultMessage": "Koodista luodaan uusi versio"
   },
+  "KOODI_VERSIOI_OK_MESSAGE": {
+    "defaultMessage": "Koodista on luotu uusi versio"
+  },
+  "KOODI_VERSIOI_OK_TITLE": {
+    "defaultMessage": "Koodi versioitiin onnistuneesti."
+  },
   "KOODI_VERSIOI_TITLE": {
     "defaultMessage": "Versioi koodi"
   },

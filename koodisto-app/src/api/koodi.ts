@@ -54,11 +54,21 @@ export const fetchKoodistoKoodis = async (
         return pageData.map((api) => mapApiKoodi({ api }));
     });
 
-export const fetchPageKoodi = async (koodiUri: string, versio: number): Promise<Koodi | undefined> =>
+const pageKoodiAccessor = async <X>(
+    koodiUri: string,
+    versio: number,
+    axiosFunc: <T, R = AxiosResponse<T>>(url: string, data?: X) => Promise<R>
+): Promise<Koodi | undefined> =>
     errorHandlingWrapper(async () => {
-        const { data: pageData } = await axios.get<ApiKoodi>(`${API_INTERNAL_PATH}/koodi/${koodiUri}/${versio}`);
+        const { data: pageData } = await axiosFunc<ApiKoodi>(`${API_INTERNAL_PATH}/koodi/${koodiUri}/${versio}`);
         return mapApiKoodi({ api: pageData });
     });
+
+export const fetchPageKoodi = async (koodiUri: string, versio: number): Promise<Koodi | undefined> =>
+    pageKoodiAccessor(koodiUri, versio, axios.get);
+
+export const createKoodiVersion = async (koodiUri: string, versio: number): Promise<Koodi | undefined> =>
+    pageKoodiAccessor(koodiUri, versio, axios.post);
 
 export const updateKoodi = async (koodi: Koodi): Promise<Koodi | undefined> =>
     upsertKoodi<UpdateKoodiDataType>({
