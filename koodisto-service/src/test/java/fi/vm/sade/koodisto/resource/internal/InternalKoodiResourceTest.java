@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.resource.internal;
 
+import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.util.KoodistoRole;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,9 +22,7 @@ import java.util.Objects;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -72,7 +71,7 @@ class InternalKoodiResourceTest {
     @Test
     @Description("Delete with invalid version")
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
-    void testDeleteInternalKoodiBadRequest() throws Exception {
+    void testDeleteInternalKoodiInvalidVersion() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/nonexistent/0"))
                 .andExpect(status().isBadRequest());
     }
@@ -86,21 +85,29 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Delete not PASSIVINEN")
+    @Description("Delete HYVAKSYTTY should fail (e.g. locked)")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
-    void testDeleteInternalKoodiCannotDelete() throws Exception {
+    void testDeleteInternalKoodiIsLocked() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/get_1/1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("error.codes.version.locked"));
+    }
+
+    @Test
+    @Description("Delete PASSIVINEN should be ok (e.g. anomaly), backwards compatibility")
+    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testDeleteInternalKoodiIsPassiivinen() throws Exception {
+        this.mockMvc.perform(delete("/internal/koodi/removable/1"))
                 .andExpect(status().isNoContent())
                 .andExpect(content().string(""));
     }
 
     @Test
-    @Description("Delete PASSIVINEN")
-    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
-    void testDeleteInternalKoodi() throws Exception {
+    @Description("Delete insufficient access rights")
+    @WithMockUser(value = "1.2.3.4.5")
+    void testDeleteInternalKoodiInsufficientAccessRights() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/removable/1"))
-                .andExpect(status().isNoContent())
-                .andExpect(content().string(""));
+                .andExpect(status().isForbidden());
     }
 
     @Test

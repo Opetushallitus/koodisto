@@ -18,6 +18,7 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodisto
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
+import fi.vm.sade.koodisto.validator.KoodistoValidationException;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -63,11 +64,17 @@ public class InternalKoodiResource {
 
     @DeleteMapping(path = "/{koodiUri}/{koodiVersio}",
             produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     public @ResponseBody
     ResponseEntity<Void> deleteKoodi(
             @Parameter(description = "Koodin URI") @PathVariable final String koodiUri,
             @Parameter(description = "Koodin versio") @PathVariable @Min(1) final int koodiVersio
     ) {
+        KoodiVersio koodi = koodiBusinessService.getKoodi(koodiUri, koodiVersio).getKoodiVersio();
+        if (koodi.isLocked()) {
+            throw new KoodistoValidationException("error.codes.version.locked");
+        }
+
         koodiBusinessService.forceDelete(koodiUri, koodiVersio);
         return ResponseEntity.noContent().build();
     }

@@ -60,6 +60,9 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private KoodistoMetadataRepository koodistoMetadataRepository;
 
     @Autowired
+    private KoodistoVersioKoodiVersioRepository koodistoVersioKoodiVersioRepository;
+
+    @Autowired
     @Lazy
     private KoodiRepository koodiRepository;
 
@@ -615,7 +618,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     @Override
-    public void forceDelete(final String koodistoUri, final int  koodistoVersio) {
+    public void forceDelete(final String koodistoUri, final int koodistoVersio) {
         KoodistoVersio koodisto = getKoodistoVersio(koodistoUri, koodistoVersio);
         koodisto.setTila(Tila.PASSIIVINEN);
         koodiVersioRepository.getKoodiVersiosIncludedOnlyInKoodistoVersio(koodistoUri, koodistoVersio).stream()

@@ -155,6 +155,9 @@ public class KoodiVersio extends BaseEntity {
                 .collect(Collectors.toMap(metadata -> metadata.getKieli().name().toLowerCase(), koodiMetadata -> Optional.ofNullable(koodiMetadata.getKuvaus()).orElse("")));
     }
 
+    public boolean isLocked() {
+        return tila == Tila.HYVAKSYTTY;
+    }
 
     @AssertTrue(message = "error.validation.enddate")
     public boolean isStartDateBeforeEndDate() {
