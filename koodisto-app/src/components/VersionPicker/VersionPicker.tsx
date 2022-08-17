@@ -16,16 +16,18 @@ export const VersionPicker: React.FC<Props> = ({ version, versions }) => {
     const { formatMessage } = useIntl();
     const navigate = useNavigate();
     const location = useLocation();
-    const options: SelectOption[] = [...versions].sort().map((v) => ({
-        label: formatMessage(
-            {
-                id: 'VERSIO_DROPDOWN_LABEL',
-                defaultMessage: 'Versio {versio}',
-            },
-            { versio: v }
-        ),
-        value: `${v}`,
-    }));
+    const options: SelectOption[] = [...versions]
+        .sort((a, b) => a - b)
+        .map((v) => ({
+            label: formatMessage(
+                {
+                    id: 'VERSIO_DROPDOWN_LABEL',
+                    defaultMessage: 'Versio {versio}',
+                },
+                { versio: v }
+            ),
+            value: `${v}`,
+        }));
     return (
         <SelectContainer>
             <Select
