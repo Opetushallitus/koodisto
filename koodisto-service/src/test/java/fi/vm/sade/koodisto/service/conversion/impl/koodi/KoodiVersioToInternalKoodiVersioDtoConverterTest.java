@@ -3,6 +3,10 @@ package fi.vm.sade.koodisto.service.conversion.impl.koodi;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodiSuhdeDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioDto;
 import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoMetadataToKoodistoMetadataDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;
+import fi.vm.sade.properties.OphProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +17,9 @@ class KoodiVersioToInternalKoodiVersioDtoConverterTest {
     KoodiVersio a;
     KoodiVersioToInternalKoodiVersioDtoConverter resource =
             new KoodiVersioToInternalKoodiVersioDtoConverter(
-                    new KoodiMetadataToKoodiMetadataDtoConverter()
+                    new KoodiMetadataToKoodiMetadataDtoConverter(), new KoodistoVersioToInternalKoodistoPageDtoConverter(new OphProperties().addDefault("koodistoUriFormat","foo"),
+                    new KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter(),
+                    new KoodistoMetadataToKoodistoMetadataDtoConverter())
             );
 
     @BeforeEach
@@ -22,14 +28,20 @@ class KoodiVersioToInternalKoodiVersioDtoConverterTest {
         KoodistoVersioKoodiVersio koodistoVersioKoodiVersio = new KoodistoVersioKoodiVersio();
         KoodistoVersio koodistoVersio = new KoodistoVersio();
         koodistoVersio.setVersio(1);
+        koodistoVersio.setVersion(1L);
+        koodistoVersio.setTila(Tila.LUONNOS);
         Koodisto koodisto = new Koodisto();
         koodisto.setKoodistoUri("koodistoUri");
+        koodisto.addKoodistoRyhma(new KoodistoRyhma());
+        koodisto.setVersion(1L);
+
         koodistoVersio.setKoodisto(koodisto);
         koodistoVersioKoodiVersio.setKoodistoVersio(koodistoVersio);
         koodisto.addKoodistoVersion(koodistoVersio);
         a.addKoodistoVersio(koodistoVersioKoodiVersio);
         Koodi koodi = new Koodi();
         koodi.setKoodisto(koodisto);
+        a.setVersio(1);
         a.setVersion(5L);
         a.setKoodi(koodi);
     }
@@ -46,7 +58,7 @@ class KoodiVersioToInternalKoodiVersioDtoConverterTest {
     void convert2() {
         InternalKoodiVersioDto b = resource.convert(a);
         assert b != null;
-        assertEquals("koodistoUri", b.getKoodistoUri());
+        assertEquals("koodistoUri", b.getKoodisto().getKoodistoUri());
     }
 
     @Test
@@ -56,14 +68,17 @@ class KoodiVersioToInternalKoodiVersioDtoConverterTest {
         KoodistoVersio koodistoVersio = new KoodistoVersio();
         koodistoVersio.setVersio(2);
         Koodisto koodisto = new Koodisto();
+        koodistoVersio.setVersion(1L);
+        koodistoVersio.setTila(Tila.LUONNOS);
         koodisto.setKoodistoUri("koodistoUri 2");
+        koodisto.addKoodistoRyhma(new KoodistoRyhma());
         koodistoVersio.setKoodisto(koodisto);
         koodisto.addKoodistoVersion(koodistoVersio);
         koodistoVersioKoodiVersio.setKoodistoVersio(koodistoVersio);
         a.addKoodistoVersio(koodistoVersioKoodiVersio);
         InternalKoodiVersioDto b = resource.convert(a);
         assert b != null;
-        assertEquals("koodistoUri 2", b.getKoodistoUri());
+        assertEquals("koodistoUri 2", b.getKoodisto().getKoodistoUri());
     }
 
     @Test

@@ -7,6 +7,7 @@ import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,15 +18,17 @@ import java.util.stream.Collectors;
 public class KoodiVersioToInternalKoodiVersioDtoConverter implements
         AbstractFromDomainConverter<KoodiVersio, InternalKoodiVersioDto> {
     private final KoodiMetadataToKoodiMetadataDtoConverter koodiMetadataToKoodiMetadataDtoConverter;
+    private final KoodistoVersioToInternalKoodistoPageDtoConverter koodistoVersioToInternalKoodistoPageDtoConverter;
 
     @Override
     public InternalKoodiVersioDto convert(KoodiVersio source) {
         return
                 InternalKoodiVersioDto.builder()
-                        .koodistoUri(source.getKoodistoVersios().stream()
+                        .koodisto(source.getKoodistoVersios().stream()
                                 .map(KoodistoVersioKoodiVersio::getKoodistoVersio)
+                                .map(koodistoVersioToInternalKoodistoPageDtoConverter::convert)
                                 .reduce((a, b) -> a.getVersio() > b.getVersio() ? a : b)
-                                .orElseThrow(KoodistoNotFoundException::new).getKoodisto().getKoodistoUri()
+                                .orElseThrow(KoodistoNotFoundException::new)
                         )
                         .koodiArvo(source.getKoodiarvo())
                         .versio(source.getVersio())

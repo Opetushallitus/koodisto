@@ -20,7 +20,6 @@ public class KoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter implem
     public InternalKoodiVersioDto convert(KoodiVersioWithKoodistoItem source) {
         return
                 InternalKoodiVersioDto.builder()
-                        .koodistoUri(source.getKoodistoItem().getKoodistoUri())
                         .koodiArvo(source.getKoodiVersio().getKoodiarvo())
                         .versio(source.getKoodiVersio().getVersio())
                         .lockingVersion(source.getKoodiVersio().getVersion())
