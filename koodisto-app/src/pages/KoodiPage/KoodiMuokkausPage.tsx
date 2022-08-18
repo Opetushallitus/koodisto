@@ -45,13 +45,6 @@ const deleteSuccess = () => {
     });
 };
 
-const versioningSuccess = () => {
-    success({
-        title: <FormattedMessage id={'KOODI_VERSIOI_OK_TITLE'} defaultMessage={'Koodi versioitiin onnistuneesti.'} />,
-        message: <FormattedMessage id={'KOODI_VERSIOI_OK_MESSAGE'} defaultMessage={'Koodista on luotu uusi versio'} />,
-    });
-};
-
 export const KoodiMuokkausPage: React.FC = () => {
     const { koodiUri, koodiVersio } = useParams();
     const isEditing = koodiUri && koodiVersio;
