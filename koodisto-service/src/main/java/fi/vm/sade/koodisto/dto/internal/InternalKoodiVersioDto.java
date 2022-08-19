@@ -23,6 +23,9 @@ public class InternalKoodiVersioDto {
 
 
     @JsonView({JsonViews.Internal.class})
+    private Integer koodistoVersio;
+
+    @JsonView({JsonViews.Internal.class})
     private String koodiArvo;
 
     @JsonView({JsonViews.Internal.class})
@@ -42,7 +45,7 @@ public class InternalKoodiVersioDto {
     private String koodiUri;
 
     @JsonView({JsonViews.Internal.class})
-    @JsonFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date paivitysPvm;
 
     @JsonView({JsonViews.Internal.class})
