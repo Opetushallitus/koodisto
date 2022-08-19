@@ -21,10 +21,9 @@ import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.StringUtils;
 import org.hibernate.Hibernate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,12 +36,13 @@ import java.util.stream.Collectors;
 
 import static fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD;
 
+@Slf4j
 @Transactional
 @Service("koodiBusinessService")
 public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     public static final String ROOT_ORG = "1.2.246.562.10.00000000001";
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     @Lazy
     KoodiRepository koodiRepository;
@@ -107,7 +107,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private KoodiVersioWithKoodistoItem createKoodiNonFlush(String koodistoUri, CreateKoodiDataType createKoodiData, KoodistoVersio latestKoodistoVersio) {
         if (createKoodiData == null || koodistoUri.isBlank()) {
-            logger.warn("KoodistoUri empty");
+            log.warn("KoodistoUri empty");
             throw new KoodistoUriEmptyException();
         }
 
@@ -354,7 +354,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             return;
         }
         if (st == SuhteenTyyppi.SISALTYY && !userIsRootUser() && !koodisHaveSameOrganisaatio(latest.getKoodi().getKoodiUri(), relatedCodeElements)) {
-            logger.warn("Failed to add 'sisaltyy' relation from {} to {}", latest.getKoodi().getKoodiUri(), relatedCodeElements.toString().replaceAll("[\n\r\t]", "_"));
+            log.warn("Failed to add 'sisaltyy' relation from {} to {}", latest.getKoodi().getKoodiUri(), relatedCodeElements.toString().replaceAll("[\n\r\t]", "_"));
             throw new KoodisHaveDifferentOrganizationsException();
         }
         if (relatedCodeElements.contains(latest.getKoodi().getKoodiUri())) {
@@ -374,7 +374,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
             List<KoodiVersioWithKoodistoItem> alakoodiVersios = getLatestKoodiVersios(relatedCodeElements.toArray(new String[relatedCodeElements.size()]));
             if (alakoodiVersios.size() == 0) {
-                logger.error("Child code uris did not match any code elements");
+                log.error("Child code uris did not match any code elements");
                 throw new KoodiNotFoundException();
             }
             for (KoodiVersioWithKoodistoItem alakoodi : alakoodiVersios) {
@@ -452,7 +452,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                 return;
             }
         }
-        logger.error("Tried to add {} relation between codeelements in codes '{}' and '{}'.", st, codesUri, codesUriToBeFound);
+        log.error("Tried to add {} relation between codeelements in codes '{}' and '{}'.", st, codesUri, codesUriToBeFound);
         throw new KoodistosHaveNoRelationException();
     }
 
@@ -534,7 +534,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                 || (Tila.HYVAKSYTTY.equals(latest.getTila()) && UpdateKoodiTilaType.LUONNOS.equals(updateKoodiData.getTila()))
                 || (!Tila.PASSIIVINEN.equals(latest.getTila()) && updateKoodiData.getTila() != null && UpdateKoodiTilaType.PASSIIVINEN.equals(updateKoodiData
                 .getTila()))) {
-            logger.info("KoodiVersio: {}", latest.getVersio());
+            log.info("KoodiVersio: {}", latest.getVersio());
 
             // Create a new version (if needed) of the koodisto too
             KoodistoVersio newKoodistoVersion = koodistoBusinessService.createNewVersion(latest.getKoodi().getKoodisto().getKoodistoUri()).getData();
@@ -636,7 +636,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             return updateOldVersion(latest, updateKoodiData);
         }
 
-        logger.info("Creating new version of KoodiVersio, base version = {}", latest.getVersio());
+        log.info("Creating new version of KoodiVersio, base version = {}", latest.getVersio());
 
         KoodiVersio newVersio = new KoodiVersio();
         EntityUtils.copyFields(updateKoodiData, newVersio);
@@ -768,7 +768,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         KoodiVersioWithKoodistoItem kvkoodisto = getKoodiVersioWithKoodistoVersioItems(koodiUri, koodiVersio);
         KoodiVersio versio = kvkoodisto.getKoodiVersio();
         if (!skipPassiivinenCheck && !Tila.PASSIIVINEN.equals(versio.getTila())) {
-            logger.error("Cannot delete koodi version. Tila must be {}.", Tila.PASSIIVINEN.name());
+            log.error("Cannot delete koodi version. Tila must be {}.", Tila.PASSIIVINEN.name());
             throw new KoodiVersioNotPassiivinenException();
         }
         List<KoodiVersioWithKoodistoItem> codes = listByRelation(koodiUri, koodiVersio, false, SuhteenTyyppi.RINNASTEINEN);
@@ -841,12 +841,12 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisByKoodistoCriteriaType searchCriteria) {
 
         if (searchCriteria == null) {
-            logger.error("No search criteria for koodisto");
+            log.error("No search criteria for koodisto");
             throw new SearchCriteriaEmptyException();
         }
 
         if (!koodistoRepository.existsByKoodistoUri(searchCriteria.getKoodistoUri())) {
-            logger.error("No koodisto found for URI {}", searchCriteria.getKoodistoUri());
+            log.error("No koodisto found for URI {}", searchCriteria.getKoodistoUri());
             throw new KoodistoNotFoundException();
         }
 
@@ -858,7 +858,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             }
         } else if (SearchKoodisByKoodistoVersioSelectionType.SPECIFIC.equals(searchCriteria.getKoodistoVersioSelection())
                 && searchCriteria.getKoodistoVersio() == null) {
-            logger.error("Koodisto version number is empty");
+            log.error("Koodisto version number is empty");
             throw new KoodistoVersionNumberEmptyException();
         }
 
@@ -867,14 +867,14 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private void checkKoodistoExists(String koodistoUri) {
         if (!koodistoBusinessService.koodistoExists(koodistoUri)) {
-            logger.error("No koodisto found with koodisto URI {}", koodistoUri);
+            log.error("No koodisto found with koodisto URI {}", koodistoUri);
             throw new KoodistoNotFoundException();
         }
     }
 
     private void checkKoodistoVersioExists(String koodistoUri, Integer koodistoVersio) {
         if (!koodistoBusinessService.koodistoExists(koodistoUri, koodistoVersio)) {
-            logger.error("No koodisto found with koodisto URI {} and versio {}.", koodistoUri, koodistoVersio);
+            log.error("No koodisto found with koodisto URI {} and versio {}.", koodistoUri, koodistoVersio);
             throw new KoodistoNotFoundException();
         }
     }
@@ -906,7 +906,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
                     searchCriteria.setKoodiVersioSelection(SearchKoodisVersioSelectionType.LATEST);
                 }
             } else if (SearchKoodisVersioSelectionType.SPECIFIC.equals(searchCriteria.getKoodiVersioSelection()) && searchCriteria.getKoodiVersio() == null) {
-                logger.error("Koodi version number is empty");
+                log.error("Koodi version number is empty");
                 throw new KoodiVersionNumberEmptyException();
             }
         }
@@ -966,7 +966,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         List<KoodiVersioWithKoodistoItem> result = searchKoodis(searchData);
         if (result.size() < 1) {
-            logger.warn("No koodi found with URI {} in koodisto with URI {}", koodiUri, koodistoUri);
+            log.warn("No koodi found with URI {} in koodisto with URI {}", koodiUri, koodistoUri);
             throw new KoodiNotFoundException();
         }
 
@@ -983,7 +983,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         List<KoodiVersioWithKoodistoItem> result = searchKoodis(searchData);
         if (result.size() < 1) {
-            logger.warn("No koodi found with URI {} in koodisto with URI {}, versio {}", koodiUri, koodistoUri, koodistoVersio);
+            log.warn("No koodi found with URI {} in koodisto with URI {}, versio {}", koodiUri, koodistoUri, koodistoVersio);
             throw new KoodiNotFoundException();
         }
 
