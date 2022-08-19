@@ -436,6 +436,9 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Override
     public FindOrCreateWrapper<KoodistoVersio> newVersion(KoodistoVersio latest) {
         latest.setTila(Tila.HYVAKSYTTY);
+        latest.getKoodiVersios().stream()
+                .map(KoodistoVersioKoodiVersio::getKoodiVersio)
+                .forEach(koodiVersio -> koodiVersio.setTila(Tila.HYVAKSYTTY));
         return createNewVersion(latest);
     }
 
