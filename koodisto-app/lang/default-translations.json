@@ -125,6 +125,9 @@
   "KOODIVERSIO_DROPDOWN": {
     "defaultMessage": "Koodiversio"
   },
+  "KOODI_LISAA_SIVU_TITLE": {
+    "defaultMessage": "Lisää koodi"
+  },
   "KOODI_MUOKKAA_SIVU_TITLE": {
     "defaultMessage": "Muokkaa koodia"
   },

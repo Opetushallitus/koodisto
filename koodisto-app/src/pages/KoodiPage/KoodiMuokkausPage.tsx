@@ -144,7 +144,7 @@ const KoodiMuokkausPageComponent: React.FC<
     });
     return (
         <>
-            {<KoodiCrumbTrail koodi={getValues()} koodistoUriParam={koodistoUri} />}
+            <KoodiCrumbTrail koodi={getValues()} koodistoUriParam={koodistoUri} />
             <MainHeaderContainer>
                 {(isEditing && (
                     <FormattedMessage
