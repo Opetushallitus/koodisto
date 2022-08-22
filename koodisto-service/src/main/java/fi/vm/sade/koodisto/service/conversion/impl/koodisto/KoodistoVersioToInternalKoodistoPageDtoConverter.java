@@ -25,7 +25,6 @@ public class KoodistoVersioToInternalKoodistoPageDtoConverter implements
     private final OphProperties ophProperties;
     private final KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter koodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;
     private final KoodistoMetadataToKoodistoMetadataDtoConverter koodistoMetadataToKoodistoMetadataDtoConverter;
-    private final KoodiVersioToInternalKoodiVersioDtoConverter koodiVersioToInternalKoodiVersioDtoConverter;
 
     private final List<Kieli> languageSortOrder = List.of(Kieli.FI, Kieli.SV, Kieli.EN);
 

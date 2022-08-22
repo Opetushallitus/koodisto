@@ -1,5 +1,7 @@
 {
-  "koodistoUri": "get",
+  "koodisto": {
+    "koodistoUri": "get"
+  },
   "koodiArvo": "1",
   "versio": 1,
   "koodiUri": "get_1",

@@ -330,7 +330,7 @@ class InternalKoodiResourceTest {
                 .andExpectAll(
                         status().isOk(),
                         content().json(
-                                "[{\"koodistoUri\":\"two\",\"koodiArvo\":\"1\",\"versio\":1,\"koodiUri\":\"two_1\",\"paivitysPvm\":\"2012-03-22\",\"paivittajaOid\":null,\"voimassaAlkuPvm\":\"1990-01-01\",\"metadata\":[{\"nimi\":\"two1\",\"kuvaus\":\"Two 1\",\"kieli\":\"FI\"}],\"sisaltyyKoodeihin\":[],\"sisaltaaKoodit\":[],\"rinnastuuKoodeihin\":[]}]")
+                                "[{\"koodisto\":{\"koodistoUri\":\"two\"},\"koodiArvo\":\"1\",\"versio\":1,\"koodiUri\":\"two_1\",\"paivitysPvm\":\"2012-03-22\",\"paivittajaOid\":null,\"voimassaAlkuPvm\":\"1990-01-01\",\"metadata\":[{\"nimi\":\"two1\",\"kuvaus\":\"Two 1\",\"kieli\":\"FI\"}],\"sisaltyyKoodeihin\":[],\"sisaltaaKoodit\":[],\"rinnastuuKoodeihin\":[]}]")
                 );
 
     }
@@ -352,7 +352,7 @@ class InternalKoodiResourceTest {
         o.put("versio", koodiVersio);
         o.put("koodiArvo", "two1");
         o.put("voimassaAlkuPvm", "2022-01-01");
-        o.put("lockingVersion", "1");
+        o.put("version", "1");
         o.put("tila", "LUONNOS");
         o.put("metadata", metadata);
 

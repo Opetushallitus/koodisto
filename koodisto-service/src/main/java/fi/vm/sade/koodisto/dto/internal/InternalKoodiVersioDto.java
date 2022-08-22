@@ -19,7 +19,8 @@ import java.util.List;
 public class InternalKoodiVersioDto {
 
     @JsonView({JsonViews.Internal.class})
-    private String koodistoUri;
+    private InternalKoodistoPageDto koodisto;
+
 
     @JsonView({JsonViews.Internal.class})
     private String koodiArvo;
