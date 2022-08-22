@@ -26,8 +26,7 @@ public class KoodiVersioToInternalKoodiVersioDtoConverter implements
         InternalKoodistoPageDto koodisto = source.getKoodistoVersios().stream()
                 .filter(versio -> Objects.equals(versio.getKoodiVersio().getId(), source.getId()) && Objects.equals(versio.getKoodiVersio().getVersio(), source.getVersio()))
                 .map(KoodistoVersioKoodiVersio::getKoodistoVersio)
-                .sorted(Comparator.comparing(KoodistoVersio::getVersio))
-                .findFirst()
+                .min(Comparator.comparing(KoodistoVersio::getVersio))
                 .map(koodistoVersioToInternalKoodistoPageDtoConverter::convert)
                 .orElseThrow(KoodistoNotFoundException::new);
 
