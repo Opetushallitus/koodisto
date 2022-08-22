@@ -18,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Objects;
 
 import static org.hamcrest.Matchers.containsString;
@@ -212,7 +213,7 @@ class InternalKoodiResourceTest {
         this.mockMvc.perform(get("/internal/koodi/one"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"koodiUri\":\"one_1\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now() + "\"")));
+                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"")));
     }
 
     @Test
@@ -248,7 +249,7 @@ class InternalKoodiResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
                 .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"UPDATED\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now() + "\"")));
+                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"")));
     }
 
     @Test
@@ -301,8 +302,8 @@ class InternalKoodiResourceTest {
                 .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
                 .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"UPDATED\"")))
                 .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"ADDED\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now() + "\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"2\",\"paivitysPvm\":\"" + LocalDate.now() + "\"")));
+                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"")))
+                .andExpect(content().string(containsString("\"koodiArvo\":\"2\",\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"")));
     }
 
     @Test
