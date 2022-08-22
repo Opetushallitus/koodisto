@@ -18,6 +18,7 @@ import { errorHandlingWrapper } from './errorHandling';
 import axios, { AxiosResponse } from 'axios';
 import { fetchOrganisaatioNimi } from './organisaatio';
 import { ApiKoodi, mapApiKoodi } from './koodi';
+import { asyncAtomWithReset } from './jotaiUtils';
 
 const urlAtom = atom<string>(`${API_INTERNAL_PATH}/koodisto`);
 
@@ -92,26 +93,10 @@ const apiKoodistoListToKoodistoList = (a: ApiListKoodisto, lang: Kieli): ListKoo
     };
 };
 
-const atomWithReset = <T>(fn: (get: Getter) => T) => {
-    const refreshCounter = atom(0);
-
-    return atom(
-        (get) => {
-            get(refreshCounter);
-            return fn(get);
-        },
-        (_, set) => set(refreshCounter, (i) => i + 1)
-    );
-};
-
-export const apiKoodistoListAtom = atomWithReset<Promise<ApiListKoodisto[]>>(async (get: Getter) => {
-    const { data } = await axios.get<ApiListKoodisto[]>(get(urlAtom));
-    return data;
-});
-
-export const koodistoListAtom = atom<ListKoodisto[]>((get: Getter) => {
+export const koodistoListAtom = asyncAtomWithReset<Promise<ListKoodisto[]>>(async (get: Getter) => {
     const lang = get(casMeLangAtom);
-    return get(apiKoodistoListAtom).map((a) => apiKoodistoListToKoodistoList(a, lang));
+    const { data } = await axios.get<ApiListKoodisto[]>(get(urlAtom));
+    return data.map((a) => apiKoodistoListToKoodistoList(a, lang));
 });
 
 export const fetchKoodiListByKoodisto = async ({

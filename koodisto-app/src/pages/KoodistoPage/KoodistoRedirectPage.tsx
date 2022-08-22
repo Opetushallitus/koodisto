@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useAtom } from 'jotai';
-import { apiKoodistoListAtom, koodistoListAtom } from '../../api/koodisto';
+import { koodistoListAtom } from '../../api/koodisto';
 import { Loading } from '../../components/Loading';
+import { useResetAtom } from 'jotai/utils';
 
 export const KoodistoRedirectPage: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { koodistoUri } = useParams();
-    const [, refreshKoodistot] = useAtom(apiKoodistoListAtom);
+    const refreshKoodistot = useResetAtom(koodistoListAtom);
     const [koodistot] = useAtom(koodistoListAtom);
     const [refreshed, setRefreshed] = useState<boolean>(false);
 
