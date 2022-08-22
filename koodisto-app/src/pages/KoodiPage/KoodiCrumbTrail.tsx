@@ -12,10 +12,10 @@ export const KoodiCrumbTrail: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
     const [koodisto, setKoodisto] = useState<PageKoodisto | undefined>(undefined);
     useEffect(() => {
         (async () => {
-            const data = await fetchPageKoodisto({ koodistoUri: koodi.koodistoUri, lang });
+            const data = koodi.koodisto && (await fetchPageKoodisto({ koodistoUri: koodi.koodisto.koodistoUri, lang }));
             setKoodisto(data);
         })();
-    }, [koodi.koodistoUri, lang]);
+    }, [koodi.koodisto, lang]);
     const trail = [
         ...((koodisto && [
             {

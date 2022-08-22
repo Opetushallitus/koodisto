@@ -1,6 +1,9 @@
 import Axios, { AxiosError, AxiosResponse } from 'axios';
 import { danger, warning } from '../../components/Notification/Notification';
-
+type ErrorMessage = { message: string };
+const isErrorMessage = (error: unknown): error is ErrorMessage => {
+    return typeof (error as ErrorMessage).message === 'string';
+};
 const handleError = <T>(error: AxiosError<T> | unknown) => {
     if (Axios.isAxiosError(error)) {
         const axiosError = error;
@@ -12,6 +15,8 @@ const handleError = <T>(error: AxiosError<T> | unknown) => {
                 danger({ message: `server.error.${axiosError.response.status}` });
             }
         }
+    } else if (isErrorMessage(error)) {
+        error.message !== 'canceled' && danger({ message: error.message });
     } else {
         danger({ message: error as string });
         console.error(error);

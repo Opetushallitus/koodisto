@@ -15,66 +15,72 @@ type CreateKoodiDataType = {
     voimassaLoppuPvm?: ApiDate;
     metadata: KoodiMetadata[];
 };
+type ApiKoodiRelation = {
+    codeElementUri: string;
+    codeElementVersion: number;
+};
 type UpdateKoodiDataType = CreateKoodiDataType & {
     koodiUri: string;
     tila: Tila;
     versio: number;
-    lockingVersion: number;
+    version: number;
+    withinCodeElements: ApiKoodiRelation[];
+    includesCodeElements: ApiKoodiRelation[];
+    levelsWithCodeElements: ApiKoodiRelation[];
 };
-export const batchUpsertKoodi = async (koodistoUri: string, koodi: CSVUpsertKoodi[]): Promise<string | undefined> => {
-    return errorHandlingWrapper(async () => {
+export const batchUpsertKoodi = async (koodistoUri: string, koodi: CSVUpsertKoodi[]): Promise<string | undefined> =>
+    errorHandlingWrapper(async () => {
         const { data } = await axios.post<ApiPageKoodisto>(`${API_INTERNAL_PATH}/koodi/${koodistoUri}`, koodi);
         return data.koodistoUri;
     });
-};
-export const mapApiKoodi = ({ api }: { api: ApiKoodi }): Koodi => {
-    return {
-        ...api,
-        paivitysPvm: parseApiDate(api.paivitysPvm),
-        voimassaAlkuPvm: parseApiDate(api.voimassaAlkuPvm),
-        voimassaLoppuPvm: api.voimassaLoppuPvm && parseApiDate(api.voimassaLoppuPvm),
-    };
-};
+
+export const mapApiKoodi = ({ api }: { api: ApiKoodi }): Koodi => ({
+    ...api,
+    paivitysPvm: parseApiDate(api.paivitysPvm),
+    voimassaAlkuPvm: parseApiDate(api.voimassaAlkuPvm),
+    voimassaLoppuPvm: api.voimassaLoppuPvm && parseApiDate(api.voimassaLoppuPvm),
+});
+
 export const fetchKoodistoKoodis = async (
     koodistoUri: string,
-    koodistoVersio: number
-): Promise<Koodi[] | undefined> => {
-    return errorHandlingWrapper(async () => {
+    koodistoVersio: number,
+    controller?: AbortController
+): Promise<Koodi[] | undefined> =>
+    errorHandlingWrapper(async () => {
         const { data: pageData } = await axios.get<ApiKoodi[]>(
-            `${API_INTERNAL_PATH}/koodi/koodisto/${koodistoUri}/${koodistoVersio}`
+            `${API_INTERNAL_PATH}/koodi/koodisto/${koodistoUri}/${koodistoVersio}`,
+            { signal: controller?.signal }
         );
         return pageData.map((api) => mapApiKoodi({ api }));
     });
-};
-export const fetchPageKoodi = async (koodiUri: string, versio: number): Promise<Koodi | undefined> => {
-    return errorHandlingWrapper(async () => {
+
+export const fetchPageKoodi = async (koodiUri: string, versio: number): Promise<Koodi | undefined> =>
+    errorHandlingWrapper(async () => {
         const { data: pageData } = await axios.get<ApiKoodi>(`${API_INTERNAL_PATH}/koodi/${koodiUri}/${versio}`);
         return mapApiKoodi({ api: pageData });
     });
-};
 
-export const updateKoodi = async (koodi: Koodi): Promise<Koodi | undefined> => {
-    return upsertKoodi<UpdateKoodiDataType>({
+export const updateKoodi = async (koodi: Koodi): Promise<Koodi | undefined> =>
+    upsertKoodi<UpdateKoodiDataType>({
         koodi,
         mapper: mapKoodiToUpdateKoodi,
         path: `${API_INTERNAL_PATH}/koodi`,
         axiosFunc: axios.put,
     });
-};
-export const createKoodi = async (koodi: Koodi): Promise<Koodi | undefined> => {
-    return upsertKoodi<CreateKoodiDataType>({
+
+export const createKoodi = async (koodi: Koodi): Promise<Koodi | undefined> =>
+    upsertKoodi<CreateKoodiDataType>({
         koodi,
         mapper: mapKoodiToCreateKoodi,
-        path: `${API_INTERNAL_PATH}/koodi/${koodi.koodistoUri}`,
+        path: `${API_INTERNAL_PATH}/koodi/${koodi.koodisto.koodistoUri}`,
         axiosFunc: axios.post,
     });
-};
-export const deleteKoodi = async (koodi: Koodi): Promise<boolean | undefined> => {
-    return errorHandlingWrapper(async () => {
+export const deleteKoodi = async (koodi: Koodi): Promise<boolean | undefined> =>
+    errorHandlingWrapper(async () => {
         const { status } = await axios.delete(`${API_INTERNAL_PATH}/koodi/${koodi.koodiUri}/${koodi.versio}`);
         return status === 204;
     });
-};
+
 const upsertKoodi = async <X>({
     koodi,
     mapper,
@@ -85,8 +91,8 @@ const upsertKoodi = async <X>({
     mapper: (a: Koodi) => X;
     path: string;
     axiosFunc: <T, R = AxiosResponse<T>>(url: string, data?: X) => Promise<R>;
-}): Promise<Koodi | undefined> => {
-    return errorHandlingWrapper(async () => {
+}): Promise<Koodi | undefined> =>
+    errorHandlingWrapper(async () => {
         const { data: apiKoodi } = await axiosFunc(path, mapper(koodi));
         return (
             apiKoodi && {
@@ -96,14 +102,25 @@ const upsertKoodi = async <X>({
             }
         );
     });
-};
 
 const mapKoodiToUpdateKoodi = (koodi: Koodi): UpdateKoodiDataType => ({
     ...mapKoodiToCreateKoodi(koodi),
     koodiUri: koodi.koodiUri,
-    lockingVersion: koodi.lockingVersion,
+    version: koodi.lockingVersion,
     tila: koodi.tila,
     versio: koodi.versio,
+    includesCodeElements: koodi.sisaltaaKoodit.map((a) => ({
+        codeElementUri: a.koodiUri,
+        codeElementVersion: a.koodiVersio,
+    })),
+    withinCodeElements: koodi.sisaltyyKoodeihin.map((a) => ({
+        codeElementUri: a.koodiUri,
+        codeElementVersion: a.koodiVersio,
+    })),
+    levelsWithCodeElements: koodi.rinnastuuKoodeihin.map((a) => ({
+        codeElementUri: a.koodiUri,
+        codeElementVersion: a.koodiVersio,
+    })),
 });
 
 const mapKoodiToCreateKoodi = (koodi: Koodi): CreateKoodiDataType => ({

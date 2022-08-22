@@ -1,15 +1,16 @@
 import * as React from 'react';
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { Table } from '../../components/Table';
 import { Link } from 'react-router-dom';
 import { KoodistoRelation, ListKoodisto, PageKoodisto } from '../../types';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
-import { ButtonLabelPrefix } from '../KoodistoTablePage/KoodistoTablePage';
 import { IconWrapper } from '../../components/IconWapper';
-import { SuhdeModal } from './SuhdeModal';
+import { KoodistoSuhdeModal } from './KoodistoSuhdeModal';
 import { ColumnDef, CellContext } from '@tanstack/react-table';
 import { UseFieldArrayReturn } from 'react-hook-form';
+import { StyledPopup } from '../../components/Modal/Modal';
+import { ButtonLabelPrefix } from '../../components/Containers';
 
 type KoodistoRelationsTableProps = {
     koodistoRelations: KoodistoRelation[];
@@ -17,16 +18,6 @@ type KoodistoRelationsTableProps = {
     fieldArrayReturn?: UseFieldArrayReturn<PageKoodisto>;
 };
 
-const AddSuhdeButton: React.FC<{ onClick: (e: React.ChangeEvent<HTMLInputElement>) => void }> = ({ onClick }) => {
-    return (
-        <Button name={'TAULUKKO_LISAA_KOODISTOSUHTEITA_BUTTON'} onClick={onClick} variant={'text'}>
-            <ButtonLabelPrefix>
-                <IconWrapper icon="el:plus" inline={true} fontSize={'0.6rem'} />
-            </ButtonLabelPrefix>
-            <FormattedMessage id={'TAULUKKO_LISAA_KOODISTOJA_BUTTON'} defaultMessage={'Lisää koodistoja'} />
-        </Button>
-    );
-};
 const RemoveSuhdeButton: React.FC<{ onClick: (e: React.ChangeEvent<HTMLInputElement>) => void }> = ({ onClick }) => {
     return (
         <Button name={'TAULUKKO_POISTA_KOODISTOSUHTEITA_BUTTON'} onClick={onClick} variant={'text'}>
@@ -37,18 +28,12 @@ const RemoveSuhdeButton: React.FC<{ onClick: (e: React.ChangeEvent<HTMLInputElem
     );
 };
 
-const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
+export const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
     koodistoRelations,
     editable,
     fieldArrayReturn,
 }) => {
     const { formatMessage, locale } = useIntl();
-
-    const [showSuhdeModal, setShowSuhdeModal] = useState<boolean>(false);
-    const showModal = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.stopPropagation();
-        setShowSuhdeModal(true);
-    };
     const data = useMemo<KoodistoRelation[]>(() => {
         return [...koodistoRelations];
     }, [koodistoRelations]);
@@ -70,7 +55,6 @@ const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
                         nimi: { fi: a.nimi || '', sv: a.nimi || '', en: a.nimi || '' },
                         kuvaus: { fi: a.kuvaus || '', sv: a.kuvaus || '', en: a.kuvaus || '' },
                         passive: false,
-                        status: 'NEW' as const,
                     })),
                 ]);
         },
@@ -84,7 +68,9 @@ const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
                     {
                         id: 'nimi',
                         cell: (info) => (
-                            <Link to={`/koodisto/${info.row.original.koodistoUri}/${info.row.original.koodistoVersio}`}>
+                            <Link
+                                to={`/koodisto/view/${info.row.original.koodistoUri}/${info.row.original.koodistoVersio}`}
+                            >
                                 {info.row.original.nimi?.[locale as keyof typeof info.row.original.nimi] ||
                                     info.row.original.nimi?.['fi']}
                             </Link>
@@ -138,17 +124,33 @@ const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
 
     return (
         <>
-            <Table<KoodistoRelation> columns={columns} data={data}>
-                {editable && <AddSuhdeButton onClick={showModal} />}
-            </Table>
-            {showSuhdeModal && (
-                <SuhdeModal
-                    oldRelations={koodistoRelations}
-                    save={(a) => addNewKoodistoToRelations(a)}
-                    close={() => setShowSuhdeModal(false)}
-                />
+            <Table<KoodistoRelation> columns={columns} data={data}></Table>
+            {editable && (
+                <StyledPopup
+                    trigger={
+                        <Button name={'TAULUKKO_LISAA_KOODISTOSUHTEITA_BUTTON'} variant={'text'}>
+                            <ButtonLabelPrefix>
+                                <IconWrapper icon="el:plus" inline={true} fontSize={'0.6rem'} />
+                            </ButtonLabelPrefix>
+                            <FormattedMessage
+                                id={'TAULUKKO_LISAA_KOODISTOJA_BUTTON'}
+                                defaultMessage={'Lisää koodistoja'}
+                            />
+                        </Button>
+                    }
+                    modal
+                >
+                    {
+                        ((close) => (
+                            <KoodistoSuhdeModal
+                                oldRelations={koodistoRelations}
+                                save={(a) => addNewKoodistoToRelations(a)}
+                                close={close}
+                            />
+                        )) as (close: () => void) => React.ReactNode
+                    }
+                </StyledPopup>
             )}
         </>
     );
 };
-export default KoodistoRelationsTable;

@@ -1,17 +1,23 @@
 import React, { useMemo, useState } from 'react';
 import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
-import { ButtonLabelPrefix, HeaderContainer } from './KoodistoTablePage';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { Table } from '../../components/Table';
 import { ListKoodisto, SelectOptionType, KoodistoRelation } from '../../types';
 import { koodistoListAtom } from '../../api/koodisto';
 import { useAtom } from 'jotai';
 import { ColumnDef, CellContext } from '@tanstack/react-table';
 import { sortBy } from 'lodash';
-
+import { ButtonLabelPrefix } from '../Containers';
+import { Table } from './Table';
+export const HeaderContainer = styled.div`
+    display: flex;
+    padding: 1rem 1rem;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #cccccc;
+`;
 const HeaderContentDivider = styled.div`
     display: inline-flex;
     align-items: baseline;
@@ -37,7 +43,7 @@ type KoodistoTableProps = {
     oldRelations?: KoodistoRelation[];
 };
 
-const KoodistoTable: React.FC<KoodistoTableProps> = ({ modal, setSelected, oldRelations = [] }) => {
+export const KoodistoTable: React.FC<KoodistoTableProps> = ({ modal, setSelected, oldRelations = [] }) => {
     const navigate = useNavigate();
     const [atomData] = useAtom(koodistoListAtom);
     const { formatMessage } = useIntl();
@@ -201,4 +207,3 @@ const KoodistoTable: React.FC<KoodistoTableProps> = ({ modal, setSelected, oldRe
         </>
     );
 };
-export default KoodistoTable;

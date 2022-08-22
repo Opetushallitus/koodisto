@@ -101,6 +101,9 @@
   "KOODISTO_RYHMA_TYHJAT_TITLE": {
     "defaultMessage": "Tyhjät koodistoryhmät ({emptyRyhmaCount})"
   },
+  "KOODISTO_SUHDE_MODAL_HEADER": {
+    "defaultMessage": "Valitse koodistot"
+  },
   "KOODISTO_TALLENNUS_MESSAGE": {
     "defaultMessage": "Tallennettiin koodisto uri:lla {koodistoUri}"
   },
@@ -130,6 +133,9 @@
   },
   "KOODI_POISTA_TITLE": {
     "defaultMessage": "Poista koodi"
+  },
+  "KOODI_SUHDE_MODAL_HEADER": {
+    "defaultMessage": "Valitse koodistot"
   },
   "KOODI_TALLENNUS_MESSAGE": {
     "defaultMessage": "Tallennettiin koodi uri:lla {koodiUri}"
@@ -182,9 +188,6 @@
   "RYHMA_PAKOLLINEN": {
     "defaultMessage": "Valitse koodisto-ryhmä."
   },
-  "SUHDEMODAL_HEADER": {
-    "defaultMessage": "Valitse koodistot"
-  },
   "SUHDEMODAL_LISAA": {
     "defaultMessage": "Lisää valitut ({chosen})"
   },
@@ -205,6 +208,9 @@
   },
   "TAULUKKO_KOODIMAARA": {
     "defaultMessage": "Koodien lkm"
+  },
+  "TAULUKKO_KOODISTORUI_NIMI": {
+    "defaultMessage": "Koodisto"
   },
   "TAULUKKO_KOODISTORYHMA_OTSIKKO": {
     "defaultMessage": "Koodistoryhma"
@@ -231,7 +237,10 @@
     "defaultMessage": "Voimassa"
   },
   "TAULUKKO_KUVAUS_OTSIKKO": {
-    "defaultMessage": "Voit rajata koodistoryhmällä tai nimellä"
+    "defaultMessage": "Kuvaus"
+  },
+  "TAULUKKO_LISAA_KOODEJA_BUTTON": {
+    "defaultMessage": "Lisää koodeja"
   },
   "TAULUKKO_LISAA_KOODISTOJA_BUTTON": {
     "defaultMessage": "Lisää koodistoja"

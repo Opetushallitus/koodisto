@@ -20,6 +20,12 @@ export const translateMetadata = ({
     lang: Kieli;
 }): Metadata | undefined => metadata.find((a) => a.kieli === lang) || metadata.find((a) => a.kieli === 'FI');
 
+export const metadataToMultiLocaleText = (metadata: Metadata[], field: keyof Metadata): Record<Locale, string> => ({
+    fi: metadata.find((b) => b.kieli === 'FI')?.[field] || '',
+    sv: metadata.find((b) => b.kieli === 'SV')?.[field] || '',
+    en: metadata.find((b) => b.kieli === 'EN')?.[field] || '',
+});
+
 export const parseApiDate = (a: ApiDate): Date => {
     return !!a && moment(a).toDate();
 };

@@ -108,14 +108,13 @@ export const fetchKoodiListByKoodisto = async ({
 }: {
     koodistoUri: string;
     koodistoVersio?: number;
-}): Promise<Koodi[] | undefined> => {
-    return errorHandlingWrapper(async () => {
+}): Promise<Koodi[] | undefined> =>
+    errorHandlingWrapper(async () => {
         const { data } = await axios.get<ApiKoodi[]>(`${API_BASE_PATH}/json/${koodistoUri}/koodi`, {
             params: koodistoVersio !== undefined ? { koodistoVersio } : {},
         });
         return data.map((api) => mapApiKoodi({ api }));
     });
-};
 
 export const updateKoodisto = async ({
     koodisto,
@@ -137,15 +136,15 @@ export const createKoodisto = async ({
 }: {
     koodisto: PageKoodisto;
     lang: Kieli;
-}): Promise<PageKoodisto | undefined> => {
-    return upsertKoodisto<CreateKoodistoDataType>({
+}): Promise<PageKoodisto | undefined> =>
+    upsertKoodisto<CreateKoodistoDataType>({
         koodisto,
         lang,
         mapper: mapPageKoodistoToCreatePageKoodisto,
         path: `${API_INTERNAL_PATH}/koodisto/${koodisto.koodistoRyhmaUri.value}`,
         axiosFunc: axios.post,
     });
-};
+
 const upsertKoodisto = async <X>({
     koodisto,
     lang,
@@ -158,8 +157,8 @@ const upsertKoodisto = async <X>({
     mapper: (a: PageKoodisto) => X;
     path: string;
     axiosFunc: <T, R = AxiosResponse<T>>(url: string, data?: X) => Promise<R>;
-}): Promise<PageKoodisto | undefined> => {
-    return errorHandlingWrapper(async () => {
+}): Promise<PageKoodisto | undefined> =>
+    errorHandlingWrapper(async () => {
         const { data: apiKoodisto } = await axiosFunc(path, mapper(koodisto));
         return (
             apiKoodisto && {
@@ -171,7 +170,6 @@ const upsertKoodisto = async <X>({
             }
         );
     });
-};
 
 const mapApiPageKoodistoToPageKoodisto = ({
     api,
@@ -207,15 +205,14 @@ const mapApiPageKoodistoToPageKoodisto = ({
     };
 };
 
-function mapPageKoodistoToCreatePageKoodisto(koodisto: PageKoodisto): CreateKoodistoDataType {
-    return {
-        omistaja: koodisto.omistaja,
-        metadataList: koodisto.metadata,
-        organisaatioOid: koodisto.organisaatioOid.value,
-        voimassaAlkuPvm: koodisto.voimassaAlkuPvm && parseUIDate(koodisto.voimassaAlkuPvm),
-        voimassaLoppuPvm: koodisto.voimassaLoppuPvm && parseUIDate(koodisto.voimassaLoppuPvm),
-    };
-}
+const mapPageKoodistoToCreatePageKoodisto = (koodisto: PageKoodisto): CreateKoodistoDataType => ({
+    omistaja: koodisto.omistaja,
+    metadataList: koodisto.metadata,
+    organisaatioOid: koodisto.organisaatioOid.value,
+    voimassaAlkuPvm: koodisto.voimassaAlkuPvm && parseUIDate(koodisto.voimassaAlkuPvm),
+    voimassaLoppuPvm: koodisto.voimassaLoppuPvm && parseUIDate(koodisto.voimassaLoppuPvm),
+});
+
 const toApiRelation = (relation: KoodistoRelation): ApiKoodistoRelation => ({
     codesUri: relation.koodistoUri,
     codesVersion: relation.koodistoVersio,

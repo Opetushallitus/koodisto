@@ -4,9 +4,8 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Notification } from './components/Notification';
 import { KoodistoPage, KoodistoMuokkausPage, KoodistoRedirectPage } from './pages/KoodistoPage';
-import KoodiPage from './pages/KoodiPage';
+import { KoodiPage, KoodiMuokkausPage } from './pages/KoodiPage';
 import { Loading } from './components/Loading';
-import { KoodiMuokkausPage } from './pages/KoodiMuokkausPage';
 
 export const PageBase = styled.div`
     width: 100%;

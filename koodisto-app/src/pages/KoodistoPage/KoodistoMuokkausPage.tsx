@@ -222,16 +222,18 @@ export const KoodistoMuokkausPage: React.FC = () => {
                             fieldPath={'kuvaus'}
                         />
                     </MainContainerRow>
-                    <KoodistoPageAccordion
-                        editable
-                        sisaltyyKoodistoihin={getValues('sisaltyyKoodistoihin') || []}
-                        sisaltyyKoodistoihinReplace={sisaltyyKoodistoihinFieldArray}
-                        rinnastuuKoodistoihin={getValues('rinnastuuKoodistoihin') || []}
-                        rinnastuuKoodistoihinReplace={rinnastuuKoodistoihinFieldArray}
-                        sisaltaaKoodistotReplace={sisaltaaKoodistotFieldArray}
-                        sisaltaaKoodistot={getValues('sisaltaaKoodistot') || []}
-                        koodiList={[]}
-                    />
+                    {isEditing && (
+                        <KoodistoPageAccordion
+                            editable
+                            sisaltyyKoodistoihin={getValues('sisaltyyKoodistoihin') || []}
+                            sisaltyyKoodistoihinReturn={sisaltyyKoodistoihinFieldArray}
+                            rinnastuuKoodistoihin={getValues('rinnastuuKoodistoihin') || []}
+                            rinnastuuKoodistoihinReturn={rinnastuuKoodistoihinFieldArray}
+                            sisaltaaKoodistot={getValues('sisaltaaKoodistot') || []}
+                            sisaltaaKoodistotReturn={sisaltaaKoodistotFieldArray}
+                            koodiList={[]}
+                        />
+                    )}
                 </form>
             </MainContainer>
             <Footer

@@ -1,5 +1,5 @@
 import { mapKoodiToCSV } from './downloadCsv';
-import { Tila } from '../types';
+import { Tila, Koodi } from '../types';
 
 const cleanKoodi = {
     versions: 1,
@@ -23,7 +23,7 @@ const cleanKoodi = {
 describe('downloadCsv', () => {
     describe('mapKoodiToCSV', () => {
         it('can map koodi with 0 metadata', () => {
-            expect(mapKoodiToCSV(cleanKoodi)).toStrictEqual({
+            expect(mapKoodiToCSV(cleanKoodi as unknown as Koodi)).toStrictEqual({
                 koodistoUri: 'koodistoUri',
                 koodiArvo: '',
                 versio: 0,
@@ -41,7 +41,9 @@ describe('downloadCsv', () => {
             });
         });
         it('can map koodi with 1 metadata', () => {
-            expect(mapKoodiToCSV({ ...cleanKoodi, metadata: [{ kieli: 'FI', nimi: 'bar' }] })).toStrictEqual({
+            expect(
+                mapKoodiToCSV({ ...cleanKoodi, metadata: [{ kieli: 'FI', nimi: 'bar' }] } as unknown as Koodi)
+            ).toStrictEqual({
                 koodistoUri: 'koodistoUri',
                 koodiArvo: '',
                 versio: 0,

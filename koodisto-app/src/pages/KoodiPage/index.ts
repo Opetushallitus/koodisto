@@ -1,3 +1,2 @@
-import KoodiPage from './KoodiPage';
-
-export default KoodiPage;
+export { KoodiPage } from './KoodiPage';
+export { KoodiMuokkausPage } from './KoodiMuokkausPage';

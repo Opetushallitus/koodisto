@@ -2,6 +2,7 @@ import { MessageDescriptor } from '@formatjs/intl/src/types';
 import { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat';
 import { Options as IntlMessageFormatOptions } from 'intl-messageformat/src/core';
 import { Control, Path } from 'react-hook-form';
+import { ApiPageKoodisto } from '../api/koodisto';
 
 export type Kieli = 'EN' | 'FI' | 'SV';
 export type Locale = Lowercase<Kieli>;
@@ -135,25 +136,24 @@ export type KoodiRelation = {
     koodiUri: string;
     koodiVersio: number;
     // codeElementValue: string;
-    koodistoNimi: {
+    koodistoNimi?: {
         fi: string;
         sv: string;
         en: string;
     };
-    nimi: {
+    nimi?: {
         fi: string;
         sv: string;
         en: string;
     };
-    kuvaus: {
+    kuvaus?: {
         fi: string;
         sv: string;
         en: string;
     };
 };
 export type Koodi = {
-    koodisto?: { koodistoUri: string };
-    koodistoUri: string;
+    koodisto: ApiPageKoodisto;
     koodiUri: string;
     resourceUri: string;
     versio: number;

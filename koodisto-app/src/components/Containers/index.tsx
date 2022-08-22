@@ -102,3 +102,9 @@ export const FooterRightContainer = styled.div`
 export const SelectContainer = styled.div`
     width: 8rem;
 `;
+
+export const ButtonLabelPrefix = styled.span`
+    display: flex;
+    align-items: center;
+    padding-right: 0.3rem;
+`;

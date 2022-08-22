@@ -1,15 +1,15 @@
 import React from 'react';
 import { Accordion } from '../../components/Accordion';
 import { FormattedMessage } from 'react-intl';
-import KoodistoRelationsTable from './KoodistoRelationsTable';
-import { KoodiTable } from './KoodiTable';
+import { KoodistoRelationsTable } from './KoodistoRelationsTable';
 import { Koodi, KoodistoRelation, PageKoodisto } from '../../types';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
-import { ButtonLabelPrefix } from '../KoodistoTablePage/KoodistoTablePage';
 import { IconWrapper } from '../../components/IconWapper';
 import { useNavigate, createSearchParams, useParams } from 'react-router-dom';
 import Spin from '@opetushallitus/virkailija-ui-components/Spin';
 import { UseFieldArrayReturn } from 'react-hook-form';
+import { ButtonLabelPrefix } from '../../components/Containers';
+import { KoodiTable } from '../../components/Table';
 
 const SISALTYY_KOODISTOIHIN_ID = 0;
 const SISALTAA_KOODISTOT_ID = 1;
@@ -22,18 +22,18 @@ type KoodistoPageAccordionProps = {
     sisaltaaKoodistot: KoodistoRelation[];
     koodiList?: Koodi[];
     editable?: boolean;
-    rinnastuuKoodistoihinReplace?: UseFieldArrayReturn<PageKoodisto>;
-    sisaltyyKoodistoihinReplace?: UseFieldArrayReturn<PageKoodisto>;
-    sisaltaaKoodistotReplace?: UseFieldArrayReturn<PageKoodisto>;
+    rinnastuuKoodistoihinReturn?: UseFieldArrayReturn<PageKoodisto>;
+    sisaltyyKoodistoihinReturn?: UseFieldArrayReturn<PageKoodisto>;
+    sisaltaaKoodistotReturn?: UseFieldArrayReturn<PageKoodisto>;
 };
 
 const KoodistoPageAccordion: React.FC<KoodistoPageAccordionProps> = ({
     rinnastuuKoodistoihin,
     sisaltyyKoodistoihin,
     sisaltaaKoodistot,
-    rinnastuuKoodistoihinReplace,
-    sisaltyyKoodistoihinReplace,
-    sisaltaaKoodistotReplace,
+    rinnastuuKoodistoihinReturn,
+    sisaltyyKoodistoihinReturn,
+    sisaltaaKoodistotReturn,
     koodiList,
     editable,
 }) => {
@@ -54,7 +54,7 @@ const KoodistoPageAccordion: React.FC<KoodistoPageAccordionProps> = ({
             ),
             panelComponent: (
                 <KoodistoRelationsTable
-                    fieldArrayReturn={sisaltyyKoodistoihinReplace}
+                    fieldArrayReturn={sisaltyyKoodistoihinReturn}
                     koodistoRelations={sisaltyyKoodistoihin}
                     editable={!!editable}
                 />
@@ -73,7 +73,7 @@ const KoodistoPageAccordion: React.FC<KoodistoPageAccordionProps> = ({
             ),
             panelComponent: (
                 <KoodistoRelationsTable
-                    fieldArrayReturn={rinnastuuKoodistoihinReplace}
+                    fieldArrayReturn={rinnastuuKoodistoihinReturn}
                     koodistoRelations={rinnastuuKoodistoihin}
                     editable={!!editable}
                 />
@@ -92,7 +92,7 @@ const KoodistoPageAccordion: React.FC<KoodistoPageAccordionProps> = ({
             ),
             panelComponent: (
                 <KoodistoRelationsTable
-                    fieldArrayReturn={sisaltaaKoodistotReplace}
+                    fieldArrayReturn={sisaltaaKoodistotReturn}
                     koodistoRelations={sisaltaaKoodistot}
                     editable={!!editable}
                 />

@@ -1,10 +1,24 @@
 import React from 'react';
 import { Accordion } from '../../components/Accordion';
 import { useIntl } from 'react-intl';
-import { RelationTable } from './RelationTable';
+import { KoodiRelationsTable } from './KoodiRelationsTable';
 import { Koodi } from '../../types';
+import { UseFieldArrayReturn } from 'react-hook-form';
 
-export const KoodiPageAccordion: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
+type KoodiPageAccordionProps = {
+    koodi: Koodi;
+    editable?: boolean;
+    sisaltyyKoodeihinReturn?: UseFieldArrayReturn<Koodi>;
+    sisaltaaKooditReturn?: UseFieldArrayReturn<Koodi>;
+    rinnastuuKoodeihinReturn?: UseFieldArrayReturn<Koodi>;
+};
+export const KoodiPageAccordion: React.FC<KoodiPageAccordionProps> = ({
+    koodi,
+    editable,
+    sisaltyyKoodeihinReturn,
+    sisaltaaKooditReturn,
+    rinnastuuKoodeihinReturn,
+}) => {
     const { formatMessage } = useIntl();
     const data = [
         {
@@ -14,9 +28,19 @@ export const KoodiPageAccordion: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
                     id: 'TAULUKKO_SISALTYY_KOODEIHIN_OTSIKKO',
                     defaultMessage: 'Sisältyy koodeihin ({count})',
                 },
-                { count: koodi.sisaltyyKoodeihin.length }
+                { count: koodi.sisaltyyKoodeihin?.length }
             ),
-            panelComponent: <RelationTable relations={koodi.sisaltyyKoodeihin} />,
+            panelComponent: (
+                <KoodiRelationsTable
+                    relationSources={koodi?.koodisto?.sisaltyyKoodistoihin?.map((a) => ({
+                        koodistoUri: a.koodistoUri,
+                        versio: a.koodistoVersio,
+                    }))}
+                    editable={!!editable}
+                    relations={koodi.sisaltyyKoodeihin || []}
+                    fieldArrayReturn={sisaltyyKoodeihinReturn}
+                />
+            ),
         },
         {
             id: 'includes',
@@ -25,9 +49,19 @@ export const KoodiPageAccordion: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
                     id: 'TAULUKKO_SISALTAA_KOODIT_OTSIKKO',
                     defaultMessage: 'Sisältää koodit ({count})',
                 },
-                { count: koodi.sisaltaaKoodit.length }
+                { count: koodi.sisaltaaKoodit?.length }
             ),
-            panelComponent: <RelationTable relations={koodi.sisaltaaKoodit} />,
+            panelComponent: (
+                <KoodiRelationsTable
+                    relationSources={koodi?.koodisto?.sisaltaaKoodistot?.map((a) => ({
+                        koodistoUri: a.koodistoUri,
+                        versio: a.koodistoVersio,
+                    }))}
+                    editable={!!editable}
+                    relations={koodi.sisaltaaKoodit || []}
+                    fieldArrayReturn={sisaltaaKooditReturn}
+                />
+            ),
         },
         {
             id: 'levels-with',
@@ -36,9 +70,19 @@ export const KoodiPageAccordion: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
                     id: 'TAULUKKO_RINNASTUU_KOODEIHIN_OTSIKKO',
                     defaultMessage: 'Rinnastuu koodeihin ({count})',
                 },
-                { count: koodi.rinnastuuKoodeihin.length }
+                { count: koodi.rinnastuuKoodeihin?.length }
             ),
-            panelComponent: <RelationTable relations={koodi.rinnastuuKoodeihin} />,
+            panelComponent: (
+                <KoodiRelationsTable
+                    relationSources={koodi?.koodisto?.rinnastuuKoodistoihin?.map((a) => ({
+                        koodistoUri: a.koodistoUri,
+                        versio: a.koodistoVersio,
+                    }))}
+                    editable={!!editable}
+                    relations={koodi.rinnastuuKoodeihin || []}
+                    fieldArrayReturn={rinnastuuKoodeihinReturn}
+                />
+            ),
         },
     ];
 

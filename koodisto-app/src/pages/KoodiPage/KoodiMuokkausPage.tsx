@@ -11,13 +11,14 @@ import {
 import { FormattedMessage, useIntl } from 'react-intl';
 import { CrumbTrail } from '../../components/CrumbTrail';
 import { fetchPageKoodi, updateKoodi, createKoodi, deleteKoodi } from '../../api/koodi';
-import { useForm, UseFormReturn } from 'react-hook-form';
-import { Koodi } from '../../types';
+import { useForm, UseFormReturn, useFieldArray, ArrayPath } from 'react-hook-form';
+import { Koodi, KoodiRelation } from '../../types';
 import { Loading } from '../../components/Loading';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import { Footer, ConfirmationDialog } from '../../components/Footer';
 import { DatePickerController, InputArrayController } from '../../components/controllers';
 import { success } from '../../components/Notification';
+import { KoodiPageAccordion } from './KoodiPageAccordion';
 
 const successNotification = (koodiUri: string) => {
     success({
@@ -55,7 +56,7 @@ export const KoodiMuokkausPage: React.FC = () => {
         shouldUseNativeValidation: true,
         defaultValues: {
             metadata: [{ kieli: 'FI' }, { kieli: 'SV' }, { kieli: 'EN' }],
-            koodistoUri: newKoodiKoodistoUri || '',
+            koodisto: { koodistoUri: newKoodiKoodistoUri || '' },
         },
     });
     useEffect(() => {
@@ -86,18 +87,34 @@ export const KoodiMuokkausPage: React.FC = () => {
         setLoading(true);
         if (await deleteKoodi(koodi)) {
             deleteSuccess();
-            navigate(`/koodisto/view/${koodi.koodistoUri}`);
+            koodi.koodisto && navigate(`/koodisto/view/${koodi.koodisto.koodistoUri}`);
         } else {
             setLoading(false);
         }
     };
-    return (loading && <Loading />) || <KoodiMuokkausPageComponent {...formReturn} save={save} remove={remove} />;
+    return (
+        (loading && <Loading />) || (
+            <KoodiMuokkausPageComponent {...formReturn} save={save} remove={remove} isEditing={!!isEditing} />
+        )
+    );
 };
 const KoodiMuokkausPageComponent: React.FC<
-    { save: (a: Koodi) => void; remove: (koodi: Koodi) => void } & UseFormReturn<Koodi>
-> = ({ register, handleSubmit, save, remove, control, getValues }) => {
+    { save: (a: Koodi) => void; remove: (koodi: Koodi) => void; isEditing: boolean } & UseFormReturn<Koodi>
+> = ({ register, handleSubmit, save, remove, control, getValues, isEditing }) => {
     const { koodiUri, koodiVersio } = useParams();
     const { formatMessage } = useIntl();
+    const sisaltyyKoodeihinReturn = useFieldArray<Koodi, ArrayPath<Koodi>, keyof KoodiRelation | 'id'>({
+        control,
+        name: 'sisaltyyKoodeihin' as ArrayPath<Koodi>,
+    });
+    const rinnastuuKoodeihinReturn = useFieldArray<Koodi, ArrayPath<Koodi>, keyof KoodiRelation | 'id'>({
+        control,
+        name: 'rinnastuuKoodeihin' as ArrayPath<Koodi>,
+    });
+    const sisaltaaKooditReturn = useFieldArray<Koodi, ArrayPath<Koodi>, keyof KoodiRelation | 'id'>({
+        control,
+        name: 'sisaltaaKoodit' as ArrayPath<Koodi>,
+    });
     return (
         <>
             <CrumbTrail trail={[{ key: koodiUri || 'newKoodiUri', label: koodiUri || '' }]} />
@@ -163,6 +180,15 @@ const KoodiMuokkausPageComponent: React.FC<
                         fieldPath={'kuvaus'}
                     />
                 </MainContainerRow>
+                {isEditing && (
+                    <KoodiPageAccordion
+                        editable
+                        koodi={getValues() || undefined}
+                        rinnastuuKoodeihinReturn={rinnastuuKoodeihinReturn}
+                        sisaltaaKooditReturn={sisaltaaKooditReturn}
+                        sisaltyyKoodeihinReturn={sisaltyyKoodeihinReturn}
+                    />
+                )}
             </MainContainer>
             <Footer
                 returnPath={(koodiUri && `/koodi/view/${koodiUri}/${koodiVersio}`) || '/'}
