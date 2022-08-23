@@ -2,12 +2,19 @@
 package fi.vm.sade.koodisto.service.types;
 
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreateKoodiDataType implements Serializable
 {
 
@@ -17,30 +24,6 @@ public class CreateKoodiDataType implements Serializable
     protected Date voimassaAlkuPvm;
     protected Date voimassaLoppuPvm;
     private List<KoodiMetadataType> metadata;
-
-    public String getKoodiArvo() {
-        return koodiArvo;
-    }
-
-    public void setKoodiArvo(String value) {
-        this.koodiArvo = value;
-    }
-
-    public Date getVoimassaAlkuPvm() {
-        return voimassaAlkuPvm;
-    }
-
-    public void setVoimassaAlkuPvm(Date value) {
-        this.voimassaAlkuPvm = value;
-    }
-
-    public Date getVoimassaLoppuPvm() {
-        return voimassaLoppuPvm;
-    }
-
-    public void setVoimassaLoppuPvm(Date value) {
-        this.voimassaLoppuPvm = value;
-    }
 
     public List<KoodiMetadataType> getMetadata() {
         if (metadata == null) {

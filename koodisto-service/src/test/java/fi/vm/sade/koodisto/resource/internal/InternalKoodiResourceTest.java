@@ -352,9 +352,12 @@ class InternalKoodiResourceTest {
         o.put("versio", koodiVersio);
         o.put("koodiArvo", "two1");
         o.put("voimassaAlkuPvm", "2022-01-01");
-        o.put("version", "1");
+        o.put("lockingVersion", "1");
         o.put("tila", "LUONNOS");
         o.put("metadata", metadata);
+        o.put("sisaltyyKoodeihin",new JSONArray());
+        o.put("sisaltaaKoodit",new JSONArray());
+        o.put("rinnastuuKoodeihin",new JSONArray());
 
         mockMvc.perform(get(BASE_PATH + "/{koodiUri}/{koodiVersio}", koodiUri, koodiVersio))
                 .andExpectAll(

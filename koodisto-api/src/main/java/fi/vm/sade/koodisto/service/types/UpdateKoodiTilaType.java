@@ -1,4 +1,3 @@
-
 package fi.vm.sade.koodisto.service.types;
 
 public enum UpdateKoodiTilaType {

@@ -1,8 +1,10 @@
 package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.koodisto.util.FieldLengths;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
@@ -17,6 +19,8 @@ import javax.validation.constraints.NotNull;
 @BatchSize(size = 20)
 @Getter
 @Setter
+@ToString
+@EqualsAndHashCode
 public class KoodinSuhde extends BaseEntity {
 
     private static final long serialVersionUID = -8875747407128912635L;

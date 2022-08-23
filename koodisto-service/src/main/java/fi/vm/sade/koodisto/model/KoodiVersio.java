@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 @BatchSize(size = 100)
 @Getter
 @Setter
-@EqualsAndHashCode
 public class KoodiVersio extends BaseEntity {
 
     private static final long serialVersionUID = 1L;

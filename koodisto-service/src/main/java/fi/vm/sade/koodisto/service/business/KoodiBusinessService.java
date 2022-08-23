@@ -3,7 +3,10 @@ package fi.vm.sade.koodisto.service.business;
 
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
+import fi.vm.sade.koodisto.dto.internal.InternalKoodiSuhdeDto;
+import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioDto;
 import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.resource.internal.InternalSuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
@@ -117,6 +120,10 @@ public interface KoodiBusinessService {
     boolean isLatestKoodiVersio(String koodiUri, Integer versio);
 
     KoodiVersio saveKoodi(ExtendedKoodiDto koodiDTO);
+
+    KoodiVersio saveKoodi(InternalKoodiVersioDto koodiDTO);
+
+    void syncronizeRelations(String koodiUri, Integer versio, InternalSuhteenTyyppi tyyppi, List<InternalKoodiSuhdeDto> relations);
 
     Set<KoodiVersio> createNewVersionsNonFlushing(Set<KoodistoVersioKoodiVersio> koodiVersios);
 

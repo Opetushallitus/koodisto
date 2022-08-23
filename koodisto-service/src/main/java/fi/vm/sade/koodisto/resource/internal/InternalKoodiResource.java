@@ -119,7 +119,7 @@ public class InternalKoodiResource {
     @PreAuthorize("hasRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     public @ResponseBody
     ResponseEntity<InternalKoodiVersioDto> updateKoodi(
-            @RequestBody @Valid ExtendedKoodiDto koodi) {
+            @RequestBody @Valid InternalKoodiVersioDto koodi) {
         KoodiVersio result = koodiBusinessService.saveKoodi(koodi);
         return ResponseEntity.ok(koodiVersioToInternalKoodiVersioDtoConverter.convert(result));
     }
