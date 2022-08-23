@@ -11,22 +11,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.cas.ServiceProperties;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Profile("!dev")
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @EnableWebSecurity
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfiguration {
     private final CasProperties casProperties;
     private final OphProperties ophProperties;
     private final UserDetailsService userDetailsService;
@@ -68,13 +71,19 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return ticketValidator;
     }
 
+    @Bean
+    public AuthenticationManager authenticationManager(final AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
     //
     // CAS filter
     //
     @Bean
-    public CasAuthenticationFilter casAuthenticationFilter() throws Exception {
+    public CasAuthenticationFilter casAuthenticationFilter(final AuthenticationManager authenticationManager) {
         OpintopolkuCasAuthenticationFilter casAuthenticationFilter = new OpintopolkuCasAuthenticationFilter(serviceProperties());
-        casAuthenticationFilter.setAuthenticationManager(authenticationManager());
+        casAuthenticationFilter.setAuthenticationManager(authenticationManager);
         casAuthenticationFilter.setFilterProcessesUrl("/j_spring_cas_security_check");
         return casAuthenticationFilter;
     }
@@ -102,9 +111,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return casAuthenticationEntryPoint;
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           final CasAuthenticationFilter casAuthenticationFilter) throws Exception {
+        return http
                 .headers().disable()
                 .csrf().disable()
                 .authorizeRequests()
@@ -113,18 +123,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/v3/api-docs/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/rest/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest()
+                .authenticated()
                 .and()
-                .addFilter(casAuthenticationFilter())
+                .addFilter(casAuthenticationFilter)
+                .authenticationProvider(casAuthenticationProvider())
                 .exceptionHandling()
                 .authenticationEntryPoint(casAuthenticationEntryPoint())
                 .and()
-                .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class);
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth
-                .authenticationProvider(casAuthenticationProvider());
+                .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class).build();
     }
 }
