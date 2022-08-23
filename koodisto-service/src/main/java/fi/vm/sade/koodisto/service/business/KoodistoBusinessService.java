@@ -26,11 +26,32 @@ public interface KoodistoBusinessService {
 
     /**
      * Deletes KoodistoVersio with given id and versio permanently
+     * regardless of the state
+     *
+     * @param koodistoUri koodisto uri used as id for koodisto
+     * @param koodistoVersio koodisto version to know which version to delete
+     */
+    void forceDelete(String koodistoUri, int koodistoVersio);
+
+    /**
+     * Deletes 'PASSIIVINEN' KoodistoVersio with given id and versio permanently
      * 
-     * @param koodistoId
-     * @param koodistoVersio
+     * @param koodistoUri koodisto uri used as id for koodisto
+     * @param koodistoVersio koodisto version to know which version to delete
      */
     void delete(String koodistoUri, Integer koodistoVersio);
+
+    /**
+     * Creates new version.
+     *
+     * Takes latest LUONNOS as parameter, makes new locked HYVAKSYTTY version of it,
+     * creates new LUONNOS version and returns it. Basically this bypasses the approval
+     * process.
+     *
+     * @param latest koodisto with LUONNOS state
+     * @return new ver
+     */
+    FindOrCreateWrapper<KoodistoVersio> newVersion(KoodistoVersio latest);
 
     /**
      * Creates new version if latest version is HYVAKSYTTY, otherwise just returns latest version.

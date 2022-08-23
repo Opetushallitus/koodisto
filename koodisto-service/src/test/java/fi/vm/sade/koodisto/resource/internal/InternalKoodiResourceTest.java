@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.resource.internal;
 
+import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.util.KoodistoRole;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,13 +18,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Objects;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -72,7 +72,7 @@ class InternalKoodiResourceTest {
     @Test
     @Description("Delete with invalid version")
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
-    void testDeleteInternalKoodiBadRequest() throws Exception {
+    void testDeleteInternalKoodiInvalidVersion() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/nonexistent/0"))
                 .andExpect(status().isBadRequest());
     }
@@ -86,20 +86,29 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Delete with non-removable koodi")
-    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
-    void testDeleteInternalKoodiCannotDelete() throws Exception {
+    @Description("Delete HYVAKSYTTY should fail (e.g. locked)")
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testDeleteInternalKoodiIsLocked() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/get_1/1"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("error.codes.version.locked"));
     }
 
     @Test
-    @Description("Delete OK")
+    @Description("Delete PASSIVINEN should be ok (e.g. anomaly), backwards compatibility")
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
-    void testDeleteInternalKoodi() throws Exception {
+    void testDeleteInternalKoodiIsPassiivinen() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/removable/1"))
                 .andExpect(status().isNoContent())
                 .andExpect(content().string(""));
+    }
+
+    @Test
+    @Description("Delete insufficient access rights")
+    @WithMockUser(value = "1.2.3.4.5")
+    void testDeleteInternalKoodiInsufficientAccessRights() throws Exception {
+        this.mockMvc.perform(delete("/internal/koodi/removable/1"))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -204,7 +213,7 @@ class InternalKoodiResourceTest {
         this.mockMvc.perform(get("/internal/koodi/one"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"koodiUri\":\"one_1\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now() + "\"")));
+                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"")));
     }
 
     @Test
@@ -240,7 +249,7 @@ class InternalKoodiResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
                 .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"UPDATED\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now() + "\"")));
+                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"")));
     }
 
     @Test
@@ -293,8 +302,8 @@ class InternalKoodiResourceTest {
                 .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
                 .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"UPDATED\"")))
                 .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"ADDED\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now() + "\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"2\",\"paivitysPvm\":\"" + LocalDate.now() + "\"")));
+                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"")))
+                .andExpect(content().string(containsString("\"koodiArvo\":\"2\",\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"")));
     }
 
     @Test

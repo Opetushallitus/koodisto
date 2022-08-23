@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.resource.internal;
 
+import fi.vm.sade.koodisto.model.Tila;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -227,19 +228,61 @@ class InternalKoodistoResourceTest {
     }
 
     @Test
-    @Description("Delete with non-removable koodisto")
+    @Description("Delete !PASSIIVINEN koodisto")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.2004.6", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodiCannotDelete() throws Exception {
         this.mockMvc.perform(delete("/internal/koodisto/get/1"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNoContent())
+                .andExpect(content().string(""));
     }
 
     @Test
-    @Description("Delete OK")
+    @Description("Delete PASSIIVINEN koodisto")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.2004.6", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodisto() throws Exception {
         this.mockMvc.perform(delete("/internal/koodisto/removable/1"))
                 .andExpect(status().isNoContent())
                 .andExpect(content().string(""));
+    }
+
+    @Test
+    @Description("Versioning should fail when given version is not latest")
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.2004.6", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testCreateKoodistoVersionNotLatest() throws Exception {
+        this.mockMvc.perform(post("/internal/koodisto/dummy/1"))
+                .andExpectAll(
+                        status().isBadRequest());
+    }
+
+    /* Revisit later - most likely borked due to the H2 compatibility issue
+    @Test
+    @Description("Versioning should succeed even when status is HYVAKSYTTY")
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.2004.6", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testCreateKoodistoVersionAcceptedStatus() throws Exception {
+        this.mockMvc.perform(post("/internal/koodisto/get/1"))
+                .andExpectAll(
+                        status().isCreated(),
+                        jsonPath("$.versio").value("2"),
+                        jsonPath("$.tila").value(Tila.LUONNOS.name()));
+    }
+    */
+
+    @Test
+    @Description("Versioning happy path")
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.2004.6", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
+    void testCreateKoodistoVersion() throws Exception {
+        this.mockMvc.perform(post("/internal/koodisto/one/1"))
+                .andExpectAll(
+                        status().isCreated(),
+                        jsonPath("$.versio").value("2"),
+                        jsonPath("$.tila").value(Tila.LUONNOS.name()));
+    }
+
+    @Test
+    @Description("Versioning should fail with insufficient access rights")
+    @WithMockUser(value = "1.2.3.4.5")
+    void testCreateKoodistoVersionInsufficientAccessRights() throws Exception {
+        this.mockMvc.perform(post("/internal/koodisto/one/1"))
+                .andExpect(status().isForbidden());
     }
 }

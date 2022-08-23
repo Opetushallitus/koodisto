@@ -60,6 +60,9 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     private KoodistoMetadataRepository koodistoMetadataRepository;
 
     @Autowired
+    private KoodistoVersioKoodiVersioRepository koodistoVersioKoodiVersioRepository;
+
+    @Autowired
     @Lazy
     private KoodiRepository koodiRepository;
 
@@ -431,6 +434,15 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     }
 
     @Override
+    public FindOrCreateWrapper<KoodistoVersio> newVersion(KoodistoVersio latest) {
+        latest.setTila(Tila.HYVAKSYTTY);
+        latest.getKoodiVersios().stream()
+                .map(KoodistoVersioKoodiVersio::getKoodiVersio)
+                .forEach(koodiVersio -> koodiVersio.setTila(Tila.HYVAKSYTTY));
+        return createNewVersion(latest);
+    }
+
+    @Override
     public FindOrCreateWrapper<KoodistoVersio> createNewVersion(KoodistoVersio latest) {
         authorizer.checkOrganisationAccess(latest.getKoodisto().getOrganisaatioOid(), ROLE_APP_KOODISTO_CRUD, ROLE_APP_KOODISTO_READ_UPDATE);
         if (latest.getTila() != Tila.HYVAKSYTTY) {
@@ -606,6 +618,15 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
     @Override
     public boolean koodistoExists(String koodistoUri, Integer koodistoVersio) {
         return koodistoVersioRepository.existsByKoodistoKoodistoUriAndVersio(koodistoUri, koodistoVersio);
+    }
+
+    @Override
+    public void forceDelete(final String koodistoUri, final int koodistoVersio) {
+        KoodistoVersio koodisto = getKoodistoVersio(koodistoUri, koodistoVersio);
+        koodisto.setTila(Tila.PASSIIVINEN);
+        koodiVersioRepository.getKoodiVersiosIncludedOnlyInKoodistoVersio(koodistoUri, koodistoVersio).stream()
+                .forEach(koodiVersio -> koodiVersio.setTila(Tila.PASSIIVINEN));
+        delete(koodistoUri, koodistoVersio);
     }
 
     @Override

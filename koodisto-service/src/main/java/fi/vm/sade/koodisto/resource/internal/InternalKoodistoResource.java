@@ -12,8 +12,10 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInte
 import fi.vm.sade.koodisto.service.types.CreateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
+import fi.vm.sade.koodisto.validator.KoodistoValidationException;
 import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -62,8 +64,28 @@ public class InternalKoodistoResource {
     ResponseEntity<Void> deleteKoodisto(
             @PathVariable final String koodistoUri,
             @PathVariable @Min(1) final int koodistoVersio) {
-        koodistoBusinessService.delete(koodistoUri, koodistoVersio);
+        koodistoBusinessService.forceDelete(koodistoUri, koodistoVersio);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(path = "/{koodistoUri}/{koodistoVersio}",
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ResponseEntity<InternalKoodistoPageDto> createKoodistoVersion(
+            @PathVariable final String koodistoUri,
+            @PathVariable @Min(1) final int koodistoVersio) {
+
+        KoodistoVersio latest = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
+
+        if (latest.getVersio() != koodistoVersio) {
+            throw new KoodistoValidationException("error.codes.latest.version.required");
+        }
+
+        latest = koodistoBusinessService.newVersion(latest).getData();
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(koodistoVersioToInternalKoodistoPageDtoConverter.convert(latest));
     }
 
     @GetMapping(path = "/{koodistoUri}/{koodistoVersio}",

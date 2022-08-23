@@ -37,6 +37,7 @@ class KoodiVersioToInternalKoodiVersioDtoConverterTest {
 
         koodistoVersio.setKoodisto(koodisto);
         koodistoVersioKoodiVersio.setKoodistoVersio(koodistoVersio);
+        koodistoVersioKoodiVersio.setKoodiVersio(a);
         koodisto.addKoodistoVersion(koodistoVersio);
         a.addKoodistoVersio(koodistoVersioKoodiVersio);
         Koodi koodi = new Koodi();
@@ -75,10 +76,11 @@ class KoodiVersioToInternalKoodiVersioDtoConverterTest {
         koodistoVersio.setKoodisto(koodisto);
         koodisto.addKoodistoVersion(koodistoVersio);
         koodistoVersioKoodiVersio.setKoodistoVersio(koodistoVersio);
+        koodistoVersioKoodiVersio.setKoodiVersio(a);
         a.addKoodistoVersio(koodistoVersioKoodiVersio);
         InternalKoodiVersioDto b = resource.convert(a);
         assert b != null;
-        assertEquals("koodistoUri 2", b.getKoodisto().getKoodistoUri());
+        assertEquals("koodistoUri", b.getKoodisto().getKoodistoUri());
     }
 
     @Test

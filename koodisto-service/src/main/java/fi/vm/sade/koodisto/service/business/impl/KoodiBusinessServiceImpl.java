@@ -25,7 +25,6 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodi.InternalKoodiVersioDtoT
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.StringUtils;
@@ -227,6 +226,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public KoodiVersioWithKoodistoItem updateKoodi(UpdateKoodiDataType updateKoodiData) {
         return updateKoodi(updateKoodiData, false);
     }
+
     private KoodiVersioWithKoodistoItem updateKoodi(UpdateKoodiDataType updateKoodiData, boolean skipAlreadyUpdatedVerification) {
         if (updateKoodiData == null || Strings.isNullOrEmpty(updateKoodiData.getKoodiUri())) {
             throw new KoodiUriEmptyException();
@@ -236,7 +236,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         KoodiVersio latestKoodiVersion = latest.getKoodiVersio();
         if (!skipAlreadyUpdatedVerification
                 && (latestKoodiVersion.getVersio() != updateKoodiData.getVersio() || (latestKoodiVersion.getVersio() == updateKoodiData.getVersio() && latestKoodiVersion
-                        .getVersion() != updateKoodiData.getLockingVersion()))) {
+                .getVersion() != updateKoodiData.getLockingVersion()))) {
             throw new KoodiOptimisticLockingException();
         }
 
@@ -536,7 +536,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         if ((Tila.HYVAKSYTTY.equals(latest.getTila()) && newVersionIsRequired(latest, updateKoodiData))
                 || (Tila.HYVAKSYTTY.equals(latest.getTila()) && UpdateKoodiTilaType.LUONNOS.equals(updateKoodiData.getTila()))
                 || (!Tila.PASSIIVINEN.equals(latest.getTila()) && updateKoodiData.getTila() != null && UpdateKoodiTilaType.PASSIIVINEN.equals(updateKoodiData
-                        .getTila()))) {
+                .getTila()))) {
             log.info("KoodiVersio: {}", latest.getVersio());
 
             // Create a new version (if needed) of the koodisto too
@@ -577,7 +577,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         List<KoodiMetadata> latestMetadatas = new ArrayList<>(latest.getMetadatas());
 
-        outer: for (KoodiMetadataType updateMetadata : updateKoodiData.getMetadata()) {
+        outer:
+        for (KoodiMetadataType updateMetadata : updateKoodiData.getMetadata()) {
             for (int i = 0; i < latestMetadatas.size(); ++i) {
                 KoodiMetadata oldMd = latestMetadatas.get(i);
                 // Update the old metadata if the language fields match
@@ -723,32 +724,12 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     @Override
-    public KoodiVersio createNewVersion(String koodiUri) {
-        return createNewVersion(getLatestKoodiVersio(koodiUri), false).getData();
-    }
-
-    @Override
     public Set<KoodiVersio> createNewVersionsNonFlushing(Set<KoodistoVersioKoodiVersio> koodiVersios) {
         HashSet<KoodiVersio> inserted = new HashSet<>();
         for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
             inserted.add(this.createNewVersion(koodiVersio.getKoodiVersio(), true).getData());
         }
         return inserted;
-    }
-
-    @Override
-    public void setKoodiTila(KoodiVersio latest, TilaType tila) {
-        if (Tila.LUONNOS.equals(latest.getTila()) && TilaType.HYVAKSYTTY.equals(tila)) {
-            setPreviousVersionEndDateToNowOrKeepFutureDate(latest);
-            latest.setTila(Tila.valueOf(tila.name()));
-        }
-    }
-
-    private void setPreviousVersionEndDateToNowOrKeepFutureDate(KoodiVersio latest) {
-        KoodiVersio previousVersion = koodiVersioRepository.getPreviousKoodiVersio(latest.getKoodi().getKoodiUri(), latest.getVersio());
-        if (previousVersion != null) {
-            previousVersion.setVoimassaLoppuPvm(getValidEndDateForKoodiVersio(previousVersion, latest));
-        }
     }
 
     private Date getValidEndDateForKoodiVersio(KoodiVersio previous, KoodiVersio latest) {
@@ -758,12 +739,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             return latestStartDate;
         }
         return previousStartDate.after(new Date()) ? previousStartDate : new Date();
-    }
-
-    @Override
-    public void setKoodiTila(String koodiUri, TilaType tila) {
-        KoodiVersio latest = getLatestKoodiVersio(koodiUri);
-        setKoodiTila(latest, tila);
     }
 
     @Override
@@ -850,6 +825,13 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
         assert latest != null;
         setRelationsToPassiveOrActive(latest, false);
+    }
+
+    @Override
+    public void forceDelete(String koodiUri, int koodiVersio) {
+        KoodiVersio koodi = getKoodiVersio(koodiUri, koodiVersio);
+        koodi.setTila(Tila.PASSIIVINEN);
+        delete(koodiUri, koodiVersio, true);
     }
 
     @Override
@@ -1241,7 +1223,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     private void separateKoodiRelationsToUriLists(Set<KoodinSuhde> koodiRelations, HashSet<String> sisaltyyUris, HashSet<String> rinnasteinenUris,
-            boolean isAlaKoodis) {
+                                                  boolean isAlaKoodis) {
         for (KoodinSuhde koodinSuhde : koodiRelations) {
             if (!koodinSuhde.isPassive()) {
                 KoodiVersio koodiVersio = isAlaKoodis ? koodinSuhde.getAlakoodiVersio() : koodinSuhde.getYlakoodiVersio();
