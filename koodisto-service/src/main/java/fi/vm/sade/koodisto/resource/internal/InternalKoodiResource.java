@@ -7,10 +7,12 @@ import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.resource.CodeElementResourceConverter;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.InternalKoodiVersioDtoToUpdateKoodiDataTypeConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
@@ -48,6 +50,7 @@ public class InternalKoodiResource {
     private final KoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter koodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter;
     private final KoodiVersioToInternalKoodiVersioDtoConverter koodiVersioToInternalKoodiVersioDtoConverter;
     private final KoodiVersioWithKoodistoItemToKoodiDtoConverter koodiVersioWithKoodistoItemToKoodiDtoConverter;
+    private final InternalKoodiVersioDtoToUpdateKoodiDataTypeConverter internalKoodiVersioDtoToUpdateKoodiDataTypeConverter;
 
     @GetMapping(path = "/{koodiUri}/{koodiVersio}",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -126,8 +129,11 @@ public class InternalKoodiResource {
     public @ResponseBody
     ResponseEntity<InternalKoodiVersioDto> updateKoodi(
             @RequestBody @Valid InternalKoodiVersioDto koodi) {
-        KoodiVersio result = koodiBusinessService.saveKoodi(koodi);
-        return ResponseEntity.ok(koodiVersioToInternalKoodiVersioDtoConverter.convert(result));
+        koodiBusinessService.updateKoodi(internalKoodiVersioDtoToUpdateKoodiDataTypeConverter.convert(koodi));
+        koodiBusinessService.syncronizeRelations(koodi.getKoodiUri(), koodi.getVersio(), SuhteenTyyppi.SISALTYY, true, koodi.getSisaltyyKoodeihin());
+        koodiBusinessService.syncronizeRelations(koodi.getKoodiUri(), koodi.getVersio(), SuhteenTyyppi.SISALTYY, false, koodi.getSisaltaaKoodit());
+        koodiBusinessService.syncronizeRelations(koodi.getKoodiUri(), koodi.getVersio(), SuhteenTyyppi.RINNASTEINEN, false, koodi.getRinnastuuKoodeihin());
+        return ResponseEntity.ok(koodiVersioToInternalKoodiVersioDtoConverter.convert(koodiBusinessService.getLatestKoodiVersio(koodi.getKoodiUri())));
     }
 
     @PostMapping(path = "/{koodistoUri}", consumes = MediaType.APPLICATION_JSON_VALUE,

@@ -4,24 +4,20 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import fi.vm.sade.authorization.NotAuthorizedException;
 import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
-import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodiSuhdeDto;
-import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioDto;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.repository.*;
 import fi.vm.sade.koodisto.resource.CodeElementResourceConverter;
-import fi.vm.sade.koodisto.resource.internal.InternalSuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.*;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
-import fi.vm.sade.koodisto.service.conversion.impl.koodi.InternalKoodiVersioDtoToUpdateKoodiDataTypeConverter;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
@@ -89,8 +85,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     @Autowired
     private CodeElementResourceConverter codeElementResourceConverter;
 
-    @Autowired
-    private InternalKoodiVersioDtoToUpdateKoodiDataTypeConverter internalKoodiVersioDtoToUpdateKoodiDataTypeConverter;
     protected String getCurrentUserOid() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
@@ -1087,66 +1081,38 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return koodi;
     }
 
-    @Override
-    public KoodiVersio saveKoodi(InternalKoodiVersioDto koodiDTO) {
-        updateKoodi(internalKoodiVersioDtoToUpdateKoodiDataTypeConverter.convert(koodiDTO));
-        syncronizeRelations(koodiDTO.getKoodiUri(), koodiDTO.getVersio(), InternalSuhteenTyyppi.SISALTYY, koodiDTO.getSisaltyyKoodeihin());
-        syncronizeRelations(koodiDTO.getKoodiUri(), koodiDTO.getVersio(), InternalSuhteenTyyppi.SISALTAA, koodiDTO.getSisaltaaKoodit());
-        syncronizeRelations(koodiDTO.getKoodiUri(), koodiDTO.getVersio(), InternalSuhteenTyyppi.RINNASTEINEN, koodiDTO.getRinnastuuKoodeihin());
-        return getLatestKoodiVersio(koodiDTO.getKoodiUri());
-    }
-
     private boolean suhteetMatches(KoodinSuhde a, InternalKoodiSuhdeDto b) {
         return (Objects.equals(b.getKoodiUri(), a.getYlakoodiVersio().getKoodi().getKoodiUri()) && Objects.equals(b.getKoodiVersio(), a.getYlakoodiVersio().getVersio()) ||
                 Objects.equals(b.getKoodiUri(), a.getAlakoodiVersio().getKoodi().getKoodiUri()) && Objects.equals(b.getKoodiVersio(), a.getAlakoodiVersio().getVersio()));
     }
 
     @Override
-    public void syncronizeRelations(String koodiUri, Integer versio, InternalSuhteenTyyppi tyyppi, List<InternalKoodiSuhdeDto> newRelations) {
+    public void syncronizeRelations(String koodiUri, Integer versio, SuhteenTyyppi tyyppi, boolean isChild, List<InternalKoodiSuhdeDto> newRelations) {
         KoodiVersio koodi = getKoodiVersio(koodiUri, versio);
         Set<KoodinSuhde> oldRelations =
                 Stream.of(koodi.getAlakoodis(), koodi.getYlakoodis())
-                        .flatMap(Collection::stream).collect(Collectors.toSet());
-        switch (tyyppi) {
-            case SISALTAA:
-                Set<KoodinSuhde> sisaltaa = oldRelations.stream().filter(a -> a.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY) && Objects.equals(a.getYlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId())).collect(Collectors.toSet());
-                handleRelations(SuhteenTyyppi.SISALTYY, newRelations, koodi, sisaltaa, false);
-                break;
-            case SISALTYY:
-                Set<KoodinSuhde> sisaltyy = oldRelations.stream().filter(a -> a.getSuhteenTyyppi().equals(SuhteenTyyppi.SISALTYY) && Objects.equals(a.getAlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId())).collect(Collectors.toSet());
-                handleRelations(SuhteenTyyppi.SISALTYY, newRelations, koodi, sisaltyy, true);
-                break;
-            case RINNASTEINEN:
-                Set<KoodinSuhde> rinnasteinen = oldRelations.stream().filter(a -> a.getSuhteenTyyppi().equals(SuhteenTyyppi.RINNASTEINEN)).collect(Collectors.toSet());
-                handleRelations(SuhteenTyyppi.RINNASTEINEN, newRelations, koodi, rinnasteinen, false);
-                break;
-            default:
-                throw new SadeBusinessException() {
-                    @Override
-                    public String getErrorKey() {
-                        return "invalid enum value";
-                    }
-                };
-        }
-
-
+                        .flatMap(Collection::stream)
+                        .filter(a ->
+                                a.getSuhteenTyyppi().equals(tyyppi)
+                                        && (tyyppi.equals(SuhteenTyyppi.RINNASTEINEN)
+                                        || (isChild && Objects.equals(a.getAlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId())
+                                        || (!isChild &&Objects.equals(a.getYlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId())))
+                                )
+                        )
+                        .collect(Collectors.toSet());
+        handleRelations(tyyppi, newRelations, koodi, oldRelations, isChild);
     }
 
-    private void handleRelations(SuhteenTyyppi tyyppi, List<InternalKoodiSuhdeDto> newRelations, KoodiVersio koodi, Set<KoodinSuhde> sisaltyy, boolean isChild) {
-        List<KoodinSuhde> removedRelations = new ArrayList<>();
-
-        sisaltyy.stream()
+    private void handleRelations(SuhteenTyyppi tyyppi, List<InternalKoodiSuhdeDto> newRelations, KoodiVersio koodi, Set<KoodinSuhde> oldRelations, boolean isChild) {
+        Stream.of(oldRelations.stream()
                 .filter(a -> newRelations.stream().noneMatch(b -> suhteetMatches(a, b)))
-                .forEach(removedRelations::add);
-        newRelations.forEach(a -> {
-            if (sisaltyy.stream().noneMatch(b -> suhteetMatches(b, a))) {
-                KoodiVersio koodi2 = getKoodiVersio(a.getKoodiUri(), a.getKoodiVersio());
-                persistNewSuhde(tyyppi, isChild ? koodi2 : koodi, isChild ? koodi : koodi2);
-            }
-        });
-        if (!removedRelations.isEmpty()) {
-            koodinSuhdeRepository.massRemove(removedRelations);
-        }
+                .collect(Collectors.toList())).filter(a->!a.isEmpty()).forEach(koodinSuhdeRepository::massRemove);
+        newRelations.stream()
+                .filter(a -> oldRelations.stream().noneMatch(b -> suhteetMatches(b, a)))
+                .forEach(a -> {
+                    KoodiVersio koodi2 = getKoodiVersio(a.getKoodiUri(), a.getKoodiVersio());
+                    persistNewSuhde(tyyppi, isChild ? koodi2 : koodi, isChild ? koodi : koodi2);
+                });
     }
 
     private void persistNewSuhde(SuhteenTyyppi sisaltyy, KoodiVersio koodi, KoodiVersio alaKoodi) {
