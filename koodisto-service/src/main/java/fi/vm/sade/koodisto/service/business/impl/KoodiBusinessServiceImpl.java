@@ -959,7 +959,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public KoodiVersioWithKoodistoItem getKoodiByKoodisto(String koodistoUri, String koodiUri) {
         checkKoodistoExists(koodistoUri);
 
-        SearchKoodisByKoodistoCriteriaType searchData = KoodiServiceSearchCriteriaBuilder.koodisByKoodistoUri(Collections.singletonList(koodiUri), koodistoUri);
+        SearchKoodisByKoodistoCriteriaType searchData = KoodiServiceSearchCriteriaBuilder.koodisByKoodistoUri(List.of(koodiUri), koodistoUri);
 
         List<KoodiVersioWithKoodistoItem> result = searchKoodis(searchData);
         if (result.isEmpty()) {
@@ -975,7 +975,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public KoodiVersioWithKoodistoItem getKoodiByKoodistoVersio(String koodistoUri, Integer koodistoVersio, String koodiUri) {
         checkKoodistoVersioExists(koodistoUri, koodistoVersio);
 
-        SearchKoodisByKoodistoCriteriaType searchData = KoodiServiceSearchCriteriaBuilder.koodisByKoodistoUriAndKoodistoVersio(Collections.singletonList(koodiUri),
+        SearchKoodisByKoodistoCriteriaType searchData = KoodiServiceSearchCriteriaBuilder.koodisByKoodistoUriAndKoodistoVersio(List.of(koodiUri),
                 koodistoUri, koodistoVersio);
 
         List<KoodiVersioWithKoodistoItem> result = searchKoodis(searchData);
@@ -1092,11 +1092,11 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         Set<KoodinSuhde> oldRelations =
                 Stream.of(koodi.getAlakoodis(), koodi.getYlakoodis())
                         .flatMap(Collection::stream)
-                        .filter(a ->
-                                a.getSuhteenTyyppi().equals(tyyppi)
+                        .filter(koodinSuhde ->
+                                koodinSuhde.getSuhteenTyyppi().equals(tyyppi)
                                         && (tyyppi.equals(SuhteenTyyppi.RINNASTEINEN)
-                                        || (isChild && Objects.equals(a.getAlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId())
-                                        || (!isChild &&Objects.equals(a.getYlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId())))
+                                        || (isChild && Objects.equals(koodinSuhde.getAlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId())
+                                        || (!isChild && Objects.equals(koodinSuhde.getYlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId())))
                                 )
                         )
                         .collect(Collectors.toSet());
@@ -1105,20 +1105,20 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private void handleRelations(SuhteenTyyppi tyyppi, List<InternalKoodiSuhdeDto> newRelations, KoodiVersio koodi, Set<KoodinSuhde> oldRelations, boolean isChild) {
         Stream.of(oldRelations.stream()
-                .filter(a -> newRelations.stream().noneMatch(b -> suhteetMatches(a, b)))
-                .collect(Collectors.toList())).filter(a->!a.isEmpty()).forEach(koodinSuhdeRepository::massRemove);
+                .filter(oldRelation -> newRelations.stream().noneMatch(newRelation -> suhteetMatches(oldRelation, newRelation)))
+                .collect(Collectors.toList())).filter(removedRelationList -> !removedRelationList.isEmpty()).forEach(koodinSuhdeRepository::massRemove);
         newRelations.stream()
-                .filter(a -> oldRelations.stream().noneMatch(b -> suhteetMatches(b, a)))
-                .forEach(a -> {
-                    KoodiVersio koodi2 = getKoodiVersio(a.getKoodiUri(), a.getKoodiVersio());
+                .filter(newRelation -> oldRelations.stream().noneMatch(b -> suhteetMatches(b, newRelation)))
+                .forEach(aaddedRelations -> {
+                    KoodiVersio koodi2 = getKoodiVersio(aaddedRelations.getKoodiUri(), aaddedRelations.getKoodiVersio());
                     persistNewSuhde(tyyppi, isChild ? koodi2 : koodi, isChild ? koodi : koodi2);
                 });
     }
 
-    private void persistNewSuhde(SuhteenTyyppi sisaltyy, KoodiVersio koodi, KoodiVersio alaKoodi) {
+    private void persistNewSuhde(SuhteenTyyppi suhteenTyyppi, KoodiVersio ylakoodi, KoodiVersio alaKoodi) {
         KoodinSuhde koodinSuhde = new KoodinSuhde();
-        koodinSuhde.setSuhteenTyyppi(sisaltyy);
-        koodinSuhde.setYlakoodiVersio(koodi);
+        koodinSuhde.setSuhteenTyyppi(suhteenTyyppi);
+        koodinSuhde.setYlakoodiVersio(ylakoodi);
         koodinSuhde.setAlakoodiVersio(alaKoodi);
         koodinSuhde.setVersio(1);
         koodinSuhdeRepository.save(koodinSuhde);
