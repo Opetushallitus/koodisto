@@ -4,6 +4,7 @@ import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.util.KoodistoRole;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,7 +37,7 @@ class InternalKoodiResourceTest {
     private MockMvc mockMvc;
 
     @Test
-    @Description("Test get koodiPage")
+    @DisplayName("Test get koodiPage")
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testGetInternalKoodiPage() throws Exception {
         this.mockMvc.perform(get("/internal/koodi/get_1/1"))
@@ -45,7 +46,7 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Test get koodiPage with invalid version")
+    @DisplayName("Test get koodiPage with invalid version")
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testGetInternalKoodiPageBadRequest() throws Exception {
         this.mockMvc.perform(get("/internal/koodi/get_1/0"))
@@ -53,14 +54,14 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Delete with invalid access rights")
+    @DisplayName("Delete with invalid access rights")
     void testDeleteInternalKoodiNoAccess() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/get_1/1"))
                 .andExpect(status().is3xxRedirection());
     }
 
     @Test
-    @Description("Delete with invalid version")
+    @DisplayName("Delete with invalid version")
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodiInvalidVersion() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/nonexistent/0"))
@@ -68,7 +69,7 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Delete with non-existent koodi")
+    @DisplayName("Delete with non-existent koodi")
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodiNotFound() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/nonexistent/1"))
@@ -76,7 +77,7 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Delete HYVAKSYTTY should fail (e.g. locked)")
+    @DisplayName("Delete HYVAKSYTTY should fail (e.g. locked)")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodiIsLocked() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/get_1/1"))
@@ -85,7 +86,7 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Delete PASSIVINEN should be ok (e.g. anomaly), backwards compatibility")
+    @DisplayName("Delete PASSIVINEN should be ok (e.g. anomaly), backwards compatibility")
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testDeleteInternalKoodiIsPassiivinen() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/removable/1"))
@@ -94,7 +95,7 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Delete insufficient access rights")
+    @DisplayName("Delete insufficient access rights")
     @WithMockUser(value = "1.2.3.4.5")
     void testDeleteInternalKoodiInsufficientAccessRights() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/removable/1"))
@@ -102,7 +103,7 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Post to not found koodisto")
+    @DisplayName("Post to not found koodisto")
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal01() throws Exception {
         this.mockMvc.perform(post("/internal/koodi/upsert/notfound")
@@ -128,7 +129,7 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Post empty rows is bad request")
+    @DisplayName("Post empty rows is bad request")
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal02() throws Exception {
         this.mockMvc.perform(post("/internal/koodi/upsert/dummy")
@@ -139,7 +140,7 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Post null body is bad request")
+    @DisplayName("Post null body is bad request")
     @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal03() throws Exception {
         this.mockMvc.perform(post("/internal/koodi/upsert/dummy")
@@ -151,7 +152,7 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Posting empty name is bad request")
+    @DisplayName("Posting empty name is bad request")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal04() throws Exception {
         this.mockMvc.perform(post("/internal/koodi/upsert/one")
@@ -177,7 +178,7 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Posting can add one koodi")
+    @DisplayName("Posting can add one koodi")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal1() throws Exception {
         this.mockMvc.perform(post("/internal/koodi/upsert/one")
@@ -211,7 +212,7 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Posting can edit one koodi")
+    @DisplayName("Posting can edit one koodi")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal2() throws Exception {
         this.mockMvc.perform(get("/internal/koodi/koodisto/two/1"))
@@ -252,7 +253,7 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Posting can add one and edit one koodi")
+    @DisplayName("Posting can add one and edit one koodi")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal3() throws Exception {
         this.mockMvc.perform(get("/internal/koodi/koodisto/two/1"))
@@ -312,7 +313,7 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Posting not found koodisto")
+    @DisplayName("Posting not found koodisto")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal4() throws Exception {
         this.mockMvc.perform(post("/internal/koodi/upsert/notfound")
@@ -338,7 +339,7 @@ class InternalKoodiResourceTest {
 
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = {KoodistoRole.ROLE_APP_KOODISTO_READ_UPDATE})
-    @Description("Test getting koodi-list for koodisto")
+    @DisplayName("Test getting koodi-list for koodisto")
     void getKoodistoKoodis() throws Exception {
         this.mockMvc.perform(get("/internal/koodi/koodisto/two/1"))
                 .andExpectAll(

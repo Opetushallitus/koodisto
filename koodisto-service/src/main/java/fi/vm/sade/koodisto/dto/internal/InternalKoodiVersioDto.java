@@ -53,9 +53,11 @@ public class InternalKoodiVersioDto {
     private String paivittajaOid;
 
     @JsonView({JsonViews.Internal.class})
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date voimassaAlkuPvm;
 
     @JsonView({JsonViews.Internal.class})
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date voimassaLoppuPvm;
 
     @JsonView({JsonViews.Internal.class})
