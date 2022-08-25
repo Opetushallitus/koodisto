@@ -11,10 +11,8 @@ import fi.vm.sade.koodisto.resource.CodeElementResourceConverter;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import fi.vm.sade.koodisto.service.conversion.impl.koodi.InternalKoodiVersioDtoToUpdateKoodiDataTypeConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter;
-import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
@@ -48,8 +46,6 @@ public class InternalKoodiResource {
     private final KoodistoVersioToInternalKoodistoPageDtoConverter koodistoVersioToInternalKoodistoPageDtoConverter;
     private final KoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter koodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter;
     private final KoodiVersioToInternalKoodiVersioDtoConverter koodiVersioToInternalKoodiVersioDtoConverter;
-    private final KoodiVersioWithKoodistoItemToKoodiDtoConverter koodiVersioWithKoodistoItemToKoodiDtoConverter;
-    private final InternalKoodiVersioDtoToUpdateKoodiDataTypeConverter internalKoodiVersioDtoToUpdateKoodiDataTypeConverter;
 
     @GetMapping(path = "/{koodiUri}/{koodiVersio}",
             produces = MediaType.APPLICATION_JSON_VALUE)
