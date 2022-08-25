@@ -3,7 +3,6 @@ package fi.vm.sade.koodisto.model;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import fi.vm.sade.koodisto.util.UserData;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
@@ -25,7 +24,6 @@ import java.util.stream.Collectors;
 @BatchSize(size = 100)
 @Getter
 @Setter
-@EqualsAndHashCode
 public class KoodiVersio extends BaseEntity {
 
     private static final long serialVersionUID = 1L;

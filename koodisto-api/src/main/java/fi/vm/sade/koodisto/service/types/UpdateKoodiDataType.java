@@ -1,50 +1,39 @@
 
 package fi.vm.sade.koodisto.service.types;
 
+import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
+import lombok.*;
+
 import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
-public class UpdateKoodiDataType extends CreateKoodiDataType implements Serializable
-{
-
+@Getter
+@Setter
+@NoArgsConstructor
+public class UpdateKoodiDataType extends CreateKoodiDataType implements Serializable {
     private static final long serialVersionUID = 1L;
-
     protected String koodiUri;
-
     protected UpdateKoodiTilaType tila;
-
     protected int versio;
     protected long lockingVersion;
 
-    public String getKoodiUri() {
-        return koodiUri;
+    @Builder
+    public UpdateKoodiDataType(
+            //create
+            String koodiArvo,
+            Date voimassaAlkuPvm,
+            Date voimassaLoppuPvm,
+            List<KoodiMetadataType> metadata,
+            // update
+            String koodiUri,
+            UpdateKoodiTilaType tila,
+            int versio,
+            long lockingVersion) {
+        super(koodiArvo, voimassaAlkuPvm, voimassaLoppuPvm, metadata);
+        this.koodiUri = koodiUri;
+        this.tila = tila;
+        this.versio = versio;
+        this.lockingVersion = lockingVersion;
     }
-
-    public void setKoodiUri(String value) {
-        this.koodiUri = value;
-    }
-
-    public UpdateKoodiTilaType getTila() {
-        return tila;
-    }
-
-    public void setTila(UpdateKoodiTilaType value) {
-        this.tila = value;
-    }
-
-    public int getVersio() {
-        return versio;
-    }
-
-    public void setVersio(int value) {
-        this.versio = value;
-    }
-
-    public long getLockingVersion() {
-        return lockingVersion;
-    }
-
-    public void setLockingVersion(long value) {
-        this.lockingVersion = value;
-    }
-
 }

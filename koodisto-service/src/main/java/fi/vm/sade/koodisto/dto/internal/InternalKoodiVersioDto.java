@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -52,20 +53,25 @@ public class InternalKoodiVersioDto {
     private String paivittajaOid;
 
     @JsonView({JsonViews.Internal.class})
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date voimassaAlkuPvm;
 
     @JsonView({JsonViews.Internal.class})
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date voimassaLoppuPvm;
 
     @JsonView({JsonViews.Internal.class})
     private List<KoodiMetadataDto> metadata;
 
     @JsonView({JsonViews.Internal.class})
+    @NotNull(message = "error.sisaltyyKoodeihin.null")
     private List<InternalKoodiSuhdeDto> sisaltyyKoodeihin;
 
     @JsonView({JsonViews.Internal.class})
+    @NotNull(message = "error.sisaltaaKoodit.null")
     private List<InternalKoodiSuhdeDto> sisaltaaKoodit;
 
     @JsonView({JsonViews.Internal.class})
+    @NotNull(message = "error.rinnastuuKoodeihin.null")
     private List<InternalKoodiSuhdeDto> rinnastuuKoodeihin;
 }

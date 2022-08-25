@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.resource.internal;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
@@ -14,7 +13,6 @@ import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter;
-import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToKoodiDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
@@ -48,7 +46,6 @@ public class InternalKoodiResource {
     private final KoodistoVersioToInternalKoodistoPageDtoConverter koodistoVersioToInternalKoodistoPageDtoConverter;
     private final KoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter koodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter;
     private final KoodiVersioToInternalKoodiVersioDtoConverter koodiVersioToInternalKoodiVersioDtoConverter;
-    private final KoodiVersioWithKoodistoItemToKoodiDtoConverter koodiVersioWithKoodistoItemToKoodiDtoConverter;
 
     @GetMapping(path = "/{koodiUri}/{koodiVersio}",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -77,17 +74,6 @@ public class InternalKoodiResource {
 
         koodiBusinessService.forceDelete(koodiUri, koodiVersio);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping(path = "/{koodistoUri}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @JsonView({JsonViews.Internal.class})
-    public @ResponseBody
-    ResponseEntity<List<KoodiDto>> getKoodiListForKoodisto(
-            @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri
-    ) {
-        List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.getKoodisByKoodisto(koodistoUri, true);
-        return ResponseEntity.ok(koodiVersioWithKoodistoItemToKoodiDtoConverter.convertAll(result));
     }
 
     @GetMapping(path = "/koodisto/{koodistoUri}/{koodistoVersio}",
@@ -126,9 +112,8 @@ public class InternalKoodiResource {
     @PreAuthorize("hasRole(T(fi.vm.sade.koodisto.util.KoodistoRole).ROLE_APP_KOODISTO_CRUD)")
     public @ResponseBody
     ResponseEntity<InternalKoodiVersioDto> updateKoodi(
-            @RequestBody @Valid ExtendedKoodiDto koodi) {
-        KoodiVersio result = koodiBusinessService.saveKoodi(koodi);
-        return ResponseEntity.ok(koodiVersioToInternalKoodiVersioDtoConverter.convert(result));
+            @RequestBody @Valid InternalKoodiVersioDto koodi) {
+        return ResponseEntity.ok(koodiBusinessService.updateKoodi(koodi));
     }
 
     @PostMapping(path = "/{koodistoUri}", consumes = MediaType.APPLICATION_JSON_VALUE,

@@ -8,6 +8,8 @@ import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
+import fi.vm.sade.koodisto.dto.internal.InternalKoodiSuhdeDto;
+import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioDto;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.repository.*;
 import fi.vm.sade.koodisto.resource.CodeElementResourceConverter;
@@ -17,6 +19,8 @@ import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.*;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.InternalKoodiVersioDtoToUpdateKoodiDataTypeConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioDtoConverter;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
@@ -33,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD;
 
@@ -81,7 +86,11 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     private UriTransliterator uriTransliterator;
 
     @Autowired
-    private CodeElementResourceConverter converter;
+    private CodeElementResourceConverter codeElementResourceConverter;
+    @Autowired
+    private KoodiVersioToInternalKoodiVersioDtoConverter koodiVersioToInternalKoodiVersioDtoConverter;
+    @Autowired
+    private InternalKoodiVersioDtoToUpdateKoodiDataTypeConverter internalKoodiVersioDtoToUpdateKoodiDataTypeConverter;
 
     protected String getCurrentUserOid() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
@@ -215,6 +224,15 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     @Override
+    public InternalKoodiVersioDto updateKoodi(
+            InternalKoodiVersioDto koodi) {
+        updateKoodi(internalKoodiVersioDtoToUpdateKoodiDataTypeConverter.convert(koodi));
+        synchronizeRelations(koodi);
+        return koodiVersioToInternalKoodiVersioDtoConverter.convert(getLatestKoodiVersio(koodi.getKoodiUri()));
+    }
+
+
+    @Override
     public KoodiVersioWithKoodistoItem updateKoodi(UpdateKoodiDataType updateKoodiData) {
         return updateKoodi(updateKoodiData, false);
     }
@@ -234,7 +252,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
         String koodistoUri = latestKoodiVersion.getKoodi().getKoodisto().getKoodistoUri();
         int latestKoodistoVersio = koodistoVersioRepository.findLatestVersioByKoodistoUri(koodistoUri)
-                .orElseThrow(() -> new KoodistoNotFoundException());
+                .orElseThrow(KoodistoNotFoundException::new);
         List<KoodiVersio> koodiVersios = koodiVersioRepository.findByKoodistoUriAndVersio(koodistoUri, latestKoodistoVersio);
 
         if (!latest.getKoodistoItem().getVersios().contains(latestKoodistoVersio)) {
@@ -373,7 +391,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             }
 
             List<KoodiVersioWithKoodistoItem> alakoodiVersios = getLatestKoodiVersios(relatedCodeElements.toArray(new String[relatedCodeElements.size()]));
-            if (alakoodiVersios.size() == 0) {
+            if (alakoodiVersios.isEmpty()) {
                 log.error("Child code uris did not match any code elements");
                 throw new KoodiNotFoundException();
             }
@@ -420,7 +438,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private void insertRelation(KoodiVersio codeElementVersion, KoodiVersioWithKoodistoItem toBeAdded, SuhteenTyyppi st, boolean isChildRelation) {
         KoodistoVersio currentCodes = koodistoBusinessService.getLatestKoodistoVersio(codeElementVersion.getKoodi().getKoodisto().getKoodistoUri(), false);
-
         Set<KoodistonSuhde> codesRelationsToBeCompared = null;
         Set<KoodistonSuhde> parentCodes = currentCodes.getYlakoodistos();
         Set<KoodistonSuhde> childCodes = currentCodes.getAlakoodistos();
@@ -741,7 +758,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     @Override
     public void acceptCodeElements(KoodistoVersio latest) {
         List<KoodiVersio> koodis = koodiVersioRepository.getKoodiVersiosByKoodistoAndKoodiTila(latest.getId(), Tila.LUONNOS);
-        if (koodis.size() > 0) {
+        if (!koodis.isEmpty()) {
             ArrayList<String> koodiUris = new ArrayList<>();
             for (KoodiVersio koodiVersio : koodis) {
                 koodiUris.add(koodiVersio.getKoodi().getKoodiUri());
@@ -768,19 +785,19 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         KoodiVersioWithKoodistoItem kvkoodisto = getKoodiVersioWithKoodistoVersioItems(koodiUri, koodiVersio);
         KoodiVersio versio = kvkoodisto.getKoodiVersio();
         if (!skipPassiivinenCheck && !Tila.PASSIIVINEN.equals(versio.getTila())) {
-            log.error("Cannot delete koodi version. Tila must be {}.", Tila.PASSIIVINEN.name());
+            log.error("Cannot delete koodi version. Tila must be {}.", Tila.PASSIIVINEN);
             throw new KoodiVersioNotPassiivinenException();
         }
         List<KoodiVersioWithKoodistoItem> codes = listByRelation(koodiUri, koodiVersio, false, SuhteenTyyppi.RINNASTEINEN);
-        if (codes == null || codes.size() == 0) {
+        if (codes == null || codes.isEmpty()) {
             codes = listByRelation(koodiUri, koodiVersio, false, SuhteenTyyppi.SISALTYY);
         }
 
-        if (codes == null || codes.size() == 0) {
+        if (codes == null || codes.isEmpty()) {
             codes = listByRelation(koodiUri, koodiVersio, true, SuhteenTyyppi.SISALTYY);
         }
 
-        if (codes != null && codes.size() > 0) {
+        if (codes != null && !codes.isEmpty()) {
             throw new KoodiVersioHasRelationsException();
 
         }
@@ -805,7 +822,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             koodi.removeKoodiVersion(versio);
 
             koodiVersioRepository.delete(versio);
-            if (koodi.getKoodiVersios().size() == 0) {
+            if (koodi.getKoodiVersios().isEmpty()) {
                 koodiRepository.delete(koodi);
             } else {
                 activateRelationsInLatestKoodiVersio(koodi);
@@ -962,10 +979,10 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public KoodiVersioWithKoodistoItem getKoodiByKoodisto(String koodistoUri, String koodiUri) {
         checkKoodistoExists(koodistoUri);
 
-        SearchKoodisByKoodistoCriteriaType searchData = KoodiServiceSearchCriteriaBuilder.koodisByKoodistoUri(Arrays.asList(koodiUri), koodistoUri);
+        SearchKoodisByKoodistoCriteriaType searchData = KoodiServiceSearchCriteriaBuilder.koodisByKoodistoUri(List.of(koodiUri), koodistoUri);
 
         List<KoodiVersioWithKoodistoItem> result = searchKoodis(searchData);
-        if (result.size() < 1) {
+        if (result.isEmpty()) {
             log.warn("No koodi found with URI {} in koodisto with URI {}", koodiUri, koodistoUri);
             throw new KoodiNotFoundException();
         }
@@ -978,11 +995,11 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public KoodiVersioWithKoodistoItem getKoodiByKoodistoVersio(String koodistoUri, Integer koodistoVersio, String koodiUri) {
         checkKoodistoVersioExists(koodistoUri, koodistoVersio);
 
-        SearchKoodisByKoodistoCriteriaType searchData = KoodiServiceSearchCriteriaBuilder.koodisByKoodistoUriAndKoodistoVersio(Arrays.asList(koodiUri),
+        SearchKoodisByKoodistoCriteriaType searchData = KoodiServiceSearchCriteriaBuilder.koodisByKoodistoUriAndKoodistoVersio(List.of(koodiUri),
                 koodistoUri, koodistoVersio);
 
         List<KoodiVersioWithKoodistoItem> result = searchKoodis(searchData);
-        if (result.size() < 1) {
+        if (result.isEmpty()) {
             log.warn("No koodi found with URI {} in koodisto with URI {}, versio {}", koodiUri, koodistoUri, koodistoVersio);
             throw new KoodiNotFoundException();
         }
@@ -1084,6 +1101,71 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return koodi;
     }
 
+    private static boolean suhteetMatches(KoodinSuhde a, InternalKoodiSuhdeDto b) {
+        return (Objects.equals(b.getKoodiUri(), a.getYlakoodiVersio().getKoodi().getKoodiUri()) && Objects.equals(b.getKoodiVersio(), a.getYlakoodiVersio().getVersio()) ||
+                Objects.equals(b.getKoodiUri(), a.getAlakoodiVersio().getKoodi().getKoodiUri()) && Objects.equals(b.getKoodiVersio(), a.getAlakoodiVersio().getVersio()));
+    }
+
+    private void synchronizeRelations(InternalKoodiVersioDto newKoodi) {
+        KoodiVersio oldKoodi = getKoodiVersio(newKoodi.getKoodiUri(), newKoodi.getVersio());
+        syncronizeRelationsByType(oldKoodi, SuhteenTyyppi.SISALTYY, true, newKoodi.getSisaltyyKoodeihin());
+        syncronizeRelationsByType(oldKoodi, SuhteenTyyppi.SISALTYY, false, newKoodi.getSisaltaaKoodit());
+        syncronizeRelationsByType(oldKoodi, SuhteenTyyppi.RINNASTEINEN, false, newKoodi.getRinnastuuKoodeihin());
+    }
+
+    private void syncronizeRelationsByType(KoodiVersio oldKoodi, SuhteenTyyppi tyyppi, boolean isChild, List<InternalKoodiSuhdeDto> newRelations) {
+        Set<KoodinSuhde> oldRelations = getOldRelationsByRelationType(tyyppi, isChild, oldKoodi);
+        handleRelations(tyyppi, isChild, oldKoodi, oldRelations, newRelations);
+    }
+
+    static Set<KoodinSuhde> getOldRelationsByRelationType(SuhteenTyyppi tyyppi, boolean isChild, KoodiVersio koodi) {
+        return Stream.of(koodi.getAlakoodis(), koodi.getYlakoodis())
+                .flatMap(Collection::stream)
+                .filter(koodinSuhde -> koodinSuhde.getSuhteenTyyppi().equals(tyyppi))
+                .filter(koodinSuhde -> rinnastuu(tyyppi) || sisaltyy(koodi, isChild, koodinSuhde) || sisaltaa(koodi, isChild, koodinSuhde))
+                .collect(Collectors.toSet());
+    }
+
+    static boolean sisaltaa(KoodiVersio koodi, boolean isChild, KoodinSuhde koodinSuhde) {
+        return !isChild && Objects.equals(koodinSuhde.getYlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId());
+    }
+
+    static boolean sisaltyy(KoodiVersio koodi, boolean isChild, KoodinSuhde koodinSuhde) {
+        return isChild && Objects.equals(koodinSuhde.getAlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId());
+    }
+
+    private static boolean rinnastuu(SuhteenTyyppi tyyppi) {
+        return tyyppi.equals(SuhteenTyyppi.RINNASTEINEN);
+    }
+
+    private void handleRelations(SuhteenTyyppi tyyppi, boolean isChild, KoodiVersio koodi, Set<KoodinSuhde> oldRelations, List<InternalKoodiSuhdeDto> newRelations) {
+        collectRelationsToRemove(newRelations, oldRelations).ifPresent(koodinSuhdeRepository::massRemove);
+        collectRelationsToAdd(newRelations, oldRelations)
+                .forEach(newKoodi -> persistNewSuhde(tyyppi, isChild, koodi, newKoodi));
+    }
+
+    private List<KoodiVersio> collectRelationsToAdd(List<InternalKoodiSuhdeDto> newRelations, Set<KoodinSuhde> oldRelations) {
+        return newRelations.stream()
+                .filter(newRelation -> oldRelations.stream().noneMatch(b -> suhteetMatches(b, newRelation)))
+                .map(addedRelation -> getKoodiVersio(addedRelation.getKoodiUri(), addedRelation.getKoodiVersio())).collect(Collectors.toList());
+    }
+
+    private static Optional<List<KoodinSuhde>> collectRelationsToRemove(List<InternalKoodiSuhdeDto> newRelations, Set<KoodinSuhde> oldRelations) {
+        List<KoodinSuhde> relationsToRemove = oldRelations.stream()
+                .filter(oldRelation -> newRelations.stream().noneMatch(newRelation -> suhteetMatches(oldRelation, newRelation)))
+                .collect(Collectors.toList());
+        return relationsToRemove.isEmpty() ? Optional.empty() : Optional.of(relationsToRemove);
+    }
+
+    private void persistNewSuhde(SuhteenTyyppi suhteenTyyppi, boolean isChild, KoodiVersio koodi, KoodiVersio newKoodi) {
+        KoodinSuhde koodinSuhde = new KoodinSuhde();
+        koodinSuhde.setSuhteenTyyppi(suhteenTyyppi);
+        koodinSuhde.setYlakoodiVersio(isChild ? newKoodi : koodi);
+        koodinSuhde.setAlakoodiVersio(isChild ? koodi : newKoodi);
+        koodinSuhde.setVersio(1);
+        koodinSuhdeRepository.save(koodinSuhde);
+    }
+
     @Override
     @Transactional
     public KoodiVersio saveKoodi(ExtendedKoodiDto koodiDTO) {
@@ -1113,8 +1195,8 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         List<String> addedLevelsWithUris = filterNewRelationUrisToSet(koodiDTO.getLevelsWithCodeElements(), existingLevelsWithUris);
         List<String> addedWithinUris = filterNewRelationUrisToSet(koodiDTO.getWithinCodeElements(), existingWithinUris);
         // MAGIC HERE?
-        latest = updateKoodi(converter.convertFromDTOToUpdateKoodiDataType(koodiDTO), true).getKoodiVersio();
-        if (removedIncludesUris.size() > 0 || addedIncludesUris.size() > 0) {
+        latest = updateKoodi(codeElementResourceConverter.convertFromDTOToUpdateKoodiDataType(koodiDTO), true).getKoodiVersio();
+        if (!removedIncludesUris.isEmpty() || !addedIncludesUris.isEmpty()) {
             latest = createNewKoodistoVersionIfNeeded(latest, true);
         }
 

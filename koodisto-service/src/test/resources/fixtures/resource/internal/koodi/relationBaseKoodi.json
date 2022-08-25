@@ -1,0 +1,94 @@
+{
+  "koodisto": {
+    "koodistoRyhmaMetadata": [
+      {
+        "id": -1,
+        "uri": "general",
+        "nimi": "general",
+        "kieli": "FI"
+      }
+    ],
+    "koodistoRyhmaUri": "general",
+    "resourceUri": "http://localhost/8080/koodisto-service/rest/codes/one",
+    "koodistoUri": "one",
+    "versio": 1,
+    "lockingVersion": 0,
+    "organisaatioOid": "1.2.2004.6",
+    "paivitysPvm": "2012-03-22",
+    "paivittajaOid": null,
+    "voimassaAlkuPvm": "2012-11-20",
+    "voimassaLoppuPvm": null,
+    "omistaja": null,
+    "tila": "LUONNOS",
+    "metadata": [
+      {
+        "kieli": "FI",
+        "nimi": "One",
+        "kuvaus": "kuvaus"
+      }
+    ],
+    "koodistoVersio": [
+      1
+    ],
+    "sisaltyyKoodistoihin": [
+      {
+        "koodistoUri": "four",
+        "koodistoVersio": 1,
+        "nimi": {
+          "fi": "Four"
+        },
+        "kuvaus": {
+          "fi": "Two kuvaus"
+        }
+      }
+    ],
+    "sisaltaaKoodistot": [
+      {
+        "koodistoUri": "three",
+        "koodistoVersio": 1,
+        "nimi": {
+          "fi": "Three"
+        },
+        "kuvaus": {
+          "fi": "kuvaus"
+        }
+      }
+    ],
+    "rinnastuuKoodistoihin": [
+      {
+        "koodistoUri": "two",
+        "koodistoVersio": 1,
+        "nimi": {
+          "fi": "Two"
+        },
+        "kuvaus": {
+          "fi": "kuvaus"
+        }
+      }
+    ]
+  },
+  "koodistoVersio": null,
+  "koodiArvo": "1",
+  "versio": 1,
+  "koodiVersio": [
+    1
+  ],
+  "lockingVersion": 1,
+  "tila": "LUONNOS",
+  "koodiUri": "one_1",
+  "paivitysPvm": "2012-03-22",
+  "paivittajaOid": null,
+  "voimassaAlkuPvm": "1990-01-01",
+  "voimassaLoppuPvm": null,
+  "metadata": [
+    {
+      "nimi": "1",
+      "kuvaus": "1",
+      "lyhytNimi": "1",
+      "kieli": "FI"
+    }
+  ],
+  "sisaltyyKoodeihin": [],
+  "sisaltaaKoodit": [],
+  "rinnastuuKoodeihin": []
+}
