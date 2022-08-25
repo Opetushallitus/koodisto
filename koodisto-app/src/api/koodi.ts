@@ -1,4 +1,4 @@
-import type { CSVUpsertKoodi, MapToApiObject, Koodi, KoodiMetadata, Tila } from '../types';
+import type { CSVUpsertKoodi, MapToApiObject, Koodi, KoodiMetadata, Tila, KoodiRelation } from '../types';
 import { ApiDate } from '../types';
 import { errorHandlingWrapper } from './errorHandling';
 import axios, { AxiosResponse } from 'axios';
@@ -15,18 +15,14 @@ type CreateKoodiDataType = {
     voimassaLoppuPvm?: ApiDate;
     metadata: KoodiMetadata[];
 };
-type ApiKoodiRelation = {
-    codeElementUri: string;
-    codeElementVersion: number;
-};
 type UpdateKoodiDataType = CreateKoodiDataType & {
     koodiUri: string;
     tila: Tila;
     versio: number;
-    version: number;
-    withinCodeElements: ApiKoodiRelation[];
-    includesCodeElements: ApiKoodiRelation[];
-    levelsWithCodeElements: ApiKoodiRelation[];
+    lockingVersion: number;
+    sisaltyyKoodeihin: KoodiRelation[];
+    sisaltaaKoodit: KoodiRelation[];
+    rinnastuuKoodeihin: KoodiRelation[];
 };
 export const batchUpsertKoodi = async (koodistoUri: string, koodi: CSVUpsertKoodi[]): Promise<string | undefined> =>
     errorHandlingWrapper(async () => {
@@ -113,21 +109,12 @@ const upsertKoodi = async <X>({
 const mapKoodiToUpdateKoodi = (koodi: Koodi): UpdateKoodiDataType => ({
     ...mapKoodiToCreateKoodi(koodi),
     koodiUri: koodi.koodiUri,
-    version: koodi.lockingVersion,
+    lockingVersion: koodi.lockingVersion,
     tila: koodi.tila,
     versio: koodi.versio,
-    includesCodeElements: koodi.sisaltaaKoodit.map((a) => ({
-        codeElementUri: a.koodiUri,
-        codeElementVersion: a.koodiVersio,
-    })),
-    withinCodeElements: koodi.sisaltyyKoodeihin.map((a) => ({
-        codeElementUri: a.koodiUri,
-        codeElementVersion: a.koodiVersio,
-    })),
-    levelsWithCodeElements: koodi.rinnastuuKoodeihin.map((a) => ({
-        codeElementUri: a.koodiUri,
-        codeElementVersion: a.koodiVersio,
-    })),
+    sisaltaaKoodit: koodi.sisaltaaKoodit,
+    sisaltyyKoodeihin: koodi.sisaltyyKoodeihin,
+    rinnastuuKoodeihin: koodi.rinnastuuKoodeihin,
 });
 
 const mapKoodiToCreateKoodi = (koodi: Koodi): CreateKoodiDataType => ({

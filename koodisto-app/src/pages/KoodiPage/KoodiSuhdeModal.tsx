@@ -34,7 +34,7 @@ export const KoodiSuhdeModal: React.FC<SuhdeModalProps> = ({ close, save, relati
     }, [relationSources]);
     return (
         <Modal
-            header={<FormattedMessage id={'KOODI_SUHDE_MODAL_HEADER'} defaultMessage={'Valitse koodistot'} />}
+            header={<FormattedMessage id={'KOODI_SUHDE_MODAL_HEADER'} defaultMessage={'Valitse koodit'} />}
             body={(koodiList && <KoodiTable modal koodiList={koodiList} setSelected={setSelected} />) || <Loading />}
             footer={<SuhdeModalFooter selected={selected} close={close} save={save} />}
             onClose={close}
