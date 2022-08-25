@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class KoodinSuhde extends BaseEntity {
 
     private static final long serialVersionUID = -8875747407128912635L;

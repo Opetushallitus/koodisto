@@ -81,17 +81,6 @@ public class InternalKoodiResource {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping(path = "/{koodistoUri}",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    @JsonView({JsonViews.Internal.class})
-    public @ResponseBody
-    ResponseEntity<List<KoodiDto>> getKoodiListForKoodisto(
-            @Parameter(description = "Koodiston URI") @PathVariable String koodistoUri
-    ) {
-        List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.getKoodisByKoodisto(koodistoUri, true);
-        return ResponseEntity.ok(koodiVersioWithKoodistoItemToKoodiDtoConverter.convertAll(result));
-    }
-
     @GetMapping(path = "/koodisto/{koodistoUri}/{koodistoVersio}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})
@@ -129,11 +118,7 @@ public class InternalKoodiResource {
     public @ResponseBody
     ResponseEntity<InternalKoodiVersioDto> updateKoodi(
             @RequestBody @Valid InternalKoodiVersioDto koodi) {
-        koodiBusinessService.updateKoodi(internalKoodiVersioDtoToUpdateKoodiDataTypeConverter.convert(koodi));
-        koodiBusinessService.syncronizeRelations(koodi.getKoodiUri(), koodi.getVersio(), SuhteenTyyppi.SISALTYY, true, koodi.getSisaltyyKoodeihin());
-        koodiBusinessService.syncronizeRelations(koodi.getKoodiUri(), koodi.getVersio(), SuhteenTyyppi.SISALTYY, false, koodi.getSisaltaaKoodit());
-        koodiBusinessService.syncronizeRelations(koodi.getKoodiUri(), koodi.getVersio(), SuhteenTyyppi.RINNASTEINEN, false, koodi.getRinnastuuKoodeihin());
-        return ResponseEntity.ok(koodiVersioToInternalKoodiVersioDtoConverter.convert(koodiBusinessService.getLatestKoodiVersio(koodi.getKoodiUri())));
+        return koodiBusinessService.updateKoodi(koodi);
     }
 
     @PostMapping(path = "/{koodistoUri}", consumes = MediaType.APPLICATION_JSON_VALUE,

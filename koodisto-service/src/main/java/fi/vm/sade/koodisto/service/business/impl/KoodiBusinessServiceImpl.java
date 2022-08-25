@@ -9,6 +9,7 @@ import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodiSuhdeDto;
+import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioDto;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.repository.*;
 import fi.vm.sade.koodisto.resource.CodeElementResourceConverter;
@@ -18,6 +19,8 @@ import fi.vm.sade.koodisto.service.business.UriTransliterator;
 import fi.vm.sade.koodisto.service.business.exception.*;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.InternalKoodiVersioDtoToUpdateKoodiDataTypeConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioDtoConverter;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
@@ -27,6 +30,7 @@ import org.apache.commons.codec.binary.StringUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,6 +88,10 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     @Autowired
     private CodeElementResourceConverter codeElementResourceConverter;
+    @Autowired
+    private KoodiVersioToInternalKoodiVersioDtoConverter koodiVersioToInternalKoodiVersioDtoConverter;
+    @Autowired
+    private InternalKoodiVersioDtoToUpdateKoodiDataTypeConverter internalKoodiVersioDtoToUpdateKoodiDataTypeConverter;
 
     protected String getCurrentUserOid() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
@@ -215,6 +223,15 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     public KoodiVersio getKoodiVersio(String koodiUri, Integer koodiVersio) {
         return getKoodiVersioWithKoodistoVersioItems(koodiUri, koodiVersio).getKoodiVersio();
     }
+
+    @Override
+    public ResponseEntity<InternalKoodiVersioDto> updateKoodi(
+            InternalKoodiVersioDto koodi) {
+        updateKoodi(internalKoodiVersioDtoToUpdateKoodiDataTypeConverter.convert(koodi));
+        synchronizeRelations(koodi);
+        return ResponseEntity.ok(koodiVersioToInternalKoodiVersioDtoConverter.convert(getLatestKoodiVersio(koodi.getKoodiUri())));
+    }
+
 
     @Override
     public KoodiVersioWithKoodistoItem updateKoodi(UpdateKoodiDataType updateKoodiData) {
@@ -422,7 +439,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
 
     private void insertRelation(KoodiVersio codeElementVersion, KoodiVersioWithKoodistoItem toBeAdded, SuhteenTyyppi st, boolean isChildRelation) {
         KoodistoVersio currentCodes = koodistoBusinessService.getLatestKoodistoVersio(codeElementVersion.getKoodi().getKoodisto().getKoodistoUri(), false);
-
         Set<KoodistonSuhde> codesRelationsToBeCompared = null;
         Set<KoodistonSuhde> parentCodes = currentCodes.getYlakoodistos();
         Set<KoodistonSuhde> childCodes = currentCodes.getAlakoodistos();
@@ -434,7 +450,12 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
         checkCodesHaveRelation(currentCodes.getKoodisto().getKoodistoUri(), codesRelationsToBeCompared, toBeAdded.getKoodistoItem().getKoodistoUri(), st);
 
-        persistNewSuhde(st, isChildRelation ? codeElementVersion : toBeAdded.getKoodiVersio(), isChildRelation ? toBeAdded.getKoodiVersio() : codeElementVersion);
+        KoodinSuhde koodinSuhde = new KoodinSuhde();
+        koodinSuhde.setSuhteenTyyppi(st);
+        koodinSuhde.setYlakoodiVersio(isChildRelation ? codeElementVersion : toBeAdded.getKoodiVersio());
+        koodinSuhde.setAlakoodiVersio(isChildRelation ? toBeAdded.getKoodiVersio() : codeElementVersion);
+        koodinSuhde.setVersio(1);
+        koodinSuhdeRepository.save(koodinSuhde);
     }
 
     private void checkCodesHaveRelation(String codesUri, Set<KoodistonSuhde> existingRelations, String codesUriToBeFound, SuhteenTyyppi st) {
@@ -1081,45 +1102,67 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         return koodi;
     }
 
-    private boolean suhteetMatches(KoodinSuhde a, InternalKoodiSuhdeDto b) {
+    private static boolean suhteetMatches(KoodinSuhde a, InternalKoodiSuhdeDto b) {
         return (Objects.equals(b.getKoodiUri(), a.getYlakoodiVersio().getKoodi().getKoodiUri()) && Objects.equals(b.getKoodiVersio(), a.getYlakoodiVersio().getVersio()) ||
                 Objects.equals(b.getKoodiUri(), a.getAlakoodiVersio().getKoodi().getKoodiUri()) && Objects.equals(b.getKoodiVersio(), a.getAlakoodiVersio().getVersio()));
     }
 
-    @Override
-    public void syncronizeRelations(String koodiUri, Integer versio, SuhteenTyyppi tyyppi, boolean isChild, List<InternalKoodiSuhdeDto> newRelations) {
-        KoodiVersio koodi = getKoodiVersio(koodiUri, versio);
-        Set<KoodinSuhde> oldRelations =
-                Stream.of(koodi.getAlakoodis(), koodi.getYlakoodis())
-                        .flatMap(Collection::stream)
-                        .filter(koodinSuhde ->
-                                koodinSuhde.getSuhteenTyyppi().equals(tyyppi)
-                                        && (tyyppi.equals(SuhteenTyyppi.RINNASTEINEN)
-                                        || (isChild && Objects.equals(koodinSuhde.getAlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId())
-                                        || (!isChild && Objects.equals(koodinSuhde.getYlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId())))
-                                )
-                        )
-                        .collect(Collectors.toSet());
-        handleRelations(tyyppi, newRelations, koodi, oldRelations, isChild);
+    private void synchronizeRelations(InternalKoodiVersioDto newKoodi) {
+        KoodiVersio oldKoodi = getKoodiVersio(newKoodi.getKoodiUri(), newKoodi.getVersio());
+        syncronizeRelationsByType(oldKoodi, SuhteenTyyppi.SISALTYY, true, newKoodi.getSisaltyyKoodeihin());
+        syncronizeRelationsByType(oldKoodi, SuhteenTyyppi.SISALTYY, false, newKoodi.getSisaltaaKoodit());
+        syncronizeRelationsByType(oldKoodi, SuhteenTyyppi.RINNASTEINEN, false, newKoodi.getRinnastuuKoodeihin());
     }
 
-    private void handleRelations(SuhteenTyyppi tyyppi, List<InternalKoodiSuhdeDto> newRelations, KoodiVersio koodi, Set<KoodinSuhde> oldRelations, boolean isChild) {
-        Stream.of(oldRelations.stream()
-                .filter(oldRelation -> newRelations.stream().noneMatch(newRelation -> suhteetMatches(oldRelation, newRelation)))
-                .collect(Collectors.toList())).filter(removedRelationList -> !removedRelationList.isEmpty()).forEach(koodinSuhdeRepository::massRemove);
-        newRelations.stream()
+    private void syncronizeRelationsByType(KoodiVersio oldKoodi, SuhteenTyyppi tyyppi, boolean isChild, List<InternalKoodiSuhdeDto> newRelations) {
+        Set<KoodinSuhde> oldRelations = getOldRelationsByRelationType(tyyppi, isChild, oldKoodi);
+        handleRelations(tyyppi, isChild, oldKoodi, oldRelations, newRelations);
+    }
+
+    static Set<KoodinSuhde> getOldRelationsByRelationType(SuhteenTyyppi tyyppi, boolean isChild, KoodiVersio koodi) {
+        return Stream.of(koodi.getAlakoodis(), koodi.getYlakoodis())
+                .flatMap(Collection::stream)
+                .filter(koodinSuhde -> koodinSuhde.getSuhteenTyyppi().equals(tyyppi))
+                .filter(koodinSuhde -> rinnastuu(tyyppi) || sisaltyy(koodi, isChild, koodinSuhde) || sisaltaa(koodi, isChild, koodinSuhde))
+                .collect(Collectors.toSet());
+    }
+
+    static boolean sisaltaa(KoodiVersio koodi, boolean isChild, KoodinSuhde koodinSuhde) {
+        return !isChild && Objects.equals(koodinSuhde.getYlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId());
+    }
+
+    static boolean sisaltyy(KoodiVersio koodi, boolean isChild, KoodinSuhde koodinSuhde) {
+        return isChild && Objects.equals(koodinSuhde.getAlakoodiVersio().getKoodi().getId(), koodi.getKoodi().getId());
+    }
+
+    private static boolean rinnastuu(SuhteenTyyppi tyyppi) {
+        return tyyppi.equals(SuhteenTyyppi.RINNASTEINEN);
+    }
+
+    private void handleRelations(SuhteenTyyppi tyyppi, boolean isChild, KoodiVersio koodi, Set<KoodinSuhde> oldRelations, List<InternalKoodiSuhdeDto> newRelations) {
+        collectRelationsToRemove(newRelations, oldRelations).ifPresent(koodinSuhdeRepository::massRemove);
+        collectRelationsToAdd(newRelations, oldRelations)
+                .forEach(newKoodi -> persistNewSuhde(tyyppi, isChild, koodi, newKoodi));
+    }
+
+    private List<KoodiVersio> collectRelationsToAdd(List<InternalKoodiSuhdeDto> newRelations, Set<KoodinSuhde> oldRelations) {
+        return newRelations.stream()
                 .filter(newRelation -> oldRelations.stream().noneMatch(b -> suhteetMatches(b, newRelation)))
-                .forEach(aaddedRelations -> {
-                    KoodiVersio koodi2 = getKoodiVersio(aaddedRelations.getKoodiUri(), aaddedRelations.getKoodiVersio());
-                    persistNewSuhde(tyyppi, isChild ? koodi2 : koodi, isChild ? koodi : koodi2);
-                });
+                .map(addedRelation -> getKoodiVersio(addedRelation.getKoodiUri(), addedRelation.getKoodiVersio())).collect(Collectors.toList());
     }
 
-    private void persistNewSuhde(SuhteenTyyppi suhteenTyyppi, KoodiVersio ylakoodi, KoodiVersio alaKoodi) {
+    private static Optional<List<KoodinSuhde>> collectRelationsToRemove(List<InternalKoodiSuhdeDto> newRelations, Set<KoodinSuhde> oldRelations) {
+        List<KoodinSuhde> relationsToRemove = oldRelations.stream()
+                .filter(oldRelation -> newRelations.stream().noneMatch(newRelation -> suhteetMatches(oldRelation, newRelation)))
+                .collect(Collectors.toList());
+        return relationsToRemove.isEmpty() ? Optional.empty() : Optional.of(relationsToRemove);
+    }
+
+    private void persistNewSuhde(SuhteenTyyppi suhteenTyyppi, boolean isChild, KoodiVersio koodi, KoodiVersio newKoodi) {
         KoodinSuhde koodinSuhde = new KoodinSuhde();
         koodinSuhde.setSuhteenTyyppi(suhteenTyyppi);
-        koodinSuhde.setYlakoodiVersio(ylakoodi);
-        koodinSuhde.setAlakoodiVersio(alaKoodi);
+        koodinSuhde.setYlakoodiVersio(isChild ? newKoodi : koodi);
+        koodinSuhde.setAlakoodiVersio(isChild ? koodi : newKoodi);
         koodinSuhde.setVersio(1);
         koodinSuhdeRepository.save(koodinSuhde);
     }

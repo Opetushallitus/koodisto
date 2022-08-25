@@ -2,7 +2,7 @@ package fi.vm.sade.koodisto.service.business;
 
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
-import fi.vm.sade.koodisto.dto.internal.InternalKoodiSuhdeDto;
+import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioDto;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
@@ -10,6 +10,7 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Set;
@@ -87,6 +88,8 @@ public interface KoodiBusinessService {
 
     KoodiVersioWithKoodistoItem createKoodi(String koodistoUri, CreateKoodiDataType createKoodiData);
 
+    ResponseEntity<InternalKoodiVersioDto> updateKoodi(InternalKoodiVersioDto koodi);
+
     KoodiVersioWithKoodistoItem updateKoodi(UpdateKoodiDataType updateKoodiData);
 
     void delete(String koodiUri, Integer koodiVersio, boolean skipPassiivinenCheck);
@@ -120,7 +123,6 @@ public interface KoodiBusinessService {
 
     KoodiVersio saveKoodi(ExtendedKoodiDto koodiDTO);
 
-    void syncronizeRelations(String koodiUri, Integer versio, SuhteenTyyppi tyyppi,boolean isChild, List<InternalKoodiSuhdeDto> relations);
 
     Set<KoodiVersio> createNewVersionsNonFlushing(Set<KoodistoVersioKoodiVersio> koodiVersios);
 

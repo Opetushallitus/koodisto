@@ -53,16 +53,6 @@ class InternalKoodiResourceTest {
     }
 
     @Test
-    @Description("Test get endpoint")
-    @WithMockUser(value = "1.2.3.4.5", authorities = {fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
-    void testGetInternalKoodi() throws Exception {
-        this.mockMvc.perform(get("/internal/koodi/get"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(containsString("\"koodiUri\":\"get_1\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"2012-03-22\"")));
-    }
-
-    @Test
     @Description("Delete with invalid access rights")
     void testDeleteInternalKoodiNoAccess() throws Exception {
         this.mockMvc.perform(delete("/internal/koodi/get_1/1"))
@@ -210,21 +200,27 @@ class InternalKoodiResourceTest {
                                 "}]"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("\"koodistoUri\":\"one\"")));
-        this.mockMvc.perform(get("/internal/koodi/one"))
+        this.mockMvc.perform(get("/internal/koodi/koodisto/one/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("\"koodiUri\":\"one_1\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"")));
+                .andExpect(content().json("[" +
+                        "{\"koodiUri\":\"one_1\"," +
+                        "\"koodiArvo\":\"1\"," +
+                        "\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"}" +
+                        "]", false));
+
     }
 
     @Test
     @Description("Posting can edit one koodi")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal2() throws Exception {
-        this.mockMvc.perform(get("/internal/koodi/two"))
+        this.mockMvc.perform(get("/internal/koodi/koodisto/two/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
-                .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"two1\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"2012-03-22\"")));
+                .andExpect(content().json("[{" +
+                        "\"koodiUri\":\"two_1\"," +
+                        "\"metadata\":[{\"nimi\":\"two1\"}]," +
+                        "\"koodiArvo\":\"1\"," +
+                        "\"paivitysPvm\":\"2012-03-22\"}]", false));
         this.mockMvc.perform(post("/internal/koodi/upsert/two")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("[{" +
@@ -244,23 +240,28 @@ class InternalKoodiResourceTest {
                                 "\"kieli\":\"SV\"}]" +
                                 "}]"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("\"koodistoUri\":\"two\"")));
-        this.mockMvc.perform(get("/internal/koodi/two"))
+                .andExpect(content().json("{\"koodistoUri\":\"two\"}", false));
+        this.mockMvc.perform(get("/internal/koodi/koodisto/two/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
-                .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"UPDATED\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"")));
+                .andExpect(content().json("[{" +
+                        "\"koodiUri\":\"two_1\"," +
+                        "\"metadata\":[{\"nimi\":\"UPDATED\"},{\"nimi\":\"UPDATED\"},{\"nimi\":\"UPDATED\"}]," +
+                        "\"koodiArvo\":\"1\"," +
+                        "\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"" +
+                        "}]", false));
     }
 
     @Test
     @Description("Posting can add one and edit one koodi")
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD})
     void testPostInternal3() throws Exception {
-        this.mockMvc.perform(get("/internal/koodi/two"))
+        this.mockMvc.perform(get("/internal/koodi/koodisto/two/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
-                .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"two1\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"2012-03-22\"")));
+                .andExpect(content().json("[{" +
+                        "\"koodiUri\":\"two_1\"," +
+                        "\"metadata\":[{\"nimi\":\"two1\"}]," +
+                        "\"koodiArvo\":\"1\",\"paivitysPvm\":\"2012-03-22\"" +
+                        "}]", false));
         this.mockMvc.perform(post("/internal/koodi/upsert/two")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("[{" +
@@ -296,14 +297,18 @@ class InternalKoodiResourceTest {
                                 "\"kieli\":\"SV\"}]" +
                                 "}]"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("\"koodistoUri\":\"two\"")));
-        this.mockMvc.perform(get("/internal/koodi/two"))
+                .andExpect(content().json("{\"koodistoUri\":\"two\"}", false));
+        this.mockMvc.perform(get("/internal/koodi/koodisto/two/1"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("\"koodiUri\":\"two_1\"")))
-                .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"UPDATED\"")))
-                .andExpect(content().string(containsString("\"metadata\":[{\"nimi\":\"ADDED\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"1\",\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"")))
-                .andExpect(content().string(containsString("\"koodiArvo\":\"2\",\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"")));
+                .andExpect(content().json("[" +
+                        "{\"koodiUri\":\"two_1\"," +
+                        "\"koodiArvo\":\"1\"," +
+                        "\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"," +
+                        "\"metadata\":[{\"nimi\":\"UPDATED\"},{\"nimi\":\"UPDATED\"},{\"nimi\":\"UPDATED\"}]}," +
+                        "{\"koodiUri\":\"two_2\"," +
+                        "\"koodiArvo\":\"2\"," +
+                        "\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"," +
+                        "\"metadata\":[{\"nimi\":\"ADDED\"},{\"nimi\":\"ADDED\"},{\"nimi\":\"ADDED\"}]}]", false));
     }
 
     @Test
@@ -364,9 +369,9 @@ class InternalKoodiResourceTest {
         o.put("lockingVersion", "1");
         o.put("tila", "LUONNOS");
         o.put("metadata", metadata);
-        o.put("sisaltyyKoodeihin",new JSONArray());
-        o.put("sisaltaaKoodit",new JSONArray());
-        o.put("rinnastuuKoodeihin",new JSONArray());
+        o.put("sisaltyyKoodeihin", new JSONArray());
+        o.put("sisaltaaKoodit", new JSONArray());
+        o.put("rinnastuuKoodeihin", new JSONArray());
 
         mockMvc.perform(get(BASE_PATH + "/{koodiUri}/{koodiVersio}", koodiUri, koodiVersio))
                 .andExpectAll(
