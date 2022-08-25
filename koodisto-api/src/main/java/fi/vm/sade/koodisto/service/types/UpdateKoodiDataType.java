@@ -11,7 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class UpdateKoodiDataType extends CreateKoodiDataType implements Serializable {
     private static final long serialVersionUID = 1L;
     protected String koodiUri;
