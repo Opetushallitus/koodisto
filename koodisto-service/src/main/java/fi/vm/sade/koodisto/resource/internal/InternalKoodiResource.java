@@ -113,7 +113,7 @@ public class InternalKoodiResource {
     public @ResponseBody
     ResponseEntity<InternalKoodiVersioDto> updateKoodi(
             @RequestBody @Valid InternalKoodiVersioDto koodi) {
-        return koodiBusinessService.updateKoodi(koodi);
+        return ResponseEntity.ok(koodiBusinessService.updateKoodi(koodi));
     }
 
     @PostMapping(path = "/{koodistoUri}", consumes = MediaType.APPLICATION_JSON_VALUE,

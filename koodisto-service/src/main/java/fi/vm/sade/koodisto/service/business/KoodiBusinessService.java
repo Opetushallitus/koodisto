@@ -10,7 +10,6 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Set;
@@ -88,7 +87,7 @@ public interface KoodiBusinessService {
 
     KoodiVersioWithKoodistoItem createKoodi(String koodistoUri, CreateKoodiDataType createKoodiData);
 
-    ResponseEntity<InternalKoodiVersioDto> updateKoodi(InternalKoodiVersioDto koodi);
+    InternalKoodiVersioDto updateKoodi(InternalKoodiVersioDto koodi);
 
     KoodiVersioWithKoodistoItem updateKoodi(UpdateKoodiDataType updateKoodiData);
 

@@ -30,7 +30,6 @@ import org.apache.commons.codec.binary.StringUtils;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -225,11 +224,11 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
     }
 
     @Override
-    public ResponseEntity<InternalKoodiVersioDto> updateKoodi(
+    public InternalKoodiVersioDto updateKoodi(
             InternalKoodiVersioDto koodi) {
         updateKoodi(internalKoodiVersioDtoToUpdateKoodiDataTypeConverter.convert(koodi));
         synchronizeRelations(koodi);
-        return ResponseEntity.ok(koodiVersioToInternalKoodiVersioDtoConverter.convert(getLatestKoodiVersio(koodi.getKoodiUri())));
+        return koodiVersioToInternalKoodiVersioDtoConverter.convert(getLatestKoodiVersio(koodi.getKoodiUri()));
     }
 
 
