@@ -39,6 +39,7 @@ public class InternalKoodiVersioDto extends InternalKoodiVersioListDto {
     @NotNull(message = "error.rinnastuuKoodeihin.null")
     private List<InternalKoodiSuhdeDto> rinnastuuKoodeihin;
 
+    @SuppressWarnings("java:S107") // constructor added to allow lombok builder generation
     @Builder(builderMethodName = "internalKoodiVersioDtoBuilder")
     public InternalKoodiVersioDto(
             String koodiUri,
