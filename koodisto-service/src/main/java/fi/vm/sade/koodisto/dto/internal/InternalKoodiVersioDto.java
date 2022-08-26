@@ -1,10 +1,10 @@
 package fi.vm.sade.koodisto.dto.internal;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Tila;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,21 +16,10 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder
-public class InternalKoodiVersioDto {
+public class InternalKoodiVersioDto extends InternalKoodiVersioListDto {
 
     @JsonView({JsonViews.Internal.class})
     private InternalKoodistoPageDto koodisto;
-
-
-    @JsonView({JsonViews.Internal.class})
-    private Integer koodistoVersio;
-
-    @JsonView({JsonViews.Internal.class})
-    private String koodiArvo;
-
-    @JsonView({JsonViews.Internal.class})
-    private Integer versio;
 
     @JsonView({JsonViews.Internal.class})
     private List<Integer> koodiVersio;
@@ -38,30 +27,6 @@ public class InternalKoodiVersioDto {
     @Min(value = 0, message = "error.lockingVersion.less.than.zero")
     @JsonView({JsonViews.Internal.class})
     private long lockingVersion;
-
-    @JsonView({JsonViews.Internal.class})
-    private Tila tila;
-
-    @JsonView({JsonViews.Internal.class})
-    private String koodiUri;
-
-    @JsonView({JsonViews.Internal.class})
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date paivitysPvm;
-
-    @JsonView({JsonViews.Internal.class})
-    private String paivittajaOid;
-
-    @JsonView({JsonViews.Internal.class})
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date voimassaAlkuPvm;
-
-    @JsonView({JsonViews.Internal.class})
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date voimassaLoppuPvm;
-
-    @JsonView({JsonViews.Internal.class})
-    private List<KoodiMetadataDto> metadata;
 
     @JsonView({JsonViews.Internal.class})
     @NotNull(message = "error.sisaltyyKoodeihin.null")
@@ -74,4 +39,31 @@ public class InternalKoodiVersioDto {
     @JsonView({JsonViews.Internal.class})
     @NotNull(message = "error.rinnastuuKoodeihin.null")
     private List<InternalKoodiSuhdeDto> rinnastuuKoodeihin;
+
+    @Builder(builderMethodName = "internalKoodiVersioDtoBuilder")
+    public InternalKoodiVersioDto(
+            String koodiUri,
+            int versio,
+            String koodiArvo,
+            Tila tila,
+            Date paivitysPvm,
+            String paivittajaOid,
+            Date voimassaAlkuPvm,
+            Date voimassaLoppuPvm,
+            List<KoodiMetadataDto> metadata,
+            InternalKoodistoPageDto koodisto,
+            List<Integer> koodiVersio,
+            long lockingVersion,
+            List<InternalKoodiSuhdeDto> sisaltyyKoodeihin,
+            List<InternalKoodiSuhdeDto> sisaltaaKoodit,
+            List<InternalKoodiSuhdeDto> rinnastuuKoodeihin
+    ) {
+        super(koodiUri, versio, koodiArvo, tila, paivitysPvm, paivittajaOid, voimassaAlkuPvm, voimassaLoppuPvm, metadata);
+        this.koodisto = koodisto;
+        this.koodiVersio = koodiVersio;
+        this.lockingVersion = lockingVersion;
+        this.sisaltyyKoodeihin = sisaltyyKoodeihin;
+        this.sisaltaaKoodit = sisaltaaKoodit;
+        this.rinnastuuKoodeihin = rinnastuuKoodeihin;
+    }
 }
