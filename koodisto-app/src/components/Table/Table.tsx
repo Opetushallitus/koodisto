@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { ValueType } from 'react-select';
-import { SelectOptionType } from '../../types';
+import type { SelectOptionType, PageSize } from '../../types';
 import {
     Column,
     Row,
@@ -21,10 +21,11 @@ import {
     CellContext,
     HeaderContext,
     RowData,
+    getPaginationRowModel,
 } from '@tanstack/react-table';
 import { IconWrapper } from '../IconWapper';
 import { debounce, uniq, uniqBy } from 'lodash';
-
+import { Paging } from './Paging';
 declare module '@tanstack/table-core' {
     // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
     interface ColumnMeta<TData extends RowData, TValue> {
@@ -93,11 +94,13 @@ export const Table = <T extends object>({
     children,
     modal,
     setSelected,
+    pageSize,
 }: TableProps<T> & {
     children?: ReactNode;
     modal?: boolean;
-    onFilter?: (rows: Row<T>[]) => void;
+    onFilter?: (rows: Row<T>[], callback?: () => void) => void;
     setSelected?: (selectedRows: T[]) => void;
+    pageSize?: PageSize;
 }) => {
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [rowSelection, setRowSelection] = useState({});
@@ -151,13 +154,14 @@ export const Table = <T extends object>({
         getFacetedRowModel: getFacetedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         onRowSelectionChange: setRowSelection,
+        getPaginationRowModel: getPaginationRowModel(),
     });
 
     useEffect(
         () =>
             onFilter &&
             onFilter(
-                (columnFilters.length > 0 && table.getFilteredRowModel().rows) || table.getFilteredRowModel().rows
+                (columnFilters.length > 0 && table.getFilteredRowModel().rows) || table.getFilteredRowModel().rows // WAT?
             ),
         [table, columnFilters, onFilter]
     );
@@ -170,6 +174,8 @@ export const Table = <T extends object>({
             ),
         [rowSelection, setSelected, table]
     );
+
+    useEffect(() => table.setPageSize(pageSize || Number.MAX_SAFE_INTEGER), [table, pageSize]);
 
     return (
         <TableContainer modal={!!modal}>
@@ -219,6 +225,8 @@ export const Table = <T extends object>({
                     })}
                 </Tbody>
             </TableElement>
+
+            {pageSize && <Paging table={table} />}
 
             {children}
         </TableContainer>

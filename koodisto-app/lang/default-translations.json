@@ -144,7 +144,7 @@
     "defaultMessage": "Poista koodi"
   },
   "KOODI_SUHDE_MODAL_HEADER": {
-    "defaultMessage": "Valitse koodistot"
+    "defaultMessage": "Valitse koodit"
   },
   "KOODI_TALLENNUS_MESSAGE": {
     "defaultMessage": "Tallennettiin koodi uri:lla {koodiUri}"
@@ -190,6 +190,9 @@
   },
   "RYHMA_PAKOLLINEN": {
     "defaultMessage": "Valitse koodisto-ryhmä."
+  },
+  "SIVUTUS_SIVU": {
+    "defaultMessage": "Sivu"
   },
   "SUHDEMODAL_LISAA": {
     "defaultMessage": "Lisää valitut ({chosen})"
