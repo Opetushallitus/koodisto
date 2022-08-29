@@ -10,6 +10,7 @@ describe('The landing page', () => {
         cy.contains('aluehallintovirasto').should('be.visible');
     });
     it('shows paging component', () => {
+        cy.wait(500); // eslint-disable-line cypress/no-unnecessary-waiting
         cy.contains('Sivu 1 / 9').should('be.visible');
     });
     it('Paging cannot go back while at first page', () => {
