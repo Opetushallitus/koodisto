@@ -226,7 +226,7 @@ export const Table = <T extends object>({
                 </Tbody>
             </TableElement>
 
-            {pageSize && <Paging table={table} />}
+            {pageSize && data.length > pageSize && <Paging table={table} />}
 
             {children}
         </TableContainer>
