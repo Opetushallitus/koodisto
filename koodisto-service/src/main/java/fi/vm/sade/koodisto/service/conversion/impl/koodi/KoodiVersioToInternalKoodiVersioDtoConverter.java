@@ -31,7 +31,7 @@ public class KoodiVersioToInternalKoodiVersioDtoConverter implements
                 .orElseThrow(KoodistoNotFoundException::new);
 
         return
-                InternalKoodiVersioDto.builder()
+                InternalKoodiVersioDto.internalKoodiVersioDtoBuilder()
                         .koodisto(koodisto)
                         .koodiArvo(source.getKoodiarvo())
                         .versio(source.getVersio())

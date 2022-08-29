@@ -3,6 +3,7 @@ package fi.vm.sade.koodisto.resource.internal;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioDto;
+import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioListDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiVersio;
@@ -12,6 +13,7 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioListDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
@@ -46,6 +48,7 @@ public class InternalKoodiResource {
     private final KoodistoVersioToInternalKoodistoPageDtoConverter koodistoVersioToInternalKoodistoPageDtoConverter;
     private final KoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter koodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter;
     private final KoodiVersioToInternalKoodiVersioDtoConverter koodiVersioToInternalKoodiVersioDtoConverter;
+    private final KoodiVersioToInternalKoodiVersioListDtoConverter koodiVersioToInternalKoodiVersioListDtoConverter;
 
     @GetMapping(path = "/{koodiUri}/{koodiVersio}",
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -80,11 +83,11 @@ public class InternalKoodiResource {
             produces = MediaType.APPLICATION_JSON_VALUE)
     @JsonView({JsonViews.Internal.class})
     public @ResponseBody
-    ResponseEntity<List<InternalKoodiVersioDto>> getKoodistoKoodis(
+    ResponseEntity<List<InternalKoodiVersioListDto>> getKoodistoKoodis(
             @PathVariable String koodistoUri,
             @PathVariable @Min(1) Integer koodistoVersio) {
         List<KoodiVersioWithKoodistoItem> result = koodiBusinessService.getKoodisByKoodistoVersio(koodistoUri, koodistoVersio, false);
-        return ResponseEntity.ok(koodiVersioToInternalKoodiVersioDtoConverter.convertAll(
+        return ResponseEntity.ok(koodiVersioToInternalKoodiVersioListDtoConverter.convertAll(
                 result.stream().map(KoodiVersioWithKoodistoItem::getKoodiVersio).collect(Collectors.toList())));
     }
 
