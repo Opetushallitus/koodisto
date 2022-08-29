@@ -98,7 +98,7 @@ export const Table = <T extends object>({
 }: TableProps<T> & {
     children?: ReactNode;
     modal?: boolean;
-    onFilter?: (rows: Row<T>[], callback?: () => void) => void;
+    onFilter?: (rows: Row<T>[]) => void;
     setSelected?: (selectedRows: T[]) => void;
     pageSize?: PageSize;
 }) => {
@@ -161,7 +161,7 @@ export const Table = <T extends object>({
         () =>
             onFilter &&
             onFilter(
-                (columnFilters.length > 0 && table.getFilteredRowModel().rows) || table.getFilteredRowModel().rows // WAT?
+                (columnFilters.length > 0 && table.getFilteredRowModel().rows) || table.getFilteredRowModel().rows
             ),
         [table, columnFilters, onFilter]
     );
