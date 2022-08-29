@@ -51,6 +51,7 @@ export const Paging = <T extends unknown>({ table }: { table: Table<T> }) => (
         </Button>
         <SelectContainer>
             <Select
+                name="CHANGE_PAGE_SIZE"
                 menuPlacement="top"
                 onChange={(option: ValueType<SelectOption>) =>
                     option && table.setPageSize(Number((option as SelectOption).value))

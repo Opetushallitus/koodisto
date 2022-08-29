@@ -4,10 +4,7 @@
     },
     "koodiArvo": "020",
     "versio": 2,
-    "koodiVersio": [
-        1,
-        2
-    ],
+    "koodiVersio": [1, 2],
     "tila": "LUONNOS",
     "koodiUri": "kunta_020",
     "paivitysPvm": "2020-12-28",

@@ -203,6 +203,7 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({ modal, setSelected
                 modal={modal}
                 onFilter={(rows) => setFilteredCount(rows.length)}
                 setSelected={setSelected}
+                pageSize={50}
             />
         </>
     );
