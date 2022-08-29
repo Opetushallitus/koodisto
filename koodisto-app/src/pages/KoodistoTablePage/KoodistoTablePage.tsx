@@ -7,6 +7,7 @@ import { KoodistoRyhmaModal } from '../../modals/KoodistoRyhmaModal';
 import { useParams, useNavigate } from 'react-router-dom';
 import { KoodistoTable } from '../../components/Table';
 import { ButtonLabelPrefix } from '../../components/Containers';
+import { StyledPopup } from '../../components/Modal/Modal';
 
 const MainContainer = styled.div`
     flex-grow: 1;
@@ -29,7 +30,7 @@ const ContentContainer = styled.div`
     display: block;
     max-width: 100%;
 `;
-
+const contentStyle = { width: '500px' };
 export const KoodistoTablePage: React.FC = () => {
     const { koodistoRyhmaUri } = useParams();
     const navigate = useNavigate();
@@ -37,39 +38,42 @@ export const KoodistoTablePage: React.FC = () => {
     useEffect(() => {
         setKoodistoRyhmaModalVisible(!!koodistoRyhmaUri);
     }, [koodistoRyhmaUri]);
-    const handleLisaaKoodistoRyhma = () => {
-        setKoodistoRyhmaModalVisible(true);
-    };
+
     return (
         <>
             <MainHeaderContainer>
                 <FormattedMessage id={'TAULUKKOSIVU_OTSIKKO'} defaultMessage={'Koodistojen ylläpito'} tagName={'h1'} />
-                <Button
-                    variant={'text'}
-                    onClick={handleLisaaKoodistoRyhma}
-                    name={'TAULUKKO_LISAA_KOODISTORYHMA_BUTTON'}
+                <StyledPopup
+                    open={koodistoRyhmaModalVisible}
+                    onClose={() => setKoodistoRyhmaModalVisible(false)}
+                    position="bottom right"
+                    trigger={
+                        <Button variant={'text'} name={'TAULUKKO_LISAA_KOODISTORYHMA_BUTTON'}>
+                            <ButtonLabelPrefix>
+                                <IconWrapper icon="el:plus" inline={true} fontSize={'0.6rem'} />
+                            </ButtonLabelPrefix>
+                            <FormattedMessage
+                                id={'TAULUKKO_LISAA_KOODISTORYHMA_BUTTON'}
+                                defaultMessage={'Luo / poista koodistoryhmä'}
+                            />
+                        </Button>
+                    }
+                    {...{ contentStyle }}
                 >
-                    <ButtonLabelPrefix>
-                        <IconWrapper icon="el:plus" inline={true} fontSize={'0.6rem'} />
-                    </ButtonLabelPrefix>
-                    <FormattedMessage
-                        id={'TAULUKKO_LISAA_KOODISTORYHMA_BUTTON'}
-                        defaultMessage={'Luo / poista koodistoryhmä'}
-                    />
-                </Button>
-            </MainHeaderContainer>
-            <MainContainer>
-                <ContentContainer>
-                    <KoodistoTable />
-                    {koodistoRyhmaModalVisible && (
+                    {(close: () => void) => (
                         <KoodistoRyhmaModal
                             koodistoRyhmaUri={koodistoRyhmaUri}
                             closeModal={() => {
-                                setKoodistoRyhmaModalVisible(false);
+                                close();
                                 navigate('/');
                             }}
                         />
                     )}
+                </StyledPopup>
+            </MainHeaderContainer>
+            <MainContainer>
+                <ContentContainer>
+                    <KoodistoTable />
                 </ContentContainer>
             </MainContainer>
         </>
