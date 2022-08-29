@@ -141,7 +141,7 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
     );
     return (
         <>
-            <Table<KoodiRelation> columns={columns} data={data} />{' '}
+            <Table<KoodiRelation> columns={columns} data={data} pageSize={20} />{' '}
             {editable && (
                 <StyledPopup
                     trigger={

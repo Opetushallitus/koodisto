@@ -124,7 +124,7 @@ export const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
 
     return (
         <>
-            <Table<KoodistoRelation> columns={columns} data={data}></Table>
+            <Table<KoodistoRelation> columns={columns} data={data} pageSize={10}></Table>
             {editable && (
                 <StyledPopup
                     trigger={

@@ -69,7 +69,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                     {
                         id: 'koodiarvo',
                         header: '',
-                        cell: (info) => <div>{info.getValue()}</div>,
+                        cell: (info) => <div>{info.row.original.koodiArvo}</div>,
                     },
                 ],
             },
@@ -117,7 +117,8 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
             columns={columns}
             data={data}
             setSelected={setSelected}
-            onFilter={(rows) => setFilteredCount(rows.length)} // triggers re-render
+            onFilter={(rows) => setFilteredCount(rows.length)}
+            pageSize={20}
         />
     );
 };

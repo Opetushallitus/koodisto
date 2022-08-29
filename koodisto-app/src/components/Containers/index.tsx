@@ -108,3 +108,7 @@ export const ButtonLabelPrefix = styled.span`
     align-items: center;
     padding-right: 0.3rem;
 `;
+
+export const Padding1 = styled.div`
+    padding: 1rem;
+`;

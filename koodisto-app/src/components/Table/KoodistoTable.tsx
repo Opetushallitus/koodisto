@@ -4,7 +4,7 @@ import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { ListKoodisto, SelectOptionType, KoodistoRelation } from '../../types';
+import { ListKoodisto, SelectOptionType, KoodistoRelation, PageSize } from '../../types';
 import { koodistoListAtom } from '../../api/koodisto';
 import { useAtom } from 'jotai';
 import { ColumnDef, CellContext } from '@tanstack/react-table';
@@ -41,9 +41,15 @@ type KoodistoTableProps = {
     modal?: boolean;
     setSelected?: (selected: ListKoodisto[]) => void;
     oldRelations?: KoodistoRelation[];
+    pageSize?: PageSize;
 };
 
-export const KoodistoTable: React.FC<KoodistoTableProps> = ({ modal, setSelected, oldRelations = [] }) => {
+export const KoodistoTable: React.FC<KoodistoTableProps> = ({
+    modal,
+    setSelected,
+    oldRelations = [],
+    pageSize = 50,
+}) => {
     const navigate = useNavigate();
     const [atomData] = useAtom(koodistoListAtom);
     const { formatMessage } = useIntl();
@@ -203,7 +209,7 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({ modal, setSelected
                 modal={modal}
                 onFilter={(rows) => setFilteredCount(rows.length)}
                 setSelected={setSelected}
-                pageSize={50}
+                pageSize={pageSize}
             />
         </>
     );
