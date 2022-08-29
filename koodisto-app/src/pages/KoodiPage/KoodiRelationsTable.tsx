@@ -66,45 +66,65 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
     const columns = useMemo<ColumnDef<KoodiRelation>[]>(
         () => [
             {
-                id: 'koodisto',
                 header: formatMessage({ id: 'TAULUKKO_KOODISTO_OTSIKKO', defaultMessage: 'Koodisto' }),
-                accessorFn: (relation: KoodiRelation) =>
-                    translateMultiLocaleText({
-                        multiLocaleText: relation.koodistoNimi,
-                        locale,
-                        defaultValue: relation.koodistoNimi?.fi || '',
-                    }),
+                columns: [
+                    {
+                        id: 'koodisto',
+                        header: '',
+                        accessorFn: (relation: KoodiRelation) =>
+                            translateMultiLocaleText({
+                                multiLocaleText: relation.koodistoNimi,
+                                locale,
+                                defaultValue: relation.koodistoNimi?.fi || '',
+                            }),
+                    },
+                ],
             },
             {
-                id: 'nimi',
-                enableColumnFilter: false,
                 header: formatMessage({ id: 'TAULUKKO_NIMI_OTSIKKO', defaultMessage: 'Nimi' }),
-                cell: (info) => (
-                    <Link to={`/koodi/view/${info.row.original.koodiUri}/${info.row.original.koodiVersio}`}>
-                        {translateMultiLocaleText({
-                            multiLocaleText: info.row.original.nimi,
-                            locale,
-                            defaultValue: info.row.original.koodiUri,
-                        })}
-                    </Link>
-                ),
+                columns: [
+                    {
+                        id: 'nimi',
+                        enableColumnFilter: false,
+                        header: '',
+                        cell: (info) => (
+                            <Link to={`/koodi/view/${info.row.original.koodiUri}/${info.row.original.koodiVersio}`}>
+                                {translateMultiLocaleText({
+                                    multiLocaleText: info.row.original.nimi,
+                                    locale,
+                                    defaultValue: info.row.original.koodiUri,
+                                })}
+                            </Link>
+                        ),
+                    },
+                ],
             },
             {
-                id: 'versio',
-                enableColumnFilter: false,
                 header: formatMessage({ id: 'TAULUKKO_VERSIO_OTSIKKO', defaultMessage: 'Versio' }),
-                accessorFn: (relation: KoodiRelation) => relation.koodiVersio,
+                columns: [
+                    {
+                        id: 'versio',
+                        enableColumnFilter: false,
+                        header: '',
+                        accessorFn: (relation: KoodiRelation) => relation.koodiVersio,
+                    },
+                ],
             },
             {
-                id: 'kuvaus',
-                enableColumnFilter: false,
                 header: formatMessage({ id: 'TAULUKKO_VERSIO_KUVAUS', defaultMessage: 'Kuvaus' }),
-                accessorFn: (relation: KoodiRelation) =>
-                    translateMultiLocaleText({
-                        multiLocaleText: relation.kuvaus,
-                        locale,
-                        defaultValue: relation.koodiUri,
-                    }),
+                columns: [
+                    {
+                        id: 'kuvaus',
+                        enableColumnFilter: false,
+                        header: '',
+                        accessorFn: (relation: KoodiRelation) =>
+                            translateMultiLocaleText({
+                                multiLocaleText: relation.kuvaus,
+                                locale,
+                                defaultValue: relation.koodiUri,
+                            }),
+                    },
+                ],
             },
             ...((editable && [
                 {
