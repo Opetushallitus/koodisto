@@ -1,10 +1,10 @@
-import React, { ReactNode, useEffect, useMemo, HTMLProps } from 'react';
+import React, { ReactNode, useState, useEffect, useMemo, useCallback, useRef, HTMLProps } from 'react';
 import styled from 'styled-components';
 import { useIntl } from 'react-intl';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { ValueType } from 'react-select';
-import { SelectOptionType } from '../../types';
+import type { SelectOptionType, PageSize } from '../../types';
 import {
     Column,
     Row,
@@ -21,10 +21,11 @@ import {
     CellContext,
     HeaderContext,
     RowData,
+    getPaginationRowModel,
 } from '@tanstack/react-table';
 import { IconWrapper } from '../IconWapper';
-import { uniq, uniqBy } from 'lodash';
-
+import { debounce, uniq, uniqBy } from 'lodash';
+import { Paging } from './Paging';
 declare module '@tanstack/table-core' {
     // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
     interface ColumnMeta<TData extends RowData, TValue> {
@@ -93,14 +94,16 @@ export const Table = <T extends object>({
     children,
     modal,
     setSelected,
+    pageSize,
 }: TableProps<T> & {
     children?: ReactNode;
     modal?: boolean;
     onFilter?: (rows: Row<T>[]) => void;
     setSelected?: (selectedRows: T[]) => void;
+    pageSize?: PageSize;
 }) => {
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-    const [rowSelection, setRowSelection] = React.useState({});
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [rowSelection, setRowSelection] = useState({});
     const appliedColumns = useMemo(
         () => [
             ...((setSelected && [
@@ -151,6 +154,7 @@ export const Table = <T extends object>({
         getFacetedRowModel: getFacetedRowModel(),
         onColumnFiltersChange: setColumnFilters,
         onRowSelectionChange: setRowSelection,
+        getPaginationRowModel: getPaginationRowModel(),
     });
 
     useEffect(
@@ -170,6 +174,9 @@ export const Table = <T extends object>({
             ),
         [rowSelection, setSelected, table]
     );
+
+    useEffect(() => table.setPageSize(pageSize || Number.MAX_SAFE_INTEGER), [table, pageSize]);
+
     return (
         <TableContainer modal={!!modal}>
             <TableElement>
@@ -219,6 +226,8 @@ export const Table = <T extends object>({
                 </Tbody>
             </TableElement>
 
+            {pageSize && data.length > pageSize && <Paging table={table} />}
+
             {children}
         </TableContainer>
     );
@@ -240,7 +249,8 @@ function Filter<T>({ column, table }: { column: Column<T, unknown>; table: React
     const { formatMessage } = useIntl();
     const columnFilterValue = column.getFilterValue();
     const firstValue = table.getPreFilteredRowModel().flatRows[0]?.getValue(column.id);
-    const sortedUniqueValues = React.useMemo(
+    const onChange = useCallback((value) => column.setFilterValue(value), [column]);
+    const sortedUniqueValues = useMemo(
         () =>
             (typeof firstValue === 'number' && []) ||
             (typeof firstValue === 'string' && uniq(Array.from(column.getFacetedUniqueValues().keys())).sort()) ||
@@ -254,7 +264,7 @@ function Filter<T>({ column, table }: { column: Column<T, unknown>; table: React
             <InputContainer>
                 <DebouncedInput
                     value={(columnFilterValue ?? '') as string}
-                    onChange={(value) => column.setFilterValue(value)}
+                    onChange={onChange}
                     placeholder={column.columnDef.meta?.filterPlaceHolder}
                     suffix={
                         <ResetFilter
@@ -283,27 +293,26 @@ function Filter<T>({ column, table }: { column: Column<T, unknown>; table: React
 function DebouncedInput({
     value: initialValue,
     onChange,
-    debounce = 500,
+    wait = 500,
     ...props
 }: {
     value: string | number;
     onChange: (value: string | number) => void;
-    debounce?: number;
+    wait?: number;
     suffix?: JSX.Element;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
-    const [value, setValue] = React.useState(initialValue);
+    const [value, setValue] = useState(initialValue);
+    const debouncedOnChange = useMemo(() => debounce(onChange, wait), [onChange, wait]);
 
-    React.useEffect(() => {
+    useEffect(() => () => debouncedOnChange.cancel(), [debouncedOnChange]);
+
+    useEffect(() => {
         setValue(initialValue);
     }, [initialValue]);
 
-    React.useEffect(() => {
-        const timeout = setTimeout(() => {
-            onChange(value);
-        }, debounce);
-
-        return () => clearTimeout(timeout);
-    }, [debounce, onChange, value]);
+    useEffect(() => {
+        debouncedOnChange(value);
+    }, [debouncedOnChange, value]);
 
     return (
         <Input
@@ -320,9 +329,9 @@ function IndeterminateCheckbox({
     ...rest
 }: { indeterminate?: boolean } & HTMLProps<HTMLInputElement>) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const ref = React.useRef<HTMLInputElement>(null!);
+    const ref = useRef<HTMLInputElement>(null!);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (typeof indeterminate === 'boolean') {
             ref.current.indeterminate = !rest.checked && indeterminate;
         }

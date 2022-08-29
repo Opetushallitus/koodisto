@@ -191,6 +191,9 @@
   "RYHMA_PAKOLLINEN": {
     "defaultMessage": "Valitse koodisto-ryhmä."
   },
+  "SIVUTUS_SIVU": {
+    "defaultMessage": "Sivu"
+  },
   "SUHDEMODAL_LISAA": {
     "defaultMessage": "Lisää valitut ({chosen})"
   },

@@ -8,6 +8,7 @@ export type Kieli = 'EN' | 'FI' | 'SV';
 export type Locale = Lowercase<Kieli>;
 export type ApiDate = `${number}${number}${number}${number}-${number}${number}-${number}${number}`;
 export type Tila = 'PASSIIVINEN' | 'LUONNOS' | 'HYVAKSYTTY';
+export type PageSize = 10 | 20 | 50 | 100;
 
 type MapDateToApiDate<PropType> = PropType extends Date ? ApiDate : PropType;
 
