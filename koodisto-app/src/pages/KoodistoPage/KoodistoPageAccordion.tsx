@@ -2,7 +2,7 @@ import React from 'react';
 import { Accordion } from '../../components/Accordion';
 import { FormattedMessage } from 'react-intl';
 import { KoodistoRelationsTable } from './KoodistoRelationsTable';
-import { Koodi, KoodistoRelation, PageKoodisto } from '../../types';
+import { KoodistoRelation, PageKoodisto, KoodiList } from '../../types';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
 import { useNavigate, createSearchParams, useParams } from 'react-router-dom';
@@ -20,7 +20,7 @@ type KoodistoPageAccordionProps = {
     rinnastuuKoodistoihin: KoodistoRelation[];
     sisaltyyKoodistoihin: KoodistoRelation[];
     sisaltaaKoodistot: KoodistoRelation[];
-    koodiList?: Koodi[];
+    koodiList?: KoodiList[];
     editable?: boolean;
     rinnastuuKoodistoihinReturn?: UseFieldArrayReturn<PageKoodisto>;
     sisaltyyKoodistoihinReturn?: UseFieldArrayReturn<PageKoodisto>;

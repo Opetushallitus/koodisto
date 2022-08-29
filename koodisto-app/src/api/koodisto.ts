@@ -1,6 +1,6 @@
-import { API_BASE_PATH, API_INTERNAL_PATH } from '../context/constants';
+import { API_INTERNAL_PATH } from '../context/constants';
 import { atom, Getter } from 'jotai';
-import type { MapToApiObject, BaseKoodisto, Koodi } from '../types';
+import type { MapToApiObject, BaseKoodisto } from '../types';
 import {
     ApiDate,
     Kieli,
@@ -17,7 +17,6 @@ import { parseApiDate, translateMetadata, parseUIDate, translateMultiLocaleText 
 import { errorHandlingWrapper } from './errorHandling';
 import axios, { AxiosResponse } from 'axios';
 import { fetchOrganisaatioNimi } from './organisaatio';
-import { ApiKoodi, mapApiKoodi } from './koodi';
 import { asyncAtomWithReset } from './jotaiUtils';
 
 const urlAtom = atom<string>(`${API_INTERNAL_PATH}/koodisto`);
@@ -98,20 +97,6 @@ export const koodistoListAtom = asyncAtomWithReset<Promise<ListKoodisto[]>>(asyn
     const { data } = await axios.get<ApiListKoodisto[]>(get(urlAtom));
     return data.map((a) => apiKoodistoListToKoodistoList(a, lang));
 });
-
-export const fetchKoodiListByKoodisto = async ({
-    koodistoUri,
-    koodistoVersio,
-}: {
-    koodistoUri: string;
-    koodistoVersio?: number;
-}): Promise<Koodi[] | undefined> =>
-    errorHandlingWrapper(async () => {
-        const { data } = await axios.get<ApiKoodi[]>(`${API_BASE_PATH}/json/${koodistoUri}/koodi`, {
-            params: koodistoVersio !== undefined ? { koodistoVersio } : {},
-        });
-        return data.map((api) => mapApiKoodi({ api }));
-    });
 
 export const updateKoodisto = async ({
     koodisto,

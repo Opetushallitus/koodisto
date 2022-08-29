@@ -1,0 +1,62 @@
+[
+    {
+        "koodiUri": "oppilaitosnumero_04526",
+        "versio": 1,
+        "koodiArvo": "04526",
+        "tila": "LUONNOS",
+        "paivitysPvm": "2019-12-27",
+        "paivittajaOid": "1.2.246.562.24.70746687432",
+        "voimassaAlkuPvm": "1991-12-31",
+        "voimassaLoppuPvm": "2009-07-31",
+        "metadata": [
+            {
+                "nimi": "Kankaisten koulu",
+                "kuvaus": "Kankaisten koulu",
+                "lyhytNimi": "Kankaisten koulu",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Kankaisten koulu",
+                "kuvaus": "Kankaisten koulu",
+                "lyhytNimi": "Kankaisten koulu",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Kankaisten koulu",
+                "kuvaus": "Kankaisten koulu",
+                "lyhytNimi": "Kankaisten koulu",
+                "kieli": "EN"
+            }
+        ]
+    },
+    {
+        "koodiUri": "oppilaitosnumero_02628",
+        "versio": 1,
+        "koodiArvo": "02628",
+        "tila": "LUONNOS",
+        "paivitysPvm": "2019-12-27",
+        "paivittajaOid": "1.2.246.562.24.70746687432",
+        "voimassaAlkuPvm": "1996-07-31",
+        "voimassaLoppuPvm": "1998-07-30",
+        "metadata": [
+            {
+                "nimi": "Nylands temporära svenska yrkeshögskola",
+                "kuvaus": "Nylands temporära svenska yrkeshögskola",
+                "lyhytNimi": "Nylands temporära svenska yrkeshögskola",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Nylands temporära svenska yrkeshögskola",
+                "kuvaus": "Nylands temporära svenska yrkeshögskola",
+                "lyhytNimi": "Nylands temporära svenska yrkeshögskola",
+                "kieli": "EN"
+            },
+            {
+                "nimi": "Nylands temporära svenska yrkeshögskola",
+                "kuvaus": "Nylands temporära svenska yrkeshögskola",
+                "lyhytNimi": "Nylands temporära svenska yrkeshögskola",
+                "kieli": "FI"
+            }
+        ]
+    }
+]

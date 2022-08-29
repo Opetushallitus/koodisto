@@ -5,7 +5,8 @@ import { Table } from '../../components/Table';
 import { translateMultiLocaleText, metadataToMultiLocaleText } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLocaleAtom } from '../../api/kayttooikeus';
-import type { KoodiRelation, Koodi } from '../../types';
+import type { KoodiRelation, Koodi, KoodiList } from '../../types';
+import { KoodistoRelation } from '../../types';
 import { ColumnDef, CellContext } from '@tanstack/react-table';
 import { UseFieldArrayReturn } from 'react-hook-form';
 import { KoodiSuhdeModal } from './KoodiSuhdeModal';
@@ -13,7 +14,6 @@ import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
 import { StyledPopup } from '../../components/Modal/Modal';
 import { ButtonLabelPrefix } from '../../components/Containers';
-import { KoodistoRelation } from '../../types';
 
 type RelationTableProps = {
     editable: boolean;
@@ -48,12 +48,12 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
         [fieldArrayReturn]
     );
     const addNewKoodiToRelations = useCallback(
-        (koodi: Koodi[]) => {
+        (koodi: KoodiList[]) => {
             fieldArrayReturn &&
                 fieldArrayReturn.replace([
                     ...relations,
-                    ...koodi.map((a: Koodi) => ({
-                        koodistoNimi: metadataToMultiLocaleText(a.koodisto.metadata, 'nimi'),
+                    ...koodi.map((a: KoodiList) => ({
+                        koodistoNimi: { fi: a.koodistoNimi || '', sv: a.koodistoNimi || '', en: a.koodistoNimi || '' },
                         nimi: metadataToMultiLocaleText(a.metadata, 'nimi'),
                         kuvaus: metadataToMultiLocaleText(a.metadata, 'kuvaus'),
                         koodiUri: a.koodiUri,

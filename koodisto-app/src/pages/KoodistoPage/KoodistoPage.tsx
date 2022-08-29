@@ -4,7 +4,7 @@ import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchPageKoodisto } from '../../api/koodisto';
 import { translateMetadata } from '../../utils';
-import { PageKoodisto, Koodi } from '../../types';
+import { PageKoodisto, KoodiList } from '../../types';
 import { Loading } from '../../components/Loading';
 import { KoodistoInfo } from './KoodistoInfo';
 import KoodistoPageAccordion from './KoodistoPageAccordion';
@@ -29,7 +29,7 @@ export const KoodistoPage: React.FC = () => {
     const [lang] = useAtom(casMeLangAtom);
     const [koodisto, setKoodisto] = useState<PageKoodisto | undefined>();
     const [uploadCsvVisible, setUploadCsvVisible] = useState<boolean>(false);
-    const [koodiList, setKoodiList] = useState<Koodi[] | undefined>(undefined);
+    const [koodiList, setKoodiList] = useState<KoodiList[] | undefined>(undefined);
     useEffect(() => {
         if (koodistoUri && versioNumber) {
             (async () => setKoodiList(await fetchKoodistoKoodis(koodistoUri, versioNumber)))();

@@ -1,6 +1,6 @@
 import Papa from 'papaparse';
 import { Kieli, Metadata, Koodi } from '../types';
-import { fetchKoodiListByKoodisto } from '../api/koodisto';
+import { fetchKoodiListByKoodisto } from '../api/koodi';
 import { info } from '../components/Notification/Notification';
 
 export const mapKoodiToCSV = (koodi: Koodi) => {

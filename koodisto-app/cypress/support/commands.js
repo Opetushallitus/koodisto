@@ -29,4 +29,5 @@ import { API_INTERNAL_PATH, API_STATUS_PATH } from '../../src/context/constants'
 Cypress.Commands.add('mockBaseIntercepts', () => {
     cy.intercept(`${API_INTERNAL_PATH}/koodistoryhma`, { fixture: 'allRyhmat.json' });
     cy.intercept(`${API_STATUS_PATH}`, { fixture: 'status.json' });
+    cy.intercept(`${API_INTERNAL_PATH}/koodisto`, { fixture: 'codes.json' });
 });

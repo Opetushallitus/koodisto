@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Koodi } from '../../types';
+import { KoodiList } from '../../types';
 import { useIntl, FormattedDate } from 'react-intl';
 import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
@@ -10,20 +10,17 @@ import { Table } from './Table';
 import { sortBy } from 'lodash';
 
 type Props = {
-    koodiList: Koodi[];
+    koodiList: KoodiList[];
     modal?: boolean;
-    setSelected?: (selected: Koodi[]) => void;
+    setSelected?: (selected: KoodiList[]) => void;
 };
 export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) => {
     const { formatMessage } = useIntl();
     const [lang] = useAtom(casMeLangAtom);
-    const data = useMemo<Koodi[]>(
-        () => sortBy([...koodiList], (a) => [a.koodisto?.koodistoUri, a.koodisto?.versio, a.koodiArvo]),
-        [koodiList]
-    );
+    const data = useMemo<KoodiList[]>(() => sortBy([...koodiList], (a) => a.koodiArvo), [koodiList]);
     const [, setFilteredCount] = useState<number>(data.length);
 
-    const columns = React.useMemo<ColumnDef<Koodi>[]>(
+    const columns = React.useMemo<ColumnDef<KoodiList>[]>(
         () => [
             ...((!!modal && [
                 {
@@ -31,10 +28,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                     columns: [
                         {
                             id: 'koodistoUri',
-                            cell: (info: CellContext<Koodi, unknown>) =>
-                                (info.row.original.koodisto &&
-                                    translateMetadata({ metadata: info.row.original.koodisto.metadata, lang })?.nimi) ||
-                                '',
+                            cell: (info: CellContext<KoodiList, unknown>) => info.row.original.koodistoNimi || '',
                         },
                     ],
                 },
@@ -60,7 +54,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                                 defaultMessage: 'Hae nimellä tai koodiarvolla',
                             }),
                         },
-                        accessorFn: (values: Koodi) => values.koodiArvo,
+                        accessorFn: (values: KoodiList) => values.koodiArvo,
                         cell: (info) => (
                             <Link to={`/koodi/view/${info.row.original.koodiUri}/${info.row.original.versio}`}>
                                 {translateMetadata({ metadata: info.row.original.metadata, lang })?.nimi}
@@ -94,7 +88,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                     columns: [
                         {
                             id: 'voimassa',
-                            cell: (info: CellContext<Koodi, unknown>) => (
+                            cell: (info: CellContext<KoodiList, unknown>) => (
                                 <FormattedDate value={info.getValue() as string} />
                             ),
                         },
@@ -105,7 +99,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                     columns: [
                         {
                             id: 'paivitetty',
-                            cell: (info: CellContext<Koodi, unknown>) => (
+                            cell: (info: CellContext<KoodiList, unknown>) => (
                                 <FormattedDate value={info.getValue() as string} />
                             ),
                         },
@@ -118,7 +112,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
     );
 
     return (
-        <Table<Koodi>
+        <Table<KoodiList>
             modal
             columns={columns}
             data={data}

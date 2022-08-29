@@ -1,14 +1,14 @@
-import type { CSVUpsertKoodi, MapToApiObject, Koodi, KoodiMetadata, Tila, KoodiRelation } from '../types';
+import type { CSVUpsertKoodi, MapToApiObject, Koodi, KoodiMetadata, Tila, KoodiRelation, KoodiList } from '../types';
 import { ApiDate } from '../types';
 import { errorHandlingWrapper } from './errorHandling';
 import axios, { AxiosResponse } from 'axios';
-import { API_INTERNAL_PATH } from '../context/constants';
+import { API_INTERNAL_PATH, API_BASE_PATH } from '../context/constants';
 import { ApiPageKoodisto } from './koodisto';
 import { parseApiDate, parseUIDate } from '../utils';
 
-export type ApiKoodi = MapToApiObject<Koodi> & {
-    koodisto: ApiPageKoodisto;
-};
+type ApiKoodi = MapToApiObject<Koodi>;
+type ApiKoodiList = MapToApiObject<KoodiList>;
+
 type CreateKoodiDataType = {
     koodiArvo: string;
     voimassaAlkuPvm: ApiDate;
@@ -30,6 +30,18 @@ export const batchUpsertKoodi = async (koodistoUri: string, koodi: CSVUpsertKood
         return data.koodistoUri;
     });
 
+export const mapApiKoodiList = (
+    koodistoUri: string,
+    koodistoVersio: number,
+    { api }: { api: ApiKoodiList }
+): KoodiList => ({
+    ...api,
+    koodistoUri,
+    koodistoVersio,
+    paivitysPvm: parseApiDate(api.paivitysPvm),
+    voimassaAlkuPvm: parseApiDate(api.voimassaAlkuPvm),
+    voimassaLoppuPvm: api.voimassaLoppuPvm && parseApiDate(api.voimassaLoppuPvm),
+});
 export const mapApiKoodi = ({ api }: { api: ApiKoodi }): Koodi => ({
     ...api,
     paivitysPvm: parseApiDate(api.paivitysPvm),
@@ -41,13 +53,13 @@ export const fetchKoodistoKoodis = async (
     koodistoUri: string,
     koodistoVersio: number,
     controller?: AbortController
-): Promise<Koodi[] | undefined> =>
+): Promise<KoodiList[] | undefined> =>
     errorHandlingWrapper(async () => {
-        const { data: pageData } = await axios.get<ApiKoodi[]>(
+        const { data: pageData } = await axios.get<ApiKoodiList[]>(
             `${API_INTERNAL_PATH}/koodi/koodisto/${koodistoUri}/${koodistoVersio}`,
             { signal: controller?.signal }
         );
-        return pageData.map((api) => mapApiKoodi({ api }));
+        return pageData.map((api) => mapApiKoodiList(koodistoUri, koodistoVersio, { api }));
     });
 
 const pageKoodiAccessor = async <X>(
@@ -104,6 +116,20 @@ const upsertKoodi = async <X>({
                 }),
             }
         );
+    });
+
+export const fetchKoodiListByKoodisto = async ({
+    koodistoUri,
+    koodistoVersio,
+}: {
+    koodistoUri: string;
+    koodistoVersio?: number;
+}): Promise<Koodi[] | undefined> =>
+    errorHandlingWrapper(async () => {
+        const { data } = await axios.get<ApiKoodi[]>(`${API_BASE_PATH}/json/${koodistoUri}/koodi`, {
+            params: koodistoVersio !== undefined ? { koodistoVersio } : {},
+        });
+        return data.map((api) => mapApiKoodi({ api }));
     });
 
 const mapKoodiToUpdateKoodi = (koodi: Koodi): UpdateKoodiDataType => ({

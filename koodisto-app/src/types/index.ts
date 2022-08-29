@@ -152,21 +152,27 @@ export type KoodiRelation = {
         en: string;
     };
 };
-export type Koodi = {
-    koodisto: ApiPageKoodisto;
+type BaseKoodi = {
     koodiUri: string;
-    resourceUri: string;
     versio: number;
-    koodiVersio: number[];
-    lockingVersion: number;
-    versions: number;
     koodiArvo: string;
+    tila: Tila;
     paivitysPvm: Date;
     paivittajaOid: string;
     voimassaAlkuPvm: Date;
     voimassaLoppuPvm?: Date;
-    tila: Tila;
     metadata: KoodiMetadata[];
+};
+export type KoodiList = BaseKoodi & {
+    koodistoUri: string;
+    koodistoVersio: number;
+    koodistoNimi?: string;
+};
+export type Koodi = BaseKoodi & {
+    koodisto: ApiPageKoodisto;
+    resourceUri: string;
+    koodiVersio: number[];
+    lockingVersion: number;
     sisaltyyKoodeihin: KoodiRelation[];
     sisaltaaKoodit: KoodiRelation[];
     rinnastuuKoodeihin: KoodiRelation[];

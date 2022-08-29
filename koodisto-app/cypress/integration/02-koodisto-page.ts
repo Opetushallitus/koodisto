@@ -15,18 +15,18 @@ describe('The Koodisto View page', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodi/koodisto/kunta/2`, { fixture: 'kuntaKoodistoKoodit.json' });
         cy.visit(`${BASE_PATH}/koodisto/view/kunta/2`);
         cy.get('.accordion > div').last().click();
-        cy.get('tbody > tr:visible').should('have.length', 192);
+        cy.get('tbody > tr:visible').should('have.length', 20);
 
         // filter by name
-        cy.get('input').last().type('mouhijärvi');
+        cy.get('input').last().type('Vaala');
         cy.get('tbody > tr:visible').should('have.length', 1);
 
         // clear filter
         cy.get('#clear-filter').click();
-        cy.get('tbody > tr:visible').should('have.length', 192);
+        cy.get('tbody > tr:visible').should('have.length', 20);
 
         // filter by koodiArvo
-        cy.get('input').last().type('493');
+        cy.get('input').last().type('785');
         cy.get('tbody > tr:visible').should('have.length', 1);
     });
 });
