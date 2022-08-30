@@ -26,6 +26,7 @@ export const KoodiInfo: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
             },
             value: formatMessage({
                 id: `TILA_${koodi.tila}`,
+                defaultMessage: koodi.tila.charAt(0).toUpperCase() + koodi.tila.slice(1).toLowerCase(),
             }),
         },
         {

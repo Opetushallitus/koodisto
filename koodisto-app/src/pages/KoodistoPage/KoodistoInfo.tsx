@@ -30,6 +30,7 @@ export const KoodistoInfo: React.FC<PageKoodisto> = ({
             },
             value: formatMessage({
                 id: `TILA_${tila}`,
+                defaultMessage: tila.charAt(0).toUpperCase() + tila.slice(1).toLowerCase(),
             }),
         },
         {
