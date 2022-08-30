@@ -183,14 +183,14 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
                 <HeaderContainer>
                     <HeaderContentDivider>
                         <FormattedMessage
-                            id={'TAULUKKO_OTSIKKO'}
+                            id={'KOODISTO_TAULUKKO_OTSIKKO'}
                             defaultMessage={'Koodistot ({filteredCount} / {totalCount})'}
                             values={{ filteredCount, totalCount: data.length }}
                             tagName={'h2'}
                         />
                         <InfoText>
                             <FormattedMessage
-                                id={'TAULUKKO_KUVAUS_OTSIKKO'}
+                                id={'KOODISTO_TAULUKKO_KUVAUS_OTSIKKO'}
                                 defaultMessage={'Voit rajata koodistoryhmällä tai nimellä'}
                             />
                         </InfoText>
