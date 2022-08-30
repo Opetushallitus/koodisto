@@ -37,7 +37,7 @@ export const CrumbTrail: React.FC<Props> = ({ trail }) => (
         {trail.map((crumb) => {
             const { label, path, key } = crumb;
             return (
-                <div key={key}>
+                <div key={key || 'undefined'}>
                     &nbsp;&gt;&nbsp;
                     {path ? <Link to={path}>{label}</Link> : <>{label}</>}
                 </div>
