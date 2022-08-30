@@ -1,5 +1,6 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
+import { capitalize } from 'lodash';
 import type { PageKoodisto } from '../../types';
 import InfoFields from '../../components/InfoFields';
 import DateRange from '../../components/DateRange';
@@ -30,7 +31,7 @@ export const KoodistoInfo: React.FC<PageKoodisto> = ({
             },
             value: formatMessage({
                 id: `TILA_${tila}`,
-                defaultMessage: tila.charAt(0).toUpperCase() + tila.slice(1).toLowerCase(),
+                defaultMessage: capitalize(tila),
             }),
         },
         {

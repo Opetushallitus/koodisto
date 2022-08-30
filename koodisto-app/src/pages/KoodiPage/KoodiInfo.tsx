@@ -1,6 +1,7 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 import styled from 'styled-components';
+import { capitalize } from 'lodash';
 import InfoFields from '../../components/InfoFields';
 import DateRange from '../../components/DateRange';
 import UpdatedAt from '../../components/UpdatedAt';
@@ -26,7 +27,7 @@ export const KoodiInfo: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
             },
             value: formatMessage({
                 id: `TILA_${koodi.tila}`,
-                defaultMessage: koodi.tila.charAt(0).toUpperCase() + koodi.tila.slice(1).toLowerCase(),
+                defaultMessage: capitalize(koodi.tila),
             }),
         },
         {
