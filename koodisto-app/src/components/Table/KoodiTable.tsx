@@ -1,11 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { KoodiList } from '../../types';
+import { KoodiList, SelectOptionType } from '../../types';
 import { useIntl, FormattedDate } from 'react-intl';
 import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLangAtom } from '../../api/kayttooikeus';
-import { ColumnDef, CellContext } from '@tanstack/react-table';
+import { ColumnDef, CellContext, Row } from '@tanstack/react-table';
 import { Table } from './Table';
 import { sortBy } from 'lodash';
 
@@ -28,7 +28,15 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                     columns: [
                         {
                             id: 'koodistoUri',
-                            cell: (info: CellContext<KoodiList, unknown>) => info.row.original.koodistoNimi || '',
+                            header: '',
+                            accessorFn: (item: KoodiList) => ({
+                                label: item.koodistoNimi || item.koodistoUri,
+                                value: item.koodistoUri,
+                            }),
+                            filterFn: (row: Row<KoodiList>, columnId: string, value: SelectOptionType[]) =>
+                                !!value.find((a) => a.value === (row.getValue(columnId) as SelectOptionType).value) ||
+                                value.length === 0,
+                            cell: (koodisto: CellContext<KoodiList, SelectOptionType>) => koodisto.getValue().label,
                         },
                     ],
                 },
