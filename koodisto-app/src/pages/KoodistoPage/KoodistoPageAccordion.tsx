@@ -8,7 +8,7 @@ import { IconWrapper } from '../../components/IconWapper';
 import { useNavigate, createSearchParams, useParams } from 'react-router-dom';
 import Spin from '@opetushallitus/virkailija-ui-components/Spin';
 import { UseFieldArrayReturn } from 'react-hook-form';
-import { ButtonLabelPrefix, Padding1 } from '../../components/Containers';
+import { ButtonLabelPrefix } from '../../components/Containers';
 import { KoodiTable } from '../../components/Table';
 
 const SISALTYY_KOODISTOIHIN_ID = 0;
@@ -133,11 +133,7 @@ const KoodistoPageAccordion: React.FC<KoodistoPageAccordionProps> = ({
                               )}
                           </>
                       )) || <Spin size={'small'} />,
-                      panelComponent: (koodiList && (
-                          <Padding1>
-                              <KoodiTable koodiList={koodiList} />
-                          </Padding1>
-                      )) || <Spin />,
+                      panelComponent: (koodiList && <KoodiTable koodiList={koodiList} modal={false} />) || <Spin />,
                   },
               ]
             : []),

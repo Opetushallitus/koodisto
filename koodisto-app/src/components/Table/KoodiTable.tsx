@@ -122,7 +122,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
 
     return (
         <Table<KoodiList>
-            modal
+            modal={modal}
             columns={columns}
             data={data}
             setSelected={setSelected}
