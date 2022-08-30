@@ -55,7 +55,7 @@ export const KoodistoPage: React.FC = () => {
 
     return (
         <>
-            <CrumbTrail trail={[{ key: koodistoUri, label: koodistonMetadata?.nimi || '' }]} />
+            <CrumbTrail trail={[{ label: koodistonMetadata?.nimi || '' }]} />
             <MainHeaderContainer>
                 <HeadingDivider>
                     <h1>{koodistonMetadata?.nimi}</h1>

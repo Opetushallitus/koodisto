@@ -180,7 +180,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
 
     return (
         <>
-            <CrumbTrail trail={[{ key: koodistoUri || 'new', label: koodistonMetadata?.nimi || '' }]} />
+            <CrumbTrail trail={[{ label: koodistonMetadata?.nimi || '' }]} />
             <MainHeaderContainer>
                 <FormattedMessage
                     id={'KOODISTO_MUOKKAA_SIVU_TITLE'}

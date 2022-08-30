@@ -14,12 +14,13 @@ const Container = styled.div`
 `;
 
 type Crumb = {
-    key: string;
     label: ReactNode;
     path?: string;
 };
 
 type Props = { trail: Crumb[] };
+
+const key = ['koodisto', 'koodi'];
 
 const Home = () => (
     <div key="home">
@@ -34,10 +35,10 @@ const Home = () => (
 export const CrumbTrail: React.FC<Props> = ({ trail }) => (
     <Container>
         <Home />
-        {trail.map((crumb) => {
-            const { label, path, key } = crumb;
+        {trail.map((crumb, index) => {
+            const { label, path } = crumb;
             return (
-                <div key={key || 'undefined'}>
+                <div key={key[index]}>
                     &nbsp;&gt;&nbsp;
                     {path ? <Link to={path}>{label}</Link> : <>{label}</>}
                 </div>

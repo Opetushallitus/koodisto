@@ -23,11 +23,10 @@ export const KoodiCrumbTrail: React.FC<{ koodi: Koodi; koodistoUriParam?: string
     const trail = [
         ...((koodisto && [
             {
-                key: koodisto.koodistoUri,
                 path: `/koodisto/view/${koodisto.koodistoUri}/${koodisto.versio}`,
                 label: translateMetadata({ metadata: koodisto.metadata, lang })?.nimi || koodisto.koodistoUri,
             },
-        ]) || [{ key: 'loading', path: undefined, label: <Spin size={'small'} /> }]),
+        ]) || [{ path: undefined, label: <Spin size={'small'} /> }]),
         { key: koodi.koodiUri, label: translateMetadata({ metadata: koodi.metadata, lang })?.nimi || koodi.koodiUri },
     ];
     return <CrumbTrail trail={trail} />;
