@@ -143,6 +143,9 @@
   "KOODI_POISTA_TITLE": {
     "defaultMessage": "Poista koodi"
   },
+  "KOODI_RELAATIO_TAULUKKO_HAKU_APUTEKSTI": {
+    "defaultMessage": "Hae nimellä"
+  },
   "KOODI_SUHDE_MODAL_HEADER": {
     "defaultMessage": "Valitse koodit"
   },

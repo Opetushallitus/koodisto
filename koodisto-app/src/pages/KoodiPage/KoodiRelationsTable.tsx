@@ -5,7 +5,7 @@ import { Table } from '../../components/Table';
 import { translateMultiLocaleText, metadataToMultiLocaleText } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLocaleAtom } from '../../api/kayttooikeus';
-import type { KoodiRelation, Koodi, KoodiList } from '../../types';
+import type { KoodiRelation, Koodi, KoodiList, SelectOptionType } from '../../types';
 import { KoodistoRelation } from '../../types';
 import { ColumnDef, CellContext } from '@tanstack/react-table';
 import { UseFieldArrayReturn } from 'react-hook-form';
@@ -71,12 +71,21 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
                     {
                         id: 'koodisto',
                         header: '',
-                        accessorFn: (relation: KoodiRelation) =>
-                            translateMultiLocaleText({
+                        accessorFn: (relation: KoodiRelation) => {
+                            const name = translateMultiLocaleText({
                                 multiLocaleText: relation.koodistoNimi,
                                 locale,
                                 defaultValue: relation.koodistoNimi?.fi || '',
-                            }),
+                            });
+                            return {
+                                label: name,
+                                value: name,
+                            };
+                        },
+                        filterFn: (row, columnId, value: SelectOptionType[]) =>
+                            !!value.find((a) => a.value === (row.getValue(columnId) as SelectOptionType).value) ||
+                            value.length === 0,
+                        cell: (koodisto) => koodisto.getValue().label,
                     },
                 ],
             },
@@ -85,17 +94,24 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
                 columns: [
                     {
                         id: 'nimi',
-                        enableColumnFilter: false,
                         header: '',
+                        accessorFn: (relation: KoodiRelation) =>
+                            translateMultiLocaleText({
+                                multiLocaleText: relation.nimi,
+                                locale,
+                                defaultValue: relation.koodiUri,
+                            }),
                         cell: (info) => (
                             <Link to={`/koodi/view/${info.row.original.koodiUri}/${info.row.original.koodiVersio}`}>
-                                {translateMultiLocaleText({
-                                    multiLocaleText: info.row.original.nimi,
-                                    locale,
-                                    defaultValue: info.row.original.koodiUri,
-                                })}
+                                {info.getValue()}
                             </Link>
                         ),
+                        meta: {
+                            filterPlaceHolder: formatMessage({
+                                id: 'KOODI_RELAATIO_TAULUKKO_HAKU_APUTEKSTI',
+                                defaultMessage: 'Hae nimellä',
+                            }),
+                        },
                     },
                 ],
             },
