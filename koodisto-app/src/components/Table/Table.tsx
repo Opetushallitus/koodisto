@@ -197,7 +197,9 @@ export const Table = <T extends object>({
                                                     </div>
                                                     {header.column.getCanFilter() && (
                                                         <div>
-                                                            <Filter column={header.column} table={table} />
+                                                            {data.length > 0 && (
+                                                                <Filter column={header.column} table={table} />
+                                                            )}
                                                         </div>
                                                     )}
                                                 </>

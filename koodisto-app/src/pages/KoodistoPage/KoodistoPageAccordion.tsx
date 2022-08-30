@@ -63,25 +63,6 @@ const KoodistoPageAccordion: React.FC<KoodistoPageAccordionProps> = ({
             ),
         },
         {
-            id: RINNASTUU_KOODISTOIHIN_ID,
-            localizedHeadingTitle: (
-                <>
-                    <FormattedMessage
-                        id={'TAULUKKO_RINNASTUU_KOODISTOIHIN_OTSIKKO'}
-                        defaultMessage={'Rinnastuu koodistoihin ({count})'}
-                        values={{ count: rinnastuuKoodistoihin.length }}
-                    />
-                </>
-            ),
-            panelComponent: (
-                <KoodistoRelationsTable
-                    fieldArrayReturn={rinnastuuKoodistoihinReturn}
-                    koodistoRelations={rinnastuuKoodistoihin}
-                    editable={!!editable}
-                />
-            ),
-        },
-        {
             id: SISALTAA_KOODISTOT_ID,
             localizedHeadingTitle: (
                 <>
@@ -96,6 +77,25 @@ const KoodistoPageAccordion: React.FC<KoodistoPageAccordionProps> = ({
                 <KoodistoRelationsTable
                     fieldArrayReturn={sisaltaaKoodistotReturn}
                     koodistoRelations={sisaltaaKoodistot}
+                    editable={!!editable}
+                />
+            ),
+        },
+        {
+            id: RINNASTUU_KOODISTOIHIN_ID,
+            localizedHeadingTitle: (
+                <>
+                    <FormattedMessage
+                        id={'TAULUKKO_RINNASTUU_KOODISTOIHIN_OTSIKKO'}
+                        defaultMessage={'Rinnastuu koodistoihin ({count})'}
+                        values={{ count: rinnastuuKoodistoihin.length }}
+                    />
+                </>
+            ),
+            panelComponent: (
+                <KoodistoRelationsTable
+                    fieldArrayReturn={rinnastuuKoodistoihinReturn}
+                    koodistoRelations={rinnastuuKoodistoihin}
                     editable={!!editable}
                 />
             ),
@@ -133,7 +133,7 @@ const KoodistoPageAccordion: React.FC<KoodistoPageAccordionProps> = ({
                               )}
                           </>
                       )) || <Spin size={'small'} />,
-                      panelComponent: (koodiList && <KoodiTable koodiList={koodiList} />) || <Spin />,
+                      panelComponent: (koodiList && <KoodiTable koodiList={koodiList} modal={false} />) || <Spin />,
                   },
               ]
             : []),

@@ -12,7 +12,7 @@ export const KoodistoSuhdeModal: React.FC<SuhdeModalProps> = ({ close, save, old
     return (
         <Modal
             header={<FormattedMessage id={'KOODISTO_SUHDE_MODAL_HEADER'} defaultMessage={'Valitse koodistot'} />}
-            body={<KoodistoTable modal setSelected={setSelected} oldRelations={oldRelations} />}
+            body={<KoodistoTable modal setSelected={setSelected} oldRelations={oldRelations} pageSize={10} />}
             footer={<SuhdeModalFooter selected={selected} close={close} save={save} />}
             onClose={close}
         ></Modal>

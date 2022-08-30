@@ -14,7 +14,6 @@ const Container = styled.div`
 `;
 
 type Crumb = {
-    key: string;
     label: ReactNode;
     path?: string;
 };
@@ -34,10 +33,10 @@ const Home = () => (
 export const CrumbTrail: React.FC<Props> = ({ trail }) => (
     <Container>
         <Home />
-        {trail.map((crumb) => {
-            const { label, path, key } = crumb;
+        {trail.map((crumb, index) => {
+            const { label, path } = crumb;
             return (
-                <div key={key}>
+                <div key={index}>
                     &nbsp;&gt;&nbsp;
                     {path ? <Link to={path}>{label}</Link> : <>{label}</>}
                 </div>

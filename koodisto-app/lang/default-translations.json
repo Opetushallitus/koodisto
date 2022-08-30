@@ -110,6 +110,12 @@
   "KOODISTO_TALLENNUS_MESSAGE_TITLE": {
     "defaultMessage": "Koodisto tallennettiin onnistuneesti."
   },
+  "KOODISTO_TAULUKKO_KUVAUS_OTSIKKO": {
+    "defaultMessage": "Voit rajata koodistoryhmällä tai nimellä"
+  },
+  "KOODISTO_TAULUKKO_OTSIKKO": {
+    "defaultMessage": "Koodistot ({filteredCount} / {totalCount})"
+  },
   "KOODISTO_VERSIOINTI_OK_MESSAGE": {
     "defaultMessage": "Koodistosta on luotu versio sekä luonnos."
   },
@@ -142,6 +148,9 @@
   },
   "KOODI_POISTA_TITLE": {
     "defaultMessage": "Poista koodi"
+  },
+  "KOODI_RELAATIO_TAULUKKO_HAKU_APUTEKSTI": {
+    "defaultMessage": "Hae nimellä"
   },
   "KOODI_SUHDE_MODAL_HEADER": {
     "defaultMessage": "Valitse koodit"
@@ -215,9 +224,6 @@
   "TAULUKKO_KOODIMAARA": {
     "defaultMessage": "Koodien lkm"
   },
-  "TAULUKKO_KOODISTORUI_NIMI": {
-    "defaultMessage": "Koodisto"
-  },
   "TAULUKKO_KOODISTORYHMA_OTSIKKO": {
     "defaultMessage": "Koodistoryhma"
   },
@@ -265,9 +271,6 @@
   },
   "TAULUKKO_NIMI_PUUTTUU_KOODISTOLTA": {
     "defaultMessage": "Nimi puuttuu {koodistoUri}"
-  },
-  "TAULUKKO_OTSIKKO": {
-    "defaultMessage": "Koodistot ({filteredCount} / {totalCount})"
   },
   "TAULUKKO_RINNASTUU_KOODEIHIN_OTSIKKO": {
     "defaultMessage": "Rinnastuu koodeihin ({count})"

@@ -5,7 +5,7 @@ import { Table } from '../../components/Table';
 import { translateMultiLocaleText, metadataToMultiLocaleText } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLocaleAtom } from '../../api/kayttooikeus';
-import type { KoodiRelation, Koodi, KoodiList } from '../../types';
+import type { KoodiRelation, Koodi, KoodiList, SelectOptionType } from '../../types';
 import { KoodistoRelation } from '../../types';
 import { ColumnDef, CellContext } from '@tanstack/react-table';
 import { UseFieldArrayReturn } from 'react-hook-form';
@@ -66,45 +66,81 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
     const columns = useMemo<ColumnDef<KoodiRelation>[]>(
         () => [
             {
-                id: 'koodisto',
                 header: formatMessage({ id: 'TAULUKKO_KOODISTO_OTSIKKO', defaultMessage: 'Koodisto' }),
-                accessorFn: (relation: KoodiRelation) =>
-                    translateMultiLocaleText({
-                        multiLocaleText: relation.koodistoNimi,
-                        locale,
-                        defaultValue: relation.koodistoNimi?.fi || '',
-                    }),
+                columns: [
+                    {
+                        id: 'koodisto',
+                        header: '',
+                        accessorFn: (relation: KoodiRelation) => {
+                            const name = translateMultiLocaleText({
+                                multiLocaleText: relation.koodistoNimi,
+                                locale,
+                                defaultValue: relation.koodistoNimi?.fi || '',
+                            });
+                            return {
+                                label: name,
+                                value: name,
+                            };
+                        },
+                        filterFn: (row, columnId, value: SelectOptionType[]) =>
+                            !!value.find((a) => a.value === (row.getValue(columnId) as SelectOptionType).value) ||
+                            value.length === 0,
+                        cell: (koodisto) => koodisto.getValue().label,
+                    },
+                ],
             },
             {
-                id: 'nimi',
-                enableColumnFilter: false,
                 header: formatMessage({ id: 'TAULUKKO_NIMI_OTSIKKO', defaultMessage: 'Nimi' }),
-                cell: (info) => (
-                    <Link to={`/koodi/view/${info.row.original.koodiUri}/${info.row.original.koodiVersio}`}>
-                        {translateMultiLocaleText({
-                            multiLocaleText: info.row.original.nimi,
-                            locale,
-                            defaultValue: info.row.original.koodiUri,
-                        })}
-                    </Link>
-                ),
+                columns: [
+                    {
+                        id: 'nimi',
+                        header: '',
+                        accessorFn: (relation: KoodiRelation) =>
+                            translateMultiLocaleText({
+                                multiLocaleText: relation.nimi,
+                                locale,
+                                defaultValue: relation.koodiUri,
+                            }),
+                        cell: (info) => (
+                            <Link to={`/koodi/view/${info.row.original.koodiUri}/${info.row.original.koodiVersio}`}>
+                                {info.getValue()}
+                            </Link>
+                        ),
+                        meta: {
+                            filterPlaceHolder: formatMessage({
+                                id: 'KOODI_RELAATIO_TAULUKKO_HAKU_APUTEKSTI',
+                                defaultMessage: 'Hae nimellä',
+                            }),
+                        },
+                    },
+                ],
             },
             {
-                id: 'versio',
-                enableColumnFilter: false,
                 header: formatMessage({ id: 'TAULUKKO_VERSIO_OTSIKKO', defaultMessage: 'Versio' }),
-                accessorFn: (relation: KoodiRelation) => relation.koodiVersio,
+                columns: [
+                    {
+                        id: 'versio',
+                        enableColumnFilter: false,
+                        header: '',
+                        accessorFn: (relation: KoodiRelation) => relation.koodiVersio,
+                    },
+                ],
             },
             {
-                id: 'kuvaus',
-                enableColumnFilter: false,
                 header: formatMessage({ id: 'TAULUKKO_VERSIO_KUVAUS', defaultMessage: 'Kuvaus' }),
-                accessorFn: (relation: KoodiRelation) =>
-                    translateMultiLocaleText({
-                        multiLocaleText: relation.kuvaus,
-                        locale,
-                        defaultValue: relation.koodiUri,
-                    }),
+                columns: [
+                    {
+                        id: 'kuvaus',
+                        enableColumnFilter: false,
+                        header: '',
+                        accessorFn: (relation: KoodiRelation) =>
+                            translateMultiLocaleText({
+                                multiLocaleText: relation.kuvaus,
+                                locale,
+                                defaultValue: relation.koodiUri,
+                            }),
+                    },
+                ],
             },
             ...((editable && [
                 {
@@ -141,7 +177,7 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
     );
     return (
         <>
-            <Table<KoodiRelation> columns={columns} data={data} />{' '}
+            <Table<KoodiRelation> columns={columns} data={data} pageSize={20} />{' '}
             {editable && (
                 <StyledPopup
                     trigger={

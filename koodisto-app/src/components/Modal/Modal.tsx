@@ -25,6 +25,7 @@ const StyledModalBodyField = styled.div`
     flex-direction: column;
     flex-wrap: nowrap;
     padding-right: 1rem;
+    width: 100%;
 `;
 const StyledModalFooter = styled(ModalFooter)`
     border-top: none;
