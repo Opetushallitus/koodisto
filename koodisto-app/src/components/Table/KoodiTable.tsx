@@ -57,7 +57,8 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                         accessorFn: (values: KoodiList) => values.koodiArvo,
                         cell: (info) => (
                             <Link to={`/koodi/view/${info.row.original.koodiUri}/${info.row.original.versio}`}>
-                                {translateMetadata({ metadata: info.row.original.metadata, lang })?.nimi}
+                                {translateMetadata({ metadata: info.row.original.metadata, lang })?.nimi ||
+                                    info.row.original.koodiUri}
                             </Link>
                         ),
                     },
