@@ -20,8 +20,6 @@ type Crumb = {
 
 type Props = { trail: Crumb[] };
 
-const key = ['koodisto', 'koodi'];
-
 const Home = () => (
     <div key="home">
         <Link to={'/'}>
@@ -38,7 +36,7 @@ export const CrumbTrail: React.FC<Props> = ({ trail }) => (
         {trail.map((crumb, index) => {
             const { label, path } = crumb;
             return (
-                <div key={key[index]}>
+                <div key={index}>
                     &nbsp;&gt;&nbsp;
                     {path ? <Link to={path}>{label}</Link> : <>{label}</>}
                 </div>

@@ -24,7 +24,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
         () => [
             ...((!!modal && [
                 {
-                    header: formatMessage({ id: 'TAULUKKO_KOODISTORUI_NIMI', defaultMessage: 'Koodisto' }),
+                    header: formatMessage({ id: 'TAULUKKO_KOODISTO_OTSIKKO', defaultMessage: 'Koodisto' }),
                     columns: [
                         {
                             id: 'koodistoUri',

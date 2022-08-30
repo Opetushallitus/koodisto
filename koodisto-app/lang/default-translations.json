@@ -224,9 +224,6 @@
   "TAULUKKO_KOODIMAARA": {
     "defaultMessage": "Koodien lkm"
   },
-  "TAULUKKO_KOODISTORUI_NIMI": {
-    "defaultMessage": "Koodisto"
-  },
   "TAULUKKO_KOODISTORYHMA_OTSIKKO": {
     "defaultMessage": "Koodistoryhma"
   },
