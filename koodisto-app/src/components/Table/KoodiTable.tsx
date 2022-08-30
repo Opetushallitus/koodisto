@@ -89,7 +89,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                         {
                             id: 'voimassa',
                             cell: (info: CellContext<KoodiList, unknown>) => (
-                                <FormattedDate value={info.getValue() as string} />
+                                <FormattedDate value={info.row.original.voimassaAlkuPvm} />
                             ),
                         },
                     ],
@@ -100,7 +100,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                         {
                             id: 'paivitetty',
                             cell: (info: CellContext<KoodiList, unknown>) => (
-                                <FormattedDate value={info.getValue() as string} />
+                                <FormattedDate value={info.row.original.paivitysPvm} />
                             ),
                         },
                     ],
