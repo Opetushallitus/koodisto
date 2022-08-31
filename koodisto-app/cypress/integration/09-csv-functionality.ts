@@ -10,7 +10,12 @@ describe('CSV functionality tests', () => {
         cy.mockBaseIntercepts();
     });
     it('shows download button on koodisto page', () => {
-        cy.intercept(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/1`, { fixture: `${koodistoUri}Koodisto.json` });
+        cy.intercept(`${API_INTERNAL_PATH}/koodi/koodisto/${koodistoUri}/1`, {
+            fixture: `${koodistoUri}.json`,
+        });
+        cy.intercept(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/1`, {
+            fixture: `${koodistoUri}Koodisto.json`,
+        });
         cy.visit(`${BASE_PATH}/koodisto/view/${koodistoUri}/1`);
         cy.get(`[name="${koodistoUri}-csv"]`).scrollIntoView().should('be.visible');
     });
@@ -32,7 +37,7 @@ describe('CSV functionality tests', () => {
             encoding: 'utf-16le',
         });
         cy.contains('Cypress_Muokattu').should('be.visible');
-        cy.intercept('POST', `${API_INTERNAL_PATH}/koodi/${koodistoUri}`, (req) => {
+        cy.intercept('POST', `${API_INTERNAL_PATH}/koodi/upsert/${koodistoUri}`, (req) => {
             req.reply({ fixture: 'arvosanatKoodisto.json' });
             expect(req.body[0].metadata[0]).to.include({ nimi: 'Cypress_Muokattu', kieli: 'FI' });
         });

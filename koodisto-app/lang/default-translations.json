@@ -17,6 +17,9 @@
   "CSV_UPLOAD_OLD_ROW": {
     "defaultMessage": "Koodi päivitetään"
   },
+  "CSV_UPLOAD_ROW_TITLE": {
+    "defaultMessage": "Toimenpide"
+  },
   "CSV_UPLOAD_SUCCESS": {
     "defaultMessage": "Tuonti onnistui"
   },

@@ -14,7 +14,10 @@ export const mapHeadersToColumns = ({
     headers?.map((key): ColumnDef<CsvKoodiObject> => {
         if (key === 'newRow')
             return {
-                header: 'new',
+                header: formatMessage({
+                    id: 'CSV_UPLOAD_ROW_TITLE',
+                    defaultMessage: 'Toimenpide',
+                }),
                 id: 'new',
                 enableColumnFilter: false,
                 accessorFn: (originalRow) => {

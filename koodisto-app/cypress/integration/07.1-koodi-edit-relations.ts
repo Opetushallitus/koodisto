@@ -13,6 +13,7 @@ describe('The Koodi Edit page can edit relations', () => {
     it('shows edit button and can open edit page', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodi/kunta_020/2`, { fixture: 'relationKoodi.json' });
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'koodiPageKoodisto.json' });
+        cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta`, { fixture: 'koodiPageKoodisto.json' });
         cy.get('button[name=KOODISIVU_MUOKKAA_KOODIA_BUTTON]').should('be.visible').click();
         cy.contains('Muokkaa koodia').should('be.visible');
         cy.contains('kunta').should('be.visible');
@@ -43,12 +44,14 @@ describe('The Koodi Edit page can edit relations', () => {
         });
         cy.intercept(`${API_INTERNAL_PATH}/koodi/kunta_020/2`, { fixture: 'koodiPage.json' });
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'koodiPageKoodisto.json' });
+        cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta`, { fixture: 'koodiPageKoodisto.json' });
         cy.get('button[name="KOODI_TALLENNA"]').should('be.visible').click();
         cy.contains('Koodi tallennettiin').should('be.visible').click();
     });
     it('shows edit button and can open edit page', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodi/kunta_020/2`, { fixture: 'koodiPage.json' });
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'koodiPageKoodisto.json' });
+        cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta`, { fixture: 'koodiPageKoodisto.json' });
         cy.get('button[name=KOODISIVU_MUOKKAA_KOODIA_BUTTON]').should('be.visible').click();
         cy.contains('Muokkaa koodia').should('be.visible');
     });
@@ -67,6 +70,7 @@ describe('The Koodi Edit page can edit relations', () => {
         });
         cy.intercept(`${API_INTERNAL_PATH}/koodi/kunta_020/2`, { fixture: 'koodiPage.json' });
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'koodiPageKoodisto.json' });
+        cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta`, { fixture: 'koodiPageKoodisto.json' });
         cy.get('button[name="KOODI_TALLENNA"]').should('be.visible').click();
         cy.contains('Koodi tallennettiin').should('be.visible').click();
     });

@@ -21,14 +21,15 @@ import { CrumbTrail } from '../../components/CrumbTrail';
 import VersionPicker from '../../components/VersionPicker';
 import { ErrorPage } from '../ErrorPage';
 import { fetchKoodistoKoodis } from '../../api/koodi';
+import { StyledPopup } from '../../components/Modal/Modal';
 
+const contentStyle = { width: '600px' };
 export const KoodistoPage: React.FC = () => {
     const { versio, koodistoUri } = useParams();
     const versioNumber = versio ? +versio : undefined;
     const navigate = useNavigate();
     const [lang] = useAtom(casMeLangAtom);
     const [koodisto, setKoodisto] = useState<PageKoodisto | undefined>();
-    const [uploadCsvVisible, setUploadCsvVisible] = useState<boolean>(false);
     const [koodiList, setKoodiList] = useState<KoodiList[] | undefined>(undefined);
     useEffect(() => {
         if (koodistoUri && versioNumber) {
@@ -72,17 +73,26 @@ export const KoodistoPage: React.FC = () => {
                             defaultMessage={'Muokkaa koodistoa'}
                         />
                     </Button>
-                    <Button
-                        variant={'outlined'}
-                        onClick={() => setUploadCsvVisible(true)}
-                        name={`${koodistoUri}-csv`}
-                        disabled={disabled}
+                    <StyledPopup
+                        position="bottom right"
+                        trigger={
+                            <Button variant={'outlined'} name={`${koodistoUri}-csv`} disabled={disabled}>
+                                <FormattedMessage
+                                    id={'KOODISTOSIVU_TUO_VIE_KOODISTO_BUTTON'}
+                                    defaultMessage={'Lataa / tuo koodisto'}
+                                />
+                            </Button>
+                        }
+                        {...{ contentStyle }}
                     >
-                        <FormattedMessage
-                            id={'KOODISTOSIVU_TUO_VIE_KOODISTO_BUTTON'}
-                            defaultMessage={'Lataa / tuo koodisto'}
-                        />
-                    </Button>
+                        {(close: () => void) => (
+                            <CSVFunctionModal
+                                koodistoUri={koodistoUri}
+                                koodistoVersio={versioNumber}
+                                closeUploader={close}
+                            />
+                        )}
+                    </StyledPopup>
                 </MainHeaderButtonsContainer>
             </MainHeaderContainer>
             <MainContainer>
@@ -95,13 +105,6 @@ export const KoodistoPage: React.FC = () => {
                     disabled={disabled}
                 />
             </MainContainer>
-            {uploadCsvVisible && koodistoUri && (
-                <CSVFunctionModal
-                    koodistoUri={koodistoUri}
-                    koodistoVersio={versioNumber}
-                    closeUploader={() => setUploadCsvVisible(false)}
-                />
-            )}
         </>
     );
 };

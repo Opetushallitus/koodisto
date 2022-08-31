@@ -26,7 +26,7 @@ type UpdateKoodiDataType = CreateKoodiDataType & {
 };
 export const batchUpsertKoodi = async (koodistoUri: string, koodi: CSVUpsertKoodi[]): Promise<string | undefined> =>
     errorHandlingWrapper(async () => {
-        const { data } = await axios.post<ApiPageKoodisto>(`${API_INTERNAL_PATH}/koodi/${koodistoUri}`, koodi);
+        const { data } = await axios.post<ApiPageKoodisto>(`${API_INTERNAL_PATH}/koodi/upsert/${koodistoUri}`, koodi);
         return data.koodistoUri;
     });
 

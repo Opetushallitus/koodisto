@@ -11,6 +11,7 @@ describe('Koodi add page', () => {
         cy.contains('kunta').should('be.visible');
     });
     it('shows add new koodi button and can open page', () => {
+        cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta`, { fixture: 'koodiPageKoodisto.json' });
         cy.get('button[name="TAULUKKO_LISAA_KOODI_BUTTON"]').should('be.visible').click();
         cy.get('h1').contains('Lisää koodi').should('be.visible');
     });

@@ -29,6 +29,7 @@ describe('The Koodisto Add page', () => {
             .type('1.1.2022{enter}{enter}', { force: true });
     });
     it('can save changes and open view page', () => {
+        cy.intercept(`${API_INTERNAL_PATH}/koodi/koodisto/nimi1655458944744/1`, []);
         cy.intercept('POST', `${API_INTERNAL_PATH}/koodisto/koute`, (req) => {
             console.log(req.body.metadataList);
             expect(req.body.metadataList).to.eqls([
