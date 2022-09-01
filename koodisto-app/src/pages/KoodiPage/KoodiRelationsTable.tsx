@@ -14,6 +14,7 @@ import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
 import { StyledPopup } from '../../components/Modal/Modal';
 import { ButtonLabelPrefix } from '../../components/Containers';
+import { uniqWith } from 'lodash';
 
 type RelationTableProps = {
     editable: boolean;
@@ -48,18 +49,27 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
         [fieldArrayReturn]
     );
     const addNewKoodiToRelations = useCallback(
-        (koodi: KoodiList[]) => {
+        (koodiList: KoodiList[]) => {
             fieldArrayReturn &&
-                fieldArrayReturn.replace([
-                    ...relations,
-                    ...koodi.map((a: KoodiList) => ({
-                        koodistoNimi: { fi: a.koodistoNimi || '', sv: a.koodistoNimi || '', en: a.koodistoNimi || '' },
-                        nimi: metadataToMultiLocaleText(a.metadata, 'nimi'),
-                        kuvaus: metadataToMultiLocaleText(a.metadata, 'kuvaus'),
-                        koodiUri: a.koodiUri,
-                        koodiVersio: a.versio,
-                    })),
-                ]);
+                fieldArrayReturn.replace(
+                    uniqWith(
+                        [
+                            ...relations,
+                            ...koodiList.map((a: KoodiList) => ({
+                                koodistoNimi: {
+                                    fi: a.koodistoNimi || '',
+                                    sv: a.koodistoNimi || '',
+                                    en: a.koodistoNimi || '',
+                                },
+                                nimi: metadataToMultiLocaleText(a.metadata, 'nimi'),
+                                kuvaus: metadataToMultiLocaleText(a.metadata, 'kuvaus'),
+                                koodiUri: a.koodiUri,
+                                koodiVersio: a.versio,
+                            })),
+                        ],
+                        (a, b) => a.koodiUri === b.koodiUri && a.koodiVersio === b.koodiVersio
+                    )
+                );
         },
         [fieldArrayReturn, relations]
     );
@@ -184,7 +194,6 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
                         <Button
                             disabled={relationSources.length === 0}
                             name={'TAULUKKO_LISAA_KOODISUHTEITA_BUTTON'}
-                            onClick={(e: React.ChangeEvent<HTMLInputElement>) => console.log(e)}
                             variant={'text'}
                         >
                             <ButtonLabelPrefix>

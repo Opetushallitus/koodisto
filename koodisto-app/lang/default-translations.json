@@ -134,6 +134,9 @@
   "KOODIVERSIO_DROPDOWN": {
     "defaultMessage": "Koodiversio"
   },
+  "KOODI_KOPIOI_SUHTEET_BUTTON": {
+    "defaultMessage": "Kopioi suhteet koodilta"
+  },
   "KOODI_LISAA_SIVU_TITLE": {
     "defaultMessage": "Lisää koodi"
   },
@@ -157,6 +160,9 @@
   },
   "KOODI_SUHDE_MODAL_HEADER": {
     "defaultMessage": "Valitse koodit"
+  },
+  "KOODI_SUHTEET_TITLE": {
+    "defaultMessage": "Koodin suhteet"
   },
   "KOODI_TALLENNUS_MESSAGE": {
     "defaultMessage": "Tallennettiin koodi uri:lla {koodiUri}"
@@ -206,11 +212,11 @@
   "SIVUTUS_SIVU": {
     "defaultMessage": "Sivu"
   },
-  "SUHDEMODAL_LISAA": {
-    "defaultMessage": "Lisää valitut ({chosen})"
-  },
   "SUHDEMODAL_SULJE": {
     "defaultMessage": "Sulje"
+  },
+  "SUHDEMODAL_VALITSE": {
+    "defaultMessage": "Valitse ({chosen})"
   },
   "SV_NIMI_PAKOLLINEN": {
     "defaultMessage": "Syötä ruotsinkielinen nimi"

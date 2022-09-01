@@ -32,7 +32,7 @@ describe('The Koodi Edit page can edit relations', () => {
     });
     it('shows koodis and can select', () => {
         cy.get('input[type=checkbox]').eq(1).click();
-        cy.get('button[name=SUHDEMODAL_LISAA]').click();
+        cy.get('button[name=SUHDEMODAL_VALITSE]').click();
     });
     it('shows added relations', () => {
         cy.get('div').contains('Sisältyy koodeihin (3)').should('be.visible');
@@ -73,5 +73,34 @@ describe('The Koodi Edit page can edit relations', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta`, { fixture: 'koodiPageKoodisto.json' });
         cy.get('button[name="KOODI_TALLENNA"]').should('be.visible').click();
         cy.contains('Koodi tallennettiin').should('be.visible').click();
+    });
+    it('can copy relations from other koodi', () => {
+        cy.intercept(`${API_INTERNAL_PATH}/koodi/aidinkielijakirjallisuus_se/1`, { fixture: '07/saameKoodi.json' });
+        cy.intercept(`${API_INTERNAL_PATH}/koodi/koodisto/aidinkielijakirjallisuus/1`, {
+            fixture: '07/aidinkielijakirjallisuusKoodit.json',
+        });
+        cy.visit(`${BASE_PATH}/koodi/edit/aidinkielijakirjallisuus_se/1`);
+
+        cy.intercept(`${API_INTERNAL_PATH}/koodisto/aidinkielijakirjallisuus/1`, {
+            fixture: '07/aidinkielijakirjallisuusKoodisto.json',
+        });
+        cy.get('button[name=KOODI_KOPIOI_SUHTEET_BUTTON]').should('be.visible').click();
+        cy.contains('Valitse koodit').should('be.visible');
+        cy.get('input[type=checkbox]').eq(0).click();
+        cy.contains('Valitse (3)').should('be.visible');
+
+        cy.intercept(`${API_INTERNAL_PATH}/koodi/aidinkielijakirjallisuus_fi/1`, {
+            fixture: '07/aidinkielijakirjallisuusFi.json',
+        });
+        cy.intercept(`${API_INTERNAL_PATH}/koodi/aidinkielijakirjallisuus_fi2/1`, {
+            fixture: '07/aidinkielijakirjallisuusFi2.json',
+        });
+        cy.intercept(`${API_INTERNAL_PATH}/koodi/aidinkielijakirjallisuus_fise/1`, {
+            fixture: '07/aidinkielijakirjallisuusFiSe.json',
+        });
+        cy.get('button[name=SUHDEMODAL_VALITSE]').should('be.visible').click();
+        cy.contains('Sisältyy koodeihin (3)').should('be.visible');
+        cy.contains('Sisältää koodit (1)').should('be.visible');
+        cy.contains('Rinnastuu koodeihin (2)').should('be.visible');
     });
 });

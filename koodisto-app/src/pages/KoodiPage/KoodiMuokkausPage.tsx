@@ -220,7 +220,7 @@ const KoodiMuokkausPageComponent: React.FC<
                 {isEditing && (
                     <KoodiPageAccordion
                         editable
-                        koodi={getValues() || undefined}
+                        koodi={getValues()}
                         rinnastuuKoodeihinReturn={rinnastuuKoodeihinReturn}
                         sisaltaaKooditReturn={sisaltaaKooditReturn}
                         sisaltyyKoodeihinReturn={sisaltyyKoodeihinReturn}

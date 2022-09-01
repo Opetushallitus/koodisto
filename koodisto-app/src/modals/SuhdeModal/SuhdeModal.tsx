@@ -19,11 +19,11 @@ export const SuhdeModalFooter = <T,>({
                 save(selected);
                 close();
             }}
-            name={'SUHDEMODAL_LISAA'}
+            name={'SUHDEMODAL_VALITSE'}
         >
             <FormattedMessage
-                id={'SUHDEMODAL_LISAA'}
-                defaultMessage={'Lisää valitut ({chosen})'}
+                id={'SUHDEMODAL_VALITSE'}
+                defaultMessage={'Valitse ({chosen})'}
                 values={{ chosen: selected.length }}
             />
         </Button>
