@@ -3,7 +3,8 @@ import { useMemo, useCallback } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { Table } from '../../components/Table';
 import { Link } from 'react-router-dom';
-import { KoodistoRelation, ListKoodisto, PageKoodisto } from '../../types';
+import { sortBy } from 'lodash';
+import { KoodistoRelation, ListKoodisto, PageKoodisto, Locale } from '../../types';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
 import { KoodistoSuhdeModal } from './KoodistoSuhdeModal';
@@ -34,9 +35,14 @@ export const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
     fieldArrayReturn,
 }) => {
     const { formatMessage, locale } = useIntl();
-    const data = useMemo<KoodistoRelation[]>(() => {
-        return [...koodistoRelations];
-    }, [koodistoRelations]);
+    const data = useMemo<KoodistoRelation[]>(
+        () =>
+            sortBy(
+                [...koodistoRelations],
+                (koodistoRelation) => koodistoRelation.nimi?.[locale as Locale] || koodistoRelation.koodistoUri
+            ),
+        [koodistoRelations, locale]
+    );
 
     const removeKoodistoFromRelations = useCallback(
         (index: number) => {
