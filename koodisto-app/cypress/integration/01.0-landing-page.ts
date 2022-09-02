@@ -6,7 +6,7 @@ describe('The landing page', () => {
     });
     it('shows koodistos on landing page', () => {
         cy.visit(`${BASE_PATH}`);
-        cy.contains('aluehallintovirasto').should('be.visible');
+        cy.contains('2.asteen pohjakoulutus 2021').should('be.visible');
     });
     it('shows paging component', () => {
         cy.wait(500); // eslint-disable-line cypress/no-unnecessary-waiting

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { KoodiList, SelectOptionType } from '../../types';
+import { KoodiList, Kieli, SelectOptionType } from '../../types';
 import { useIntl, FormattedDate } from 'react-intl';
 import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
@@ -14,10 +14,17 @@ type Props = {
     modal?: boolean;
     setSelected?: (selected: KoodiList[]) => void;
 };
+
+const resolveName = (koodi: KoodiList, lang: Kieli): string =>
+    translateMetadata({ metadata: koodi.metadata, lang })?.nimi || koodi.koodiUri;
+
 export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) => {
     const { formatMessage } = useIntl();
     const [lang] = useAtom(casMeLangAtom);
-    const data = useMemo<KoodiList[]>(() => sortBy([...koodiList], (a) => a.koodiArvo), [koodiList]);
+    const data = useMemo<KoodiList[]>(
+        () => sortBy([...koodiList], (koodi) => resolveName(koodi, lang)),
+        [koodiList, lang]
+    );
     const [, setFilteredCount] = useState<number>(data.length);
 
     const columns = React.useMemo<ColumnDef<KoodiList>[]>(
@@ -65,8 +72,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                         accessorFn: (values: KoodiList) => values.koodiArvo,
                         cell: (info) => (
                             <Link to={`/koodi/view/${info.row.original.koodiUri}/${info.row.original.versio}`}>
-                                {translateMetadata({ metadata: info.row.original.metadata, lang })?.nimi ||
-                                    info.row.original.koodiUri}
+                                {resolveName(info.row.original, lang)}
                             </Link>
                         ),
                     },
