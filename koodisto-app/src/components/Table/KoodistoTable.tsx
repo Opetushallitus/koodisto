@@ -60,7 +60,7 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
                     (p, c) => [...(oldRelations?.find((a) => a.koodistoUri === c.koodistoUri) ? [] : [c]), ...p],
                     [] as ListKoodisto[]
                 ),
-                (o) => o.koodistoUri
+                (o) => o.nimi
             ),
         [atomData, oldRelations]
     );
