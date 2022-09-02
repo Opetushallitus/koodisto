@@ -46,13 +46,13 @@ type AccordionDataItem = {
 
 type AccordionProps = {
     data: AccordionDataItem[];
+    open?: UUID[];
 };
 
-export const Accordion: React.FC<AccordionProps> = (props) => {
-    const { data } = props;
-    const [activeAcIds, setActiveAcIds] = useState<UUID[]>([]);
+export const Accordion: React.FC<AccordionProps> = ({ data, open = [] }) => {
+    const [activeAcIds, setActiveAcIds] = useState<UUID[]>([...open]);
     return (
-        <AC onChange={setActiveAcIds} allowZeroExpanded allowMultipleExpanded>
+        <AC onChange={setActiveAcIds} allowZeroExpanded allowMultipleExpanded preExpanded={activeAcIds}>
             {data.map((item) => {
                 return (
                     <StyledAccordionItem key={item.id} uuid={item.id}>

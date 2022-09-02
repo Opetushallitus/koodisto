@@ -139,7 +139,7 @@ const KoodistoPageAccordion: React.FC<KoodistoPageAccordionProps> = ({
             : []),
     ];
 
-    return <Accordion data={data} />;
+    return <Accordion data={data} open={[KOODIT_ID]} />;
 };
 
 export default KoodistoPageAccordion;
