@@ -4,8 +4,9 @@ import { Link } from 'react-router-dom';
 import { Table } from '../../components/Table';
 import { translateMultiLocaleText, metadataToMultiLocaleText } from '../../utils';
 import { useAtom } from 'jotai';
+import { sortBy } from 'lodash';
 import { casMeLocaleAtom } from '../../api/kayttooikeus';
-import type { KoodiRelation, Koodi, KoodiList, SelectOptionType } from '../../types';
+import type { KoodiRelation, Koodi, KoodiList, SelectOptionType, Locale } from '../../types';
 import { KoodistoRelation } from '../../types';
 import { ColumnDef, CellContext } from '@tanstack/react-table';
 import { UseFieldArrayReturn } from 'react-hook-form';
@@ -39,9 +40,11 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
 }) => {
     const { formatMessage } = useIntl();
     const [locale] = useAtom(casMeLocaleAtom);
-    const data = useMemo<KoodiRelation[]>(() => {
-        return [...relations];
-    }, [relations]);
+    const data = useMemo<KoodiRelation[]>(
+        () =>
+            sortBy([...relations], (koodiRelation) => koodiRelation.nimi?.[locale as Locale] || koodiRelation.koodiUri),
+        [relations, locale]
+    );
     const removeKoodiFromRelations = useCallback(
         (index: number) => {
             fieldArrayReturn && fieldArrayReturn.remove(index);
