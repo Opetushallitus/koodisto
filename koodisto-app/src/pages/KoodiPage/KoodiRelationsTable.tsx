@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Table } from '../../components/Table';
 import { translateMultiLocaleText, metadataToMultiLocaleText } from '../../utils';
 import { useAtom } from 'jotai';
-import { sortBy } from 'lodash';
+import { sortBy, uniqWith } from 'lodash';
 import { casMeLocaleAtom } from '../../api/kayttooikeus';
 import type { KoodiRelation, Koodi, KoodiList, SelectOptionType, Locale } from '../../types';
 import { KoodistoRelation } from '../../types';
@@ -15,7 +15,6 @@ import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
 import { StyledPopup } from '../../components/Modal/Modal';
 import { ButtonLabelPrefix } from '../../components/Containers';
-import { uniqWith } from 'lodash';
 
 type RelationTableProps = {
     editable: boolean;
