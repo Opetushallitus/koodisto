@@ -1,92 +1,92 @@
 [
-  {
-    "koodiUri": "aidinkielijakirjallisuus_fi",
-    "versio": 1,
-    "koodiArvo": "FI",
-    "tila": "LUONNOS",
-    "paivitysPvm": "2022-08-31",
-    "paivittajaOid": "1.2.3.4.5",
-    "voimassaAlkuPvm": "2013-04-13",
-    "voimassaLoppuPvm": null,
-    "metadata": [
-      {
-        "nimi": "Suomi äidinkielenä",
-        "kuvaus": "Suomi äidinkielenä",
-        "lyhytNimi": "Suomi äidinkielenä",
-        "kieli": "FI"
-      },
-      {
-        "nimi": "Suomi äidinkielenä",
-        "kuvaus": "Suomi äidinkielenä",
-        "lyhytNimi": "Suomi äidinkielenä",
-        "kieli": "EN"
-      },
-      {
-        "nimi": "Finska som modersmål",
-        "kuvaus": "Finska som modersmål",
-        "lyhytNimi": "Finska som modersmål",
-        "kieli": "SV"
-      }
-    ]
-  },
-  {
-    "koodiUri": "aidinkielijakirjallisuus_fi2",
-    "versio": 1,
-    "koodiArvo": "FI_2",
-    "tila": "LUONNOS",
-    "paivitysPvm": "2022-08-31",
-    "paivittajaOid": "1.2.3.4.5",
-    "voimassaAlkuPvm": "2013-04-13",
-    "voimassaLoppuPvm": null,
-    "metadata": [
-      {
-        "nimi": "Finska som andraspråk",
-        "kuvaus": "Finska som andraspråk",
-        "lyhytNimi": "Finska som andraspråk",
-        "kieli": "SV"
-      },
-      {
-        "nimi": "Suomi toisena kielenä",
-        "kuvaus": "Suomi toisena kielenä",
-        "lyhytNimi": "Suomi toisena kielenä",
-        "kieli": "EN"
-      },
-      {
-        "nimi": "Suomi toisena kielenä",
-        "kuvaus": "Suomi toisena kielenä",
-        "lyhytNimi": "Suomi toisena kielenä",
-        "kieli": "FI"
-      }
-    ]
-  },
-  {
-    "koodiUri": "aidinkielijakirjallisuus_fise",
-    "versio": 1,
-    "koodiArvo": "FI_SE",
-    "tila": "LUONNOS",
-    "paivitysPvm": "2022-08-31",
-    "paivittajaOid": "1.2.3.4.5",
-    "voimassaAlkuPvm": "2013-04-13",
-    "voimassaLoppuPvm": null,
-    "metadata": [
-      {
-        "nimi": "Finska för samisktalande",
-        "kuvaus": "Finska för samisktalande",
-        "lyhytNimi": "Finska för samisktalande",
-        "kieli": "SV"
-      },
-      {
-        "nimi": "Suomi saamenkielisille",
-        "kuvaus": "Suomi saamenkielisille",
-        "lyhytNimi": "Suomi saamenkielisille",
-        "kieli": "EN"
-      },
-      {
-        "nimi": "Suomi saamenkielisille",
-        "kuvaus": "Suomi saamenkielisille",
-        "lyhytNimi": "Suomi saamenkielisille",
-        "kieli": "FI"
-      }
-    ]
-  }
+    {
+        "koodiUri": "aidinkielijakirjallisuus_fi",
+        "versio": 1,
+        "koodiArvo": "FI",
+        "tila": "LUONNOS",
+        "paivitysPvm": "2022-08-31",
+        "paivittajaOid": "1.2.3.4.5",
+        "voimassaAlkuPvm": "2013-04-13",
+        "voimassaLoppuPvm": null,
+        "metadata": [
+            {
+                "nimi": "Suomi äidinkielenä",
+                "kuvaus": "Suomi äidinkielenä",
+                "lyhytNimi": "Suomi äidinkielenä",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Suomi äidinkielenä",
+                "kuvaus": "Suomi äidinkielenä",
+                "lyhytNimi": "Suomi äidinkielenä",
+                "kieli": "EN"
+            },
+            {
+                "nimi": "Finska som modersmål",
+                "kuvaus": "Finska som modersmål",
+                "lyhytNimi": "Finska som modersmål",
+                "kieli": "SV"
+            }
+        ]
+    },
+    {
+        "koodiUri": "aidinkielijakirjallisuus_fi2",
+        "versio": 1,
+        "koodiArvo": "FI_2",
+        "tila": "LUONNOS",
+        "paivitysPvm": "2022-08-31",
+        "paivittajaOid": "1.2.3.4.5",
+        "voimassaAlkuPvm": "2013-04-13",
+        "voimassaLoppuPvm": null,
+        "metadata": [
+            {
+                "nimi": "Finska som andraspråk",
+                "kuvaus": "Finska som andraspråk",
+                "lyhytNimi": "Finska som andraspråk",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Suomi toisena kielenä",
+                "kuvaus": "Suomi toisena kielenä",
+                "lyhytNimi": "Suomi toisena kielenä",
+                "kieli": "EN"
+            },
+            {
+                "nimi": "Suomi toisena kielenä",
+                "kuvaus": "Suomi toisena kielenä",
+                "lyhytNimi": "Suomi toisena kielenä",
+                "kieli": "FI"
+            }
+        ]
+    },
+    {
+        "koodiUri": "aidinkielijakirjallisuus_fise",
+        "versio": 1,
+        "koodiArvo": "FI_SE",
+        "tila": "LUONNOS",
+        "paivitysPvm": "2022-08-31",
+        "paivittajaOid": "1.2.3.4.5",
+        "voimassaAlkuPvm": "2013-04-13",
+        "voimassaLoppuPvm": null,
+        "metadata": [
+            {
+                "nimi": "Finska för samisktalande",
+                "kuvaus": "Finska för samisktalande",
+                "lyhytNimi": "Finska för samisktalande",
+                "kieli": "SV"
+            },
+            {
+                "nimi": "Suomi saamenkielisille",
+                "kuvaus": "Suomi saamenkielisille",
+                "lyhytNimi": "Suomi saamenkielisille",
+                "kieli": "EN"
+            },
+            {
+                "nimi": "Suomi saamenkielisille",
+                "kuvaus": "Suomi saamenkielisille",
+                "lyhytNimi": "Suomi saamenkielisille",
+                "kieli": "FI"
+            }
+        ]
+    }
 ]

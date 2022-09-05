@@ -140,6 +140,9 @@
   "KOODI_LISAA_SIVU_TITLE": {
     "defaultMessage": "Lisää koodi"
   },
+  "KOODI_MUOKKAA_SEURAAVA_NUMERO": {
+    "defaultMessage": "Seuraava juokseva numero"
+  },
   "KOODI_MUOKKAA_SIVU_TITLE": {
     "defaultMessage": "Muokkaa koodia"
   },
