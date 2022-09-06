@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ListKoodisto, SelectOptionType, KoodistoRelation, PageSize } from '../../types';
 import { koodistoListAtom } from '../../api/koodisto';
 import { useAtom } from 'jotai';
-import { ColumnDef, CellContext } from '@tanstack/react-table';
+import { ColumnDef, CellContext, Row } from '@tanstack/react-table';
 import { sortBy } from 'lodash';
 import { ButtonLabelPrefix } from '../Containers';
 import { Table } from './Table';
@@ -77,6 +77,8 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
                         filterFn: (row, columnId, value: SelectOptionType[]) =>
                             !!value.find((a) => a.value === (row.getValue(columnId) as SelectOptionType).value) ||
                             value.length === 0,
+                        sortingFn: (a: Row<ListKoodisto>, b: Row<ListKoodisto>) =>
+                            a.original.ryhmaNimi?.localeCompare(b.original.ryhmaNimi || ''),
                         cell: (info) => (
                             <Link to={`/koodistoRyhma/${info.row.original.ryhmaUri}`}>{info.getValue().label}</Link>
                         ),
@@ -125,6 +127,10 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
                           columns: [
                               {
                                   id: 'voimassaAlkuPvm',
+                                  accessorKey: 'voimassaAlkuPvm',
+                                  header: '',
+                                  enableColumnFilter: false,
+                                  sortingFn: 'datetime',
                                   cell: (info: CellContext<ListKoodisto, unknown>) =>
                                       info.row.original.voimassaAlkuPvm && (
                                           <TableCellText>
@@ -142,6 +148,10 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
                           columns: [
                               {
                                   id: 'voimassaLoppuPvm',
+                                  header: '',
+                                  accessorKey: 'voimassaLoppuPvm',
+                                  enableColumnFilter: false,
+                                  sortingFn: 'datetime',
                                   cell: (info: CellContext<ListKoodisto, unknown>) =>
                                       info.row.original.voimassaLoppuPvm && (
                                           <TableCellText>
@@ -156,6 +166,9 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
                           columns: [
                               {
                                   id: 'koodiCount',
+                                  header: '',
+                                  accessorKey: 'koodiCount',
+                                  enableColumnFilter: false,
                                   cell: (info: CellContext<ListKoodisto, unknown>) => (
                                       <TableCellText>{info.row.original.koodiCount}</TableCellText>
                                   ),
@@ -169,6 +182,10 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
                 columns: [
                     {
                         id: 'versio',
+                        header: '',
+                        accessorKey: 'versio',
+                        enableColumnFilter: false,
+                        sortingFn: 'basic',
                         cell: (info: CellContext<ListKoodisto, unknown>) =>
                             info.row.original.versio && <TableCellText>{info.row.original.versio}</TableCellText>,
                     },

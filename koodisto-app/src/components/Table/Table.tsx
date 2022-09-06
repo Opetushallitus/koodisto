@@ -22,6 +22,8 @@ import {
     HeaderContext,
     RowData,
     getPaginationRowModel,
+    SortingState,
+    getSortedRowModel,
 } from '@tanstack/react-table';
 import { IconWrapper } from '../IconWapper';
 import { debounce, uniq, uniqBy } from 'lodash';
@@ -82,6 +84,11 @@ const InputContainer = styled(FilterContainer)`
     max-width: 25rem;
 `;
 
+const SortColumn = styled.div`
+    cursor: pointer;
+    user-select: none;
+`;
+
 type TableProps<T extends object> = {
     columns: ColumnDef<T>[];
     data: T[];
@@ -104,6 +111,7 @@ export const Table = <T extends object>({
 }) => {
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [rowSelection, setRowSelection] = useState({});
+    const [sorting, setSorting] = useState<SortingState>([]);
     const appliedColumns = useMemo(
         () => [
             ...((setSelected && [
@@ -145,6 +153,7 @@ export const Table = <T extends object>({
         columns: appliedColumns,
         data,
         state: {
+            sorting,
             columnFilters,
             rowSelection,
         },
@@ -155,6 +164,8 @@ export const Table = <T extends object>({
         onColumnFiltersChange: setColumnFilters,
         onRowSelectionChange: setRowSelection,
         getPaginationRowModel: getPaginationRowModel(),
+        onSortingChange: setSorting,
+        getSortedRowModel: getSortedRowModel(),
     });
 
     useEffect(
@@ -181,50 +192,49 @@ export const Table = <T extends object>({
         <TableContainer modal={!!modal}>
             <TableElement>
                 <Thead>
-                    {table.getHeaderGroups().map((headerGroup: HeaderGroup<T>) => {
-                        return (
-                            <Tr key={headerGroup.id}>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <Th key={header.id} colSpan={header.colSpan}>
-                                            {!header.isPlaceholder && (
-                                                <>
+                    {table.getHeaderGroups().map((headerGroup: HeaderGroup<T>) => (
+                        <Tr key={headerGroup.id}>
+                            {headerGroup.headers.map((header) => {
+                                const sortToggle =
+                                    headerGroup.depth === 0
+                                        ? header.column.columns[0]?.getToggleSortingHandler()
+                                        : undefined;
+                                const isSorted =
+                                    headerGroup.depth === 0 ? (header.column.columns[0]?.getIsSorted() as string) : '';
+                                return (
+                                    <Th key={header.id} colSpan={header.colSpan}>
+                                        {!header.isPlaceholder && (
+                                            <>
+                                                <SortColumn onClick={sortToggle}>
+                                                    {flexRender(header.column.columnDef.header, header.getContext())}
+                                                    {{
+                                                        asc: <IconWrapper icon="ci:short-up" />,
+                                                        desc: <IconWrapper icon="ci:short-down" />,
+                                                    }[isSorted] ?? null}
+                                                </SortColumn>
+                                                {header.column.getCanFilter() && (
                                                     <div>
-                                                        {flexRender(
-                                                            header.column.columnDef.header,
-                                                            header.getContext()
+                                                        {data.length > 0 && (
+                                                            <Filter column={header.column} table={table} />
                                                         )}
                                                     </div>
-                                                    {header.column.getCanFilter() && (
-                                                        <div>
-                                                            {data.length > 0 && (
-                                                                <Filter column={header.column} table={table} />
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </>
-                                            )}
-                                        </Th>
-                                    );
-                                })}
-                            </Tr>
-                        );
-                    })}
+                                                )}
+                                            </>
+                                        )}
+                                    </Th>
+                                );
+                            })}
+                        </Tr>
+                    ))}
                 </Thead>
                 <Tbody>
-                    {table.getRowModel().rows.map((row: Row<T>) => {
-                        return (
-                            <Tr key={row.id}>
-                                {row.getVisibleCells().map((cell) => {
-                                    return (
-                                        <Td key={cell.id}>
-                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                        </Td>
-                                    );
-                                })}
-                            </Tr>
-                        );
-                    })}
+                    {table.getRowModel().rows.map((row: Row<T>) => (
+                        <Tr key={row.id}>
+                            {row.getVisibleCells().map((cell) => (
+                                <Td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Td>
+                            ))}
+                        </Tr>
+                    ))}
                 </Tbody>
             </TableElement>
 

@@ -73,12 +73,14 @@ export const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
                 columns: [
                     {
                         id: 'nimi',
+                        header: '',
+                        accessorFn: (relation: KoodistoRelation) =>
+                            relation.nimi?.[locale as keyof typeof relation.nimi] || relation.nimi?.['fi'],
                         cell: (info) => (
                             <Link
                                 to={`/koodisto/view/${info.row.original.koodistoUri}/${info.row.original.koodistoVersio}`}
                             >
-                                {info.row.original.nimi?.[locale as keyof typeof info.row.original.nimi] ||
-                                    info.row.original.nimi?.['fi']}
+                                {info.getValue()}
                             </Link>
                         ),
                     },

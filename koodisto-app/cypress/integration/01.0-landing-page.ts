@@ -41,4 +41,17 @@ describe('The landing page', () => {
         cy.get('input').eq(1).type('maakunta');
         cy.contains('Sivu 1 / 1').should('be.visible');
     });
+    it('Reset filter', () => {
+        cy.get('#clear-filter').click();
+        cy.contains('Sivu 1 / 9').should('be.visible');
+    });
+    it('Sort by first column', () => {
+        cy.contains('Haun koodistot').should('be.visible');
+        cy.get('th').eq(0).click();
+        cy.contains('Virta-JTP').should('be.visible');
+        cy.get('th').eq(0).click();
+        cy.contains('Alueet').should('be.visible');
+        cy.get('th').eq(0).click();
+        cy.contains('Haun koodistot').should('be.visible');
+    });
 });
