@@ -14,6 +14,8 @@ import { danger, success } from '../../components/Notification';
 import { downloadCsv } from '../../utils';
 import styled from 'styled-components';
 import { ColumnDef } from '@tanstack/react-table';
+import { useResetAtom } from 'jotai/utils';
+import { koodistoListAtom } from '../../api/koodisto';
 
 const DownloadContainer = styled.div`
     padding-bottom: 1rem;
@@ -83,16 +85,19 @@ const persistData = async ({
     koodistoUri,
     formatMessage,
     setSaving,
+    refreshKoodistoList,
 }: {
     data: CsvKoodiObject[];
     koodistoUri: string;
     formatMessage: MessageFormatter;
     setSaving: (saving: boolean) => void;
+    refreshKoodistoList: () => void;
 }) => {
     const koodi = data.map(mapCsvToKoodi);
     setSaving(true);
     const result = await batchUpsertKoodi(koodistoUri, koodi);
     if (result) {
+        refreshKoodistoList();
         success({
             title: formatMessage({ id: 'CSV_UPLOAD_SUCCESS', defaultMessage: 'Tuonti onnistui' }),
             message: formatMessage(
@@ -111,6 +116,7 @@ export const CSVFunctionModal: React.FC<Props> = ({ koodistoUri, koodistoVersio,
 
     const [persistedKoodiList, setPersistedKoodiList] = useState<Koodi[] | undefined>(undefined);
     const [saving, setSaving] = useState<boolean>(false);
+    const refreshKoodistoList = useResetAtom(koodistoListAtom);
     const { formatMessage } = useIntl();
     useEffect(() => {
         (async () => {
@@ -183,7 +189,13 @@ export const CSVFunctionModal: React.FC<Props> = ({ koodistoUri, koodistoVersio,
                     <Button
                         disabled={!validData(csvKoodiArray) || saving}
                         onClick={async () => {
-                            await persistData({ setSaving, data: dataMemo, koodistoUri, formatMessage });
+                            await persistData({
+                                setSaving,
+                                data: dataMemo,
+                                koodistoUri,
+                                formatMessage,
+                                refreshKoodistoList,
+                            });
                             setSaving(false);
                             closeUploader();
                         }}

@@ -6,6 +6,7 @@ import {
     createKoodisto,
     deleteKoodisto,
     createKoodistoVersion,
+    koodistoListAtom,
 } from '../../api/koodisto';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, useFieldArray, ArrayPath } from 'react-hook-form';
@@ -16,6 +17,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import { CrumbTrail } from '../../components/CrumbTrail';
 import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
+import { useResetAtom } from 'jotai/utils';
 import { casMeLangAtom } from '../../api/kayttooikeus';
 import { DatePickerController, SelectController, InputArrayController } from '../../components/controllers';
 import { success } from '../../components/Notification';
@@ -82,6 +84,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
     const [lang] = useAtom(casMeLangAtom);
     const [koodistoRyhmaOptions] = useAtom<SelectOption[]>(koodistoRyhmaOptionsAtom);
     const [organisaatioSelect] = useAtom<SelectOption[]>(organisaatioSelectAtom);
+    const refreshKoodistoList = useResetAtom(koodistoListAtom);
     const [loading, setLoading] = useState<boolean>(false);
     const [disabled, setDisabled] = useState<boolean>(false);
     const versioNumber = versio ? +versio : undefined;
@@ -142,6 +145,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
         const updated = await persistFunction({ koodisto, lang });
         setLoading(false);
         if (updated) {
+            refreshKoodistoList();
             successNotification(updated.koodistoUri);
             reset(updated);
             navigate(`/koodisto/view/${updated.koodistoUri}/${updated.versio}`);
@@ -155,6 +159,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
     ) => {
         setLoading(true);
         if (await action(koodisto)) {
+            refreshKoodistoList();
             showNotification();
             navigate(`/koodisto/view/${koodisto.koodistoUri}`);
         } else {
