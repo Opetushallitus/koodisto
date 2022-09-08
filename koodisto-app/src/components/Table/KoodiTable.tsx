@@ -69,7 +69,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                                 defaultMessage: 'Hae nimellä tai koodiarvolla',
                             }),
                         },
-                        accessorFn: (values: KoodiList) => values.koodiArvo,
+                        accessorFn: (values: KoodiList) => resolveName(values, lang),
                         cell: (info) => (
                             <Link to={`/koodi/view/${info.row.original.koodiUri}/${info.row.original.versio}`}>
                                 {resolveName(info.row.original, lang)}
@@ -84,6 +84,8 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                     {
                         id: 'koodiarvo',
                         header: '',
+                        accessorKey: 'koodiArvo',
+                        enableColumnFilter: false,
                         cell: (info) => <div>{info.row.original.koodiArvo}</div>,
                     },
                 ],
@@ -93,6 +95,9 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                 columns: [
                     {
                         id: 'versio',
+                        header: '',
+                        accessorKey: 'versio',
+                        enableColumnFilter: false,
                         cell: (info) => <div>{info.row.original.versio}</div>,
                     },
                 ],
@@ -103,6 +108,10 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                     columns: [
                         {
                             id: 'voimassa',
+                            header: '',
+                            accessorKey: 'voimassaAlkuPvm',
+                            sortingFn: 'datetime',
+                            enableColumnFilter: false,
                             cell: (info: CellContext<KoodiList, unknown>) => (
                                 <FormattedDate value={info.row.original.voimassaAlkuPvm} />
                             ),
@@ -114,6 +123,10 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                     columns: [
                         {
                             id: 'paivitetty',
+                            header: '',
+                            accessorKey: 'paivitysPvm',
+                            sortingFn: 'datetime',
+                            enableColumnFilter: false,
                             cell: (info: CellContext<KoodiList, unknown>) => (
                                 <FormattedDate value={info.row.original.paivitysPvm} />
                             ),

@@ -8,7 +8,7 @@ import { sortBy, uniqWith } from 'lodash';
 import { casMeLocaleAtom } from '../../api/kayttooikeus';
 import type { KoodiRelation, Koodi, KoodiList, SelectOptionType, Locale } from '../../types';
 import { KoodistoRelation } from '../../types';
-import { ColumnDef, CellContext } from '@tanstack/react-table';
+import { ColumnDef, CellContext, Row } from '@tanstack/react-table';
 import { UseFieldArrayReturn } from 'react-hook-form';
 import { KoodiSuhdeModal } from './KoodiSuhdeModal';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
@@ -75,8 +75,14 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
         },
         [fieldArrayReturn, relations]
     );
-    const columns = useMemo<ColumnDef<KoodiRelation>[]>(
-        () => [
+    const columns = useMemo<ColumnDef<KoodiRelation>[]>(() => {
+        const resolveName = (relation: KoodiRelation) =>
+            translateMultiLocaleText({
+                multiLocaleText: relation.koodistoNimi,
+                locale,
+                defaultValue: relation.koodistoNimi?.fi || '',
+            });
+        return [
             {
                 header: formatMessage({ id: 'TAULUKKO_KOODISTO_OTSIKKO', defaultMessage: 'Koodisto' }),
                 columns: [
@@ -84,16 +90,14 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
                         id: 'koodisto',
                         header: '',
                         accessorFn: (relation: KoodiRelation) => {
-                            const name = translateMultiLocaleText({
-                                multiLocaleText: relation.koodistoNimi,
-                                locale,
-                                defaultValue: relation.koodistoNimi?.fi || '',
-                            });
+                            const label = resolveName(relation);
                             return {
-                                label: name,
-                                value: name,
+                                label,
+                                value: label,
                             };
                         },
+                        sortingFn: (a: Row<KoodiRelation>, b: Row<KoodiRelation>) =>
+                            resolveName(a.original).localeCompare(resolveName(b.original)),
                         filterFn: (row, columnId, value: SelectOptionType[]) =>
                             !!value.find((a) => a.value === (row.getValue(columnId) as SelectOptionType).value) ||
                             value.length === 0,
@@ -171,9 +175,8 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
                 },
             ]) ||
                 []),
-        ],
-        [editable, formatMessage, locale, removeKoodiFromRelations]
-    );
+        ];
+    }, [editable, formatMessage, locale, removeKoodiFromRelations]);
 
     const suhdeModal = useCallback(
         (close) => (
