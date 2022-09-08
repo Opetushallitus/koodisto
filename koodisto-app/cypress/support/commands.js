@@ -30,4 +30,6 @@ Cypress.Commands.add('mockBaseIntercepts', () => {
     cy.intercept(`${API_INTERNAL_PATH}/koodistoryhma`, { fixture: 'allRyhmat.json' });
     cy.intercept(`${API_STATUS_PATH}`, { fixture: 'status.json' });
     cy.intercept(`${API_INTERNAL_PATH}/koodisto`, { fixture: 'codes.json' });
+    cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta/2`, { fixture: 'kuntaKoodisto.json' });
+    cy.intercept(`${API_INTERNAL_PATH}/koodi/koodisto/kunta/2`, { fixture: 'kuntaKoodistoKoodit.json' });
 });

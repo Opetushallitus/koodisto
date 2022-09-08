@@ -1,6 +1,7 @@
 {
     "koodisto": {
-        "koodistoUri": "kunta"
+        "koodistoUri": "kunta",
+        "versio": 2
     },
     "koodiArvo": "020",
     "versio": 2,
