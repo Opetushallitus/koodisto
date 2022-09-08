@@ -1,1 +1,1 @@
-export { errorHandlingWrapper, useErrorHandlingWrapper } from './errorHandling';
+export { errorHandlingWrapper } from './errorHandling';

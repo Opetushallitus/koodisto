@@ -30,11 +30,3 @@ export const errorHandlingWrapper = async <A = never, B = AxiosResponse<A>>(
         return Promise.resolve(undefined);
     });
 };
-export const useErrorHandlingWrapper = <T>(workhorse: () => { data: T | undefined; loading: boolean }) => {
-    try {
-        return workhorse();
-    } catch (error) {
-        handleError(error);
-        return { data: undefined, loading: false };
-    }
-};

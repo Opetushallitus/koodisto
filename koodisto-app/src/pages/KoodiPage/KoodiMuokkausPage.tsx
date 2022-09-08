@@ -9,8 +9,10 @@ import {
     MainContainerRowContent,
 } from '../../components/Containers';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { useResetAtom } from 'jotai/utils';
 import { KoodiCrumbTrail } from '../KoodiPage/KoodiCrumbTrail';
 import { fetchPageKoodi, updateKoodi, createKoodi, deleteKoodi, fetchKoodistoKoodis } from '../../api/koodi';
+import { koodistoListAtom } from '../../api/koodisto';
 import { useForm, UseFormReturn, useFieldArray, ArrayPath } from 'react-hook-form';
 import { Koodi, KoodiRelation, KoodiList } from '../../types';
 import { Loading } from '../../components/Loading';
@@ -53,6 +55,7 @@ export const KoodiMuokkausPage: React.FC = () => {
     const newKoodiKoodistoUri = searchParams.get('koodistoUri');
     const newKoodiKoodistoVersio = searchParams.get('koodistoVersio');
     const navigate = useNavigate();
+    const refreshKoodistoList = useResetAtom(koodistoListAtom);
     const [loading, setLoading] = useState<boolean>(false);
     const [disabled, setDisabled] = useState<boolean>(false);
     const [koodit, setKoodit] = useState<KoodiList[]>([]);
@@ -89,15 +92,20 @@ export const KoodiMuokkausPage: React.FC = () => {
     }, [koodiUri, koodiVersio, formReturn, isEditing, newKoodiKoodistoUri, newKoodiKoodistoVersio]);
     const save = async (koodi: Koodi) => {
         if (isEditing) await persist(koodi, updateKoodi);
-        else await persist(koodi, createKoodi);
+        else await persist(koodi, createKoodi, refreshKoodistoList);
     };
-    const persist = async (koodi: Koodi, persistFunction: (koodi: Koodi) => Promise<Koodi | undefined>) => {
+    const persist = async (
+        koodi: Koodi,
+        persistFunction: (koodi: Koodi) => Promise<Koodi | undefined>,
+        callback?: () => void
+    ) => {
         setLoading(true);
         const data = await persistFunction(koodi);
         setLoading(false);
         if (data) {
             successNotification(data.koodiUri);
             formReturn.reset(data);
+            callback && callback();
             navigate(`/koodi/view/${data.koodiUri}/${data.versio}`);
         }
     };
@@ -110,6 +118,7 @@ export const KoodiMuokkausPage: React.FC = () => {
         setLoading(true);
         if (await action(koodi)) {
             showNotification();
+            refreshKoodistoList();
             navigate(`/koodisto/view/${koodi.koodisto.koodistoUri}`);
         } else {
             setLoading(false);
