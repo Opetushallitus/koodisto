@@ -5,6 +5,7 @@ import { atom, Getter, Atom } from 'jotai';
 import { sortBy } from 'lodash';
 import { translateMultiLocaleText } from '../utils';
 import { casMeLocaleAtom } from './kayttooikeus';
+import { ORGANISAATIO_URI_LIST } from '../context/constants';
 
 const urlAtom = atom<string>('/organisaatio-service');
 
@@ -21,17 +22,10 @@ export const fetchOrganisaatioNimi = async (oid: string): Promise<OrganisaatioNi
 };
 
 const organisaatioNamesAtom = atom<Promise<Organisaatio[]>>(async (get: Getter) => {
-    const { data } = await axios.get<{
+    const { data } = await axios.post<{
         numHits: number;
         organisaatiot: Organisaatio[];
-    }>(`${get(urlAtom)}/api/hae`, {
-        params: {
-            aktiiviset: true,
-            lakkautetut: true,
-            suunnitellut: true,
-            organisaatiotyyppi: 'organisaatiotyyppi_05',
-        },
-    });
+    }>(`${get(urlAtom)}/api/findbyoids`, ORGANISAATIO_URI_LIST);
     return data.organisaatiot;
 });
 export const organisaatioSelectAtom: Atom<SelectOption[]> = atom((get) => {
