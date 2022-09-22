@@ -40,7 +40,7 @@ describe('The Koodisto Edit page', () => {
         cy.get('button[name="KOODISTOSIVU_MUOKKAA_KOODISTOA_BUTTON"]').should('be.visible').click();
         cy.contains('Muokkaa koodistoa').should('be.visible');
         cy.intercept('PUT', `${API_INTERNAL_PATH}/koodisto`, (req) => {
-            expect(req.body.organisaatioOid).to.eq('1.2.246.562.10.2013112012294919827487');
+            expect(req.body.organisaatioOid).to.eq('1.2.246.562.10.00000000001');
             expect(req.body.codesGroupUri).to.eq('varda');
             req.reply({ fixture: 'kuntaKoodisto.json' });
         });
@@ -48,8 +48,8 @@ describe('The Koodisto Edit page', () => {
             .should('be.visible')
             .find('input[type=text]')
             .should('be.visible')
-            .type('csc', { force: true });
-        cy.contains('CSC-Tieteen').should('be.visible').click();
+            .type('ope', { force: true });
+        cy.contains('Opetushall').should('be.visible').click();
 
         cy.get('div[id="koodistoRyhmaUri"]')
             .should('be.visible')
