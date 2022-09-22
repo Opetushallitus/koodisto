@@ -22,11 +22,8 @@ export const fetchOrganisaatioNimi = async (oid: string): Promise<OrganisaatioNi
 };
 
 const organisaatioNamesAtom = atom<Promise<Organisaatio[]>>(async (get: Getter) => {
-    const { data } = await axios.post<{
-        numHits: number;
-        organisaatiot: Organisaatio[];
-    }>(`${get(urlAtom)}/api/findbyoids`, ORGANISAATIO_URI_LIST);
-    return data.organisaatiot;
+    const { data } = await axios.post<Organisaatio[]>(`${get(urlAtom)}/api/findbyoids`, ORGANISAATIO_URI_LIST);
+    return data;
 });
 export const organisaatioSelectAtom: Atom<SelectOption[]> = atom((get) => {
     const names = get(organisaatioNamesAtom);
