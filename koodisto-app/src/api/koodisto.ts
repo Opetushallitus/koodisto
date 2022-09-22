@@ -13,7 +13,7 @@ import {
     Tila,
 } from '../types';
 import { casMeLangAtom } from './kayttooikeus';
-import { parseApiDate, translateMetadata, parseUIDate, translateMultiLocaleText } from '../utils';
+import { parseApiDate, translateMetadata, parseUIDate, translateMultiLocaleText, fillMetadata } from '../utils';
 import { errorHandlingWrapper } from './errorHandling';
 import axios, { AxiosResponse } from 'axios';
 import { fetchOrganisaatioNimi } from './organisaatio';
@@ -162,12 +162,9 @@ const mapApiPageKoodistoToPageKoodisto = ({
     lang: Kieli;
     organisaatioNimi?: OrganisaatioNimi;
 }): PageKoodisto => {
-    const metadata = [...api.metadata];
-    (['FI', 'SV', 'EN'] as Kieli[]).forEach(
-        (kieli) => metadata.find((a) => a.kieli === kieli) || api.metadata.push({ ...metadata[0], kieli })
-    );
     return {
         ...api,
+        metadata: fillMetadata(api.metadata),
         organisaatioNimi,
         koodistoRyhmaUri: {
             label: translateMetadata({ metadata: api.koodistoRyhmaMetadata, lang })?.nimi || api.koodistoRyhmaUri,

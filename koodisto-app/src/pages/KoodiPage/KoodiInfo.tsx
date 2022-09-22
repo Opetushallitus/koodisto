@@ -11,6 +11,7 @@ const NameContainer = styled.ul`
     list-style-type: none;
     padding: 0;
     margin: 0;
+
     li div {
         display: inline-block;
         min-width: 2rem;
@@ -38,7 +39,7 @@ export const KoodiInfo: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
             value: (
                 <NameContainer>
                     {koodi.metadata.map((meta) => (
-                        <li key={meta.kieli}>
+                        <li key={meta.kieli} className={'kieli-nimi'}>
                             <div>{meta.kieli}</div>
                             <div>{meta.nimi}</div>
                         </li>
