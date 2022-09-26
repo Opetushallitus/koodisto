@@ -48,13 +48,22 @@ export const MainContainerRow = styled.div`
 const MainContainerRowTitleContainer = styled.div`
     min-width: 10rem;
 `;
-export const MainContainerRowTitle = (props: MessageDescriptor) => {
-    return (
-        <MainContainerRowTitleContainer>
-            <FormattedMessage {...props} />
-        </MainContainerRowTitleContainer>
-    );
-};
+const MainContainerRowTitleMandatoryContainer = styled(MainContainerRowTitleContainer)`
+    &:after {
+        content: ' *';
+    }
+`;
+export const MainContainerRowTitle = (props: MessageDescriptor) => (
+    <MainContainerRowTitleContainer>
+        <FormattedMessage {...props} />
+    </MainContainerRowTitleContainer>
+);
+export const MainContainerRowTitleMandatory = (props: MessageDescriptor) => (
+    <MainContainerRowTitleMandatoryContainer>
+        <FormattedMessage {...props} />
+    </MainContainerRowTitleMandatoryContainer>
+);
+
 export const MainContainerRowContent = styled.div<{ width?: number }>`
     min-width: ${(props) => props.width || 15}rem;
 `;
