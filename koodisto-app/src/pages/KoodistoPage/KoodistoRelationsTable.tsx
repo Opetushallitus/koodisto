@@ -16,7 +16,10 @@ import { ButtonLabelPrefix } from '../../components/Containers';
 type KoodistoRelationsTableProps = {
     koodistoRelations: KoodistoRelation[];
     editable: boolean;
-    fieldArrayReturn?: UseFieldArrayReturn<PageKoodisto>;
+    fieldArrayReturn?:
+        | UseFieldArrayReturn<PageKoodisto, 'sisaltaaKoodistot'>
+        | UseFieldArrayReturn<PageKoodisto, 'sisaltyyKoodistoihin'>
+        | UseFieldArrayReturn<PageKoodisto, 'rinnastuuKoodistoihin'>;
 };
 
 const RemoveSuhdeButton: React.FC<{ onClick: (e: React.ChangeEvent<HTMLInputElement>) => void }> = ({ onClick }) => {
@@ -45,7 +48,10 @@ export const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
     );
 
     const removeKoodistoFromRelations = useCallback(
-        (index: number) => {
+        (uri: string, versio: number) => {
+            const index = fieldArrayReturn?.fields.findIndex(
+                (value) => value.koodistoUri === uri && value.koodistoVersio === versio
+            );
             fieldArrayReturn && fieldArrayReturn.remove(index);
         },
         [fieldArrayReturn]
@@ -119,7 +125,14 @@ export const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
                             header: '',
                             enableColumnFilter: false,
                             cell: (info: CellContext<KoodistoRelation, never>) => (
-                                <RemoveSuhdeButton onClick={() => removeKoodistoFromRelations(info.row.index)} />
+                                <RemoveSuhdeButton
+                                    onClick={() =>
+                                        removeKoodistoFromRelations(
+                                            info.row.original.koodistoUri,
+                                            info.row.original.koodistoVersio
+                                        )
+                                    }
+                                />
                             ),
                         },
                     ],

@@ -7,7 +7,6 @@ import { useAtom } from 'jotai';
 import { sortBy, uniqWith } from 'lodash';
 import { casMeLocaleAtom } from '../../api/kayttooikeus';
 import type { KoodiRelation, Koodi, KoodiList, SelectOptionType, Locale } from '../../types';
-import { KoodistoRelation } from '../../types';
 import { ColumnDef, CellContext, Row } from '@tanstack/react-table';
 import { UseFieldArrayReturn } from 'react-hook-form';
 import { KoodiSuhdeModal } from './KoodiSuhdeModal';
@@ -19,7 +18,10 @@ import { ButtonLabelPrefix } from '../../components/Containers';
 type RelationTableProps = {
     editable: boolean;
     relations: KoodiRelation[];
-    fieldArrayReturn?: UseFieldArrayReturn<Koodi>;
+    fieldArrayReturn?:
+        | UseFieldArrayReturn<Koodi, 'sisaltaaKoodit'>
+        | UseFieldArrayReturn<Koodi, 'sisaltyyKoodeihin'>
+        | UseFieldArrayReturn<Koodi, 'rinnastuuKoodeihin'>;
     relationSources?: { koodistoUri: string; versio: number }[];
 };
 const RemoveSuhdeButton: React.FC<{ onClick: (e: React.ChangeEvent<HTMLInputElement>) => void }> = ({ onClick }) => {
@@ -45,7 +47,10 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
         [relations, locale]
     );
     const removeKoodiFromRelations = useCallback(
-        (index: number) => {
+        (uri: string, versio: number) => {
+            const index = fieldArrayReturn?.fields.findIndex(
+                (value) => value.koodiUri === uri && value.koodiVersio === versio
+            );
             fieldArrayReturn && fieldArrayReturn.remove(index);
         },
         [fieldArrayReturn]
@@ -167,8 +172,15 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
                             id: 'poista',
                             header: '',
                             enableColumnFilter: false,
-                            cell: (info: CellContext<KoodistoRelation, never>) => (
-                                <RemoveSuhdeButton onClick={() => removeKoodiFromRelations(info.row.index)} />
+                            cell: (info: CellContext<KoodiRelation, never>) => (
+                                <RemoveSuhdeButton
+                                    onClick={() =>
+                                        removeKoodiFromRelations(
+                                            info.row.original.koodiUri,
+                                            info.row.original.koodiVersio
+                                        )
+                                    }
+                                />
                             ),
                         },
                     ],

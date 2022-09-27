@@ -14,9 +14,9 @@ import { uniqWith } from 'lodash';
 type KoodiPageAccordionProps = {
     koodi: Koodi;
     editable?: boolean;
-    sisaltyyKoodeihinReturn?: UseFieldArrayReturn<Koodi>;
-    sisaltaaKooditReturn?: UseFieldArrayReturn<Koodi>;
-    rinnastuuKoodeihinReturn?: UseFieldArrayReturn<Koodi>;
+    sisaltyyKoodeihinReturn?: UseFieldArrayReturn<Koodi, 'sisaltyyKoodeihin'>;
+    sisaltaaKooditReturn?: UseFieldArrayReturn<Koodi, 'sisaltaaKoodit'>;
+    rinnastuuKoodeihinReturn?: UseFieldArrayReturn<Koodi, 'rinnastuuKoodeihin'>;
 };
 const AccordionContainer = styled.div`
     padding-top: 1rem;

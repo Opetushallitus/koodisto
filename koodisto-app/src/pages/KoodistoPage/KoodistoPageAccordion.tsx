@@ -22,9 +22,9 @@ type KoodistoPageAccordionProps = {
     sisaltaaKoodistot: KoodistoRelation[];
     koodiList?: KoodiList[];
     editable?: boolean;
-    rinnastuuKoodistoihinReturn?: UseFieldArrayReturn<PageKoodisto>;
-    sisaltyyKoodistoihinReturn?: UseFieldArrayReturn<PageKoodisto>;
-    sisaltaaKoodistotReturn?: UseFieldArrayReturn<PageKoodisto>;
+    rinnastuuKoodistoihinReturn?: UseFieldArrayReturn<PageKoodisto, 'rinnastuuKoodistoihin'>;
+    sisaltyyKoodistoihinReturn?: UseFieldArrayReturn<PageKoodisto, 'sisaltyyKoodistoihin'>;
+    sisaltaaKoodistotReturn?: UseFieldArrayReturn<PageKoodisto, 'sisaltaaKoodistot'>;
     disabled: boolean;
 };
 

@@ -9,8 +9,8 @@ import {
     koodistoListAtom,
 } from '../../api/koodisto';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useForm, useFieldArray, ArrayPath } from 'react-hook-form';
-import { PageKoodisto, SelectOption, Kieli, KoodistoRelation } from '../../types';
+import { useForm, useFieldArray } from 'react-hook-form';
+import { PageKoodisto, SelectOption, Kieli } from '../../types';
 import { Loading } from '../../components/Loading';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -96,29 +96,17 @@ export const KoodistoMuokkausPage: React.FC = () => {
             metadata: [{ kieli: 'FI' }, { kieli: 'SV' }, { kieli: 'EN' }],
         },
     });
-    const sisaltyyKoodistoihinFieldArray = useFieldArray<
-        PageKoodisto,
-        ArrayPath<PageKoodisto>,
-        keyof KoodistoRelation | 'id'
-    >({
+    const sisaltyyKoodistoihinFieldArray = useFieldArray<PageKoodisto, 'sisaltyyKoodistoihin'>({
         control,
-        name: 'sisaltyyKoodistoihin' as ArrayPath<PageKoodisto>,
+        name: 'sisaltyyKoodistoihin',
     });
-    const rinnastuuKoodistoihinFieldArray = useFieldArray<
-        PageKoodisto,
-        ArrayPath<PageKoodisto>,
-        keyof KoodistoRelation | 'id'
-    >({
+    const rinnastuuKoodistoihinFieldArray = useFieldArray<PageKoodisto, 'rinnastuuKoodistoihin'>({
         control,
-        name: 'rinnastuuKoodistoihin' as ArrayPath<PageKoodisto>,
+        name: 'rinnastuuKoodistoihin',
     });
-    const sisaltaaKoodistotFieldArray = useFieldArray<
-        PageKoodisto,
-        ArrayPath<PageKoodisto>,
-        keyof KoodistoRelation | 'id'
-    >({
+    const sisaltaaKoodistotFieldArray = useFieldArray<PageKoodisto, 'sisaltaaKoodistot'>({
         control,
-        name: 'sisaltaaKoodistot' as ArrayPath<PageKoodisto>,
+        name: 'sisaltaaKoodistot',
     });
     const koodistonMetadata = translateMetadata({ metadata: getValues('metadata'), lang });
     useEffect(() => {
