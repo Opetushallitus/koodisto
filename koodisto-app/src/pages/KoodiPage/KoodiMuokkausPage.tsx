@@ -6,6 +6,7 @@ import {
     MainContainer,
     MainContainerRow,
     MainContainerRowTitle,
+    MainContainerRowTitleMandatory,
     MainContainerRowContent,
 } from '../../components/Containers';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -221,7 +222,7 @@ const KoodiMuokkausPageComponent: React.FC<
                     <InputArrayController<Koodi>
                         control={control}
                         getValues={getValues}
-                        title={{ id: 'FIELD_ROW_TITLE_NIMI', defaultMessage: 'Nimi*' }}
+                        title={{ id: 'FIELD_ROW_TITLE_NIMI', defaultMessage: 'Nimi' }}
                         fieldPath={'nimi'}
                         rules={{
                             required: formatMessage({
@@ -230,6 +231,7 @@ const KoodiMuokkausPageComponent: React.FC<
                             }),
                         }}
                         disabled={disabled}
+                        mandatory
                     />
                 </MainContainerRow>
                 <MainContainerRow>
@@ -242,7 +244,7 @@ const KoodiMuokkausPageComponent: React.FC<
                     />
                 </MainContainerRow>
                 <MainContainerRow>
-                    <MainContainerRowTitle id={'FIELD_TITLE_voimassaAlkuPvm'} defaultMessage={'Voimassa'} />
+                    <MainContainerRowTitleMandatory id={'FIELD_TITLE_voimassaAlkuPvm'} defaultMessage={'Voimassa'} />
                     <MainContainerRowContent>
                         <DatePickerController<Koodi>
                             name={'voimassaAlkuPvm'}

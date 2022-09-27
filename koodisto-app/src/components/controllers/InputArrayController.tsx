@@ -4,7 +4,7 @@ import { ControllerProps, KoodiMetadata } from '../../types';
 import styled from 'styled-components';
 import { IconWrapper } from '../IconWapper';
 import * as React from 'react';
-import { MainContainerRowTitle, MainContainerRowContent } from '../Containers';
+import { MainContainerRowTitle, MainContainerRowTitleMandatory, MainContainerRowContent } from '../Containers';
 import Textarea from '@opetushallitus/virkailija-ui-components/Textarea';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 
@@ -39,6 +39,7 @@ type Props<T> = Omit<ControllerProps<T>, 'name'> & {
     fieldPath: keyof KoodiMetadata;
     getValues: UseFormGetValues<T>;
     large?: boolean;
+    mandatory?: boolean;
 };
 export const InputArrayController = <T extends { metadata: KoodiMetadata[] }>({
     title,
@@ -48,6 +49,7 @@ export const InputArrayController = <T extends { metadata: KoodiMetadata[] }>({
     disabled,
     getValues,
     large,
+    mandatory,
 }: Props<T>) => {
     const { formatMessage } = useIntl();
     const { fields, update } = useFieldArray<T, ArrayPath<T>, keyof KoodiMetadata | 'id'>({
@@ -59,9 +61,10 @@ export const InputArrayController = <T extends { metadata: KoodiMetadata[] }>({
         update(1, { ...firstValue[1], [fieldPath]: firstValue[0][fieldPath] } as FieldArray<T, ArrayPath<T>>);
         update(2, { ...firstValue[2], [fieldPath]: firstValue[0][fieldPath] } as FieldArray<T, ArrayPath<T>>);
     };
+    const LabelContainer = mandatory ? MainContainerRowTitleMandatory : MainContainerRowTitle;
     return (
         <Container>
-            <MainContainerRowTitle {...title} />
+            <LabelContainer {...title} />
             <Direction large={large}>
                 {fields.map((field, index) => (
                     <Column key={field.id}>

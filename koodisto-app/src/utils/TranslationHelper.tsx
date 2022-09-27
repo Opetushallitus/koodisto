@@ -12,5 +12,8 @@ export const TranslationHelper = () => (
         <FormattedMessage id="TILA_PASSIIVINEN" defaultMessage={'Passiivinen'} />
         <FormattedMessage id="TILA_LUONNOS" defaultMessage={'Luonnos'} />
         <FormattedMessage id="TILA_HYVAKSYTTY" defaultMessage={'Hyväksytty'} />
+        <FormattedMessage id={'KOODISTO_RYHMA_FI'} defaultMessage={'FI'} />
+        <FormattedMessage id={'KOODISTO_RYHMA_SV'} defaultMessage={'SV'} />
+        <FormattedMessage id={'KOODISTO_RYHMA_EN'} defaultMessage={'EN'} />
     </>
 );

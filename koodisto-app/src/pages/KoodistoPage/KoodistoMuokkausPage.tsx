@@ -26,6 +26,7 @@ import {
     MainContainerRow,
     MainContainer,
     MainContainerRowTitle,
+    MainContainerRowTitleMandatory,
     MainContainerRowContent,
 } from '../../components/Containers';
 import { koodistoRyhmaOptionsAtom } from '../../api/koodistoRyhma';
@@ -184,7 +185,10 @@ export const KoodistoMuokkausPage: React.FC = () => {
             <MainContainer>
                 <form>
                     <MainContainerRow>
-                        <MainContainerRowTitle id={'FIELD_TITLE_koodistoRyhmaUri'} defaultMessage={'Koodistoryhmä*'} />
+                        <MainContainerRowTitleMandatory
+                            id={'FIELD_TITLE_koodistoRyhmaUri'}
+                            defaultMessage={'Koodistoryhmä'}
+                        />
                         <MainContainerRowContent>
                             <SelectController
                                 control={control}
@@ -204,7 +208,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                         <InputArrayController<PageKoodisto>
                             control={control}
                             getValues={getValues}
-                            title={{ id: 'FIELD_ROW_TITLE_NIMI', defaultMessage: 'Nimi*' }}
+                            title={{ id: 'FIELD_ROW_TITLE_NIMI', defaultMessage: 'Nimi' }}
                             fieldPath={'nimi'}
                             rules={{
                                 required: formatMessage({
@@ -213,10 +217,14 @@ export const KoodistoMuokkausPage: React.FC = () => {
                                 }),
                             }}
                             disabled={disabled}
+                            mandatory
                         />
                     </MainContainerRow>
                     <MainContainerRow>
-                        <MainContainerRowTitle id={'FIELD_TITLE_voimassaAlkuPvm'} defaultMessage={'Voimassa'} />
+                        <MainContainerRowTitleMandatory
+                            id={'FIELD_TITLE_voimassaAlkuPvm'}
+                            defaultMessage={'Voimassa'}
+                        />
                         <MainContainerRowContent>
                             <DatePickerController<PageKoodisto>
                                 name={'voimassaAlkuPvm'}
@@ -242,7 +250,10 @@ export const KoodistoMuokkausPage: React.FC = () => {
                         </MainContainerRowContent>
                     </MainContainerRow>
                     <MainContainerRow>
-                        <MainContainerRowTitle id={'FIELD_TITLE_organisaatioNimi'} defaultMessage={'Organisaatio*'} />
+                        <MainContainerRowTitleMandatory
+                            id={'FIELD_TITLE_organisaatioNimi'}
+                            defaultMessage={'Organisaatio'}
+                        />
                         <MainContainerRowContent width={25}>
                             <SelectController
                                 control={control}

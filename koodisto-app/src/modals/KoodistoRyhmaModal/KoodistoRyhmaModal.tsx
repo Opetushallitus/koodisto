@@ -15,6 +15,7 @@ import {
     updateKoodistoRyhma,
     createKoodistoRyhma,
 } from '../../api/koodistoRyhma';
+import { MainContainerRowTitleMandatory } from '../../components/Containers';
 
 type Props = {
     koodistoRyhmaUri?: string;
@@ -114,7 +115,7 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                         )}
                     </h2>
                     <form>
-                        <FormattedMessage id={'KOODISTO_RYHMA_FI'} defaultMessage={'FI'} />
+                        <MainContainerRowTitleMandatory id={'KOODISTO_RYHMA_FI'} defaultMessage={'FI'} />
                         <Input
                             {...register('fi', {
                                 required: formatMessage({
@@ -139,7 +140,7 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                                 </div>
                             }
                         />
-                        <FormattedMessage id={'KOODISTO_RYHMA_SV'} defaultMessage={'SV'} />
+                        <MainContainerRowTitleMandatory id={'KOODISTO_RYHMA_SV'} defaultMessage={'SV'} />
                         <Input
                             {...register('sv', {
                                 required: formatMessage({
@@ -148,7 +149,7 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                                 }),
                             })}
                         />
-                        <FormattedMessage id={'KOODISTO_RYHMA_EN'} defaultMessage={'EN'} />
+                        <MainContainerRowTitleMandatory id={'KOODISTO_RYHMA_EN'} defaultMessage={'EN'} />
                         <Input
                             {...register('en', {
                                 required: formatMessage({
