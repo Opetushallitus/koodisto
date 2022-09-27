@@ -207,10 +207,13 @@ export const Table = <T extends object>({
                                             <>
                                                 <SortColumn onClick={sortToggle}>
                                                     {flexRender(header.column.columnDef.header, header.getContext())}
-                                                    {{
-                                                        asc: <IconWrapper icon="ci:short-up" />,
-                                                        desc: <IconWrapper icon="ci:short-down" />,
-                                                    }[isSorted] ?? null}
+                                                    {(headerGroup.depth === 0 &&
+                                                        {
+                                                            asc: <IconWrapper icon="ci:short-up" />,
+                                                            desc: <IconWrapper icon="ci:short-down" />,
+                                                        }[isSorted]) ?? (
+                                                        <IconWrapper icon="ci:unfold-more" color="gray" />
+                                                    )}
                                                 </SortColumn>
                                                 {header.column.getCanFilter() && (
                                                     <div>
