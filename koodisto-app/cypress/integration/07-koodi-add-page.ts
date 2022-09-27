@@ -27,7 +27,7 @@ describe('Koodi add page', () => {
         cy.get('input[name="metadata[2][lyhytNimi]"]').type('lyhyt-arvo');
 
         cy.get('div')
-            .contains('Voimassa')
+            .contains('Alkupäivämäärä')
             .should('be.visible')
             .parent()
             .find('input[type=text]')
@@ -35,7 +35,7 @@ describe('Koodi add page', () => {
             .type('1.1.2022{enter}{enter}', { force: true });
 
         cy.get('div')
-            .contains('Voimassa loppu')
+            .contains('Loppupäivämäärä')
             .should('be.visible')
             .parent()
             .find('input[type=text]')
