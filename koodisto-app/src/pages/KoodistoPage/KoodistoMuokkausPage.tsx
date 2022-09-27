@@ -223,7 +223,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                     <MainContainerRow>
                         <MainContainerRowTitleMandatory
                             id={'FIELD_TITLE_voimassaAlkuPvm'}
-                            defaultMessage={'Voimassa'}
+                            defaultMessage={'Alkupäivämäärä'}
                         />
                         <MainContainerRowContent>
                             <DatePickerController<PageKoodisto>
@@ -240,7 +240,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                         </MainContainerRowContent>
                     </MainContainerRow>
                     <MainContainerRow>
-                        <MainContainerRowTitle id={'FIELD_TITLE_voimassaLoppuPvm'} defaultMessage={'Voimassa loppu'} />
+                        <MainContainerRowTitle id={'FIELD_TITLE_voimassaLoppuPvm'} defaultMessage={'Loppupäivämäärä'} />
                         <MainContainerRowContent>
                             <DatePickerController<PageKoodisto>
                                 name={'voimassaLoppuPvm'}

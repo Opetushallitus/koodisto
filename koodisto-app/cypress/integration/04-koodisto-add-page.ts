@@ -21,7 +21,7 @@ describe('The Koodisto Add page', () => {
             .should('be.visible')
             .type('csc{enter}{enter}', { force: true });
         cy.get('div')
-            .contains('Voimassa')
+            .contains('Alkupäivämäärä')
             .should('be.visible')
             .parent()
             .find('input[type=text]')

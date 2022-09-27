@@ -244,7 +244,10 @@ const KoodiMuokkausPageComponent: React.FC<
                     />
                 </MainContainerRow>
                 <MainContainerRow>
-                    <MainContainerRowTitleMandatory id={'FIELD_TITLE_voimassaAlkuPvm'} defaultMessage={'Voimassa'} />
+                    <MainContainerRowTitleMandatory
+                        id={'FIELD_TITLE_voimassaAlkuPvm'}
+                        defaultMessage={'Alkupäivämäärä'}
+                    />
                     <MainContainerRowContent>
                         <DatePickerController<Koodi>
                             name={'voimassaAlkuPvm'}
@@ -260,7 +263,7 @@ const KoodiMuokkausPageComponent: React.FC<
                     </MainContainerRowContent>
                 </MainContainerRow>
                 <MainContainerRow>
-                    <MainContainerRowTitle id={'FIELD_TITLE_voimassaLoppuPvm'} defaultMessage={'Voimassa loppu'} />
+                    <MainContainerRowTitle id={'FIELD_TITLE_voimassaLoppuPvm'} defaultMessage={'Loppupäivämäärä'} />
                     <MainContainerRowContent>
                         <DatePickerController<Koodi> name={'voimassaLoppuPvm'} control={control} disabled={disabled} />
                     </MainContainerRowContent>
