@@ -128,10 +128,10 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
                             </Link>
                         ),
                         meta: {
-                            filterPlaceHolder: formatMessage({
+                            filterPlaceHolder: {
                                 id: 'KOODI_RELAATIO_TAULUKKO_HAKU_APUTEKSTI',
                                 defaultMessage: 'Hae nimellä',
-                            }),
+                            },
                         },
                     },
                 ],

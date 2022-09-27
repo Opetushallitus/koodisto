@@ -101,13 +101,10 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
                                 { koodistoUri: values.koodistoUri }
                             ),
                         meta: {
-                            filterPlaceHolder: formatMessage(
-                                {
-                                    id: 'TAULUKKO_HAKU_APUTEKSTI',
-                                    defaultMessage: 'Haetaan {koodistoCount} koodistosta',
-                                },
-                                { koodistoCount: data.length }
-                            ),
+                            filterPlaceHolder: {
+                                id: 'TAULUKKO_HAKU_APUTEKSTI',
+                                defaultMessage: 'Haetaan {rows} koodistosta',
+                            },
                         },
                         cell: (info) => (
                             <Link to={`koodisto/view/${info.row.original.koodistoUri}/${info.row.original.versio}`}>
@@ -192,7 +189,7 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
                 ],
             },
         ],
-        [data.length, formatMessage, modal]
+        [formatMessage, modal]
     );
     return (
         <>

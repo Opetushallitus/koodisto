@@ -64,10 +64,10 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
                             );
                         },
                         meta: {
-                            filterPlaceHolder: formatMessage({
+                            filterPlaceHolder: {
                                 id: 'KOODI_TAULUKKO_FILTTERI_PLACEHOLDER',
                                 defaultMessage: 'Hae nimellä tai koodiarvolla',
-                            }),
+                            },
                         },
                         accessorFn: (values: KoodiList) => resolveName(values, lang),
                         cell: (info) => (
