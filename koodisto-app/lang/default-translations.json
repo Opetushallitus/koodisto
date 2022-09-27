@@ -231,7 +231,7 @@
     "defaultMessage": "Valitse arvo listalta"
   },
   "TAULUKKO_HAKU_APUTEKSTI": {
-    "defaultMessage": "Haetaan {koodistoCount} koodistosta"
+    "defaultMessage": "Haetaan {rows} koodistosta"
   },
   "TAULUKKO_KOODIMAARA": {
     "defaultMessage": "Koodien lkm"

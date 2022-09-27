@@ -1,6 +1,6 @@
 import React, { ReactNode, useState, useEffect, useMemo, useCallback, useRef, HTMLProps } from 'react';
 import styled from 'styled-components';
-import { useIntl } from 'react-intl';
+import { MessageDescriptor, useIntl } from 'react-intl';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
 import Select from '@opetushallitus/virkailija-ui-components/Select';
 import { ValueType } from 'react-select';
@@ -31,7 +31,7 @@ import { Paging } from './Paging';
 declare module '@tanstack/table-core' {
     // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
     interface ColumnMeta<TData extends RowData, TValue> {
-        filterPlaceHolder?: string;
+        filterPlaceHolder?: MessageDescriptor;
     }
 }
 
@@ -280,7 +280,12 @@ function Filter<T>({ column, table }: { column: Column<T, unknown>; table: React
                 <DebouncedInput
                     value={(columnFilterValue ?? '') as string}
                     onChange={onChange}
-                    placeholder={column.columnDef.meta?.filterPlaceHolder}
+                    placeholder={
+                        column.columnDef.meta?.filterPlaceHolder &&
+                        formatMessage(column.columnDef.meta.filterPlaceHolder, {
+                            rows: table.getFilteredRowModel().rows.length,
+                        })
+                    }
                     suffix={
                         <ResetFilter
                             resetFilters={column.getIsFiltered() ? () => column.setFilterValue(undefined) : undefined}
