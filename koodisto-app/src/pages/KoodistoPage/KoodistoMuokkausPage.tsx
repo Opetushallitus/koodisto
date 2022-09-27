@@ -12,14 +12,18 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { PageKoodisto, SelectOption, Kieli } from '../../types';
 import { Loading } from '../../components/Loading';
-import Input from '@opetushallitus/virkailija-ui-components/Input';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { CrumbTrail } from '../../components/CrumbTrail';
 import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
 import { useResetAtom } from 'jotai/utils';
 import { casMeLangAtom } from '../../api/kayttooikeus';
-import { DatePickerController, SelectController, InputArrayController } from '../../components/controllers';
+import {
+    DatePickerController,
+    SelectController,
+    InputArrayController,
+    InputController,
+} from '../../components/controllers';
 import { success } from '../../components/Notification';
 import {
     MainHeaderContainer,
@@ -90,7 +94,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
     const [disabled, setDisabled] = useState<boolean>(false);
     const versioNumber = versio ? +versio : undefined;
     const isEditing = koodistoUri && versioNumber;
-    const { control, register, handleSubmit, reset, getValues } = useForm<PageKoodisto>({
+    const { control, handleSubmit, reset, getValues } = useForm<PageKoodisto>({
         shouldUseNativeValidation: true,
         defaultValues: {
             tila: 'LUONNOS',
@@ -262,7 +266,7 @@ export const KoodistoMuokkausPage: React.FC = () => {
                                 rules={{
                                     required: formatMessage({
                                         id: 'ORGANISAATIO_PAKOLLINEN',
-                                        defaultMessage: 'organisaatio.',
+                                        defaultMessage: 'Syötä organisaatio.',
                                     }),
                                 }}
                                 disabled={disabled}
@@ -270,9 +274,19 @@ export const KoodistoMuokkausPage: React.FC = () => {
                         </MainContainerRowContent>
                     </MainContainerRow>
                     <MainContainerRow>
-                        <MainContainerRowTitle id={'FIELD_TITLE_omistaja'} defaultMessage={'Omistaja'} />
+                        <MainContainerRowTitleMandatory id={'FIELD_TITLE_omistaja'} defaultMessage={'Omistaja'} />
                         <MainContainerRowContent>
-                            <Input {...register('omistaja')} disabled={disabled} />
+                            <InputController
+                                control={control}
+                                name={'omistaja'}
+                                rules={{
+                                    required: formatMessage({
+                                        id: 'OMISTAJA_PAKOLLINEN',
+                                        defaultMessage: 'Syötä omistaja.',
+                                    }),
+                                }}
+                                disabled={disabled}
+                            />
                         </MainContainerRowContent>
                     </MainContainerRow>
                     <MainContainerRow>
@@ -281,8 +295,15 @@ export const KoodistoMuokkausPage: React.FC = () => {
                             control={control}
                             getValues={getValues}
                             title={{ id: 'FIELD_ROW_TITLE_KUVAUS', defaultMessage: 'Kuvaus' }}
+                            rules={{
+                                required: formatMessage({
+                                    id: 'KUVAUS_PAKOLLINEN',
+                                    defaultMessage: 'Syötä kuvaus',
+                                }),
+                            }}
                             fieldPath={'kuvaus'}
                             disabled={disabled}
+                            mandatory
                         />
                     </MainContainerRow>
                     {isEditing && (

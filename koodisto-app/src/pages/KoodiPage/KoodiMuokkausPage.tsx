@@ -17,9 +17,8 @@ import { koodistoListAtom } from '../../api/koodisto';
 import { useForm, UseFormReturn, useFieldArray } from 'react-hook-form';
 import { Koodi, KoodiList } from '../../types';
 import { Loading } from '../../components/Loading';
-import Input from '@opetushallitus/virkailija-ui-components/Input';
 import { Footer, ConfirmationDialog } from '../../components/Footer';
-import { DatePickerController, InputArrayController } from '../../components/controllers';
+import { DatePickerController, InputArrayController, InputController } from '../../components/controllers';
 import { success } from '../../components/Notification';
 import { KoodiPageAccordion } from './KoodiPageAccordion';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
@@ -209,7 +208,17 @@ const KoodiMuokkausPageComponent: React.FC<
                 <MainContainerRow>
                     <MainContainerRowTitle id={'FIELD_TITLE_koodiArvo'} defaultMessage={'Koodiarvo'} />
                     <MainContainerRowContent>
-                        <Input {...register('koodiArvo')} disabled={disabled} />
+                        <InputController
+                            control={control}
+                            name={'koodiArvo'}
+                            rules={{
+                                required: formatMessage({
+                                    id: 'KOODIARVO_PAKOLLINEN',
+                                    defaultMessage: 'Syötä koodiarvo',
+                                }),
+                            }}
+                            disabled={disabled}
+                        />
                     </MainContainerRowContent>
                     <Button name={'KOODI_MUOKKAA_SEURAAVA_NUMERO'} variant={'text'} onClick={setNextNumber}>
                         <FormattedMessage

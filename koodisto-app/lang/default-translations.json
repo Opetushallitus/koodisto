@@ -32,6 +32,9 @@
   "FI_NIMI_PAKOLLINEN": {
     "defaultMessage": "Syötä suomenkielinen nimi."
   },
+  "KOODIARVO_PAKOLLINEN": {
+    "defaultMessage": "Syötä koodiarvo"
+  },
   "KOODISIVU_MUOKKAA_KOODIA_BUTTON": {
     "defaultMessage": "Muokkaa koodia"
   },
@@ -182,6 +185,9 @@
   "KOPIOI_MUIHIN_NIMIIN": {
     "defaultMessage": "Kopioi muihin kieliin"
   },
+  "KUVAUS_PAKOLLINEN": {
+    "defaultMessage": "Syötä kuvaus"
+  },
   "LATAA_CSV_LATAA": {
     "defaultMessage": "Lataa CSV"
   },
@@ -206,8 +212,11 @@
   "NIMI_PAKOLLINEN": {
     "defaultMessage": "Syötä nimi"
   },
+  "OMISTAJA_PAKOLLINEN": {
+    "defaultMessage": "Syötä omistaja."
+  },
   "ORGANISAATIO_PAKOLLINEN": {
-    "defaultMessage": "organisaatio."
+    "defaultMessage": "Syötä organisaatio."
   },
   "RYHMA_PAKOLLINEN": {
     "defaultMessage": "Valitse koodisto-ryhmä."
