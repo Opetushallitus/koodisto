@@ -7,7 +7,7 @@ import { KoodistoRyhmaModal } from '../../modals/KoodistoRyhmaModal';
 import { useParams, useNavigate } from 'react-router-dom';
 import { KoodistoTable } from '../../components/Table';
 import { ButtonLabelPrefix } from '../../components/Containers';
-import { StyledPopup } from '../../components/Modal/Modal';
+import { ModalPopup } from '../../components/Modal/Modal';
 
 const MainContainer = styled.div`
     flex-grow: 1;
@@ -43,10 +43,9 @@ export const KoodistoTablePage: React.FC = () => {
         <>
             <MainHeaderContainer>
                 <FormattedMessage id={'TAULUKKOSIVU_OTSIKKO'} defaultMessage={'Koodistojen ylläpito'} tagName={'h1'} />
-                <StyledPopup
+                <ModalPopup
                     open={koodistoRyhmaModalVisible}
-                    onClose={() => setKoodistoRyhmaModalVisible(false)}
-                    position="bottom right"
+                    onClose={() => navigate('/')}
                     trigger={
                         <Button variant={'text'} name={'TAULUKKO_LISAA_KOODISTORYHMA_BUTTON'}>
                             <ButtonLabelPrefix>
@@ -65,11 +64,10 @@ export const KoodistoTablePage: React.FC = () => {
                             koodistoRyhmaUri={koodistoRyhmaUri}
                             closeModal={() => {
                                 close();
-                                navigate('/');
                             }}
                         />
                     )}
-                </StyledPopup>
+                </ModalPopup>
             </MainHeaderContainer>
             <MainContainer>
                 <ContentContainer>

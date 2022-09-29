@@ -6,7 +6,7 @@ import { Koodi, KoodiList, KoodiRelation } from '../../types';
 import { UseFieldArrayReturn } from 'react-hook-form';
 import styled from 'styled-components';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
-import { StyledPopup } from '../../components/Modal/Modal';
+import { ModalPopup } from '../../components/Modal/Modal';
 import { KoodiSuhdeModal } from './KoodiSuhdeModal';
 import { fetchPageKoodi } from '../../api/koodi';
 import { uniqWith } from 'lodash';
@@ -130,7 +130,7 @@ export const KoodiPageAccordion: React.FC<KoodiPageAccordionProps> = ({
             <AccordionHeaderContainer>
                 <FormattedMessage id={'KOODI_SUHTEET_TITLE'} defaultMessage={'Koodin suhteet'} tagName={'h2'} />
                 {editable && (
-                    <StyledPopup
+                    <ModalPopup
                         trigger={
                             <Button name={'KOODI_KOPIOI_SUHTEET_BUTTON'} variant={'text'}>
                                 <FormattedMessage
@@ -139,7 +139,6 @@ export const KoodiPageAccordion: React.FC<KoodiPageAccordionProps> = ({
                                 />
                             </Button>
                         }
-                        modal
                     >
                         {(close: () => void) => (
                             <KoodiSuhdeModal
@@ -150,7 +149,7 @@ export const KoodiPageAccordion: React.FC<KoodiPageAccordionProps> = ({
                                 close={close}
                             />
                         )}
-                    </StyledPopup>
+                    </ModalPopup>
                 )}
             </AccordionHeaderContainer>
             <Accordion data={data} />

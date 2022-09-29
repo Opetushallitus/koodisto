@@ -10,7 +10,7 @@ import { IconWrapper } from '../../components/IconWapper';
 import { KoodistoSuhdeModal } from './KoodistoSuhdeModal';
 import { ColumnDef, CellContext } from '@tanstack/react-table';
 import { UseFieldArrayReturn } from 'react-hook-form';
-import { StyledPopup } from '../../components/Modal/Modal';
+import { ModalPopup } from '../../components/Modal/Modal';
 import { ButtonLabelPrefix } from '../../components/Containers';
 
 type KoodistoRelationsTableProps = {
@@ -147,7 +147,7 @@ export const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
         <>
             <Table<KoodistoRelation> columns={columns} data={data} pageSize={10}></Table>
             {editable && (
-                <StyledPopup
+                <ModalPopup
                     trigger={
                         <Button name={'TAULUKKO_LISAA_KOODISTOSUHTEITA_BUTTON'} variant={'text'}>
                             <ButtonLabelPrefix>
@@ -159,7 +159,6 @@ export const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
                             />
                         </Button>
                     }
-                    modal
                 >
                     {
                         ((close) => (
@@ -170,7 +169,7 @@ export const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
                             />
                         )) as (close: () => void) => React.ReactNode
                     }
-                </StyledPopup>
+                </ModalPopup>
             )}
         </>
     );

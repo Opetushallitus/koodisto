@@ -12,7 +12,7 @@ import { UseFieldArrayReturn } from 'react-hook-form';
 import { KoodiSuhdeModal } from './KoodiSuhdeModal';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
-import { StyledPopup } from '../../components/Modal/Modal';
+import { ModalPopup } from '../../components/Modal/Modal';
 import { ButtonLabelPrefix } from '../../components/Containers';
 
 type RelationTableProps = {
@@ -206,7 +206,7 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
         <>
             <Table<KoodiRelation> columns={columns} data={data} pageSize={20} />{' '}
             {editable && (
-                <StyledPopup
+                <ModalPopup
                     trigger={
                         <Button
                             disabled={relationSources.length === 0}
@@ -219,10 +219,9 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
                             <FormattedMessage id={'TAULUKKO_LISAA_KOODEJA_BUTTON'} defaultMessage={'Lisää koodeja'} />
                         </Button>
                     }
-                    modal
                 >
                     {suhdeModal}
-                </StyledPopup>
+                </ModalPopup>
             )}
         </>
     );

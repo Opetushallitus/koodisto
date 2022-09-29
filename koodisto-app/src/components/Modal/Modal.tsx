@@ -4,9 +4,10 @@ import ModalFooter from '@opetushallitus/virkailija-ui-components/ModalFooter';
 import ModalHeader from '@opetushallitus/virkailija-ui-components/ModalHeader';
 import styled from 'styled-components';
 import Popup from 'reactjs-popup';
+import { PopupProps, PopupActions } from 'reactjs-popup/dist/types';
 
 const StyledOPModal = styled.div`
-    border: 1px solid #979797;
+    outline: 1px solid #979797;
     border-top: 3px solid #159ecb;
     border-radius: 0;
     background-color: #ffffff;
@@ -65,11 +66,17 @@ export const Modal: React.FC<Props> = ({ onClose, footer, header, body }: Props)
         </StyledOPModal>
     );
 };
-export const StyledPopup = styled(Popup)`
-    &-overlay {
-        background: 0;
-    }
-    &-content {
-        padding: 0;
-    }
-`;
+const overlayStyle = { background: 'rgba(0,0,0,0.5)' };
+const contentStyle = { width: '80vw', padding: 0 };
+export const ModalPopup: React.FC<PopupProps & React.RefAttributes<PopupActions>> = (props) => (
+    <Popup
+        modal
+        {...{
+            ...props,
+            overlayStyle: { ...overlayStyle, ...props.overlayStyle },
+            contentStyle: { ...contentStyle, ...props.contentStyle },
+        }}
+    >
+        {props.children}
+    </Popup>
+);

@@ -21,9 +21,8 @@ import { CrumbTrail } from '../../components/CrumbTrail';
 import VersionPicker from '../../components/VersionPicker';
 import { ErrorPage } from '../ErrorPage';
 import { fetchKoodistoKoodis } from '../../api/koodi';
-import { StyledPopup } from '../../components/Modal/Modal';
+import { ModalPopup } from '../../components/Modal/Modal';
 
-const contentStyle = { width: '600px' };
 export const KoodistoPage: React.FC = () => {
     const { versio, koodistoUri } = useParams();
     const versioNumber = versio ? +versio : undefined;
@@ -73,8 +72,7 @@ export const KoodistoPage: React.FC = () => {
                             defaultMessage={'Muokkaa koodistoa'}
                         />
                     </Button>
-                    <StyledPopup
-                        position="bottom right"
+                    <ModalPopup
                         trigger={
                             <Button variant={'outlined'} name={`${koodistoUri}-csv`} disabled={disabled}>
                                 <FormattedMessage
@@ -83,7 +81,6 @@ export const KoodistoPage: React.FC = () => {
                                 />
                             </Button>
                         }
-                        {...{ contentStyle }}
                     >
                         {(close: () => void) => (
                             <CSVFunctionModal
@@ -92,7 +89,7 @@ export const KoodistoPage: React.FC = () => {
                                 closeUploader={close}
                             />
                         )}
-                    </StyledPopup>
+                    </ModalPopup>
                 </MainHeaderButtonsContainer>
             </MainHeaderContainer>
             <MainContainer>
