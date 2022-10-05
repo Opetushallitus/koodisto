@@ -206,7 +206,7 @@ const KoodiMuokkausPageComponent: React.FC<
             </MainHeaderContainer>
             <MainContainer>
                 <MainContainerRow>
-                    <MainContainerRowTitle id={'FIELD_TITLE_koodiArvo'} defaultMessage={'Koodiarvo'} />
+                    <MainContainerRowTitleMandatory id={'FIELD_TITLE_koodiArvo'} defaultMessage={'Koodiarvo'} />
                     <MainContainerRowContent>
                         <InputController
                             control={control}
