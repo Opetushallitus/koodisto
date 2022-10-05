@@ -45,8 +45,7 @@ public abstract class KoodiServiceSearchCriteriaBuilder {
 
     public static SearchKoodisCriteriaType latestValidAcceptedKoodiByUri(final String koodiUri) {
         SearchKoodisCriteriaType searchType = latestAcceptedKoodiByUri(koodiUri);
-        searchType.setValidAt(DateHelper.DateToXmlCal(new Date()));
-
+        searchType.setValidAt(new Date());
         return searchType;
     }
 
@@ -71,7 +70,7 @@ public abstract class KoodiServiceSearchCriteriaBuilder {
 
         KoodiBaseSearchCriteriaType koodiCriteria = new KoodiBaseSearchCriteriaType();
         koodiCriteria.getKoodiTilas().add(TilaType.HYVAKSYTTY);
-        koodiCriteria.setValidAt(DateHelper.DateToXmlCal(new Date()));
+        koodiCriteria.setValidAt(new Date());
         searchType.setKoodiSearchCriteria(koodiCriteria);
 
         return searchType;

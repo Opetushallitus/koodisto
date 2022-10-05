@@ -1,10 +1,20 @@
 package fi.vm.sade.koodisto.model;
 
 public class JsonViews {
-    public static class Extended {
+
+    private JsonViews() {
+        throw new IllegalStateException("Utility class");
     }
-    public static class Basic {
+
+    public interface Extended {
     }
-    public static class Simple {
+
+    public interface Basic {
+    }
+
+    public interface Simple {
+    }
+
+    public interface Internal {
     }
 }

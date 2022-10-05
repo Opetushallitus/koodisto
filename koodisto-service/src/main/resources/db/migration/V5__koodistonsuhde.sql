@@ -7,7 +7,7 @@ CREATE TABLE koodistonsuhde (
 );
 
 
-ALTER TABLE public.koodistonsuhde OWNER TO oph;
+ALTER TABLE koodistonsuhde OWNER TO oph;
 
 
 --

@@ -5,7 +5,7 @@ import fi.vm.sade.koodisto.model.Koodisto;
 
 public class KoodiBuilder implements Builder<Koodi> {
 
-    private Koodi koodi;
+    private final Koodi koodi;
 
     public KoodiBuilder() {
         koodi = new Koodi();

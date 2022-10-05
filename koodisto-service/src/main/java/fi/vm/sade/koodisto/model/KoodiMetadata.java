@@ -1,11 +1,13 @@
 package fi.vm.sade.koodisto.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import fi.vm.sade.koodisto.common.util.FieldLengths;
+import fi.vm.sade.koodisto.util.FieldLengths;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -34,6 +36,8 @@ import javax.validation.constraints.Size;
         hints = {
                 @QueryHint(name = KoodiMetadata.FETCH_GRAPH_HINT, value = "koodiMetadataWithKoodiVersio")
         })
+@Getter
+@Setter
 public class KoodiMetadata extends BaseEntity {
 
     public static final String TABLE_NAME = "koodiMetadata";
@@ -99,103 +103,5 @@ public class KoodiMetadata extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = KOODIVERSIO_COLUMN_NAME, nullable = false)
     private KoodiVersio koodiVersio;
-
-    public String getNimi() {
-        return nimi;
-    }
-
-    public void setNimi(String nimi) {
-        this.nimi = nimi;
-    }
-
-    public String getKuvaus() {
-        return kuvaus;
-    }
-
-    public void setKuvaus(String kuvaus) {
-        this.kuvaus = kuvaus;
-    }
-
-    public String getLyhytNimi() {
-        return lyhytNimi;
-    }
-
-    public void setLyhytNimi(String lyhytNimi) {
-        this.lyhytNimi = lyhytNimi;
-    }
-
-    public String getKayttoohje() {
-        return kayttoohje;
-    }
-
-    public void setKayttoohje(String kayttoohje) {
-        this.kayttoohje = kayttoohje;
-    }
-
-    public String getKasite() {
-        return kasite;
-    }
-
-    public void setKasite(String kasite) {
-        this.kasite = kasite;
-    }
-
-    public String getSisaltaaMerkityksen() {
-        return sisaltaaMerkityksen;
-    }
-
-    public void setSisaltaaMerkityksen(String sisaltaaMerkityksen) {
-        this.sisaltaaMerkityksen = sisaltaaMerkityksen;
-    }
-
-    public String getEiSisallaMerkitysta() {
-        return eiSisallaMerkitysta;
-    }
-
-    public void setEiSisallaMerkitysta(String eiSisallaMerkitysta) {
-        this.eiSisallaMerkitysta = eiSisallaMerkitysta;
-    }
-
-    public String getHuomioitavaKoodi() {
-        return huomioitavaKoodi;
-    }
-
-    public void setHuomioitavaKoodi(String huomioitavaKoodi) {
-        this.huomioitavaKoodi = huomioitavaKoodi;
-    }
-
-    public String getSisaltaaKoodiston() {
-        return sisaltaaKoodiston;
-    }
-
-    public void setSisaltaaKoodiston(String sisaltaaKoodiston) {
-        this.sisaltaaKoodiston = sisaltaaKoodiston;
-    }
-
-    public Kieli getKieli() {
-        return kieli;
-    }
-
-    public void setKieli(Kieli kieli) {
-        this.kieli = kieli;
-    }
-
-    public KoodiVersio getKoodiVersio() {
-        return koodiVersio;
-    }
-
-    public void setKoodiVersio(KoodiVersio koodiVersio) {
-        this.koodiVersio = koodiVersio;
-    }
-    
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 
 }

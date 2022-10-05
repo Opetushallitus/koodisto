@@ -6,7 +6,7 @@ import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 
 public class KoodistonSuhdeBuilder implements Builder<KoodistonSuhde> {
 
-    private KoodistonSuhde relation;
+    private final KoodistonSuhde relation;
 
     public KoodistonSuhdeBuilder() {
         relation = new KoodistonSuhde();

@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.service.business.changes.impl;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import fi.vm.sade.koodisto.dto.KoodiChangesDto;
@@ -15,6 +14,7 @@ import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,10 +26,11 @@ import java.util.*;
 public class KoodiChangesServiceImpl implements KoodiChangesService {
     
     @Autowired
-    private KoodiBusinessService service;
+    KoodiBusinessService service;
     
     @Autowired
-    private KoodistoBusinessService koodistoService;
+    @Lazy
+    KoodistoBusinessService koodistoService;
 
     @Override
     public KoodiChangesDto getChangesDto(String uri, Integer versio, boolean compareToLatestAccepted) {
@@ -112,13 +113,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
     }
 
     private List<SimpleCodeElementRelation> passiveRelations(KoodiVersio latestKoodiVersio) {
-        Collection<KoodinSuhde> passiveRelations = Collections2.filter(getRelationsFromKoodiVersio(latestKoodiVersio), new Predicate<KoodinSuhde>() {
-            
-            @Override
-            public boolean apply(@Nonnull KoodinSuhde input) {
-                return input.isPassive();
-            }
-        });
+        Collection<KoodinSuhde> passiveRelations = Collections2.filter(getRelationsFromKoodiVersio(latestKoodiVersio), KoodinSuhde::isPassive);
         return new ArrayList<>(Collections2.transform(passiveRelations, new KoodinSuhdeToSimpleCodeElementRelation(latestKoodiVersio.getKoodi().getKoodiUri())));
     }
 
@@ -150,25 +145,14 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
     }
     
     private List<SimpleKoodiMetadataDto> removedMetadatas(Set<KoodiMetadata> compareToMetas, final Set<KoodiMetadata> latestMetas) {
-        Collection<SimpleKoodiMetadataDto> removedMetas = Collections2.transform(Collections2.filter(compareToMetas, new Predicate<KoodiMetadata>() {
-
-            @Override
-            public boolean apply(KoodiMetadata input) {
-                for (KoodiMetadata data : latestMetas) {
-                    if(data.getKieli().equals(input.getKieli())) {
-                        return false;
-                    }
+        Collection<SimpleKoodiMetadataDto> removedMetas = Collections2.transform(Collections2.filter(compareToMetas, input -> {
+            for (KoodiMetadata data : latestMetas) {
+                if (data.getKieli().equals(input.getKieli())) {
+                    return false;
                 }
-                return true;
             }
-            
-        }), new Function<KoodiMetadata, SimpleKoodiMetadataDto>() {
-
-            @Override
-            public SimpleKoodiMetadataDto apply(@Nonnull KoodiMetadata input) {
-                return new SimpleKoodiMetadataDto(input.getNimi(), input.getKieli(), input.getKuvaus(), input.getLyhytNimi());
-            }
-        });
+            return true;
+        }), input -> new SimpleKoodiMetadataDto(input.getNimi(), input.getKieli(), input.getKuvaus(), input.getLyhytNimi()));
         
         return new ArrayList<>(removedMetas);
     }

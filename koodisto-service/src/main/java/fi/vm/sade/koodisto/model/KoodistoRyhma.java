@@ -3,22 +3,26 @@
  */
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.koodisto.common.util.FieldLengths;
+import fi.vm.sade.koodisto.util.FieldLengths;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-@Table(name = KoodistoRyhma.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistoRyhma.TABLE_NAME + "_01", columnNames = { KoodistoRyhma.KOODISTO_RYHMA_URI_COLUMN_NAME }))
+@Table(name = KoodistoRyhma.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistoRyhma.TABLE_NAME + "_01", columnNames = {KoodistoRyhma.KOODISTO_RYHMA_URI_COLUMN_NAME}))
 @org.hibernate.annotations.Table(appliesTo = KoodistoRyhma.TABLE_NAME, comment = "Koodistoryhmä sisältää aina tietyn tyyppisiä koodistoja, esim. alueet. Koodisto voi kuulua useaan koodistoryhmään.")
 @Entity
 @Cacheable
+@Getter
+@Setter
 public class KoodistoRyhma extends BaseEntity {
 
     private static final long serialVersionUID = 4137284135569188700L;
@@ -31,7 +35,7 @@ public class KoodistoRyhma extends BaseEntity {
     private Set<Koodisto> koodistos = new HashSet<>();
 
     @NotEmpty
-    @OneToMany(mappedBy = "koodistoRyhma", fetch = FetchType.EAGER, cascade = { CascadeType.ALL })
+    @OneToMany(mappedBy = "koodistoRyhma", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas = new HashSet<>();
 
@@ -48,14 +52,6 @@ public class KoodistoRyhma extends BaseEntity {
         return Collections.unmodifiableSet(koodistoRyhmaMetadatas);
     }
 
-    public String getKoodistoRyhmaUri() {
-        return koodistoRyhmaUri;
-    }
-
-    public void setKoodistoRyhmaUri(String koodistoJoukkoUri) {
-        this.koodistoRyhmaUri = koodistoJoukkoUri;
-    }
-
     public void addKoodistoRyhmaMetadata(KoodistoRyhmaMetadata metadata) {
         this.koodistoRyhmaMetadatas.add(metadata);
         metadata.setKoodistoRyhma(this);
@@ -63,10 +59,6 @@ public class KoodistoRyhma extends BaseEntity {
 
     public void removeKoodistoRyhmaMetadata(KoodistoRyhmaMetadata metadata) {
         this.koodistoRyhmaMetadatas.remove(metadata);
-    }
-
-    public void setKoodistoRyhmaMetadatas(final Set<KoodistoRyhmaMetadata> koodistoRyhmaMetadatas) {
-        this.koodistoRyhmaMetadatas = koodistoRyhmaMetadatas;
     }
 
     public void addKoodisto(Koodisto koodisto) {
@@ -77,13 +69,7 @@ public class KoodistoRyhma extends BaseEntity {
         this.koodistos.remove(koodisto);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
+    public String getNimi(Kieli kieli) {
+        return getKoodistoRyhmaMetadatas().stream().filter(a -> a.getKieli().equals(kieli)).findFirst().orElseGet(KoodistoRyhmaMetadata::new).getNimi();
     }
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
 }

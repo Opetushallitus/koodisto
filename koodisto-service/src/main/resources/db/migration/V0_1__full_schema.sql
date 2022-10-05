@@ -16,7 +16,7 @@ SET search_path = public, pg_catalog;
 -- Name: hibernate_sequence; Type: SEQUENCE; Schema: public; Owner: oph
 --
 
-CREATE SEQUENCE hibernate_sequence
+CREATE SEQUENCE public.hibernate_sequence
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE

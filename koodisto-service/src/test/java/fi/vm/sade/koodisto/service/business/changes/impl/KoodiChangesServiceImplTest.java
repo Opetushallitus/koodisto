@@ -12,16 +12,13 @@ import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import fi.vm.sade.koodisto.test.support.builder.KoodiVersioBuilder;
 import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kubek2k.springockito.annotations.ReplaceWithMock;
-import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -29,11 +26,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
-@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "classpath:spring/simple-test-context.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class KoodiChangesServiceImplTest {
     
     private static final Date CURRENT_DATE = new Date();
@@ -47,22 +44,15 @@ public class KoodiChangesServiceImplTest {
     private static final String NAME_SV = "elefant", SHORT_NAME_SV = "kort", DESCRIPTION_SV = "stora flockdjur";
     private static final Integer VERSIO = 1;
 
-    @ReplaceWithMock
-    @Autowired
+    @MockBean
     private KoodiBusinessService koodiService;
     
-    @ReplaceWithMock
-    @Autowired
+    @MockBean
     private KoodistoBusinessService koodistoService;
     
     @Autowired
     private KoodiChangesService service;
-    
-    @Before
-    public void init() {
-        MockitoAnnotations.initMocks(this);
-    }
-        
+
     @Test
     public void returnsNoChangesIfNothingHasChanged() {
         assertResultIsNoChanges(givenResult(givenKoodiVersio(VERSIO), givenKoodiVersio(VERSIO)), VERSIO);
@@ -138,7 +128,7 @@ public class KoodiChangesServiceImplTest {
     @Test
     public void metadataWhereDescriptionAndShortNameIsRemovedIsShownAsRemoved() {
         KoodiVersio latest = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO + 1, NAME, null, null, Kieli.FI);
-        KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);;
+        KoodiVersio original = givenKoodiVersioWithCustomNameShortNameAndDescriptionForLanguage(VERSIO, NAME, SHORT_NAME, DESCRIPTION, Kieli.FI);
         assertResultHasMetadataChanges(givenResult(original, latest), VERSIO + 1, new SimpleKoodiMetadataDto(null, Kieli.FI, ChangesService.REMOVED_METADATA_FIELD, ChangesService.REMOVED_METADATA_FIELD));
     }
     
@@ -257,10 +247,10 @@ public class KoodiChangesServiceImplTest {
         assertTrue(dto.poistetutKoodinSuhteet.isEmpty());
         assertEquals(1, dto.lisatytKoodinSuhteet.size());
         SimpleCodeElementRelation relation = dto.lisatytKoodinSuhteet.get(0);
-        assertEquals(koodiUri, relation.koodiUri);
-        assertEquals(SuhteenTyyppi.RINNASTEINEN, relation.suhteenTyyppi);
-        assertTrue(relation.lapsiKoodi);
-        assertEquals(relationVersion, relation.versio);
+        assertEquals(koodiUri, relation.getKoodiUri());
+        assertEquals(SuhteenTyyppi.RINNASTEINEN, relation.getSuhteenTyyppi());
+        assertTrue(relation.isLapsiKoodi());
+        assertEquals(relationVersion, relation.getVersio());
     }
     
     @Test
@@ -275,10 +265,10 @@ public class KoodiChangesServiceImplTest {
         assertTrue(dto.lisatytKoodinSuhteet.isEmpty());
         assertEquals(1, dto.poistetutKoodinSuhteet.size());
         SimpleCodeElementRelation relation = dto.poistetutKoodinSuhteet.get(0);
-        assertEquals(koodiUri, relation.koodiUri);
-        assertEquals(SuhteenTyyppi.SISALTYY, relation.suhteenTyyppi);
-        assertFalse(relation.lapsiKoodi);
-        assertEquals(relationVersion, relation.versio);
+        assertEquals(koodiUri, relation.getKoodiUri());
+        assertEquals(SuhteenTyyppi.SISALTYY, relation.getSuhteenTyyppi());
+        assertFalse(relation.isLapsiKoodi());
+        assertEquals(relationVersion, relation.getVersio());
     }
     
     @Test
@@ -294,10 +284,10 @@ public class KoodiChangesServiceImplTest {
         assertTrue(dto.poistetutKoodinSuhteet.isEmpty());
         assertEquals(1, dto.passivoidutKoodinSuhteet.size());
         SimpleCodeElementRelation relation = dto.passivoidutKoodinSuhteet.get(0);
-        assertEquals(koodiUri, relation.koodiUri);
-        assertEquals(SuhteenTyyppi.SISALTYY, relation.suhteenTyyppi);
-        assertTrue(relation.lapsiKoodi);
-        assertEquals(relationVersion, relation.versio);
+        assertEquals(koodiUri, relation.getKoodiUri());
+        assertEquals(SuhteenTyyppi.SISALTYY, relation.getSuhteenTyyppi());
+        assertTrue(relation.isLapsiKoodi());
+        assertEquals(relationVersion, relation.getVersio());
     }
     
     @Test
@@ -386,7 +376,7 @@ public class KoodiChangesServiceImplTest {
         Integer versio = koodiVersio.getVersio();
         when(koodiService.getKoodiVersio(KOODI_URI, versio)).thenReturn(koodiVersio);
         when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
-        when(koodistoService.getKoodistoByKoodistoUri(any(String.class))).thenReturn(latest.getKoodi().getKoodisto());
+        when(koodistoService.getKoodistoByKoodistoUri(any())).thenReturn(latest.getKoodi().getKoodisto());
         return service.getChangesDto(KOODI_URI, versio, false);
     }
     
@@ -394,7 +384,7 @@ public class KoodiChangesServiceImplTest {
         Integer versio = koodiVersio.getVersio();
         when(koodiService.getKoodiVersio(KOODI_URI, versio)).thenReturn(koodiVersio);
         when(koodiService.getLatestKoodiVersio(KOODI_URI)).thenReturn(latest);
-        when(koodistoService.getKoodistoByKoodistoUri(any(String.class))).thenReturn(DtoFactory.createKoodistoVersio(new Koodisto(), 999).build().getKoodisto());
+        when(koodistoService.getKoodistoByKoodistoUri(any())).thenReturn(DtoFactory.createKoodistoVersio(new Koodisto(), 999).build().getKoodisto());
         return service.getChangesDto(KOODI_URI, versio, false);
     }
     
@@ -425,7 +415,7 @@ public class KoodiChangesServiceImplTest {
         }        
         Koodisto koodisto = Mockito.mock(Koodisto.class);
         when(koodisto.getKoodistoVersios()).thenReturn(koodistoVersios);
-        when(koodistoService.getKoodistoByKoodistoUri(any(String.class))).thenReturn(koodisto);
+        when(koodistoService.getKoodistoByKoodistoUri(any())).thenReturn(koodisto);
     }
     
     private KoodiVersio getMatchingCodeElementVersion(Integer versio, KoodiVersio[] versios) {

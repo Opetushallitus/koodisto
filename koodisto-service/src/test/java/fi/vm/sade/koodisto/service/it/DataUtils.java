@@ -3,10 +3,9 @@ package fi.vm.sade.koodisto.service.it;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
-import fi.vm.sade.koodisto.service.impl.conversion.koodisto.KoodistoMetadataToKoodistoMetadataTypeConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoMetadataToKoodistoMetadataTypeConverter;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.*;
-import fi.vm.sade.koodisto.util.DateHelper;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -22,8 +21,8 @@ public final class DataUtils {
         CreateKoodistoDataType type = new CreateKoodistoDataType();
         type.setOmistaja(omistaja);
         type.setOrganisaatioOid(organisaatioOid);
-        type.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? DateHelper.DateToXmlCal(voimassaAlkuPvm) : null);
-        type.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? DateHelper.DateToXmlCal(voimassaLoppuPvm) : null);
+        type.setVoimassaAlkuPvm(voimassaAlkuPvm);
+        type.setVoimassaLoppuPvm(voimassaLoppuPvm);
 
         for (KieliType k : KieliType.values()) {
             KoodistoMetadataType m = new KoodistoMetadataType();
@@ -43,8 +42,8 @@ public final class DataUtils {
         type.setOmistaja(omistaja);
         type.setTila(tila);
         type.setOrganisaatioOid(organisaatioOid);
-        type.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? DateHelper.DateToXmlCal(voimassaAlkuPvm) : null);
-        type.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? DateHelper.DateToXmlCal(voimassaLoppuPvm) : null);
+        type.setVoimassaAlkuPvm(voimassaAlkuPvm);
+        type.setVoimassaLoppuPvm(voimassaLoppuPvm);
 
         for (KieliType k : KieliType.values()) {
             KoodistoMetadataType m = new KoodistoMetadataType();
@@ -80,8 +79,8 @@ public final class DataUtils {
                                                                 String nimi) {
         CreateKoodiDataType koodiDataType = new CreateKoodiDataType();
         koodiDataType.setKoodiArvo(koodiArvo);
-        koodiDataType.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? DateHelper.DateToXmlCal(voimassaAlkuPvm) : null);
-        koodiDataType.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? DateHelper.DateToXmlCal(voimassaLoppuPvm) : null);
+        koodiDataType.setVoimassaAlkuPvm(voimassaAlkuPvm);
+        koodiDataType.setVoimassaLoppuPvm(voimassaLoppuPvm);
         for (KieliType k : KieliType.values()) {
             KoodiMetadataType metadataType = new KoodiMetadataType();
             metadataType.setNimi(nimi);
@@ -101,8 +100,8 @@ public final class DataUtils {
         koodiDataType.setKoodiUri(koodiUri);
         koodiDataType.setKoodiArvo(koodiArvo);
         koodiDataType.setTila(tila);
-        koodiDataType.setVoimassaAlkuPvm(voimassaAlkuPvm != null ? DateHelper.DateToXmlCal(voimassaAlkuPvm) : null);
-        koodiDataType.setVoimassaLoppuPvm(voimassaLoppuPvm != null ? DateHelper.DateToXmlCal(voimassaLoppuPvm) : null);
+        koodiDataType.setVoimassaAlkuPvm(voimassaAlkuPvm);
+        koodiDataType.setVoimassaLoppuPvm(voimassaLoppuPvm);
         for (KieliType k : KieliType.values()) {
             KoodiMetadataType metadataType = new KoodiMetadataType();
             metadataType.setNimi(nimi);
@@ -125,8 +124,8 @@ public final class DataUtils {
         to.setLukittu(koodisto.getLukittu());
         to.setOmistaja(koodisto.getOmistaja());
         to.setOrganisaatioOid(koodisto.getOrganisaatioOid());
-        to.setVoimassaAlkuPvm(DateHelper.DateToXmlCal(from.getVoimassaAlkuPvm()));
-        if (from.getVoimassaLoppuPvm() != null) to.setVoimassaLoppuPvm(DateHelper.DateToXmlCal(from.getVoimassaLoppuPvm()));
+        to.setVoimassaAlkuPvm(from.getVoimassaAlkuPvm());
+        if (from.getVoimassaLoppuPvm() != null) to.setVoimassaLoppuPvm(from.getVoimassaLoppuPvm());
         KoodistoMetadataToKoodistoMetadataTypeConverter converter = new KoodistoMetadataToKoodistoMetadataTypeConverter();
         for (KoodistoMetadata metaData : from.getMetadatas()) {
             to.getMetadataList().add(converter.convert(metaData));

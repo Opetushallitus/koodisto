@@ -1,10 +1,8 @@
-/**
- *
- */
 package fi.vm.sade.koodisto.service.business;
 
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
+import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioDto;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
@@ -12,7 +10,6 @@ import fi.vm.sade.koodisto.service.types.SearchKoodisByKoodistoCriteriaType;
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
 
 import java.util.List;
 import java.util.Set;
@@ -23,26 +20,34 @@ import java.util.Set;
 public interface KoodiBusinessService {
     /**
      * Creates list of koodi objects to given koodisto.
-     * 
+     *
      * @param koodistoUri
      * @param koodiList
-     * @return 
+     * @return
      */
     KoodistoVersio massCreate(String koodistoUri, List<UpdateKoodiDataType> koodiList);
 
     /**
      * Lists koodis by the relation to given koodi.
-     * 
+     *
      * @param koodiId
      * @param suhdeTyyppi
      * @return
      */
     List<KoodiVersioWithKoodistoItem> listByRelation(KoodiUriAndVersioType koodi, SuhteenTyyppi suhdeTyyppi,
-            Boolean isChild);
+                                                     boolean isChild);
+
+    /**
+     * Deletes given code version permanently regardless of it's state
+     *
+     * @param koodiUri    unique identifier for koodi
+     * @param koodiVersio koodi version
+     */
+    void forceDelete(String koodiUri, int koodiVersio);
 
     /**
      * Deletes given code version permanently
-     * 
+     *
      * @param koodiId
      * @param koodiVersio
      */
@@ -51,12 +56,12 @@ public interface KoodiBusinessService {
     /**
      * adds a relation between provided ylaKoodi with its version and alaKoodis
      * with given type.
-     * 
+     *
      * @param ylaKoodiId
      * @param version
      * @param alaKoodiIds
      * @param suhteenTyyppi
-     * @param isChild 
+     * @param isChild
      */
     void addRelation(String ylaKoodi, List<String> alaKoodis, SuhteenTyyppi st, boolean isChild);
 
@@ -64,8 +69,9 @@ public interface KoodiBusinessService {
 
     /**
      * Removes relation between provided codeElement and relations with given type.
-     * @param st type of relation
-     * @param isChild is provided codeElementUri child or parent
+     *
+     * @param st                  type of relation
+     * @param isChild             is provided codeElementUri child or parent
      * @param codeElementUri
      * @param relatedCodeElements
      */
@@ -77,17 +83,15 @@ public interface KoodiBusinessService {
 
     List<KoodiVersioWithKoodistoItem> searchKoodis(SearchKoodisCriteriaType searchCriteria);
 
+    KoodiVersioWithKoodistoItem getKoodi(String koodiUri, int koodiVersio);
+
     KoodiVersioWithKoodistoItem createKoodi(String koodistoUri, CreateKoodiDataType createKoodiData);
+
+    InternalKoodiVersioDto updateKoodi(InternalKoodiVersioDto koodi);
 
     KoodiVersioWithKoodistoItem updateKoodi(UpdateKoodiDataType updateKoodiData);
 
     void delete(String koodiUri, Integer koodiVersio, boolean skipPassiivinenCheck);
-
-    KoodiVersio createNewVersion(String koodiUri);
-
-    void setKoodiTila(String koodiUri, TilaType tila);
-
-    void setKoodiTila(KoodiVersio latest, TilaType tila);
 
     List<KoodiVersioWithKoodistoItem> getKoodisByKoodistoVersio(String koodistoUri, Integer koodistoVersio, boolean onlyValidKoodis);
 
@@ -107,16 +111,17 @@ public interface KoodiBusinessService {
     List<KoodiVersioWithKoodistoItem> listByRelation(String koodiUri, Integer koodiVersio, boolean child, SuhteenTyyppi suhteenTyyppi);
 
     KoodiVersio getLatestKoodiVersio(String koodiUri);
-    
+
     KoodiVersio getKoodiVersio(String koodiUri, Integer versio);
-    
+
     Koodi getKoodi(String koodiUri);
 
     boolean hasRelationBetweenCodeElements(KoodiVersio ylaKoodiVersio, final KoodiVersio alaKoodiVersio);
-    
+
     boolean isLatestKoodiVersio(String koodiUri, Integer versio);
 
     KoodiVersio saveKoodi(ExtendedKoodiDto koodiDTO);
+
 
     Set<KoodiVersio> createNewVersionsNonFlushing(Set<KoodistoVersioKoodiVersio> koodiVersios);
 

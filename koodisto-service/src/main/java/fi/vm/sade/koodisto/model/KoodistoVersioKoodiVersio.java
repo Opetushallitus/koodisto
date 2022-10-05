@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.model;
 
 import fi.vm.sade.koodisto.model.constraint.KoodistoVersioKoodiVersioConstraint;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -10,6 +11,8 @@ import javax.validation.constraints.NotNull;
         "koodistoVersio_id", "koodiVersio_id" }))
 @KoodistoVersioKoodiVersioConstraint
 @Cacheable
+@Getter
+@Setter
 public class KoodistoVersioKoodiVersio extends BaseEntity {
 
     private static final long serialVersionUID = -5215588552498620061L;
@@ -23,30 +26,5 @@ public class KoodistoVersioKoodiVersio extends BaseEntity {
     @JoinColumn(name = "koodiVersio_id", nullable = false)
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private KoodiVersio koodiVersio;
-
-    public KoodistoVersio getKoodistoVersio() {
-        return koodistoVersio;
-    }
-
-    public void setKoodistoVersio(KoodistoVersio koodistoVersio) {
-        this.koodistoVersio = koodistoVersio;
-    }
-
-    public KoodiVersio getKoodiVersio() {
-        return koodiVersio;
-    }
-
-    public void setKoodiVersio(KoodiVersio koodiVersio) {
-        this.koodiVersio = koodiVersio;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
 
 }

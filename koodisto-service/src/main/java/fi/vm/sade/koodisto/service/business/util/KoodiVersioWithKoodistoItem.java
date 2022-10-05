@@ -52,12 +52,7 @@ public class KoodiVersioWithKoodistoItem {
         }
         KoodiVersioWithKoodistoItem other = (KoodiVersioWithKoodistoItem) obj;
         if (koodiVersio == null) {
-            if (other.koodiVersio != null) {
-                return false;
-            }
-        } else if (!koodiVersio.equals(other.koodiVersio)) {
-            return false;
-        }
-        return true;
+            return other.koodiVersio == null;
+        } else return koodiVersio.equals(other.koodiVersio);
     }
 }

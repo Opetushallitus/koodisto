@@ -6,13 +6,13 @@ import fi.vm.sade.koodisto.model.Kieli;
 
 public class SimpleMetadataDto {
     
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
     public final String nimi;
     
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
     public final Kieli kieli;
     
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
     public final String kuvaus;
 
     public SimpleMetadataDto(String nimi, Kieli kieli, String kuvaus) {
@@ -55,11 +55,8 @@ public class SimpleMetadataDto {
         } else if (!kuvaus.equals(other.kuvaus))
             return false;
         if (nimi == null) {
-            if (other.nimi != null)
-                return false;
-        } else if (!nimi.equals(other.nimi))
-            return false;
-        return true;
+            return other.nimi == null;
+        } else return nimi.equals(other.nimi);
     }
     
     

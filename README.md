@@ -1,36 +1,31 @@
-# koodisto
+# Koodisto 
 
-Koodistopalvelun palvelukerros ja käyttöliittymä. 
+Koodisto is an application for managing and distributing common codecs to ease up intercommunication 
+between services.
 
-Ks [tekninen dokumentaatio](https://wiki.eduuni.fi/display/OPHPALV/Koodistopalvelun+tekninen+dokumentaatio) wikissä.
+## Technologies
 
-Swagger-documentaatio: https://virkailija.opintopolku.fi/koodisto-service/swagger/index.html
+Koodisto is Spring Boot application which uses PostgreSQL database as persistent data storage.
 
-## Technologies & Frameworks
+## Developing
 
-Below is non-exhaustive list of the key technologies & frameworks used in the project.
-
-### Backend
-
-* Spring Framework
-* Spring Security (CAS)
-* Apache CXF
-* Castor XML
-* Postgresql
-* JPA / Hibernate5
-* Flyway
-* Swagger
-
-### Frontend
-
-* Node 8
-* Webpack 4.16
-* Angular 1.3
-* JQuery 3.3
-* Bootstrap
-
-### Build tools
+### Prerequisites
 
 * Java 11
-* Maven 3
-* Docker
+* Maven
+
+### Running tests
+
+`mvn clean test`
+
+### Running application locally
+
+Application runtime requires a real database which can be set up easily with 
+[provided docker setup](dev/database).
+
+Local setup should be run with `dev` profile.
+
+In `koodisto-service` directory, run `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
+
+Datasource settings from [application.properties](koodisto-service/src/main/resources/application.properties) can be overridden with 
+VM start up parameters as follows: `-Dspring.datasource.username=foo`

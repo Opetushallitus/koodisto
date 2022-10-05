@@ -6,7 +6,6 @@ import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.koodisto.util.DateHelper;
 
 import java.util.Date;
 
@@ -47,16 +46,16 @@ public final class EntityUtils {
 
     public static void copyFields(CreateKoodiDataType from, KoodiVersio to) {
         to.setKoodiarvo(from.getKoodiArvo());
-        to.setVoimassaAlkuPvm(from.getVoimassaAlkuPvm() != null ? DateHelper.xmlCalToDate(from.getVoimassaAlkuPvm())
+        to.setVoimassaAlkuPvm(from.getVoimassaAlkuPvm() != null ? from.getVoimassaAlkuPvm()
                 : null);
-        to.setVoimassaLoppuPvm(from.getVoimassaLoppuPvm() != null ? DateHelper.xmlCalToDate(from.getVoimassaLoppuPvm())
+        to.setVoimassaLoppuPvm(from.getVoimassaLoppuPvm() != null ? from.getVoimassaLoppuPvm()
                 : null);
     }
 
     public static void copyFields(CreateKoodistoDataType from, KoodistoVersio to) {
-        to.setVoimassaAlkuPvm(from.getVoimassaAlkuPvm() != null ? DateHelper.xmlCalToDate(from.getVoimassaAlkuPvm())
+        to.setVoimassaAlkuPvm(from.getVoimassaAlkuPvm() != null ? from.getVoimassaAlkuPvm()
                 : null);
-        to.setVoimassaLoppuPvm(from.getVoimassaLoppuPvm() != null ? DateHelper.xmlCalToDate(from.getVoimassaLoppuPvm())
+        to.setVoimassaLoppuPvm(from.getVoimassaLoppuPvm() != null ? from.getVoimassaLoppuPvm()
                 : null);
     }
 
@@ -95,17 +94,17 @@ public final class EntityUtils {
         if (from.getTila() != null) {
             to.setTila(Tila.valueOf(from.getTila().name()));
         }
-        to.setVoimassaAlkuPvm(from.getVoimassaAlkuPvm() != null ? DateHelper.xmlCalToDate(from.getVoimassaAlkuPvm())
+        to.setVoimassaAlkuPvm(from.getVoimassaAlkuPvm() != null ? from.getVoimassaAlkuPvm()
                 : null);
-        to.setVoimassaLoppuPvm(from.getVoimassaLoppuPvm() != null ? DateHelper.xmlCalToDate(from.getVoimassaLoppuPvm())
+        to.setVoimassaLoppuPvm(from.getVoimassaLoppuPvm() != null ? from.getVoimassaLoppuPvm()
                 : null);
     }
 
     public static void copyFields(UpdateKoodistoDataType from, KoodistoVersio to) {
         to.setTila(Tila.valueOf(from.getTila().name()));
-        to.setVoimassaAlkuPvm(from.getVoimassaAlkuPvm() != null ? DateHelper.xmlCalToDate(from.getVoimassaAlkuPvm())
+        to.setVoimassaAlkuPvm(from.getVoimassaAlkuPvm() != null ? from.getVoimassaAlkuPvm()
                 : new Date());
-        to.setVoimassaLoppuPvm(from.getVoimassaLoppuPvm() != null ? DateHelper.xmlCalToDate(from.getVoimassaLoppuPvm())
+        to.setVoimassaLoppuPvm(from.getVoimassaLoppuPvm() != null ? from.getVoimassaLoppuPvm()
                 : null);
     }
 

@@ -5,6 +5,7 @@ import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
+import fi.vm.sade.koodisto.service.conversion.impl.MetadataToSimpleMetadataConverter;
 import org.junit.Test;
 
 import java.util.List;
@@ -14,8 +15,8 @@ import static org.junit.Assert.assertEquals;
 
 public class MetadataToSimpleMetadataConverterTest {
     
-    private final static String CODES_NAME = "codes", CODES_DESCRIPTION = "desc";
-    private final static String CODE_NAME = "koodi", CODE_DESCRIPTION = "kuvaus", CODE_SHORT_NAME = "ko";
+    private static final String CODES_NAME = "codes", CODES_DESCRIPTION = "desc";
+    private static final String CODE_NAME = "koodi", CODE_DESCRIPTION = "kuvaus", CODE_SHORT_NAME = "ko";
     
     @Test
     public void convertsKoodistoMetadataToSimpleMetadata() {

@@ -2,6 +2,8 @@ package fi.vm.sade.koodisto.model;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
@@ -16,6 +18,8 @@ import java.util.Set;
 @Entity
 @Cacheable
 @BatchSize(size = 100)
+@Getter
+@Setter
 public class Koodi extends BaseEntity {
 
     public static final String TABLE_NAME = "koodi";
@@ -35,14 +39,6 @@ public class Koodi extends BaseEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodi", cascade = CascadeType.ALL)
     private Set<KoodiVersio> koodiVersios = new HashSet<>();
 
-    public Koodisto getKoodisto() {
-        return koodisto;
-    }
-
-    public void setKoodisto(Koodisto koodisto) {
-        this.koodisto = koodisto;
-    }
-
     public Set<KoodiVersio> getKoodiVersios() {
         return Collections.unmodifiableSet(koodiVersios);
     }
@@ -51,24 +47,4 @@ public class Koodi extends BaseEntity {
         this.koodiVersios.remove(koodiVersio);
     }
 
-    public String getKoodiUri() {
-        return koodiUri;
-    }
-
-    public void setKoodiUri(String koodiUri) {
-        this.koodiUri = koodiUri;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-    
-    
-    
 }

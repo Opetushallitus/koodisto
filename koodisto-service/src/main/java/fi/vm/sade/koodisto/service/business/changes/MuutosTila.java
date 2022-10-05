@@ -3,9 +3,9 @@ package fi.vm.sade.koodisto.service.business.changes;
 public enum MuutosTila {
     EI_MUUTOKSIA("Ei muutoksia"), MUUTOKSIA("Muutoksia on tapahtunut"), POISTETTU("Poistettu");
     
-    private String value;
+    private final String value;
     
-    private MuutosTila(String value) {
+    MuutosTila(String value) {
         this.value = value;
     }
     

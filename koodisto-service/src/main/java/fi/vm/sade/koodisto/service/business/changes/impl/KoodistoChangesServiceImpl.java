@@ -14,7 +14,7 @@ import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.*;
-import fi.vm.sade.koodisto.service.impl.conversion.MetadataToSimpleMetadataConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.MetadataToSimpleMetadataConverter;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -127,7 +127,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
                         return input.isPassive();
                     }
                 });
-                return new ArrayList<SimpleCodeElementRelation>(Collections2.transform(passiveRelations, new KoodinSuhdeToSimpleCodeElementRelation(koodiVersio.getKoodi().getKoodiUri())));
+                return new ArrayList<>(Collections2.transform(passiveRelations, new KoodinSuhdeToSimpleCodeElementRelation(koodiVersio.getKoodi().getKoodiUri())));
             }
             
             private List<KoodinSuhde> getRelationsFromKoodiVersio(KoodiVersio koodiVersio) {
@@ -137,7 +137,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
             }
             
         });
-        return new ArrayList<KoodiChangesDto>(addedCodeElements);
+        return new ArrayList<>(addedCodeElements);
     }
     
     private List<KoodiChangesDto> removedCodeElements(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
@@ -313,7 +313,7 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
 
         @Override
         public SimpleCodesRelation apply(KoodistonSuhde input) {
-            boolean isChild = koodistoUri.equals(input.getYlakoodistoVersio().getKoodisto().getKoodistoUri()) ? true : false;
+            boolean isChild = koodistoUri.equals(input.getYlakoodistoVersio().getKoodisto().getKoodistoUri());
             String uri = isChild ? input.getAlakoodistoVersio().getKoodisto().getKoodistoUri() : input.getYlakoodistoVersio().getKoodisto().getKoodistoUri();
             Integer versio = isChild ? input.getAlakoodistoVersio().getVersio() : input.getYlakoodistoVersio().getVersio();
             return new SimpleCodesRelation(uri, versio, input.getSuhteenTyyppi(), isChild);

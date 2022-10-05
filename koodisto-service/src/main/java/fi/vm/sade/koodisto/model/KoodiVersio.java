@@ -1,34 +1,29 @@
 package fi.vm.sade.koodisto.model;
 
-import fi.vm.sade.koodisto.common.util.FieldLengths;
-import fi.vm.sade.koodisto.model.constraint.fieldassert.DateIsNullOrNotBeforeAnotherDateAsserter;
-import fi.vm.sade.koodisto.model.constraint.fieldassert.FieldAssert;
+import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
+import fi.vm.sade.koodisto.util.FieldLengths;
+import fi.vm.sade.koodisto.util.UserData;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import javax.validation.constraints.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import static fi.vm.sade.koodisto.service.business.impl.UserDetailServiceImpl.findCurrentUserOid;
 
-@FieldAssert(field1 = "voimassaAlkuPvm", field2 = "voimassaLoppuPvm", asserter = DateIsNullOrNotBeforeAnotherDateAsserter.class, message = "{voimassaLoppuPvm.invalid}")
 @Entity
 @Table(name = KoodiVersio.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodiVersio.TABLE_NAME
-        + "_01", columnNames = { KoodiVersio.VERSIO_COLUMN_NAME, KoodiVersio.KOODI_COLUMN_NAME }))
+        + "_01", columnNames = {KoodiVersio.VERSIO_COLUMN_NAME, KoodiVersio.KOODI_COLUMN_NAME}))
 @org.hibernate.annotations.Table(appliesTo = KoodiVersio.TABLE_NAME, comment = "Koodiversio sisältää mm. koodiarvon, " +
         "voimassaolopäivämäärät ja koodin tilan.")
 @Cacheable
 @BatchSize(size = 100)
+@Getter
+@Setter
 public class KoodiVersio extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
@@ -78,20 +73,20 @@ public class KoodiVersio extends BaseEntity {
     @Column(name = "tila", nullable = false, length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private Tila tila;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodiVersio", cascade = { CascadeType.ALL })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodiVersio", cascade = {CascadeType.ALL})
     private Set<KoodistoVersioKoodiVersio> koodistoVersios = new HashSet<>();
 
     @NotEmpty
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodiVersio", cascade = { CascadeType.ALL })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodiVersio", cascade = {CascadeType.ALL})
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<KoodiMetadata> metadatas = new HashSet<>();
 
     @BatchSize(size = 100)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodiVersio", cascade = { CascadeType.ALL })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "alakoodiVersio", cascade = {CascadeType.ALL})
     private Set<KoodinSuhde> ylakoodis = new HashSet<>();
 
     @BatchSize(size = 100)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ylakoodiVersio", cascade = { CascadeType.ALL })
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "ylakoodiVersio", cascade = {CascadeType.ALL})
     private Set<KoodinSuhde> alakoodis = new HashSet<>();
 
     @PrePersist
@@ -99,10 +94,10 @@ public class KoodiVersio extends BaseEntity {
         luotu = luotu == null ? new Date() : luotu;
         onUpdate();
     }
-    
+
     @PreUpdate
     protected void onUpdate() {
-        findCurrentUserOid().ifPresent(this::setPaivittajaOid);
+        UserData.getCurrentUserOid().ifPresent(this::setPaivittajaOid);
         this.paivitysPvm = new Date();
     }
 
@@ -128,78 +123,6 @@ public class KoodiVersio extends BaseEntity {
         metadatas.remove(metadata);
     }
 
-    public Koodi getKoodi() {
-        return koodi;
-    }
-
-    public void setKoodi(Koodi koodi) {
-        this.koodi = koodi;
-    }
-
-    public Integer getVersio() {
-        return versio;
-    }
-
-    public void setVersio(Integer versio) {
-        this.versio = versio;
-    }
-
-    public Date getPaivitysPvm() {
-        return paivitysPvm;
-    }
-
-    public void setPaivitysPvm(Date paivitysPvm) {
-        this.paivitysPvm = paivitysPvm;
-    }
-    
-    public Date getLuotu() {
-        return luotu;
-    }
-    
-    public void setLuotu(Date luotu) {
-        this.luotu = luotu;
-    }
-
-    public Date getVoimassaAlkuPvm() {
-        return voimassaAlkuPvm;
-    }
-
-    public void setVoimassaAlkuPvm(Date voimassaAlkuPvm) {
-        this.voimassaAlkuPvm = voimassaAlkuPvm;
-    }
-
-    public Date getVoimassaLoppuPvm() {
-        return voimassaLoppuPvm;
-    }
-
-    public void setVoimassaLoppuPvm(Date voimassaLoppuPvm) {
-        this.voimassaLoppuPvm = voimassaLoppuPvm;
-    }
-
-    public Tila getTila() {
-        return tila;
-    }
-
-    public void setTila(Tila tila) {
-        this.tila = tila;
-    }
-
-    public String getKoodiarvo() {
-        return koodiarvo;
-    }
-
-    public void setKoodiarvo(String koodiarvo) {
-        this.koodiarvo = koodiarvo;
-    }
-
-    public Set<KoodinSuhde> getYlakoodis() {
-        return ylakoodis;
-    }
-
-    public Set<KoodinSuhde> getAlakoodis() {
-        return alakoodis;
-    }
-
     public void addYlakoodi(KoodinSuhde ylakoodi) {
         this.ylakoodis.add(ylakoodi);
     }
@@ -207,39 +130,35 @@ public class KoodiVersio extends BaseEntity {
     public void addAlakoodi(KoodinSuhde alakoodi) {
         this.alakoodis.add(alakoodi);
     }
-    
-    public void removeYlakoodi(KoodinSuhde ylakoodi) {
-        this.ylakoodis.remove(ylakoodi);
-    }
-    
-    public void removeAlakoodi(KoodinSuhde alakoodi) {
-        this.alakoodis.remove(alakoodi);
-    }
 
     public void removeKoodistoVersio(KoodistoVersioKoodiVersio koodistoVersio) {
         this.koodistoVersios.remove(koodistoVersio);
     }
 
-    @AssertTrue(message = "Validation end date must not be before start date")
-    public boolean getValidateDates() {
-        return voimassaAlkuPvm != null && (voimassaLoppuPvm == null || !voimassaLoppuPvm.before(voimassaAlkuPvm));
+    public Map<String, String> getKoodistoNimi() {
+        return this.getKoodi().getKoodisto().getKoodistoVersios().stream()
+                .reduce((a, b) -> a.getVersio() > b.getVersio() ? a : b)
+                .orElseThrow(KoodistoNotFoundException::new)
+                .getMetadatas().stream()
+                .collect(Collectors.toMap(metadata -> metadata.getKieli().name().toLowerCase(), KoodistoMetadata::getNimi));
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return super.equals(o);
-    }
-    @Override
-    public int hashCode() {
-        return super.hashCode();
+    public Map<String, String> getNimi() {
+        return this.getMetadatas().stream()
+                .collect(Collectors.toMap(metadata -> metadata.getKieli().name().toLowerCase(), KoodiMetadata::getNimi));
     }
 
-    public String getPaivittajaOid() {
-        return paivittajaOid;
+    public Map<String, String> getKuvaus() {
+        return this.getMetadatas().stream()
+                .collect(Collectors.toMap(metadata -> metadata.getKieli().name().toLowerCase(), koodiMetadata -> Optional.ofNullable(koodiMetadata.getKuvaus()).orElse("")));
     }
 
-    public void setPaivittajaOid(String paivittajaOid) {
-        this.paivittajaOid = paivittajaOid;
+    public boolean isLocked() {
+        return tila == Tila.HYVAKSYTTY;
     }
 
+    @AssertTrue(message = "error.validation.enddate")
+    public boolean isStartDateBeforeEndDate() {
+        return Optional.ofNullable(voimassaLoppuPvm).map(date -> date.after(voimassaAlkuPvm)).orElse(true);
+    }
 }

@@ -1,22 +1,20 @@
 package fi.vm.sade.koodisto.service.impl.conversion.koodi;
 
-import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
 import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.service.business.util.HostAwareKoodistoConfiguration;
+import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
-import fi.vm.sade.koodisto.service.conversion.SadeConversionService;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kubek2k.springockito.annotations.ReplaceWithMock;
-import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -25,27 +23,22 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "classpath:spring/test-context.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
 
-    @ReplaceWithMock
-    @Autowired
-    private HostAwareKoodistoConfiguration koodistoConfiguration;
+    @Mock
+    private KoodiVersioRepository koodiVersioRepository;
 
-    @ReplaceWithMock
     @Autowired
-    private KoodiVersioDAO koodiVersioDao;
-    
-    @Autowired
-    private SadeConversionService conversionService;
+    KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter;
 
     private Integer koodiVersio = 1;
 
     @Test
     public void convertsKoodinSuhdeToRelationCodeElement() {
         KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
-        ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
+        ExtendedKoodiDto dto = koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(kv);
         assertEquals(1, dto.getIncludesCodeElements().size());
         assertEquals(2, dto.getLevelsWithCodeElements().size());
         assertEquals(1, dto.getWithinCodeElements().size());
@@ -54,21 +47,21 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
     @Test
     public void storesCodeElementNameLanguageDescriptionAndValueToRelationCodeElement() {
         KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
-        ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
+        ExtendedKoodiDto dto = koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(kv);
         RelationCodeElement rel = dto.getIncludesCodeElements().get(0);
-        SimpleMetadataDto data = rel.relationMetadata.get(0);
+        SimpleMetadataDto data = rel.getRelationMetadata().get(0);
         KoodiMetadata givenKoodiMetadata = givenKoodiMetadata();
         assertEquals(givenKoodiMetadata.getKieli(), data.kieli);
         assertEquals(givenKoodiMetadata.getNimi(), data.nimi);
         assertEquals(givenKoodiMetadata.getKuvaus(), data.kuvaus);
-        assertEquals(givenKoodiVersio().getKoodiarvo(), rel.codeElementValue);
+        assertEquals(givenKoodiVersio().getKoodiarvo(), rel.getCodeElementValue());
     }
 
     @Test
     public void storesParentCodesMetadataToRelationCodeElement() {
         KoodiVersioWithKoodistoItem kv = givenKoodiVersioWithKoodistoItem();
-        ExtendedKoodiDto dto = conversionService.convert(kv, ExtendedKoodiDto.class);
-        assertEquals(Kieli.EN, dto.getIncludesCodeElements().get(0).parentMetadata.get(0).kieli);
+        ExtendedKoodiDto dto = koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(kv);
+        assertEquals(Kieli.EN, dto.getIncludesCodeElements().get(0).getParentMetadata().get(0).kieli);
     }
 
     @Test
@@ -77,9 +70,9 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
         KoodiVersio child = DtoFactory.createKoodiVersioWithUriAndVersioAndRelation("kynä", 1, parent, SuhteenTyyppi.SISALTYY);
         Map<String, Integer> dummyResponse = new HashMap<String, Integer>();
         dummyResponse.put("penaali", 1);
-        when(koodiVersioDao.getLatestVersionNumbersForUris("penaali")).thenReturn(dummyResponse);
-        when(koodiVersioDao.isLatestKoodiVersio("kynä", 1)).thenReturn(true);
-        ExtendedKoodiDto dto = conversionService.convert(new KoodiVersioWithKoodistoItem(child, new KoodistoItem()), ExtendedKoodiDto.class);
+        when(koodiVersioRepository.getLatestVersionNumbersForUris("penaali")).thenReturn(dummyResponse);
+        when(koodiVersioRepository.isLatestKoodiVersio("kynä", 1)).thenReturn(true);
+        ExtendedKoodiDto dto = koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(new KoodiVersioWithKoodistoItem(child, new KoodistoItem()));
         assertEquals(1, dto.getWithinCodeElements().size());
     }
 

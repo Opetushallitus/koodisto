@@ -11,53 +11,45 @@ import fi.vm.sade.koodisto.service.business.changes.KoodistoChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kubek2k.springockito.annotations.ReplaceWithMock;
-import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
-@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "classpath:spring/simple-test-context.xml")
-@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
+@RunWith(SpringRunner.class)
 public class KoodistoChangesServiceImplTest {
     
     private static final String KOODI_URI = "koivu";
-    private final static String KOODISTO_URI = "lehtipuut";
-    private final static String NAME = "Lehtipuut", DESCRIPTION = "pudottavat lehtensä syksyisin";
-    private final static String NAME_EN = "Leaftrees", DESCRIPTION_EN = "leaves are dropped during autumn";
-    private final static Date CURRENT_DATE = new Date();
+    private static final String KOODISTO_URI = "lehtipuut";
+    private static final String NAME = "Lehtipuut", DESCRIPTION = "pudottavat lehtensä syksyisin";
+    private static final String NAME_EN = "Leaftrees", DESCRIPTION_EN = "leaves are dropped during autumn";
+    private static final Date CURRENT_DATE = new Date();
     private static final Date FIRST_DATE = new Date(2000), SECOND_DATE = new Date(20050000), THIRD_DATE = new Date(30050000);
     
-    private final static Integer VERSIO = 1;
+    private static final Integer VERSIO = 1;
     
-    @ReplaceWithMock
+    @MockBean
     @Autowired
     private KoodistoBusinessService koodistoService;
     
-    @ReplaceWithMock
+    @MockBean
     @Autowired
     private KoodiBusinessService koodiService;
     
     @Autowired
     private KoodistoChangesService service;
-    
-    @Before
-    public void init() {
-        MockitoAnnotations.initMocks(this);
-    }
     
     @Test
     public void returnsNoChangesIfNothingHasChanged() {
@@ -102,8 +94,8 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio original = givenKoodistoVersioWithMetadata(versio, givenKoodistoMetadata(NAME_EN, DESCRIPTION_EN, Kieli.EN));
         KoodistoVersio latest = givenKoodistoVersioWithMetadata(versio + 1);
         KoodistoChangesDto result = givenResult(original, latest);
-        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
-        assertTrue(result.poistuneetTiedot.contains(new SimpleMetadataDto(NAME_EN, Kieli.EN, DESCRIPTION_EN)));
+        assertEquals(MuutosTila.MUUTOKSIA, result.getMuutosTila());
+        assertTrue(result.getPoistuneetTiedot().contains(new SimpleMetadataDto(NAME_EN, Kieli.EN, DESCRIPTION_EN)));
     }
     
     @Test
@@ -126,9 +118,9 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio latest = givenKoodistoVersioWithMetadata(VERSIO + 1, newName, DESCRIPTION);
         KoodistoVersio original = givenKoodistoVersioWithMetadata(VERSIO, NAME, DESCRIPTION);
         KoodistoChangesDto dto = givenResult(original, latest);
-        assertTrue(dto.poistuneetTiedot.isEmpty());
-        assertEquals(1, dto.muuttuneetTiedot.size());
-        assertEquals(new SimpleMetadataDto(newName, Kieli.FI, null), dto.muuttuneetTiedot.get(0));
+        assertTrue(dto.getPoistuneetTiedot().isEmpty());
+        assertEquals(1, dto.getMuuttuneetTiedot().size());
+        assertEquals(new SimpleMetadataDto(newName, Kieli.FI, null), dto.getMuuttuneetTiedot().get(0));
     }
     
     @Test
@@ -137,8 +129,8 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio original = givenKoodistoVersio(versio);
         KoodistoVersio latest = givenKoodistoVersioWithCustomDatesItIsInEffect(versio + 1, CURRENT_DATE, null);
         KoodistoChangesDto result = givenResult(original, latest);
-        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
-        assertEquals(CURRENT_DATE, result.voimassaAlkuPvm);
+        assertEquals(MuutosTila.MUUTOKSIA, result.getMuutosTila());
+        assertEquals(CURRENT_DATE, result.getVoimassaAlkuPvm());
     }
 
     @Test
@@ -147,9 +139,9 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio original = givenKoodistoVersio(versio);
         KoodistoVersio latest = givenKoodistoVersioWithCustomDatesItIsInEffect(versio + 1, original.getVoimassaAlkuPvm(), CURRENT_DATE);
         KoodistoChangesDto result = givenResult(original, latest);
-        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
-        assertEquals(CURRENT_DATE, result.voimassaLoppuPvm);
-        assertNull(result.poistettuVoimassaLoppuPvm);
+        assertEquals(MuutosTila.MUUTOKSIA, result.getMuutosTila());
+        assertEquals(CURRENT_DATE, result.getVoimassaLoppuPvm());
+        assertNull(result.getPoistettuVoimassaLoppuPvm());
     }
     
     @Test
@@ -158,9 +150,9 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio latest = givenKoodistoVersio(versio + 1);
         KoodistoVersio original = givenKoodistoVersioWithCustomDatesItIsInEffect(versio, CURRENT_DATE, CURRENT_DATE);
         KoodistoChangesDto result = givenResult(original, latest);
-        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
-        assertNull(result.voimassaLoppuPvm);
-        assertTrue(result.poistettuVoimassaLoppuPvm);
+        assertEquals(MuutosTila.MUUTOKSIA, result.getMuutosTila());
+        assertNull(result.getVoimassaLoppuPvm());
+        assertTrue(result.getPoistettuVoimassaLoppuPvm());
     }
     
     @Test
@@ -168,8 +160,8 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio latest = givenKoodistoVersio(VERSIO + 1);
         latest.setTila(Tila.PASSIIVINEN);
         KoodistoChangesDto result = givenResult(givenKoodistoVersio(VERSIO), latest);
-        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
-        assertEquals(Tila.PASSIIVINEN, result.tila);
+        assertEquals(MuutosTila.MUUTOKSIA, result.getMuutosTila());
+        assertEquals(Tila.PASSIIVINEN, result.getTila());
     }
     
     @Test
@@ -207,15 +199,15 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio original = givenKoodistoVersio(VERSIO);
         KoodistoVersio latest = givenKoodistoVersioWithRelations(VERSIO + 1, givenKoodistonSuhde(SuhteenTyyppi.RINNASTEINEN, null, givenKoodistoVersio(relationVersion, koodistoUri)));
         KoodistoChangesDto dto = givenResult(original, latest);
-        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
-        assertTrue(dto.passivoidutKoodistonSuhteet.isEmpty());
-        assertTrue(dto.poistetutKoodistonSuhteet.isEmpty());
-        assertEquals(1, dto.lisatytKoodistonSuhteet.size());
-        SimpleCodesRelation relation = dto.lisatytKoodistonSuhteet.get(0);
-        assertEquals(koodistoUri, relation.koodistoUri);
-        assertEquals(SuhteenTyyppi.RINNASTEINEN, relation.suhteenTyyppi);
-        assertTrue(relation.lapsiKoodisto);
-        assertEquals(relationVersion, relation.versio);
+        assertEquals(MuutosTila.MUUTOKSIA, dto.getMuutosTila());
+        assertTrue(dto.getPassivoidutKoodistonSuhteet().isEmpty());
+        assertTrue(dto.getPoistetutKoodistonSuhteet().isEmpty());
+        assertEquals(1, dto.getLisatytKoodistonSuhteet().size());
+        SimpleCodesRelation relation = dto.getLisatytKoodistonSuhteet().get(0);
+        assertEquals(koodistoUri, relation.getKoodistoUri());
+        assertEquals(SuhteenTyyppi.RINNASTEINEN, relation.getSuhteenTyyppi());
+        assertTrue(relation.isLapsiKoodisto());
+        assertEquals(relationVersion, relation.getVersio());
     }
     
     @Test
@@ -225,15 +217,15 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio latest = givenKoodistoVersio(VERSIO + 1);
         KoodistoVersio original = givenKoodistoVersioWithRelations(VERSIO, givenKoodistonSuhde(SuhteenTyyppi.SISALTYY, givenKoodistoVersio(relationVersion, koodistoUri), null));
         KoodistoChangesDto dto = givenResult(original, latest);
-        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
-        assertTrue(dto.passivoidutKoodistonSuhteet.isEmpty());
-        assertTrue(dto.lisatytKoodistonSuhteet.isEmpty());
-        assertEquals(1, dto.poistetutKoodistonSuhteet.size());
-        SimpleCodesRelation relation = dto.poistetutKoodistonSuhteet.get(0);
-        assertEquals(koodistoUri, relation.koodistoUri);
-        assertEquals(SuhteenTyyppi.SISALTYY, relation.suhteenTyyppi);
-        assertFalse(relation.lapsiKoodisto);
-        assertEquals(relationVersion, relation.versio);
+        assertEquals(MuutosTila.MUUTOKSIA, dto.getMuutosTila());
+        assertTrue(dto.getPassivoidutKoodistonSuhteet().isEmpty());
+        assertTrue(dto.getLisatytKoodistonSuhteet().isEmpty());
+        assertEquals(1, dto.getPoistetutKoodistonSuhteet().size());
+        SimpleCodesRelation relation = dto.getPoistetutKoodistonSuhteet().get(0);
+        assertEquals(koodistoUri, relation.getKoodistoUri());
+        assertEquals(SuhteenTyyppi.SISALTYY, relation.getSuhteenTyyppi());
+        assertFalse(relation.isLapsiKoodisto());
+        assertEquals(relationVersion, relation.getVersio());
     }
     
     @Test
@@ -244,15 +236,15 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio original = givenKoodistoVersioWithRelations(VERSIO, givenKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, related));
         KoodistoVersio latest = givenKoodistoVersioWithRelations(VERSIO + 1, givenPassiveKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, related, true, false));
         KoodistoChangesDto dto = givenResult(original, latest);
-        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
-        assertTrue(dto.lisatytKoodistonSuhteet.isEmpty());
-        assertTrue(dto.poistetutKoodistonSuhteet.isEmpty());
-        assertEquals(1, dto.passivoidutKoodistonSuhteet.size());
-        SimpleCodesRelation relation = dto.passivoidutKoodistonSuhteet.get(0);
-        assertEquals(koodistoUri, relation.koodistoUri);
-        assertEquals(SuhteenTyyppi.SISALTYY, relation.suhteenTyyppi);
-        assertTrue(relation.lapsiKoodisto);
-        assertEquals(relationVersion, relation.versio);
+        assertEquals(MuutosTila.MUUTOKSIA, dto.getMuutosTila());
+        assertTrue(dto.getLisatytKoodistonSuhteet().isEmpty());
+        assertTrue(dto.getPoistetutKoodistonSuhteet().isEmpty());
+        assertEquals(1, dto.getPassivoidutKoodistonSuhteet().size());
+        SimpleCodesRelation relation = dto.getPassivoidutKoodistonSuhteet().get(0);
+        assertEquals(koodistoUri, relation.getKoodistoUri());
+        assertEquals(SuhteenTyyppi.SISALTYY, relation.getSuhteenTyyppi());
+        assertTrue(relation.isLapsiKoodisto());
+        assertEquals(relationVersion, relation.getVersio());
     }
     
     @Test
@@ -261,10 +253,10 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio original = givenKoodistoVersioWithRelations(versio, givenKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodistoVersio(3, "juuret")), givenKoodistonSuhde(SuhteenTyyppi.RINNASTEINEN, null, givenKoodistoVersio(3, "lehdet")));
         KoodistoVersio latest = givenKoodistoVersioWithRelations(versio + 1, givenPassiveKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodistoVersio(3, "juuret"), true, false), givenKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodistoVersio(3, "oksat")));
         KoodistoChangesDto dto = givenResult(original, latest);
-        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
-        assertEquals(1, dto.lisatytKoodistonSuhteet.size());
-        assertEquals(1, dto.poistetutKoodistonSuhteet.size());
-        assertEquals(1, dto.passivoidutKoodistonSuhteet.size());
+        assertEquals(MuutosTila.MUUTOKSIA, dto.getMuutosTila());
+        assertEquals(1, dto.getLisatytKoodistonSuhteet().size());
+        assertEquals(1, dto.getPoistetutKoodistonSuhteet().size());
+        assertEquals(1, dto.getPassivoidutKoodistonSuhteet().size());
     }
     
     @Test
@@ -273,10 +265,10 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio original = givenKoodistoVersioWithRelations(VERSIO, givenKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodistoVersio(3, "puut")), givenKoodistonSuhde(SuhteenTyyppi.RINNASTEINEN, null, relationCode));
         KoodistoVersio latest = givenKoodistoVersioWithRelations(VERSIO + 1, givenPassiveKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, givenKoodistoVersio(3, "puut"), true, false), givenKoodistonSuhde(SuhteenTyyppi.SISALTYY, null, relationCode));
         KoodistoChangesDto dto = givenResult(original, latest);
-        assertEquals(MuutosTila.MUUTOKSIA, dto.muutosTila);
-        assertEquals(1, dto.lisatytKoodistonSuhteet.size());
-        assertEquals(1, dto.poistetutKoodistonSuhteet.size());
-        assertEquals(1, dto.passivoidutKoodistonSuhteet.size());
+        assertEquals(MuutosTila.MUUTOKSIA, dto.getMuutosTila());
+        assertEquals(1, dto.getLisatytKoodistonSuhteet().size());
+        assertEquals(1, dto.getPoistetutKoodistonSuhteet().size());
+        assertEquals(1, dto.getPassivoidutKoodistonSuhteet().size());
     }
     
     @Test
@@ -312,8 +304,8 @@ public class KoodistoChangesServiceImplTest {
         KoodistoVersio second = givenKoodistoVersioWithMetaDataAndCustomDateItWasCreated(VERSIO + 1, SECOND_DATE, givenKoodistoMetadata(NAME, descriptionChangedForSecond, Kieli.FI));
         KoodistoVersio third = givenKoodistoVersioWithMetaDataAndCustomDateItWasCreated(VERSIO + 2, THIRD_DATE, givenKoodistoMetadata(nameChangedForThird, descriptionChangedForSecond, Kieli.FI));
         KoodistoChangesDto dto = givenResultWithMultipleKoodistoVersiosForDateQuery(query, false, first, second, third);
-        assertEquals(3, dto.viimeisinVersio.intValue());
-        SimpleMetadataDto data = dto.muuttuneetTiedot.get(0);
+        assertEquals(3, dto.getViimeisinVersio().intValue());
+        SimpleMetadataDto data = dto.getMuuttuneetTiedot().get(0);
         assertEquals(nameChangedForThird, data.nimi);
         if (shouldUseFirst) {
             assertEquals(descriptionChangedForSecond, data.kuvaus);
@@ -323,34 +315,34 @@ public class KoodistoChangesServiceImplTest {
     }
     
     private void assertResultWithKoodiChanges(Integer expectedVersio, KoodistoChangesDto result, int expectedAmountAdded, int expectedAmountChanged, int expectedAmountDeleted) {
-        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
-        assertEquals(expectedAmountAdded, result.lisatytKoodit.size());
-        assertEquals(expectedAmountDeleted, result.poistetutKoodit.size());
-        assertEquals(expectedAmountChanged, result.muuttuneetKoodit.size());
+        assertEquals(MuutosTila.MUUTOKSIA, result.getMuutosTila());
+        assertEquals(expectedAmountAdded, result.getLisatytKoodit().size());
+        assertEquals(expectedAmountDeleted, result.getPoistetutKoodit().size());
+        assertEquals(expectedAmountChanged, result.getMuuttuneetKoodit().size());
     }
 
     private void assertResultWithTila(Integer expectedVersio, String expectedDescription, Tila expectedTila, KoodistoChangesDto result) {
-        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
-        assertEquals(expectedVersio, result.viimeisinVersio);
-        assertEquals(expectedTila, result.tila);
-        assertEquals(expectedDescription, result.muuttuneetTiedot.get(0).kuvaus);
+        assertEquals(MuutosTila.MUUTOKSIA, result.getMuutosTila());
+        assertEquals(expectedVersio, result.getViimeisinVersio());
+        assertEquals(expectedTila, result.getTila());
+        assertEquals(expectedDescription, result.getMuuttuneetTiedot().get(0).kuvaus);
     }
 
     private void assertResultIsNoChanges(KoodistoChangesDto result, int versio) {
-        assertEquals(KOODISTO_URI, result.koodistoUri);
-        assertEquals(MuutosTila.EI_MUUTOKSIA, result.muutosTila);
-        assertEquals(versio, result.viimeisinVersio.intValue());
-        assertTrue(result.muuttuneetTiedot.isEmpty());
-        assertNotNull(result.viimeksiPaivitetty);
-        assertNull(result.voimassaAlkuPvm);
-        assertNull(result.voimassaLoppuPvm);
-        assertNull(result.tila);
+        assertEquals(KOODISTO_URI, result.getKoodistoUri());
+        assertEquals(MuutosTila.EI_MUUTOKSIA, result.getMuutosTila());
+        assertEquals(versio, result.getViimeisinVersio().intValue());
+        assertTrue(result.getMuuttuneetTiedot().isEmpty());
+        assertNotNull(result.getViimeksiPaivitetty());
+        assertNull(result.getVoimassaAlkuPvm());
+        assertNull(result.getVoimassaLoppuPvm());
+        assertNull(result.getTila());
     }
     
     private void assertResultHasMetadataChanges(KoodistoChangesDto result, int versio, SimpleMetadataDto ... expecteds) {
-        assertEquals(MuutosTila.MUUTOKSIA, result.muutosTila);
-        assertTrue(result.muuttuneetTiedot.containsAll(Arrays.asList(expecteds)));
-        assertEquals(versio, result.viimeisinVersio.intValue());
+        assertEquals(MuutosTila.MUUTOKSIA, result.getMuutosTila());
+        assertTrue(result.getMuuttuneetTiedot().containsAll(Arrays.asList(expecteds)));
+        assertEquals(versio, result.getViimeisinVersio().intValue());
     }
     
     private KoodistoChangesDto givenResultWithMultipleKoodistoVersiosForDateQuery(Date date, boolean compareToLatestAccepted, KoodistoVersio ... versios) {
@@ -371,7 +363,7 @@ public class KoodistoChangesServiceImplTest {
     private KoodistoChangesDto givenResultWithCodeElementsRemoved(KoodistoVersio koodistoVersio, KoodistoVersio latest) {
         KoodiVersio mockedKoodiVersio = Mockito.mock(KoodiVersio.class);
         when(mockedKoodiVersio.getVersio()).thenReturn(VERSIO);
-        when(koodiService.getLatestKoodiVersio(any(String.class))).thenReturn(mockedKoodiVersio);
+        when(koodiService.getLatestKoodiVersio(any())).thenReturn(mockedKoodiVersio);
         return givenResult(koodistoVersio, latest);
     }
     

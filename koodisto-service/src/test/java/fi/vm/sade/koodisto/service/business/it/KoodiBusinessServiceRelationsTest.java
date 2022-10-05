@@ -1,16 +1,19 @@
 package fi.vm.sade.koodisto.service.business.it;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import fi.vm.sade.koodisto.dao.DaoTest;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,8 +21,19 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@DatabaseSetup("classpath:test-data.xml")
-public class KoodiBusinessServiceRelationsTest extends DaoTest {
+@org.springframework.test.context.jdbc.Sql(
+        scripts = "classpath:test-data.sql",
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
+)
+@org.springframework.test.context.jdbc.Sql(
+        scripts = "classpath:truncate_tables.sql",
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+)
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureTestDatabase
+@WithMockUser(value = "1.2.3.4.5", authorities = "APP_KOODISTO_CRUD_1.2.246.562.10.00000000001")
+public class KoodiBusinessServiceRelationsTest {
 
     private final Logger logger = LoggerFactory.getLogger(KoodiBusinessServiceRelationsTest.class);
 
@@ -34,8 +48,8 @@ public class KoodiBusinessServiceRelationsTest extends DaoTest {
                 SuhteenTyyppi.RINNASTEINEN, false);
         assertEquals(2, rinnastuvat.size());
         for (KoodiVersioWithKoodistoItem k : rinnastuvat) {
-            logger.info("Koodi: " + k.getKoodiVersio().getKoodi().getKoodiUri() + " - versio "
-                    + k.getKoodiVersio().getVersio());
+            logger.info("Koodi: {} - versio: {}"
+                    ,k.getKoodiVersio().getKoodi().getKoodiUri(), k.getKoodiVersio().getVersio());
         }
 
         List<KoodiVersioWithKoodistoItem> children = koodiBusinessService.listByRelation(kv, SuhteenTyyppi.SISALTYY,
@@ -80,7 +94,7 @@ public class KoodiBusinessServiceRelationsTest extends DaoTest {
         assertEquals(3L, result.size());
     }
 
-    @Ignore("Suddenly started to fail in CI pipeline, works elsewhere?")
+    //@Ignore("Suddenly started to fail in CI pipeline, works elsewhere?")
     @Test
     public void savedRelationBetweenCodeElementsInSameCodes() {
         koodiBusinessService.addRelation("31", Arrays.asList("33"), SuhteenTyyppi.SISALTYY, false);
@@ -106,21 +120,10 @@ public class KoodiBusinessServiceRelationsTest extends DaoTest {
         assertEquals(0L, result.size());
     }
 
-    @Test
-    public void updatingKoodiVersioDoesNotRemoveOldRelations() {
-        KoodiUriAndVersioType kv = givenKoodiUriAndVersioType("7", 1);
-        koodiBusinessService.createNewVersion(kv.getKoodiUri());
-        List<KoodiVersioWithKoodistoItem> newItems = koodiBusinessService.listByRelation(givenKoodiUriAndVersioType("7", 2), SuhteenTyyppi.RINNASTEINEN, true);
-        assertEquals(2, newItems.size());
-        assertEquals(2, koodiBusinessService.listByRelation(kv, SuhteenTyyppi.RINNASTEINEN, true).size());
-    }
-
     private KoodiUriAndVersioType givenKoodiUriAndVersioType(String koodiUri, int versio) {
         KoodiUriAndVersioType kv = new KoodiUriAndVersioType();
         kv.setKoodiUri(koodiUri);
         kv.setVersio(versio);
         return kv;
     }
-
-
 }

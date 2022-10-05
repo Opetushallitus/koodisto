@@ -1,11 +1,10 @@
 package fi.vm.sade.koodisto.service.business.it;
 
-import com.github.springtestdbunit.annotation.DatabaseSetup;
-import fi.vm.sade.koodisto.dao.DaoTest;
-import fi.vm.sade.koodisto.dao.KoodiVersioDAO;
 import fi.vm.sade.koodisto.model.*;
+import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
+import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
@@ -14,18 +13,32 @@ import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import org.hibernate.Hibernate;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.*;
 
 import static org.junit.Assert.*;
 
-@DatabaseSetup("classpath:test-data.xml")
-@WithMockUser("1.2.3.4.5")
-public class KoodiBusinessServiceTest extends DaoTest {
+@org.springframework.test.context.jdbc.Sql(
+        scripts = "classpath:test-data.sql",
+        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
+)
+@org.springframework.test.context.jdbc.Sql(
+        scripts = "classpath:truncate_tables.sql",
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+)
+@SpringBootTest
+@AutoConfigureTestDatabase
+@RunWith(SpringRunner.class)
+@WithMockUser(value = "1.2.3.4.5", authorities = "APP_KOODISTO_CRUD_1.2.246.562.10.00000000001")
+public class KoodiBusinessServiceTest {
 
     @Autowired
     private KoodiBusinessService koodiBusinessService;
@@ -34,7 +47,7 @@ public class KoodiBusinessServiceTest extends DaoTest {
     private KoodistoBusinessService koodistoBusinessService;
 
     @Autowired
-    private KoodiVersioDAO koodiVersioDAO;
+    private KoodiVersioRepository koodiVersioRepository;
 
     private static UpdateKoodiDataType convert(KoodiVersio koodiVersio) throws Exception {
 
@@ -42,8 +55,8 @@ public class KoodiBusinessServiceTest extends DaoTest {
 
         updateKoodiDataType.setKoodiArvo(koodiVersio.getKoodiarvo());
         updateKoodiDataType.setKoodiUri(koodiVersio.getKoodi().getKoodiUri());
-        updateKoodiDataType.setVoimassaAlkuPvm(convert(koodiVersio.getVoimassaAlkuPvm()));
-        updateKoodiDataType.setVoimassaLoppuPvm(convert(koodiVersio.getVoimassaLoppuPvm()));
+        updateKoodiDataType.setVoimassaAlkuPvm(koodiVersio.getVoimassaAlkuPvm());
+        updateKoodiDataType.setVoimassaLoppuPvm(koodiVersio.getVoimassaLoppuPvm());
         updateKoodiDataType.getMetadata().clear();
         updateKoodiDataType.getMetadata().addAll(convert(koodiVersio.getMetadatas()));
         updateKoodiDataType.setVersio(koodiVersio.getVersio());
@@ -52,20 +65,9 @@ public class KoodiBusinessServiceTest extends DaoTest {
         return updateKoodiDataType;
     }
 
-    private static XMLGregorianCalendar convert(Date date) throws Exception {
-
-        if (date == null) return null;
-
-        GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        gregorianCalendar.setTime(date);
-
-        return DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
-
-    }
-
     private static Set<KoodiMetadataType> convert(Set<KoodiMetadata> koodiMetadataSet) {
 
-        Set<KoodiMetadataType> koodiMetadataTypeSet = new HashSet<KoodiMetadataType>();
+        Set<KoodiMetadataType> koodiMetadataTypeSet = new HashSet<>();
 
         for (KoodiMetadata koodiMetadata : koodiMetadataSet) {
 
@@ -105,7 +107,7 @@ public class KoodiBusinessServiceTest extends DaoTest {
 
     @Test
     public void testDeleteVersio() {
-        final String koodistoUri = "http://koodisto21";
+        final String koodistoUri = "koodisto21";
         final String koodiUri = "477";
 
         final int numberOfVersiosBeforeDelete = 2;
@@ -131,7 +133,7 @@ public class KoodiBusinessServiceTest extends DaoTest {
     @Test
     public void changeTilaFromHyvaksyttyToLuonnos() throws Exception {
 
-        final String koodistoUri = "http://koodisto19";
+        final String koodistoUri = "koodisto19";
         final Integer koodistoVersioBeforeTilaChange = 1;
         final Integer koodistoVersioAfterTilaChange = 2;
 
@@ -140,7 +142,7 @@ public class KoodiBusinessServiceTest extends DaoTest {
         assertEquals(koodistoVersioBeforeTilaChange, beforeUpdate.getVersio());
         assertEquals(Tila.HYVAKSYTTY, beforeUpdate.getTila());
 
-        List<KoodiVersioWithKoodistoItem> koodiVersioWithKoodistoItems = koodiBusinessService.getKoodisByKoodisto("http://koodisto19", true);
+        List<KoodiVersioWithKoodistoItem> koodiVersioWithKoodistoItems = koodiBusinessService.getKoodisByKoodisto("koodisto19", true);
         for (KoodiVersioWithKoodistoItem koodiVersioWithKoodistoItem : koodiVersioWithKoodistoItems) {
             if (Tila.HYVAKSYTTY.equals(koodiVersioWithKoodistoItem.getKoodiVersio().getTila())) {
                 UpdateKoodiDataType updateKoodiDataType = convert(koodiVersioWithKoodistoItem.getKoodiVersio());
@@ -152,18 +154,6 @@ public class KoodiBusinessServiceTest extends DaoTest {
         KoodistoVersio afterUpdate = koodistoBusinessService.getLatestKoodistoVersio(koodistoUri);
         assertEquals(Tila.LUONNOS, afterUpdate.getTila());
         assertEquals(koodistoVersioAfterTilaChange, afterUpdate.getVersio());
-    }
-
-    @Test
-    public void setsEndDatePreviousVersionWhenNewVersionIsSetToHyvaksytty() {
-        KoodiVersio latest = koodiBusinessService.getLatestKoodiVersio("436");
-        KoodiVersio updated = koodiBusinessService.createNewVersion(latest.getKoodi().getKoodiUri());
-        assertEquals(Tila.HYVAKSYTTY, latest.getTila());
-        assertNull(latest.getVoimassaLoppuPvm());
-        assertEquals(Tila.LUONNOS, updated.getTila());
-        koodiBusinessService.setKoodiTila(updated.getKoodi().getKoodiUri(), TilaType.HYVAKSYTTY);
-        latest = koodiVersioDAO.read(latest.getId());
-        assertNotNull(latest.getVoimassaLoppuPvm());
     }
 
     @Test
@@ -193,13 +183,6 @@ public class KoodiBusinessServiceTest extends DaoTest {
     }
 
     @Test
-    public void doesNotCopyPassiveRelationsWhenNewVersionIsCreated() {
-        String koodiUri = "passiivisuhdeeikopioidu";
-        koodiBusinessService.createNewVersion(koodiUri);
-        assertTrue(koodiBusinessService.listByRelation(koodiUri, true, SuhteenTyyppi.SISALTYY).isEmpty());
-    }
-
-    @Test
     public void fetchesKoodiAndInitializesKoodiVersions() {
         Koodi koodi = koodiBusinessService.getKoodi("435");
         assertNotNull(koodi);
@@ -214,12 +197,14 @@ public class KoodiBusinessServiceTest extends DaoTest {
     }
 
     @Test
+    @Transactional
     public void setsRelationsToPassiveWhenUpdatingTilaToPassive() throws Exception {
         KoodiVersio latest = koodiBusinessService.getLatestKoodiVersio("809suhdetahan");
         UpdateKoodiDataType updateData = convert(latest);
         updateData.setTila(UpdateKoodiTilaType.PASSIIVINEN);
         koodiBusinessService.updateKoodi(updateData);
-        assertRelationsArePassive(koodiBusinessService.getLatestKoodiVersio("809suhdetahan"), true);
+        KoodiVersio newest = koodiBusinessService.getLatestKoodiVersio("809suhdetahan");
+        assertRelationsArePassive(newest, true);
     }
 
     @Test
@@ -233,7 +218,17 @@ public class KoodiBusinessServiceTest extends DaoTest {
         assertRelationsArePassive(kv, false);
     }
 
-    private void assertRelationsArePassive(KoodiVersio latest, boolean passive) {
+    @Test
+    public void getKoodi() {
+        assertNotNull(koodiBusinessService.getKoodi("3", 1));
+    }
+
+    @Test(expected = KoodiNotFoundException.class)
+    public void getKoodiNotFound() {
+        koodiBusinessService.getKoodi("this-should-not-exists", 0);
+    }
+
+    public void assertRelationsArePassive(KoodiVersio latest, boolean passive) {
         for (KoodinSuhde ks : latest.getAlakoodis()) {
             assertEquals(passive, ks.isPassive());
         }
