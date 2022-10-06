@@ -16,7 +16,7 @@
 
         <aspectj.version>1.8.13</aspectj.version>
         <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
-        <cas-client.version>3.4.1</cas-client.version>
+        <cas-client.version>3.6.0</cas-client.version>
         <castor-xml.version>1.4.1</castor-xml.version>
         <commons-configuration.version>1.9</commons-configuration.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
@@ -25,7 +25,7 @@
         <ehcache.version>2.10.6</ehcache.version>
         <log-client.version>8.0</log-client.version>
         <hibernate.version>5.4.32.Final</hibernate.version>
-        <hibernate.validator.version>5.4.3.Final</hibernate.validator.version>
+        <hibernate.validator.version>6.0.23.Final</hibernate.validator.version>
         <hibernate4-maven-plugin.version>0.1.1</hibernate4-maven-plugin.version>
         <hsqldb.version>2.6.1</hsqldb.version>
         <jackson.2.version>2.9.8</jackson.2.version>
@@ -42,10 +42,10 @@
         <servlet.version>3.0.1</servlet.version>
 
         <slf4j.version>1.8.0-beta4</slf4j.version>
-        <log4j.version>2.17.0</log4j.version>
+        <log4j.version>2.17.1</log4j.version>
 
         <spring.version>4.3.26.RELEASE</spring.version>
-        <spring-security.version>4.2.14.RELEASE</spring-security.version>
+        <spring-security.version>5.5.7</spring-security.version>
         <spring-session.version>2.1.10.RELEASE</spring-session.version>
 
         <springockito-annotations.version>${springockito.version}</springockito-annotations.version>
@@ -92,8 +92,7 @@ branchName=${branch}
 vcsRevision=${revision}
 buildTtime=${maven.build.timestamp}]]>
                                 </echo>
-                                <loadfile property="buildversiontxt"
-                                          srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
+                                <loadfile property="buildversiontxt" srcFile="target/${project.build.finalName}/${buildversion_prefix}buildversion.txt"/>
                                 <echo message="${buildversiontxt}"/>
                                 <echo file="target/mavenversion.txt">${project.version}</echo>
                             </target>
