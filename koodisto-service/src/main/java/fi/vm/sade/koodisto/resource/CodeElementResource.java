@@ -92,6 +92,15 @@ public class CodeElementResource {
         return ResponseEntity.ok(koodiVersioWithKoodistoItemToSimpleKoodiDtoConverter.convertAll(codeElements));
     }
 
+    @JsonView({JsonViews.Simple.class})
+    @Operation(description = "Palauttaa koodin tietystä koodistoversiosta")
+    @GetMapping(path = "/codes/{codesUri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    public ResponseEntity<Object> getAllCodeElementsByCodesUri(
+            @Parameter(description = "Koodisto URI") @PathVariable @NotEmpty final String codesUri) {
+        List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.getKoodisByKoodisto(codesUri, false);
+        return ResponseEntity.ok(koodiVersioWithKoodistoItemToSimpleKoodiDtoConverter.convertAll(codeElements));
+    }
+
     @Operation(description = "Palauttaa uusimman koodiversion")
     @JsonView({JsonViews.Basic.class})
     @GetMapping(path = "/latest/{codeElementUri}", produces = MediaType.APPLICATION_JSON_VALUE)
