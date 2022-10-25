@@ -21,10 +21,10 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -266,6 +266,12 @@ class CodeElementResourceTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(3));
+    }
+    @Test
+    void testGetAllCodeElementsWithRelationsByCodesUriAndVersion() throws Exception {
+        getAllCodeElementsWithRelationsByCodesUriAndVersion("sisaltyysuhde2kanssa", 1)
+                .andExpect(status().isOk())
+                .andExpect(content().json(readFile("/fixtures/resource/codeelement/withrelations.json")));
     }
 
     @Test
@@ -933,6 +939,10 @@ class CodeElementResourceTest {
         return mockMvc.perform(get(BASE_PATH + "/codes/{codesUri}/{codesVersion}", codesUri, codesVersion));
     }
 
+    private ResultActions getAllCodeElementsWithRelationsByCodesUriAndVersion(String codesUri, int codesVersion) throws Exception {
+        return mockMvc.perform(get(BASE_PATH + "/codes/withrelations/{codesUri}/{codesVersion}", codesUri, codesVersion));
+    }
+
     private ResultActions getAllCodeElementsByCodesUri(String codesUri) throws Exception {
         return mockMvc.perform(get(BASE_PATH + "/codes/{codesUri}", codesUri));
     }
@@ -1004,5 +1014,8 @@ class CodeElementResourceTest {
         }
         o.put("metadata", new JSONArray(mds));
         return o;
+    }
+    private String readFile(String fileName) throws Exception {
+        return Files.readString(Paths.get(Objects.requireNonNull(getClass().getResource(fileName)).toURI()), StandardCharsets.UTF_8);
     }
 }
