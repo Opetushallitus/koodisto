@@ -267,11 +267,12 @@ class CodeElementResourceTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(3));
     }
+
     @Test
     void testGetAllCodeElementsWithRelationsByCodesUriAndVersion() throws Exception {
         getAllCodeElementsWithRelationsByCodesUriAndVersion("sisaltyysuhde2kanssa", 1)
                 .andExpect(status().isOk())
-                .andExpect(content().json(readFile("/fixtures/resource/codeelement/withrelations.json")));
+                .andExpect(content().json(readFile("/fixtures/resource/codeelement/withrelations.json"), true));
     }
 
     @Test
@@ -1015,6 +1016,7 @@ class CodeElementResourceTest {
         o.put("metadata", new JSONArray(mds));
         return o;
     }
+
     private String readFile(String fileName) throws Exception {
         return Files.readString(Paths.get(Objects.requireNonNull(getClass().getResource(fileName)).toURI()), StandardCharsets.UTF_8);
     }

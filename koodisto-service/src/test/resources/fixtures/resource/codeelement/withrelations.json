@@ -3,6 +3,7 @@
     "metadata": [
       {
         "nimi": "Alajaervi",
+        "kuvaus": "Alajaervi",
         "lyhytNimi": "Alajaervi",
         "kieli": "FI"
       }
@@ -30,6 +31,7 @@
     "metadata": [
       {
         "nimi": "Olajaervi",
+        "kuvaus": "Olajaervi",
         "lyhytNimi": "Olajaervi",
         "kieli": "FI"
       }
@@ -57,6 +59,7 @@
     "metadata": [
       {
         "nimi": "Iijaervi",
+        "kuvaus": "Iijaervi",
         "lyhytNimi": "Iijaervi",
         "kieli": "FI"
       }

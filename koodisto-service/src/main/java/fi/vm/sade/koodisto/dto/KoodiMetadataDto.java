@@ -21,7 +21,7 @@ public class KoodiMetadataDto {
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
     private String nimi;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
     private String kuvaus;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
