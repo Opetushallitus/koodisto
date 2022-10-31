@@ -83,12 +83,21 @@ public class CodeElementResource {
     }
 
     @JsonView({JsonViews.Simple.class})
-    @Operation(description = "Palauttaa koodin tietystä koodistoversiosta")
+    @Operation(description = "Palauttaa koodit tietystä koodistoversiosta")
     @GetMapping(path = "/codes/{codesUri}/{codesVersion}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<Object> getAllCodeElementsByCodesUriAndVersion(
             @Parameter(description = "Koodisto URI") @PathVariable @NotEmpty final String codesUri,
             @Parameter(description = "Koodiston versio") @PathVariable @Min(1) final int codesVersion) {
         List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.getKoodisByKoodistoVersio(codesUri, codesVersion, false);
+        return ResponseEntity.ok(koodiVersioWithKoodistoItemToSimpleKoodiDtoConverter.convertAll(codeElements));
+    }
+
+    @JsonView({JsonViews.Simple.class})
+    @Operation(description = "Palauttaa koodit viimeisestä koodistoversiosta")
+    @GetMapping(path = "/codes/{codesUri}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    public ResponseEntity<Object> getAllCodeElementsByCodesUri(
+            @Parameter(description = "Koodisto URI") @PathVariable @NotEmpty final String codesUri) {
+        List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.getKoodisByKoodisto(codesUri, false);
         return ResponseEntity.ok(koodiVersioWithKoodistoItemToSimpleKoodiDtoConverter.convertAll(codeElements));
     }
 

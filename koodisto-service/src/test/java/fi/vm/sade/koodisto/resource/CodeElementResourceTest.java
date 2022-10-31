@@ -250,6 +250,17 @@ class CodeElementResourceTest {
     }
 
     @Test
+    void testGetAllCodeElementsByCodesUri() throws Exception {
+        String res = getAllCodeElementsByCodesUriAndVersion("lisaarinnasteinen2", 1)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$.length()").value(3)).andReturn().getResponse().getContentAsString();
+        getAllCodeElementsByCodesUri("lisaarinnasteinen2")
+                .andExpect(status().isOk())
+                .andExpect(content().string(res));
+    }
+
+    @Test
     void testGetAllCodeElementsByCodesUriAndVersion() throws Exception {
         getAllCodeElementsByCodesUriAndVersion("lisaarinnasteinen2", 1)
                 .andExpect(status().isOk())
@@ -260,6 +271,9 @@ class CodeElementResourceTest {
     @Test
     void testGetAllCodeElementsByCodesUriAndVersionInvalid() throws Exception {
         getAllCodeElementsByCodesUriAndVersion("lisaarinnasteinen2", -1)
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("error.validation.version")));
+        getAllCodeElementsByCodesUriAndVersion("lisaarinnasteinen2", 0)
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string(containsString("error.validation.version")));
         getAllCodeElementsByCodesUriAndVersion("uridoesnotexist", 1)
@@ -917,6 +931,10 @@ class CodeElementResourceTest {
 
     private ResultActions getAllCodeElementsByCodesUriAndVersion(String codesUri, int codesVersion) throws Exception {
         return mockMvc.perform(get(BASE_PATH + "/codes/{codesUri}/{codesVersion}", codesUri, codesVersion));
+    }
+
+    private ResultActions getAllCodeElementsByCodesUri(String codesUri) throws Exception {
+        return mockMvc.perform(get(BASE_PATH + "/codes/{codesUri}", codesUri));
     }
 
     private ResultActions getLatestCodeElementVersionsByCodeElementUri(String codeElementUri) throws Exception {
