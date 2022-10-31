@@ -1,0 +1,86 @@
+[
+  {
+    "metadata": [
+      {
+        "nimi": "Alajaervi",
+        "kuvaus": "Alajaervi",
+        "lyhytNimi": "Alajaervi",
+        "kieli": "FI"
+      }
+    ],
+    "withinCodeElements": [
+      {
+        "codeElementUri": "sisaltaakoodisto1koodit",
+        "codeElementVersion": 1,
+        "passive": false
+      }
+    ],
+    "includesCodeElements": [
+      {
+        "codeElementUri": "sisaltyykoodisto1koodienkanssa",
+        "codeElementVersion": 1,
+        "passive": false
+      }
+    ],
+    "levelsWithCodeElements": [],
+    "koodiUri": "sisaltyysuhde4kanssa1",
+    "versio": 1,
+    "koodiArvo": "ss4k1"
+  },
+  {
+    "metadata": [
+      {
+        "nimi": "Olajaervi",
+        "kuvaus": "Olajaervi",
+        "lyhytNimi": "Olajaervi",
+        "kieli": "FI"
+      }
+    ],
+    "withinCodeElements": [
+      {
+        "codeElementUri": "sisaltaakoodisto1koodit",
+        "codeElementVersion": 1,
+        "passive": false
+      }
+    ],
+    "includesCodeElements": [
+      {
+        "codeElementUri": "sisaltyykoodisto1koodienkanssa",
+        "codeElementVersion": 1,
+        "passive": false
+      }
+    ],
+    "levelsWithCodeElements": [],
+    "koodiUri": "sisaltyysuhde4kanssa2",
+    "versio": 1,
+    "koodiArvo": "ss4k2"
+  },
+  {
+    "metadata": [
+      {
+        "nimi": "Iijaervi",
+        "kuvaus": "Iijaervi",
+        "lyhytNimi": "Iijaervi",
+        "kieli": "FI"
+      }
+    ],
+    "withinCodeElements": [
+      {
+        "codeElementUri": "sisaltaakoodisto1koodit",
+        "codeElementVersion": 1,
+        "passive": false
+      }
+    ],
+    "includesCodeElements": [
+      {
+        "codeElementUri": "sisaltyykoodisto1koodienkanssa",
+        "codeElementVersion": 1,
+        "passive": false
+      }
+    ],
+    "levelsWithCodeElements": [],
+    "koodiUri": "sisaltyysuhde4kanssa3",
+    "versio": 1,
+    "koodiArvo": "ss4k3"
+  }
+]

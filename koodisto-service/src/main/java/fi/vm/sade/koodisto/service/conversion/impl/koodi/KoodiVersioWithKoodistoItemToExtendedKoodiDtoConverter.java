@@ -10,10 +10,10 @@ import fi.vm.sade.koodisto.model.KoodinSuhde;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
+import fi.vm.sade.koodisto.service.conversion.ExtendedConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.MetadataToSimpleMetadataConverter;
 import fi.vm.sade.properties.OphProperties;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
-        Converter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
+        ExtendedConverter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
 
     private final OphProperties ophProperties;
     private final KoodiMetadataToKoodiMetadataDtoConverter koodistoVersioToKoodistoVersioListDtoConverter;

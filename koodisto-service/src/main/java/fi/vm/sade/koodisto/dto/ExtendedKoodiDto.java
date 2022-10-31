@@ -33,34 +33,34 @@ public class ExtendedKoodiDto {
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
     @NotNull
     protected Tila tila;
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
     @NotEmpty(message = "error.metadata.empty")
     protected List<KoodiMetadataDto> metadata = new ArrayList<>();
-    @JsonView({JsonViews.Extended.class, JsonViews.Internal.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
     @NotNull
     protected List<RelationCodeElement> withinCodeElements = new ArrayList<>();
-    @JsonView({JsonViews.Extended.class, JsonViews.Internal.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
     @NotNull
     protected List<RelationCodeElement> includesCodeElements = new ArrayList<>();
-    @JsonView({JsonViews.Extended.class, JsonViews.Internal.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
     @NotNull
     protected List<RelationCodeElement> levelsWithCodeElements = new ArrayList<>();
     @JsonView({JsonViews.Internal.class})
     @JsonInclude(JsonInclude.Include.NON_NULL)
     protected Integer versions;
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
     @NotBlank
     private String koodiUri;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
     private String resourceUri;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private Long version;
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
     @Min(0)
     private int versio;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private KoodistoItemDto koodisto;
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
     @NotBlank
     private String koodiArvo;
 
@@ -73,9 +73,9 @@ public class ExtendedKoodiDto {
     @Getter
     @RequiredArgsConstructor
     public static class RelationCodeElement {
-        @JsonView({JsonViews.Extended.class, JsonViews.Internal.class})
+        @JsonView({JsonViews.Extended.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
         private final String codeElementUri;
-        @JsonView({JsonViews.Extended.class, JsonViews.Internal.class})
+        @JsonView({JsonViews.Extended.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
         private final Integer codeElementVersion;
         @JsonView({JsonViews.Extended.class, JsonViews.Internal.class})
         private final String codeElementValue;
@@ -84,7 +84,7 @@ public class ExtendedKoodiDto {
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
         private final List<SimpleMetadataDto> parentMetadata;
 
-        @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
+        @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
         private final boolean passive;
     }
 }

@@ -17,4 +17,7 @@ public class JsonViews {
 
     public interface Internal {
     }
+
+    public interface SimpleWithRelations {
+    }
 }
