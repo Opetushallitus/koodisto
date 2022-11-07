@@ -47,7 +47,7 @@ type Props = {
 };
 
 const onUpload = ({
-    data,
+    data: unfiltered,
     koodistoUri,
     setCsvKoodiArray,
 }: {
@@ -55,6 +55,7 @@ const onUpload = ({
     koodistoUri: string;
     setCsvKoodiArray: (csvKoodiArray: CsvKoodiObject[]) => void;
 }): void => {
+    const data = unfiltered.filter((a) => !!a.koodistoUri && !!a.koodiArvo);
     const wrongKoodistoUri = data?.find((a) => {
         return a.koodistoUri !== koodistoUri;
     });

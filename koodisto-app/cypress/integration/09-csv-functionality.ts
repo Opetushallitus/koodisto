@@ -43,4 +43,18 @@ describe('CSV functionality tests', () => {
         });
         cy.get('button').contains('Tallenna').click();
     });
+
+    it('upload csv file with empty line', () => {
+        cy.intercept(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, { fixture: `${koodistoUri}.json` });
+        cy.get(`[name="${koodistoUri}-csv"]`).click();
+        cy.get('input[type="file"]').attachFile({
+            filePath: `${koodistoUri}_upload_empty_line.csv`,
+            encoding: 'utf-16le',
+        });
+        cy.contains('Cypress_Muokattu').should('be.visible');
+        cy.intercept('POST', `${API_INTERNAL_PATH}/koodi/upsert/${koodistoUri}`, (req) => {
+            req.reply({ fixture: 'arvosanatKoodisto.json' });
+            expect(req.body[0].metadata[0]).to.include({ nimi: 'Cypress_Muokattu', kieli: 'FI' });
+        });
+    });
 });
