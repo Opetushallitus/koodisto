@@ -2,9 +2,9 @@
   {
     "metadata": [
       {
-        "nimi": "Alajaervi",
-        "kuvaus": "Alajaervi",
-        "lyhytNimi": "Alajaervi",
+        "nimi": "Alapuro",
+        "kuvaus": "Alapuro",
+        "lyhytNimi": "Puro",
         "kieli": "FI"
       },
       {
@@ -20,31 +20,25 @@
         "kieli": "EN"
       }
     ],
-    "withinCodeElements": [
+    "withinCodeElements": [],
+    "includesCodeElements": [],
+    "levelsWithCodeElements": [
       {
         "codeElementUri": "sisaltaakoodisto1koodit",
         "codeElementVersion": 1,
         "passive": false
       }
     ],
-    "includesCodeElements": [
-      {
-        "codeElementUri": "sisaltyykoodisto1koodienkanssa",
-        "codeElementVersion": 1,
-        "passive": false
-      }
-    ],
-    "levelsWithCodeElements": [],
-    "koodiUri": "sisaltyysuhde4kanssa1",
+    "koodiUri": "rinnastuu4kanssa1",
     "versio": 1,
-    "koodiArvo": "ss4k1"
+    "koodiArvo": "r4k1"
   },
   {
     "metadata": [
       {
-        "nimi": "Olajaervi",
-        "kuvaus": "Olajaervi",
-        "lyhytNimi": "Olajaervi",
+        "nimi": "Kivipuro",
+        "kuvaus": "Kivipuro",
+        "lyhytNimi": "Puro",
         "kieli": "FI"
       },
       {
@@ -60,31 +54,25 @@
         "kieli": "EN"
       }
     ],
-    "withinCodeElements": [
+    "withinCodeElements": [],
+    "includesCodeElements": [],
+    "levelsWithCodeElements": [
       {
         "codeElementUri": "sisaltaakoodisto1koodit",
         "codeElementVersion": 1,
         "passive": false
       }
     ],
-    "includesCodeElements": [
-      {
-        "codeElementUri": "sisaltyykoodisto1koodienkanssa",
-        "codeElementVersion": 1,
-        "passive": false
-      }
-    ],
-    "levelsWithCodeElements": [],
-    "koodiUri": "sisaltyysuhde4kanssa2",
+    "koodiUri": "rinnastuu4kanssa2",
     "versio": 1,
-    "koodiArvo": "ss4k2"
+    "koodiArvo": "r4k2"
   },
   {
     "metadata": [
       {
-        "nimi": "Iijaervi",
-        "kuvaus": "Iijaervi",
-        "lyhytNimi": "Iijaervi",
+        "nimi": "Sorapuro",
+        "kuvaus": "Sorapuro",
+        "lyhytNimi": "Puro",
         "kieli": "FI"
       },
       {
@@ -100,23 +88,17 @@
         "kieli": "EN"
       }
     ],
-    "withinCodeElements": [
+    "withinCodeElements": [],
+    "includesCodeElements": [],
+    "levelsWithCodeElements": [
       {
         "codeElementUri": "sisaltaakoodisto1koodit",
         "codeElementVersion": 1,
         "passive": false
       }
     ],
-    "includesCodeElements": [
-      {
-        "codeElementUri": "sisaltyykoodisto1koodienkanssa",
-        "codeElementVersion": 1,
-        "passive": false
-      }
-    ],
-    "levelsWithCodeElements": [],
-    "koodiUri": "sisaltyysuhde4kanssa3",
+    "koodiUri": "rinnastuu4kanssa3",
     "versio": 1,
-    "koodiArvo": "ss4k3"
+    "koodiArvo": "r4k3"
   }
 ]

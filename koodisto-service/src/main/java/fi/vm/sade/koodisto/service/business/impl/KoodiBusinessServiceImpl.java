@@ -7,6 +7,7 @@ import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;
+import fi.vm.sade.koodisto.dto.KoodiMetadataDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodiSuhdeDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioDto;
@@ -36,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -1040,6 +1042,77 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         }
 
         return searchKoodis(searchData);
+    }
+
+    @Override
+    public List<ExtendedKoodiDto> getKoodisWithRelationsByKoodistoVersio(String koodistoUri, int koodistoVersio) {
+        return getKoodisWithMetadataByKoodistoVersio(koodistoUri, koodistoVersio).stream()
+                .map(a -> {
+                    List<KoodistoRepository.FlatKoodiWithRelation> relations = koodistoRepository.findFlatKoodiRelations(koodistoUri, koodistoVersio, a.getKoodiUri());
+                    a.setWithinCodeElements(getWithinCodeElements(relations));
+                    a.setIncludesCodeElements(getIncludesCodeElements(relations));
+                    a.setLevelsWithCodeElements(getLevelsWithCodeElements(relations));
+                    return a;
+                })
+                .collect(Collectors.toList());
+    }
+
+    private List<RelationCodeElement> getWithinCodeElements(List<KoodistoRepository.FlatKoodiWithRelation> relations) {
+        return relations.stream()
+                .filter(a -> a.getSuhteentyyppi().equals(SuhteenTyyppi.SISALTYY) && a.getIsWithin())
+                .map(getRelationFromFlat()).collect(Collectors.toList());
+    }
+
+    private List<RelationCodeElement> getIncludesCodeElements(List<KoodistoRepository.FlatKoodiWithRelation> relations) {
+        return relations.stream()
+                .filter(a -> a.getSuhteentyyppi().equals(SuhteenTyyppi.SISALTYY) && !a.getIsWithin())
+                .map(getRelationFromFlat()).collect(Collectors.toList());
+    }
+
+    private List<RelationCodeElement> getLevelsWithCodeElements(List<KoodistoRepository.FlatKoodiWithRelation> relations) {
+        return relations.stream()
+                .filter(a -> a.getSuhteentyyppi().equals(SuhteenTyyppi.RINNASTEINEN))
+                .map(getRelationFromFlat()).collect(Collectors.toList());
+    }
+
+    private static Function<KoodistoRepository.FlatKoodiWithRelation, RelationCodeElement> getRelationFromFlat() {
+        return relation -> RelationCodeElement.builder()
+                .codeElementUri(relation.getSuhdeKoodiuri())
+                .codeElementVersion(relation.getSuhdeVersio())
+                .passive(relation.getSuhdeKoodiPassive())
+                .build();
+    }
+
+    private List<ExtendedKoodiDto> getKoodisWithMetadataByKoodistoVersio(String koodistoUri, int koodistoVersio) {
+        return koodistoRepository.findFlatKoodiWithMetadata(koodistoUri, koodistoVersio)
+                .stream().map(koodi -> ExtendedKoodiDto.builder()
+                        .koodiUri(koodi.getKoodiUri())
+                        .versio(koodi.getKoodiVersio())
+                        .koodiArvo(koodi.getKoodiArvo())
+                        .metadata(getMetadata(koodi))
+                        .build())
+                .sorted(Comparator.comparing(ExtendedKoodiDto::getKoodiUri))
+                .collect(Collectors.toList());
+    }
+
+
+    private static List<KoodiMetadataDto> getMetadata(KoodistoRepository.FlatKoodiWithMetadata koodi) {
+        return List.of(KoodiMetadataDto.builder()
+                .kieli(Kieli.FI)
+                .nimi(koodi.getMetadataNimiFI())
+                .lyhytNimi(koodi.getMetadataLyhytNimiFI())
+                .kuvaus(koodi.getMetadataKuvausFI())
+                .build(), KoodiMetadataDto.builder()
+                .kieli(Kieli.SV)
+                .nimi(koodi.getMetadataNimiSV())
+                .lyhytNimi(koodi.getMetadataLyhytNimiSV())
+                .kuvaus(koodi.getMetadataKuvausSV())
+                .build(), KoodiMetadataDto.builder()
+                .kieli(Kieli.EN)
+                .nimi(koodi.getMetadataNimiEN())
+                .lyhytNimi(koodi.getMetadataLyhytNimiEN())
+                .kuvaus(koodi.getMetadataKuvausEN())
+                .build());
     }
 
     private void onlyValidKoodis(SearchKoodisByKoodistoCriteriaType searchData) {

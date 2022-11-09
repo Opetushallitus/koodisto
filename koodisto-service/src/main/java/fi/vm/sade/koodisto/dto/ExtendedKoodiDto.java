@@ -6,9 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Tila;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.*;
 import java.util.ArrayList;
@@ -18,6 +16,9 @@ import java.util.Optional;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ExtendedKoodiDto {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -71,6 +72,7 @@ public class ExtendedKoodiDto {
     }
 
     @Getter
+    @Builder
     @RequiredArgsConstructor
     public static class RelationCodeElement {
         @JsonView({JsonViews.Extended.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})

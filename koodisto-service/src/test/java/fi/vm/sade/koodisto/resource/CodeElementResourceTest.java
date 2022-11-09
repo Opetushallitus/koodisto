@@ -276,6 +276,12 @@ class CodeElementResourceTest {
     }
 
     @Test
+    void testGetAllCodeElementsWithRelationsByCodesUriAndVersionLevels() throws Exception {
+        getAllCodeElementsWithRelationsByCodesUriAndVersion("rinnasteinensuhde1kanssa", 1)
+                .andExpect(status().isOk())
+                .andExpect(content().json(readFile("/fixtures/resource/codeelement/withrelations_levels.json"), true));
+    }
+    @Test
     void testGetAllCodeElementsByCodesUriAndVersionInvalid() throws Exception {
         getAllCodeElementsByCodesUriAndVersion("lisaarinnasteinen2", -1)
                 .andExpect(status().isBadRequest())
