@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodiRelaatioListaDto;
+import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.KoodiVersio;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
@@ -16,7 +17,6 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodisto
 import fi.vm.sade.koodisto.service.types.SearchKoodisCriteriaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import fi.vm.sade.koodisto.validator.KoodistoValidationException;
-import fi.vm.sade.koodisto.model.JsonViews;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -102,13 +102,12 @@ public class CodeElementResource {
     }
 
     @JsonView({JsonViews.SimpleWithRelations.class})
-    @Operation(description = "Palauttaa koodin tietystä koodistoversiosta")
+    @Operation(description = "Palauttaa koodit relaatioiden kera tietystä koodistoversiosta")
     @GetMapping(path = "/codes/withrelations/{codesUri}/{codesVersion}", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<Object> getAllCodeElementsWithRelationsByCodesUriAndVersion(
             @Parameter(description = "Koodisto URI") @PathVariable @NotEmpty final String codesUri,
             @Parameter(description = "Koodiston versio") @PathVariable @Min(1) final int codesVersion) {
-        List<KoodiVersioWithKoodistoItem> codeElements = koodiBusinessService.getKoodisByKoodistoVersio(codesUri, codesVersion, false);
-        return ResponseEntity.ok(koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convertAll(codeElements));
+        return ResponseEntity.ok(koodiBusinessService.getKoodisWithRelationsByKoodistoVersio(codesUri, codesVersion));
     }
 
     @Operation(description = "Palauttaa uusimman koodiversion")

@@ -95,6 +95,8 @@ public interface KoodiBusinessService {
 
     List<KoodiVersioWithKoodistoItem> getKoodisByKoodistoVersio(String koodistoUri, Integer koodistoVersio, boolean onlyValidKoodis);
 
+    List<ExtendedKoodiDto> getKoodisWithRelationsByKoodistoVersio(String koodistoUri, int koodistoVersio);
+
     List<KoodiVersioWithKoodistoItem> getKoodisByKoodisto(String koodistoUri, boolean onlyValidKoodis);
 
     List<KoodiVersioWithKoodistoItem> getKoodisByKoodistoWithKoodiArvo(String koodistoUri, String koodiArvo);
