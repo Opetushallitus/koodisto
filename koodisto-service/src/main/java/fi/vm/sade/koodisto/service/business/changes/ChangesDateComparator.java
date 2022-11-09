@@ -1,12 +1,14 @@
 package fi.vm.sade.koodisto.service.business.changes;
 
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 
+import java.time.ZoneId;
 import java.util.Collection;
+import java.util.Date;
 
 public abstract class ChangesDateComparator<C> {
 
-    public C getClosestMatchingEntity(DateTime dateToCompare, Collection<C> entities) {
+    public C getClosestMatchingEntity(LocalDateTime dateToCompare, Collection<C> entities) {
         C closestMatching = null;
         for (C entity : entities) {
             closestMatching = compareDateTimes(dateToCompare, entity, closestMatching);
@@ -14,12 +16,12 @@ public abstract class ChangesDateComparator<C> {
         return closestMatching;
     }
 
-    private C compareDateTimes(DateTime toCompare, C entity, C closestMatching) {
+    private C compareDateTimes(LocalDateTime toCompare, C entity, C closestMatching) {
         if (closestMatching == null) {
             return entity;
         }
-        DateTime entityDate = getDateFromEntity(entity);
-        DateTime closestMatchingDate = getDateFromEntity(closestMatching);
+        LocalDateTime entityDate = getDateFromEntity(entity);
+        LocalDateTime closestMatchingDate = getDateFromEntity(closestMatching);
         if (toCompare.isBefore(entityDate) && entityDate.isBefore(closestMatchingDate)
                 || toCompare.isAfter(entityDate) && toCompare.isBefore(closestMatchingDate)
                 || toCompare.isAfter(entityDate) && entityDate.isAfter(closestMatchingDate)
@@ -30,6 +32,10 @@ public abstract class ChangesDateComparator<C> {
         return closestMatching;
     }
 
-    protected abstract DateTime getDateFromEntity(C entity);
-
+    protected abstract LocalDateTime getDateFromEntity(C entity);
+    protected static LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
+    }
 }

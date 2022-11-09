@@ -1,6 +1,6 @@
 package fi.vm.sade.koodisto.service.business.changes;
 
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 
 public interface ChangesService<T> {
     
@@ -8,6 +8,6 @@ public interface ChangesService<T> {
 
     T getChangesDto(String uri, Integer versio, boolean compareToLatestAccepted);
     
-    T getChangesDto(String uri, DateTime date, boolean compareToLatestAccepted);
+    T getChangesDto(String uri, LocalDateTime date, boolean compareToLatestAccepted);
 
 }

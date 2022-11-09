@@ -20,7 +20,6 @@ import fi.vm.sade.koodisto.validator.KoodistoValidationException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import org.joda.time.DateTime;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +31,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -146,7 +146,7 @@ public class CodeElementResource {
                                                                   @Parameter(description = "Minuutti") @PathVariable @Min(0) @Max(59) final int minute,
                                                                   @Parameter(description = "Sekunti") @PathVariable @Min(0) @Max(59) final int second,
                                                                   @Parameter(description = "Verrataanko viimeiseen hyväksyttyyn versioon") @RequestParam(defaultValue = "false") Boolean compareToLatestAccepted) {
-        DateTime dateTime = new DateTime(year, month, dayofmonth, hour, minute, second);
+        LocalDateTime dateTime = LocalDateTime.of(year, month, dayofmonth, hour, minute, second);
         return ResponseEntity.ok(changesService.getChangesDto(codeElementUri, dateTime, compareToLatestAccepted));
     }
 

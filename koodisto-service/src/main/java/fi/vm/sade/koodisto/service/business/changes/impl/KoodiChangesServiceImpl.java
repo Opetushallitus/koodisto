@@ -12,13 +12,13 @@ import fi.vm.sade.koodisto.service.business.changes.ChangesDateComparator;
 import fi.vm.sade.koodisto.service.business.changes.ChangesService;
 import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Transactional(readOnly = true)
@@ -40,13 +40,13 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
     }
     
     @Override
-    public KoodiChangesDto getChangesDto(String uri, DateTime date, boolean compareToLatestAccepted) {
+    public KoodiChangesDto getChangesDto(String uri, LocalDateTime date, boolean compareToLatestAccepted) {
         KoodiVersio koodiVersio = determineCodeVersionThatMatchesDate(uri, date);
         KoodiVersio latestKoodiVersio = fetchLatestDesiredCodeVersion(uri, compareToLatestAccepted);
         return constructChangesDto(koodiVersio, latestKoodiVersio, compareToLatestAccepted);
     }
     
-    private KoodiVersio determineCodeVersionThatMatchesDate(String uri, DateTime date) {
+    private KoodiVersio determineCodeVersionThatMatchesDate(String uri, LocalDateTime date) {
         return new KoodiChangesDateComparator().getClosestMatchingEntity(date, service.getKoodi(uri).getKoodiVersios());
     }
 
@@ -231,8 +231,8 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
     private static class KoodiChangesDateComparator extends ChangesDateComparator<KoodiVersio> {
 
         @Override
-        protected DateTime getDateFromEntity(KoodiVersio entity) {
-            return new DateTime(entity.getLuotu());
+        protected LocalDateTime getDateFromEntity(KoodiVersio entity) {
+            return convertToLocalDateTimeViaInstant(entity.getLuotu());
         }
         
     }
