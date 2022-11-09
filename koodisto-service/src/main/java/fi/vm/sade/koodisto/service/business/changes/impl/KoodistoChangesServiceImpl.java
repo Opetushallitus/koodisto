@@ -15,11 +15,11 @@ import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.changes.*;
 import fi.vm.sade.koodisto.service.conversion.impl.MetadataToSimpleMetadataConverter;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -46,13 +46,13 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
     }
 
     @Override
-    public KoodistoChangesDto getChangesDto(String uri, DateTime date, boolean compareToLatestAccepted) {
+    public KoodistoChangesDto getChangesDto(String uri, LocalDateTime date, boolean compareToLatestAccepted) {
         KoodistoVersio koodistoVersio = determineCodeVersionThatMatchesDate(uri, date);
         KoodistoVersio latest = fetchLatestDesiredCodesVersion(uri, compareToLatestAccepted);
         return constructChangesDto(koodistoVersio, latest);
     }
     
-    private KoodistoVersio determineCodeVersionThatMatchesDate(String uri, DateTime date) {
+    private KoodistoVersio determineCodeVersionThatMatchesDate(String uri, LocalDateTime date) {
         return new KoodistoChangesDateComparator().getClosestMatchingEntity(date, koodistoService.getKoodistoByKoodistoUri(uri).getKoodistoVersios());
     }
     
@@ -323,8 +323,8 @@ public class KoodistoChangesServiceImpl implements KoodistoChangesService {
     private class KoodistoChangesDateComparator extends ChangesDateComparator<KoodistoVersio> {
 
         @Override
-        protected DateTime getDateFromEntity(KoodistoVersio entity) {
-            return new DateTime(entity.getLuotu());
+        protected LocalDateTime getDateFromEntity(KoodistoVersio entity) {
+            return convertToLocalDateTimeViaInstant(entity.getLuotu());
         }
         
     }

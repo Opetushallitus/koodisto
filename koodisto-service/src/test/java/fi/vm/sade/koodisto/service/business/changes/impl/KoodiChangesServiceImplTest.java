@@ -11,7 +11,6 @@ import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import fi.vm.sade.koodisto.test.support.builder.KoodiVersioBuilder;
-import org.joda.time.DateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -20,10 +19,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.any;
@@ -35,7 +33,9 @@ public class KoodiChangesServiceImplTest {
     
     private static final Date CURRENT_DATE = new Date();
     
-    private static final Date FIRST_DATE = new Date(1000), SECOND_DATE = new Date(20000000), THIRD_DATE = new Date(30000000);
+    private static final Date FIRST_DATE = new Date(1000);
+    private static final Date SECOND_DATE = new Date(20000000);
+    private static final Date THIRD_DATE = new Date(30000000);
     
     private static final String KOODI_URI = "elefantti";
     
@@ -227,12 +227,12 @@ public class KoodiChangesServiceImplTest {
     
     @Test
     public void usesCodesVersionThatIsClosestToGivenDateForComparison() {
-        assertGivenResultWithDateQuery(SECOND_DATE, false);
+        assertGivenResultWithDateQuery(dateFromLong(20000000), false);
     }
     
     @Test
     public void usesFirstVersionForComparisonWhenDateUsedForQueryIsBeforeAnyVersion() {
-        assertGivenResultWithDateQuery(new Date(0), true);
+        assertGivenResultWithDateQuery(dateFromLong(0), true);
     }
 
     @Test
@@ -323,7 +323,7 @@ public class KoodiChangesServiceImplTest {
         assertResultIsDeleted(givenDeletedResult(givenKoodiVersio(VERSIO), givenKoodiVersio(VERSIO + 1), true));
     }
     
-    private void assertGivenResultWithDateQuery(Date query, boolean shouldUseFirst) {
+    private void assertGivenResultWithDateQuery(LocalDateTime query, boolean shouldUseFirst) {
         String descriptionChangedForSecond = "kuvausta norsusta";
         String nameChangedForThird = "Otus";
         KoodiVersio first = givenKoodiVersioWithMetaDataAndCustomDateItWasCreated(VERSIO, FIRST_DATE, givenKoodiMetadata(NAME, SHORT_NAME, DESCRIPTION, Kieli.FI));
@@ -399,13 +399,13 @@ public class KoodiChangesServiceImplTest {
         return service.getChangesDto(KOODI_URI, versio, compareToLatestAccepted);
     }
 
-    private KoodiChangesDto givenResultWithMultipleKoodiVersiosForDateQuery(Date date, boolean compareToLatestAccepted, KoodiVersio ... versios) {
+    private KoodiChangesDto givenResultWithMultipleKoodiVersiosForDateQuery(LocalDateTime date, boolean compareToLatestAccepted, KoodiVersio ... versios) {
         if (!compareToLatestAccepted) {
             returnLatestKoodiVersioFromMockedKoodiService(versios);
         }
         returnGivenKoodiVersiosWithKoodiFromMockedKoodiService(versios);
         koodistoServiceReturnsKoodistoWithAllVersions(versios);
-        return service.getChangesDto(KOODI_URI, new DateTime(date), compareToLatestAccepted);
+        return service.getChangesDto(KOODI_URI, date, compareToLatestAccepted);
     }
     
     private void koodistoServiceReturnsKoodistoWithAllVersions(KoodiVersio ... versios) {
@@ -493,5 +493,10 @@ public class KoodiChangesServiceImplTest {
     
     private KoodinSuhde givenPassiveKoodinSuhde(SuhteenTyyppi tyyppi, KoodiVersio parent, KoodiVersio child, boolean parentPassive, boolean childPassive) {
         return DtoFactory.createKoodinSuhde(tyyppi, child, parent, parentPassive, childPassive);
+    }
+
+    private LocalDateTime dateFromLong(long timestamp) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp),
+                TimeZone.getDefault().toZoneId());
     }
 }
