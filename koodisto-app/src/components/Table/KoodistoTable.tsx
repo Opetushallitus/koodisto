@@ -7,10 +7,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ListKoodisto, SelectOptionType, KoodistoRelation, PageSize } from '../../types';
 import { koodistoListAtom } from '../../api/koodisto';
 import { useAtom } from 'jotai';
-import { ColumnDef, CellContext, Row } from '@tanstack/react-table';
+import { ColumnDef, CellContext, Row, ColumnFiltersState } from '@tanstack/react-table';
 import { sortBy } from 'lodash';
 import { ButtonLabelPrefix } from '../Containers';
 import { Table } from './Table';
+import { atomWithStorage } from 'jotai/utils';
+
 export const HeaderContainer = styled.div`
     display: flex;
     padding: 1rem 1rem;
@@ -43,7 +45,7 @@ type KoodistoTableProps = {
     oldRelations?: KoodistoRelation[];
     pageSize?: PageSize;
 };
-
+const koodistoFiltersAtom = atomWithStorage<ColumnFiltersState>('koodistoFilters', []);
 export const KoodistoTable: React.FC<KoodistoTableProps> = ({
     modal,
     setSelected,
@@ -52,6 +54,7 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
 }) => {
     const navigate = useNavigate();
     const [atomData] = useAtom(koodistoListAtom);
+    const [koodistoFilters, setKoodistoFilters] = useAtom(koodistoFiltersAtom);
     const { formatMessage } = useIntl();
     const data = useMemo<ListKoodisto[]>(
         () =>
@@ -68,7 +71,7 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
     const columns = React.useMemo<ColumnDef<ListKoodisto>[]>(
         () => [
             {
-                header: formatMessage({ id: 'TAULUKKO_KOODISTORYHMA_OTSIKKO', defaultMessage: 'Koodistoryhma' }),
+                header: formatMessage({ id: 'TAULUKKO_KOODISTORYHMA_OTSIKKO', defaultMessage: 'Koodistoryhmä' }),
                 columns: [
                     {
                         id: 'ryhmaUri',
@@ -224,6 +227,8 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
                 onFilter={(rows) => setFilteredCount(rows.length)}
                 setSelected={setSelected}
                 pageSize={pageSize}
+                initialFilterState={koodistoFilters}
+                setStoredFilterState={setKoodistoFilters}
             />
         </>
     );

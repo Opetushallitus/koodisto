@@ -24,10 +24,12 @@ import {
     getPaginationRowModel,
     SortingState,
     getSortedRowModel,
+    OnChangeFn,
 } from '@tanstack/react-table';
 import { IconWrapper } from '../IconWapper';
 import { debounce, uniq, uniqBy } from 'lodash';
 import { Paging } from './Paging';
+
 declare module '@tanstack/table-core' {
     // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
     interface ColumnMeta<TData extends RowData, TValue> {
@@ -102,14 +104,22 @@ export const Table = <T extends object>({
     modal,
     setSelected,
     pageSize,
+    initialFilterState = [],
+    setStoredFilterState = (_a) => {
+        /* by default do nothing */
+    },
 }: TableProps<T> & {
     children?: ReactNode;
     modal?: boolean;
     onFilter?: (rows: Row<T>[]) => void;
     setSelected?: (selectedRows: T[]) => void;
     pageSize?: PageSize;
+    initialFilterState?: ColumnFiltersState;
+    setStoredFilterState?: (a: ColumnFiltersState) => void;
 }) => {
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(initialFilterState);
+    useEffect(() => setStoredFilterState(columnFilters), [columnFilters, setStoredFilterState]);
+
     const [rowSelection, setRowSelection] = useState({});
     const [sorting, setSorting] = useState<SortingState>([]);
     const appliedColumns = useMemo(
@@ -149,6 +159,9 @@ export const Table = <T extends object>({
         ],
         [columns, setSelected]
     );
+    const filterOnChangeFn: OnChangeFn<ColumnFiltersState> = (a) => {
+        setColumnFilters(a);
+    };
     const table = useReactTable<T>({
         columns: appliedColumns,
         data,
@@ -161,7 +174,7 @@ export const Table = <T extends object>({
         getFilteredRowModel: getFilteredRowModel(),
         getFacetedUniqueValues: getFacetedUniqueValues(),
         getFacetedRowModel: getFacetedRowModel(),
-        onColumnFiltersChange: setColumnFilters,
+        onColumnFiltersChange: filterOnChangeFn,
         onRowSelectionChange: setRowSelection,
         getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
@@ -296,6 +309,7 @@ function Filter<T>({ column, table }: { column: Column<T, unknown>; table: React
         )) || (
             <SelectContainer>
                 <Select
+                    id={`filter-container-${column.id}`}
                     onChange={(values: ValueType<SelectOptionType>) => column.setFilterValue(values)}
                     placeholder={formatMessage({
                         id: 'TAULUKKO_DROPDOWN_FILTTERI',
