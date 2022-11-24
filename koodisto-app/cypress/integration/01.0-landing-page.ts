@@ -45,7 +45,18 @@ describe('The landing page', () => {
         cy.get('#clear-filter').click();
         cy.contains('Sivu 1 / 9').should('be.visible');
     });
+    it('Filters are saved and not cleared on navigation', () => {
+        cy.get('[id="filter-container-ryhmaUri"]').click().find('input').type('Koski{enter}');
+        cy.contains('Koodistot (86 / 406)').should('be.visible');
+        cy.visit(`${BASE_PATH}`);
+        cy.contains('Koodistot (86 / 406)').should('be.visible');
+        cy.get('[id="filter-container-ryhmaUri"]').find('svg').eq(0).click();
+        cy.contains('Koodistot (406 / 406)').should('be.visible');
+        cy.visit(`${BASE_PATH}`);
+        cy.contains('Koodistot (406 / 406)').should('be.visible');
+    });
     it('Sort by first column', () => {
+        cy.visit(`${BASE_PATH}`);
         cy.contains('Haun koodistot').should('be.visible');
         cy.get('th').eq(0).click();
         cy.contains('Virta-JTP').should('be.visible');
