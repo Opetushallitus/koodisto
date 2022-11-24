@@ -45,7 +45,7 @@ type KoodistoTableProps = {
     oldRelations?: KoodistoRelation[];
     pageSize?: PageSize;
 };
-const koodistoFiltersAtom = atomWithStorage<ColumnFiltersState>('koodistoFilters', []);
+const koodistoFiltersAtom = atomWithStorage<ColumnFiltersState>('koodisto-app:koodistoFilters', []);
 export const KoodistoTable: React.FC<KoodistoTableProps> = ({
     modal,
     setSelected,
