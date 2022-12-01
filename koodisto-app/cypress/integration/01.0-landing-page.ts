@@ -55,6 +55,13 @@ describe('The landing page', () => {
         cy.visit(`${BASE_PATH}`);
         cy.contains('Koodistot (406 / 406)').should('be.visible');
     });
+    it('Filter by koodistoUri', () => {
+        cy.visit(`${BASE_PATH}`);
+        cy.contains('Koodistot (406 / 406)').should('be.visible');
+        cy.get('input').eq(1).type('2astee');
+        cy.contains('Koodistot (1 / 406)').should('be.visible');
+        cy.get('#clear-filter').click();
+    });
     it('Sort by first column', () => {
         cy.visit(`${BASE_PATH}`);
         cy.contains('Haun koodistot').should('be.visible');
