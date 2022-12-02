@@ -83,7 +83,12 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
                         sortingFn: (a: Row<ListKoodisto>, b: Row<ListKoodisto>) =>
                             a.original.ryhmaNimi?.localeCompare(b.original.ryhmaNimi || ''),
                         cell: (info) => (
-                            <Link to={`/koodistoRyhma/${info.row.original.ryhmaUri}`}>{info.getValue().label}</Link>
+                            <Link
+                                title={info.row.original.ryhmaUri}
+                                to={`/koodistoRyhma/${info.row.original.ryhmaUri}`}
+                            >
+                                {info.getValue().label}
+                            </Link>
                         ),
                     },
                 ],
@@ -103,6 +108,10 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
                                 },
                                 { koodistoUri: values.koodistoUri }
                             ),
+                        filterFn: (row, _, value: string) =>
+                            row.original.koodistoUri?.toLowerCase().includes(value.toLowerCase()) ||
+                            row.original.nimi?.toLowerCase().includes(value.toLowerCase()) ||
+                            false,
                         meta: {
                             filterPlaceHolder: {
                                 id: 'TAULUKKO_HAKU_APUTEKSTI',
@@ -110,7 +119,10 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
                             },
                         },
                         cell: (info) => (
-                            <Link to={`koodisto/view/${info.row.original.koodistoUri}/${info.row.original.versio}`}>
+                            <Link
+                                title={info.row.original.koodistoUri}
+                                to={`koodisto/view/${info.row.original.koodistoUri}/${info.row.original.versio}`}
+                            >
                                 {info.getValue()}
                             </Link>
                         ),
