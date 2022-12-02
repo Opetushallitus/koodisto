@@ -1,5 +1,6 @@
 import Axios, { AxiosError, AxiosResponse } from 'axios';
-import { danger, warning } from '../../components/Notification/Notification';
+import { danger, clientError } from '../../components/Notification/Notification';
+
 type ErrorMessage = { message: string };
 const isErrorMessage = (error: unknown): error is ErrorMessage => {
     return typeof (error as ErrorMessage).message === 'string';
@@ -9,8 +10,8 @@ const handleError = <T>(error: AxiosError<T> | unknown) => {
         const axiosError = error;
         if (axiosError.response) {
             console.error('axiosError', axiosError.response);
-            if (axiosError.response.data) {
-                warning({ title: `client.error.${axiosError.response.status}`, message: axiosError.response.data });
+            if (axiosError.response.data && axiosError.response.status < 500) {
+                clientError(axiosError.response.status, axiosError.response.data);
             } else {
                 danger({ message: `server.error.${axiosError.response.status}` });
             }

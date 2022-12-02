@@ -15,10 +15,28 @@ const MESSAGE_DEFAULTS = {
     animationIn: ['animate__animated', 'animate__fadeIn'],
     animationOut: ['animate__animated', 'animate__fadeOut'],
 };
-const messageInputs = ({ title, message, timeOut }: NotificationProps): iNotification => ({
+
+type NotificationProps = {
+    id?: string;
+    title?: ReactNode | string;
+    message: ReactNode | string;
+    values?: Record<string, string | number>;
+    timeOut?: number;
+};
+const messageInputs = ({ id, title, message, values, timeOut }: NotificationProps): iNotification => ({
     ...MESSAGE_DEFAULTS,
-    title: typeof title === 'string' ? <FormattedMessage id={title} defaultMessage={title} /> : title,
-    message: typeof message === 'string' ? <FormattedMessage id={message} defaultMessage={message} /> : message,
+    title:
+        typeof title === 'string' ? (
+            <FormattedMessage id={`${id || title}-title`} defaultMessage={title} values={values} />
+        ) : (
+            title
+        ),
+    message:
+        typeof message === 'string' ? (
+            <FormattedMessage id={`${id || title}-message`} defaultMessage={message} values={values} />
+        ) : (
+            message
+        ),
     dismiss: {
         duration: timeOut || DEFAULT_TIMEOUT,
         pauseOnHover: true,
@@ -28,18 +46,26 @@ const messageInputs = ({ title, message, timeOut }: NotificationProps): iNotific
 export const Notification = () => {
     return <ReactNotifications />;
 };
-type NotificationProps = {
-    title?: ReactNode | string;
-    message: ReactNode | string;
-    timeOut?: number;
-};
 
-export const warning = (props: NotificationProps) => {
+const warning = (props: NotificationProps) => {
     Store.addNotification({
         ...messageInputs(props),
         type: 'warning' as NOTIFICATION_TYPE,
     });
 };
+
+const clientStatusToMessage: Record<number, string> = {
+    400: 'Selain virhe {status}, ota yhteyttä ylläpitoon.',
+    404: 'Tietue ei löytynyt palvelimelta.',
+};
+export const clientError = (status: number, data: string) =>
+    warning({
+        id: `client.error.${status}`,
+        title: clientStatusToMessage[status] || `Selain virhe {status}, ota yhteyttä ylläpitoon.`,
+        message: data,
+        values: { status },
+    });
+
 export const success = (props: NotificationProps) => {
     Store.addNotification({
         ...messageInputs(props),

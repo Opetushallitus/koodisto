@@ -34,21 +34,21 @@ describe('Errors', () => {
         cy.get(`[name="${koodistoUri}-csv"]`).click();
         cy.contains('server.error.500').should('be.visible');
     });
-    it('error if 404 with key', () => {
+    it('error if 400', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, { fixture: 'kuntaKoodisto.json' });
         cy.visit(`${BASE_PATH}/koodisto/view/${koodistoUri}/2`);
         cy.intercept(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, (req) => {
             req.reply({
-                statusCode: 404,
+                statusCode: 400,
                 delay: 10,
                 body: 'custom message',
             });
         });
         cy.get(`[name="${koodistoUri}-csv"]`).click();
-        cy.contains('client.error.404').should('be.visible');
+        cy.contains('Selain virhe 400, ota yhteyttä ylläpitoon.').should('be.visible');
         cy.contains('custom message').should('be.visible');
     });
-    it('error if 404 with key and message', () => {
+    it('error if 404', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, { fixture: 'kuntaKoodisto.json' });
         cy.visit(`${BASE_PATH}/koodisto/view/${koodistoUri}/2`);
         cy.intercept(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, (req) => {
@@ -59,7 +59,7 @@ describe('Errors', () => {
             });
         });
         cy.get(`[name="${koodistoUri}-csv"]`).click();
-        cy.contains('client.error.404').should('be.visible');
+        cy.contains('Tietue ei löytynyt palvelimelta.').should('be.visible');
         cy.contains('custom message').should('be.visible');
     });
     it('Redirects to index page on non-existent URL', () => {
