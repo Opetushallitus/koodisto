@@ -45,7 +45,7 @@ describe('Errors', () => {
             });
         });
         cy.get(`[name="${koodistoUri}-csv"]`).click();
-        cy.contains('Selain virhe 400, ota yhteyttä ylläpitoon.').should('be.visible');
+        cy.contains('Selainvirhe 400, ota yhteyttä ylläpitoon (yhteisetpalvelut@opintopolku.fi)').should('be.visible');
         cy.contains('custom message').should('be.visible');
     });
     it('error if 404', () => {
@@ -59,8 +59,22 @@ describe('Errors', () => {
             });
         });
         cy.get(`[name="${koodistoUri}-csv"]`).click();
-        cy.contains('Tietue ei löytynyt palvelimelta.').should('be.visible');
+        cy.contains('' + 'Tietuetta ei löytynyt palvelimelta').should('be.visible');
         cy.contains('custom message').should('be.visible');
+    });
+    it("error if i'm a teapot", () => {
+        cy.intercept(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, { fixture: 'kuntaKoodisto.json' });
+        cy.visit(`${BASE_PATH}/koodisto/view/${koodistoUri}/2`);
+        cy.intercept(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, (req) => {
+            req.reply({
+                statusCode: 418,
+                delay: 10,
+                body: "i'm a teapot",
+            });
+        });
+        cy.get(`[name="${koodistoUri}-csv"]`).click();
+        cy.contains('Selainvirhe 418, ota yhteyttä ylläpitoon (yhteisetpalvelut@opintopolku.fi)').should('be.visible');
+        cy.contains("i'm a teapot").should('be.visible');
     });
     it('Redirects to index page on non-existent URL', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto`, { fixture: 'codes.json' });

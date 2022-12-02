@@ -27,13 +27,13 @@ const messageInputs = ({ id, title, message, values, timeOut }: NotificationProp
     ...MESSAGE_DEFAULTS,
     title:
         typeof title === 'string' ? (
-            <FormattedMessage id={`${id || title}-title`} defaultMessage={title} values={values} />
+            <FormattedMessage id={`${id || title}.title`} defaultMessage={title} values={values} />
         ) : (
             title
         ),
     message:
         typeof message === 'string' ? (
-            <FormattedMessage id={`${id || title}-message`} defaultMessage={message} values={values} />
+            <FormattedMessage id={`${id || title}.message`} defaultMessage={message} values={values} />
         ) : (
             message
         ),
@@ -53,15 +53,15 @@ const warning = (props: NotificationProps) => {
         type: 'warning' as NOTIFICATION_TYPE,
     });
 };
-
+const genericClientError = 'Selainvirhe {status}, ota yhteyttä ylläpitoon (yhteisetpalvelut@opintopolku.fi)';
 const clientStatusToMessage: Record<number, string> = {
-    400: 'Selain virhe {status}, ota yhteyttä ylläpitoon.',
-    404: 'Tietue ei löytynyt palvelimelta.',
+    400: genericClientError,
+    404: 'Tietuetta ei löytynyt palvelimelta, ota yhteyttä ylläpitoon (yhteisetpalvelut@opintopolku.fi)',
 };
 export const clientError = (status: number, data: string) =>
     warning({
         id: `client.error.${status}`,
-        title: clientStatusToMessage[status] || `Selain virhe {status}, ota yhteyttä ylläpitoon.`,
+        title: clientStatusToMessage[status] || genericClientError,
         message: data,
         values: { status },
     });
