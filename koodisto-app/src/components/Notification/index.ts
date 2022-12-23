@@ -1,1 +1,1 @@
-export { Notification, danger, warning, success } from './Notification';
+export { Notification, danger, clientError, success } from './Notification';
