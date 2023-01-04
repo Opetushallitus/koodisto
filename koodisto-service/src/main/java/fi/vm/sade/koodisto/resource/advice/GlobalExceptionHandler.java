@@ -8,6 +8,7 @@ import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
@@ -32,6 +33,12 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
     private static final String DEBUG_LOG_MESSAGE = "GlobalExceptionHandler handeled exception";
     private static final String WARN_NOT_HANDELED_MESSAGE = "GlobalExceptionHandler passed this exception through {}";
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        log.debug(DEBUG_LOG_MESSAGE, e);
+        return ResponseEntity.badRequest().body("error.codeelement.value.not.unique");
+    }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException e) {

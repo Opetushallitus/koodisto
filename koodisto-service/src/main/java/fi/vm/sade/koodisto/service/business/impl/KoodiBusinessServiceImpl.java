@@ -122,8 +122,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
             throw new KoodistoUriEmptyException();
         }
 
-        checkIfCodeElementValueExistsAlready("", createKoodiData.getKoodiArvo(), latestKoodistoVersio.getKoodiVersios());
-
         Koodi koodi = new Koodi();
         koodi.setKoodisto(latestKoodistoVersio.getKoodisto());
         koodi.setKoodiUri(uriTransliterator.generateKoodiUriByKoodistoUriAndKoodiArvo(koodistoUri, createKoodiData.getKoodiArvo()));
@@ -165,26 +163,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         koodinSuhdeRepository.flush();
         koodistonSuhdeRepository.flush();
         koodistoVersioKoodiVersioRepository.flush();
-    }
-
-    private void checkIfCodeElementValueExistsAlready(String koodiUri,
-                                                      String koodiArvo,
-                                                      Set<KoodistoVersioKoodiVersio> koodiVersios) {
-        for (KoodistoVersioKoodiVersio koodiVersio : koodiVersios) {
-            if (!koodiUri.equals(koodiVersio.getKoodiVersio().getKoodi().getKoodiUri()) &&
-                    koodiArvo.equals(koodiVersio.getKoodiVersio().getKoodiarvo())) {
-                throw new KoodiValueNotUniqueException();
-            }
-        }
-    }
-
-    private void checkIfCodeElementValueExistsAlready(String koodiUri,
-                                                      String koodiArvo,
-                                                      List<KoodiVersio> koodiVersios) {
-        if (koodiVersios.stream().anyMatch(koodiVersio -> !koodiUri.equals(koodiVersio.getKoodi().getKoodiUri()) &&
-                koodiArvo.equals(koodiVersio.getKoodiarvo()))) {
-            throw new KoodiValueNotUniqueException();
-        }
     }
 
     private KoodiVersioWithKoodistoItem getLatestKoodiVersioWithKoodistoVersioItems(String koodiUri) {
@@ -260,8 +238,6 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         if (!latest.getKoodistoItem().getVersios().contains(latestKoodistoVersio)) {
             throw new KoodiNotInKoodistoException();
         }
-
-        checkIfCodeElementValueExistsAlready(updateKoodiData.getKoodiUri(), updateKoodiData.getKoodiArvo(), koodiVersios);
 
         KoodiVersio newVersion = createNewVersionIfNeeded(latest.getKoodiVersio(), updateKoodiData);
 
