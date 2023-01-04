@@ -53,8 +53,8 @@ VALUES ('-1', 'FI', '1', '1', '-1', '1', '1'),
        ('-3', 'FI', '3', '1', '-3', '3', '3'),
        ('-4', 'FI', '4', '1', '-4', '4', '4');
 
-INSERT INTO koodistoversio_koodiversio (id, version, koodistoversio_id, koodiversio_id)
-VALUES ('-1', '1', '-1', '-1'),
-       ('-2', '1', '-2', '-2'),
-       ('-3', '1', '-3', '-3'),
-       ('-4', '1', '-4', '-4');
+INSERT INTO koodistoversio_koodiversio (id, version, koodistoversio_id, koodiversio_id, koodiarvo)
+VALUES ('-1', '1', '-1', '-1', '1'),
+       ('-2', '1', '-2', '-2', '1'),
+       ('-3', '1', '-3', '-3', '1'),
+       ('-4', '1', '-4', '-4', '1');

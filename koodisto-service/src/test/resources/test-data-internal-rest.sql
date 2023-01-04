@@ -51,7 +51,7 @@ VALUES ('-1', 'FI', 'get1', '1', '-1', 'Get 1', 'Get 1'),
        ('-2', 'FI', 'two1', '1', '-2', 'Two 1', 'Two 1'),
        ('-3', 'FI', 'removable', '1', '-3', 'Removable', 'Removable');
 
-INSERT INTO koodistoversio_koodiversio (id, version, koodistoversio_id, koodiversio_id)
-VALUES ('-3', '1', '-3', '-1'),
-       ('-4', '1', '-4', '-2'),
-       ('-5', '1', '-6', '-3');
+INSERT INTO koodistoversio_koodiversio (id, version, koodistoversio_id, koodiversio_id, koodiarvo)
+VALUES ('-3', '1', '-3', '-1', '1'),
+       ('-4', '1', '-4', '-2', '1'),
+       ('-5', '1', '-6', '-3', '1');

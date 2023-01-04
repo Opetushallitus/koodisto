@@ -44,9 +44,9 @@ INSERT INTO koodistometadata (id,kieli,nimi,version,koodistoversio_id, kuvaus)
 VALUES
     ('-99', 'FI', 'Dummy', '0', '-99', 'kuvaus');
 
-INSERT INTO koodistoversio_koodiversio (id,version,koodistoversio_id,koodiversio_id)
+INSERT INTO koodistoversio_koodiversio (id,version,koodistoversio_id,koodiversio_id,koodiarvo)
 VALUES
-    ('-99', '0', '-99', '-99');
+    ('-99', '0', '-99', '-99', 'dummy');
 
 INSERT INTO koodistoryhma_koodisto (koodistoryhma_id,koodisto_id)
 VALUES

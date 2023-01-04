@@ -99,6 +99,7 @@ public class KoodiVersio extends BaseEntity {
     protected void onUpdate() {
         UserData.getCurrentUserOid().ifPresent(this::setPaivittajaOid);
         this.paivitysPvm = new Date();
+        this.koodistoVersios.stream().forEach(kv -> kv.setKoodiarvo(this.koodiarvo));
     }
 
     public Set<KoodistoVersioKoodiVersio> getKoodistoVersios() {

@@ -104,15 +104,15 @@ VALUES
     ('-22', 'FI', 'Paljon muutettu', '0', '-21', 'Muutettu vähän kaikkea'),
     ('-23', 'EN', 'Plenty of changes', '0', '-21', 'A lot of changes in this codes');
 
-INSERT INTO koodistoversio_koodiversio (id,version,koodistoversio_id,koodiversio_id)
+INSERT INTO koodistoversio_koodiversio (id,version,koodistoversio_id,koodiversio_id,koodiarvo)
 VALUES
-    ('-99', '0', '-99', '-99'),
-    ('-1', '0', '-15', '-1'),
-    ('-2', '0', '-19', '-2'),
-    ('-3', '0', '-20', '-3'),
-    ('-4', '0', '-21', '-4'),
-    ('-5', '0', '-20', '-5'),
-    ('-6', '0', '-21', '-6');
+    ('-99', '0', '-99', '-99', 'dummy'),
+    ('-1', '0', '-15', '-1', 'csvtestikoodi'),
+    ('-2', '0', '-19', '-2', 'muutettukoodi'),
+    ('-3', '0', '-20', '-3', 'muutettukoodi'),
+    ('-4', '0', '-21', '-4', 'muutettukoodi'),
+    ('-5', '0', '-20', '-5', 'poistettukoodi'),
+    ('-6', '0', '-21', '-6', 'lisattykoodi');
 
 INSERT INTO koodistoryhma (id,koodistoryhmauri,version)
 VALUES
