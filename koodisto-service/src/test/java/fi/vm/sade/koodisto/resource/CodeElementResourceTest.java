@@ -344,6 +344,18 @@ class CodeElementResourceTest {
 
     @Test
     @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
+    void testDuplicateKoodiArvoIsNotAllowed() throws Exception {
+        JSONObject validDto = createValidCodeElementDtoJson("value", "name", "shortName", 3);
+
+        insert("inserttestkoodisto", validDto)
+                .andExpect(status().isCreated())
+                .andDo(handler -> insert("inserttestkoodisto", validDto).andExpectAll(
+                        status().isBadRequest(),
+                        content().string("error.codeelement.value.not.unique")));
+    }
+
+    @Test
+    @WithMockUser(value = "1.2.3.4.5", authorities = {"ROLE_APP_KOODISTO_CRUD_1.2.246.562.10.00000000001", "ROLE_APP_KOODISTO_CRUD"})
     void testInsertInvalid() throws Exception {
         JSONObject validDto = createValidCodeElementDtoJson("newdtouri", "Name", 3);
         insert(null, validDto).andExpect(status().isMethodNotAllowed()).andExpect(content().string("error.method.not.supported"));
