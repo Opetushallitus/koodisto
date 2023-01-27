@@ -46,10 +46,10 @@ VALUES ('-1', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'HYVAKSYTTY', '1'
        ('-2', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'LUONNOS', '1', '1990-01-01', '-2', '1'),
        ('-3', '1', '2012-03-22 13:23:41.414000', '2013-01-01', 'PASSIIVINEN', '1', '1990-01-01', '-3', '1');
 
-INSERT INTO koodimetadata (id, kieli, nimi, version, koodiversio_id, lyhytnimi, kuvaus)
-VALUES ('-1', 'FI', 'get1', '1', '-1', 'Get 1', 'Get 1'),
-       ('-2', 'FI', 'two1', '1', '-2', 'Two 1', 'Two 1'),
-       ('-3', 'FI', 'removable', '1', '-3', 'Removable', 'Removable');
+INSERT INTO koodimetadata (id, kieli, kasite, nimi, version, koodiversio_id, lyhytnimi, kuvaus)
+VALUES ('-1', 'FI', 'kasite 1', 'get1', '1', '-1', 'Get 1', 'Get 1'),
+       ('-2', 'FI', 'kasite 2', 'two1', '1', '-2', 'Two 1', 'Two 1'),
+       ('-3', 'FI', 'kasite 3', 'removable', '1', '-3', 'Removable', 'Removable');
 
 INSERT INTO koodistoversio_koodiversio (id, version, koodistoversio_id, koodiversio_id, koodiarvo)
 VALUES ('-3', '1', '-3', '-1', '1'),

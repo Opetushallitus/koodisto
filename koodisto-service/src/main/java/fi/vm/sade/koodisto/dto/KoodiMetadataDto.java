@@ -30,7 +30,7 @@ public class KoodiMetadataDto {
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
     private String kayttoohje;
 
-    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
+    @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
     private String kasite;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})

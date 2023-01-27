@@ -11,8 +11,10 @@
   "metadata": [
     {
       "nimi": "get1",
+      "kasite": "kasite 1",
       "kuvaus": "Get 1",
-      "kieli": "FI"
+      "kieli": "FI",
+      "lyhytNimi":"Get 1"
     }
   ],
   "sisaltyyKoodeihin": [],
