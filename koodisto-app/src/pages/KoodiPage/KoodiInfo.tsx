@@ -63,6 +63,22 @@ export const KoodiInfo: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
         },
         {
             header: {
+                id: 'KASITE',
+                defaultMessage: 'Käsite',
+            },
+            value: (
+                <NameContainer>
+                    {koodi.metadata.map((meta) => (
+                        <li key={meta.kieli} className={'kieli-nimi'}>
+                            <div>{meta.kieli}</div>
+                            <div>{meta.kasite}</div>
+                        </li>
+                    ))}
+                </NameContainer>
+            ),
+        },
+        {
+            header: {
                 id: 'VOIMASSA',
                 defaultMessage: 'Voimassa',
             },

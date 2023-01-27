@@ -287,6 +287,15 @@ const KoodiMuokkausPageComponent: React.FC<
                         disabled={disabled}
                     />
                 </MainContainerRow>
+                <MainContainerRow>
+                    <InputArrayController<Koodi>
+                        control={control}
+                        getValues={getValues}
+                        title={{ id: 'KASITE', defaultMessage: 'Käsite' }}
+                        fieldPath={'kasite'}
+                        disabled={disabled}
+                    />
+                </MainContainerRow>
                 {isEditing && (
                     <KoodiPageAccordion
                         editable

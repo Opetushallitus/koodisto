@@ -59,7 +59,7 @@ describe('Errors', () => {
             });
         });
         cy.get(`[name="${koodistoUri}-csv"]`).click();
-        cy.contains('' + 'Tietuetta ei löytynyt palvelimelta').should('be.visible');
+        cy.contains('Tietuetta ei löytynyt palvelimelta').should('be.visible');
         cy.contains('custom message').should('be.visible');
     });
     it("error if i'm a teapot", () => {

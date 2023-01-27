@@ -20,7 +20,7 @@ describe('Koodi edit page', () => {
     it('can modify koodi', () => {
         cy.intercept('PUT', `${API_INTERNAL_PATH}/koodi`, (req) => {
             expect(req.body.metadata).to.eqls([
-                { kieli: 'FI', nimi: 'Akaa muokattu', lyhytNimi: 'lyhyt nimi', kuvaus: '' },
+                { kieli: 'FI', nimi: 'Akaa muokattu', lyhytNimi: 'lyhyt nimi', kuvaus: '', kasite: 'kasite' },
                 { kieli: 'SV', nimi: 'Akaa', kuvaus: '' },
                 { kieli: 'EN', nimi: 'Akaa', kuvaus: '' },
             ]);
@@ -36,6 +36,11 @@ describe('Koodi edit page', () => {
             .should('have.value', '')
             .clear()
             .type('lyhyt nimi');
+        cy.get('input[name="metadata[0][kasite]"]')
+            .should('be.visible')
+            .should('have.value', '')
+            .clear()
+            .type('kasite');
         cy.intercept(`${API_INTERNAL_PATH}/koodi/kunta_020/2`, { fixture: 'koodiPage.json' });
         cy.intercept(`${API_INTERNAL_PATH}/koodisto/kunta`, { fixture: 'koodiPageKoodisto.json' });
         cy.get('button[name="KOODI_TALLENNA"]').should('be.visible').click();

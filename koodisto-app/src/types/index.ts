@@ -17,6 +17,7 @@ export type MapToApiObject<T> = {
 };
 
 export type KoodiMetadata = Metadata & {
+    kasite?: string;
     lyhytNimi?: string;
 };
 export type Metadata = {
