@@ -1,6 +1,9 @@
 package fi.vm.sade.koodisto.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodiVersio;
@@ -25,6 +28,7 @@ public class KoodiMetadataDto {
     private String kuvaus;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
+    @JsonInclude(value = Include.NON_NULL, content = Include.NON_NULL)
     private String lyhytNimi;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})

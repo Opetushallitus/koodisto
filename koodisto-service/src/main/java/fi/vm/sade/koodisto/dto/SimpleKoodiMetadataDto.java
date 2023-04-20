@@ -1,11 +1,12 @@
 package fi.vm.sade.koodisto.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Kieli;
 
-@JsonSerialize(include=JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(value = Include.NON_NULL, content = Include.NON_NULL)
 public class SimpleKoodiMetadataDto extends SimpleMetadataDto {
     
     @JsonView(JsonViews.Basic.class)
