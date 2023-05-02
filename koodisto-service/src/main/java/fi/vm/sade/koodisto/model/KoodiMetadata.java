@@ -1,6 +1,9 @@
 package fi.vm.sade.koodisto.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import fi.vm.sade.koodisto.util.FieldLengths;
 import lombok.Getter;
 import lombok.Setter;
@@ -59,6 +62,7 @@ public class KoodiMetadata extends BaseEntity {
     private String kuvaus;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+    @JsonInclude(value = Include.NON_NULL, content = Include.NON_NULL)
     @Size(min = 0, max = FieldLengths.DEFAULT_FIELD_LENGTH)
     @Column(name = "lyhytNimi", length = FieldLengths.DEFAULT_FIELD_LENGTH, nullable = true)
     private String lyhytNimi;
