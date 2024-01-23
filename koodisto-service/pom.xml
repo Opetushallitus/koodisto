@@ -133,6 +133,11 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.2.6</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.kagkarlsson</groupId>
+			<artifactId>db-scheduler-spring-boot-starter</artifactId>
+			<version>11.7</version>
+		</dependency>
 	</dependencies>
 
 	<build>
