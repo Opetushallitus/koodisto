@@ -1,4 +1,7 @@
 name: koodisto-service
+env:
+  jdk-version: 11
+  jdk-distribution: 'adopt'
 on:
   workflow_dispatch:
   push:
@@ -10,11 +13,11 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
-      - name: Set up JDK 11
+      - name: Set up JDK $jdk-version
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
-          distribution: 'adopt'
+          java-version: '$jdk-version'
+          distribution: '$jdk-distribution'
           cache: 'maven'
       - name: Maven version
         run: mvn --version
@@ -79,11 +82,11 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
-      - name: Set up JDK 11
+      - name: Set up JDK $jdk-version
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
-          distribution: 'adopt'
+          java-version: '$jdk-version'
+          distribution: '$jdk-distribution'
           cache: 'maven'
       - name: Maven version
         run: mvn --version
