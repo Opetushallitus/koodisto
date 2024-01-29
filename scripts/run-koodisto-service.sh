@@ -4,7 +4,7 @@ readonly repo="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
 
 function main {
   wait_for_local_db_to_be_healthy
-  select_java_version "11"
+  select_java_version "21"
   cd "$repo"
   ./mvnw clean install -DskipTests
   cd "$repo"/koodisto-service
