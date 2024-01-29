@@ -13,7 +13,7 @@ function main {
 
 function select_java_version {
   java_version="$1"
-  JAVA_HOME="$(/usr/libexec/java_home -v "${java_version}")"
+  JAVA_HOME="$(/usr/libexec/java_home --failfast --version "${java_version}" > /dev/null 2>&1 || fatal "JDK version ${java_version} required but not installed")"
   export JAVA_HOME
 }
 
