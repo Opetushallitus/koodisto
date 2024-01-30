@@ -26,7 +26,6 @@ jobs:
           name: koodisto-service-jar
           path: koodisto-service/target/koodisto-service.jar
   sonarcloud:
-    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
