@@ -14,7 +14,6 @@ import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioListDtoConverter;
-import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
@@ -46,7 +45,7 @@ public class InternalKoodiResource {
     private final KoodiBusinessService koodiBusinessService;
     private final CodeElementResourceConverter converter;
     private final KoodistoVersioToInternalKoodistoPageDtoConverter koodistoVersioToInternalKoodistoPageDtoConverter;
-    private final KoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter koodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter;
+    private final KoodiMetadataToKoodiMetadataDtoConverter koodiMetadataToKoodiMetadataDtoConverter;
     private final KoodiVersioToInternalKoodiVersioDtoConverter koodiVersioToInternalKoodiVersioDtoConverter;
     private final KoodiVersioToInternalKoodiVersioListDtoConverter koodiVersioToInternalKoodiVersioListDtoConverter;
 
@@ -128,9 +127,29 @@ public class InternalKoodiResource {
             @PathVariable String koodistoUri,
             @RequestBody @Valid CreateKoodiDataType koodi) {
         KoodiVersioWithKoodistoItem result = koodiBusinessService.createKoodi((koodistoUri), koodi);
-        InternalKoodiVersioDto converted = koodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter.convert(result);
+        InternalKoodiVersioDto converted = convertKoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter(result);
         converted.setKoodisto(koodistoVersioToInternalKoodistoPageDtoConverter.convert(koodistoBusinessService.getLatestKoodistoVersio(koodistoUri)));
         return ResponseEntity.ok(converted);
+    }
+
+    private InternalKoodiVersioDto convertKoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter(KoodiVersioWithKoodistoItem source) {
+        return InternalKoodiVersioDto.internalKoodiVersioDtoBuilder()
+                .koodiArvo(source.getKoodiVersio().getKoodiarvo())
+                .versio(source.getKoodiVersio().getVersio())
+                .lockingVersion(source.getKoodiVersio().getVersion())
+                .tila(source.getKoodiVersio().getTila())
+                .koodiUri(source.getKoodiVersio().getKoodi().getKoodiUri())
+                .paivitysPvm(source.getKoodiVersio().getPaivitysPvm())
+                .paivittajaOid(source.getKoodiVersio().getPaivittajaOid())
+                .voimassaAlkuPvm(source.getKoodiVersio().getVoimassaAlkuPvm())
+                .voimassaLoppuPvm(source.getKoodiVersio().getVoimassaLoppuPvm())
+                .metadata(source.getKoodiVersio().getMetadatas().stream()
+                        .map(koodiMetadataToKoodiMetadataDtoConverter::convert)
+                        .collect(Collectors.toList()))
+                .rinnastuuKoodeihin(KoodiConverterUtil.getLevelsWithCodes(source.getKoodiVersio()))
+                .sisaltaaKoodit(KoodiConverterUtil.extractBySuhde(source.getKoodiVersio().getAlakoodis(), SuhteenTyyppi.SISALTYY, KoodinSuhde::getAlakoodiVersio))
+                .sisaltyyKoodeihin(KoodiConverterUtil.extractBySuhde(source.getKoodiVersio().getYlakoodis(), SuhteenTyyppi.SISALTYY, KoodinSuhde::getYlakoodiVersio))
+                .build();
     }
 
     private KoodiDto setKoodiUri(String koodistoUri, KoodiDto koodi) {
