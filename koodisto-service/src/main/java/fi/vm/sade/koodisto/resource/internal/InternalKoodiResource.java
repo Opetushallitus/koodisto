@@ -5,15 +5,12 @@ import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodiVersioListDto;
 import fi.vm.sade.koodisto.dto.internal.InternalKoodistoPageDto;
-import fi.vm.sade.koodisto.model.JsonViews;
-import fi.vm.sade.koodisto.model.KoodiVersio;
-import fi.vm.sade.koodisto.model.KoodistoVersio;
+import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.resource.CodeElementResourceConverter;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
-import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioDtoConverter;
-import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioListDtoConverter;
+import fi.vm.sade.koodisto.service.conversion.impl.koodi.*;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
 import fi.vm.sade.koodisto.service.types.CreateKoodiDataType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodiDataType;
@@ -127,29 +124,29 @@ public class InternalKoodiResource {
             @PathVariable String koodistoUri,
             @RequestBody @Valid CreateKoodiDataType koodi) {
         KoodiVersioWithKoodistoItem result = koodiBusinessService.createKoodi((koodistoUri), koodi);
-        InternalKoodiVersioDto converted = convertKoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter(result);
+        InternalKoodiVersioDto converted = convertKoodiVersioWithKoodistoItemToInternalKoodiVersioDto(result);
         converted.setKoodisto(koodistoVersioToInternalKoodistoPageDtoConverter.convert(koodistoBusinessService.getLatestKoodistoVersio(koodistoUri)));
         return ResponseEntity.ok(converted);
     }
 
-    private InternalKoodiVersioDto convertKoodiVersioWithKoodistoItemToInternalKoodiVersioDtoConverter(KoodiVersioWithKoodistoItem source) {
+    private InternalKoodiVersioDto convertKoodiVersioWithKoodistoItemToInternalKoodiVersioDto(KoodiVersioWithKoodistoItem source) {
         return InternalKoodiVersioDto.internalKoodiVersioDtoBuilder()
-                .koodiArvo(source.getKoodiVersio().getKoodiarvo())
-                .versio(source.getKoodiVersio().getVersio())
-                .lockingVersion(source.getKoodiVersio().getVersion())
-                .tila(source.getKoodiVersio().getTila())
-                .koodiUri(source.getKoodiVersio().getKoodi().getKoodiUri())
-                .paivitysPvm(source.getKoodiVersio().getPaivitysPvm())
-                .paivittajaOid(source.getKoodiVersio().getPaivittajaOid())
-                .voimassaAlkuPvm(source.getKoodiVersio().getVoimassaAlkuPvm())
-                .voimassaLoppuPvm(source.getKoodiVersio().getVoimassaLoppuPvm())
-                .metadata(source.getKoodiVersio().getMetadatas().stream()
-                        .map(koodiMetadataToKoodiMetadataDtoConverter::convert)
-                        .collect(Collectors.toList()))
-                .rinnastuuKoodeihin(KoodiConverterUtil.getLevelsWithCodes(source.getKoodiVersio()))
-                .sisaltaaKoodit(KoodiConverterUtil.extractBySuhde(source.getKoodiVersio().getAlakoodis(), SuhteenTyyppi.SISALTYY, KoodinSuhde::getAlakoodiVersio))
-                .sisaltyyKoodeihin(KoodiConverterUtil.extractBySuhde(source.getKoodiVersio().getYlakoodis(), SuhteenTyyppi.SISALTYY, KoodinSuhde::getYlakoodiVersio))
-                .build();
+                        .koodiArvo(source.getKoodiVersio().getKoodiarvo())
+                        .versio(source.getKoodiVersio().getVersio())
+                        .lockingVersion(source.getKoodiVersio().getVersion())
+                        .tila(source.getKoodiVersio().getTila())
+                        .koodiUri(source.getKoodiVersio().getKoodi().getKoodiUri())
+                        .paivitysPvm(source.getKoodiVersio().getPaivitysPvm())
+                        .paivittajaOid(source.getKoodiVersio().getPaivittajaOid())
+                        .voimassaAlkuPvm(source.getKoodiVersio().getVoimassaAlkuPvm())
+                        .voimassaLoppuPvm(source.getKoodiVersio().getVoimassaLoppuPvm())
+                        .metadata(source.getKoodiVersio().getMetadatas().stream()
+                                .map(koodiMetadataToKoodiMetadataDtoConverter::convert)
+                                .collect(Collectors.toList()))
+                        .rinnastuuKoodeihin(KoodiConverterUtil.getLevelsWithCodes(source.getKoodiVersio()))
+                        .sisaltaaKoodit(KoodiConverterUtil.extractBySuhde(source.getKoodiVersio().getAlakoodis(), SuhteenTyyppi.SISALTYY, KoodinSuhde::getAlakoodiVersio))
+                        .sisaltyyKoodeihin(KoodiConverterUtil.extractBySuhde(source.getKoodiVersio().getYlakoodis(), SuhteenTyyppi.SISALTYY, KoodinSuhde::getYlakoodiVersio))
+                        .build();
     }
 
     private KoodiDto setKoodiUri(String koodistoUri, KoodiDto koodi) {
