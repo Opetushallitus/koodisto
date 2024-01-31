@@ -41,7 +41,7 @@ public class ExportService {
     }
 
     @Transactional
-    void createSchema() {
+    public void createSchema() {
         jdbcTemplate.execute("DROP SCHEMA IF EXISTS exportnew CASCADE");
         jdbcTemplate.execute("CREATE SCHEMA exportnew");
         jdbcTemplate.execute(
