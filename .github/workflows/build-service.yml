@@ -2,7 +2,7 @@ name: koodisto-service
 on:
   workflow_dispatch:
   push:
-    branches: [ master, spring_boot ]
+    branches: [ master, spring_boot, topic/github-packages ]
   pull_request:
 jobs:
   build:
@@ -19,6 +19,8 @@ jobs:
       - name: Maven version
         run: mvn --version
       - name: Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mvn clean package -B -Dbranch=$GITHUB_REF_NAME -Drevision=$GITHUB_SHA -DbuildNumber=$GITHUB_RUN_NUMBER/$GITHUB_RUN_ATTEMPT
       - name: Upload koodisto-service-jar
         uses: actions/upload-artifact@v3
