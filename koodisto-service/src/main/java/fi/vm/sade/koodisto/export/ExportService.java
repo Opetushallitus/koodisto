@@ -5,21 +5,13 @@ import com.github.kagkarlsson.scheduler.task.TaskWithoutDataDescriptor;
 import com.github.kagkarlsson.scheduler.task.helper.Tasks;
 import com.github.kagkarlsson.scheduler.task.schedule.FixedDelay;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 @Slf4j
 @Configuration
@@ -37,7 +29,7 @@ public class ExportService {
 
     void createSchemaAndWriteAsCsvToDisk() {
         createSchema();
-        writeSchemaAsCsvToDisk();
+        exportTableToS3();
     }
 
     @Transactional
@@ -59,61 +51,18 @@ public class ExportService {
         jdbcTemplate.execute("ALTER SCHEMA exportnew RENAME TO export");
     }
 
-    @SneakyThrows
-    void writeSchemaAsCsvToDisk() {
-        var valueSeparator = ",";
-        var csvString = jdbcTemplate.query("SELECT * FROM export.koodi", new ResultSetExtractor<String>() {
-            @Override
-            public String extractData(ResultSet rs) throws SQLException, DataAccessException {
-                var columnCount = rs.getMetaData().getColumnCount();
-                var buffer = new StringBuffer();
+    void exportTableToS3() {
+        var bucketName = "oph-yleiskayttoiset-export-" + System.getenv("ENV_NAME");
+        var objectKey = "fulldump/v2/koodi.csv";
+        var awsRegion = "eu-west-1";
 
-                for (int col = 1; col <= columnCount; ++col) {
-                    buffer.append(rs.getMetaData().getColumnName(col));
-
-                    if (col < columnCount) {
-                        buffer.append(valueSeparator);
-                    }
-                }
-
-                while (rs.next()) {
-                    buffer.append("\n");
-
-                    for (int col = 1; col <= columnCount; ++col) {
-                        var rawString = rs.getString(col);
-
-                        if (rawString != null) {
-                            buffer.append(escapeCharacters(replaceNewLinesWithSpaces(rawString)));
-                        } else {
-                            buffer.append("");
-                        }
-
-                        if (col < columnCount) {
-                            buffer.append(valueSeparator);
-                        }
-                    }
-                }
-
-                return buffer.toString();
-            }
-        });
-
-        var tmpFile = File.createTempFile("koodi", ".csv");
-        try (var writer = new FileWriter(tmpFile)) {
-            writer.write(csvString);
-        }
-        log.info("Data Export: data written to " + tmpFile);
-    }
-
-    private String replaceNewLinesWithSpaces(String s) {
-        return s.replaceAll("\\R", " ");
-    }
-
-    private String escapeCharacters(String s) {
-        if (s.contains(",") || s.contains("\"") || s.contains("'")) {
-            return "\"" + s.replace("\"", "\"\"") + "\"";
-        } else {
-            return s;
-        }
+        log.info("Exporting table to S3: {}/{}", bucketName, objectKey);
+        var sql = """
+                SELECT * FROM aws_s3.query_export_to_s3(
+                    'SELECT koodistouri, koodiuri, koodiarvo, koodinimi_fi, koodinimi_sv FROM export.koodi',
+                    aws_commons.create_s3_uri(?, ?, ?)
+                )
+                """;
+        jdbcTemplate.update(sql, bucketName, objectKey, awsRegion);
     }
 }
