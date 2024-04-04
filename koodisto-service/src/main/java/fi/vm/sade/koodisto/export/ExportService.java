@@ -6,6 +6,7 @@ import com.github.kagkarlsson.scheduler.task.helper.Tasks;
 import com.github.kagkarlsson.scheduler.task.schedule.FixedDelay;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,8 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class ExportService {
     private final JdbcTemplate jdbcTemplate;
 
+    @Value("${koodisto.tasks.export.bucket-name}")
+    private String bucketName;
+
+    @Value("${koodisto.tasks.export.aws-region}")
+    private String awsRegion;
+
     @Bean
-    @ConditionalOnProperty(name = "koodisto.tasks.export-enabled", matchIfMissing = false)
+    @ConditionalOnProperty(name = "koodisto.tasks.export.enabled", matchIfMissing = false)
     Task<Void> createSchemaTask() {
         return Tasks.recurring(new TaskWithoutDataDescriptor("Data export: create schema"),
                 FixedDelay.ofSeconds(5)).execute((taskInstance, executionContext) -> createSchemaAndWriteAsCsvToDisk());
@@ -52,10 +59,7 @@ public class ExportService {
     }
 
     void exportTableToS3() {
-        var bucketName = "oph-yleiskayttoiset-export-" + System.getenv("ENV_NAME");
         var objectKey = "fulldump/v2/koodi.csv";
-        var awsRegion = "eu-west-1";
-
         log.info("Exporting table to S3: {}/{}", bucketName, objectKey);
         var sql = """
                 SELECT * FROM aws_s3.query_export_to_s3(
