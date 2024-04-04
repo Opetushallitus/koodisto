@@ -1,46 +1,31 @@
 package fi.vm.sade.koodisto.export;
 
-import com.github.kagkarlsson.scheduler.task.Task;
-import com.github.kagkarlsson.scheduler.task.TaskWithoutDataDescriptor;
-import com.github.kagkarlsson.scheduler.task.helper.Tasks;
-import com.github.kagkarlsson.scheduler.task.schedule.FixedDelay;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.transfer.s3.S3TransferManager;
+import software.amazon.awssdk.transfer.s3.model.DownloadFileRequest;
+import software.amazon.awssdk.transfer.s3.model.UploadFileRequest;
+
+import java.io.File;
+import java.io.IOException;
 
 @Slf4j
-@Configuration
 @RequiredArgsConstructor
+@Service
 public class ExportService {
     private final JdbcTemplate jdbcTemplate;
+    private final S3AsyncClient opintopolkuS3Client;
+    private final S3AsyncClient lampiS3Client;
 
     @Value("${koodisto.tasks.export.bucket-name}")
     private String bucketName;
-
-    @Value("${koodisto.tasks.export.aws-region}")
-    private String awsRegion;
-
-    @Bean
-    @ConditionalOnProperty(name = "koodisto.tasks.export.enabled", matchIfMissing = false)
-    Task<Void> createSchemaTask() {
-        log.info("Creating koodisto export task");
-        return Tasks.recurring(new TaskWithoutDataDescriptor("Data export: create schema"), FixedDelay.ofHours(1))
-                .execute((taskInstance, executionContext) -> {
-                    log.info("Running koodisto export task");
-                    createSchemaAndWriteAsCsvToDisk();
-                    log.info("Koodisto export task completed");
-                });
-    }
-
-    void createSchemaAndWriteAsCsvToDisk() {
-        createSchema();
-        exportTableToS3();
-    }
+    @Value("${koodisto.tasks.export.lampi-bucket-name}")
+    private String lampiBucketName;
 
     @Transactional
     public void createSchema() {
@@ -61,6 +46,11 @@ public class ExportService {
         jdbcTemplate.execute("ALTER SCHEMA exportnew RENAME TO export");
     }
 
+    public void exportSchema() throws IOException {
+        exportTableToS3();
+        copyToLampi();
+    }
+
     void exportTableToS3() {
         var objectKey = "fulldump/v2/koodi.csv";
         log.info("Exporting table to S3: {}/{}", bucketName, objectKey);
@@ -70,6 +60,32 @@ public class ExportService {
                     aws_commons.create_s3_uri(?, ?, ?)
                 )
                 """;
-        jdbcTemplate.update(sql, bucketName, objectKey, awsRegion);
+        jdbcTemplate.update(sql, bucketName, objectKey, OpintopolkuAwsClients.REGION.id());
+    }
+
+    void copyToLampi() throws IOException {
+        var temporaryFile = File.createTempFile("koodi", "csv");
+        try {
+            log.info("Downloading file from S3: {}/fulldump/v2/koodi.csv", bucketName);
+            try (var downloader = S3TransferManager.builder().s3Client(opintopolkuS3Client).build()) {
+                var fileDownload = downloader.downloadFile(DownloadFileRequest.builder()
+                        .getObjectRequest(b -> b.bucket(bucketName).key("fulldump/v2/koodi.csv"))
+                        .destination(temporaryFile)
+                        .build());
+                fileDownload.completionFuture().join();
+            }
+
+
+            log.info("Uploading file to S3: {}/fulldump/v2/koodi.csv", lampiBucketName);
+            try (var uploader = S3TransferManager.builder().s3Client(lampiS3Client).build()) {
+                var fileUpload = uploader.uploadFile(UploadFileRequest.builder()
+                        .putObjectRequest(b -> b.bucket(lampiBucketName).key("fulldump/v2/koodi.csv"))
+                        .source(temporaryFile)
+                        .build());
+                fileUpload.completionFuture().join();
+            }
+        } finally {
+            temporaryFile.delete();
+        }
     }
 }
