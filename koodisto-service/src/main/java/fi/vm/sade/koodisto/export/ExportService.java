@@ -29,7 +29,7 @@ public class ExportService {
     @ConditionalOnProperty(name = "koodisto.tasks.export.enabled", matchIfMissing = false)
     Task<Void> createSchemaTask() {
         log.info("Creating koodisto export task");
-        return Tasks.recurring(new TaskWithoutDataDescriptor("Data export: create schema"), FixedDelay.ofSeconds(5))
+        return Tasks.recurring(new TaskWithoutDataDescriptor("Data export: create schema"), FixedDelay.ofHours(1))
                 .execute((taskInstance, executionContext) -> {
                     log.info("Running koodisto export task");
                     createSchemaAndWriteAsCsvToDisk();
