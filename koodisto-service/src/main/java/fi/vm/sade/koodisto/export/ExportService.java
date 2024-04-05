@@ -83,7 +83,7 @@ public class ExportService {
     }
 
     void exportTableToS3() {
-        exportQueryToS3("fulldump/v2/koodi.csv", "SELECT koodistouri, koodiuri, koodiarvo, koodiversio, tila, voimassaalkupvm, voimassaloppupvm, koodinimi_fi, koodinimi_sv, koodinimi_en, koodikuvaus_fi, koodikuvaus_sv, koodikuvaus_en, koodiversiocreated_at, koodiversio_updated_at FROM export.koodi");
+        exportQueryToS3("fulldump/v2/koodi.csv", "SELECT koodistouri, koodiuri, koodiarvo, koodiversio, tila, voimassaalkupvm, voimassaloppupvm, koodinimi_fi, koodinimi_sv, koodinimi_en, koodikuvaus_fi, koodikuvaus_sv, koodikuvaus_en, koodiversiocreated_at, koodiversioupdated_at FROM export.koodi");
         exportQueryToS3("fulldump/v2/relaatio.csv", "SELECT ylakoodiuri, ylakoodiversio, relaatiotyyppi, alakoodiuri, alakoodiversio, relaatioversio FROM export.relaatio");
     }
 
