@@ -13,6 +13,7 @@ import software.amazon.awssdk.transfer.s3.model.UploadFileRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -99,7 +100,7 @@ public class ExportService {
                 fileUpload.completionFuture().join();
             }
         } finally {
-            temporaryFile.delete();
+            Files.deleteIfExists(temporaryFile.toPath());
         }
     }
 }
