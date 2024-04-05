@@ -89,7 +89,7 @@ public class ExportService {
 
     void exportQueryToS3(String objectKey, String query) {
         log.info("Exporting table to S3: {}/{}", bucketName, objectKey);
-        var sql = "SELECT * FROM aws_s3.query_export_to_s3(?, aws_commons.create_s3_uri(?, ?, ?))";
+        var sql = "SELECT * FROM aws_s3.query_export_to_s3(?, aws_commons.create_s3_uri(?, ?, ?), options := 'FORMAT CSV, HEADER TRUE')";
         jdbcTemplate.update(sql, query, bucketName, objectKey, OpintopolkuAwsClients.REGION.id());
     }
 
