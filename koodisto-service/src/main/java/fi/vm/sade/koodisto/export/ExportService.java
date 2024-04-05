@@ -57,6 +57,22 @@ public class ExportService {
                 LEFT JOIN public.koodimetadata metadata_sv ON koodiversio.id = metadata_sv.koodiversio_id AND metadata_sv.kieli = 'SV'
                 LEFT JOIN public.koodimetadata metadata_en ON koodiversio.id = metadata_en.koodiversio_id AND metadata_en.kieli = 'EN'
                 """);
+        jdbcTemplate.execute("""
+                CREATE TABLE exportnew.relaatio AS
+                SELECT
+                    ylakoodi.koodiuri ylakoodiuri,
+                    ylakoodiversio.versio ylakoodiversio,
+                    suhteentyyppi relaatiotyyppi,
+                    alakoodi.koodiuri alakoodiuri,
+                    alakoodiversio.versio alakoodiversio,
+                    koodinsuhde.versio relaatioversio
+                FROM koodinsuhde
+                LEFT JOIN koodiversio ylakoodiversio ON ylakoodiversio.id = ylakoodiversio_id
+                LEFT JOIN koodi ylakoodi ON ylakoodiversio.koodi_id = ylakoodi.id
+                LEFT JOIN koodiversio alakoodiversio ON alakoodiversio.id = alakoodiversio_id
+                LEFT JOIN koodi alakoodi ON alakoodiversio.koodi_id = alakoodi.id
+                JOIN koodisto ON ylakoodi.koodisto_id = koodisto.id
+                """);
         jdbcTemplate.execute("DROP SCHEMA IF EXISTS export CASCADE");
         jdbcTemplate.execute("ALTER SCHEMA exportnew RENAME TO export");
     }
@@ -67,37 +83,44 @@ public class ExportService {
     }
 
     void exportTableToS3() {
-        var objectKey = "fulldump/v2/koodi.csv";
+        exportQueryToS3("fulldump/v2/koodi.csv", "SELECT koodistouri, koodiuri, koodiarvo, koodiversio, tila, voimassaalkupvm, voimassaloppupvm, koodinimi_fi, koodinimi_sv, koodinimi_en, koodikuvaus_fi, koodikuvaus_sv, koodikuvaus_en, koodiversiocreated_at, koodiversio_updated_at FROM export.koodi");
+        exportQueryToS3("fulldump/v2/relaatio.csv", "SELECT ylakoodiuri, ylakoodiversio, relaatiotyyppi, alakoodiuri, alakoodiversio, relaatioversio FROM export.relaatio");
+    }
+
+    void exportQueryToS3(String objectKey, String query) {
         log.info("Exporting table to S3: {}/{}", bucketName, objectKey);
-        var sql = """
-                SELECT * FROM aws_s3.query_export_to_s3(
-                    'SELECT koodistouri, koodiuri, koodiarvo, koodiversio, tila, voimassaalkupvm, voimassaloppupvm, koodinimi_fi, koodinimi_sv, koodinimi_en, koodikuvaus_fi, koodikuvaus_sv, koodikuvaus_en, koodiversiocreated_at, koodiversio_updated_at FROM export.koodi',
-                    aws_commons.create_s3_uri(?, ?, ?)
-                )
-                """;
-        jdbcTemplate.update(sql, bucketName, objectKey, OpintopolkuAwsClients.REGION.id());
+        var sql = "SELECT * FROM aws_s3.query_export_to_s3(?, aws_commons.create_s3_uri(?, ?, ?))";
+        jdbcTemplate.update(sql, query, bucketName, objectKey, OpintopolkuAwsClients.REGION.id());
     }
 
     void copyToLampi() throws IOException {
-        var temporaryFile = File.createTempFile("koodi", "csv");
+        var koodiversionId = copyFileToLampi("fulldump/v2/koodi.csv");
+        log.info("Wrote koodis to Lampi with version id {}", koodiversionId);
+        var relaatioVersionId = copyFileToLampi("fulldump/v2/relaatio.csv");
+        log.info("Wrote relaatiot to Lampi with version id {}", relaatioVersionId);
+    }
+
+    String copyFileToLampi(String objectKey) throws IOException {
+        var temporaryFile = File.createTempFile("export", "csv");
         try {
-            log.info("Downloading file from S3: {}/fulldump/v2/koodi.csv", bucketName);
+            log.info("Downloading file from S3: {}/{}", bucketName, objectKey);
             try (var downloader = S3TransferManager.builder().s3Client(opintopolkuS3Client).build()) {
                 var fileDownload = downloader.downloadFile(DownloadFileRequest.builder()
-                        .getObjectRequest(b -> b.bucket(bucketName).key("fulldump/v2/koodi.csv"))
+                        .getObjectRequest(b -> b.bucket(bucketName).key(objectKey))
                         .destination(temporaryFile)
                         .build());
                 fileDownload.completionFuture().join();
             }
 
 
-            log.info("Uploading file to S3: {}/fulldump/v2/koodi.csv", lampiBucketName);
+            log.info("Uploading file to S3: {}/{}", lampiBucketName, objectKey);
             try (var uploader = S3TransferManager.builder().s3Client(lampiS3Client).build()) {
                 var fileUpload = uploader.uploadFile(UploadFileRequest.builder()
-                        .putObjectRequest(b -> b.bucket(lampiBucketName).key("fulldump/v2/koodi.csv"))
+                        .putObjectRequest(b -> b.bucket(lampiBucketName).key(objectKey))
                         .source(temporaryFile)
                         .build());
-                fileUpload.completionFuture().join();
+                var result = fileUpload.completionFuture().join();
+                return result.response().versionId();
             }
         } finally {
             Files.deleteIfExists(temporaryFile.toPath());
