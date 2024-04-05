@@ -31,17 +31,31 @@ public class ExportService {
     public void createSchema() {
         jdbcTemplate.execute("DROP SCHEMA IF EXISTS exportnew CASCADE");
         jdbcTemplate.execute("CREATE SCHEMA exportnew");
-        jdbcTemplate.execute(
-                "CREATE TABLE exportnew.koodi AS " +
-                        "SELECT k1.koodistouri," +
-                        "k0.koodiuri," +
-                        "k2.koodiarvo," +
-                        "(SELECT nimi from koodimetadata where kieli = 'FI' and koodiversio_id = k2.id) koodinimi_fi," +
-                        "(SELECT nimi from koodimetadata where kieli = 'SV' and koodiversio_id = k2.id) koodinimi_sv " +
-                        "FROM koodi k0 " +
-                        "JOIN koodisto k1 on k1.id = k0.koodisto_id " +
-                        "JOIN koodiversio k2 ON k0.id = k2.koodi_id " +
-                        "WHERE now() BETWEEN k2.voimassaalkupvm AND coalesce(k2.voimassaloppupvm, now())");
+        jdbcTemplate.execute("""
+                CREATE TABLE exportnew.koodi AS
+                SELECT
+                    koodisto.koodistouri AS koodistouri,
+                    koodi.koodiuri AS koodiuri,
+                    koodiversio.koodiarvo AS koodiarvo,
+                    koodiversio.versio AS koodiversio,
+                    koodiversio.tila AS tila,
+                    koodiversio.voimassaalkupvm AS voimassaalkupvm,
+                    koodiversio.voimassaloppupvm AS voimassaloppupvm,
+                    metadata_fi.nimi AS koodinimi_fi,
+                    metadata_sv.nimi AS koodinimi_sv,
+                    metadata_en.nimi AS koodinimi_en,
+                    metadata_fi.kuvaus AS koodikuvaus_fi,
+                    metadata_sv.kuvaus AS koodikuvaus_sv,
+                    metadata_en.kuvaus AS koodikuvaus_en,
+                    koodiversio.luotu AS koodiversiocreated_at,
+                    koodiversio.paivityspvm AS koodiversioupdated_at
+                FROM koodi
+                JOIN koodisto ON koodi.koodisto_id = koodisto.id
+                JOIN koodiversio ON koodi.id = koodiversio.koodi_id
+                LEFT JOIN public.koodimetadata metadata_fi ON koodiversio.id = metadata_fi.koodiversio_id AND metadata_fi.kieli = 'FI'
+                LEFT JOIN public.koodimetadata metadata_sv ON koodiversio.id = metadata_sv.koodiversio_id AND metadata_sv.kieli = 'SV'
+                LEFT JOIN public.koodimetadata metadata_en ON koodiversio.id = metadata_en.koodiversio_id AND metadata_en.kieli = 'EN'
+                """);
         jdbcTemplate.execute("DROP SCHEMA IF EXISTS export CASCADE");
         jdbcTemplate.execute("ALTER SCHEMA exportnew RENAME TO export");
     }
@@ -56,7 +70,7 @@ public class ExportService {
         log.info("Exporting table to S3: {}/{}", bucketName, objectKey);
         var sql = """
                 SELECT * FROM aws_s3.query_export_to_s3(
-                    'SELECT koodistouri, koodiuri, koodiarvo, koodinimi_fi, koodinimi_sv FROM export.koodi',
+                    'SELECT koodistouri, koodiuri, koodiarvo, koodiversio, tila, voimassaalkupvm, voimassaloppupvm, koodinimi_fi, koodinimi_sv, koodinimi_en, koodikuvaus_fi, koodikuvaus_sv, koodikuvaus_en, koodiversiocreated_at, koodiversio_updated_at FROM export.koodi',
                     aws_commons.create_s3_uri(?, ?, ?)
                 )
                 """;
