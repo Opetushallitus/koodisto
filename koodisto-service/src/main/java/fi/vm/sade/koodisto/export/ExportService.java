@@ -23,6 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class ExportService {
+    private static final String S3_PREFIX = "fulldump/koodisto/v2/";
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final JdbcTemplate jdbcTemplate;
     private final S3AsyncClient opintopolkuS3Client;
@@ -88,8 +89,8 @@ public class ExportService {
     }
 
     void exportTableToS3() {
-        exportQueryToS3("fulldump/v2/koodi.csv", "SELECT koodistouri, koodiuri, koodiarvo, koodiversio, tila, voimassaalkupvm, voimassaloppupvm, koodinimi_fi, koodinimi_sv, koodinimi_en, koodikuvaus_fi, koodikuvaus_sv, koodikuvaus_en, koodiversiocreated_at, koodiversioupdated_at FROM export.koodi");
-        exportQueryToS3("fulldump/v2/relaatio.csv", "SELECT ylakoodiuri, ylakoodiversio, relaatiotyyppi, alakoodiuri, alakoodiversio, relaatioversio FROM export.relaatio");
+        exportQueryToS3(S3_PREFIX + "/koodi.csv", "SELECT koodistouri, koodiuri, koodiarvo, koodiversio, tila, voimassaalkupvm, voimassaloppupvm, koodinimi_fi, koodinimi_sv, koodinimi_en, koodikuvaus_fi, koodikuvaus_sv, koodikuvaus_en, koodiversiocreated_at, koodiversioupdated_at FROM export.koodi");
+        exportQueryToS3(S3_PREFIX + "/relaatio.csv", "SELECT ylakoodiuri, ylakoodiversio, relaatiotyyppi, alakoodiuri, alakoodiversio, relaatioversio FROM export.relaatio");
     }
 
     void exportQueryToS3(String objectKey, String query) {
@@ -99,9 +100,9 @@ public class ExportService {
     }
 
     void copyToLampi() throws IOException {
-        var koodiversionId = copyFileToLampi("fulldump/v2/koodi.csv");
+        var koodiversionId = copyFileToLampi(S3_PREFIX + "/koodi.csv");
         log.info("Wrote koodis to Lampi with version id {}", koodiversionId);
-        var relaatioVersionId = copyFileToLampi("fulldump/v2/relaatio.csv");
+        var relaatioVersionId = copyFileToLampi(S3_PREFIX + "/relaatio.csv");
         log.info("Wrote relaatiot to Lampi with version id {}", relaatioVersionId);
         writeManifest(new ExportManifest(List.of(koodiversionId, relaatioVersionId)));
     }
@@ -109,7 +110,7 @@ public class ExportService {
     private void writeManifest(ExportManifest manifest) throws JsonProcessingException {
         var manifestJson = objectMapper.writeValueAsString(manifest);
         var response = lampiS3Client.putObject(
-                b -> b.bucket(lampiBucketName).key("fulldump/v2/manifest.json"),
+                b -> b.bucket(lampiBucketName).key(S3_PREFIX + "/manifest.json"),
                 AsyncRequestBody.fromString(manifestJson)
         ).join();
         log.info("Wrote manifest to S3: {}", response);
