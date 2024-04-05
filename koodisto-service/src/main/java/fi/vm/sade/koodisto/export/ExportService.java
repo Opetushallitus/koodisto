@@ -1,11 +1,14 @@
 package fi.vm.sade.koodisto.export;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.transfer.s3.S3TransferManager;
 import software.amazon.awssdk.transfer.s3.model.DownloadFileRequest;
@@ -14,11 +17,13 @@ import software.amazon.awssdk.transfer.s3.model.UploadFileRequest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
 public class ExportService {
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final JdbcTemplate jdbcTemplate;
     private final S3AsyncClient opintopolkuS3Client;
     private final S3AsyncClient lampiS3Client;
@@ -98,9 +103,19 @@ public class ExportService {
         log.info("Wrote koodis to Lampi with version id {}", koodiversionId);
         var relaatioVersionId = copyFileToLampi("fulldump/v2/relaatio.csv");
         log.info("Wrote relaatiot to Lampi with version id {}", relaatioVersionId);
+        writeManifest(new ExportManifest(List.of(koodiversionId, relaatioVersionId)));
     }
 
-    String copyFileToLampi(String objectKey) throws IOException {
+    private void writeManifest(ExportManifest manifest) throws JsonProcessingException {
+        var manifestJson = objectMapper.writeValueAsString(manifest);
+        var response = lampiS3Client.putObject(
+                b -> b.bucket(lampiBucketName).key("fulldump/v2/manifest.json"),
+                AsyncRequestBody.fromString(manifestJson)
+        ).join();
+        log.info("Wrote manifest to S3: {}", response);
+    }
+
+    private ExportManifest.ExportFileDetails copyFileToLampi(String objectKey) throws IOException {
         var temporaryFile = File.createTempFile("export", "csv");
         try {
             log.info("Downloading file from S3: {}/{}", bucketName, objectKey);
@@ -120,7 +135,8 @@ public class ExportService {
                         .source(temporaryFile)
                         .build());
                 var result = fileUpload.completionFuture().join();
-                return result.response().versionId();
+                var objectVersion = result.response().versionId();
+                return new ExportManifest.ExportFileDetails(objectKey, objectVersion);
             }
         } finally {
             Files.deleteIfExists(temporaryFile.toPath());
