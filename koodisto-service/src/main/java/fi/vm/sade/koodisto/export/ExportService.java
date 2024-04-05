@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class ExportService {
-    private static final String S3_PREFIX = "fulldump/koodisto/v2/";
+    private static final String S3_PREFIX = "fulldump/koodisto/v2";
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final JdbcTemplate jdbcTemplate;
     private final S3AsyncClient opintopolkuS3Client;
