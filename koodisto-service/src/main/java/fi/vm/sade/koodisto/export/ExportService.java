@@ -170,7 +170,7 @@ public class ExportService {
     }
 
     private <T> void exportQueryToS3AsJson(String query, String objectKey, Function<ResultSet, T> mapper) throws IOException {
-        var tempFile = File.createTempFile("export", "json");
+        var tempFile = File.createTempFile("export", ".json");
         try {
             exportToFile(query, mapper, tempFile);
             uploadFile(opintopolkuS3Client, bucketName, objectKey, tempFile);
@@ -239,7 +239,7 @@ public class ExportService {
     }
 
     private ExportManifest.ExportFileDetails copyFileToLampi(String objectKey) throws IOException {
-        var temporaryFile = File.createTempFile("export", "csv");
+        var temporaryFile = File.createTempFile("export", ".csv");
         try {
             log.info("Downloading file from S3: {}/{}", bucketName, objectKey);
             try (var downloader = S3TransferManager.builder().s3Client(opintopolkuS3Client).build()) {
