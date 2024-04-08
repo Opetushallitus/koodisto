@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.export;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
@@ -30,7 +31,8 @@ import java.util.stream.Stream;
 @Service
 public class ExportService {
     private static final String S3_PREFIX = "fulldump/koodisto/v2";
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper()
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
     private final JdbcTemplate jdbcTemplate;
     private final S3AsyncClient opintopolkuS3Client;
     private final S3AsyncClient lampiS3Client;
