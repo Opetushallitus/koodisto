@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -224,11 +225,12 @@ public class ExportService {
     }
 
     public void copyExportFilesToLampi() throws IOException {
-        var koodiversionId = copyFileToLampi(S3_PREFIX + "/koodi.csv");
-        log.info("Wrote koodis to Lampi with version id {}", koodiversionId);
-        var relaatioVersionId = copyFileToLampi(S3_PREFIX + "/relaatio.csv");
-        log.info("Wrote relaatiot to Lampi with version id {}", relaatioVersionId);
-        writeManifest(new ExportManifest(List.of(koodiversionId, relaatioVersionId)));
+        var details = new ArrayList<ExportManifest.ExportFileDetails>();
+        details.add(copyFileToLampi(S3_PREFIX + "/koodi.csv"));
+        details.add(copyFileToLampi(S3_PREFIX + "/relaatio.csv"));
+        details.add(copyFileToLampi(S3_PREFIX + "/koodi.json"));
+        details.add(copyFileToLampi(S3_PREFIX + "/relaatio.json"));
+        writeManifest(new ExportManifest(details));
     }
 
     private void writeManifest(ExportManifest manifest) throws JsonProcessingException {
