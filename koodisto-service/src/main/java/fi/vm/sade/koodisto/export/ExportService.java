@@ -2,6 +2,7 @@ package fi.vm.sade.koodisto.export;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,14 +11,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
+import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 import software.amazon.awssdk.transfer.s3.S3TransferManager;
 import software.amazon.awssdk.transfer.s3.model.DownloadFileRequest;
 import software.amazon.awssdk.transfer.s3.model.UploadFileRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.sql.ResultSet;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -83,9 +89,127 @@ public class ExportService {
         jdbcTemplate.execute("ALTER SCHEMA exportnew RENAME TO export");
     }
 
-    public void generateExportFiles() {
-        exportQueryToS3(S3_PREFIX + "/koodi.csv", "SELECT koodistouri, koodiuri, koodiarvo, koodiversio, tila, voimassaalkupvm, voimassaloppupvm, koodinimi_fi, koodinimi_sv, koodinimi_en, koodikuvaus_fi, koodikuvaus_sv, koodikuvaus_en, koodiversiocreated_at, koodiversioupdated_at FROM export.koodi");
-        exportQueryToS3(S3_PREFIX + "/relaatio.csv", "SELECT ylakoodiuri, ylakoodiversio, relaatiotyyppi, alakoodiuri, alakoodiversio, relaatioversio FROM export.relaatio");
+    private static final String KOODI_QUERY = "SELECT koodistouri, koodiuri, koodiarvo, koodiversio, tila, voimassaalkupvm, voimassaloppupvm, koodinimi_fi, koodinimi_sv, koodinimi_en, koodikuvaus_fi, koodikuvaus_sv, koodikuvaus_en, koodiversiocreated_at, koodiversioupdated_at FROM export.koodi";
+    private static final String  RELAATIO_QUERY = "SELECT ylakoodiuri, ylakoodiversio, relaatiotyyppi, alakoodiuri, alakoodiversio, relaatioversio FROM export.relaatio";
+
+    public void generateExportFiles() throws IOException {
+        generateCsvExports();
+        generateJsonExports();
+    }
+
+    void generateCsvExports() {
+        exportQueryToS3(S3_PREFIX + "/koodi.csv", KOODI_QUERY);
+        exportQueryToS3(S3_PREFIX + "/relaatio.csv", RELAATIO_QUERY);
+    }
+
+    void generateJsonExports() throws IOException {
+        exportQueryToS3AsJson(KOODI_QUERY, S3_PREFIX + "/koodi.json", unchecked(rs ->
+                new ExportedKoodi(
+                        rs.getString("koodistouri"),
+                        rs.getString("koodiuri"),
+                        rs.getString("koodiarvo"),
+                        rs.getLong("koodiversio"),
+                        rs.getString("tila"),
+                        rs.getString("voimassaalkupvm"), // date
+                        rs.getString("voimassaloppupvm"), // date
+                        rs.getString("koodinimi_fi"),
+                        rs.getString("koodinimi_sv"),
+                        rs.getString("koodinimi_en"),
+                        rs.getString("koodikuvaus_fi"),
+                        rs.getString("koodikuvaus_sv"),
+                        rs.getString("koodikuvaus_en"),
+                        rs.getString("koodiversiocreated_at"), // timestamp
+                        rs.getString("koodiversioudpated_at") // timestamp
+                )
+        ));
+        exportQueryToS3AsJson(RELAATIO_QUERY, S3_PREFIX + "/relaatio.json", unchecked(rs ->
+                new ExportedRelaatio(
+                        rs.getString("ylakoodiuri"),
+                        rs.getLong("ylakoodiversio"),
+                        rs.getString("relaatiotyyppi"),
+                        rs.getString("alakoodiuri"),
+                        rs.getLong("alakoodiversio"),
+                        rs.getLong("relaatioversio")
+                )
+        ));
+    }
+
+    private interface ThrowingFunction<T, R, E extends Throwable> {
+        R apply(T rs) throws E;
+    }
+
+    @Data
+    private static class ExportedKoodi {
+        private final String koodistouri;
+        private final String koodiuri;
+        private final String koodiarvo;
+        private final Long koodiversio;
+        private final String tila;
+        private final String voimassaalkupvm;
+        private final String voimassaloppuvpm;
+        private final String koodinimi_fi;
+        private final String koodinimi_sv;
+        private final String koodinimi_en;
+        private final String koodikuvaus_fi;
+        private final String koodikuvaus_sv;
+        private final String koodikuvaus_en;
+        private final String koodiversiocreated_at;
+        private final String koodiversioupdated_at;
+    }
+
+    @Data
+    private static class ExportedRelaatio {
+        private final String ylakoodiuri;
+        private final Long ylakoodiversio;
+        private final String relaatiotyyppi;
+        private final String alakoodiuri;
+        private final Long alakoodiversio;
+        private final Long relaatioversio;
+    }
+
+    private <T> void exportQueryToS3AsJson(String query, String objectKey, Function<ResultSet, T> mapper) throws IOException {
+        var tempFile = File.createTempFile("export", "json");
+        try {
+            exportToFile(query, mapper, tempFile);
+            uploadFile(opintopolkuS3Client, bucketName, objectKey, tempFile);
+        } finally {
+            Files.deleteIfExists(tempFile.toPath());
+        }
+    }
+
+    private <T> void exportToFile(String query, Function<ResultSet, T> mapper, File file) throws IOException {
+        log.info("Writing JSON export to {}", file.getAbsolutePath());
+        try (var writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
+            writer.write("{\n");
+            writer.write("\"koodis\": [\n");
+
+            var firstElement = true;
+            try (Stream<T> stream = jdbcTemplate.queryForStream(query, (rs, n) -> mapper.apply(rs))) {
+                Iterable<T> iterable = stream::iterator;
+                for (T jsonObject : iterable) {
+                    if (firstElement) {
+                        firstElement = false;
+                    } else {
+                        writer.write(",\n");
+                    }
+                    writer.write(objectMapper.writeValueAsString(jsonObject));
+                }
+            }
+            writer.write("\n");
+            writer.write("]\n");
+            writer.write("}\n");
+            log.info("File written!");
+        }
+    }
+
+    private <T, R, E extends Throwable> Function<T, R> unchecked(ThrowingFunction<T, R, E> f) {
+        return t -> {
+            try {
+                return f.apply(t);
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        };
     }
 
     private void exportQueryToS3(String objectKey, String query) {
@@ -124,19 +248,22 @@ public class ExportService {
                 fileDownload.completionFuture().join();
             }
 
-
-            log.info("Uploading file to S3: {}/{}", lampiBucketName, objectKey);
-            try (var uploader = S3TransferManager.builder().s3Client(lampiS3Client).build()) {
-                var fileUpload = uploader.uploadFile(UploadFileRequest.builder()
-                        .putObjectRequest(b -> b.bucket(lampiBucketName).key(objectKey))
-                        .source(temporaryFile)
-                        .build());
-                var result = fileUpload.completionFuture().join();
-                var objectVersion = result.response().versionId();
-                return new ExportManifest.ExportFileDetails(objectKey, objectVersion);
-            }
+            var response = uploadFile(lampiS3Client, lampiBucketName, objectKey, temporaryFile);
+            return new ExportManifest.ExportFileDetails(objectKey, response.versionId());
         } finally {
             Files.deleteIfExists(temporaryFile.toPath());
+        }
+    }
+
+    private PutObjectResponse uploadFile(S3AsyncClient s3Client, String bucketName, String objectKey, File file) {
+        log.info("Uploading file to S3: {}/{}", bucketName, objectKey);
+        try (var uploader = S3TransferManager.builder().s3Client(s3Client).build()) {
+            var fileUpload = uploader.uploadFile(UploadFileRequest.builder()
+                    .putObjectRequest(b -> b.bucket(bucketName).key(objectKey))
+                    .source(file)
+                    .build());
+            var result = fileUpload.completionFuture().join();
+            return result.response();
         }
     }
 }
