@@ -6,6 +6,7 @@ import com.github.kagkarlsson.scheduler.task.helper.Tasks;
 import com.github.kagkarlsson.scheduler.task.schedule.FixedDelay;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,9 @@ import java.io.IOException;
 public class ExportTaskConfiguration {
     private final ExportService exportService;
 
+    @Value("${koodisto.tasks.export.copy-to-lampi}")
+    private boolean copyToLampi;
+
     @Bean
     @ConditionalOnProperty(name = "koodisto.tasks.export.enabled", matchIfMissing = false)
     Task<Void> createSchemaTask() {
@@ -27,7 +31,12 @@ public class ExportTaskConfiguration {
                     try {
                         log.info("Running koodisto export task");
                         exportService.createSchema();
-                        exportService.exportSchema();
+                        exportService.generateExportFiles();
+                        if (copyToLampi) {
+                            exportService.copyExportFilesToLampi();
+                        } else {
+                            log.info("Copying export files to Lampi is disabled");
+                        }
                         log.info("Koodisto export task completed");
                     } catch (IOException e) {
                         throw new RuntimeException(e);

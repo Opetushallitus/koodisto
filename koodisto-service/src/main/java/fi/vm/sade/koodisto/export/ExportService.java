@@ -83,24 +83,19 @@ public class ExportService {
         jdbcTemplate.execute("ALTER SCHEMA exportnew RENAME TO export");
     }
 
-    public void exportSchema() throws IOException {
-        exportTableToS3();
-        copyToLampi();
-    }
-
-    void exportTableToS3() {
+    public void generateExportFiles() {
         exportQueryToS3(S3_PREFIX + "/koodi.csv", "SELECT koodistouri, koodiuri, koodiarvo, koodiversio, tila, voimassaalkupvm, voimassaloppupvm, koodinimi_fi, koodinimi_sv, koodinimi_en, koodikuvaus_fi, koodikuvaus_sv, koodikuvaus_en, koodiversiocreated_at, koodiversioupdated_at FROM export.koodi");
         exportQueryToS3(S3_PREFIX + "/relaatio.csv", "SELECT ylakoodiuri, ylakoodiversio, relaatiotyyppi, alakoodiuri, alakoodiversio, relaatioversio FROM export.relaatio");
     }
 
-    void exportQueryToS3(String objectKey, String query) {
+    private void exportQueryToS3(String objectKey, String query) {
         log.info("Exporting table to S3: {}/{}", bucketName, objectKey);
         var sql = "SELECT rows_uploaded FROM aws_s3.query_export_to_s3(?, aws_commons.create_s3_uri(?, ?, ?), options := 'FORMAT CSV, HEADER TRUE')";
         var rowsUploaded = jdbcTemplate.queryForObject(sql, Long.class, query, bucketName, objectKey, OpintopolkuAwsClients.REGION.id());
         log.info("Exported {} rows to S3 object {}", rowsUploaded, objectKey);
     }
 
-    void copyToLampi() throws IOException {
+    public void copyExportFilesToLampi() throws IOException {
         var koodiversionId = copyFileToLampi(S3_PREFIX + "/koodi.csv");
         log.info("Wrote koodis to Lampi with version id {}", koodiversionId);
         var relaatioVersionId = copyFileToLampi(S3_PREFIX + "/relaatio.csv");
