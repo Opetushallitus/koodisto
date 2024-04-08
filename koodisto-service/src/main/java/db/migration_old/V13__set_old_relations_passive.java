@@ -1,4 +1,4 @@
-package db.migration;
+package db.migration_old;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;

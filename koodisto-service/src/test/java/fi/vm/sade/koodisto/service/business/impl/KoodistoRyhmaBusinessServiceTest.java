@@ -25,17 +25,10 @@ import java.util.stream.Collectors;
 import static java.util.Set.of;
 import static org.junit.Assert.*;
 
-@org.springframework.test.context.jdbc.Sql(
-        scripts = "classpath:test-data-codes-rest.sql",
-        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
-)
-@org.springframework.test.context.jdbc.Sql(
-        scripts = "classpath:truncate_tables.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
-)
+@Sql("/truncate_tables.sql")
+@Sql("/test-data-codes-rest.sql")
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@AutoConfigureTestDatabase
 public class KoodistoRyhmaBusinessServiceTest {
 
     @Autowired

@@ -31,15 +31,8 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 
-@org.springframework.test.context.jdbc.Sql(
-        scripts = "classpath:test-data.sql",
-        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD
-)
-@org.springframework.test.context.jdbc.Sql(
-        scripts = "classpath:truncate_tables.sql",
-        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
-)
-@AutoConfigureTestDatabase
+@Sql("/truncate_tables.sql")
+@Sql("/test-data.sql")
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @WithMockUser(value = "1.2.3.4.5", authorities = "APP_KOODISTO_CRUD_1.2.246.562.10.00000000001")

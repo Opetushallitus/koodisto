@@ -7,6 +7,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12.17
+        ports:
+          - 5435:5432
+        env:
+          POSTGRES_USER: app
+          POSTGRES_DB: koodisto
+          POSTGRES_PASSWORD: koodisto
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
@@ -27,6 +36,15 @@ jobs:
           path: koodisto-service/target/koodisto-service.jar
   sonarcloud:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12.17
+        ports:
+          - 5435:5432
+        env:
+          POSTGRES_USER: app
+          POSTGRES_DB: koodisto
+          POSTGRES_PASSWORD: koodisto
     steps:
       - name: Checkout source
         uses: actions/checkout@v3

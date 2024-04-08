@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql("/truncate_tables.sql")
 @Sql("/test-data.sql")
 @SpringBootTest
-@AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 class KoodistoResourceTest {
     private static final String BASE_PATH = "/rest/json";

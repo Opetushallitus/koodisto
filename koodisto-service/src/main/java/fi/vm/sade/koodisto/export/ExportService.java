@@ -39,6 +39,8 @@ public class ExportService {
     private String bucketName;
     @Value("${koodisto.tasks.export.lampi-bucket-name}")
     private String lampiBucketName;
+    @Value("${koodisto.tasks.export.upload-to-s3:true}")
+    private boolean uploadToS3;
 
     @Transactional
     public void createSchema() {
@@ -119,7 +121,7 @@ public class ExportService {
                         rs.getString("koodikuvaus_sv"),
                         rs.getString("koodikuvaus_en"),
                         rs.getString("koodiversiocreated_at"), // timestamp
-                        rs.getString("koodiversioudpated_at") // timestamp
+                        rs.getString("koodiversioupdated_at") // timestamp
                 )
         ));
         exportQueryToS3AsJson(RELAATIO_QUERY, S3_PREFIX + "/relaatio.json", unchecked(rs ->
@@ -256,6 +258,10 @@ public class ExportService {
     }
 
     private PutObjectResponse uploadFile(S3AsyncClient s3Client, String bucketName, String objectKey, File file) {
+        if (!uploadToS3) {
+            log.info("Skipping upload to S3");
+            return null;
+        }
         log.info("Uploading file to S3: {}/{}", bucketName, objectKey);
         try (var uploader = S3TransferManager.builder().s3Client(s3Client).build()) {
             var fileUpload = uploader.uploadFile(UploadFileRequest.builder()

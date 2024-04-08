@@ -1,0 +1,24 @@
+version: "3"
+services:
+  database:
+    container_name: oph-koodisto-db
+    image: postgres:12.17
+    environment:
+      - POSTGRES_USER=app
+      - POSTGRES_DB=koodisto
+      - POSTGRES_PASSWORD=koodisto
+    ports:
+      - 5434:5432
+    command: ["postgres", "-c", "log_statement=all"]
+  database-test:
+    container_name: oph-koodisto-test-db
+    image: postgres:12.17
+    environment:
+      - POSTGRES_USER=app
+      - POSTGRES_DB=koodisto
+      - POSTGRES_PASSWORD=koodisto
+    ports:
+      - 5435:5432
+    command: ["postgres", "-c", "log_statement=all"]
+volumes:
+  database-data:
