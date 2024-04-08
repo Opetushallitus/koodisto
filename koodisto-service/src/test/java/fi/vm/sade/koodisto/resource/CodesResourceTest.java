@@ -30,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql("/truncate_tables.sql")
 @Sql("/test-data-codes-rest.sql")
 @SpringBootTest
-@AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 class CodesResourceTest {
     private final String BASE_PATH = "/rest/codes";

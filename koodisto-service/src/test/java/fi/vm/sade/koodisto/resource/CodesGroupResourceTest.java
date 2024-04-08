@@ -21,7 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql("/truncate_tables.sql")
 @Sql("/test-data-codes-rest.sql")
 @SpringBootTest
-@AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 class CodesGroupResourceTest {
     @Autowired

@@ -14,6 +14,10 @@ function main {
 
   tmux splitw -v
   tmux select-pane -t 1
+  tmux send-keys "cd ${repo}; docker-compose down --volumes; docker-compose up --force-recreate --renew-anon-volumes" C-m
+
+  tmux splitw -v
+  tmux select-pane -t 2
   tmux send-keys "$repo/scripts/run-koodisto-service.sh" C-m
 
   #open "http://localhost:3003/organisaatiot"
