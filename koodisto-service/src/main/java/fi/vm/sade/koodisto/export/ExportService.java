@@ -3,9 +3,6 @@ package fi.vm.sade.koodisto.export;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -257,35 +254,29 @@ public class ExportService {
         }
     }
 }
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-class ExportedKoodi {
-    private String koodistouri;
-    private String koodiuri;
-    private String koodiarvo;
-    private Long koodiversio;
-    private String tila;
-    private String voimassaalkupvm;
-    private String voimassaloppuvpm;
-    private String koodinimi_fi;
-    private String koodinimi_sv;
-    private String koodinimi_en;
-    private String koodikuvaus_fi;
-    private String koodikuvaus_sv;
-    private String koodikuvaus_en;
-    private String koodiversiocreated_at;
-    private String koodiversioupdated_at;
-}
+record ExportedKoodi(
+    String koodistouri,
+    String koodiuri,
+    String koodiarvo,
+    Long koodiversio,
+    String tila,
+    String voimassaalkupvm,
+    String voimassaloppuvpm,
+    String koodinimi_fi,
+    String koodinimi_sv,
+    String koodinimi_en,
+    String koodikuvaus_fi,
+    String koodikuvaus_sv,
+    String koodikuvaus_en,
+    String koodiversiocreated_at,
+    String koodiversioupdated_at
+){}
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-class ExportedRelaatio {
-    private String ylakoodiuri;
-    private Long ylakoodiversio;
-    private String relaatiotyyppi;
-    private String alakoodiuri;
-    private Long alakoodiversio;
-    private Long relaatioversio;
-}
+record ExportedRelaatio(
+        String ylakoodiuri,
+        Long ylakoodiversio,
+        String relaatiotyyppi,
+        String alakoodiuri,
+        Long alakoodiversio,
+        Long relaatioversio
+){}
