@@ -178,16 +178,18 @@ public class ExportService {
             exportToFile(query, mapper, tempFile);
             uploadFile(opintopolkuS3Client, bucketName, objectKey, tempFile);
         } finally {
-            Files.deleteIfExists(tempFile.toPath());
+            if (uploadToS3) {
+                Files.deleteIfExists(tempFile.toPath());
+            } else {
+                log.info("Not uploading file to S3, keeping it at {}", tempFile.getAbsolutePath());
+            }
         }
     }
 
     private <T> void exportToFile(String query, Function<ResultSet, T> mapper, File file) throws IOException {
         log.info("Writing JSON export to {}", file.getAbsolutePath());
         try (var writer = Files.newBufferedWriter(file.toPath(), StandardCharsets.UTF_8)) {
-            writer.write("{\n");
-            writer.write("\"koodis\": [\n");
-
+            writer.write("[\n");
             var firstElement = true;
             try (Stream<T> stream = jdbcTemplate.queryForStream(query, (rs, n) -> mapper.apply(rs))) {
                 Iterable<T> iterable = stream::iterator;
@@ -202,8 +204,6 @@ public class ExportService {
             }
             writer.write("\n");
             writer.write("]\n");
-            writer.write("}\n");
-            log.info("File written!");
         }
     }
 
