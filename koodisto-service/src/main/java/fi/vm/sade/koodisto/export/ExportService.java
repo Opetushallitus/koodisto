@@ -3,7 +3,9 @@ package fi.vm.sade.koodisto.export;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,8 +110,8 @@ public class ExportService {
         exportQueryToS3(S3_PREFIX + "/csv/relaatio.csv", RELAATIO_QUERY);
     }
 
-    void generateJsonExports() throws IOException {
-        exportQueryToS3AsJson(KOODI_QUERY, S3_PREFIX + "/json/koodi.json", unchecked(rs ->
+    List<File> generateJsonExports() throws IOException {
+        var koodiFile = exportQueryToS3AsJson(KOODI_QUERY, S3_PREFIX + "/json/koodi.json", unchecked(rs ->
                 new ExportedKoodi(
                         rs.getString("koodistouri"),
                         rs.getString("koodiuri"),
@@ -127,7 +130,7 @@ public class ExportService {
                         rs.getString("koodiversioupdated_at") // timestamp
                 )
         ));
-        exportQueryToS3AsJson(RELAATIO_QUERY, S3_PREFIX + "/json/relaatio.json", unchecked(rs ->
+        var relaatioFile = exportQueryToS3AsJson(RELAATIO_QUERY, S3_PREFIX + "/json/relaatio.json", unchecked(rs ->
                 new ExportedRelaatio(
                         rs.getString("ylakoodiuri"),
                         rs.getLong("ylakoodiversio"),
@@ -137,42 +140,15 @@ public class ExportService {
                         rs.getLong("relaatioversio")
                 )
         ));
+        return List.of(koodiFile, relaatioFile);
     }
 
     private interface ThrowingFunction<T, R, E extends Throwable> {
         R apply(T rs) throws E;
     }
 
-    @Data
-    private static class ExportedKoodi {
-        private final String koodistouri;
-        private final String koodiuri;
-        private final String koodiarvo;
-        private final Long koodiversio;
-        private final String tila;
-        private final String voimassaalkupvm;
-        private final String voimassaloppuvpm;
-        private final String koodinimi_fi;
-        private final String koodinimi_sv;
-        private final String koodinimi_en;
-        private final String koodikuvaus_fi;
-        private final String koodikuvaus_sv;
-        private final String koodikuvaus_en;
-        private final String koodiversiocreated_at;
-        private final String koodiversioupdated_at;
-    }
 
-    @Data
-    private static class ExportedRelaatio {
-        private final String ylakoodiuri;
-        private final Long ylakoodiversio;
-        private final String relaatiotyyppi;
-        private final String alakoodiuri;
-        private final Long alakoodiversio;
-        private final Long relaatioversio;
-    }
-
-    private <T> void exportQueryToS3AsJson(String query, String objectKey, Function<ResultSet, T> mapper) throws IOException {
+    private <T> File exportQueryToS3AsJson(String query, String objectKey, Function<ResultSet, T> mapper) throws IOException {
         var tempFile = File.createTempFile("export", ".json");
         try {
             exportToFile(query, mapper, tempFile);
@@ -184,6 +160,7 @@ public class ExportService {
                 log.info("Not uploading file to S3, keeping it at {}", tempFile.getAbsolutePath());
             }
         }
+        return tempFile;
     }
 
     private <T> void exportToFile(String query, Function<ResultSet, T> mapper, File file) throws IOException {
@@ -279,4 +256,36 @@ public class ExportService {
             return result.response();
         }
     }
+}
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+class ExportedKoodi {
+    private String koodistouri;
+    private String koodiuri;
+    private String koodiarvo;
+    private Long koodiversio;
+    private String tila;
+    private String voimassaalkupvm;
+    private String voimassaloppuvpm;
+    private String koodinimi_fi;
+    private String koodinimi_sv;
+    private String koodinimi_en;
+    private String koodikuvaus_fi;
+    private String koodikuvaus_sv;
+    private String koodikuvaus_en;
+    private String koodiversiocreated_at;
+    private String koodiversioupdated_at;
+}
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+class ExportedRelaatio {
+    private String ylakoodiuri;
+    private Long ylakoodiversio;
+    private String relaatiotyyppi;
+    private String alakoodiuri;
+    private Long alakoodiversio;
+    private Long relaatioversio;
 }

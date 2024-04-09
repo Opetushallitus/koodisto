@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.export;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -7,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         "koodisto.tasks.export.upload-to-s3=false",
 })
 class ExportServiceTest {
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired ExportService exportService;
     @Autowired JdbcTemplate jdbcTemplate;
 
@@ -27,8 +31,14 @@ class ExportServiceTest {
     }
 
     @Test
-    void jsonExportDoesNotThrow() throws IOException {
+    void jsonExport() throws IOException {
         exportService.createSchema();
-        exportService.generateJsonExports();
+        var files = exportService.generateJsonExports();
+        assertThat(files).hasSize(2);
+
+        var koodit = objectMapper.readValue(files.get(0), new TypeReference<List<ExportedKoodi>>(){});
+        assertThat(koodit).hasSize(215);
+        var relaatiot = objectMapper.readValue(files.get(1), new TypeReference<List<ExportedRelaatio>>(){});
+        assertThat(relaatiot).hasSize(24);
     }
 }
