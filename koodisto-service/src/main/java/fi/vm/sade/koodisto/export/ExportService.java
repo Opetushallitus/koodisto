@@ -103,12 +103,12 @@ public class ExportService {
     }
 
     void generateCsvExports() {
-        exportQueryToS3(S3_PREFIX + "/koodi.csv", KOODI_QUERY);
-        exportQueryToS3(S3_PREFIX + "/relaatio.csv", RELAATIO_QUERY);
+        exportQueryToS3(S3_PREFIX + "/csv/koodi.csv", KOODI_QUERY);
+        exportQueryToS3(S3_PREFIX + "/csv/relaatio.csv", RELAATIO_QUERY);
     }
 
     void generateJsonExports() throws IOException {
-        exportQueryToS3AsJson(KOODI_QUERY, S3_PREFIX + "/koodi.json", unchecked(rs ->
+        exportQueryToS3AsJson(KOODI_QUERY, S3_PREFIX + "/json/koodi.json", unchecked(rs ->
                 new ExportedKoodi(
                         rs.getString("koodistouri"),
                         rs.getString("koodiuri"),
@@ -127,7 +127,7 @@ public class ExportService {
                         rs.getString("koodiversioupdated_at") // timestamp
                 )
         ));
-        exportQueryToS3AsJson(RELAATIO_QUERY, S3_PREFIX + "/relaatio.json", unchecked(rs ->
+        exportQueryToS3AsJson(RELAATIO_QUERY, S3_PREFIX + "/json/relaatio.json", unchecked(rs ->
                 new ExportedRelaatio(
                         rs.getString("ylakoodiuri"),
                         rs.getLong("ylakoodiversio"),
@@ -225,18 +225,21 @@ public class ExportService {
     }
 
     public void copyExportFilesToLampi() throws IOException {
-        var details = new ArrayList<ExportManifest.ExportFileDetails>();
-        details.add(copyFileToLampi(S3_PREFIX + "/koodi.csv"));
-        details.add(copyFileToLampi(S3_PREFIX + "/relaatio.csv"));
-        details.add(copyFileToLampi(S3_PREFIX + "/koodi.json"));
-        details.add(copyFileToLampi(S3_PREFIX + "/relaatio.json"));
-        writeManifest(new ExportManifest(details));
+        var csvManifest = new ArrayList<ExportManifest.ExportFileDetails>();
+        csvManifest.add(copyFileToLampi(S3_PREFIX + "/csv/koodi.csv"));
+        csvManifest.add(copyFileToLampi(S3_PREFIX + "/csv/relaatio.csv"));
+        writeManifest(S3_PREFIX + "/csv/manifest.json", new ExportManifest(csvManifest));
+
+        var jsonManifest = new ArrayList<ExportManifest.ExportFileDetails>();
+        jsonManifest.add(copyFileToLampi(S3_PREFIX + "/json/koodi.json"));
+        jsonManifest.add(copyFileToLampi(S3_PREFIX + "/json/relaatio.json"));
+        writeManifest(S3_PREFIX + "/json/manifest.json", new ExportManifest(jsonManifest));
     }
 
-    private void writeManifest(ExportManifest manifest) throws JsonProcessingException {
+    private void writeManifest(String objectKey, ExportManifest manifest) throws JsonProcessingException {
         var manifestJson = objectMapper.writeValueAsString(manifest);
         var response = lampiS3Client.putObject(
-                b -> b.bucket(lampiBucketName).key(S3_PREFIX + "/manifest.json"),
+                b -> b.bucket(lampiBucketName).key(objectKey),
                 AsyncRequestBody.fromString(manifestJson)
         ).join();
         log.info("Wrote manifest to S3: {}", response);
