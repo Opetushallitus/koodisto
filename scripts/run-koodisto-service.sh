@@ -18,7 +18,7 @@ function select_java_version {
 }
 
 function wait_for_local_db_to_be_healthy {
-  wait_for_container_to_be_healthy oph-postgres-db
+  wait_for_container_to_be_healthy oph-koodisto-db
 }
 
 function wait_for_container_to_be_healthy {

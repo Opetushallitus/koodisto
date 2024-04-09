@@ -10,6 +10,9 @@ services:
     ports:
       - 5434:5432
     command: ["postgres", "-c", "log_statement=all"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --username app --dbname koodisto"]
+      interval: 1s
   database-test:
     container_name: oph-koodisto-test-db
     image: postgres:12.17
