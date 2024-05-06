@@ -90,6 +90,11 @@ public class ExportService {
                 LEFT JOIN koodi alakoodi ON alakoodiversio.koodi_id = alakoodi.id
                 JOIN koodisto ON ylakoodi.koodisto_id = koodisto.id
                 """);
+
+        jdbcTemplate.execute("ALTER TABLE exportnew.koodi ADD CONSTRAINT koodi_pk PRIMARY KEY (koodiuri, koodiversio)");
+        jdbcTemplate.execute("ALTER TABLE exportnew.relaatio ADD CONSTRAINT alakoodi_fk FOREIGN KEY (alakoodiuri, alakoodiversio) REFERENCES exportnew.koodi (koodiuri, koodiversio)");
+        jdbcTemplate.execute("ALTER TABLE exportnew.relaatio ADD CONSTRAINT ylakoodi_fk FOREIGN KEY (ylakoodiuri, ylakoodiversio) REFERENCES exportnew.koodi (koodiuri, koodiversio)");
+
         jdbcTemplate.execute("DROP SCHEMA IF EXISTS export CASCADE");
         jdbcTemplate.execute("ALTER SCHEMA exportnew RENAME TO export");
     }
