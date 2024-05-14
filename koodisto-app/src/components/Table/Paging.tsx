@@ -27,7 +27,7 @@ const SelectContainer = styled.div`
 
 const pageSizes: PageSize[] = [10, 20, 50, 100];
 
-export const Paging = <T extends unknown>({ table }: { table: Table<T> }) => (
+export const Paging = <T extends object>({ table }: { table: Table<T> }) => (
     <Pager>
         <InfoBox>
             <FormattedMessage id={'SIVUTUS_SIVU'} defaultMessage={'Sivu'} /> {table.getState().pagination.pageIndex + 1}{' '}

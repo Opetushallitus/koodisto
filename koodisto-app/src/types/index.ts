@@ -1,7 +1,7 @@
 import { MessageDescriptor } from '@formatjs/intl/src/types';
 import { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat';
 import { Options as IntlMessageFormatOptions } from 'intl-messageformat/src/core';
-import { Control, Path } from 'react-hook-form';
+import { Control, FieldValues, Path } from 'react-hook-form';
 import { ApiPageKoodisto } from '../api/koodisto';
 
 export type Kieli = 'EN' | 'FI' | 'SV';
@@ -180,7 +180,7 @@ export type Koodi = BaseKoodi & {
     rinnastuuKoodeihin: KoodiRelation[];
 };
 
-export type ControllerProps<T> = {
+export type ControllerProps<T extends FieldValues> = {
     control: Control<T>;
     name: Path<T>;
     disabled?: boolean;

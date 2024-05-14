@@ -89,7 +89,7 @@ export const KoodiInfo: React.FC<{ koodi: Koodi }> = ({ koodi }) => {
                 id: 'KUVAUS',
                 defaultMessage: 'Kuvaus',
             },
-            value: koodi.metadata[0].kuvaus || '-',
+            value: koodi.metadata[0]?.kuvaus ?? '-',
         },
         {
             header: {

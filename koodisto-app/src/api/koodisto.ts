@@ -13,7 +13,7 @@ import {
     Tila,
 } from '../types';
 import { casMeLangAtom } from './kayttooikeus';
-import { parseApiDate, translateMetadata, parseUIDate, translateMultiLocaleText, fillMetadata } from '../utils';
+import { parseApiDate, parseUIDate, translateMetadata, translateMultiLocaleText, fillMetadata } from '../utils';
 import { errorHandlingWrapper } from './errorHandling';
 import axios, { AxiosResponse } from 'axios';
 import { fetchOrganisaatioNimi } from './organisaatio';
@@ -52,8 +52,8 @@ type ApiListKoodisto = ApiBaseKoodisto & {
 };
 
 type CreateKoodistoDataType = {
-    voimassaAlkuPvm: ApiDate;
-    voimassaLoppuPvm?: ApiDate;
+    voimassaAlkuPvm: ApiDate | '';
+    voimassaLoppuPvm?: ApiDate | '';
     omistaja: string;
     organisaatioOid: string;
     metadataList: Metadata[];
@@ -141,7 +141,7 @@ const upsertKoodisto = async <X>({
     axiosFunc: <T, R = AxiosResponse<T>>(url: string, data?: X) => Promise<R>;
 }): Promise<PageKoodisto | undefined> =>
     errorHandlingWrapper(async () => {
-        const { data: apiKoodisto } = await axiosFunc(path, mapper(koodisto));
+        const { data: apiKoodisto } = await axiosFunc<ApiPageKoodisto>(path, mapper(koodisto));
         return (
             apiKoodisto && {
                 ...mapApiPageKoodistoToPageKoodisto({

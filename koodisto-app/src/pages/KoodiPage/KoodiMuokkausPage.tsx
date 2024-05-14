@@ -166,7 +166,6 @@ const KoodiMuokkausPageComponent: React.FC<
         versio: number;
     } & UseFormReturn<Koodi>
 > = ({
-    register,
     handleSubmit,
     save,
     deleteAction,

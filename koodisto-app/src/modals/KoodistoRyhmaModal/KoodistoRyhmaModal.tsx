@@ -42,9 +42,9 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
     }, []);
     useEffect(() => {
         (async () => {
-            if (!!koodistoRyhmaUri) {
+            if (koodistoRyhmaUri) {
                 const ryhma = await fetchKoodistoRyhma(koodistoRyhmaUri);
-                if (!!ryhma) {
+                if (ryhma) {
                     setValue('fi', ryhma.nimi.fi);
                     setValue('sv', ryhma.nimi.sv);
                     setValue('en', ryhma.nimi.en);

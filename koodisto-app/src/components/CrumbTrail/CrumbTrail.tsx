@@ -13,7 +13,7 @@ const Container = styled.div`
     min-width: 3rem;
 `;
 
-type Crumb = {
+export type Crumb = {
     label: ReactNode;
     path?: string;
 };

@@ -13,13 +13,6 @@ export const translateMultiLocaleText = ({
 }): string => {
     return multiLocaleText?.[locale] || defaultValue;
 };
-export const translateMetadata = ({
-    metadata = [{ kieli: 'FI', nimi: 'N/A', kuvaus: 'N/A' }],
-    lang,
-}: {
-    metadata: Metadata[];
-    lang: Kieli;
-}): Metadata | undefined => metadata.find((a) => a.kieli === lang) || metadata.find((a) => a.kieli === 'FI');
 
 export const metadataToMultiLocaleText = (metadata: Metadata[], field: keyof Metadata): Record<Locale, string> => ({
     fi: metadata.find((b) => b.kieli === 'FI')?.[field] || '',
@@ -30,8 +23,8 @@ export const metadataToMultiLocaleText = (metadata: Metadata[], field: keyof Met
 export const parseApiDate = (a: ApiDate): Date => {
     return !!a && moment(a).toDate();
 };
-export const parseUIDate = (a: Date): ApiDate => {
-    return !!a && (moment(a).format('YYYY-MM-DD') as ApiDate);
+export const parseUIDate = (a: Date): ApiDate | '' => {
+    return a && (moment(a).format('YYYY-MM-DD') as ApiDate);
 };
 const kieliSorter = (o: Metadata) => (o.kieli === 'FI' ? 1 : o.kieli === 'SV' ? 2 : 3);
 export const fillMetadata = (apiMetadata: Metadata[]) => {
@@ -42,3 +35,4 @@ export const fillMetadata = (apiMetadata: Metadata[]) => {
     return sortBy(metadata, kieliSorter);
 };
 export { downloadCsv } from './downloadCsv';
+export { translateMetadata } from './translateMetadata';

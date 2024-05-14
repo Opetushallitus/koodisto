@@ -11,8 +11,8 @@ type ApiKoodiList = MapToApiObject<KoodiList>;
 
 type CreateKoodiDataType = {
     koodiArvo: string;
-    voimassaAlkuPvm: ApiDate;
-    voimassaLoppuPvm?: ApiDate;
+    voimassaAlkuPvm: ApiDate | '';
+    voimassaLoppuPvm?: ApiDate | '';
     metadata: KoodiMetadata[];
 };
 type UpdateKoodiDataType = CreateKoodiDataType & {
@@ -113,7 +113,7 @@ const upsertKoodi = async <X>({
     axiosFunc: <T, R = AxiosResponse<T>>(url: string, data?: X) => Promise<R>;
 }): Promise<Koodi | undefined> =>
     errorHandlingWrapper(async () => {
-        const { data: apiKoodi } = await axiosFunc(path, mapper(koodi));
+        const { data: apiKoodi } = await axiosFunc<ApiKoodi>(path, mapper(koodi));
         return (
             apiKoodi && {
                 ...mapApiKoodi({
