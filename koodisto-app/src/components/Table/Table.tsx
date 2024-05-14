@@ -105,7 +105,7 @@ export const Table = <T extends object>({
     setSelected,
     pageSize,
     initialFilterState = [],
-    setStoredFilterState = (_a) => {
+    setStoredFilterState = () => {
         /* by default do nothing */
     },
 }: TableProps<T> & {

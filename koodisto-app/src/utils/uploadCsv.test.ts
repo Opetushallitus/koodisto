@@ -1,14 +1,17 @@
+import assert from 'assert/strict';
+import { describe, it } from 'node:test';
+
 import { mapCsvToKoodi, validData } from './uploadCsv';
 
-describe('CSVFunctionModal', () => {
+describe('uploadCsv', () => {
     it('can verify undefined data', () => {
-        expect(validData(undefined)).toBe(false);
+        assert.strictEqual(validData(undefined), false);
     });
     it('can verify empty data', () => {
-        expect(validData([])).toBe(false);
+        assert.strictEqual(validData([]), false);
     });
     it('can map csv to koodi', () => {
-        expect(
+        assert.deepStrictEqual(
             mapCsvToKoodi({
                 koodistoUri: 'foo',
                 koodiArvo: '0',
@@ -25,15 +28,16 @@ describe('CSVFunctionModal', () => {
                 kuvaus_FI: '',
                 kuvaus_SV: '',
                 newRow: false,
-            })
-        ).toStrictEqual({
-            koodiArvo: '0',
-            versio: undefined,
-            voimassaAlkuPvm: undefined,
-            voimassaLoppuPvm: undefined,
-            metadata: [{ kieli: 'EN', nimi: 'FOO_ZERO', lyhytNimi: undefined, kuvaus: undefined }],
-        });
-        expect(
+            }),
+            {
+                koodiArvo: '0',
+                versio: undefined,
+                voimassaAlkuPvm: undefined,
+                voimassaLoppuPvm: undefined,
+                metadata: [{ kieli: 'EN', nimi: 'FOO_ZERO', lyhytNimi: undefined, kuvaus: undefined }],
+            }
+        );
+        assert.deepStrictEqual(
             mapCsvToKoodi({
                 koodistoUri: 'foo-start',
                 koodiArvo: '0',
@@ -50,15 +54,16 @@ describe('CSVFunctionModal', () => {
                 kuvaus_FI: '',
                 kuvaus_SV: '',
                 newRow: false,
-            })
-        ).toStrictEqual({
-            koodiArvo: '0',
-            versio: undefined,
-            voimassaAlkuPvm: '2022-01-01',
-            voimassaLoppuPvm: undefined,
-            metadata: [{ kieli: 'EN', nimi: 'FOO_ZERO', lyhytNimi: undefined, kuvaus: undefined }],
-        });
-        expect(
+            }),
+            {
+                koodiArvo: '0',
+                versio: undefined,
+                voimassaAlkuPvm: '2022-01-01',
+                voimassaLoppuPvm: undefined,
+                metadata: [{ kieli: 'EN', nimi: 'FOO_ZERO', lyhytNimi: undefined, kuvaus: undefined }],
+            }
+        );
+        assert.deepStrictEqual(
             mapCsvToKoodi({
                 koodistoUri: 'foo-start',
                 koodiArvo: '0',
@@ -75,17 +80,18 @@ describe('CSVFunctionModal', () => {
                 kuvaus_FI: '',
                 kuvaus_SV: 'SV',
                 newRow: false,
-            })
-        ).toStrictEqual({
-            koodiArvo: '0',
-            versio: 6,
-            voimassaAlkuPvm: '2022-01-01',
-            voimassaLoppuPvm: '2033-01-01',
-            metadata: [
-                { kieli: 'FI', nimi: 'Yks', lyhytNimi: 'fi', kuvaus: undefined },
-                { kieli: 'SV', nimi: 'Ett', lyhytNimi: undefined, kuvaus: 'SV' },
-                { kieli: 'EN', nimi: 'FOO_ZERO', lyhytNimi: undefined, kuvaus: undefined },
-            ],
-        });
+            }),
+            {
+                koodiArvo: '0',
+                versio: 6,
+                voimassaAlkuPvm: '2022-01-01',
+                voimassaLoppuPvm: '2033-01-01',
+                metadata: [
+                    { kieli: 'FI', nimi: 'Yks', lyhytNimi: 'fi', kuvaus: undefined },
+                    { kieli: 'SV', nimi: 'Ett', lyhytNimi: undefined, kuvaus: 'SV' },
+                    { kieli: 'EN', nimi: 'FOO_ZERO', lyhytNimi: undefined, kuvaus: undefined },
+                ],
+            }
+        );
     });
 });

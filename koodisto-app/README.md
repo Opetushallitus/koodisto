@@ -13,15 +13,11 @@
 
 Huom, lokaalikehitys vaatii paikallisen [backendin](https://github.com/Opetushallitus/koodisto).
 
-Npm install:
-
-`npm run install:all`
-
 Käynnistä dev modessa, sisältäen mock-api:
 
-`npm run dev`
+`./start-local-env.sh`
 
-Jest testit:
+Nodejs testit:
 
 `npm run test `
 

@@ -1,12 +1,12 @@
-import { Controller } from 'react-hook-form';
+import { Controller, FieldValues } from 'react-hook-form';
 import * as React from 'react';
 import { ControllerProps, SelectOption } from '../../types';
 import { FastSelect } from './FastSelect';
 
-type Props<T> = ControllerProps<T> & {
+type Props<T extends FieldValues> = ControllerProps<T> & {
     options: SelectOption[];
 };
-export const SelectController = <T,>({ name, control, options, disabled, rules }: Props<T>) => {
+export const SelectController = <T extends FieldValues>({ name, control, options, disabled, rules }: Props<T>) => {
     return (
         <Controller
             control={control}

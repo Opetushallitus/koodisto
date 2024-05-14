@@ -1,5 +1,14 @@
 import { MessageDescriptor, useIntl, FormattedMessage } from 'react-intl';
-import { FieldPath, UseFormGetValues, useFieldArray, Controller, ArrayPath, Path, FieldArray } from 'react-hook-form';
+import {
+    FieldPath,
+    UseFormGetValues,
+    useFieldArray,
+    Controller,
+    ArrayPath,
+    Path,
+    FieldArray,
+    FieldValues,
+} from 'react-hook-form';
 import { ControllerProps, KoodiMetadata } from '../../types';
 import styled from 'styled-components';
 import { IconWrapper } from '../IconWapper';
@@ -34,7 +43,7 @@ export const Direction = styled.div<{ large?: boolean }>`
         width: ${(props) => (props.large ? 60 : 19)}vw;
     }
 `;
-type Props<T> = Omit<ControllerProps<T>, 'name'> & {
+type Props<T extends FieldValues> = Omit<ControllerProps<T>, 'name'> & {
     title: MessageDescriptor;
     fieldPath: keyof KoodiMetadata;
     getValues: UseFormGetValues<T>;
@@ -58,8 +67,8 @@ export const InputArrayController = <T extends { metadata: KoodiMetadata[] }>({
     });
     const copyToFields = (): void => {
         const firstValue = getValues(`metadata` as Path<T>) as KoodiMetadata[];
-        update(1, { ...firstValue[1], [fieldPath]: firstValue[0][fieldPath] } as FieldArray<T, ArrayPath<T>>);
-        update(2, { ...firstValue[2], [fieldPath]: firstValue[0][fieldPath] } as FieldArray<T, ArrayPath<T>>);
+        update(1, { ...firstValue[1], [fieldPath]: firstValue[0]?.[fieldPath] } as FieldArray<T, ArrayPath<T>>);
+        update(2, { ...firstValue[2], [fieldPath]: firstValue[0]?.[fieldPath] } as FieldArray<T, ArrayPath<T>>);
     };
     const LabelContainer = mandatory ? MainContainerRowTitleMandatory : MainContainerRowTitle;
     return (

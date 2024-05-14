@@ -12,46 +12,30 @@ jobs:
   cypress:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-      - name: Code coverrage cache
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-cypress-coverage
-        with:
-          path: cypress-coverage
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.sha }}
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '16.17.0'
+          node-version: '20'
           cache: 'npm'
       - name: Install dependencies
-        run: npm run install:all
+        run: npm ci
+      - name: Install mock-api dependencies
+        run: cd mock-api && npm ci && cd -
       - name: Run Cypress tests
         run: npm run cypress:ci
 
   react-build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Code coverrage cache
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-code-coverage
-        with:
-          path: coverage
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.sha }}
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '16.17.0'
+          node-version: '20'
           cache: 'npm'
       - name: Install dependencies
-        run: npm run install:all
-      - name: Run jest
-        run: npm run test
+        run: npm ci
+      - name: Run test
+        run: npm test
       - name: Run react Build
         run: npm run build
       - name: Set up JDK 21
@@ -111,13 +95,6 @@ jobs:
           cache-name: cache-code-coverage
         with:
           path: coverage
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.sha }}
-      - name: Cypress coverrage cache
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-cypress-coverage
-        with:
-          path: cypress-coverage
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ github.sha }}
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master

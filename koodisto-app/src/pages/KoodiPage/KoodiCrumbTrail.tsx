@@ -6,6 +6,7 @@ import { CrumbTrail } from '../../components/CrumbTrail';
 import type { Koodi, PageKoodisto } from '../../types';
 import { fetchPageKoodisto } from '../../api/koodisto';
 import Spin from '@opetushallitus/virkailija-ui-components/Spin';
+import { Crumb } from '../../components/CrumbTrail/CrumbTrail';
 
 export const KoodiCrumbTrail: React.FC<{ koodi: Koodi; koodistoUriParam?: string }> = ({ koodi, koodistoUriParam }) => {
     const [lang] = useAtom(casMeLangAtom);
@@ -20,14 +21,14 @@ export const KoodiCrumbTrail: React.FC<{ koodi: Koodi; koodistoUriParam?: string
             }
         })();
     }, [koodistoUri, versio, lang]);
-    const trail = [
+    const trail: Crumb[] = [
         ...((koodisto && [
             {
                 path: `/koodisto/view/${koodisto.koodistoUri}/${koodisto.versio}`,
                 label: translateMetadata({ metadata: koodisto.metadata, lang })?.nimi || koodisto.koodistoUri,
             },
         ]) || [{ path: undefined, label: <Spin size={'small'} /> }]),
-        { key: koodi.koodiUri, label: translateMetadata({ metadata: koodi.metadata, lang })?.nimi || koodi.koodiUri },
+        { label: translateMetadata({ metadata: koodi.metadata, lang })?.nimi || koodi.koodiUri },
     ];
     return <CrumbTrail trail={trail} />;
 };

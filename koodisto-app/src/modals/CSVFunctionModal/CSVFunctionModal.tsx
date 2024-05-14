@@ -7,7 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Table } from '../../components/Table';
 
 import { CsvKoodiObject, MessageFormatter, Koodi } from '../../types';
-import { getHeaders, mapCsvToKoodi, mapHeadersToColumns, validData } from './uploadCsv';
+import { getHeaders, mapCsvToKoodi, mapHeadersToColumns, validData } from '../../utils/uploadCsv';
 import { fetchKoodiListByKoodisto, batchUpsertKoodi } from '../../api/koodi';
 import { Loading } from '../../components/Loading';
 import { danger, success } from '../../components/Notification';
