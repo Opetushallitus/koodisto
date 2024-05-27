@@ -1,6 +1,6 @@
 #
 # TÄHÄN TIEDOSTOON EI SAA TALLENTAA YMPÄRISTÖKOHTAISIA ARVOJA MUUTOIN KUIN MUUTTUJINA!!!
-# 
+#
 # Tämä tiedosto toimii pohjana oph-configuration/common.properties tiedostolle,
 # joka asettaa tomcatin ympäristökohtaiset arvot.
 #
@@ -10,7 +10,6 @@ auth.mode={{auth_mode}}
 host.cas={{host_cas}}
 host.alb={{host_alb}}
 host.virkailija={{host_virkailija}}
-server.name={{ansible_hostname}}
 
 # Oletusarvoja
 cas.group-role-attribute=cn
