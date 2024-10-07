@@ -54,7 +54,7 @@ public class WebSecurityConfiguration {
     @Bean
     CasAuthenticationProvider casAuthenticationProvider(ServiceProperties serviceProperties, TicketValidator ticketValidator) {
         CasAuthenticationProvider casAuthenticationProvider = new CasAuthenticationProvider();
-        casAuthenticationProvider.setUserDetailsService(new OphUserDetailsServiceImpl(ophProperties.url("host.alb"), "1.2.246.562.10.00000000001.koodisto-app"));
+        casAuthenticationProvider.setAuthenticationUserDetailsService(new OphUserDetailsServiceImpl());
         casAuthenticationProvider.setServiceProperties(serviceProperties);
         casAuthenticationProvider.setTicketValidator(ticketValidator);
         casAuthenticationProvider.setKey(casProperties.getKey());
