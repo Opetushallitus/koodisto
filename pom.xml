@@ -76,6 +76,11 @@
 			<id>oph-sade-artifactory-releases</id>
 			<url>https://artifactory.opintopolku.fi/artifactory/oph-sade-release-local</url>
 		</repository>
+                <repository>
+                        <id>github</id>
+                        <name>GitHub Packages</name>
+                        <url>https://maven.pkg.github.com/Opetushallitus/java-utils</url>
+                </repository>
 	</repositories>
 <build>
 	<plugins>
