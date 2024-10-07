@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.configuration;
 
 import fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter;
+import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl;
 import fi.vm.sade.koodisto.configuration.properties.CasProperties;
 import fi.vm.sade.properties.OphProperties;
 import org.jasig.cas.client.session.SingleSignOutFilter;
@@ -29,13 +30,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final CasProperties casProperties;
     private final OphProperties ophProperties;
-    private final UserDetailsService userDetailsService;
 
     @Autowired
-    public WebSecurityConfiguration(CasProperties casProperties, OphProperties ophProperties, UserDetailsService userDetailsService) {
+    public WebSecurityConfiguration(CasProperties casProperties, OphProperties ophProperties) {
         this.casProperties = casProperties;
         this.ophProperties = ophProperties;
-        this.userDetailsService = userDetailsService;
     }
 
     @Bean
@@ -54,7 +53,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public CasAuthenticationProvider casAuthenticationProvider() {
         CasAuthenticationProvider casAuthenticationProvider = new CasAuthenticationProvider();
-        casAuthenticationProvider.setUserDetailsService(this.userDetailsService);
+        casAuthenticationProvider.setAuthenticationUserDetailsService(new OphUserDetailsServiceImpl());
         casAuthenticationProvider.setServiceProperties(serviceProperties());
         casAuthenticationProvider.setTicketValidator(ticketValidator());
         casAuthenticationProvider.setKey(casProperties.getKey());
