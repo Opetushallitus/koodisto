@@ -1,12 +1,11 @@
 package fi.vm.sade.koodisto.resource.advice;
 
-
-import fi.vm.sade.authorization.NotAuthorizedException;
-import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
+import fi.vm.sade.koodisto.configuration.authorizer.NotAuthorizedException;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoNotFoundException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
+import fi.vm.sade.koodisto.service.business.exception.SadeBusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -22,8 +21,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

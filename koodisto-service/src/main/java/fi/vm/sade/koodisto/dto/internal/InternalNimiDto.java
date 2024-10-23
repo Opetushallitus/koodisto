@@ -3,7 +3,7 @@ package fi.vm.sade.koodisto.dto.internal;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 @Builder
 @Getter
 public class InternalNimiDto {

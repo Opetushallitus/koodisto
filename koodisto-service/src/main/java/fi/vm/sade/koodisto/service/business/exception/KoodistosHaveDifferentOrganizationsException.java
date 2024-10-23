@@ -1,7 +1,5 @@
 package fi.vm.sade.koodisto.service.business.exception;
 
-import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
-
 public class KoodistosHaveDifferentOrganizationsException extends SadeBusinessException {
 
     private static final long serialVersionUID = 155764709543824538L;
@@ -11,11 +9,11 @@ public class KoodistosHaveDifferentOrganizationsException extends SadeBusinessEx
     public KoodistosHaveDifferentOrganizationsException(String message) {
         super(message);
     }
-    
+
     public KoodistosHaveDifferentOrganizationsException(){
         super(ERROR_MESSAGE);
     }
-    
+
     public KoodistosHaveDifferentOrganizationsException(Throwable cause){
         super(ERROR_MESSAGE, cause);
     }

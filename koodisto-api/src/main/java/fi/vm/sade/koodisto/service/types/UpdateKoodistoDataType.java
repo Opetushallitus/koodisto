@@ -1,18 +1,16 @@
-
 package fi.vm.sade.koodisto.service.types;
 
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class UpdateKoodistoDataType extends CreateKoodistoDataType implements Serializable {
+public class UpdateKoodistoDataType extends CreateKoodistoDataType {
 
     private static final long serialVersionUID = 1L;
     @NotBlank(message = "error.codesGroupUri.blank")

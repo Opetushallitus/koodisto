@@ -1,4 +1,3 @@
-
 package fi.vm.sade.koodisto.service.types;
 
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
@@ -7,8 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;

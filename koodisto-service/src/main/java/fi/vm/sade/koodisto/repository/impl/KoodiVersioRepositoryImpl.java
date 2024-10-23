@@ -15,11 +15,11 @@ import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
-import javax.persistence.criteria.CriteriaBuilder.In;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Tuple;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.*;
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -279,7 +279,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
     /**
      * Takes the result of the search method and converts into a structure
      * containing the koodiversio and the koodisto URIs and version numbers
-     * 
+     *
      * @param resultSet
      *            search result set
      * @return
@@ -488,7 +488,7 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
         }
         return returnMap;
     }
-    
+
     private TypedQuery<KoodiVersio> createKoodiVersioQueryFromSearchCriteria(SearchKoodisCriteriaType searchCriteria) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<KoodiVersio> criteriaQuery = cb.createQuery(KoodiVersio.class);
@@ -506,21 +506,21 @@ public class KoodiVersioRepositoryImpl implements KoodiVersioRepositoryCustom {
         CriteriaBuilder cb = em.getCriteriaBuilder();
 
         HashMap<KoodiVersio, KoodiVersio> results = new HashMap<>();
-        
+
         for (KoodiVersio kv : koodis) {
             CriteriaQuery<KoodiVersio> query = cb.createQuery(KoodiVersio.class);
             Root<KoodiVersio> root = query.from(KoodiVersio.class);
             Join<KoodiVersio, Koodi> koodi = root.join(KOODI);
             Predicate koodiUriEqual = cb.equal(koodi.get(KOODI_URI), kv.getKoodi().getKoodiUri());
             Predicate koodiVersioLessThan = cb.lessThan(root.get(VERSIO), kv.getVersio());
-            
+
             query.select(root).where(cb.and(koodiUriEqual, koodiVersioLessThan)).orderBy(cb.desc(root.<Integer> get(VERSIO)));
             List<KoodiVersio> resultList = em.createQuery(query).setMaxResults(1).getResultList();
             if(resultList.size() == 1){
                 results.put(kv, resultList.get(0));
             }
         }
-            
+
         return results;
     }
 

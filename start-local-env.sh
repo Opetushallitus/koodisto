@@ -10,7 +10,7 @@ function main {
   tmux new-session -d -s "$session"
 
   tmux select-pane -t 0
-  tmux send-keys "cd ${repo}; docker-compose down --volumes; docker-compose up --force-recreate --renew-anon-volumes" C-m
+  tmux send-keys "cd ${repo}; docker compose down --volumes; docker compose up --force-recreate --renew-anon-volumes" C-m
 
   tmux splitw -v
   tmux select-pane -t 1
