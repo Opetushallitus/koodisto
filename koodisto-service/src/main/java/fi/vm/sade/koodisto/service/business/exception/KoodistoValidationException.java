@@ -1,7 +1,4 @@
-package fi.vm.sade.koodisto.validator;
-
-import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
-import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
+package fi.vm.sade.koodisto.service.business.exception;
 
 public class KoodistoValidationException extends SadeBusinessException {
     private static final long serialVersionUID = 1L;

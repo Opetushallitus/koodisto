@@ -1,6 +1,6 @@
 #
 # TÄHÄN TIEDOSTOON EI SAA TALLENTAA YMPÄRISTÖKOHTAISIA ARVOJA MUUTOIN KUIN MUUTTUJINA!!!
-# 
+#
 # Tämä tiedosto toimii pohjana oph-configuration/common.properties tiedostolle,
 # joka asettaa tomcatin ympäristökohtaiset arvot.
 #
@@ -24,8 +24,6 @@ cas.group-search-filter=(uniqueMember\={0})
 cas.sendRenew=false
 cas.user-search-base=ou\=people
 cas.user-search-filter=(|(mail\={0})(uid\={0}))
-flyway.initOnMigrate=true
-flyway.outOfOrder=true
 jpa.schemaUpdate=validate
 jpa.showSql=false
 web.url.cas=https\://${host.cas}/cas

@@ -1,7 +1,5 @@
 package fi.vm.sade.koodisto.service.business.exception;
 
-import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
-
 /**
  * User: kwuoti
  * Date: 8.4.2013

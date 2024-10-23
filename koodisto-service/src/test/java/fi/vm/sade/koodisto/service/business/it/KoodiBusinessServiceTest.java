@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.service.business.it;
 
 import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
 import fi.vm.sade.koodisto.service.business.KoodiBusinessService;
 import fi.vm.sade.koodisto.service.business.KoodistoBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
@@ -9,13 +8,11 @@ import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.types.*;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
-import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import org.hibernate.Hibernate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
@@ -38,9 +35,6 @@ public class KoodiBusinessServiceTest {
 
     @Autowired
     private KoodistoBusinessService koodistoBusinessService;
-
-    @Autowired
-    private KoodiVersioRepository koodiVersioRepository;
 
     private static UpdateKoodiDataType convert(KoodiVersio koodiVersio) throws Exception {
 

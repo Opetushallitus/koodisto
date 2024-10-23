@@ -5,7 +5,6 @@ import fi.vm.sade.koodisto.dto.internal.InternalKoodistoSuhdeDto;
 import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaMissingException;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
-import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioToInternalKoodiVersioDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.properties.OphProperties;
@@ -52,7 +51,7 @@ public class KoodistoVersioToInternalKoodistoPageDtoConverter implements
                 .omistaja(source.getKoodisto().getOmistaja())
                 .metadata(source.getMetadatas().stream()
                         .map(koodistoMetadataToKoodistoMetadataDtoConverter::convert)
-                        .sorted(((a, b) -> a != null && a.equals(b) ? 0 : languageSortOrder.indexOf(a.getKieli()) < languageSortOrder.indexOf(b.getKieli()) ? -1 : 1))
+                        .sorted(((a, b) -> a != null && a.equals(b) ? 0 : a != null && languageSortOrder.indexOf(a.getKieli()) < languageSortOrder.indexOf(b.getKieli()) ? -1 : 1))
                         .collect(Collectors.toCollection(LinkedHashSet::new)))
                 .koodistoVersio(source.getKoodisto().getKoodistoVersios().stream()
                         .map(KoodistoVersio::getVersio)

@@ -4,15 +4,16 @@ import fi.vm.sade.koodisto.util.FieldLengths;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Comment;
 
-import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = KoodinSuhde.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodinSuhde.TABLE_NAME + "_01", columnNames = {
         KoodinSuhde.ALAKOODI_COLUMN_NAME, KoodinSuhde.YLAKOODI_COLUMN_NAME, KoodinSuhde.SUHTEEN_TYYPPI_COLUMN_NAME, KoodinSuhde.VERSION_COLUMN_NAME }))
-@org.hibernate.annotations.Table(appliesTo = KoodinSuhde.TABLE_NAME, comment = "Määrittää kahden koodin välinen suhteen. Suhteen tyyppi voi olla SISALTYY tai RINNASTEINEN.")
+@Comment("Määrittää kahden koodin välinen suhteen. Suhteen tyyppi voi olla SISALTYY tai RINNASTEINEN.")
 @Cacheable
 @BatchSize(size = 20)
 @Getter
@@ -42,16 +43,16 @@ public class KoodinSuhde extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = SUHTEEN_TYYPPI_COLUMN_NAME, nullable = false, length = FieldLengths.DEFAULT_FIELD_LENGTH)
     private SuhteenTyyppi suhteenTyyppi;
-    
+
     @NotNull
     @Min(1)
     @Column(name = VERSIO_COLUMN_NAME, nullable = false)
     private Integer versio;
-    
+
     @NotNull
     @Column(name = "ylakoodistapassiivinen", nullable = false)
     private boolean ylaKoodiPassive = false;
-    
+
     @NotNull
     @Column(name = "alakoodistapassiivinen", nullable = false)
     private boolean alaKoodiPassive = false;

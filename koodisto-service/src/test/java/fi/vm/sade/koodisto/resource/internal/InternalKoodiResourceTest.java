@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.resource.internal;
 
-import fi.vm.sade.koodisto.model.Tila;
 import fi.vm.sade.koodisto.util.KoodistoRole;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -9,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Description;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;

@@ -8,8 +8,6 @@ import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.persister.entity.EntityPersister;
 
-import java.io.Serializable;
-
 public class AuditPostInsertEventListener implements PostInsertEventListener {
 
     private final Audit audit;
@@ -21,7 +19,7 @@ public class AuditPostInsertEventListener implements PostInsertEventListener {
     @Override
     public void onPostInsert(PostInsertEvent event) {
         String targetKey = AuditUtils.getTargetKey(event.getPersister());
-        Serializable targetId = event.getId();
+        Object targetId = event.getId();
         Target.Builder targetBuilder = new Target.Builder()
                 .setField(targetKey, targetId.toString());
 
@@ -36,7 +34,7 @@ public class AuditPostInsertEventListener implements PostInsertEventListener {
     }
 
     @Override
-    public boolean requiresPostCommitHanding(EntityPersister persister) {
+    public boolean requiresPostCommitHandling(EntityPersister persister) {
         return false;
     }
 

@@ -5,8 +5,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
 
 import java.time.LocalDate;
 import java.time.ZoneOffset;

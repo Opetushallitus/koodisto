@@ -8,7 +8,7 @@ import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Tila;
 import lombok.*;
 
-import javax.validation.constraints.*;
+import jakarta.validation.constraints.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

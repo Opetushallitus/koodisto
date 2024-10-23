@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Comment;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 @Table(name = Koodi.TABLE_NAME)
-@org.hibernate.annotations.Table(appliesTo = Koodi.TABLE_NAME, comment = "Koodin pääentiteetti, johon eri koodiversiot liittyvät.<br>" +
-        "Sisältää koodiUrin.")
+@Comment("Koodin pääentiteetti, johon eri koodiversiot liittyvät. Sisältää koodiUrin.")
 @Entity
 @Cacheable
 @BatchSize(size = 100)

@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
+import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +62,7 @@ public class KoodistoVersioRepositoryImpl implements KoodistoVersioRepositoryCus
 
         EntityGraph<?> entityGraph = em.getEntityGraph("koodistoWithRelations");
         TypedQuery<KoodistoVersio> query = em.createQuery(criteriaQuery)
-                .setHint("javax.persistence.fetchgraph", entityGraph);
+                .setHint("jakarta.persistence.fetchgraph", entityGraph);
 
         return query.getResultList();
     }

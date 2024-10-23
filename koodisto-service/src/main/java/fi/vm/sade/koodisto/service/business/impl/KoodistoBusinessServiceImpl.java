@@ -2,8 +2,9 @@ package fi.vm.sade.koodisto.service.business.impl;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
-import fi.vm.sade.authorization.NotAuthorizedException;
-import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
+
+import fi.vm.sade.koodisto.configuration.authorizer.Authorizer;
+import fi.vm.sade.koodisto.configuration.authorizer.NotAuthorizedException;
 import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;
 import fi.vm.sade.koodisto.dto.KoodistoDto;
 import fi.vm.sade.koodisto.dto.KoodistoDto.RelationCodes;
@@ -58,9 +59,6 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
 
     @Autowired
     private KoodistoMetadataRepository koodistoMetadataRepository;
-
-    @Autowired
-    private KoodistoVersioKoodiVersioRepository koodistoVersioKoodiVersioRepository;
 
     @Autowired
     @Lazy
@@ -272,7 +270,7 @@ public class KoodistoBusinessServiceImpl implements KoodistoBusinessService {
                     newKoodistoRyhma = getKoodistoGroup(updateKoodistoData.getCodesGroupUri());
                 }
             }
-            if (newKoodistoRyhma != null) {
+            if (newKoodistoRyhma != null && oldKoodistoRyhma != null) {
                 oldKoodistoRyhma.removeKoodisto(latest.getKoodisto());
                 newKoodistoRyhma.addKoodisto(latest.getKoodisto());
                 latest.getKoodisto().removeKoodistoRyhma(oldKoodistoRyhma);

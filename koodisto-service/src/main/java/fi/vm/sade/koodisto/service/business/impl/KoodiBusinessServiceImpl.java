@@ -2,8 +2,9 @@ package fi.vm.sade.koodisto.service.business.impl;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
-import fi.vm.sade.authorization.NotAuthorizedException;
-import fi.vm.sade.javautils.opintopolku_spring_security.Authorizer;
+
+import fi.vm.sade.koodisto.configuration.authorizer.Authorizer;
+import fi.vm.sade.koodisto.configuration.authorizer.NotAuthorizedException;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.FindOrCreateWrapper;
@@ -233,7 +234,7 @@ public class KoodiBusinessServiceImpl implements KoodiBusinessService {
         String koodistoUri = latestKoodiVersion.getKoodi().getKoodisto().getKoodistoUri();
         int latestKoodistoVersio = koodistoVersioRepository.findLatestVersioByKoodistoUri(koodistoUri)
                 .orElseThrow(KoodistoNotFoundException::new);
-        List<KoodiVersio> koodiVersios = koodiVersioRepository.findByKoodistoUriAndVersio(koodistoUri, latestKoodistoVersio);
+        koodiVersioRepository.findByKoodistoUriAndVersio(koodistoUri, latestKoodistoVersio);
 
         if (!latest.getKoodistoItem().getVersios().contains(latestKoodistoVersio)) {
             throw new KoodiNotInKoodistoException();

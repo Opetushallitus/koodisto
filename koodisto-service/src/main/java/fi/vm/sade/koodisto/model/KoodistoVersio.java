@@ -8,21 +8,19 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.*;
 import org.springframework.core.style.ToStringCreator;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.*;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import java.util.*;
 
 @Entity
 @Table(name = KoodistoVersio.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistoVersio.TABLE_NAME
         + "_01", columnNames = { KoodistoVersio.VERSIO_COLUMN_NAME, KoodistoVersio.KOODISTO_COLUMN_NAME }))
-@org.hibernate.annotations.Table(appliesTo = KoodistoVersio.TABLE_NAME, comment = "Koodistoversio sisältää mm. " +
-        "koodiston päivityspäivämäärän, voimassaolopäivämäärät ja koodiston tilan.")
+@Comment("Koodistoversio sisältää mm. koodiston päivityspäivämäärän, voimassaolopäivämäärät ja koodiston tilan.")
 @Cacheable
 @NamedEntityGraphs({@NamedEntityGraph(name = "koodistoWithRelations",
         attributeNodes = {
@@ -84,8 +82,6 @@ public class KoodistoVersio extends BaseEntity {
     private Tila tila;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "koodistoVersio", cascade = { CascadeType.ALL })
-
-    @LazyCollection(LazyCollectionOption.EXTRA)
     private Set<KoodistoVersioKoodiVersio> koodiVersios = new HashSet<>();
 
     @NotEmpty
@@ -145,7 +141,7 @@ public class KoodistoVersio extends BaseEntity {
     public void removeYlaKoodistonSuhde(KoodistonSuhde ks) {
         ylakoodistos.remove(ks);
     }
-    
+
     public void removeAlaKoodistonSuhde(KoodistonSuhde ks) {
         alakoodistos.remove(ks);
     }

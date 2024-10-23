@@ -1,12 +1,10 @@
 package fi.vm.sade.koodisto.service.business.exception;
 
-import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
-
 /**
  * Exception class for situations where koodi does not belong to the specified koodisto
- * 
+ *
  * @author wuoti
- * 
+ *
  */
 public class KoodiNotInKoodistoException extends SadeBusinessException {
 

@@ -12,7 +12,6 @@ import org.slf4j.MDC;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -31,11 +30,11 @@ public final class AuditUtils {
         }
         if (propertyType.isAssociationType()) {
             Object oldState = event.getOldState(index);
-            Serializable oldStateId = oldState != null
+            Object oldStateId = oldState != null
                     ? entityPersister.getIdentifier(oldState, event.getSessionImplementor())
                     : null;
             Object newState = event.getNewState(index);
-            Serializable newStateId = newState != null
+            Object newStateId = newState != null
                     ? entityPersister.getIdentifier(newState, event.getSessionImplementor())
                     : null;
 

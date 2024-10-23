@@ -1,20 +1,22 @@
 package fi.vm.sade.koodisto.model;
 
+import org.hibernate.annotations.Comment;
+
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = KoodistoMetadata.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_"
         + KoodistoMetadata.TABLE_NAME + "_01", columnNames = { KoodistoMetadata.KIELI_COLUMN_NAME,
         KoodistoMetadata.KOODISTO_VERSIO_COLUMN_NAME }))
-@org.hibernate.annotations.Table(appliesTo = KoodistoMetadata.TABLE_NAME, comment = "Sisältää koodiston metatiedot, kuten nimi, kuvaus, jne.")
+@Comment("Sisältää koodiston metatiedot, kuten nimi, kuvaus, jne.")
 @Cacheable
 @Getter
 @Setter

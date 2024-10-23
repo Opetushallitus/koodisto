@@ -10,8 +10,8 @@ import fi.vm.sade.koodisto.repository.KoodistoMetadataRepositoryCustom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.*;
 
 @Repository
 public class KoodistoMetadataRepositoryImpl implements

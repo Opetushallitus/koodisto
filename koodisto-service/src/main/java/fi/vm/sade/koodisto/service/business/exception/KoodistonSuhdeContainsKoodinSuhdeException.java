@@ -1,7 +1,5 @@
 package fi.vm.sade.koodisto.service.business.exception;
 
-import fi.vm.sade.javautils.opintopolku_spring_security.SadeBusinessException;
-
 public class KoodistonSuhdeContainsKoodinSuhdeException extends
 SadeBusinessException {
 
@@ -12,7 +10,7 @@ SadeBusinessException {
     public KoodistonSuhdeContainsKoodinSuhdeException(String message) {
         super(message);
     }
-    
+
     public KoodistonSuhdeContainsKoodinSuhdeException(){
         super(ERROR_MESSAGE);
     }

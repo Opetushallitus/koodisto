@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 class KoodiRelaatioListaDtoTest extends DtoTest {
 
-    private static Stream<Arguments> parameters() {
+    static Stream<Arguments> parameters() {
         return Stream.of(
                 Arguments.of("Should be valid", getValid().build(), Set.of()),
                 Arguments.of("Fail if URI not set", getValid().codeElementUri(null).build(), Set.of("error.codeElementUri.empty")),

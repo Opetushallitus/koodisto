@@ -3,7 +3,7 @@ package fi.vm.sade.koodisto.dto.internal;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Getter
 @Setter
