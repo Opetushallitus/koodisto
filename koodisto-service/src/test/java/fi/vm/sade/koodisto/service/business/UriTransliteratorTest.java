@@ -12,8 +12,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.*;
 
-import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
+import static org.junit.Assert.*;
 
 /**
  * User: kwuoti Date: 22.3.2013 Time: 6.41

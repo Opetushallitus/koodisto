@@ -8,7 +8,8 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiMetadataTypeToKood
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiTypeToKoodiVersioConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.*;
 import fi.vm.sade.koodisto.service.types.common.*;
-import junit.framework.Assert;
+
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -254,7 +255,7 @@ public class KoodistoConversionServiceTest {
 
     private KoodistoVersio createKoodistoVersioWithKoodinSuhdes(Koodisto koodisto) {
         KoodistoVersio versio = createKoodistoVersio(koodisto);
-        //Note that relations created here are very atypical and actually invalid, but useful for quick conversion testing purposes. 
+        //Note that relations created here are very atypical and actually invalid, but useful for quick conversion testing purposes.
         Set<KoodistonSuhde> alaKoodistos = new HashSet<KoodistonSuhde>();
         alaKoodistos.add(createKoodistonSuhde(versio, versio, SuhteenTyyppi.SISALTYY));
         alaKoodistos.add(createKoodistonSuhde(versio, versio, SuhteenTyyppi.RINNASTEINEN));

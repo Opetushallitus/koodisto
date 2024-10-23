@@ -1,9 +1,6 @@
-
 package fi.vm.sade.koodisto.service.types.common;
 
-import java.io.Serializable;
-
-public class KoodiMetadataType extends MetadataType implements Serializable
+public class KoodiMetadataType extends MetadataType
 {
 
     private static final long serialVersionUID = 1L;

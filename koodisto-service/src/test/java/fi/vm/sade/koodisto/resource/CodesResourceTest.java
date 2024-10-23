@@ -8,7 +8,6 @@ import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -220,9 +219,9 @@ class CodesResourceTest {
 
         // tarkastetaan että v1 on vielä kunnossa
         KoodistoDto koodistoV1c = helper.getKoodisto(koodistoV1a.getKoodistoUri(), koodistoV1b.getVersio());
-        assertThat(koodistoV1c).isEqualToIgnoringGivenFields(koodistoV1b, "codesVersions", "metadata");
+        assertThat(koodistoV1c).usingRecursiveComparison().isEqualTo(koodistoV1b).ignoringFields("codesVersions", "metadata");
         ExtendedKoodiDto koodiV1d = helper.getKoodi(koodiV1a.getKoodiUri(), koodiV1b.getVersio());
-        assertThat(koodiV1d).isEqualToIgnoringGivenFields(koodiV1b,
+        assertThat(koodiV1d).usingRecursiveComparison().isEqualTo(koodiV1b).ignoringFields(
                 "versions", "version", "koodisto", "paivitysPvm", "tila",
                 "withinCodeElements", "includesCodeElements", "levelsWithCodeElements", "metadata");
     }
