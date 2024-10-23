@@ -16,8 +16,6 @@ function main {
   tmux select-pane -t 1
   tmux send-keys "$repo/scripts/run-koodisto-service.sh" C-m
 
-  #open "http://localhost:3003/organisaatiot"
-
   tmux attach-session -t "$session"
 }
 

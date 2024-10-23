@@ -1,6 +1,6 @@
-# Koodisto 
+# Koodisto
 
-Koodisto is an application for managing and distributing common codecs to ease up intercommunication 
+Koodisto is an application for managing and distributing common codecs to ease up intercommunication
 between services.
 
 ## Technologies
@@ -11,12 +11,15 @@ Koodisto is Spring Boot application which uses PostgreSQL database as persistent
 
 ### Prerequisites
 
-* Java 11
-* Maven
+* Java 21
+* tmux
+* docker
 
 ### Running tests
 
-`mvn clean test`
+Run `oph-koodisto-test-db` (e.g. with the start local env script)
+
+`./mvnw clean test`
 
 ### Running application locally
 
