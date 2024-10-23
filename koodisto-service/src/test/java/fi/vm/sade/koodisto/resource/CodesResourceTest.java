@@ -219,11 +219,12 @@ class CodesResourceTest {
 
         // tarkastetaan että v1 on vielä kunnossa
         KoodistoDto koodistoV1c = helper.getKoodisto(koodistoV1a.getKoodistoUri(), koodistoV1b.getVersio());
-        assertThat(koodistoV1c).usingRecursiveComparison().isEqualTo(koodistoV1b).ignoringFields("codesVersions", "metadata");
+        assertThat(koodistoV1c).usingRecursiveComparison().ignoringFields("codesVersions", "metadata").isEqualTo(koodistoV1b);
         ExtendedKoodiDto koodiV1d = helper.getKoodi(koodiV1a.getKoodiUri(), koodiV1b.getVersio());
-        assertThat(koodiV1d).usingRecursiveComparison().isEqualTo(koodiV1b).ignoringFields(
-                "versions", "version", "koodisto", "paivitysPvm", "tila",
-                "withinCodeElements", "includesCodeElements", "levelsWithCodeElements", "metadata");
+        assertThat(koodiV1d).usingRecursiveComparison()
+                .ignoringFields("versions", "version", "koodisto", "paivitysPvm", "tila",
+                        "withinCodeElements", "includesCodeElements", "levelsWithCodeElements", "metadata")
+                .isEqualTo(koodiV1b);
     }
 
     @Test
