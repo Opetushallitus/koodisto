@@ -4,18 +4,18 @@ import fi.vm.sade.koodisto.util.FieldLengths;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Comment;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 @Table(name = Koodisto.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + Koodisto.TABLE_NAME + "_01", columnNames = { Koodisto.KOODISTO_URI_COLUMN_NAME }))
-@org.hibernate.annotations.Table(appliesTo = Koodisto.TABLE_NAME, comment = "Koodiston pääentiteetti, johon eri koodistoversiot "
-        + "liittyvät. Sisältää koodistoUrin.")
+@Comment("Koodiston pääentiteetti, johon eri koodistoversiot liittyvät. Sisältää koodistoUrin.")
 @Entity
 @Cacheable
 @BatchSize(size = 100)

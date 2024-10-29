@@ -8,9 +8,10 @@ import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Comment;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,8 +19,7 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = KoodiVersio.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodiVersio.TABLE_NAME
         + "_01", columnNames = {KoodiVersio.VERSIO_COLUMN_NAME, KoodiVersio.KOODI_COLUMN_NAME}))
-@org.hibernate.annotations.Table(appliesTo = KoodiVersio.TABLE_NAME, comment = "Koodiversio sisältää mm. koodiarvon, " +
-        "voimassaolopäivämäärät ja koodin tilan.")
+@Comment("Koodiversio sisältää mm. koodiarvon, voimassaolopäivämäärät ja koodin tilan.")
 @Cacheable
 @BatchSize(size = 100)
 @Getter

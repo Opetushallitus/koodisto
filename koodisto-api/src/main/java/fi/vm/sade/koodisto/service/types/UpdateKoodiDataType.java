@@ -1,17 +1,15 @@
-
 package fi.vm.sade.koodisto.service.types;
 
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import lombok.*;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class UpdateKoodiDataType extends CreateKoodiDataType implements Serializable {
+public class UpdateKoodiDataType extends CreateKoodiDataType {
     private static final long serialVersionUID = 1L;
     protected String koodiUri;
     protected UpdateKoodiTilaType tila;

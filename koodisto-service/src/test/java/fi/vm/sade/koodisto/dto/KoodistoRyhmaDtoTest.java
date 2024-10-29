@@ -10,7 +10,7 @@ import static java.util.Set.of;
 
 class KoodistoRyhmaDtoTest extends DtoTest {
 
-    private static Stream<Arguments> parameters() {
+    static Stream<Arguments> parameters() {
         return Stream.of(
                 Arguments.of("Should be valid", getValid().build(), Set.of()),
                 Arguments.of("Metadata must be set", getValid().koodistoRyhmaMetadatas(null).build(), Set.of("error.metadata.empty")),

@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 class KoodiDtoTest extends DtoTest {
 
-    private static Stream<Arguments> parameters() {
+    static Stream<Arguments> parameters() {
         return Stream.of(
                 Arguments.of("Should be valid", getValid().build(), Set.of()),
                 Arguments.of("End date can be null", getValid().voimassaLoppuPvm(null).build(), Set.of()),

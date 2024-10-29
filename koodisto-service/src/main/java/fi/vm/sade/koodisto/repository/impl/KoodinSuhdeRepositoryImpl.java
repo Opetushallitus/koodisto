@@ -12,8 +12,8 @@ import fi.vm.sade.koodisto.service.business.exception.KoodiNotFoundException;
 import fi.vm.sade.koodisto.service.types.common.KoodiUriAndVersioType;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +63,7 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
             throw new KoodiNotFoundException("error.codeelement.relation.list.empty");
         }
         Predicate concatenatedAlakoodiUriAndVersioRestriction =
-                cb.concat(alakoodiJoin.get(KOODI_URI), cb.concat(SEPARATOR, alakoodiVersioJoin.get(VERSIO)))
+                cb.concat(cb.concat(alakoodiJoin.get(KOODI_URI), SEPARATOR), alakoodiVersioJoin.get(VERSIO))
                         .in(concatenatedAlaList);
 
         Predicate ylakoodiRestriction = cb.and(
@@ -83,7 +83,7 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
                 concatenatedYlaList.add(yk.getKoodiUri() + SEPARATOR + yk.getVersio());
             }
             Predicate concatenatedYlakoodiUriAndVersioRestriction =
-                    cb.concat(ylakoodiJoin.get(KOODI_URI), cb.concat(SEPARATOR, ylakoodiVersioJoin.get(VERSIO)))
+                    cb.concat(cb.concat(ylakoodiJoin.get(KOODI_URI), SEPARATOR), ylakoodiVersioJoin.get(VERSIO))
                             .in(concatenatedYlaList);
 
             Predicate alakoodiRestriction = cb.and(
@@ -122,7 +122,7 @@ public class KoodinSuhdeRepositoryImpl implements KoodinSuhdeRepositoryCustom {
             throw new KoodiNotFoundException("error.codeelement.relation.list.empty");
         }
         Predicate concatenatedAlakoodiUriAndVersioRestriction =
-                cb.concat(ylakoodiJoin.get(KOODI_URI), cb.concat(SEPARATOR, ylakoodiVersioJoin.get(VERSIO)))
+                cb.concat(cb.concat(ylakoodiJoin.get(KOODI_URI), SEPARATOR), ylakoodiVersioJoin.get(VERSIO))
                         .in(concatenatedYlaList);
 
         Predicate ylakoodiRestriction = cb.and(

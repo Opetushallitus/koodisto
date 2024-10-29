@@ -1,6 +1,7 @@
 package fi.vm.sade.koodisto.configuration;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -16,4 +17,8 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .setViewName("forward:/actuator/health");
     }
 
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+      configurer.setUseTrailingSlashMatch(true);
+    }
 }
