@@ -20,7 +20,7 @@ function main {
 
   tmux splitw -v
   tmux select-pane -t 1
-  tmux send-keys "npm install && npm run start" C-m
+  tmux send-keys "nvm use 20 && npm install && npm run start" C-m
 
   open "http://localhost:3000/koodisto-app"
 

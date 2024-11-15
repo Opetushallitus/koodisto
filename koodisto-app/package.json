@@ -7,7 +7,7 @@
         "@opetushallitus/virkailija-ui-components": "^0.4.7",
         "@tanstack/match-sorter-utils": "^8.1.1",
         "@tanstack/react-table": "^8.5.11",
-        "axios": "^0.26.0",
+        "axios": "^0.28.1",
         "jotai": "^1.6.0",
         "lodash": "^4.17.21",
         "moment": "^2.29.1",
@@ -22,7 +22,7 @@
         "react-router-dom": "^6.3.0",
         "reactjs-popup": "^2.0.5",
         "styled-components": "^5.3.3",
-        "universal-cookie": "^4.0.4",
+        "universal-cookie": "^7.2.2",
         "url": "^0.11.0"
     },
     "devDependencies": {
@@ -118,9 +118,5 @@
             "last 1 safari version"
         ]
     },
-    "proxy": "http://localhost:9000",
-    "engines": {
-        "npm": "^10",
-        "node": "^20"
-    }
+    "proxy": "http://localhost:9000"
 }
