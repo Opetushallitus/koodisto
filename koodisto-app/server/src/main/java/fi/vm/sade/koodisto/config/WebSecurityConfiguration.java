@@ -3,7 +3,6 @@ package fi.vm.sade.koodisto.config;
 import fi.vm.sade.java_utils.security.OpintopolkuCasAuthenticationFilter;
 import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl;
 import fi.vm.sade.koodisto.config.properties.CasProperties;
-import fi.vm.sade.properties.OphProperties;
 import lombok.RequiredArgsConstructor;
 
 import org.apereo.cas.client.session.SingleSignOutFilter;
@@ -32,7 +31,6 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfiguration {
-    private final OphProperties ophProperties;
     private final CasProperties casProperties;
 
     public static final String SPRING_CAS_SECURITY_CHECK_PATH = "/j_spring_cas_security_check";
