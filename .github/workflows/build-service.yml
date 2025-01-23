@@ -31,7 +31,7 @@ jobs:
           cache: "npm"
           cache-dependency-path: koodisto-app/package-lock.json
       - name: Build frontend
-        working-directory: organisaatio-ui
+        working-directory: koodisto-app
         run: |
           npm ci
           npm run lint
