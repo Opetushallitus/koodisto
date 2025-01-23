@@ -33,7 +33,7 @@ jobs:
       - name: Test UI
         working-directory: koodisto-app
         run: |
-          cd ../mock-api
+          cd mock-api
           npm ci
           cd -
           npm run cypress:ci
