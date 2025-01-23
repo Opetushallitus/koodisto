@@ -12,9 +12,19 @@ function main {
   tmux select-pane -t 0
   tmux send-keys "cd ${repo}; docker compose down --volumes; docker compose up --force-recreate --renew-anon-volumes" C-m
 
-  tmux splitw -v
+  tmux splitw -h
   tmux select-pane -t 1
   tmux send-keys "$repo/scripts/run-koodisto-service.sh" C-m
+
+  tmux splitw -v
+  tmux select-pane -t 2
+  tmux send-keys "cd koodisto-app/mock-api && npm install && cd .. && npm run mock-api" C-m
+
+  tmux splitw -v
+  tmux select-pane -t 3
+  tmux send-keys "cd koodisto-app && nvm use 20 && npm install && npm run start" C-m
+
+  open "http://localhost:3000/koodisto-service/ui"
 
   tmux attach-session -t "$session"
 }

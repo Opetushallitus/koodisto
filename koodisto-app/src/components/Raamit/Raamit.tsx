@@ -1,7 +1,7 @@
 import React from 'react';
 
 const VIRKAILIJA_RAAMIT_PROD_URL = '/virkailija-raamit/apply-raamit.js';
-const VIRKAILIJA_RAAMIT_DEV_URL = '/koodisto-app/dev-raamit.js';
+const VIRKAILIJA_RAAMIT_DEV_URL = '/koodisto-service/dev-raamit.js';
 const SCRIPT_ELEMENT_ID = 'virkailija-raamit-script';
 
 export const Raamit: React.FC = ({ children }) => {

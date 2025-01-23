@@ -37,7 +37,7 @@ module.exports = function () {
             compress: true,
             static: {
                 directory: path.resolve(__dirname, 'public'),
-                publicPath: ['/koodisto-app/'],
+                publicPath: ['/koodisto-service/'],
                 watch: {
                     ignored: {},
                 },
@@ -49,19 +49,23 @@ module.exports = function () {
                 },
             },
             devMiddleware: {
-                publicPath: '/koodisto-app',
+                publicPath: '/koodisto-service',
             },
             historyApiFallback: {
                 disableDotRule: true,
-                index: '/koodisto-app/',
+                index: '/koodisto-service',
             },
             host: '127.0.0.1',
             hot: true,
             port: 3000,
             proxy: [
                 {
+                    target: 'http://localhost:8080',
+                    context: ['/koodisto-service/static', '/koodisto-service/rest', '/koodisto-service/internal'],
+                },
+                {
                     target: 'http://localhost:9000',
-                    context: ['/koodisto-service', '/kayttooikeus-service', '/organisaatio-service', '/lokalisointi'],
+                    context: ['/kayttooikeus-service', '/organisaatio-service', '/lokalisointi'],
                 },
             ],
         },
@@ -78,7 +82,7 @@ module.exports = function () {
                 ? 'static/js/[name].[contenthash:8].chunk.js'
                 : isEnvDevelopment && 'static/js/[name].chunk.js',
             assetModuleFilename: 'static/media/[name].[hash][ext]',
-            publicPath: '/koodisto-app/',
+            publicPath: '/koodisto-service/',
             devtoolModuleFilenameTemplate: isEnvProduction
                 ? (info) => path.relative(path.resolve(__dirname, 'src'), info.absoluteResourcePath).replace(/\\/g, '/')
                 : isEnvDevelopment && ((info) => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
@@ -185,7 +189,7 @@ module.exports = function () {
             }),
             new WebpackManifestPlugin({
                 fileName: 'asset-manifest.json',
-                publicPath: '/koodisto-app/',
+                publicPath: '/koodisto-service/ui/',
                 generate: (seed, files, entrypoints) => {
                     const manifestFiles = files.reduce((manifest, file) => {
                         manifest[file.name] = file.path;

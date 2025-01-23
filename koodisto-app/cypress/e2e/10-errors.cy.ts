@@ -79,6 +79,6 @@ describe('Errors', () => {
     it('Redirects to index page on non-existent URL', () => {
         cy.intercept(`${API_INTERNAL_PATH}/koodisto`, { fixture: 'codes.json' });
         cy.visit(`${BASE_PATH}/some/non-existent/path`);
-        cy.location().should((location) => expect(location.pathname).to.equal('/koodisto-app/'));
+        cy.location().should((location) => expect(location.pathname).to.equal('/koodisto-service/ui/'));
     });
 });

@@ -37,7 +37,7 @@ describe('Koodisto Edit page', () => {
         cy.get('input[name=CONFIRMATION_CHECK]').should('be.visible').click({ force: true });
         cy.get('button[name=CONFIRMATION_ACTION]').should('be.visible').click({ force: true });
         cy.location().should((location) => {
-            expect(location.pathname).to.eq('/koodisto-app/koodisto/view/kunta/2');
+            expect(location.pathname).to.eq('/koodisto-service/ui/koodisto/view/kunta/2');
         });
     });
 });

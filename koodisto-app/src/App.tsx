@@ -18,7 +18,7 @@ export const PageBase = styled.div`
 
 const App: React.FC = () => {
     return (
-        <BrowserRouter basename={'/koodisto-app'}>
+        <BrowserRouter basename={'/koodisto-service/ui'}>
             <Notification />
             <PageBase>
                 <React.Suspense fallback={<Loading />}>

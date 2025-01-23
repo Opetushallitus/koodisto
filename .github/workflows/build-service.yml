@@ -25,6 +25,18 @@ jobs:
           java-version: '21'
           distribution: 'corretto'
           cache: 'maven'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: koodisto-app/package-lock.json
+      - name: Build frontend
+        working-directory: organisaatio-ui
+        run: |
+          npm ci
+          npm run lint
+          npm run prettier
+          npm run build
       - name: Maven version
         run: mvn --version
       - name: Build
