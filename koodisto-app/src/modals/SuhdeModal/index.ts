@@ -1,0 +1,1 @@
+export { SuhdeModalFooter } from './SuhdeModal';

@@ -1,0 +1,56 @@
+{
+    "koodistoRyhmaMetadata": [
+        {
+            "id": 611884,
+            "uri": "koute",
+            "nimi": "Oiva",
+            "kieli": "EN"
+        },
+        {
+            "id": 611884,
+            "uri": "koute",
+            "nimi": "Oiva",
+            "kieli": "FI"
+        },
+        {
+            "id": 611884,
+            "uri": "koute",
+            "nimi": "Oiva",
+            "kieli": "SV"
+        }
+    ],
+    "koodistoRyhmaUri": "koute",
+    "resourceUri": "https://virkailija.hahtuvaopintopolku.fi/koodisto-service/rest/codes/nimi1655458944744",
+    "koodistoUri": "nimi1655458944744",
+    "versio": 1,
+    "lockingVersion": 0,
+    "organisaatioOid": "1.2.246.562.10.2013112012294919827487",
+    "paivitysPvm": "2022-06-17",
+    "paivittajaOid": "devaaja",
+    "voimassaAlkuPvm": "2022-01-01",
+    "voimassaLoppuPvm": null,
+    "omistaja": "",
+    "tila": "LUONNOS",
+    "metadata": [
+        {
+            "kieli": "FI",
+            "nimi": "nimi-1655458944744",
+            "kuvaus": ""
+        },
+        {
+            "kieli": "SV",
+            "nimi": "nimi-1655458944744",
+            "kuvaus": ""
+        },
+        {
+            "kieli": "EN",
+            "nimi": "nimi-1655458944744",
+            "kuvaus": ""
+        }
+    ],
+    "koodistoVersio": [1],
+    "sisaltyyKoodistoihin": [],
+    "sisaltaaKoodistot": [],
+    "rinnastuuKoodistoihin": [],
+    "koodiList": []
+}
