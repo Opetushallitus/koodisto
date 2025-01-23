@@ -1,4 +1,5 @@
 export repo="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
+readonly node_version=$( cat "${repo}/.nvmrc" )
 
 function export_aws_credentials {
   local -r env=$1

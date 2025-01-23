@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 source "$( dirname "${BASH_SOURCE[0]}" )/scripts/lib/common-functions.sh"
-readonly node_version=$( cat "${repo}/.nvmrc" )
 
 function main {
   local -r env="$( parse_env_from_script_name )"
