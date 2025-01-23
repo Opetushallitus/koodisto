@@ -1,6 +1,6 @@
 import {execSync} from 'node:child_process';
 
-const REPOSITORY_NAME = "organisaatio"
+const REPOSITORY_NAME = "koodisto"
 const SLACK_NOTIFICATIONS_CHANNEL_WEBHOOK_URL = process.env.SLACK_NOTIFICATIONS_CHANNEL_WEBHOOK_URL as string
 const ENVIRONMENT_NAME = process.env.ENVIRONMENT_NAME as string
 
