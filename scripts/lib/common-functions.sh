@@ -61,6 +61,18 @@ function is_running_on_codebuild {
   [ -n "${CODEBUILD_BUILD_ID:-}" ]
 }
 
+function select_java_version {
+  if ! is_running_on_codebuild; then
+    info "Switching to Java $1"
+    java_version="$1"
+    JAVA_HOME="$(/usr/libexec/java_home -v "${java_version}")"
+    export JAVA_HOME
+  else
+    info "Running on CodeBuild; Java version is managed in buildspec"
+  fi
+  java -version
+}
+
 function require_command {
   if ! command -v "$1" >/dev/null; then
     fatal "I require $1 but it's not installed. Aborting."
