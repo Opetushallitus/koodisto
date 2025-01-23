@@ -30,6 +30,13 @@ jobs:
           node-version: "20"
           cache: "npm"
           cache-dependency-path: koodisto-app/package-lock.json
+      - name: Test UI
+        working-directory: koodisto-app
+        run: |
+          cd ../mock-api
+          npm ci
+          cd -
+          npm run cypress:ci
       - name: Build frontend
         working-directory: koodisto-app
         run: |
