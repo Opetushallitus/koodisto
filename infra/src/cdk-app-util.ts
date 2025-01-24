@@ -323,12 +323,12 @@ function makeTestProject(
           build: {
             commands: testCommands,
           },
-          artifacts: {
-            files: [
-              "koodisto-app/cypress/videos/**/*",
-              "koodisto-app/cypress/screenshots/**/*",
-            ],
-          },
+        },
+        artifacts: {
+          files: [
+            "koodisto-app/cypress/videos/**/*",
+            "koodisto-app/cypress/screenshots/**/*",
+          ],
         },
       }),
     },
