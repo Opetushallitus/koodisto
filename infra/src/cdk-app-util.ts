@@ -314,10 +314,7 @@ function makeTestProject(
             commands: [
               "docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD",
               ...preBuildCommands,
-              //"mkdir -p ~/.gradle && echo $GITHUB_PACKAGES_GRADLE_PROPERTIES | base64 -d > ~/.gradle/gradle.properties",
-              //"echo $GITHUB_PACKAGES_GRADLE_PROPERTIES | base64 -d > ./organisaatio-service/github-packages-gradle.properties",
               "echo $MVN_SETTINGSXML > ./settings.xml",
-              //"echo $MVN_SETTINGSXML > ./varda-rekisterointi/settings.xml",
             ],
           },
           build: {
