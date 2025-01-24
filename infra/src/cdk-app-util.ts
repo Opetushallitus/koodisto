@@ -5,6 +5,7 @@ import * as codepipeline_actions from "aws-cdk-lib/aws-codepipeline-actions";
 import * as codestarconnections from "aws-cdk-lib/aws-codestarconnections";
 import * as constructs from "constructs";
 import * as iam from "aws-cdk-lib/aws-iam";
+import * as s3 from "aws-cdk-lib/aws-s3";
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import { ROUTE53_HEALTH_CHECK_REGION } from "./health-check";
 
@@ -100,9 +101,11 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
     super(scope, id, props);
     const capitalizedEnv = capitalize(env);
 
+    const artifactBucket = new s3.Bucket(this, `ArtifactBucket`, {});
     const pipeline = new codepipeline.Pipeline(this, `DeployPipeline`, {
       pipelineName: `Deploy${capitalizedEnv}`,
       pipelineType: codepipeline.PipelineType.V1,
+      artifactBucket,
     });
 
     const sourceOutput = new codepipeline.Artifact();
@@ -319,6 +322,12 @@ function makeTestProject(
           },
           build: {
             commands: testCommands,
+          },
+          artifacts: {
+            files: [
+              "koodisto-app/cypress/videos/**/*",
+              "koodisto-app/cypress/screenshots/**/*",
+            ],
           },
         },
       }),

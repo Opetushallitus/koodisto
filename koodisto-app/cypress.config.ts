@@ -5,7 +5,7 @@ const { rm } = require('fs');
 export default defineConfig({
     defaultCommandTimeout: 10000,
     pageLoadTimeout: 15000,
-    video: false,
+    video: true,
     e2e: {
         setupNodeEvents(on, config) {
             on('task', {
