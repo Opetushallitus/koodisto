@@ -5,7 +5,7 @@ const koodistoUri = 'arvosanat';
 before(() => {
     cy.task('deleteFolder', Cypress.config('downloadsFolder'));
 });
-describe.skip('CSV functionality tests', () => {
+describe('CSV functionality tests', () => {
     beforeEach(() => {
         cy.mockBaseIntercepts();
     });
