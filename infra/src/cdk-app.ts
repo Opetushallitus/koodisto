@@ -3,10 +3,13 @@ import * as constructs from "constructs";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as route53 from "aws-cdk-lib/aws-route53";
 import * as ssm from "aws-cdk-lib/aws-ssm";
+import * as sns from "aws-cdk-lib/aws-sns";
+import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as rds from "aws-cdk-lib/aws-rds";
 
 import { getConfig, getEnvironment } from "./config";
+import { DatabaseBackupToS3 } from "./DatabaseBackupToS3";
 
 class CdkApp extends cdk.App {
   constructor(props: cdk.AppProps) {
@@ -19,12 +22,18 @@ class CdkApp extends cdk.App {
     };
 
     const { hostedZone } = new DnsStack(this, "DnsStack", stackProps);
-    new AlarmStack(this, "AlarmStack", stackProps);
+    const { alarmTopic } = new AlarmStack(this, "AlarmStack", stackProps);
     const { vpc, bastion } = new VpcStack(this, "VpcStack", stackProps);
+    const { ecsCluster } = new EcsStack(this, "EcsStack", {
+      ...stackProps,
+      vpc,
+    });
     new DatabaseStack(this, "DatabaseStack", {
       ...stackProps,
       vpc,
       bastion,
+      ecsCluster,
+      alarmTopic,
     });
   }
 }
@@ -91,9 +100,31 @@ class VpcStack extends cdk.Stack {
   }
 }
 
+class EcsStack extends cdk.Stack {
+  readonly ecsCluster: ecs.Cluster;
+
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: cdk.StackProps & {
+      vpc: ec2.IVpc;
+    }
+  ) {
+    super(scope, id, props);
+    const { vpc } = props;
+
+    this.ecsCluster = new ecs.Cluster(this, "Cluster", {
+      vpc,
+      clusterName: "Cluster",
+    });
+  }
+}
 class AlarmStack extends cdk.Stack {
+  readonly alarmTopic: sns.ITopic;
+
   constructor(scope: constructs.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+    this.alarmTopic = this.createAlarmTopic();
 
     const radiatorAccountId = "905418271050";
     const radiatorReader = new iam.Role(this, "RadiatorReaderRole", {
@@ -108,6 +139,12 @@ class AlarmStack extends cdk.Stack {
       })
     );
   }
+
+  createAlarmTopic(): sns.ITopic {
+    return new sns.Topic(this, "AlarmTopic", {
+      displayName: "alarm",
+    });
+  }
 }
 
 class DatabaseStack extends cdk.Stack {
@@ -118,11 +155,13 @@ class DatabaseStack extends cdk.Stack {
     props: cdk.StackProps & {
       vpc: ec2.IVpc;
       bastion: ec2.BastionHostLinux;
+      ecsCluster: ecs.Cluster;
+      alarmTopic: sns.ITopic;
     }
   ) {
     super(scope, id, props);
 
-    const { vpc, bastion } = props;
+    const { vpc, bastion, ecsCluster, alarmTopic } = props;
     this.database = new rds.DatabaseCluster(this, "Database", {
       vpc,
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
@@ -145,6 +184,12 @@ class DatabaseStack extends cdk.Stack {
       readers: [],
     });
     this.database.connections.allowDefaultPortFrom(bastion);
+    new DatabaseBackupToS3(this, "DatabaseBackup", {
+      ecsCluster: ecsCluster,
+      dbCluster: this.database,
+      dbName: "koodisto",
+      alarmTopic,
+    });
   }
 }
 
