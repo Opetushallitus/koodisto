@@ -4,6 +4,7 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as route53 from "aws-cdk-lib/aws-route53";
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
+import * as rds from "aws-cdk-lib/aws-rds";
 
 import { getConfig, getEnvironment } from "./config";
 
@@ -19,7 +20,12 @@ class CdkApp extends cdk.App {
 
     const { hostedZone } = new DnsStack(this, "DnsStack", stackProps);
     new AlarmStack(this, "AlarmStack", stackProps);
-    new VpcStack(this, "VpcStack", stackProps);
+    const { vpc, bastion } = new VpcStack(this, "VpcStack", stackProps);
+    new DatabaseStack(this, "DatabaseStack", {
+      ...stackProps,
+      vpc,
+      bastion,
+    });
   }
 }
 
@@ -101,6 +107,44 @@ class AlarmStack extends cdk.Stack {
         resources: ["*"],
       })
     );
+  }
+}
+
+class DatabaseStack extends cdk.Stack {
+  readonly database: rds.DatabaseCluster;
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: cdk.StackProps & {
+      vpc: ec2.IVpc;
+      bastion: ec2.BastionHostLinux;
+    }
+  ) {
+    super(scope, id, props);
+
+    const { vpc, bastion } = props;
+    this.database = new rds.DatabaseCluster(this, "Database", {
+      vpc,
+      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
+      defaultDatabaseName: "koodisto",
+      engine: rds.DatabaseClusterEngine.auroraPostgres({
+        version: rds.AuroraPostgresEngineVersion.VER_15_7,
+      }),
+      credentials: rds.Credentials.fromGeneratedSecret("koodisto", {
+        secretName: "KoodistoDatabaseSecret",
+      }),
+      storageType: rds.DBClusterStorageType.AURORA,
+      writer: rds.ClusterInstance.provisioned("writer", {
+        enablePerformanceInsights: true,
+        instanceType: ec2.InstanceType.of(
+          ec2.InstanceClass.T4G,
+          ec2.InstanceSize.MEDIUM
+        ),
+      }),
+      storageEncrypted: true,
+      readers: [],
+    });
+    this.database.connections.allowDefaultPortFrom(bastion);
   }
 }
 
