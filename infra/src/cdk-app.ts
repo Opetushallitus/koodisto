@@ -1,16 +1,22 @@
 import * as cdk from "aws-cdk-lib";
 import * as constructs from "constructs";
 import * as iam from "aws-cdk-lib/aws-iam";
+import * as path from "path";
 import * as route53 from "aws-cdk-lib/aws-route53";
+import * as route53_targets from "aws-cdk-lib/aws-route53-targets";
+import * as ecr_assets from "aws-cdk-lib/aws-ecr-assets";
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as logs from "aws-cdk-lib/aws-logs";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as sns_subscriptions from "aws-cdk-lib/aws-sns-subscriptions";
 import * as sns from "aws-cdk-lib/aws-sns";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as rds from "aws-cdk-lib/aws-rds";
+import * as elasticloadbalancingv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
+import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager";
 
 import { getConfig, getEnvironment } from "./config";
 import { DatabaseBackupToS3 } from "./DatabaseBackupToS3";
@@ -32,12 +38,165 @@ class CdkApp extends cdk.App {
       ...stackProps,
       vpc,
     });
-    new DatabaseStack(this, "DatabaseStack", {
+    const { database, exportBucket } = new DatabaseStack(
+      this,
+      "DatabaseStack",
+      {
+        ...stackProps,
+        vpc,
+        bastion,
+        ecsCluster,
+        alarmTopic,
+      }
+    );
+    new ApplicationStack(this, "ApplicationStack", {
       ...stackProps,
+      hostedZone,
       vpc,
-      bastion,
       ecsCluster,
-      alarmTopic,
+      database,
+      exportBucket,
+    });
+  }
+}
+
+class ApplicationStack extends cdk.Stack {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    props: cdk.StackProps & {
+      hostedZone: route53.IHostedZone;
+      vpc: ec2.IVpc;
+      ecsCluster: ecs.Cluster;
+      database: rds.DatabaseCluster;
+      exportBucket: s3.Bucket;
+    }
+  ) {
+    super(scope, id, props);
+    const { vpc, ecsCluster, database, exportBucket, hostedZone } = props;
+    const config = getConfig();
+
+    const appPort = 8080;
+    const albHostname = `koodisto.${config.zoneName}`;
+
+    const logGroup = new logs.LogGroup(this, "AppLogGroup", {
+      logGroupName: "Koodisto/koodisto",
+      retention: logs.RetentionDays.INFINITE,
+    });
+
+    const dockerImage = new ecr_assets.DockerImageAsset(this, "AppImage", {
+      directory: path.join(__dirname, "../../"),
+      file: "Dockerfile",
+      platform: ecr_assets.Platform.LINUX_ARM64,
+      exclude: ["infra/cdk.out"],
+    });
+
+    const taskDefinition = new ecs.FargateTaskDefinition(
+      this,
+      "TaskDefinition",
+      {
+        cpu: 1024,
+        memoryLimitMiB: 2048,
+        runtimePlatform: {
+          operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
+          cpuArchitecture: ecs.CpuArchitecture.ARM64,
+        },
+      }
+    );
+    taskDefinition.addContainer("AppContainer", {
+      image: ecs.ContainerImage.fromDockerImageAsset(dockerImage),
+      logging: ecs.LogDrivers.awsLogs({ logGroup, streamPrefix: "app" }),
+      environment: {
+        "spring.datasource.url": `jdbc:postgresql://${database.clusterEndpoint.hostname}:${database.clusterEndpoint.port.toString()}/koodisto`,
+        "host.virkailija": config.virkailijaHost,
+        "koodisto.tasks.export.bucket-name": exportBucket.bucketName,
+      },
+      secrets: {
+        "spring.datasource.username": ecs.Secret.fromSecretsManager(
+          database.secret!,
+          "username"
+        ),
+        "spring.datasource.password": ecs.Secret.fromSecretsManager(
+          database.secret!,
+          "password"
+        ),
+      },
+      portMappings: [
+        {
+          name: "koodisto",
+          containerPort: appPort,
+          appProtocol: ecs.AppProtocol.http,
+        },
+      ],
+    });
+
+    const service = new ecs.FargateService(this, "Service", {
+      cluster: ecsCluster,
+      taskDefinition,
+      desiredCount: config.minCapacity,
+      minHealthyPercent: 100,
+      maxHealthyPercent: 200,
+      vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
+      healthCheckGracePeriod: cdk.Duration.minutes(2),
+      circuitBreaker: { enable: true, rollback: true },
+    });
+    service.connections.allowToDefaultPort(database);
+
+    if (config.minCapacity !== config.maxCapacity) {
+      const scaling = service.autoScaleTaskCount({
+        minCapacity: config.minCapacity,
+        maxCapacity: config.maxCapacity,
+      });
+      scaling.scaleOnMetric("ServiceCpuScaling", {
+        metric: service.metricCpuUtilization(),
+        scalingSteps: [
+          { upper: 15, change: -1 },
+          { lower: 50, change: +1 },
+          { lower: 65, change: +2 },
+          { lower: 80, change: +3 },
+        ],
+      });
+    }
+
+    const alb = new elasticloadbalancingv2.ApplicationLoadBalancer(
+      this,
+      "LoadBalancer",
+      { vpc, internetFacing: true }
+    );
+
+    new route53.ARecord(this, "ALBARecord", {
+      zone: hostedZone,
+      target: route53.RecordTarget.fromAlias(
+        new route53_targets.LoadBalancerTarget(alb)
+      ),
+      recordName: albHostname,
+    });
+
+    const albCertificate = new certificatemanager.Certificate(
+      this,
+      "AlbCertificate",
+      {
+        domainName: albHostname,
+        validation:
+          certificatemanager.CertificateValidation.fromDns(hostedZone),
+      }
+    );
+
+    const listener = alb.addListener("Listener", {
+      protocol: elasticloadbalancingv2.ApplicationProtocol.HTTPS,
+      port: 443,
+      certificates: [albCertificate],
+      open: true,
+    });
+    listener.addTargets("ServiceTarget", {
+      port: appPort,
+      targets: [service],
+      healthCheck: {
+        enabled: true,
+        path: "/koodisto-service/actuator/health",
+        interval: cdk.Duration.seconds(10),
+        port: appPort.toString(),
+      },
     });
   }
 }
