@@ -5,6 +5,7 @@ import * as route53 from "aws-cdk-lib/aws-route53";
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as lambda from "aws-cdk-lib/aws-lambda";
+import * as s3 from "aws-cdk-lib/aws-s3";
 import * as sns_subscriptions from "aws-cdk-lib/aws-sns-subscriptions";
 import * as sns from "aws-cdk-lib/aws-sns";
 import * as ecs from "aws-cdk-lib/aws-ecs";
@@ -186,6 +187,8 @@ class AlarmStack extends cdk.Stack {
 
 class DatabaseStack extends cdk.Stack {
   readonly database: rds.DatabaseCluster;
+  readonly exportBucket: s3.Bucket;
+
   constructor(
     scope: constructs.Construct,
     id: string,
@@ -199,6 +202,7 @@ class DatabaseStack extends cdk.Stack {
     super(scope, id, props);
 
     const { vpc, bastion, ecsCluster, alarmTopic } = props;
+    this.exportBucket = new s3.Bucket(this, "ExportBucket", {});
     this.database = new rds.DatabaseCluster(this, "Database", {
       vpc,
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
@@ -219,6 +223,7 @@ class DatabaseStack extends cdk.Stack {
       }),
       storageEncrypted: true,
       readers: [],
+      s3ExportBuckets: [this.exportBucket],
     });
     this.database.connections.allowDefaultPortFrom(bastion);
     new DatabaseBackupToS3(this, "DatabaseBackup", {
