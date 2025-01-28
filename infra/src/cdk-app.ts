@@ -226,12 +226,13 @@ class DatabaseStack extends cdk.Stack {
       s3ExportBuckets: [this.exportBucket],
     });
     this.database.connections.allowDefaultPortFrom(bastion);
-    new DatabaseBackupToS3(this, "DatabaseBackup", {
+    const backup = new DatabaseBackupToS3(this, "DatabaseBackup", {
       ecsCluster: ecsCluster,
       dbCluster: this.database,
       dbName: "koodisto",
       alarmTopic,
     });
+    this.database.connections.allowDefaultPortFrom(backup);
   }
 }
 
