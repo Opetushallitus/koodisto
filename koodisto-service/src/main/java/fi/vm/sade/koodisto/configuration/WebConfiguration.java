@@ -16,7 +16,7 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .setViewName("forward:/actuator/health");
         registry.addViewController("/actuator/health")
                 .setViewName("forward:/actuator/health");
-        registry.addViewController("/ui")
+        registry.addViewController("/ui/**")
                 .setViewName("forward:/index.html");
         registry.addViewController("/")
                 .setViewName("forward:/index.html");
