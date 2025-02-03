@@ -49,8 +49,6 @@ export const qa: Config = {
   ...defaultConfig,
   virkailijaHost: "virkailija.testiopintopolku.fi",
   zoneName: "qa.koodisto.opintopolku.fi",
-  minCapacity: 0,
-  maxCapacity: 0,
   vpcCidr: "10.7.64.0/18",
 };
 
