@@ -15,9 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Sql("/truncate_tables.sql")
 @Sql("/test-data.sql")
-@SpringBootTest(properties = {
-        "koodisto.tasks.export.upload-to-s3=false",
-})
+@SpringBootTest
 class ExportServiceTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired ExportService exportService;
@@ -32,6 +30,7 @@ class ExportServiceTest {
 
     @Test
     void jsonExport() throws IOException {
+        exportService.setUploadToS3(false);
         exportService.createSchema();
         var files = exportService.generateJsonExports();
         assertThat(files).hasSize(2);

@@ -19,6 +19,7 @@ import * as elasticloadbalancingv2 from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager";
 
 import { getConfig, getEnvironment } from "./config";
+import * as alarms from "./alarms";
 import { DatabaseBackupToS3 } from "./DatabaseBackupToS3";
 
 class CdkApp extends cdk.App {
@@ -52,6 +53,7 @@ class CdkApp extends cdk.App {
     new ApplicationStack(this, "ApplicationStack", {
       ...stackProps,
       hostedZone,
+      alarmTopic,
       vpc,
       ecsCluster,
       database,
@@ -66,6 +68,7 @@ class ApplicationStack extends cdk.Stack {
     id: string,
     props: cdk.StackProps & {
       hostedZone: route53.IHostedZone;
+      alarmTopic: sns.ITopic;
       vpc: ec2.IVpc;
       ecsCluster: ecs.Cluster;
       database: rds.DatabaseCluster;
@@ -103,13 +106,31 @@ class ApplicationStack extends cdk.Stack {
         },
       }
     );
+
+    const lampiProperties: Record<string, string> = config.lampiExport
+      ? {
+          "koodisto.tasks.export.enabled":
+            config.lampiExport.enabled.toString(),
+          "koodisto.tasks.export.bucket-name": exportBucket.bucketName,
+          "koodisto.tasks.export.lampi-bucket-name":
+            config.lampiExport.bucketName,
+          "koodisto.tasks.export.lampi-role-arn":
+            ssm.StringParameter.valueFromLookup(this, "LampiRoleArn"),
+          "koodisto.tasks.export.lampi-external-id":
+            ssm.StringParameter.valueFromLookup(this, "LampiExternalId"),
+        }
+      : {
+          "koodisto.tasks.export.enabled": "false",
+          "koodisto.tasks.export.bucket-name": exportBucket.bucketName,
+        };
+
     taskDefinition.addContainer("AppContainer", {
       image: ecs.ContainerImage.fromDockerImageAsset(dockerImage),
       logging: ecs.LogDrivers.awsLogs({ logGroup, streamPrefix: "app" }),
       environment: {
         "spring.datasource.url": `jdbc:postgresql://${database.clusterEndpoint.hostname}:${database.clusterEndpoint.port.toString()}/koodisto`,
         "host.virkailija": config.virkailijaHost,
-        "koodisto.tasks.export.bucket-name": exportBucket.bucketName,
+        ...lampiProperties,
       },
       secrets: {
         "spring.datasource.username": ecs.Secret.fromSecretsManager(
@@ -129,6 +150,19 @@ class ApplicationStack extends cdk.Stack {
         },
       ],
     });
+
+    if (config.lampiExport) {
+      taskDefinition.addToTaskRolePolicy(
+        new iam.PolicyStatement({
+          actions: ["sts:AssumeRole"],
+          resources: [
+            ssm.StringParameter.valueFromLookup(this, "LampiRoleArn"),
+          ],
+        })
+      );
+
+      this.exportFailureAlarm(logGroup, props.alarmTopic);
+    }
 
     const service = new ecs.FargateService(this, "Service", {
       cluster: ecsCluster,
@@ -198,6 +232,16 @@ class ApplicationStack extends cdk.Stack {
         port: appPort.toString(),
       },
     });
+  }
+
+  exportFailureAlarm(logGroup: logs.LogGroup, alarmTopic: sns.ITopic) {
+    alarms.alarmIfExpectedLogLineIsMissing(
+      this,
+      "ExportTask",
+      logGroup,
+      alarmTopic,
+      logs.FilterPattern.literal('"Koodisto export task completed"')
+    );
   }
 }
 

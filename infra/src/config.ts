@@ -1,15 +1,21 @@
 const environments = ["hahtuva", "dev", "qa", "prod"] as const;
 type EnvironmentName = (typeof environments)[number];
 
+export type Config = {
+  virkailijaHost: string;
+  zoneName: string;
+  vpcCidr: string;
+  minCapacity: number;
+  maxCapacity: number;
+  lampiExport?: {
+    enabled: boolean;
+    bucketName: string;
+  };
+};
 const defaultConfig = {
-  virkailijaHost: "",
-  zoneName: "",
-  vpcCidr: "",
   minCapacity: 2,
   maxCapacity: 8,
 };
-
-export type Config = typeof defaultConfig;
 
 export function getEnvironment(): EnvironmentName {
   const env = process.env.ENV;
@@ -43,6 +49,10 @@ export const dev: Config = {
   virkailijaHost: "virkailija.untuvaopintopolku.fi",
   zoneName: "dev.koodisto.opintopolku.fi",
   vpcCidr: "10.7.128.0/18",
+  lampiExport: {
+    enabled: true,
+    bucketName: "oph-lampi-dev",
+  },
 };
 
 export const qa: Config = {
@@ -50,6 +60,10 @@ export const qa: Config = {
   virkailijaHost: "virkailija.testiopintopolku.fi",
   zoneName: "qa.koodisto.opintopolku.fi",
   vpcCidr: "10.7.64.0/18",
+  lampiExport: {
+    enabled: true,
+    bucketName: "oph-lampi-qa",
+  },
 };
 
 export const prod: Config = {
@@ -59,4 +73,8 @@ export const prod: Config = {
   vpcCidr: "10.7.0.0/18",
   minCapacity: 0,
   maxCapacity: 0,
+  lampiExport: {
+    enabled: false,
+    bucketName: "oph-lampi-prod",
+  },
 };

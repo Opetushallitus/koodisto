@@ -19,9 +19,6 @@ import java.io.IOException;
 public class ExportTaskConfiguration {
     private final ExportService exportService;
 
-    @Value("${koodisto.tasks.export.copy-to-lampi}")
-    private boolean copyToLampi;
-
     @Bean
     @ConditionalOnProperty(name = "koodisto.tasks.export.enabled", matchIfMissing = false)
     Task<Void> createSchemaTask() {
@@ -32,11 +29,7 @@ public class ExportTaskConfiguration {
                         log.info("Running koodisto export task");
                         exportService.createSchema();
                         exportService.generateExportFiles();
-                        if (copyToLampi) {
-                            exportService.copyExportFilesToLampi();
-                        } else {
-                            log.info("Copying export files to Lampi is disabled");
-                        }
+                        exportService.copyExportFilesToLampi();
                         log.info("Koodisto export task completed");
                     } catch (IOException e) {
                         throw new RuntimeException(e);

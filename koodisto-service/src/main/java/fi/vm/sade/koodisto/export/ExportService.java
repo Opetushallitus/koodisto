@@ -41,8 +41,10 @@ public class ExportService {
     private String bucketName;
     @Value("${koodisto.tasks.export.lampi-bucket-name}")
     private String lampiBucketName;
-    @Value("${koodisto.tasks.export.upload-to-s3:true}")
-    private boolean uploadToS3;
+    private boolean uploadToS3 = true;
+    protected void setUploadToS3(boolean uploadToS3) {
+        this.uploadToS3 = uploadToS3;
+    }
 
     @Transactional
     public void createSchema() {
