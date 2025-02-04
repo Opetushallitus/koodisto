@@ -21,6 +21,7 @@ import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager";
 import { getConfig, getEnvironment } from "./config";
 import * as alarms from "./alarms";
 import { DatabaseBackupToS3 } from "./DatabaseBackupToS3";
+import { createHealthCheckStacks } from "./health-check";
 
 class CdkApp extends cdk.App {
   constructor(props: cdk.AppProps) {
@@ -31,9 +32,14 @@ class CdkApp extends cdk.App {
         region: process.env.CDK_DEPLOY_TARGET_REGION,
       },
     };
+    const config = getConfig();
 
     const { hostedZone } = new DnsStack(this, "DnsStack", stackProps);
-    const { alarmTopic } = new AlarmStack(this, "AlarmStack", stackProps);
+    const { alarmTopic, alarmsToSlackLambda } = new AlarmStack(
+      this,
+      "AlarmStack",
+      stackProps
+    );
     const { vpc, bastion } = new VpcStack(this, "VpcStack", stackProps);
     const { ecsCluster } = new EcsStack(this, "EcsStack", {
       ...stackProps,
@@ -59,6 +65,14 @@ class CdkApp extends cdk.App {
       database,
       exportBucket,
     });
+    createHealthCheckStacks(this, alarmsToSlackLambda, [
+      {
+        name: "Koodisto",
+        url: new URL(
+          `https://virkailija.${config.opintopolkuHost}/koodisto-service/actuator/health`
+        ),
+      },
+    ]);
   }
 }
 
@@ -329,14 +343,15 @@ class EcsStack extends cdk.Stack {
 
 class AlarmStack extends cdk.Stack {
   readonly alarmTopic: sns.ITopic;
+  readonly alarmsToSlackLambda: lambda.IFunction;
 
   constructor(scope: constructs.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-    const alarmsToSlackLambda = this.createAlarmsToSlackLambda();
+    this.alarmsToSlackLambda = this.createAlarmsToSlackLambda();
     this.alarmTopic = this.createAlarmTopic();
 
     this.alarmTopic.addSubscription(
-      new sns_subscriptions.LambdaSubscription(alarmsToSlackLambda)
+      new sns_subscriptions.LambdaSubscription(this.alarmsToSlackLambda)
     );
 
     const radiatorAccountId = "905418271050";
