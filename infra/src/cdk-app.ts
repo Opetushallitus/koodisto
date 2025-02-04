@@ -69,7 +69,7 @@ class CdkApp extends cdk.App {
       {
         name: "Koodisto",
         url: new URL(
-          `https://virkailija.${config.opintopolkuHost}/koodisto-service/actuator/health`
+          `https://${config.virkailijaHost}/koodisto-service/actuator/health`
         ),
       },
     ]);
