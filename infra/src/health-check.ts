@@ -31,14 +31,19 @@ export function createHealthCheckStacks(
       },
     }
   );
-  new RegionalHealthCheckStack(app, "RegionalHealthCheckStack", {
-    env: {
-      account: process.env.CDK_DEPLOY_TARGET_ACCOUNT,
-      region: process.env.CDK_DEPLOY_TARGET_REGION,
-    },
-    globalAlarmTopicArn: healthCheckStack.globalAlarmTopic.topicArn,
-    alarmsToSlackLambdaArn: alarmsToSlackLambda.functionArn,
-  });
+  const regionalHealthCheckStack = new RegionalHealthCheckStack(
+    app,
+    "RegionalHealthCheckStack",
+    {
+      env: {
+        account: process.env.CDK_DEPLOY_TARGET_ACCOUNT,
+        region: process.env.CDK_DEPLOY_TARGET_REGION,
+      },
+      globalAlarmTopicArn: healthCheckStack.globalAlarmTopic.topicArn,
+      alarmsToSlackLambdaArn: alarmsToSlackLambda.functionArn,
+    }
+  );
+  regionalHealthCheckStack.addDependency(healthCheckStack);
 }
 
 class GlobalHealthCheckStack extends cdk.Stack {
