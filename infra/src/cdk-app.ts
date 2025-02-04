@@ -120,6 +120,7 @@ class ApplicationStack extends cdk.Stack {
         },
       }
     );
+    exportBucket.grantReadWrite(taskDefinition.taskRole);
 
     const lampiProperties: Record<string, string> = config.lampiExport
       ? {
