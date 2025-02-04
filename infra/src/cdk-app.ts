@@ -175,7 +175,13 @@ class ApplicationStack extends cdk.Stack {
         })
       );
 
-      this.exportFailureAlarm(logGroup, props.alarmTopic);
+      new alarms.ExpectedLogLineAlarm(this, "ExportTaskAlarm", {
+        logGroup,
+        alarmTopic: props.alarmTopic,
+        metricNamespace: "Koodisto",
+        name: "ExportTask",
+        expectedLogLine: "Koodisto export task completed",
+      });
     }
 
     const service = new ecs.FargateService(this, "Service", {
@@ -246,16 +252,6 @@ class ApplicationStack extends cdk.Stack {
         port: appPort.toString(),
       },
     });
-  }
-
-  exportFailureAlarm(logGroup: logs.LogGroup, alarmTopic: sns.ITopic) {
-    alarms.alarmIfExpectedLogLineIsMissing(
-      this,
-      "ExportTask",
-      logGroup,
-      alarmTopic,
-      logs.FilterPattern.literal('"Koodisto export task completed"')
-    );
   }
 }
 
