@@ -72,7 +72,7 @@ export const prod: Config = {
   zoneName: "prod.koodisto.opintopolku.fi",
   vpcCidr: "10.7.0.0/18",
   lampiExport: {
-    enabled: false,
+    enabled: true,
     bucketName: "oph-lampi-prod",
   },
 };
