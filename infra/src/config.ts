@@ -71,8 +71,6 @@ export const prod: Config = {
   virkailijaHost: "virkailija.opintopolku.fi",
   zoneName: "prod.koodisto.opintopolku.fi",
   vpcCidr: "10.7.0.0/18",
-  minCapacity: 0,
-  maxCapacity: 0,
   lampiExport: {
     enabled: false,
     bucketName: "oph-lampi-prod",
