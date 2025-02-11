@@ -52,6 +52,11 @@ export const hahtuva: Config = {
   virkailijaHost: "virkailija.hahtuvaopintopolku.fi",
   zoneName: "hahtuva.koodisto.opintopolku.fi",
   vpcCidr: "10.7.192.0/18",
+  datantuonti: {
+    export: {
+      enabled: true,
+    },
+  },
 };
 
 export const dev: Config = {
