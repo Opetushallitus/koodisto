@@ -17,11 +17,13 @@ import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as rds from "aws-cdk-lib/aws-rds";
 import * as elasticloadbalancingv2 from "aws-cdk-lib/aws-elasticloadbalancingv2";
 import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager";
+import * as kms from "aws-cdk-lib/aws-kms";
 
 import { getConfig, getEnvironment } from "./config";
 import * as alarms from "./alarms";
 import { DatabaseBackupToS3 } from "./DatabaseBackupToS3";
 import { createHealthCheckStacks } from "./health-check";
+import * as datantuonti from "./datantuonti"
 
 class CdkApp extends cdk.App {
   constructor(props: cdk.AppProps) {
@@ -45,6 +47,7 @@ class CdkApp extends cdk.App {
       ...stackProps,
       vpc,
     });
+    const datantuontiExport = new datantuonti.ExportStack(this, "DatantuontiExport", stackProps);
     const { database, exportBucket } = new DatabaseStack(
       this,
       "DatabaseStack",
@@ -54,6 +57,7 @@ class CdkApp extends cdk.App {
         bastion,
         ecsCluster,
         alarmTopic,
+        datantuontiExportBucket: datantuontiExport.bucket
       }
     );
     new ApplicationStack(this, "ApplicationStack", {
@@ -64,6 +68,8 @@ class CdkApp extends cdk.App {
       ecsCluster,
       database,
       exportBucket,
+      datantuontiExportBucket: datantuontiExport.bucket,
+      datantuontiExportEncryptionKey: datantuontiExport.encryptionKey
     });
     createHealthCheckStacks(this, alarmsToSlackLambda, [
       {
@@ -87,6 +93,8 @@ class ApplicationStack extends cdk.Stack {
       ecsCluster: ecs.Cluster;
       database: rds.DatabaseCluster;
       exportBucket: s3.Bucket;
+      datantuontiExportBucket: s3.Bucket;
+      datantuontiExportEncryptionKey: kms.Key;
     }
   ) {
     super(scope, id, props);
@@ -145,6 +153,9 @@ class ApplicationStack extends cdk.Stack {
       environment: {
         "spring.datasource.url": `jdbc:postgresql://${database.clusterEndpoint.hostname}:${database.clusterEndpoint.port.toString()}/koodisto`,
         "host.virkailija": config.virkailijaHost,
+        "koodisto.tasks.datantuonti.export.enabled": `${config.datantuonti.export.enabled}`,
+        "koodisto.tasks.datantuonti.export.bucket-name": props.datantuontiExportBucket.bucketName,
+        "koodisto.tasks.datantuonti.export.encryption-key-arn": props.datantuontiExportEncryptionKey.keyArn,
         ...lampiProperties,
       },
       secrets: {
@@ -412,11 +423,12 @@ class DatabaseStack extends cdk.Stack {
       bastion: ec2.BastionHostLinux;
       ecsCluster: ecs.Cluster;
       alarmTopic: sns.ITopic;
+      datantuontiExportBucket: s3.Bucket;
     }
   ) {
     super(scope, id, props);
 
-    const { vpc, bastion, ecsCluster, alarmTopic } = props;
+    const { vpc, bastion, ecsCluster, alarmTopic, datantuontiExportBucket } = props;
     this.exportBucket = new s3.Bucket(this, "ExportBucket", {});
     this.database = new rds.DatabaseCluster(this, "Database", {
       vpc,
@@ -438,7 +450,7 @@ class DatabaseStack extends cdk.Stack {
       }),
       storageEncrypted: true,
       readers: [],
-      s3ExportBuckets: [this.exportBucket],
+      s3ExportBuckets: [this.exportBucket, datantuontiExportBucket],
     });
     this.database.connections.allowDefaultPortFrom(bastion);
     const backup = new DatabaseBackupToS3(this, "DatabaseBackup", {

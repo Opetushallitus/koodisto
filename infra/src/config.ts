@@ -11,10 +11,20 @@ export type Config = {
     enabled: boolean;
     bucketName: string;
   };
+  datantuonti: {
+    export: {
+      enabled: boolean;
+    };
+  };
 };
 const defaultConfig = {
   minCapacity: 2,
   maxCapacity: 8,
+  datantuonti: {
+    export: {
+      enabled: false,
+    },
+  },
 };
 
 export function getEnvironment(): EnvironmentName {
