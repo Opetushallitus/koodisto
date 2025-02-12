@@ -98,7 +98,7 @@ class ApplicationStack extends cdk.Stack {
     }
   ) {
     super(scope, id, props);
-    const { vpc, ecsCluster, database, exportBucket, hostedZone } = props;
+    const { vpc, ecsCluster, database, exportBucket, datantuontiExportBucket, datantuontiExportEncryptionKey, hostedZone } = props;
     const config = getConfig();
 
     const appPort = 8080;
@@ -129,6 +129,8 @@ class ApplicationStack extends cdk.Stack {
       }
     );
     exportBucket.grantReadWrite(taskDefinition.taskRole);
+    datantuontiExportBucket.grantReadWrite(taskDefinition.taskRole);
+    datantuontiExportEncryptionKey.grantEncrypt(taskDefinition.taskRole);
 
     const lampiProperties: Record<string, string> = config.lampiExport
       ? {
