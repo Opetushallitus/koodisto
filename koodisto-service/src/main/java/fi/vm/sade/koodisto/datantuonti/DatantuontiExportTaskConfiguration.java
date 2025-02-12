@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto.datantuonti;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.kagkarlsson.scheduler.task.Task;
 import com.github.kagkarlsson.scheduler.task.TaskWithoutDataDescriptor;
 import com.github.kagkarlsson.scheduler.task.helper.Tasks;
@@ -26,7 +27,11 @@ public class DatantuontiExportTaskConfiguration {
                 .execute((taskInstance, executionContext) -> {
                     log.info("Running koodisto datantuonti export task");
                     String secondsFromEpoch = datantuontiExportService.createSchemaAndReturnTransactionTimestampFromEpoch();
-                    datantuontiExportService.generateExportFiles(secondsFromEpoch);
+                    try {
+                        datantuontiExportService.generateExportFiles(secondsFromEpoch);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
                     log.info("Koodisto datantuonti export task completed");
                 });
     }

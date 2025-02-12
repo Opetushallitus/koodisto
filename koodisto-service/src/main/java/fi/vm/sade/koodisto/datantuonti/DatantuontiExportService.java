@@ -1,5 +1,8 @@
 package fi.vm.sade.koodisto.datantuonti;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,11 +10,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.ServerSideEncryption;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -25,6 +30,8 @@ public class DatantuontiExportService {
     private String bucketName;
     @Value("${koodisto.tasks.datantuonti.export.encryption-key-arn}")
     private String encryptionKeyArn;
+    private final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new Jdk8Module());
 
     private static final String V1_PREFIX = "koodisto/v1";
 
@@ -39,15 +46,33 @@ public class DatantuontiExportService {
         return jdbcTemplate.queryForObject("SELECT extract(epoch from transaction_timestamp())", String.class);
     }
 
-    public void generateExportFiles(String timestamp) {
+    public void generateExportFiles(String timestamp) throws JsonProcessingException {
         var tables = listTableNamesToBeExported();
         tables.parallelStream().forEach(table -> writeTableToS3(timestamp, table));
+        writeManifest(timestamp);
+    }
+
+    private void writeManifest(String timestamp) throws JsonProcessingException {
+        var objectKey = V1_PREFIX + "/manifest.json";
+        var manifest = new HashMap<String, String>();
+        listTableNamesToBeExported().forEach(table -> manifest.put(table, getObjectKey(table, timestamp)));
+        log.info("Writing manifest file {}/{}: {}", bucketName, objectKey, manifest);
+        var manifestJson = objectMapper.writeValueAsString(manifest);
+        var response = opintopolkuS3Client.putObject(
+                b -> b.bucket(bucketName).key(objectKey),
+                AsyncRequestBody.fromString(manifestJson)
+        ).join();
+        log.info("Wrote manifest to S3: {}", response);
     }
 
     private void writeTableToS3(String timestamp, String table) {
-        var objectKey = V1_PREFIX + "/csv/" + table + "-" + timestamp + ".csv";
+        var objectKey = getObjectKey(timestamp, table);
         exportQueryToS3(objectKey, "SELECT * FROM datantuonti_export."  + table);
         reEncryptFile(objectKey);
+    }
+
+    private String getObjectKey(String timestamp, String table) {
+        return V1_PREFIX + "/csv/" + table + "-" + timestamp + ".csv";
     }
 
     private void exportQueryToS3(String objectKey, String query) {
