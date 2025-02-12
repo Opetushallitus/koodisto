@@ -196,6 +196,16 @@ class ApplicationStack extends cdk.Stack {
       });
     }
 
+    new alarms.ExpectedLogLineAlarm(this, "DatantuontiExportTaskAlarm", {
+      logGroup,
+      alarmTopic: props.alarmTopic,
+      metricNamespace: "Koodisto",
+      name: "DatantuontiExportTask",
+      expectedLogLine: "Koodisto datantuonti export task completed",
+      period: cdk.Duration.hours(25),
+      evaluationPeriods: 1,
+    });
+
     const service = new ecs.FargateService(this, "Service", {
       cluster: ecsCluster,
       taskDefinition,
