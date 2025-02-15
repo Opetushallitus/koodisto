@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Slf4j
@@ -18,6 +19,7 @@ import java.time.LocalTime;
 @Configuration
 public class DatantuontiImportTaskConfiguration {
     private final DatantuontiImportService datantuontiImportService;
+    private static final LocalDate ANCHOR_DATE = LocalDate.of(2025, 2, 16);
 
     @Bean
     @ConditionalOnProperty(name = "koodisto.tasks.datantuonti.import.enabled", matchIfMissing = false)
@@ -28,10 +30,23 @@ public class DatantuontiImportTaskConfiguration {
                     try {
                         log.info("Running koodisto datantuonti import task");
                         datantuontiImportService.importTempTablesFromS3();
+                        if (isBiWeeklyExecutionDay()) {
+                            log.info("It is the biweekly datantuonti day, replacing all koodisto data with imported data");
+                            datantuontiImportService.replaceData();
+                        } else {
+                            log.info("It is not the biweekly datantuonti day, not replacing koodisto data");
+                        }
                         log.info("Koodisto datantuonti import task completed");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 });
+    }
+
+    private boolean isBiWeeklyExecutionDay() {
+        LocalDate today = LocalDate.now();
+
+        long daysSinceAnchor = ANCHOR_DATE.until(today).getDays();
+        return daysSinceAnchor % 14 == 0;
     }
 }
