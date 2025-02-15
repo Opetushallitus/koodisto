@@ -59,6 +59,7 @@ export const hahtuva: Config = {
   zoneName: "hahtuva.koodisto.opintopolku.fi",
   vpcCidr: "10.7.192.0/18",
   datantuonti: {
+    ...defaultConfig.datantuonti,
     export: {
       enabled: true,
     },
@@ -75,6 +76,7 @@ export const dev: Config = {
     bucketName: "oph-lampi-dev",
   },
   datantuonti: {
+    ...defaultConfig.datantuonti,
     export: {
       enabled: true,
     },
@@ -91,6 +93,7 @@ export const qa: Config = {
     bucketName: "oph-lampi-qa",
   },
   datantuonti: {
+    ...defaultConfig.datantuonti,
     export: {
       enabled: true,
     },
@@ -107,6 +110,7 @@ export const prod: Config = {
     bucketName: "oph-lampi-prod",
   },
   datantuonti: {
+    ...defaultConfig.datantuonti,
     export: {
       enabled: true,
     },
