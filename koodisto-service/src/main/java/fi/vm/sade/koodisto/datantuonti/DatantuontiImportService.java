@@ -32,7 +32,7 @@ public class DatantuontiImportService {
     private final S3AsyncClient opintopolkuS3Client;
     private final JdbcTemplate jdbcTemplate;
     private final ObjectMapper objectMapper;
-    @Value("${koodisto.tasks.datantuonti.import.bucket.name}")
+    @Value("${koodisto.tasks.datantuonti.import.bucket-name}")
     private String bucketName;
 
     @Transactional
