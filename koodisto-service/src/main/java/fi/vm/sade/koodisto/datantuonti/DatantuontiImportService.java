@@ -29,7 +29,7 @@ public class DatantuontiImportService {
     @Transactional
     public void importTempTablesFromS3() throws IOException {
         var manifest = getManifest();
-        jdbcTemplate.execute("DROP schema datantuonti_import");
+        jdbcTemplate.execute("DROP SCHEMA IF EXISTS datantuonti_import CASCADE");
         jdbcTemplate.execute("CREATE schema datantuonti_import");
 
         jdbcTemplate.execute("CREATE TABLE datantuonti_export.koodi AS TABLE public.koodi WITH NO DATA");
