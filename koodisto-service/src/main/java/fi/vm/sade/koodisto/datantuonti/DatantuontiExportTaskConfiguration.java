@@ -21,7 +21,7 @@ public class DatantuontiExportTaskConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "koodisto.tasks.datantuonti.export.enabled", matchIfMissing = false)
-    Task<Void> createSchemaTask() {
+    Task<Void> datantuontiExportTask() {
         log.info("Creating koodisto datantuonti export task");
         return Tasks.recurring(new TaskWithoutDataDescriptor("DatantuontiExport"), new Daily(LocalTime.of(0, 15, 0)))
                 .execute((taskInstance, executionContext) -> {

@@ -21,7 +21,7 @@ public class DatantuontiImportTaskConfiguration {
 
     @Bean
     @ConditionalOnProperty(name = "koodisto.tasks.datantuonti.import.enabled", matchIfMissing = false)
-    Task<Void> createSchemaTask() {
+    Task<Void> datantuontiImportTask() {
         log.info("Creating koodisto datantuonti import task");
         return Tasks.recurring(new TaskWithoutDataDescriptor("DatantuontiImport"), new Daily(LocalTime.of(2, 15, 0)))
                 .execute((taskInstance, executionContext) -> {
