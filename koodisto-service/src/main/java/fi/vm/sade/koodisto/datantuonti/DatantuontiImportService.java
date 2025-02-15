@@ -32,18 +32,18 @@ public class DatantuontiImportService {
         jdbcTemplate.execute("DROP SCHEMA IF EXISTS datantuonti_import CASCADE");
         jdbcTemplate.execute("CREATE schema datantuonti_import");
 
-        jdbcTemplate.execute("CREATE TABLE datantuonti_export.koodi AS TABLE public.koodi WITH NO DATA");
-        jdbcTemplate.execute("CREATE TABLE datantuonti_export.koodimetadata AS TABLE public.koodimetadata WITH NO DATA");
-        jdbcTemplate.execute("CREATE TABLE datantuonti_export.koodinsuhde AS TABLE public.koodinsuhde WITH NO DATA");
-        jdbcTemplate.execute("CREATE TABLE datantuonti_export.koodisto AS TABLE public.koodisto WITH NO DATA");
-        jdbcTemplate.execute("CREATE TABLE datantuonti_export.koodistometadata AS TABLE public.koodistometadata WITH NO DATA");
-        jdbcTemplate.execute("CREATE TABLE datantuonti_export.koodistonsuhde AS TABLE public.koodistonsuhde WITH NO DATA");
-        jdbcTemplate.execute("CREATE TABLE datantuonti_export.koodistoryhma AS TABLE public.koodistoryhma WITH NO DATA");
-        jdbcTemplate.execute("CREATE TABLE datantuonti_export.koodistoryhma_koodisto AS TABLE public.koodistoryhma_koodisto WITH NO DATA");
-        jdbcTemplate.execute("CREATE TABLE datantuonti_export.koodistoryhmametadata AS TABLE public.koodistoryhmametadata WITH NO DATA");
-        jdbcTemplate.execute("CREATE TABLE datantuonti_export.koodistoversio AS TABLE public.koodistoversio WITH NO DATA");
-        jdbcTemplate.execute("CREATE TABLE datantuonti_export.koodistoversio_koodiversio AS TABLE public.koodistoversio_koodiversio WITH NO DATA");
-        jdbcTemplate.execute("CREATE TABLE datantuonti_export.koodiversio AS TABLE public.koodiversio WITH NO DATA");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodi AS TABLE public.koodi WITH NO DATA");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodimetadata AS TABLE public.koodimetadata WITH NO DATA");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodinsuhde AS TABLE public.koodinsuhde WITH NO DATA");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodisto AS TABLE public.koodisto WITH NO DATA");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodistometadata AS TABLE public.koodistometadata WITH NO DATA");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodistonsuhde AS TABLE public.koodistonsuhde WITH NO DATA");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodistoryhma AS TABLE public.koodistoryhma WITH NO DATA");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodistoryhma_koodisto AS TABLE public.koodistoryhma_koodisto WITH NO DATA");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodistoryhmametadata AS TABLE public.koodistoryhmametadata WITH NO DATA");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodistoversio AS TABLE public.koodistoversio WITH NO DATA");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodistoversio_koodiversio AS TABLE public.koodistoversio_koodiversio WITH NO DATA");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodiversio AS TABLE public.koodiversio WITH NO DATA");
 
         importDataFromS3("datantuonti_import.koodi", manifest.koodi());
         importDataFromS3("datantuonti_import.koodimetadata", manifest.koodimetadata());
