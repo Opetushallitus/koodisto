@@ -102,6 +102,9 @@ export const qa: Config = {
     export: {
       enabled: true,
     },
+    import: {
+      enabled: true,
+    },
   },
 };
 
