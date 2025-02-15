@@ -39,7 +39,18 @@ public class DatantuontiExportService {
     public String createSchemaAndReturnTransactionTimestampFromEpoch() {
         jdbcTemplate.execute("DROP SCHEMA IF EXISTS datantuonti_export_new CASCADE");
         jdbcTemplate.execute("CREATE SCHEMA datantuonti_export_new");
-        listTableNamesToBeExported().forEach(this::createExportTable);
+        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodi AS SELECT * FROM public.koodi");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodimetadata AS SELECT * FROM public.koodimetadata");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodinsuhde AS SELECT * FROM public.koodinsuhde");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodisto AS SELECT * FROM public.koodisto");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodistometadata AS SELECT * FROM public.koodistometadata");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodistonsuhde AS SELECT * FROM public.koodistonsuhde");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodistoryhma AS SELECT * FROM public.koodistoryhma");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodistoryhma_koodisto AS SELECT * FROM public.koodistoryhma_koodisto");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodistoryhmametadata AS SELECT * FROM public.koodistoryhmametadata");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodistoversio AS SELECT * FROM public.koodistoversio");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodistoversio_koodiversio AS SELECT * FROM public.koodistoversio_koodiversio");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodiversio AS SELECT * FROM public.koodiversio");
         jdbcTemplate.execute("DROP SCHEMA IF EXISTS datantuonti_export CASCADE");
         jdbcTemplate.execute("ALTER SCHEMA datantuonti_export_new RENAME TO datantuonti_export");
 
@@ -47,15 +58,63 @@ public class DatantuontiExportService {
     }
 
     public void generateExportFiles(String timestamp) throws JsonProcessingException {
-        var tables = listTableNamesToBeExported();
-        tables.parallelStream().forEach(table -> writeTableToS3(timestamp, table));
-        writeManifest(timestamp);
+        var koodiObjectKey = writeTableToS3(timestamp, "koodi", "SELECT * FROM datantuonti_export.koodi");
+        var koodimetadataObjectKey = writeTableToS3(timestamp, "koodimetadata", "SELECT * FROM datantuonti_export.koodimetadata");
+        var koodinsuhdeObjectKey = writeTableToS3(timestamp, "koodinsuhde", "SELECT * FROM datantuonti_export.koodinsuhde");
+        var koodistoObjectKey = writeTableToS3(timestamp, "koodisto", "SELECT * FROM datantuonti_export.koodisto");
+        var koodistometadataObjectKey = writeTableToS3(timestamp, "koodistometadata", "SELECT * FROM datantuonti_export.koodistometadata");
+        var koodistonsuhdeObjectKey = writeTableToS3(timestamp, "koodistonsuhde", "SELECT * FROM datantuonti_export.koodistonsuhde");
+        var koodistoryhmaObjectKey = writeTableToS3(timestamp, "koodistoryhma", "SELECT * FROM datantuonti_export.koodistoryhma");
+        var koodistoryhma_koodistoObjectKey = writeTableToS3(timestamp, "koodistoryhma_koodisto", "SELECT * FROM datantuonti_export.koodistoryhma_koodisto");
+        var koodistoryhmametadataObjectKey = writeTableToS3(timestamp, "koodistoryhmametadata", "SELECT * FROM datantuonti_export.koodistoryhmametadata");
+        var koodistoversioObjectKey = writeTableToS3(timestamp, "koodistoversio", "SELECT * FROM datantuonti_export.koodistoversio");
+        var koodistoversio_koodiversioObjectKey = writeTableToS3(timestamp, "koodistoversio_koodiversio", "SELECT * FROM datantuonti_export.koodistoversio_koodiversio");
+        var koodiversioObjectKey = writeTableToS3(timestamp, "koodiversio", "SELECT * FROM datantuonti_export.koodiversio");
+        writeManifest(
+                koodiObjectKey,
+                koodimetadataObjectKey,
+                koodinsuhdeObjectKey,
+                koodistoObjectKey,
+                koodistometadataObjectKey,
+                koodistonsuhdeObjectKey,
+                koodistoryhmaObjectKey,
+                koodistoryhma_koodistoObjectKey,
+                koodistoryhmametadataObjectKey,
+                koodistoversioObjectKey,
+                koodistoversio_koodiversioObjectKey,
+                koodiversioObjectKey
+        );
     }
 
-    private void writeManifest(String timestamp) throws JsonProcessingException {
+    private void writeManifest(
+            String koodiObjectKey,
+            String koodimetadataObjectKey,
+            String koodinsuhdeObjectKey,
+            String koodistoObjectKey,
+            String koodistometadataObjectKey,
+            String koodistonsuhdeObjectKey,
+            String koodistoryhmaObjectKey,
+            String koodistoryhma_koodistoObjectKey,
+            String koodistoryhmametadataObjectKey,
+            String koodistoversioObjectKey,
+            String koodistoversio_koodiversioObjectKey,
+            String koodiversioObjectKey
+    ) throws JsonProcessingException {
         var objectKey = V1_PREFIX + "/manifest.json";
-        var manifest = new HashMap<String, String>();
-        listTableNamesToBeExported().forEach(table -> manifest.put(table, getObjectKey(table, timestamp)));
+        var manifest = new DatantuontiManifest(
+                koodiObjectKey,
+                koodimetadataObjectKey,
+                koodinsuhdeObjectKey,
+                koodistoObjectKey,
+                koodistometadataObjectKey,
+                koodistonsuhdeObjectKey,
+                koodistoryhmaObjectKey,
+                koodistoryhma_koodistoObjectKey,
+                koodistoryhmametadataObjectKey,
+                koodistoversioObjectKey,
+                koodistoversio_koodiversioObjectKey,
+                koodiversioObjectKey
+        );
         log.info("Writing manifest file {}/{}: {}", bucketName, objectKey, manifest);
         var manifestJson = objectMapper.writeValueAsString(manifest);
         var response = opintopolkuS3Client.putObject(
@@ -65,10 +124,12 @@ public class DatantuontiExportService {
         log.info("Wrote manifest to S3: {}", response);
     }
 
-    private void writeTableToS3(String timestamp, String table) {
+    private String writeTableToS3(String timestamp, String table, String query) {
         var objectKey = getObjectKey(timestamp, table);
-        exportQueryToS3(objectKey, "SELECT * FROM datantuonti_export."  + table);
+        exportQueryToS3(objectKey, query);
         reEncryptFile(objectKey);
+
+        return objectKey;
     }
 
     private String getObjectKey(String timestamp, String table) {
@@ -94,19 +155,5 @@ public class DatantuontiExportService {
                 .build();
         opintopolkuS3Client.copyObject(request).join();
         log.info("{}/{} re-encrypted with custom key", bucketName, objectKey);
-    }
-
-    private void createExportTable(String table) {
-        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new." + table + " AS SELECT * FROM public."  + table);
-    }
-
-    private List<String> listTableNamesToBeExported() {
-        var sql = """
-          SELECT tablename
-          FROM pg_catalog.pg_tables
-          WHERE schemaname = 'public'
-          AND tablename LIKE 'koodi%';
-        """;
-        return jdbcTemplate.queryForList(sql, String.class);
     }
 }
