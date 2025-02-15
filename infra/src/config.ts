@@ -82,6 +82,9 @@ export const dev: Config = {
     export: {
       enabled: true,
     },
+    import: {
+      enabled: true,
+    },
   },
 };
 
