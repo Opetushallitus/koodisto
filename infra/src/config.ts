@@ -100,4 +100,9 @@ export const prod: Config = {
     enabled: true,
     bucketName: "oph-lampi-prod",
   },
+  datantuonti: {
+    export: {
+      enabled: true,
+    },
+  },
 };
