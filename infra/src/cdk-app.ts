@@ -131,6 +131,8 @@ class ApplicationStack extends cdk.Stack {
     exportBucket.grantReadWrite(taskDefinition.taskRole);
     datantuontiExportBucket.grantReadWrite(taskDefinition.taskRole);
     datantuontiExportEncryptionKey.grantEncrypt(taskDefinition.taskRole);
+    datantuonti.createS3ImporPolicyStatements(this)
+        .forEach(statement => taskDefinition.addToTaskRolePolicy(statement))
 
     const lampiProperties: Record<string, string> = config.lampiExport
       ? {
@@ -158,9 +160,16 @@ class ApplicationStack extends cdk.Stack {
         "koodisto.tasks.datantuonti.export.enabled": `${config.datantuonti.export.enabled}`,
         "koodisto.tasks.datantuonti.export.bucket-name": props.datantuontiExportBucket.bucketName,
         "koodisto.tasks.datantuonti.export.encryption-key-arn": props.datantuontiExportEncryptionKey.keyArn,
+        "koodisto.tasks.datantuonti.import.enabled": `${config.datantuonti.import.enabled}`,
         ...lampiProperties,
       },
       secrets: {
+        "koodisto.tasks.datantuonti.import.bucket-name": ecs.Secret.fromSsmParameter(
+            ssm.StringParameter.fromStringParameterName(
+                this,
+                `ParamDatantuontiImportBucketName`,
+                "koodisto.tasks.datantuonti.import.bucket-name"
+            )),
         "spring.datasource.username": ecs.Secret.fromSecretsManager(
           database.secret!,
           "username"
@@ -442,6 +451,13 @@ class DatabaseStack extends cdk.Stack {
 
     const { vpc, bastion, ecsCluster, alarmTopic, datantuontiExportBucket } = props;
     this.exportBucket = new s3.Bucket(this, "ExportBucket", {});
+
+    const datantuontiImportRole = new iam.Role(this, "DatantuontiImport", {
+      assumedBy: new iam.ServicePrincipal("rds.amazonaws.com")
+    });
+    datantuonti.createS3ImporPolicyStatements(this)
+        .forEach(statement =>  datantuontiImportRole.addToPolicy(statement));
+
     this.database = new rds.DatabaseCluster(this, "Database", {
       vpc,
       vpcSubnets: { subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
@@ -462,6 +478,7 @@ class DatabaseStack extends cdk.Stack {
       }),
       storageEncrypted: true,
       readers: [],
+      s3ImportRole: datantuontiImportRole,
       s3ExportBuckets: [this.exportBucket, datantuontiExportBucket],
     });
     this.database.connections.allowDefaultPortFrom(bastion);
