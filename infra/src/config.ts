@@ -68,6 +68,11 @@ export const dev: Config = {
     enabled: true,
     bucketName: "oph-lampi-dev",
   },
+  datantuonti: {
+    export: {
+      enabled: true,
+    },
+  },
 };
 
 export const qa: Config = {
