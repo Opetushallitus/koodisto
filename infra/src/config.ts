@@ -59,8 +59,10 @@ export const hahtuva: Config = {
   zoneName: "hahtuva.koodisto.opintopolku.fi",
   vpcCidr: "10.7.192.0/18",
   datantuonti: {
-    ...defaultConfig.datantuonti,
     export: {
+      enabled: true,
+    },
+    import: {
       enabled: true,
     },
   },
