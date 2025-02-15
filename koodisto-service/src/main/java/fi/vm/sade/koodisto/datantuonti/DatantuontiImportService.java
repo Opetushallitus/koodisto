@@ -44,6 +44,7 @@ public class DatantuontiImportService {
         jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodistoversio AS TABLE public.koodistoversio WITH NO DATA");
         jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodistoversio_koodiversio AS TABLE public.koodistoversio_koodiversio WITH NO DATA");
         jdbcTemplate.execute("CREATE TABLE datantuonti_import.koodiversio AS TABLE public.koodiversio WITH NO DATA");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_import.hibernate_sequence(last_value bigint)");
 
         importDataFromS3("datantuonti_import.koodi", manifest.koodi());
         importDataFromS3("datantuonti_import.koodimetadata", manifest.koodimetadata());
@@ -57,6 +58,7 @@ public class DatantuontiImportService {
         importDataFromS3("datantuonti_import.koodistoversio", manifest.koodistoversio());
         importDataFromS3("datantuonti_import.koodistoversio_koodiversio", manifest.koodistoversio_koodiversio());
         importDataFromS3("datantuonti_import.koodiversio", manifest.koodiversio());
+        importDataFromS3("datantuonti_import.hibernate_sequence", manifest.hibernate_sequence());
     }
 
     private void importDataFromS3(String table, String objectKey) {

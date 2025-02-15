@@ -51,6 +51,7 @@ public class DatantuontiExportService {
         jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodistoversio AS SELECT * FROM public.koodistoversio");
         jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodistoversio_koodiversio AS SELECT * FROM public.koodistoversio_koodiversio");
         jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.koodiversio AS SELECT * FROM public.koodiversio");
+        jdbcTemplate.execute("CREATE TABLE datantuonti_export_new.hibernate_sequence AS SELECT last_value FROM public.hibernate_sequence");
         jdbcTemplate.execute("DROP SCHEMA IF EXISTS datantuonti_export CASCADE");
         jdbcTemplate.execute("ALTER SCHEMA datantuonti_export_new RENAME TO datantuonti_export");
 
@@ -70,6 +71,7 @@ public class DatantuontiExportService {
         var koodistoversioObjectKey = writeTableToS3(timestamp, "koodistoversio", "SELECT * FROM datantuonti_export.koodistoversio");
         var koodistoversio_koodiversioObjectKey = writeTableToS3(timestamp, "koodistoversio_koodiversio", "SELECT * FROM datantuonti_export.koodistoversio_koodiversio");
         var koodiversioObjectKey = writeTableToS3(timestamp, "koodiversio", "SELECT * FROM datantuonti_export.koodiversio");
+        var hibernate_sequenceObjectKey = writeTableToS3(timestamp, "hibernate_sequence", "SELECT * FROM datantuonti_export.hibernate_sequence");
         writeManifest(
                 koodiObjectKey,
                 koodimetadataObjectKey,
@@ -82,7 +84,8 @@ public class DatantuontiExportService {
                 koodistoryhmametadataObjectKey,
                 koodistoversioObjectKey,
                 koodistoversio_koodiversioObjectKey,
-                koodiversioObjectKey
+                koodiversioObjectKey,
+                hibernate_sequenceObjectKey
         );
     }
 
@@ -98,8 +101,8 @@ public class DatantuontiExportService {
             String koodistoryhmametadataObjectKey,
             String koodistoversioObjectKey,
             String koodistoversio_koodiversioObjectKey,
-            String koodiversioObjectKey
-    ) throws JsonProcessingException {
+            String koodiversioObjectKey,
+            String hibernate_sequenceObjectKey) throws JsonProcessingException {
         var objectKey = V1_PREFIX + "/manifest.json";
         var manifest = new DatantuontiManifest(
                 koodiObjectKey,
@@ -113,7 +116,8 @@ public class DatantuontiExportService {
                 koodistoryhmametadataObjectKey,
                 koodistoversioObjectKey,
                 koodistoversio_koodiversioObjectKey,
-                koodiversioObjectKey
+                koodiversioObjectKey,
+                hibernate_sequenceObjectKey
         );
         log.info("Writing manifest file {}/{}: {}", bucketName, objectKey, manifest);
         var manifestJson = objectMapper.writeValueAsString(manifest);

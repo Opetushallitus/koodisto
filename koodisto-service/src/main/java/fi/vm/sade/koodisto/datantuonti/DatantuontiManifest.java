@@ -11,5 +11,6 @@ record DatantuontiManifest(String koodi,
                            String koodistoryhmametadata,
                            String koodistoversio,
                            String koodistoversio_koodiversio,
-                           String koodiversio
+                           String koodiversio,
+                           String hibernate_sequence
                            ) {}
