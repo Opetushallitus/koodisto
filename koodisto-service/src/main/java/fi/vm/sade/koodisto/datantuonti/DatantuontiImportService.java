@@ -88,7 +88,7 @@ public class DatantuontiImportService {
     @Transactional
     public void replaceData() {
         truncateTables();
-        insertData();
+        insertDataInReverseOrderOfForeignKeyReferences();
         updateHibernateSequence();
     }
 
@@ -110,20 +110,19 @@ public class DatantuontiImportService {
         jdbcTemplate.execute(sql);
     }
 
-    private void insertData() {
-        jdbcTemplate.execute("SET CONSTRAINTS ALL DEFERRED");
+    private void insertDataInReverseOrderOfForeignKeyReferences() {
+        jdbcTemplate.execute("INSERT INTO public.koodisto (SELECT * FROM datantuonti_import.koodisto)");
+        jdbcTemplate.execute("INSERT INTO public.koodistoversio (SELECT * FROM datantuonti_import.koodistoversio)");
+        jdbcTemplate.execute("INSERT INTO public.koodistometadata (SELECT * FROM datantuonti_import.koodistometadata)");
+        jdbcTemplate.execute("INSERT INTO public.koodistoryhma (SELECT * FROM datantuonti_import.koodistoryhma)");
+        jdbcTemplate.execute("INSERT INTO public.koodistoryhmametadata (SELECT * FROM datantuonti_import.koodistoryhmametadata)");
+        jdbcTemplate.execute("INSERT INTO public.koodistonsuhde (SELECT * FROM datantuonti_import.koodistonsuhde)");
+        jdbcTemplate.execute("INSERT INTO public.koodistoryhma_koodisto (SELECT * FROM datantuonti_import.koodistoryhma_koodisto)");
         jdbcTemplate.execute("INSERT INTO public.koodi (SELECT * FROM datantuonti_import.koodi)");
+        jdbcTemplate.execute("INSERT INTO public.koodiversio (SELECT * FROM datantuonti_import.koodiversio)");
         jdbcTemplate.execute("INSERT INTO public.koodimetadata (SELECT * FROM datantuonti_import.koodimetadata)");
         jdbcTemplate.execute("INSERT INTO public.koodinsuhde (SELECT * FROM datantuonti_import.koodinsuhde)");
-        jdbcTemplate.execute("INSERT INTO public.koodisto (SELECT * FROM datantuonti_import.koodisto)");
-        jdbcTemplate.execute("INSERT INTO public.koodistometadata (SELECT * FROM datantuonti_import.koodistometadata)");
-        jdbcTemplate.execute("INSERT INTO public.koodistonsuhde (SELECT * FROM datantuonti_import.koodistonsuhde)");
-        jdbcTemplate.execute("INSERT INTO public.koodistoryhma (SELECT * FROM datantuonti_import.koodistoryhma)");
-        jdbcTemplate.execute("INSERT INTO public.koodistoryhma_koodisto (SELECT * FROM datantuonti_import.koodistoryhma_koodisto)");
-        jdbcTemplate.execute("INSERT INTO public.koodistoryhmametadata (SELECT * FROM datantuonti_import.koodistoryhmametadata)");
-        jdbcTemplate.execute("INSERT INTO public.koodistoversio (SELECT * FROM datantuonti_import.koodistoversio)");
         jdbcTemplate.execute("INSERT INTO public.koodistoversio_koodiversio (SELECT * FROM datantuonti_import.koodistoversio_koodiversio)");
-        jdbcTemplate.execute("INSERT INTO public.koodiversio (SELECT * FROM datantuonti_import.koodiversio)");
     }
 
     private void updateHibernateSequence() {
