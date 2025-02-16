@@ -126,6 +126,6 @@ public class DatantuontiImportService {
     }
 
     private void updateHibernateSequence() {
-        jdbcTemplate.execute("SELECT setval('hibernate_sequence' (SELECT last_value FROM datantuonti_import.hibernate_sequence))");
+        jdbcTemplate.execute("SELECT setval('hibernate_sequence', (SELECT last_value FROM datantuonti_import.hibernate_sequence))");
     }
 };
