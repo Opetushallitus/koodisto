@@ -89,16 +89,24 @@ public final class AuditUtils {
         return null;
     }
 
+    private static boolean isOauth2User(Authentication auth) {
+        return auth != null && auth.getName() != null && !auth.getName().startsWith("1.");
+    }
+
     private static Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
     public static User getUser() {
-        Oid oid = getOid();
         String remoteAddr = MDC.get("remoteAddr");
         String session = MDC.get("session");
         String userAgent = MDC.get("userAgent");
-        return new User(oid, createInetAddress(remoteAddr), session, userAgent);
+
+        Authentication authentication = getAuthentication();
+        if (isOauth2User(authentication)) {
+            return new Oauth2User(authentication.getName(), createInetAddress(remoteAddr), userAgent);
+        }
+        return new User(getOid(), createInetAddress(remoteAddr), session, userAgent);
     }
 
     private static InetAddress createInetAddress(String remoteAddr) {
