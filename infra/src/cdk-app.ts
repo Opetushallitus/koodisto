@@ -126,13 +126,21 @@ class ApplicationStack extends cdk.Stack {
           operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
           cpuArchitecture: ecs.CpuArchitecture.ARM64,
         },
-      }
+      },
     );
     exportBucket.grantReadWrite(taskDefinition.taskRole);
     datantuontiExportBucket.grantReadWrite(taskDefinition.taskRole);
     datantuontiExportEncryptionKey.grantEncrypt(taskDefinition.taskRole);
     datantuonti.createS3ImporPolicyStatements(this)
         .forEach(statement => taskDefinition.addToTaskRolePolicy(statement))
+
+    const oauthProperties: ecs.ContainerDefinitionProps["environment"] =
+      config.oauthServer
+        ? {
+            "spring.security.oauth2.resourceserver.jwt.issuer-uri": `https://${config.oauthServer}/kayttooikeus-service`,
+            "spring.security.oauth2.resourceserver.jwt.jwk-set-uri": `https://${config.oauthServer}/kayttooikeus-service/oauth2/jwks`,
+          }
+        : {};
 
     const lampiProperties: Record<string, string> = config.lampiExport
       ? {
@@ -162,6 +170,7 @@ class ApplicationStack extends cdk.Stack {
         "koodisto.tasks.datantuonti.export.encryption-key-arn": props.datantuontiExportEncryptionKey.keyArn,
         "koodisto.tasks.datantuonti.import.enabled": `${config.datantuonti.import.enabled}`,
         ...lampiProperties,
+        ...oauthProperties,
       },
       secrets: {
         "koodisto.tasks.datantuonti.import.bucket-name": ecs.Secret.fromSsmParameter(

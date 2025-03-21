@@ -19,6 +19,7 @@ export type Config = {
       enabled: boolean;
     };
   };
+  oauthServer?: string;
 };
 const defaultConfig = {
   minCapacity: 2,
@@ -66,6 +67,7 @@ export const hahtuva: Config = {
       enabled: true,
     },
   },
+  oauthServer: "kayttooikeus.hahtuva.yleiskayttoiset.opintopolku.fi",
 };
 
 export const dev: Config = {
@@ -86,6 +88,7 @@ export const dev: Config = {
       enabled: true,
     },
   },
+  oauthServer: "kayttooikeus.untuva.yleiskayttoiset.opintopolku.fi",
 };
 
 export const qa: Config = {
