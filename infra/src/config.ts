@@ -88,7 +88,7 @@ export const dev: Config = {
       enabled: true,
     },
   },
-  oauthServer: "kayttooikeus.untuva.yleiskayttoiset.opintopolku.fi",
+  oauthServer: "kayttooikeus.dev.yleiskayttoiset.opintopolku.fi",
 };
 
 export const qa: Config = {
