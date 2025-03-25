@@ -127,4 +127,5 @@ export const prod: Config = {
       enabled: true,
     },
   },
+  oauthServer: "kayttooikeus.prod.yleiskayttoiset.opintopolku.fi",
 };
