@@ -109,6 +109,7 @@ export const qa: Config = {
       enabled: true,
     },
   },
+  oauthServer: "kayttooikeus.qa.yleiskayttoiset.opintopolku.fi",
 };
 
 export const prod: Config = {
