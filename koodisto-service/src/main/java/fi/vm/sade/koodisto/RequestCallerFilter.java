@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto;
 
+import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -7,6 +8,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.security.cas.authentication.CasAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -22,6 +24,11 @@ public class RequestCallerFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try {
+            getUserDetails(servletRequest).ifPresent(userDetails -> {
+                var oid = userDetails.getUsername();
+                MDC.put(CALLER_HENKILO_OID_ATTRIBUTE, oid);
+                servletRequest.setAttribute(CALLER_HENKILO_OID_ATTRIBUTE, oid);
+            });
             getJwtToken(servletRequest).ifPresent(jwt -> {
                 var username = jwt.getName();
                 MDC.put(CALLER_HENKILO_OID_ATTRIBUTE, username);
@@ -31,6 +38,19 @@ public class RequestCallerFilter extends GenericFilterBean {
         } finally {
             MDC.remove(CALLER_HENKILO_OID_ATTRIBUTE);
         }
+    }
+
+    private Optional<OphUserDetailsServiceImpl.UserDetailsImpl> getUserDetails(ServletRequest servletRequest) {
+        if (servletRequest instanceof HttpServletRequest request) {
+            var principal = request.getUserPrincipal();
+            if (principal instanceof CasAuthenticationToken token) {
+                var userDetails = token.getUserDetails();
+                if (userDetails instanceof OphUserDetailsServiceImpl.UserDetailsImpl casUserDetails) {
+                    return Optional.of(casUserDetails);
+                }
+            }
+        }
+        return Optional.empty();
     }
 
     private Optional<JwtAuthenticationToken> getJwtToken(ServletRequest servletRequest) {
