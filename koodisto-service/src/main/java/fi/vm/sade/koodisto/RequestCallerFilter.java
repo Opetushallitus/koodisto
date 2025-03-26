@@ -30,9 +30,9 @@ public class RequestCallerFilter extends GenericFilterBean {
                 servletRequest.setAttribute(CALLER_HENKILO_OID_ATTRIBUTE, oid);
             });
             getJwtToken(servletRequest).ifPresent(jwt -> {
-                var username = jwt.getName();
-                MDC.put(CALLER_HENKILO_OID_ATTRIBUTE, username);
-                servletRequest.setAttribute(CALLER_HENKILO_OID_ATTRIBUTE, username);
+                var oid = jwt.getName();
+                MDC.put(CALLER_HENKILO_OID_ATTRIBUTE, oid);
+                servletRequest.setAttribute(CALLER_HENKILO_OID_ATTRIBUTE, oid);
             });
             filterChain.doFilter(servletRequest, servletResponse);
         } finally {
