@@ -126,12 +126,7 @@ public class WebSecurityConfiguration {
                         return isOauth2Request(request);
                     }
                 })
-                .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/buildversion.txt").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/rest/**").permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(authz -> authz.anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(oauth2JwtConverter())))
                 .build();
