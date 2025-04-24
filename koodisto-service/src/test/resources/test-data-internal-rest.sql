@@ -33,7 +33,8 @@ VALUES ('-1', 'FI', 'Dummy', '0', '-1', 'kuvaus'),
        ('-2', 'FI', 'One', '1', '-2', 'kuvaus'),
        ('-3', 'FI', 'get', '1', '-3', 'get'),
        ('-4', 'FI', 'Twot', '1', '-4', 'Two kuvaus'),
-       ('-5', 'FI', 'new version', '1', '-5', 'new version');
+       ('-5', 'FI', 'new version', '1', '-5', 'new version'),
+       ('-6', 'FI', 'test yo', '1', '-6', 'yo test');
 
 
 INSERT INTO koodi (id, koodisto_id, version, koodiuri)

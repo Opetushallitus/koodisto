@@ -17,17 +17,16 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nonnull;
 import java.time.LocalDateTime;
 import java.util.*;
 
 @Transactional(readOnly = true)
 @Service
 public class KoodiChangesServiceImpl implements KoodiChangesService {
-    
+
     @Autowired
     KoodiBusinessService service;
-    
+
     @Autowired
     @Lazy
     KoodistoBusinessService koodistoService;
@@ -38,14 +37,14 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         KoodiVersio latestKoodiVersio = fetchLatestDesiredCodeVersion(uri, compareToLatestAccepted);
         return constructChangesDto(koodiVersio, latestKoodiVersio, compareToLatestAccepted);
     }
-    
+
     @Override
     public KoodiChangesDto getChangesDto(String uri, LocalDateTime date, boolean compareToLatestAccepted) {
         KoodiVersio koodiVersio = determineCodeVersionThatMatchesDate(uri, date);
         KoodiVersio latestKoodiVersio = fetchLatestDesiredCodeVersion(uri, compareToLatestAccepted);
         return constructChangesDto(koodiVersio, latestKoodiVersio, compareToLatestAccepted);
     }
-    
+
     private KoodiVersio determineCodeVersionThatMatchesDate(String uri, LocalDateTime date) {
         return new KoodiChangesDateComparator().getClosestMatchingEntity(date, service.getKoodi(uri).getKoodiVersios());
     }
@@ -86,10 +85,10 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         List<SimpleCodeElementRelation> removedRelations = removedRelations(koodiVersio, latestKoodiVersio);
         List<SimpleCodeElementRelation> passiveRelations = passiveRelations(latestKoodiVersio);
         MuutosTila muutosTila = anyChanges(changedMetas, removedMetas, dateHandler.anyChanges(), tilaHasChanged, addedRelations, removedRelations, passiveRelations);
-        return new KoodiChangesDto(koodiUri, muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, addedRelations, removedRelations, 
+        return new KoodiChangesDto(koodiUri, muutosTila, latestKoodiVersio.getVersio(), changedMetas, removedMetas, addedRelations, removedRelations,
                 passiveRelations, latestKoodiVersio.getPaivitysPvm(), dateHandler.startDateChanged, dateHandler.endDateChanged, dateHandler.endDateRemoved, tilaHasChanged);
     }
-    
+
     private boolean removedFromLatestCodes(KoodiVersio koodiVersio, boolean compareToLatestAccepted) {
         Koodisto koodisto = koodistoService.getKoodistoByKoodistoUri(koodiVersio.getKoodi().getKoodisto().getKoodistoUri());
         KoodistoVersio koodistoVersio = getMatchingKoodistoVersio(new ArrayList<>(koodisto.getKoodistoVersios()), compareToLatestAccepted);
@@ -143,7 +142,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         noChanges = noChanges && addedRelations.isEmpty() && removedRelations.isEmpty() && passiveRelations.isEmpty();
         return noChanges ? MuutosTila.EI_MUUTOKSIA : MuutosTila.MUUTOKSIA;
     }
-    
+
     private List<SimpleKoodiMetadataDto> removedMetadatas(Set<KoodiMetadata> compareToMetas, final Set<KoodiMetadata> latestMetas) {
         Collection<SimpleKoodiMetadataDto> removedMetas = Collections2.transform(Collections2.filter(compareToMetas, input -> {
             for (KoodiMetadata data : latestMetas) {
@@ -153,7 +152,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
             }
             return true;
         }), input -> new SimpleKoodiMetadataDto(input.getNimi(), input.getKieli(), input.getKuvaus(), input.getLyhytNimi()));
-        
+
         return new ArrayList<>(removedMetas);
     }
 
@@ -165,7 +164,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
                 changedMetadatas.add(getChangesForMetadata(latestData, metaWithMatchingKieli));
             }
         }
-        
+
         return changedMetadatas;
     }
 
@@ -199,13 +198,13 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
 
     private KoodiMetadata getMetadataWithMatchingLanguage(Set<KoodiMetadata> compareToMetadatas, Kieli kieli) {
         for(KoodiMetadata data : compareToMetadatas) {
-            if (data.getKieli().equals(kieli)) { 
+            if (data.getKieli().equals(kieli)) {
                 return data;
             }
         }
         return null;
     }
-    
+
     private static final class KoodinSuhdeFoundNotFound implements Predicate<KoodinSuhde> {
         private final List<KoodinSuhde> relationsToCompare;
 
@@ -214,12 +213,12 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         }
 
         @Override
-        public boolean apply(@Nonnull KoodinSuhde input) {
+        public boolean apply(KoodinSuhde input) {
             boolean missing = true;
             String upperCodeUri = input.getYlakoodiVersio().getKoodi().getKoodiUri();
             String lowerCodeUri = input.getAlakoodiVersio().getKoodi().getKoodiUri();
             for (KoodinSuhde ks : relationsToCompare) {
-                if (lowerCodeUri.equals(ks.getAlakoodiVersio().getKoodi().getKoodiUri()) && upperCodeUri.equals(ks.getYlakoodiVersio().getKoodi().getKoodiUri()) 
+                if (lowerCodeUri.equals(ks.getAlakoodiVersio().getKoodi().getKoodiUri()) && upperCodeUri.equals(ks.getYlakoodiVersio().getKoodi().getKoodiUri())
                         && ks.getSuhteenTyyppi().equals(input.getSuhteenTyyppi())) {
                     missing = false;
                 }
@@ -234,7 +233,7 @@ public class KoodiChangesServiceImpl implements KoodiChangesService {
         protected LocalDateTime getDateFromEntity(KoodiVersio entity) {
             return convertToLocalDateTimeViaInstant(entity.getLuotu());
         }
-        
+
     }
 
 }
