@@ -1,7 +1,7 @@
 services:
   database:
     container_name: oph-koodisto-db
-    image: postgres:12.17
+    image: postgres:15.10
     environment:
       - POSTGRES_USER=app
       - POSTGRES_DB=koodisto
@@ -14,7 +14,7 @@ services:
       interval: 1s
   database-test:
     container_name: oph-koodisto-test-db
-    image: postgres:12.17
+    image: postgres:15.10
     environment:
       - POSTGRES_USER=app
       - POSTGRES_DB=koodisto
