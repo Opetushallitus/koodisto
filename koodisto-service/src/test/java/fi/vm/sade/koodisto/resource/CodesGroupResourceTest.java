@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.json.JsonCompareMode;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static fi.vm.sade.koodisto.util.KoodistoRole.ROLE_APP_KOODISTO_CRUD;
@@ -30,7 +31,7 @@ class CodesGroupResourceTest {
     void testGetCodesByCodesUri() throws Exception {
         this.mockMvc.perform(get(String.format("/rest/codesgroup/%s", -1L)))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":-1,\"koodistoRyhmaUri\":\"relaatioidenlisaaminen\",\"koodistoRyhmaMetadatas\":[{\"id\":-1,\"uri\":\"relaatioidenlisaaminen\",\"nimi\":\"Relaatioiden lisääminen\",\"kieli\":\"FI\"}],\"koodistos\":[{},{},{},{},{}]}", true));
+                .andExpect(content().json("{\"id\":-1,\"koodistoRyhmaUri\":\"relaatioidenlisaaminen\",\"koodistoRyhmaMetadatas\":[{\"id\":-1,\"uri\":\"relaatioidenlisaaminen\",\"nimi\":\"Relaatioiden lisääminen\",\"kieli\":\"FI\"}],\"koodistos\":[{},{},{},{},{}]}", JsonCompareMode.STRICT));
     }
 
     @Test
@@ -51,16 +52,16 @@ class CodesGroupResourceTest {
     void testUpdate() throws Exception {
         this.mockMvc.perform(get(String.format("/rest/codesgroup/%s", -4L)))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":-4,\"koodistoRyhmaUri\":\"koodistoryhmanpaivittaminen\",\"koodistoRyhmaMetadatas\":[{\"id\":-4,\"uri\":\"koodistoryhmanpaivittaminen\",\"nimi\":\"Tyhjän koodistoryhmän päivittäminen\",\"kieli\":\"FI\"}],\"koodistos\":[]}", true));
+                .andExpect(content().json("{\"id\":-4,\"koodistoRyhmaUri\":\"koodistoryhmanpaivittaminen\",\"koodistoRyhmaMetadatas\":[{\"id\":-4,\"uri\":\"koodistoryhmanpaivittaminen\",\"nimi\":\"Tyhjän koodistoryhmän päivittäminen\",\"kieli\":\"FI\"}],\"koodistos\":[]}", JsonCompareMode.STRICT));
         this.mockMvc.perform(
                         put("/rest/codesgroup/")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content("{\"id\":-4,\"koodistoRyhmaUri\":\"koodistoryhmanpaivittaminen\",\"koodistoRyhmaMetadatas\":[{\"nimi\":\"paivitettunimi\",\"kieli\":\"FI\"}],\"koodistos\":[]}"))
                 .andExpect(status().isCreated())
-                .andExpect(content().json("{\"id\":-4,\"koodistoRyhmaUri\":\"koodistoryhmanpaivittaminen\",\"koodistoRyhmaMetadatas\":[{\"id\":-4,\"uri\":\"koodistoryhmanpaivittaminen\",\"nimi\":\"paivitettunimi\",\"kieli\":\"FI\"}],\"koodistos\":[]}", true));
+                .andExpect(content().json("{\"id\":-4,\"koodistoRyhmaUri\":\"koodistoryhmanpaivittaminen\",\"koodistoRyhmaMetadatas\":[{\"id\":-4,\"uri\":\"koodistoryhmanpaivittaminen\",\"nimi\":\"paivitettunimi\",\"kieli\":\"FI\"}],\"koodistos\":[]}", JsonCompareMode.STRICT));
         this.mockMvc.perform(get(String.format("/rest/codesgroup/%s", -4L)))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":-4,\"koodistoRyhmaUri\":\"koodistoryhmanpaivittaminen\",\"koodistoRyhmaMetadatas\":[{\"id\":-4,\"uri\":\"koodistoryhmanpaivittaminen\",\"nimi\":\"paivitettunimi\",\"kieli\":\"FI\"}],\"koodistos\":[]}", true));
+                .andExpect(content().json("{\"id\":-4,\"koodistoRyhmaUri\":\"koodistoryhmanpaivittaminen\",\"koodistoRyhmaMetadatas\":[{\"id\":-4,\"uri\":\"koodistoryhmanpaivittaminen\",\"nimi\":\"paivitettunimi\",\"kieli\":\"FI\"}],\"koodistos\":[]}", JsonCompareMode.STRICT));
     }
 
     @Test
@@ -98,7 +99,7 @@ class CodesGroupResourceTest {
                 .andReturn().getResponse().getContentAsString(), "$.id");
         this.mockMvc.perform(get(String.format("/rest/codesgroup/%s", id)))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":" + id + ",\"koodistoRyhmaUri\":\"newnameforcodesgroup\",\"koodistoRyhmaMetadatas\":[{\"uri\":\"newnameforcodesgroup\",\"nimi\":\"newnameforcodesgroup\",\"kieli\":\"FI\"}],\"koodistos\":[]}", false));
+                .andExpect(content().json("{\"id\":" + id + ",\"koodistoRyhmaUri\":\"newnameforcodesgroup\",\"koodistoRyhmaMetadatas\":[{\"uri\":\"newnameforcodesgroup\",\"nimi\":\"newnameforcodesgroup\",\"kieli\":\"FI\"}],\"koodistos\":[]}", JsonCompareMode.LENIENT));
     }
 
     @Test

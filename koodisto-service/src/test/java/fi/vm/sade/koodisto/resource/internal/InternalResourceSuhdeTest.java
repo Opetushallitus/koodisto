@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.json.JsonCompareMode;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
@@ -78,7 +79,7 @@ class InternalResourceSuhdeTest {
                 .andExpect(content().json("{" +
                         "\"sisaltyyKoodeihin\":[{\"koodiUri\": \"two_1\"}]," +
                         "\"sisaltaaKoodit\":[{\"koodiUri\": \"three_1\"}]," +
-                        "\"rinnastuuKoodeihin\":[{\"koodiUri\": \"four_1\"}]}", false));
+                        "\"rinnastuuKoodeihin\":[{\"koodiUri\": \"four_1\"}]}", JsonCompareMode.LENIENT));
 
         input.put("rinnastuuKoodeihin", new JSONArray());
         input.put("lockingVersion", 2);
@@ -92,7 +93,7 @@ class InternalResourceSuhdeTest {
                 .andExpect(content().json("{" +
                         "\"sisaltyyKoodeihin\":[{\"koodiUri\": \"two_1\"}]," +
                         "\"sisaltaaKoodit\":[{\"koodiUri\": \"three_1\"}]," +
-                        "\"rinnastuuKoodeihin\":[]}", false));
+                        "\"rinnastuuKoodeihin\":[]}", JsonCompareMode.LENIENT));
 
         input.put("sisaltyyKoodeihin", new JSONArray());
         input.put("sisaltaaKoodit", new JSONArray());
@@ -107,7 +108,7 @@ class InternalResourceSuhdeTest {
                 .andExpect(content().json("{" +
                         "\"sisaltyyKoodeihin\":[]," +
                         "\"sisaltaaKoodit\":[]," +
-                        "\"rinnastuuKoodeihin\":[]}", false));
+                        "\"rinnastuuKoodeihin\":[]}", JsonCompareMode.LENIENT));
 
     }
 

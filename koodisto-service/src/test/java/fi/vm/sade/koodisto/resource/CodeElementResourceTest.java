@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.json.JsonCompareMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -270,14 +271,14 @@ class CodeElementResourceTest {
     void testGetAllCodeElementsWithRelationsByCodesUriAndVersion() throws Exception {
         getAllCodeElementsWithRelationsByCodesUriAndVersion("sisaltyysuhde2kanssa", 1)
                 .andExpect(status().isOk())
-                .andExpect(content().json(readFile("/fixtures/resource/codeelement/withrelations.json"), true));
+                .andExpect(content().json(readFile("/fixtures/resource/codeelement/withrelations.json"), JsonCompareMode.STRICT));
     }
 
     @Test
     void testGetAllCodeElementsWithRelationsByCodesUriAndVersionLevels() throws Exception {
         getAllCodeElementsWithRelationsByCodesUriAndVersion("rinnasteinensuhde1kanssa", 1)
                 .andExpect(status().isOk())
-                .andExpect(content().json(readFile("/fixtures/resource/codeelement/withrelations_levels.json"), true));
+                .andExpect(content().json(readFile("/fixtures/resource/codeelement/withrelations_levels.json"), JsonCompareMode.STRICT));
     }
     @Test
     void testGetAllCodeElementsByCodesUriAndVersionInvalid() throws Exception {

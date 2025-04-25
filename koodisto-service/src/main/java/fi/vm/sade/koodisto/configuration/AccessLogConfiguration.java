@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto.configuration;
 
 import ch.qos.logback.access.tomcat.LogbackValve;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;

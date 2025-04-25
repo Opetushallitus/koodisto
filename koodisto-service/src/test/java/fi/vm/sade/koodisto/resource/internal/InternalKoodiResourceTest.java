@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.json.JsonCompareMode;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.nio.charset.StandardCharsets;
@@ -205,7 +206,7 @@ class InternalKoodiResourceTest {
                         "{\"koodiUri\":\"one_1\"," +
                         "\"koodiArvo\":\"1\"," +
                         "\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"}" +
-                        "]", false));
+                        "]", JsonCompareMode.LENIENT));
 
     }
 
@@ -219,7 +220,7 @@ class InternalKoodiResourceTest {
                         "\"koodiUri\":\"two_1\"," +
                         "\"metadata\":[{\"nimi\":\"two1\"}]," +
                         "\"koodiArvo\":\"1\"," +
-                        "\"paivitysPvm\":\"2012-03-22\"}]", false));
+                        "\"paivitysPvm\":\"2012-03-22\"}]", JsonCompareMode.LENIENT));
         this.mockMvc.perform(post("/internal/koodi/upsert/two")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("[{" +
@@ -239,7 +240,7 @@ class InternalKoodiResourceTest {
                                 "\"kieli\":\"SV\"}]" +
                                 "}]"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"koodistoUri\":\"two\"}", false));
+                .andExpect(content().json("{\"koodistoUri\":\"two\"}", JsonCompareMode.LENIENT));
         this.mockMvc.perform(get("/internal/koodi/koodisto/two/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[{" +
@@ -247,7 +248,7 @@ class InternalKoodiResourceTest {
                         "\"metadata\":[{\"nimi\":\"UPDATED\"},{\"nimi\":\"UPDATED\"},{\"nimi\":\"UPDATED\"}]," +
                         "\"koodiArvo\":\"1\"," +
                         "\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"" +
-                        "}]", false));
+                        "}]", JsonCompareMode.LENIENT));
     }
 
     @Test
@@ -260,7 +261,7 @@ class InternalKoodiResourceTest {
                         "\"koodiUri\":\"two_1\"," +
                         "\"metadata\":[{\"nimi\":\"two1\"}]," +
                         "\"koodiArvo\":\"1\",\"paivitysPvm\":\"2012-03-22\"" +
-                        "}]", false));
+                        "}]", JsonCompareMode.LENIENT));
         this.mockMvc.perform(post("/internal/koodi/upsert/two")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("[{" +
@@ -296,7 +297,7 @@ class InternalKoodiResourceTest {
                                 "\"kieli\":\"SV\"}]" +
                                 "}]"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"koodistoUri\":\"two\"}", false));
+                .andExpect(content().json("{\"koodistoUri\":\"two\"}", JsonCompareMode.LENIENT));
         this.mockMvc.perform(get("/internal/koodi/koodisto/two/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[" +
@@ -307,7 +308,7 @@ class InternalKoodiResourceTest {
                         "{\"koodiUri\":\"two_2\"," +
                         "\"koodiArvo\":\"2\"," +
                         "\"paivitysPvm\":\"" + LocalDate.now(ZoneId.of("UTC")) + "\"," +
-                        "\"metadata\":[{\"nimi\":\"ADDED\"},{\"nimi\":\"ADDED\"},{\"nimi\":\"ADDED\"}]}]", false));
+                        "\"metadata\":[{\"nimi\":\"ADDED\"},{\"nimi\":\"ADDED\"},{\"nimi\":\"ADDED\"}]}]", JsonCompareMode.LENIENT));
     }
 
     @Test
