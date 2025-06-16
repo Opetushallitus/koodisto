@@ -168,7 +168,9 @@ class ApplicationStack extends cdk.Stack {
         "koodisto.tasks.datantuonti.export.enabled": `${config.datantuonti.export.enabled}`,
         "koodisto.tasks.datantuonti.export.bucket-name": props.datantuontiExportBucket.bucketName,
         "koodisto.tasks.datantuonti.export.encryption-key-arn": props.datantuontiExportEncryptionKey.keyArn,
-        "koodisto.tasks.datantuonti.import.enabled": `${config.datantuonti.import.enabled}`,
+        "koodisto.tasks.datantuonti.import.enabled": config.datantuonti.import
+          ? `${config.datantuonti.import.enabled}`
+          : "false",
         ...lampiProperties,
         ...oauthProperties,
       },
@@ -226,15 +228,17 @@ class ApplicationStack extends cdk.Stack {
       evaluationPeriods: 1,
     });
 
-    new alarms.ExpectedLogLineAlarm(this, "DatantuontiImportTaskAlarm", {
-      logGroup,
-      alarmTopic: props.alarmTopic,
-      metricNamespace: "Koodisto",
-      name: "DatantuontiImportTask",
-      expectedLogLine: "Koodisto datantuonti import task completed",
-      period: cdk.Duration.hours(25),
-      evaluationPeriods: 1,
-    });
+    if (config.datantuonti.import) {
+      new alarms.ExpectedLogLineAlarm(this, "DatantuontiImportTaskAlarm", {
+        logGroup,
+        alarmTopic: props.alarmTopic,
+        metricNamespace: "Koodisto",
+        name: "DatantuontiImportTask",
+        expectedLogLine: "Koodisto datantuonti import task completed",
+        period: cdk.Duration.hours(25),
+        evaluationPeriods: 1,
+      });
+    }
 
     const service = new ecs.FargateService(this, "Service", {
       cluster: ecsCluster,

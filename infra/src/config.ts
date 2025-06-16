@@ -15,7 +15,7 @@ export type Config = {
     export: {
       enabled: boolean;
     };
-    import: {
+    import?: {
       enabled: boolean;
     };
   };
@@ -26,9 +26,6 @@ const defaultConfig = {
   maxCapacity: 8,
   datantuonti: {
     export: {
-      enabled: false,
-    },
-    import: {
       enabled: false,
     },
   },
