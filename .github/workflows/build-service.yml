@@ -36,11 +36,19 @@ jobs:
           npm ci
           cd mock-api
           npm ci
-      - name: Test UI
+      - name: koodisto-app lint
         working-directory: koodisto-app
         run: |
           npm run lint
           npm run prettier
+      - name: Test UI with Playwright
+        working-directory: koodisto-app
+        run: |
+          npm run playwright:install
+          CI=true npm run playwright
+      - name: Test UI with Cypress
+        working-directory: koodisto-app
+        run: |
           npm run cypress:ci
       - name: Build frontend
         working-directory: koodisto-app

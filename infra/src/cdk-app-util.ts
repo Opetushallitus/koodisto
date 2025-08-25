@@ -144,6 +144,16 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
           ]),
         }),
       );
+      testStage.addAction(
+        new codepipeline_actions.CodeBuildAction({
+          actionName: "KoodistoUiPlaywright",
+          input: sourceOutput,
+          outputs: [new codepipeline.Artifact("KoodistoUiPlaywrightOutput")],
+          project: makeUbuntuTestProject(this, env, "TestKoodistoUiPlaywright", [
+            "scripts/ci/run-playwright-tests.sh",
+          ]),
+        }),
+      );
     }
 
     const deployProject = new codebuild.PipelineProject(this, `DeployProject`, {

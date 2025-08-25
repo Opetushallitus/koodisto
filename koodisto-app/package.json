@@ -74,6 +74,7 @@
         "prettier": "prettier --check 'src/**/*{js,jsx,ts,tsx}'",
         "prettier:fix": "prettier --write 'src/**/*{js,jsx,ts,tsx}'",
         "playwright": "PLAYWRIGHT=true concurrently -s first -k 'npm run mock-api' 'npm run start' 'npx playwright test'",
+        "playwright:install": "playwright install-deps && playwright install chromium && npm --prefix mock-api ci",
         "cypress:open": "cypress open",
         "cypress:run": "cypress run",
         "cypress:ci": "START_SERVER_AND_TEST_INSECURE=1 concurrently  --success first --kill-others 'npm run cypress:run' 'npm run mock-api' 'npm run start'"
