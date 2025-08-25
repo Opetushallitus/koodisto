@@ -1,0 +1,131 @@
+{
+    "koodiUri": "aidinkielijakirjallisuus_fi",
+    "versio": 1,
+    "koodiArvo": "FI",
+    "tila": "LUONNOS",
+    "paivitysPvm": "2022-08-31",
+    "paivittajaOid": "1.2.3.4.5",
+    "voimassaAlkuPvm": "2013-04-13",
+    "voimassaLoppuPvm": null,
+    "metadata": [
+        {
+            "nimi": "FIXTURE 1",
+            "kuvaus": "Suomi äidinkielenä",
+            "lyhytNimi": "Suomi äidinkielenä",
+            "kieli": "FI"
+        },
+        {
+            "nimi": "Suomi äidinkielenä",
+            "kuvaus": "Suomi äidinkielenä",
+            "lyhytNimi": "Suomi äidinkielenä",
+            "kieli": "EN"
+        },
+        {
+            "nimi": "Finska som modersmål",
+            "kuvaus": "Finska som modersmål",
+            "lyhytNimi": "Finska som modersmål",
+            "kieli": "SV"
+        }
+    ],
+    "koodisto": {
+        "koodistoRyhmaMetadata": [
+            {
+                "id": 0,
+                "uri": "muutkoodistot",
+                "nimi": "Muut koodistot",
+                "kieli": "FI"
+            },
+            {
+                "id": 0,
+                "uri": "muutkoodistot",
+                "nimi": "muut",
+                "kieli": "SV"
+            },
+            {
+                "id": 0,
+                "uri": "muutkoodistot",
+                "nimi": "muut",
+                "kieli": "EN"
+            }
+        ],
+        "koodistoRyhmaUri": "muutkoodistot",
+        "resourceUri": "https://virkailija.hahtuvaopintopolku.fi/koodisto-service/rest/codes/aidinkielijakirjallisuus",
+        "koodistoUri": "aidinkielijakirjallisuus",
+        "versio": 1,
+        "lockingVersion": 1,
+        "organisaatioOid": "1.2.246.562.10.00000000001",
+        "paivitysPvm": "2022-08-31",
+        "paivittajaOid": "1.2.3.4.5",
+        "voimassaAlkuPvm": "2013-01-01",
+        "voimassaLoppuPvm": null,
+        "omistaja": "Opetushallitus",
+        "tila": "LUONNOS",
+        "metadata": [
+            {
+                "kieli": "FI",
+                "nimi": "aidinkielijakirjallisuus",
+                "kuvaus": "aidinkielijakirjallisuus"
+            },
+            {
+                "kieli": "SV",
+                "nimi": "aidinkielijakirjallisuus",
+                "kuvaus": "aidinkielijakirjallisuus"
+            },
+            {
+                "kieli": "EN",
+                "nimi": "aidinkielijakirjallisuus",
+                "kuvaus": "aidinkielijakirjallisuus"
+            }
+        ],
+        "koodistoVersio": [1],
+        "sisaltyyKoodistoihin": [],
+        "sisaltaaKoodistot": [],
+        "rinnastuuKoodistoihin": []
+    },
+    "koodiVersio": [1],
+    "lockingVersion": 1,
+    "sisaltyyKoodeihin": [
+        {
+            "koodiUri": "aiheet_106",
+            "koodiVersio": 1,
+            "nimi": {
+                "fi": "aiheet_106 first"
+            },
+            "kuvaus": {
+                "fi": "aiheet_106 first"
+            },
+            "koodistoNimi": {
+                "fi": "aiheet"
+            }
+        },
+        {
+            "koodiUri": "aiheet_109",
+            "koodiVersio": 1,
+            "nimi": {
+                "fi": "aiheet_109 first"
+            },
+            "kuvaus": {
+                "fi": "aiheet_109 first"
+            },
+            "koodistoNimi": {
+                "fi": "aiheet"
+            }
+        }
+    ],
+    "sisaltaaKoodit": [],
+    "rinnastuuKoodeihin": [
+        {
+            "koodiUri": "aiheet_106",
+            "koodiVersio": 1,
+            "nimi": {
+                "fi": "aiheet_106 first"
+            },
+            "kuvaus": {
+                "fi": "aiheet_106 first"
+            },
+            "koodistoNimi": {
+                "fi": "aiheet"
+            }
+        }
+    ]
+}

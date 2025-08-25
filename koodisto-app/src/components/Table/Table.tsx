@@ -291,6 +291,7 @@ function Filter<T>({ column, table }: { column: Column<T, unknown>; table: React
         (typeof firstValue === 'string' && (
             <InputContainer>
                 <DebouncedInput
+                    id={`filter-container-${column.id}`}
                     value={(columnFilterValue ?? '') as string}
                     onChange={onChange}
                     placeholder={

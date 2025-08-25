@@ -28,6 +28,7 @@
         "@formatjs/intl": "^2.10.2",
         "@iconify/icons-fa-solid": "^1.2.2",
         "@iconify/react": "^3.1.4",
+        "@playwright/test": "^1.55.0",
         "@types/lodash": "^4.14.182",
         "@types/node": "^20.12.11",
         "@types/papaparse": "^5.3.2",
@@ -72,6 +73,7 @@
         "lint:fix": "eslint --ext .ts,.tsx src --fix",
         "prettier": "prettier --check 'src/**/*{js,jsx,ts,tsx}'",
         "prettier:fix": "prettier --write 'src/**/*{js,jsx,ts,tsx}'",
+        "playwright": "PLAYWRIGHT=true concurrently -s first -k 'npm run mock-api' 'npm run start' 'npx playwright test'",
         "cypress:open": "cypress open",
         "cypress:run": "cypress run",
         "cypress:ci": "START_SERVER_AND_TEST_INSECURE=1 concurrently  --success first --kill-others 'npm run cypress:run' 'npm run mock-api' 'npm run start'"

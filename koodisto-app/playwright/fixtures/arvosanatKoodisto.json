@@ -1,0 +1,70 @@
+{
+    "koodistoRyhmaMetadata": [
+        {
+            "id": 4,
+            "uri": "koulutuskoodistot",
+            "nimi": "Koulutuskoodistot",
+            "kieli": "EN"
+        },
+        {
+            "id": 4,
+            "uri": "koulutuskoodistot",
+            "nimi": "Koulutuskoodistot",
+            "kieli": "SV"
+        },
+        {
+            "id": 4,
+            "uri": "koulutuskoodistot",
+            "nimi": "Koulutuskoodistot",
+            "kieli": "FI"
+        }
+    ],
+    "koodistoRyhmaUri": "koulutuskoodistot",
+    "resourceUri": "https://virkailija.hahtuvaopintopolku.fi/koodisto-service/rest/codes/arvosanat",
+    "koodistoUri": "arvosanat",
+    "versio": 1,
+    "lockingVersion": 2,
+    "organisaatioOid": "1.2.246.562.10.00000000001",
+    "paivitysPvm": "2022-08-31",
+    "paivittajaOid": "devaaja",
+    "voimassaAlkuPvm": "2013-01-01",
+    "voimassaLoppuPvm": null,
+    "omistaja": "Opetushallitus",
+    "tila": "LUONNOS",
+    "metadata": [
+        {
+            "kieli": "FI",
+            "nimi": "arvosanat",
+            "kuvaus": "arvosanat"
+        },
+        {
+            "kieli": "SV",
+            "nimi": "arvosanat",
+            "kuvaus": "arvosanat"
+        },
+        {
+            "kieli": "EN",
+            "nimi": "arvosanat",
+            "kuvaus": "arvosanat"
+        }
+    ],
+    "koodistoVersio": [1],
+    "sisaltyyKoodistoihin": [
+        {
+            "koodistoUri": "aiheet",
+            "koodistoVersio": 1,
+            "nimi": {
+                "fi": "aiheet",
+                "sv": "aiheet",
+                "en": "aiheet"
+            },
+            "kuvaus": {
+                "fi": "aiheet",
+                "sv": "aiheet",
+                "en": "aiheet"
+            }
+        }
+    ],
+    "sisaltaaKoodistot": [],
+    "rinnastuuKoodistoihin": []
+}

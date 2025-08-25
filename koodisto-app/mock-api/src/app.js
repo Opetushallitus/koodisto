@@ -14,6 +14,7 @@ if (debug) {
     morganBody(app);
 }
 app.use(cors());
+app.use('/koodisto-service', apiMocker('src/api/koodisto-service'));
 app.use('/kayttooikeus-service', apiMocker('src/api/kayttooikeus-service'));
 app.use('/organisaatio-service', apiMocker('src/api/organisaatio-service'));
 app.use('/lokalisointi', apiMocker('src/api/lokalisointi'));

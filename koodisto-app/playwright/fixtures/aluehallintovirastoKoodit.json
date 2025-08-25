@@ -1,0 +1,32 @@
+[
+    {
+        "koodiUri": "aluehallintovirasto_6",
+        "versio": 1,
+        "koodiArvo": "6",
+        "tila": "HYVAKSYTTY",
+        "paivitysPvm": "2018-02-08",
+        "paivittajaOid": null,
+        "voimassaAlkuPvm": "2009-12-31",
+        "voimassaLoppuPvm": null,
+        "metadata": [
+            {
+                "nimi": "Lapland AVI",
+                "kuvaus": "Lapland AVI",
+                "lyhytNimi": "Lapland AVI",
+                "kieli": "EN"
+            },
+            {
+                "nimi": "Lapin Aluehallintovirasto",
+                "kuvaus": "Lapin Aluehallintovirasto",
+                "lyhytNimi": "Lapin AVI",
+                "kieli": "FI"
+            },
+            {
+                "nimi": "Lapin Regionalförvaltningsverk",
+                "kuvaus": "Lapin Regionalförvaltningsverk",
+                "lyhytNimi": "Lapplands RFV",
+                "kieli": "SV"
+            }
+        ]
+    }
+]

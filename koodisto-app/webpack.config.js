@@ -12,6 +12,7 @@ const imageInlineSizeLimit = parseInt(process.env.IMAGE_INLINE_SIZE_LIMIT || '10
 
 const isEnvDevelopment = process.env.NODE_ENV === 'development';
 const isEnvProduction = process.env.NODE_ENV === 'production';
+const isPlaywright = process.env.PLAYWRIGHT === 'true';
 const isEnvProductionProfile = isEnvProduction && process.argv.includes('--profile');
 
 const createEnvironmentHash = () => {
@@ -57,17 +58,24 @@ module.exports = function () {
             },
             host: '127.0.0.1',
             hot: true,
-            port: 3000,
-            proxy: [
-                {
-                    target: 'http://localhost:8080',
-                    context: ['/koodisto-service/static', '/koodisto-service/rest', '/koodisto-service/internal'],
-                },
-                {
-                    target: 'http://localhost:9000',
-                    context: ['/kayttooikeus-service', '/organisaatio-service', '/lokalisointi'],
-                },
-            ],
+            port: isPlaywright ? 8686 : 3000,
+            proxy: isPlaywright
+                ? [
+                      {
+                          target: 'http://localhost:9000',
+                          context: ['/kayttooikeus-service', '/organisaatio-service', '/lokalisointi'],
+                      },
+                  ]
+                : [
+                      {
+                          target: 'http://localhost:8080',
+                          context: ['/koodisto-service/static', '/koodisto-service/rest', '/koodisto-service/internal'],
+                      },
+                      {
+                          target: 'http://localhost:9000',
+                          context: ['/kayttooikeus-service', '/organisaatio-service', '/lokalisointi'],
+                      },
+                  ],
         },
         entry: {
             main: path.resolve(__dirname, 'src', 'index.tsx'),
