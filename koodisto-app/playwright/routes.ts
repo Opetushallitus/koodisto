@@ -101,3 +101,38 @@ export const mockGetKoodiKoodisto = async (page: Page, name: string, version: nu
         await route.fulfill({ json: koodit });
     });
 };
+
+export const mockPutKoodisto = async (
+    page: Page,
+    expect: (body: Record<string, unknown>) => Promise<void>,
+    returnValue: unknown
+) => {
+    await page.route(`${API_INTERNAL_PATH}/koodisto`, async (route) => {
+        if (route.request().method() !== 'PUT') {
+            await route.fallback();
+            return;
+        }
+        await expect(route.request().postDataJSON());
+        await route.fulfill({ json: returnValue });
+    });
+};
+
+export const mockPostKoodisto = async (page: Page, name: string, version: number, returnValue: unknown) => {
+    await page.route(`${API_INTERNAL_PATH}/koodisto/${name}/${version}`, async (route) => {
+        if (route.request().method() !== 'POST') {
+            await route.fallback();
+            return;
+        }
+        await route.fulfill({ status: 201, json: returnValue });
+    });
+};
+
+export const mockDeleteKoodisto = async (page: Page, name: string, version: number) => {
+    await page.route(`${API_INTERNAL_PATH}/koodisto/${name}/${version}`, async (route) => {
+        if (route.request().method() !== 'DELETE') {
+            await route.fallback();
+            return;
+        }
+        await route.fulfill({ status: 204 });
+    });
+};
