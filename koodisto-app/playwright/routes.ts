@@ -136,3 +136,23 @@ export const mockDeleteKoodisto = async (page: Page, name: string, version: numb
         await route.fulfill({ status: 204 });
     });
 };
+
+export const mockKoodiPage = async (page: Page, name: string, version: number, fixture: unknown) => {
+    await page.route(`${API_INTERNAL_PATH}/koodi/${name}/${version}`, async (route) => {
+        if (route.request().method() !== 'GET') {
+            await route.fallback();
+            return;
+        }
+        await route.fulfill({ json: fixture });
+    });
+};
+
+export const mockKoodiPageKoodisto = async (page: Page, name: string, fixture: unknown) => {
+    await page.route(`${API_INTERNAL_PATH}/koodisto/${name}`, async (route) => {
+        if (route.request().method() !== 'GET') {
+            await route.fallback();
+            return;
+        }
+        await route.fulfill({ json: fixture });
+    });
+};
