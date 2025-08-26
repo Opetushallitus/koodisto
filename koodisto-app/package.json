@@ -42,11 +42,8 @@
         "concurrently": "^7.0.0",
         "copy-webpack-plugin": "^12.0.2",
         "css-loader": "^6.11.0",
-        "cypress": "^10",
-        "cypress-file-upload": "^5.0.8",
         "eslint": "^8.57.0",
         "eslint-config-prettier": "^8.10.0",
-        "eslint-plugin-cypress": "^3.2.0",
         "eslint-plugin-jsx-a11y": "^6.8.0",
         "eslint-plugin-react": "^7.34.1",
         "file-loader": "^6.2.0",
@@ -74,24 +71,19 @@
         "prettier": "prettier --check 'src/**/*{js,jsx,ts,tsx}'",
         "prettier:fix": "prettier --write 'src/**/*{js,jsx,ts,tsx}'",
         "playwright": "PLAYWRIGHT=true concurrently -s first -k 'npm run mock-api' 'npm run start' 'npx playwright test'",
-        "playwright:install": "playwright install-deps && playwright install chromium && npm --prefix mock-api ci",
-        "cypress:open": "cypress open",
-        "cypress:run": "cypress run",
-        "cypress:ci": "START_SERVER_AND_TEST_INSECURE=1 concurrently  --success first --kill-others 'npm run cypress:run' 'npm run mock-api' 'npm run start'"
+        "playwright:install": "playwright install-deps && playwright install chromium && npm --prefix mock-api ci"
     },
     "eslintConfig": {
         "parser": "@typescript-eslint/parser",
         "plugins": [
             "@typescript-eslint",
-            "cypress",
             "react"
         ],
         "extends": [
             "eslint:recommended",
             "plugin:@typescript-eslint/eslint-recommended",
             "plugin:@typescript-eslint/recommended",
-            "plugin:react/recommended",
-            "plugin:cypress/recommended"
+            "plugin:react/recommended"
         ],
         "settings": {
             "react": {

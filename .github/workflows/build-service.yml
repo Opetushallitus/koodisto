@@ -46,10 +46,6 @@ jobs:
         run: |
           npm run playwright:install
           CI=true npm run playwright
-      - name: Test UI with Cypress
-        working-directory: koodisto-app
-        run: |
-          npm run cypress:ci
       - name: Build frontend
         working-directory: koodisto-app
         run: npm run build

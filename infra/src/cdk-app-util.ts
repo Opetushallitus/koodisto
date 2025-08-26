@@ -137,18 +137,8 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
       );
       testStage.addAction(
         new codepipeline_actions.CodeBuildAction({
-          actionName: "Cypress",
-          input: sourceOutput,
-          project: makeUbuntuTestProject(this, env, "TestCypress", [
-            "scripts/ci/run-cypress-tests.sh",
-          ]),
-        }),
-      );
-      testStage.addAction(
-        new codepipeline_actions.CodeBuildAction({
           actionName: "KoodistoUiPlaywright",
           input: sourceOutput,
-          outputs: [new codepipeline.Artifact("KoodistoUiPlaywrightOutput")],
           project: makeUbuntuTestProject(this, env, "TestKoodistoUiPlaywright", [
             "scripts/ci/run-playwright-tests.sh",
           ]),
@@ -336,8 +326,6 @@ function makeTestProject(
         },
         artifacts: {
           files: [
-            "koodisto-app/cypress/videos/**/*",
-            "koodisto-app/cypress/screenshots/**/*",
           ],
         },
       }),
