@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 import { API_INTERNAL_PATH, API_STATUS_PATH } from '../src/context/constants';
 
@@ -42,5 +42,62 @@ export const mockRoutes = async (page: Page) => {
             return;
         }
         await route.fulfill({ json: kuntaKoodistoKoodit });
+    });
+};
+
+export const mockGetKoodistoRyhma = async (page: Page, name: string, koodistoryhma: unknown) => {
+    await page.route(`${API_INTERNAL_PATH}/koodistoryhma/${name}`, async (route) => {
+        await route.fulfill({ json: koodistoryhma });
+    });
+    await page.route(`${API_INTERNAL_PATH}/koodistoryhma/${name}/`, async (route) => {
+        await route.fulfill({ json: koodistoryhma });
+    });
+};
+
+export const mockPostKoodistoRyhma = async (page: Page, expected: { nimi: { fi: string; sv: string; en: string } }) => {
+    await page.route(`${API_INTERNAL_PATH}/koodistoryhma`, async (route) => {
+        if (route.request().method() !== 'POST') {
+            await route.fallback();
+            return;
+        }
+        expect(route.request().postDataJSON()).toStrictEqual(expected);
+        await route.fulfill({ json: { koodistoRyhmaUri: expected.nimi.fi } });
+    });
+};
+
+export const mockDeleteKoodistoRyhma = async (page: Page) => {
+    await page.route(`${API_INTERNAL_PATH}/koodistoryhma`, async (route) => {
+        if (route.request().method() !== 'DELETE') {
+            await route.fallback();
+            return;
+        }
+        await route.fulfill({ body: '' });
+    });
+};
+
+export const mockPutKoodistoRyhma = async (
+    page: Page,
+    name: string,
+    expected: { nimi: { fi: string; sv: string; en: string } }
+) => {
+    await page.route(`${API_INTERNAL_PATH}/koodistoryhma/${name}`, async (route) => {
+        if (route.request().method() !== 'PUT') {
+            await route.fallback();
+            return;
+        }
+        expect(route.request().postDataJSON()).toStrictEqual(expected);
+        await route.fulfill({ json: { koodistoRyhmaUri: name } });
+    });
+};
+
+export const mockGetKoodisto = async (page: Page, name: string, version: number, koodisto: unknown) => {
+    await page.route(`${API_INTERNAL_PATH}/koodisto/${name}/${version}`, async (route) => {
+        await route.fulfill({ json: koodisto });
+    });
+};
+
+export const mockGetKoodiKoodisto = async (page: Page, name: string, version: number, koodit: unknown) => {
+    await page.route(`${API_INTERNAL_PATH}/koodi/koodisto/${name}/${version}`, async (route) => {
+        await route.fulfill({ json: koodit });
     });
 };
