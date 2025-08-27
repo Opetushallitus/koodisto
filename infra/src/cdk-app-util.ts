@@ -139,6 +139,7 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
         new codepipeline_actions.CodeBuildAction({
           actionName: "KoodistoUiPlaywright",
           input: sourceOutput,
+          outputs: [new codepipeline.Artifact("KoodistoUiPlaywrightOutput")],
           project: makeUbuntuTestProject(this, env, "TestKoodistoUiPlaywright", [
             "scripts/ci/run-playwright-tests.sh",
           ]),
@@ -323,10 +324,14 @@ function makeTestProject(
           build: {
             commands: testCommands,
           },
+          post_build: {
+            commands: [
+              "mkdir -p test-results && touch test-results/dummy && tar czf playwright.tar.gz test-results/*"
+            ]
+          }
         },
         artifacts: {
-          files: [
-          ],
+          files: ["playwright.tar.gz"],
         },
       }),
     },
