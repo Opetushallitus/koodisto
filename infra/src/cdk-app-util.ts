@@ -326,7 +326,7 @@ function makeTestProject(
           },
           post_build: {
             commands: [
-              "mkdir -p test-results && touch test-results/dummy && tar czf playwright.tar.gz test-results/*"
+              "mkdir -p koodisto-app/test-results && touch koodisto-app/test-results/dummy && tar czf playwright.tar.gz koodisto-app/test-results/*"
             ]
           }
         },
