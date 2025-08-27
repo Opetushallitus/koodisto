@@ -33,6 +33,13 @@ test('Create koodistoryhmä', async ({ page }) => {
         await page.locator('input[name=en]').fill('foo');
         await mockGetKoodistoRyhma(page, 'empty', emptyRyhma1);
         await page.locator('button[name=KOODISTO_RYHMA_LUO_UUSI]').click();
+        await expect(page.locator('button[name=POISTA_KOODISTORYHMA-foo]')).toBeVisible();
+    });
+
+    await test.step('can delete empty ryhma', async () => {
+        await mockGetKoodistoRyhma(page, 'empty', emptyRyhma0);
+        await mockDeleteKoodistoRyhma(page);
+        await page.locator('button[name=POISTA_KOODISTORYHMA-foo]').click();
     });
 
     await test.step('can add a new ryhma with copied values', async () => {
@@ -42,12 +49,6 @@ test('Create koodistoryhmä', async ({ page }) => {
         await page.locator('svg[name=KOPIOI_MUIHIN_NIMIIN]').click();
         await mockGetKoodistoRyhma(page, 'empty', emptyRyhma1);
         await page.locator('button[name=KOODISTO_RYHMA_LUO_UUSI]').click();
-    });
-
-    await test.step('can delete empty ryhma', async () => {
-        await mockGetKoodistoRyhma(page, 'empty', emptyRyhma0);
-        await mockDeleteKoodistoRyhma(page);
-        await page.locator('button[name=POISTA_KOODISTORYHMA-foo]').click();
     });
 
     await test.step('can close the modal', async () => {

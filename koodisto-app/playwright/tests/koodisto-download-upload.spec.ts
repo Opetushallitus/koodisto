@@ -45,10 +45,10 @@ test('CSV functionality tests', async ({ page }) => {
             page.getByText('Valitse tiedosto').click(),
         ]);
         await upload.setFiles(path.join(__dirname, `../fixtures/arvosanat_upload.csv`));
-        await expect(page.getByText('Cypress_Muokattu')).toBeVisible();
+        await expect(page.getByText('Testi_Muokattu')).toBeVisible();
         await page.route(`${API_INTERNAL_PATH}/koodi/upsert/arvosanat`, async (route) => {
             expect(route.request().postDataJSON()[0].metadata[0]).toStrictEqual({
-                nimi: 'Cypress_Muokattu',
+                nimi: 'Testi_Muokattu',
                 lyhytNimi: 'Hyväksytty',
                 kieli: 'FI',
             });
@@ -65,10 +65,10 @@ test('CSV functionality tests', async ({ page }) => {
             page.getByText('Valitse tiedosto').click(),
         ]);
         await upload.setFiles(path.join(__dirname, `../fixtures/arvosanat_upload_empty_line.csv`));
-        await expect(page.getByText('Cypress_Muokattu')).toBeVisible();
+        await expect(page.getByText('Testi_Muokattu')).toBeVisible();
         await page.route(`${API_INTERNAL_PATH}/koodi/upsert/arvosanat`, async (route) => {
             expect(route.request().postDataJSON()[0].metadata[0]).toStrictEqual({
-                nimi: 'Cypress_Muokattu',
+                nimi: 'Testi_Muokattu',
                 lyhytNimi: 'Hyväksytty',
                 kieli: 'FI',
             });

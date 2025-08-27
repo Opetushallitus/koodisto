@@ -8,8 +8,14 @@ import kuntaKoodisto from '../fixtures/kuntaKoodisto.json';
 test.describe('Errors', async () => {
     const koodistoUri = 'kunta';
 
-    test('shows error boudary if codes fails', async ({ page }) => {
+    test.beforeEach(async ({ page }) => {
         await mockRoutes(page);
+        await page.route(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, async (route) => {
+            await route.fulfill({ json: kuntaKoodisto });
+        });
+    });
+
+    test('shows error boudary if codes fails', async ({ page }) => {
         await page.route(`${API_INTERNAL_PATH}/koodisto`, async (route) => {
             await route.fulfill({
                 status: 404,
@@ -21,12 +27,6 @@ test.describe('Errors', async () => {
     });
 
     test('error if 500', async ({ page }) => {
-        await mockRoutes(page);
-
-        await page.route(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, async (route) => {
-            await route.fulfill({ json: kuntaKoodisto });
-        });
-
         await page.route(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, async (route) => {
             await route.fulfill({ status: 500 });
         });
@@ -37,11 +37,6 @@ test.describe('Errors', async () => {
     });
 
     test('error if 400', async ({ page }) => {
-        await mockRoutes(page);
-        await page.route(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, async (route) => {
-            await route.fulfill({ json: kuntaKoodisto });
-        });
-
         await page.route(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, async (route) => {
             await route.fulfill({
                 status: 400,
@@ -58,11 +53,6 @@ test.describe('Errors', async () => {
     });
 
     test('error if 404', async ({ page }) => {
-        await mockRoutes(page);
-        await page.route(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, async (route) => {
-            await route.fulfill({ json: kuntaKoodisto });
-        });
-
         await page.route(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, async (route) => {
             await route.fulfill({
                 status: 404,
@@ -75,12 +65,7 @@ test.describe('Errors', async () => {
         await expect(page.getByText('custom message')).toBeVisible();
     });
 
-    test("error if i'm a teapot", async ({ page }) => {
-        await mockRoutes(page);
-        await page.route(`${API_INTERNAL_PATH}/koodisto/${koodistoUri}/2`, async (route) => {
-            await route.fulfill({ json: kuntaKoodisto });
-        });
-
+    test('error if 418', async ({ page }) => {
         await page.route(`${API_BASE_PATH}/json/${koodistoUri}/koodi*`, async (route) => {
             await route.fulfill({
                 status: 418,
@@ -97,7 +82,6 @@ test.describe('Errors', async () => {
     });
 
     test('Redirects to index page on non-existent URL', async ({ page }) => {
-        await mockRoutes(page);
         await page.route(`${API_INTERNAL_PATH}/koodisto`, async (route) => {
             await route.fulfill({ json: codes });
         });

@@ -70,7 +70,7 @@
         "lint:fix": "eslint --ext .ts,.tsx src --fix",
         "prettier": "prettier --check 'src/**/*{js,jsx,ts,tsx}'",
         "prettier:fix": "prettier --write 'src/**/*{js,jsx,ts,tsx}'",
-        "playwright": "PLAYWRIGHT=true concurrently -s first -k 'npm run mock-api' 'npm run start' 'npx playwright test'",
+        "playwright": "PLAYWRIGHT=true concurrently -s first -k 'npm run mock-api' 'npm run start' 'sleep 5 && npx playwright test'",
         "playwright:install": "playwright install-deps && playwright install chromium && npm --prefix mock-api ci"
     },
     "eslintConfig": {
