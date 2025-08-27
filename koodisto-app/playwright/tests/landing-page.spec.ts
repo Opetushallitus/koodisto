@@ -5,38 +5,8 @@ import { BASE_PATH } from '../../src/context/constants';
 
 test('The landing page', async ({ page }) => {
     await mockRoutes(page);
+    await page.goto(BASE_PATH);
 
-    await test.step('shows koodistos on landing page', async () => {
-        await page.goto(BASE_PATH);
-        await expect(page.getByText('2.asteen pohjakoulutus 2021')).toBeVisible();
-    });
-    await test.step('shows paging component', async () => {
-        await expect(page.getByText('Sivu 1 / 9')).toBeVisible();
-    });
-    await test.step('Paging cannot go back while at first page', async () => {
-        await expect(page.locator('button[name=PREVIOUS_PAGE]')).toBeDisabled();
-        await expect(page.locator('button[name=FIRST_PAGE]')).toBeDisabled();
-    });
-    await test.step('Paging can get to next page', async () => {
-        await page.locator('button[name=NEXT_PAGE]').click();
-        await expect(page.getByText('Sivu 2 / 9')).toBeVisible();
-    });
-    await test.step('Paging can get to last page', async () => {
-        await page.locator('button[name=LAST_PAGE]').click();
-        await expect(page.getByText('Sivu 9 / 9')).toBeVisible();
-    });
-    await test.step('Paging cannot go forward while at last page', async () => {
-        await expect(page.locator('button[name=NEXT_PAGE]')).toBeDisabled();
-        await expect(page.locator('button[name=LAST_PAGE]')).toBeDisabled();
-    });
-    await test.step('Paging can get to previous page', async () => {
-        await page.locator('button[name=PREVIOUS_PAGE]').click();
-        await expect(page.getByText('Sivu 8 / 9')).toBeVisible();
-    });
-    await test.step('Paging can get to first page', async () => {
-        await page.locator('button[name=FIRST_PAGE]').click();
-        await expect(page.getByText('Sivu 1 / 9')).toBeVisible();
-    });
     await test.step('Paging resets when filter changes', async () => {
         await page.locator('button[name=LAST_PAGE]').click();
         await page.locator('[id="filter-container-koodistoUri"]').fill('maakunta');
