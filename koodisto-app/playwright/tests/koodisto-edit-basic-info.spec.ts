@@ -36,7 +36,7 @@ test('The Koodisto Edit page', async ({ page }) => {
         await page.locator('input[name="metadata[0][nimi]"]').clear();
         await page.locator('input[name="metadata[0][nimi]"]').fill('kunta muokattu');
         await page.locator('button[name="KOODISTO_TALLENNA"]').click();
-        await expect(page.getByText('Tallennettiin koodisto uri:lla kunta')).toBeVisible();
+        await expect(page.getByText('Tallennettiin koodisto uri:lla kunta').first()).toBeVisible();
     });
 
     await test.step('shows edit button and can click 2', async () => {
@@ -56,6 +56,6 @@ test('The Koodisto Edit page', async ({ page }) => {
         await page.locator('div[id="koodistoRyhmaUri"] input[type=text]').fill('Va', { force: true });
         await page.getByText('Varda').click();
         await page.locator('button[name="KOODISTO_TALLENNA"]').click();
-        await expect(page.getByText('Tallennettiin koodisto uri:lla kunta')).toBeVisible();
+        await expect(page.getByText('Tallennettiin koodisto uri:lla kunta').first()).toBeVisible();
     });
 });
