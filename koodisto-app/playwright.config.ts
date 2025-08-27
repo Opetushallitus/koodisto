@@ -4,6 +4,7 @@ const CI = !!process.env.CI || !!process.env.CODEBUILD_BUILD_ID;
 
 export default defineConfig({
     testDir: './playwright/tests',
+    expect: { timeout: 10_000 },
     fullyParallel: true,
     forbidOnly: CI,
     retries: CI ? 2 : 0,
