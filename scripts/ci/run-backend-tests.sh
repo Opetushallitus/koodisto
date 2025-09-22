@@ -17,14 +17,14 @@ function main {
 }
 
 function start_database {
-  if is_running_on_codebuild; then
+  if is_running_on_ci; then
     cd "${repo}"
     docker compose up --detach
   fi
 }
 
 function cleanup {
-  if is_running_on_codebuild; then
+  if is_running_on_ci; then
     cd "${repo}"
     docker compose down
   fi

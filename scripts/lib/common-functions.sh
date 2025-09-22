@@ -62,6 +62,14 @@ function is_running_on_codebuild {
   [ -n "${CODEBUILD_BUILD_ID:-}" ]
 }
 
+function is_running_on_github_actions {
+  [ -n "${GITHUB_ACTIONS:-}" ]
+}
+
+function is_running_on_ci {
+  is_running_on_codebuild || is_running_on_github_actions
+}
+
 function select_java_version {
   if ! is_running_on_codebuild; then
     info "Switching to Java $1"
