@@ -9,7 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: ./scripts/ci/run-cypress-tests.sh
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'corretto'
+          java-version: '21'
+      - run: ./scripts/ci/run-playwright-tests.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   run-backend-tests:
     runs-on: ubuntu-latest
     steps:
