@@ -23,7 +23,7 @@ import { getConfig, getEnvironment } from "./config";
 import * as alarms from "./alarms";
 import { DatabaseBackupToS3 } from "./DatabaseBackupToS3";
 import { createHealthCheckStacks } from "./health-check";
-import * as datantuonti from "./datantuonti"
+import * as datantuonti from "./datantuonti";
 
 class CdkApp extends cdk.App {
   constructor(props: cdk.AppProps) {
@@ -47,7 +47,11 @@ class CdkApp extends cdk.App {
       ...stackProps,
       vpc,
     });
-    const datantuontiExport = new datantuonti.ExportStack(this, "DatantuontiExport", stackProps);
+    const datantuontiExport = new datantuonti.ExportStack(
+      this,
+      "DatantuontiExport",
+      stackProps
+    );
     const { database, exportBucket } = new DatabaseStack(
       this,
       "DatabaseStack",
@@ -57,7 +61,7 @@ class CdkApp extends cdk.App {
         bastion,
         ecsCluster,
         alarmTopic,
-        datantuontiExportBucket: datantuontiExport.bucket
+        datantuontiExportBucket: datantuontiExport.bucket,
       }
     );
     new ApplicationStack(this, "ApplicationStack", {
@@ -69,7 +73,7 @@ class CdkApp extends cdk.App {
       database,
       exportBucket,
       datantuontiExportBucket: datantuontiExport.bucket,
-      datantuontiExportEncryptionKey: datantuontiExport.encryptionKey
+      datantuontiExportEncryptionKey: datantuontiExport.encryptionKey,
     });
     createHealthCheckStacks(this, alarmsToSlackLambda, [
       {
@@ -98,7 +102,15 @@ class ApplicationStack extends cdk.Stack {
     }
   ) {
     super(scope, id, props);
-    const { vpc, ecsCluster, database, exportBucket, datantuontiExportBucket, datantuontiExportEncryptionKey, hostedZone } = props;
+    const {
+      vpc,
+      ecsCluster,
+      database,
+      exportBucket,
+      datantuontiExportBucket,
+      datantuontiExportEncryptionKey,
+      hostedZone,
+    } = props;
     const config = getConfig();
 
     const appPort = 8080;
@@ -126,19 +138,20 @@ class ApplicationStack extends cdk.Stack {
           operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
           cpuArchitecture: ecs.CpuArchitecture.ARM64,
         },
-      },
+      }
     );
     exportBucket.grantReadWrite(taskDefinition.taskRole);
     datantuontiExportBucket.grantReadWrite(taskDefinition.taskRole);
     datantuontiExportEncryptionKey.grantEncrypt(taskDefinition.taskRole);
-    datantuonti.createS3ImporPolicyStatements(this)
-        .forEach(statement => taskDefinition.addToTaskRolePolicy(statement))
+    datantuonti
+      .createS3ImporPolicyStatements(this)
+      .forEach((statement) => taskDefinition.addToTaskRolePolicy(statement));
 
     const oauthProperties: ecs.ContainerDefinitionProps["environment"] =
       config.oauthServer
         ? {
-            "spring.security.oauth2.resourceserver.jwt.issuer-uri": `https://${config.oauthServer}/kayttooikeus-service`,
-            "spring.security.oauth2.resourceserver.jwt.jwk-set-uri": `https://${config.oauthServer}/kayttooikeus-service/oauth2/jwks`,
+            "#spring.security.oauth2.resourceserver.jwt.issuer-uri": `https://${config.oauthServer}/kayttooikeus-service`,
+            "#spring.security.oauth2.resourceserver.jwt.jwk-set-uri": `https://${config.oauthServer}/kayttooikeus-service/oauth2/jwks`,
           }
         : {};
 
@@ -166,21 +179,26 @@ class ApplicationStack extends cdk.Stack {
         "spring.datasource.url": `jdbc:postgresql://${database.clusterEndpoint.hostname}:${database.clusterEndpoint.port.toString()}/koodisto`,
         "host.virkailija": config.virkailijaHost,
         "koodisto.tasks.datantuonti.export.enabled": `${config.datantuonti.export.enabled}`,
-        "koodisto.tasks.datantuonti.export.bucket-name": props.datantuontiExportBucket.bucketName,
-        "koodisto.tasks.datantuonti.export.encryption-key-arn": props.datantuontiExportEncryptionKey.keyArn,
+        "koodisto.tasks.datantuonti.export.bucket-name":
+          props.datantuontiExportBucket.bucketName,
+        "koodisto.tasks.datantuonti.export.encryption-key-arn":
+          props.datantuontiExportEncryptionKey.keyArn,
         "koodisto.tasks.datantuonti.import.enabled": config.datantuonti.import
           ? `${config.datantuonti.import.enabled}`
           : "false",
         ...lampiProperties,
         ...oauthProperties,
+        "koodisto.jwt-issuers": config.jwtIssuers,
       },
       secrets: {
-        "koodisto.tasks.datantuonti.import.bucket-name": ecs.Secret.fromSsmParameter(
+        "koodisto.tasks.datantuonti.import.bucket-name":
+          ecs.Secret.fromSsmParameter(
             ssm.StringParameter.fromStringParameterName(
-                this,
-                `ParamDatantuontiImportBucketName`,
-                "koodisto.tasks.datantuonti.import.bucket-name"
-            )),
+              this,
+              `ParamDatantuontiImportBucketName`,
+              "koodisto.tasks.datantuonti.import.bucket-name"
+            )
+          ),
         "spring.datasource.username": ecs.Secret.fromSecretsManager(
           database.secret!,
           "username"
@@ -472,14 +490,16 @@ class DatabaseStack extends cdk.Stack {
   ) {
     super(scope, id, props);
 
-    const { vpc, bastion, ecsCluster, alarmTopic, datantuontiExportBucket } = props;
+    const { vpc, bastion, ecsCluster, alarmTopic, datantuontiExportBucket } =
+      props;
     this.exportBucket = new s3.Bucket(this, "ExportBucket", {});
 
     const datantuontiImportRole = new iam.Role(this, "DatantuontiImport", {
-      assumedBy: new iam.ServicePrincipal("rds.amazonaws.com")
+      assumedBy: new iam.ServicePrincipal("rds.amazonaws.com"),
     });
-    datantuonti.createS3ImporPolicyStatements(this)
-        .forEach(statement =>  datantuontiImportRole.addToPolicy(statement));
+    datantuonti
+      .createS3ImporPolicyStatements(this)
+      .forEach((statement) => datantuontiImportRole.addToPolicy(statement));
 
     this.database = new rds.DatabaseCluster(this, "Database", {
       vpc,

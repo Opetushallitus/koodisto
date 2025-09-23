@@ -19,7 +19,8 @@ export type Config = {
       enabled: boolean;
     };
   };
-  oauthServer?: string;
+  oauthServer: string;
+  jwtIssuers: string;
 };
 const defaultConfig = {
   minCapacity: 2,
@@ -65,6 +66,8 @@ export const hahtuva: Config = {
     },
   },
   oauthServer: "kayttooikeus.hahtuva.yleiskayttoiset.opintopolku.fi",
+  jwtIssuers:
+    "https://kayttooikeus.hahtuva.yleiskayttoiset.opintopolku.fi/kayttooikeus-service,https://hahtuva.otuva.opintopolku.fi/kayttooikeus-service",
 };
 
 export const dev: Config = {
@@ -86,6 +89,8 @@ export const dev: Config = {
     },
   },
   oauthServer: "kayttooikeus.dev.yleiskayttoiset.opintopolku.fi",
+  jwtIssuers:
+    "https://kayttooikeus.dev.yleiskayttoiset.opintopolku.fi/kayttooikeus-service,https://dev.otuva.opintopolku.fi/kayttooikeus-service",
 };
 
 export const qa: Config = {
@@ -107,6 +112,8 @@ export const qa: Config = {
     },
   },
   oauthServer: "kayttooikeus.qa.yleiskayttoiset.opintopolku.fi",
+  jwtIssuers:
+    "https://kayttooikeus.qa.yleiskayttoiset.opintopolku.fi/kayttooikeus-service,https://qa.otuva.opintopolku.fi/kayttooikeus-service",
 };
 
 export const prod: Config = {
@@ -125,4 +132,6 @@ export const prod: Config = {
     },
   },
   oauthServer: "kayttooikeus.prod.yleiskayttoiset.opintopolku.fi",
+  jwtIssuers:
+    "https://kayttooikeus.prod.yleiskayttoiset.opintopolku.fi/kayttooikeus-service,https://prod.otuva.opintopolku.fi/kayttooikeus-service",
 };
