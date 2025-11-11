@@ -18,11 +18,11 @@ function main {
 
   tmux splitw -v
   tmux select-pane -t 2
-  tmux send-keys "cd koodisto-app/mock-api && npm install && cd .. && npm run mock-api" C-m
+  tmux send-keys "$repo/scripts/run-mock-api.sh" C-m
 
   tmux splitw -v
   tmux select-pane -t 3
-  tmux send-keys "cd koodisto-app && nvm use 20 && npm install && npm run start" C-m
+  tmux send-keys "$repo/scripts/run-koodisto-app.sh" C-m
 
   open "http://localhost:3000/koodisto-service/ui"
 
