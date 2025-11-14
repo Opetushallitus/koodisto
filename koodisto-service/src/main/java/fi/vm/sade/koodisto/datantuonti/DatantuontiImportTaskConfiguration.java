@@ -30,11 +30,11 @@ public class DatantuontiImportTaskConfiguration {
                     try {
                         log.info("Running koodisto datantuonti import task");
                         datantuontiImportService.importTempTablesFromS3();
-                        if (isBiWeeklyExecutionDay()) {
-                            log.info("It is the biweekly datantuonti day, replacing all koodisto data with imported data");
+                        if (isItTheTrueDayOfExecution()) {
+                            log.info("It is the day of datantuonti, replacing all koodisto data with imported data");
                             datantuontiImportService.replaceData();
                         } else {
-                            log.info("It is not the biweekly datantuonti day, not replacing koodisto data");
+                            log.info("It is not the day of datantuonti, not replacing koodisto data");
                         }
                         log.info("Koodisto datantuonti import task completed");
                     } catch (IOException e) {
@@ -43,10 +43,10 @@ public class DatantuontiImportTaskConfiguration {
                 });
     }
 
-    private boolean isBiWeeklyExecutionDay() {
+    private boolean isItTheTrueDayOfExecution() {
         LocalDate today = LocalDate.now();
 
         long daysSinceAnchor = ANCHOR_DATE.until(today).getDays();
-        return daysSinceAnchor % 14 == 0;
+        return daysSinceAnchor % 7 == 0;
     }
 }
