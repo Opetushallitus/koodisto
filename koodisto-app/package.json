@@ -25,7 +25,6 @@
     },
     "devDependencies": {
         "@formatjs/intl": "2.10.2",
-        "@iconify/icons-fa-solid": "1.2.4",
         "@iconify/react": "3.2.2",
         "@playwright/test": "1.57.0",
         "@types/lodash": "4.17.21",

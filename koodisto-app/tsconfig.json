@@ -7,7 +7,7 @@
         "es2019"
       ],
       "allowJs": false,
-      "skipLibCheck": false,
+      "skipLibCheck": true,
       "esModuleInterop": true,
       "allowSyntheticDefaultImports": true,
       "strict": true,
@@ -25,6 +25,7 @@
       "resolveJsonModule": true,
       "isolatedModules": true,
       "jsx": "react",
+      "typeRoots": ["./node_modules/@types"],
       "types": []
     },
     "include": [
@@ -32,7 +33,5 @@
       "playwright"
     ],
     "exclude": [
-      "node_modules",
-      "./node_modules/@formatjs/intl/src/types.d.ts"
     ]
   }
