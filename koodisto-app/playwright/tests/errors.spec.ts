@@ -87,6 +87,6 @@ test.describe('Errors', async () => {
         });
 
         await page.goto(`${BASE_PATH}/some/non-existent/path`);
-        await page.waitForURL('/koodisto-service/ui/');
+        await page.waitForURL('/koodisto-service/ui');
     });
 });

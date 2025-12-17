@@ -42,6 +42,6 @@ test('Koodisto Edit page', async ({ page }) => {
             await route.fulfill({ json: [] });
         });
         await page.locator('button[name=CONFIRMATION_ACTION]').click({ force: true });
-        await page.waitForURL(/\/koodisto-service\/ui\/$/);
+        await page.waitForURL(/\/koodisto-service\/ui$/);
     });
 });
