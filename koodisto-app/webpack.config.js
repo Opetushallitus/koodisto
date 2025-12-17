@@ -134,7 +134,7 @@ module.exports = function () {
                     enforce: 'pre',
                     test: /\.(js|mjs|jsx|ts|tsx|css)$/,
                     loader: 'source-map-loader',
-                    exclude: /virkailija-ui-components/,
+                    exclude: [/virkailija-ui-components/, /fast-memoize/],
                 },
                 {
                     oneOf: [
