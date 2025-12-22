@@ -1,4 +1,5 @@
 export repo="$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd )"
+export CDK_DISABLE_CLI_TELEMETRY=true
 readonly node_version=$( cat "${repo}/.nvmrc" )
 
 function export_aws_credentials {
