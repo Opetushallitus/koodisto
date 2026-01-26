@@ -156,7 +156,6 @@ public class WebSecurityConfiguration {
                     .requestMatchers("/actuator/**").permitAll()
                     .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/rest/**").permitAll()
-                    .requestMatchers("/ui/**").hasAnyRole("APP_KOODISTO_READ_UPDATE", "APP_KOODISTO_CRUD")
                     .anyRequest().authenticated())
             .addFilterAt(casAuthenticationFilter, CasAuthenticationFilter.class)
             .addFilterBefore(singleSignOutFilter(), CasAuthenticationFilter.class)

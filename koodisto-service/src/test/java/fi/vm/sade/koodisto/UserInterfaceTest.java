@@ -25,18 +25,4 @@ public class UserInterfaceTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/ui"));
     }
-
-    @Test
-    @WithMockUser
-    public void uiRequiresRole() throws Exception {
-        mockMvc.perform(get("/ui"))
-                .andExpect(status().isForbidden());
-    }
-
-    @Test
-    @WithMockUser(username = "1.2.3.4.5", authorities = "ROLE_APP_KOODISTO_CRUD")
-    public void uiOpensWithRole() throws Exception {
-        mockMvc.perform(get("/ui"))
-                .andExpect(status().isOk());
-    }
 }
