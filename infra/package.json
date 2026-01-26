@@ -4,7 +4,7 @@
     "@aws-sdk/client-sts": "^3.693.0",
     "@types/node": "24.10.4",
     "aws-cdk": "2.1005.0",
-    "aws-cdk-lib": "2.189.1",
+    "aws-cdk-lib": "2.236.0",
     "constructs": "10.4.4",
     "ts-node": "10.9.2",
     "typescript": "5.9.3"
