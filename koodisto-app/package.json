@@ -6,7 +6,7 @@
         "@opetushallitus/virkailija-ui-components": "^0.4.7",
         "@tanstack/match-sorter-utils": "8.19.4",
         "@tanstack/react-table": "8.21.3",
-        "axios": "0.30.2",
+        "axios": "1.13.3",
         "jotai": "1.13.1",
         "lodash": "^4.17.21",
         "moment": "2.30.1",
