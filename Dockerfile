@@ -19,7 +19,7 @@ COPY settings.xml .
 
 RUN mvn clean package -s settings.xml -DskipTests
 
-FROM amazoncorretto:21.0.9@sha256:9a236fde34eb07f427a89e7a73f19256af188e3476ed7210101b3ed4daa4de1b
+FROM amazoncorretto:25.0.2@sha256:7f3cb44bd7daa80adfec83a989121fe83f14fec5e21dc2940de7fe6a99a6351e
 WORKDIR /app
 
 COPY --from=build /build/koodisto-service/target/koodisto-service.jar koodisto-service.jar
