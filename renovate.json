@@ -2,6 +2,7 @@
   "extends": ["config:best-practices", ":automergePatch", ":automergeDigest"],
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
+    "automerge": true,
     "enabled": true,
     "automerge": true,
     "labels": ["security"]
