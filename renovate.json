@@ -3,6 +3,7 @@
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "enabled": true,
+    "automerge": true,
     "labels": ["security"]
   },
   "prConcurrentLimit": 10
