@@ -187,9 +187,13 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
           value: `/env/${env}/slack-notifications-channel-webhook`,
         },
-        MVN_SETTINGSXML: {
+        MVN_SETTINGS_GITHUB_USERNAME: {
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
-          value: `/mvn/settingsxml`,
+          value: "/mvn/settings/github/username",
+        },
+        MVN_SETTINGS_GITHUB_PASSWORD: {
+          type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
+          value: "/mvn/settings/github/password",
         },
       },
       buildSpec: codebuild.BuildSpec.fromObject({
@@ -201,7 +205,6 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
           pre_build: {
             commands: [
               "sudo yum install -y perl-Digest-SHA", // for shasum command
-              "echo $MVN_SETTINGSXML > ./settings.xml",
             ],
           },
           build: {
@@ -309,9 +312,13 @@ function makeTestProject(
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
           value: "/docker/password",
         },
-        MVN_SETTINGSXML: {
+        MVN_SETTINGS_GITHUB_USERNAME: {
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
-          value: `/mvn/settingsxml`,
+          value: "/mvn/settings/github/username",
+        },
+        MVN_SETTINGS_GITHUB_PASSWORD: {
+          type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
+          value: "/mvn/settings/github/password",
         },
       },
       buildSpec: codebuild.BuildSpec.fromObject({
@@ -329,7 +336,6 @@ function makeTestProject(
             commands: [
               "docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD",
               ...preBuildCommands,
-              "echo $MVN_SETTINGSXML > ./settings.xml",
             ],
           },
           build: {

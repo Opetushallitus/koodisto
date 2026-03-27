@@ -15,9 +15,9 @@ COPY koodisto-audit ./koodisto-audit
 COPY koodisto-service ./koodisto-service
 COPY koodisto-api ./koodisto-api
 COPY pom.xml .
-COPY settings.xml .
+COPY codebuild-mvn-settings.xml .
 
-RUN mvn clean package -s settings.xml -DskipTests
+RUN mvn clean package -s codebuild-mvn-settings.xml -DskipTests
 
 FROM amazoncorretto:21.0.9@sha256:9a236fde34eb07f427a89e7a73f19256af188e3476ed7210101b3ed4daa4de1b
 WORKDIR /app

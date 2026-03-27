@@ -10,7 +10,7 @@ function main {
 
   cd "${repo}"
   if is_running_on_codebuild; then
-    mvn clean install -s ./settings.xml
+    mvn clean install -s ./codebuild-mvn-settings.xml
   else
     mvn clean install
   fi
