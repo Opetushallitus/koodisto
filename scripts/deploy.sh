@@ -36,7 +36,10 @@ function deploy_util {
 
 function deploy_env {
   local -r env="$1"
-  if ! is_running_on_codebuild; then
+  if is_running_on_codebuild; then
+    export MVN_SETTINGS_GITHUB_USERNAME
+    export MVN_SETTINGS_GITHUB_PASSWORD
+  else
     export_aws_credentials "util"
     local -r accountId=$(get_aws_account_id_of_env "${env}")
     export CDK_DEPLOY_TARGET_ACCOUNT=${accountId}
