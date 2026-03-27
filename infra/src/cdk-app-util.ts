@@ -165,8 +165,8 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
   <servers>
     <server>
       <id>github</id>
-      <username>${MVN_SETTINGS_GITHUB_USERNAME}</username>
-      <password>${MVN_SETTINGS_GITHUB_PASSWORD}</password>
+      <username>\${MVN_SETTINGS_GITHUB_USERNAME}</username>
+      <password>\${MVN_SETTINGS_GITHUB_PASSWORD}</password>
     </server>
   </servers>
 </settings>
