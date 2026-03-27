@@ -158,6 +158,20 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
       );
     }
 
+    const MAVEN_SETTINGS_XML = `
+<settings xmlns='http://maven.apache.org/SETTINGS/1.0.0'
+  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+  xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd'>
+  <servers>
+    <server>
+      <id>github</id>
+      <username>${MVN_SETTINGS_GITHUB_USERNAME}</username>
+      <password>${MVN_SETTINGS_GITHUB_PASSWORD}</password>
+    </server>
+  </servers>
+</settings>
+`;
+
     const deployProject = new codebuild.PipelineProject(this, `DeployProject`, {
       projectName: `Deploy${capitalizedEnv}`,
       concurrentBuildLimit: 1,
@@ -205,6 +219,9 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
           pre_build: {
             commands: [
               "sudo yum install -y perl-Digest-SHA", // for shasum command
+              `cat <<EOF > settings.xml
+${MAVEN_SETTINGS_XML}
+EOF`,
             ],
           },
           build: {
@@ -336,6 +353,9 @@ function makeTestProject(
             commands: [
               "docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD",
               ...preBuildCommands,
+              `cat <<EOF > codebuild-mvn-settings.xml
+${MAVEN_SETTINGS_XML}
+EOF`,
             ],
           },
           build: {
