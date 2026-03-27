@@ -219,7 +219,7 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
           pre_build: {
             commands: [
               "sudo yum install -y perl-Digest-SHA", // for shasum command
-              `cat <<EOF > settings.xml
+              `cat <<EOF > codebuild-mvn-settings.xml
 ${MAVEN_SETTINGS_XML}
 EOF`,
             ],
