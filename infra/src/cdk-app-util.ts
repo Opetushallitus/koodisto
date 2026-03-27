@@ -89,6 +89,20 @@ type Repository = {
   branch: string;
 };
 
+const MAVEN_SETTINGS_XML = `
+<settings xmlns='http://maven.apache.org/SETTINGS/1.0.0'
+  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+  xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd'>
+  <servers>
+    <server>
+      <id>github</id>
+      <username>\${MVN_SETTINGS_GITHUB_USERNAME}</username>
+      <password>\${MVN_SETTINGS_GITHUB_PASSWORD}</password>
+    </server>
+  </servers>
+</settings>
+`;
+
 class ContinuousDeploymentPipelineStack extends cdk.Stack {
   constructor(
     scope: constructs.Construct,
@@ -157,20 +171,6 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
         }),
       );
     }
-
-    const MAVEN_SETTINGS_XML = `
-<settings xmlns='http://maven.apache.org/SETTINGS/1.0.0'
-  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-  xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd'>
-  <servers>
-    <server>
-      <id>github</id>
-      <username>\${MVN_SETTINGS_GITHUB_USERNAME}</username>
-      <password>\${MVN_SETTINGS_GITHUB_PASSWORD}</password>
-    </server>
-  </servers>
-</settings>
-`;
 
     const deployProject = new codebuild.PipelineProject(this, `DeployProject`, {
       projectName: `Deploy${capitalizedEnv}`,
