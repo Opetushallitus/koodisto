@@ -8,6 +8,7 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as ssm from "aws-cdk-lib/aws-ssm";
 import { ROUTE53_HEALTH_CHECK_REGION } from "./health-check";
+import * as dm from "./dependency-management";
 
 class CdkAppUtil extends cdk.App {
   constructor(props: cdk.AppProps) {
@@ -16,14 +17,30 @@ class CdkAppUtil extends cdk.App {
       account: process.env.CDK_DEFAULT_ACCOUNT,
       region: process.env.CDK_DEFAULT_REGION,
     };
-    new ContinuousDeploymentStack(this, "ContinuousDeploymentStack", {
-      env,
-    });
+
+    const dependencyManagement = new dm.DependencyManagementStack(
+      this,
+      "DependencyManagementStack",
+      { env }
+    );
+    new ContinuousDeploymentStack(
+      this,
+      "ContinuousDeploymentStack",
+      dependencyManagement,
+      {
+        env,
+      }
+    );
   }
 }
 
 class ContinuousDeploymentStack extends cdk.Stack {
-  constructor(scope: constructs.Construct, id: string, props: cdk.StackProps) {
+  constructor(
+    scope: constructs.Construct,
+    id: string,
+    dependencyManagement: dm.DependencyManagementStack,
+    props: cdk.StackProps
+  ) {
     super(scope, id, props);
 
     const githubConnection = new codestarconnections.CfnConnection(
@@ -32,7 +49,7 @@ class ContinuousDeploymentStack extends cdk.Stack {
       {
         connectionName: "GithubConnection",
         providerType: "GitHub",
-      },
+      }
     );
 
     new ContinuousDeploymentPipelineStack(
@@ -41,7 +58,8 @@ class ContinuousDeploymentStack extends cdk.Stack {
       "hahtuva",
       githubConnection,
       { owner: "Opetushallitus", name: "koodisto", branch: "master" },
-      props,
+      dependencyManagement,
+      props
     );
     new ContinuousDeploymentPipelineStack(
       this,
@@ -49,7 +67,8 @@ class ContinuousDeploymentStack extends cdk.Stack {
       "dev",
       githubConnection,
       { owner: "Opetushallitus", name: "koodisto", branch: "green-hahtuva" },
-      props,
+      dependencyManagement,
+      props
     );
     new ContinuousDeploymentPipelineStack(
       this,
@@ -57,7 +76,8 @@ class ContinuousDeploymentStack extends cdk.Stack {
       "qa",
       githubConnection,
       { owner: "Opetushallitus", name: "koodisto", branch: "green-dev" },
-      props,
+      dependencyManagement,
+      props
     );
     new ContinuousDeploymentPipelineStack(
       this,
@@ -65,7 +85,8 @@ class ContinuousDeploymentStack extends cdk.Stack {
       "prod",
       githubConnection,
       { owner: "Opetushallitus", name: "koodisto", branch: "green-qa" },
-      props,
+      dependencyManagement,
+      props
     );
 
     const radiatorAccountId = "905418271050";
@@ -75,8 +96,8 @@ class ContinuousDeploymentStack extends cdk.Stack {
     });
     radiatorReader.addManagedPolicy(
       iam.ManagedPolicy.fromAwsManagedPolicyName(
-        "AWSCodePipeline_ReadOnlyAccess",
-      ),
+        "AWSCodePipeline_ReadOnlyAccess"
+      )
     );
   }
 }
@@ -89,20 +110,6 @@ type Repository = {
   branch: string;
 };
 
-const MAVEN_SETTINGS_XML = `
-<settings xmlns='http://maven.apache.org/SETTINGS/1.0.0'
-  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
-  xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd'>
-  <servers>
-    <server>
-      <id>github</id>
-      <username>\${MVN_SETTINGS_GITHUB_USERNAME}</username>
-      <password>\${MVN_SETTINGS_GITHUB_PASSWORD}</password>
-    </server>
-  </servers>
-</settings>
-`;
-
 class ContinuousDeploymentPipelineStack extends cdk.Stack {
   constructor(
     scope: constructs.Construct,
@@ -110,7 +117,8 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
     env: EnvironmentName,
     connection: codestarconnections.CfnConnection,
     repository: Repository,
-    props: cdk.StackProps,
+    dependencyManagement: dm.DependencyManagementStack,
+    props: cdk.StackProps
   ) {
     super(scope, id, props);
     const capitalizedEnv = capitalize(env);
@@ -124,7 +132,7 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
     cdk.Tags.of(pipeline).add(
       "Repository",
       `${repository.owner}/${repository.name}`,
-      { includeResourceTypes: ["AWS::CodePipeline::Pipeline"] },
+      { includeResourceTypes: ["AWS::CodePipeline::Pipeline"] }
     );
     cdk.Tags.of(pipeline).add("FromBranch", repository.branch, {
       includeResourceTypes: ["AWS::CodePipeline::Pipeline"],
@@ -155,20 +163,28 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
         new codepipeline_actions.CodeBuildAction({
           actionName: "Backend",
           input: sourceOutput,
-          project: makeAmazonLinuxTestProject(this, env, `TestBackend`, [
-            "scripts/ci/run-backend-tests.sh",
-          ]),
-        }),
+          project: makeAmazonLinuxTestProject(
+            this,
+            env,
+            `TestBackend`,
+            ["scripts/ci/run-backend-tests.sh"],
+            dependencyManagement
+          ),
+        })
       );
       testStage.addAction(
         new codepipeline_actions.CodeBuildAction({
           actionName: "KoodistoUiPlaywright",
           input: sourceOutput,
           outputs: [new codepipeline.Artifact("KoodistoUiPlaywrightOutput")],
-          project: makeUbuntuTestProject(this, env, "TestKoodistoUiPlaywright", [
-            "scripts/ci/run-playwright-tests.sh",
-          ]),
-        }),
+          project: makeUbuntuTestProject(
+            this,
+            env,
+            "TestKoodistoUiPlaywright",
+            ["scripts/ci/run-playwright-tests.sh"],
+            dependencyManagement
+          ),
+        })
       );
     }
 
@@ -219,9 +235,7 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
           pre_build: {
             commands: [
               "sudo yum install -y perl-Digest-SHA", // for shasum command
-              `cat <<EOF > codebuild-mvn-settings.xml
-${MAVEN_SETTINGS_XML}
-EOF`,
+              ...dependencyManagement.createMavenSettingsXmlCommands(),
             ],
           },
           build: {
@@ -235,7 +249,7 @@ EOF`,
 
     const deploymentTargetAccount = ssm.StringParameter.valueFromLookup(
       this,
-      `/env/${env}/account_id`,
+      `/env/${env}/account_id`
     );
     const targetRegions = ["eu-west-1", ROUTE53_HEALTH_CHECK_REGION];
     deployProject.role?.attachInlinePolicy(
@@ -252,8 +266,9 @@ EOF`,
             ]),
           }),
         ],
-      }),
+      })
     );
+    dependencyManagement.grantRead(deployProject.role!);
     const deployAction = new codepipeline_actions.CodeBuildAction({
       actionName: "Deploy",
       input: sourceOutput,
@@ -269,6 +284,7 @@ function makeAmazonLinuxTestProject(
   env: string,
   name: string,
   testCommands: string[],
+  dependencyManagement: dm.DependencyManagementStack
 ): codebuild.PipelineProject {
   return makeTestProject(
     scope,
@@ -279,6 +295,7 @@ function makeAmazonLinuxTestProject(
     [
       "sudo yum install -y perl-Digest-SHA", // for shasum command
     ],
+    dependencyManagement
   );
 }
 
@@ -287,6 +304,7 @@ function makeUbuntuTestProject(
   env: string,
   name: string,
   testCommands: string[],
+  dependencyManagement: dm.DependencyManagementStack
 ): codebuild.PipelineProject {
   return makeTestProject(
     scope,
@@ -299,6 +317,7 @@ function makeUbuntuTestProject(
       "sudo apt-get install -y netcat", // for nc command
       "sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb", // For Chromium
     ],
+    dependencyManagement
   );
 }
 
@@ -309,8 +328,9 @@ function makeTestProject(
   testCommands: string[],
   buildImage: codebuild.IBuildImage,
   preBuildCommands: string[],
+  dependencyManagement: dm.DependencyManagementStack
 ) {
-  return new codebuild.PipelineProject(
+  const project = new codebuild.PipelineProject(
     scope,
     `${name}${capitalize(env)}Project`,
     {
@@ -352,10 +372,8 @@ function makeTestProject(
           pre_build: {
             commands: [
               "docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD",
+              ...dependencyManagement.createMavenSettingsXmlCommands(),
               ...preBuildCommands,
-              `cat <<EOF > codebuild-mvn-settings.xml
-${MAVEN_SETTINGS_XML}
-EOF`,
             ],
           },
           build: {
@@ -363,16 +381,18 @@ EOF`,
           },
           post_build: {
             commands: [
-              "mkdir -p koodisto-app/test-results && touch koodisto-app/test-results/dummy && tar czf playwright.tar.gz koodisto-app/test-results/*"
-            ]
-          }
+              "mkdir -p koodisto-app/test-results && touch koodisto-app/test-results/dummy && tar czf playwright.tar.gz koodisto-app/test-results/*",
+            ],
+          },
         },
         artifacts: {
           files: ["playwright.tar.gz"],
         },
       }),
-    },
+    }
   );
+  dependencyManagement.grantRead(project.role!);
+  return project;
 }
 
 function capitalize(s: string) {
