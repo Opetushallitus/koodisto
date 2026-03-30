@@ -217,14 +217,6 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
           value: `/env/${env}/slack-notifications-channel-webhook`,
         },
-        MVN_SETTINGS_GITHUB_USERNAME: {
-          type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
-          value: "/mvn/settings/github/username",
-        },
-        MVN_SETTINGS_GITHUB_PASSWORD: {
-          type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
-          value: "/mvn/settings/github/password",
-        },
       },
       buildSpec: codebuild.BuildSpec.fromObject({
         version: "0.2",
@@ -348,14 +340,6 @@ function makeTestProject(
         DOCKER_PASSWORD: {
           type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
           value: "/docker/password",
-        },
-        MVN_SETTINGS_GITHUB_USERNAME: {
-          type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
-          value: "/mvn/settings/github/username",
-        },
-        MVN_SETTINGS_GITHUB_PASSWORD: {
-          type: codebuild.BuildEnvironmentVariableType.PARAMETER_STORE,
-          value: "/mvn/settings/github/password",
         },
       },
       buildSpec: codebuild.BuildSpec.fromObject({
