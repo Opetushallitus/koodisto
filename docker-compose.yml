@@ -1,7 +1,7 @@
 services:
   database:
     container_name: oph-koodisto-db
-    image: postgres:15.15@sha256:697ff70295146d53b702b07532fe68aaed7a5f10d04ff68edbeffd5fbacd15a5
+    image: postgres:15.15@sha256:98fe06b500b5eb29e45bf8c073eb0ca399790ce17b1d586448edc4203627d342
     environment:
       - POSTGRES_USER=app
       - POSTGRES_DB=koodisto
@@ -14,7 +14,7 @@ services:
       interval: 1s
   database-test:
     container_name: oph-koodisto-test-db
-    image: postgres:15.15@sha256:697ff70295146d53b702b07532fe68aaed7a5f10d04ff68edbeffd5fbacd15a5
+    image: postgres:15.15@sha256:98fe06b500b5eb29e45bf8c073eb0ca399790ce17b1d586448edc4203627d342
     environment:
       - POSTGRES_USER=app
       - POSTGRES_DB=koodisto
