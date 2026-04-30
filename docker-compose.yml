@@ -7,7 +7,7 @@ services:
       - POSTGRES_DB=koodisto
       - POSTGRES_PASSWORD=koodisto
     ports:
-      - 5434:5432
+      - 5454:5432
     command: ["postgres", "-c", "log_statement=all"]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready --username app --dbname koodisto"]
@@ -20,7 +20,7 @@ services:
       - POSTGRES_DB=koodisto
       - POSTGRES_PASSWORD=koodisto
     ports:
-      - 5435:5432
+      - 5453:5432
     command: ["postgres", "-c", "log_statement=all"]
 volumes:
   database-data:

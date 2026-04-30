@@ -12,7 +12,7 @@ export const EmptyKoodistoRyhmaList: React.FC<{
 }> = ({ emptyKoodistoRyhma, setEmptyKoodistoRyhma }) => {
     const onDelete = async (uri: string) => {
         const data = await deleteKoodistoRyhma(uri);
-        data &&
+        if (data) {
             success({
                 title: (
                     <FormattedMessage
@@ -28,7 +28,8 @@ export const EmptyKoodistoRyhmaList: React.FC<{
                     />
                 ),
             });
-        data && setEmptyKoodistoRyhma(data);
+            setEmptyKoodistoRyhma(data);
+        }
     };
     return (
         <>

@@ -21,18 +21,23 @@ export const KoodiSuhdeModal: React.FC<SuhdeModalProps> = ({ close, save, relati
     useEffect(() => {
         const controller = new AbortController();
         (async () => {
-            const list = await relationSources.reduce(async (p, c) => {
-                const koodistoNimi = atomData.find((koodisto) => koodisto.koodistoUri === c.koodistoUri)?.nimi || '';
-                return [
-                    ...(await p),
-                    ...((await fetchKoodistoKoodis(c.koodistoUri, c.versio, controller)) || []).map((a) => ({
-                        ...a,
-                        koodistoNimi,
-                    })),
-                ];
-            }, Promise.resolve([] as KoodiList[]));
-
-            list && setKoodiList(list);
+            const list = await relationSources.reduce(
+                async (p, c) => {
+                    const koodistoNimi =
+                        atomData.find((koodisto) => koodisto.koodistoUri === c.koodistoUri)?.nimi || '';
+                    return [
+                        ...(await p),
+                        ...((await fetchKoodistoKoodis(c.koodistoUri, c.versio, controller)) || []).map((a) => ({
+                            ...a,
+                            koodistoNimi,
+                        })),
+                    ];
+                },
+                Promise.resolve([] as KoodiList[])
+            );
+            if (list) {
+                setKoodiList(list);
+            }
         })();
         return () => {
             controller.abort();

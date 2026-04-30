@@ -72,11 +72,15 @@ export const KoodiMuokkausPage: React.FC = () => {
         if (isEditing) {
             (async () => {
                 const pageKoodi = await fetchPageKoodi(koodiUri, +koodiVersio);
-                pageKoodi && formReturn.reset(pageKoodi);
+                if (pageKoodi) {
+                    formReturn.reset(pageKoodi);
+                }
                 const koodiList =
                     (await (pageKoodi?.koodisto &&
                         fetchKoodistoKoodis(pageKoodi.koodisto.koodistoUri, Number(pageKoodi.koodisto.versio)))) || [];
-                koodiList && setKoodit(koodiList);
+                if (koodiList) {
+                    setKoodit(koodiList);
+                }
                 setDisabled(pageKoodi?.tila !== 'LUONNOS');
             })();
         } else {
@@ -85,7 +89,9 @@ export const KoodiMuokkausPage: React.FC = () => {
                     (await (newKoodiKoodistoUri &&
                         newKoodiKoodistoVersio &&
                         fetchKoodistoKoodis(newKoodiKoodistoUri, Number(newKoodiKoodistoVersio)))) || [];
-                koodiList && setKoodit(koodiList);
+                if (koodiList) {
+                    setKoodit(koodiList);
+                }
             })();
         }
         setLoading(false);
@@ -105,7 +111,9 @@ export const KoodiMuokkausPage: React.FC = () => {
         if (data) {
             successNotification(data.koodiUri);
             formReturn.reset(data);
-            callback && callback();
+            if (callback) {
+                callback();
+            }
             navigate(`/koodi/view/${data.koodiUri}/${data.versio}`);
         }
     };

@@ -31,7 +31,7 @@ import { debounce, uniq, uniqBy } from 'lodash';
 import { Paging } from './Paging';
 
 declare module '@tanstack/table-core' {
-    // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/consistent-type-definitions
     interface ColumnMeta<TData extends RowData, TValue> {
         filterPlaceHolder?: MessageDescriptor;
     }
@@ -53,7 +53,11 @@ const Th = styled.th`
     text-align: left;
 `;
 const Td = styled.td`
-    font-family: Roboto, Arial Unicode MS, Arial, sans-serif;
+    font-family:
+        Roboto,
+        Arial Unicode MS,
+        Arial,
+        sans-serif;
     font-weight: 400;
 `;
 const Tr = styled.tr``;

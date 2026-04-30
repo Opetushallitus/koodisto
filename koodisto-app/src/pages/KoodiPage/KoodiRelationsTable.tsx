@@ -51,13 +51,15 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
             const index = fieldArrayReturn?.fields.findIndex(
                 (value) => value.koodiUri === uri && value.koodiVersio === versio
             );
-            fieldArrayReturn && fieldArrayReturn.remove(index);
+            if (fieldArrayReturn) {
+                fieldArrayReturn.remove(index);
+            }
         },
         [fieldArrayReturn]
     );
     const addNewKoodiToRelations = useCallback(
         (koodiList: KoodiList[]) => {
-            fieldArrayReturn &&
+            if (fieldArrayReturn) {
                 fieldArrayReturn.replace(
                     uniqWith(
                         [
@@ -77,6 +79,7 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
                         (a, b) => a.koodiUri === b.koodiUri && a.koodiVersio === b.koodiVersio
                     )
                 );
+            }
         },
         [fieldArrayReturn, relations]
     );

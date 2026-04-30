@@ -117,7 +117,11 @@ export const KoodiPageAccordion: React.FC<KoodiPageAccordionProps> = ({
                 sisaltyyKoodeihin: [],
                 sisaltaaKoodit: [],
                 rinnastuuKoodeihin: [],
-            } as { sisaltyyKoodeihin: KoodiRelation[]; sisaltaaKoodit: KoodiRelation[]; rinnastuuKoodeihin: KoodiRelation[] })
+            } as {
+                sisaltyyKoodeihin: KoodiRelation[];
+                sisaltaaKoodit: KoodiRelation[];
+                rinnastuuKoodeihin: KoodiRelation[];
+            })
         );
 
         sisaltaaKooditReturn?.replace(joinRelations(koodi.sisaltaaKoodit, newRelations.sisaltaaKoodit));

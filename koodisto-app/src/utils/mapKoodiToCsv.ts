@@ -4,7 +4,7 @@ export const mapKoodiToCSV = (koodi: Koodi) => {
     const allLang: Kieli[] = ['FI', 'SV', 'EN'];
     const metadataKeys = ['nimi', 'lyhytNimi', 'kuvaus'] as (keyof Metadata)[];
     const reducedMetadata = allLang.reduce((p, language) => {
-        const languageKeyedMetadata: { [key: string]: string | undefined } = {};
+        const languageKeyedMetadata: Record<string, string | undefined> = {};
         const languageMetadata = {
             nimi: '',
             lyhytNimi: '',

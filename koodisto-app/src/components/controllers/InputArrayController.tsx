@@ -90,6 +90,8 @@ export const InputArrayController = <T extends { metadata: KoodiMetadata[] }>({
                                         defaultMessage: 'Kopioi muihin kieliin',
                                     })}
                                     onClick={() => copyToFields()}
+                                    tabIndex={0}
+                                    role="button"
                                 >
                                     <IconWrapper
                                         icon="ci:copy"

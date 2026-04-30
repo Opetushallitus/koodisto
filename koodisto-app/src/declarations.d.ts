@@ -2,9 +2,9 @@
 /// <reference types="react-dom" />
 
 declare namespace NodeJS {
-    interface ProcessEnv {
+    type ProcessEnv = {
         readonly NODE_ENV: 'development' | 'production' | 'test';
-    }
+    };
 }
 
 declare module '*.avif' {
@@ -52,16 +52,16 @@ declare module '*.svg' {
 }
 
 declare module '*.module.css' {
-    const classes: { readonly [key: string]: string };
+    const classes: Readonly<Record<string, string>>;
     export default classes;
 }
 
 declare module '*.module.scss' {
-    const classes: { readonly [key: string]: string };
+    const classes: Readonly<Record<string, string>>;
     export default classes;
 }
 
 declare module '*.module.sass' {
-    const classes: { readonly [key: string]: string };
+    const classes: Readonly<Record<string, string>>;
     export default classes;
 }

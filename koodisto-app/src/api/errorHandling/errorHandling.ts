@@ -17,7 +17,9 @@ const handleError = <T>(error: AxiosError<T> | unknown) => {
             }
         }
     } else if (isErrorMessage(error)) {
-        error.message !== 'canceled' && danger({ message: error.message });
+        if (error.message !== 'canceled') {
+            danger({ message: error.message });
+        }
     } else {
         danger({ message: error as string });
         console.error(error);

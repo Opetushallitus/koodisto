@@ -52,13 +52,15 @@ export const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
             const index = fieldArrayReturn?.fields.findIndex(
                 (value) => value.koodistoUri === uri && value.koodistoVersio === versio
             );
-            fieldArrayReturn && fieldArrayReturn.remove(index);
+            if (fieldArrayReturn) {
+                fieldArrayReturn.remove(index);
+            }
         },
         [fieldArrayReturn]
     );
     const addNewKoodistoToRelations = useCallback(
         (koodisto: ListKoodisto[]) => {
-            fieldArrayReturn &&
+            if (fieldArrayReturn) {
                 fieldArrayReturn.replace([
                     ...koodistoRelations,
                     ...koodisto.map((a) => ({
@@ -69,6 +71,7 @@ export const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
                         passive: false,
                     })),
                 ]);
+            }
         },
         [fieldArrayReturn, koodistoRelations]
     );

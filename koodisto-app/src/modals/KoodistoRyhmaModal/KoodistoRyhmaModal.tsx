@@ -37,7 +37,9 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
     useEffect(() => {
         (async () => {
             const emptyRyhmat = await fetchEmptyKoodistoRyhma();
-            emptyRyhmat && setEmptyKoodistoRyhma(emptyRyhmat);
+            if (emptyRyhmat) {
+                setEmptyKoodistoRyhma(emptyRyhmat);
+            }
         })();
     }, []);
     useEffect(() => {
@@ -55,7 +57,7 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
 
     const update = async (uri: string, nimi: { fi: string; sv: string; en: string }) => {
         const updated = await updateKoodistoRyhma(uri, { nimi });
-        updated &&
+        if (updated) {
             success({
                 title: (
                     <FormattedMessage
@@ -71,10 +73,11 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                     />
                 ),
             });
+        }
     };
     const create = async (nimi: { fi: string; sv: string; en: string }) => {
         const created = await createKoodistoRyhma({ nimi });
-        created &&
+        if (created) {
             success({
                 title: (
                     <FormattedMessage
@@ -90,8 +93,11 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                     />
                 ),
             });
+        }
         const data = await fetchEmptyKoodistoRyhma();
-        data && setEmptyKoodistoRyhma(data);
+        if (data) {
+            setEmptyKoodistoRyhma(data);
+        }
         reset();
     };
 
@@ -130,6 +136,8 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                                         defaultMessage: 'Kopioi muihin kieliin',
                                     })}
                                     onClick={() => copyToNames()}
+                                    tabIndex={0}
+                                    role="button"
                                 >
                                     <IconWrapper
                                         icon="ci:copy"

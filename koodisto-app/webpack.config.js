@@ -57,7 +57,7 @@ module.exports = function () {
             },
             host: '127.0.0.1',
             hot: true,
-            port: isPlaywright ? 8686 : 3000,
+            port: isPlaywright ? 8686 : 3001,
             proxy: isPlaywright
                 ? [
                       {

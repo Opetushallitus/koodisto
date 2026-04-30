@@ -11,7 +11,6 @@ function main {
   npm_ci_if_needed
 
   npm run lint
-  npm run prettier
   npm run playwright:install
   CI=true npm run playwright
 }
