@@ -23,7 +23,7 @@ test('The landing page', async ({ page }) => {
         await expect(page.getByText('Koodistot (86 / 406)')).toBeVisible();
         await page.goto(BASE_PATH);
         await expect(page.getByText('Koodistot (86 / 406)')).toBeVisible();
-        await page.getByRole('row', { name: 'Koski', exact: true }).locator('svg').first().click();
+        await page.locator('#filter-container-ryhmaUri').locator('svg').first().click();
         await expect(page.getByText('Koodistot (406 / 406)')).toBeVisible();
         await page.goto(BASE_PATH);
         await expect(page.getByText('Koodistot (406 / 406)')).toBeVisible();
