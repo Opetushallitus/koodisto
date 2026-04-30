@@ -21,12 +21,7 @@ export default defineConfig([
 
         rules: {
             'jsx-a11y/click-events-have-key-events': 1,
-            'jsx-a11y/no-autofocus': 1,
-            'jsx-a11y/no-noninteractive-element-interactions': 1,
             '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
-            '@typescript-eslint/no-explicit-any': 1,
-            '@typescript-eslint/no-invalid-void-type': 1, // does not recognise rtk generic type arguments
-            '@typescript-eslint/no-non-null-assertion': 1,
             '@typescript-eslint/no-unused-vars': [
                 'error',
                 {
