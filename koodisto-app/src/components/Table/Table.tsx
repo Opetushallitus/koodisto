@@ -2,8 +2,7 @@ import React, { ReactNode, useState, useEffect, useMemo, useCallback, useRef, HT
 import styled from 'styled-components';
 import { MessageDescriptor, useIntl } from 'react-intl';
 import Input from '@opetushallitus/virkailija-ui-components/Input';
-import Select from '@opetushallitus/virkailija-ui-components/Select';
-import { ValueType } from 'react-select';
+import Select from 'react-select';
 import type { SelectOptionType, PageSize } from '../../types';
 import {
     Column,
@@ -315,13 +314,13 @@ function Filter<T>({ column, table }: { column: Column<T, unknown>; table: React
             <SelectContainer>
                 <Select
                     id={`filter-container-${column.id}`}
-                    onChange={(values: ValueType<SelectOptionType>) => column.setFilterValue(values)}
+                    onChange={(values) => column.setFilterValue(values)}
                     placeholder={formatMessage({
                         id: 'TAULUKKO_DROPDOWN_FILTTERI',
                         defaultMessage: 'Valitse arvo listalta',
                     })}
                     isMulti={true}
-                    value={(column.getFilterValue() as ValueType<{ label: string; value: string }>) || []}
+                    value={(column.getFilterValue() as SelectOptionType[]) ?? []}
                     options={sortedUniqueValues.map((a: SelectOptionType) => ({ label: a.label, value: a.value }))}
                 />
             </SelectContainer>

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useMemo, useState } from 'react';
-import Select from '@opetushallitus/virkailija-ui-components/Select';
+import Select from 'react-select';
 import { SelectOption } from '../../types';
 import { escapeRegExp, sortBy } from 'lodash';
 

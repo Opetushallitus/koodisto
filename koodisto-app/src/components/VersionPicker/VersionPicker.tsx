@@ -2,8 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import { dropRight } from 'lodash';
-import Select from '@opetushallitus/virkailija-ui-components/Select';
-import type { ValueType } from 'react-select';
+import Select from 'react-select';
 import type { SelectOption } from '../../types';
 import { SelectContainer } from '..//Containers';
 
@@ -37,7 +36,7 @@ export const VersionPicker: React.FC<Props> = ({ version, versions }) => {
                 })}
                 value={options.find((option) => option.value === `${version}`)}
                 options={options}
-                onChange={(value: ValueType<SelectOption>) => {
+                onChange={(value) => {
                     navigate([...dropRight(location.pathname.split('/')), (value as SelectOption).value].join('/'));
                 }}
             />

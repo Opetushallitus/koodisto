@@ -3,9 +3,8 @@ import { Table } from '@tanstack/react-table';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import Button from '@opetushallitus/virkailija-ui-components/Button';
-import Select from '@opetushallitus/virkailija-ui-components/Select';
-import type { ValueType } from 'react-select';
-import type { SelectOption, PageSize } from '../../types';
+import Select from 'react-select';
+import type { PageSize } from '../../types';
 import { IconWrapper } from '../IconWapper';
 
 const Pager = styled.section`
@@ -53,9 +52,7 @@ export const Paging = <T extends object>({ table }: { table: Table<T> }) => (
             <Select
                 name="CHANGE_PAGE_SIZE"
                 menuPlacement="top"
-                onChange={(option: ValueType<SelectOption>) =>
-                    option && table.setPageSize(Number((option as SelectOption).value))
-                }
+                onChange={(option) => option && table.setPageSize(Number(option.value))}
                 value={{
                     label: `${table.getState().pagination.pageSize}`,
                     value: `${table.getState().pagination.pageSize}`,
