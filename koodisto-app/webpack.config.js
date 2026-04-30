@@ -4,7 +4,6 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { createHash } = require('crypto');
 
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
@@ -182,6 +181,7 @@ module.exports = function () {
             new HtmlWebpackPlugin({
                 filename: 'index.html',
                 template: path.resolve(__dirname, 'public', 'index.html'),
+                favicon: path.resolve(__dirname, 'public', 'favicon.ico'),
                 chunks: ['main'],
             }),
             new webpack.DefinePlugin({
@@ -192,9 +192,6 @@ module.exports = function () {
                     filename: 'static/css/[name].[contenthash:8].css',
                     chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
                 }),
-            new CopyWebpackPlugin({
-                patterns: [{ from: path.resolve(__dirname, 'public', 'favicon.ico') }],
-            }),
             new WebpackManifestPlugin({
                 fileName: 'asset-manifest.json',
                 publicPath: '/koodisto-service/ui/',
