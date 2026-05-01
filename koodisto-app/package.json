@@ -28,7 +28,7 @@
         "@eslint/js": "9.39.4",
         "@formatjs/intl": "2.10.15",
         "@iconify/react": "3.2.2",
-        "@playwright/test": "1.57.0",
+        "@playwright/test": "1.59.1",
         "@types/lodash": "4.17.24",
         "@types/node": "24.10.15",
         "@types/papaparse": "5.5.2",
