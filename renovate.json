@@ -4,7 +4,6 @@
   "vulnerabilityAlerts": {
     "automerge": true,
     "enabled": true,
-    "automerge": true,
     "labels": ["security"]
   },
   "prConcurrentLimit": 10,
