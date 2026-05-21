@@ -19,7 +19,7 @@ import * as elasticloadbalancingv2 from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import * as certificatemanager from "aws-cdk-lib/aws-certificatemanager";
 import * as kms from "aws-cdk-lib/aws-kms";
 
-import { getConfig, getEnvironment } from "./config";
+import { getConfig } from "./config";
 import * as alarms from "./alarms";
 import { DatabaseBackupToS3 } from "./DatabaseBackupToS3";
 import { createHealthCheckStacks } from "./health-check";
