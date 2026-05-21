@@ -23,7 +23,8 @@ import { getConfig } from "./config";
 import * as alarms from "./alarms";
 import { DatabaseBackupToS3 } from "./DatabaseBackupToS3";
 import { createHealthCheckStacks } from "./health-check";
-import * as datantuonti from "./datantuonti"
+import * as datantuonti from "./datantuonti";
+import { ResponseAlarms } from "./response-alarms";
 
 class CdkApp extends cdk.App {
   constructor(props: cdk.AppProps) {
@@ -298,7 +299,7 @@ class ApplicationStack extends cdk.Stack {
       certificates: [albCertificate],
       open: true,
     });
-    listener.addTargets("ServiceTarget", {
+    const target = listener.addTargets("ServiceTarget", {
       port: appPort,
       targets: [service],
       healthCheck: {
@@ -307,6 +308,14 @@ class ApplicationStack extends cdk.Stack {
         interval: cdk.Duration.seconds(10),
         port: appPort.toString(),
       },
+    });
+    new ResponseAlarms(this, "ResponseAlarms", {
+      prefix: "Organisaatio",
+      alarmTopic: props.alarmTopic,
+      alb,
+      albThreshold: 10,
+      target,
+      targetThreshold: 10,
     });
   }
 }
