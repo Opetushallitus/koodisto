@@ -310,7 +310,7 @@ class ApplicationStack extends cdk.Stack {
       },
     });
     new ResponseAlarms(this, "ResponseAlarms", {
-      prefix: "Organisaatio",
+      prefix: "Koodisto",
       alarmTopic: props.alarmTopic,
       alb,
       albThreshold: 10,
