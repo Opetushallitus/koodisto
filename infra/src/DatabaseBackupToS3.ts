@@ -29,7 +29,7 @@ export class DatabaseBackupToS3
   constructor(
     scope: constructs.Construct,
     id: string,
-    props: DatabaseBackupToS3Props
+    props: DatabaseBackupToS3Props,
   ) {
     super(scope, id);
     const { ecsCluster, dbCluster, dbName, alarmTopic } = props;
@@ -71,7 +71,7 @@ export class DatabaseBackupToS3
           operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
           cpuArchitecture: ecs.CpuArchitecture.ARM64,
         },
-      }
+      },
     );
     backupBucket.grantReadWrite(taskDefinition.taskRole);
 
@@ -87,7 +87,7 @@ export class DatabaseBackupToS3
       filterPattern: logs.FilterPattern.all(
         logs.FilterPattern.exists("$.size"),
         logs.FilterPattern.exists("$.dbname"),
-        logs.FilterPattern.exists("$.frequency")
+        logs.FilterPattern.exists("$.frequency"),
       ),
     });
 
@@ -129,7 +129,7 @@ export class DatabaseBackupToS3
         evaluationPeriods: 8,
         treatMissingData: cloudwatch.TreatMissingData.BREACHING,
         actionsEnabled: true,
-      }
+      },
     );
 
     [dailyFailureAlarm, monthlyFailureAlarm].forEach((alarm) => {
@@ -149,11 +149,11 @@ export class DatabaseBackupToS3
       secrets: {
         DB_USERNAME: ecs.Secret.fromSecretsManager(
           dbCluster.secret!,
-          "username"
+          "username",
         ),
         DB_PASSWORD: ecs.Secret.fromSecretsManager(
           dbCluster.secret!,
-          "password"
+          "password",
         ),
       },
     });
@@ -166,7 +166,7 @@ export class DatabaseBackupToS3
         cluster: ecsCluster,
         taskDefinition,
         securityGroups: [securityGroup],
-      })
+      }),
     );
 
     this.connections = new ec2.Connections({

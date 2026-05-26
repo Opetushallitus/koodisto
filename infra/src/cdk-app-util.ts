@@ -21,7 +21,7 @@ class CdkAppUtil extends cdk.App {
     const dependencyManagement = new dm.DependencyManagementStack(
       this,
       "DependencyManagementStack",
-      { env }
+      { env },
     );
     new ContinuousDeploymentStack(
       this,
@@ -29,7 +29,7 @@ class CdkAppUtil extends cdk.App {
       dependencyManagement,
       {
         env,
-      }
+      },
     );
   }
 }
@@ -39,7 +39,7 @@ class ContinuousDeploymentStack extends cdk.Stack {
     scope: constructs.Construct,
     id: string,
     dependencyManagement: dm.DependencyManagementStack,
-    props: cdk.StackProps
+    props: cdk.StackProps,
   ) {
     super(scope, id, props);
 
@@ -49,7 +49,7 @@ class ContinuousDeploymentStack extends cdk.Stack {
       {
         connectionName: "GithubConnection",
         providerType: "GitHub",
-      }
+      },
     );
 
     new ContinuousDeploymentPipelineStack(
@@ -59,7 +59,7 @@ class ContinuousDeploymentStack extends cdk.Stack {
       githubConnection,
       { owner: "Opetushallitus", name: "koodisto", branch: "master" },
       dependencyManagement,
-      props
+      props,
     );
     new ContinuousDeploymentPipelineStack(
       this,
@@ -68,7 +68,7 @@ class ContinuousDeploymentStack extends cdk.Stack {
       githubConnection,
       { owner: "Opetushallitus", name: "koodisto", branch: "green-hahtuva" },
       dependencyManagement,
-      props
+      props,
     );
     new ContinuousDeploymentPipelineStack(
       this,
@@ -77,7 +77,7 @@ class ContinuousDeploymentStack extends cdk.Stack {
       githubConnection,
       { owner: "Opetushallitus", name: "koodisto", branch: "green-dev" },
       dependencyManagement,
-      props
+      props,
     );
     new ContinuousDeploymentPipelineStack(
       this,
@@ -86,7 +86,7 @@ class ContinuousDeploymentStack extends cdk.Stack {
       githubConnection,
       { owner: "Opetushallitus", name: "koodisto", branch: "green-qa" },
       dependencyManagement,
-      props
+      props,
     );
 
     const radiatorAccountId = "905418271050";
@@ -96,8 +96,8 @@ class ContinuousDeploymentStack extends cdk.Stack {
     });
     radiatorReader.addManagedPolicy(
       iam.ManagedPolicy.fromAwsManagedPolicyName(
-        "AWSCodePipeline_ReadOnlyAccess"
-      )
+        "AWSCodePipeline_ReadOnlyAccess",
+      ),
     );
   }
 }
@@ -118,7 +118,7 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
     connection: codestarconnections.CfnConnection,
     repository: Repository,
     dependencyManagement: dm.DependencyManagementStack,
-    props: cdk.StackProps
+    props: cdk.StackProps,
   ) {
     super(scope, id, props);
     const capitalizedEnv = capitalize(env);
@@ -132,7 +132,7 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
     cdk.Tags.of(pipeline).add(
       "Repository",
       `${repository.owner}/${repository.name}`,
-      { includeResourceTypes: ["AWS::CodePipeline::Pipeline"] }
+      { includeResourceTypes: ["AWS::CodePipeline::Pipeline"] },
     );
     cdk.Tags.of(pipeline).add("FromBranch", repository.branch, {
       includeResourceTypes: ["AWS::CodePipeline::Pipeline"],
@@ -168,9 +168,9 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
             env,
             `TestBackend`,
             ["scripts/ci/run-backend-tests.sh"],
-            dependencyManagement
+            dependencyManagement,
           ),
-        })
+        }),
       );
       testStage.addAction(
         new codepipeline_actions.CodeBuildAction({
@@ -182,9 +182,22 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
             env,
             "TestKoodistoUiPlaywright",
             ["scripts/ci/run-playwright-tests.sh"],
-            dependencyManagement
+            dependencyManagement,
           ),
-        })
+        }),
+      );
+      testStage.addAction(
+        new codepipeline_actions.CodeBuildAction({
+          actionName: "Prettier",
+          input: sourceOutput,
+          project: makeUbuntuTestProject(
+            this,
+            env,
+            "CheckCodeFormat",
+            ["scripts/ci/run-code-format-checks.sh"],
+            dependencyManagement,
+          ),
+        }),
       );
     }
 
@@ -241,7 +254,7 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
 
     const deploymentTargetAccount = ssm.StringParameter.valueFromLookup(
       this,
-      `/env/${env}/account_id`
+      `/env/${env}/account_id`,
     );
     const targetRegions = ["eu-west-1", ROUTE53_HEALTH_CHECK_REGION];
     deployProject.role?.attachInlinePolicy(
@@ -258,7 +271,7 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
             ]),
           }),
         ],
-      })
+      }),
     );
     dependencyManagement.grantRead(deployProject.role!);
     const deployAction = new codepipeline_actions.CodeBuildAction({
@@ -276,7 +289,7 @@ function makeAmazonLinuxTestProject(
   env: string,
   name: string,
   testCommands: string[],
-  dependencyManagement: dm.DependencyManagementStack
+  dependencyManagement: dm.DependencyManagementStack,
 ): codebuild.PipelineProject {
   return makeTestProject(
     scope,
@@ -287,7 +300,7 @@ function makeAmazonLinuxTestProject(
     [
       "sudo yum install -y perl-Digest-SHA", // for shasum command
     ],
-    dependencyManagement
+    dependencyManagement,
   );
 }
 
@@ -296,7 +309,7 @@ function makeUbuntuTestProject(
   env: string,
   name: string,
   testCommands: string[],
-  dependencyManagement: dm.DependencyManagementStack
+  dependencyManagement: dm.DependencyManagementStack,
 ): codebuild.PipelineProject {
   return makeTestProject(
     scope,
@@ -309,7 +322,7 @@ function makeUbuntuTestProject(
       "sudo apt-get install -y netcat", // for nc command
       "sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libnss3 libxss1 libasound2 libxtst6 xauth xvfb", // For Chromium
     ],
-    dependencyManagement
+    dependencyManagement,
   );
 }
 
@@ -320,7 +333,7 @@ function makeTestProject(
   testCommands: string[],
   buildImage: codebuild.IBuildImage,
   preBuildCommands: string[],
-  dependencyManagement: dm.DependencyManagementStack
+  dependencyManagement: dm.DependencyManagementStack,
 ) {
   const project = new codebuild.PipelineProject(
     scope,
@@ -373,7 +386,7 @@ function makeTestProject(
           files: ["playwright.tar.gz"],
         },
       }),
-    }
+    },
   );
   dependencyManagement.grantRead(project.role!);
   return project;

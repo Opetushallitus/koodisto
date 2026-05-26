@@ -27,7 +27,7 @@ export class ExpectedLogLineAlarm extends constructs.Construct {
       expectedLogLine,
       period,
       evaluationPeriods,
-    }: ExpectedLogLineAlarmProps
+    }: ExpectedLogLineAlarmProps,
   ) {
     super(scope, id);
 

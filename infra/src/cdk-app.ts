@@ -41,14 +41,18 @@ class CdkApp extends cdk.App {
     const { alarmTopic, alarmsToSlackLambda } = new AlarmStack(
       this,
       "AlarmStack",
-      stackProps
+      stackProps,
     );
     const { vpc, bastion } = new VpcStack(this, "VpcStack", stackProps);
     const { ecsCluster } = new EcsStack(this, "EcsStack", {
       ...stackProps,
       vpc,
     });
-    const datantuontiExport = new datantuonti.ExportStack(this, "DatantuontiExport", stackProps);
+    const datantuontiExport = new datantuonti.ExportStack(
+      this,
+      "DatantuontiExport",
+      stackProps,
+    );
     const { database, exportBucket } = new DatabaseStack(
       this,
       "DatabaseStack",
@@ -58,8 +62,8 @@ class CdkApp extends cdk.App {
         bastion,
         ecsCluster,
         alarmTopic,
-        datantuontiExportBucket: datantuontiExport.bucket
-      }
+        datantuontiExportBucket: datantuontiExport.bucket,
+      },
     );
     new ApplicationStack(this, "ApplicationStack", {
       ...stackProps,
@@ -70,13 +74,13 @@ class CdkApp extends cdk.App {
       database,
       exportBucket,
       datantuontiExportBucket: datantuontiExport.bucket,
-      datantuontiExportEncryptionKey: datantuontiExport.encryptionKey
+      datantuontiExportEncryptionKey: datantuontiExport.encryptionKey,
     });
     createHealthCheckStacks(this, alarmsToSlackLambda, [
       {
         name: "Koodisto",
         url: new URL(
-          `https://${config.virkailijaHost}/koodisto-service/actuator/health`
+          `https://${config.virkailijaHost}/koodisto-service/actuator/health`,
         ),
       },
     ]);
@@ -96,10 +100,18 @@ class ApplicationStack extends cdk.Stack {
       exportBucket: s3.Bucket;
       datantuontiExportBucket: s3.Bucket;
       datantuontiExportEncryptionKey: kms.Key;
-    }
+    },
   ) {
     super(scope, id, props);
-    const { vpc, ecsCluster, database, exportBucket, datantuontiExportBucket, datantuontiExportEncryptionKey, hostedZone } = props;
+    const {
+      vpc,
+      ecsCluster,
+      database,
+      exportBucket,
+      datantuontiExportBucket,
+      datantuontiExportEncryptionKey,
+      hostedZone,
+    } = props;
     const config = getConfig();
 
     const appPort = 8080;
@@ -132,8 +144,9 @@ class ApplicationStack extends cdk.Stack {
     exportBucket.grantReadWrite(taskDefinition.taskRole);
     datantuontiExportBucket.grantReadWrite(taskDefinition.taskRole);
     datantuontiExportEncryptionKey.grantEncrypt(taskDefinition.taskRole);
-    datantuonti.createS3ImporPolicyStatements(this)
-        .forEach(statement => taskDefinition.addToTaskRolePolicy(statement))
+    datantuonti
+      .createS3ImporPolicyStatements(this)
+      .forEach((statement) => taskDefinition.addToTaskRolePolicy(statement));
 
     const oauthProperties: ecs.ContainerDefinitionProps["environment"] =
       config.oauthServer
@@ -167,8 +180,10 @@ class ApplicationStack extends cdk.Stack {
         "spring.datasource.url": `jdbc:postgresql://${database.clusterEndpoint.hostname}:${database.clusterEndpoint.port.toString()}/koodisto`,
         "host.virkailija": config.virkailijaHost,
         "koodisto.tasks.datantuonti.export.enabled": `${config.datantuonti.export.enabled}`,
-        "koodisto.tasks.datantuonti.export.bucket-name": props.datantuontiExportBucket.bucketName,
-        "koodisto.tasks.datantuonti.export.encryption-key-arn": props.datantuontiExportEncryptionKey.keyArn,
+        "koodisto.tasks.datantuonti.export.bucket-name":
+          props.datantuontiExportBucket.bucketName,
+        "koodisto.tasks.datantuonti.export.encryption-key-arn":
+          props.datantuontiExportEncryptionKey.keyArn,
         "koodisto.tasks.datantuonti.import.enabled": config.datantuonti.import
           ? `${config.datantuonti.import.enabled}`
           : "false",
@@ -176,19 +191,21 @@ class ApplicationStack extends cdk.Stack {
         ...oauthProperties,
       },
       secrets: {
-        "koodisto.tasks.datantuonti.import.bucket-name": ecs.Secret.fromSsmParameter(
+        "koodisto.tasks.datantuonti.import.bucket-name":
+          ecs.Secret.fromSsmParameter(
             ssm.StringParameter.fromStringParameterName(
-                this,
-                `ParamDatantuontiImportBucketName`,
-                "koodisto.tasks.datantuonti.import.bucket-name"
-            )),
+              this,
+              `ParamDatantuontiImportBucketName`,
+              "koodisto.tasks.datantuonti.import.bucket-name",
+            ),
+          ),
         "spring.datasource.username": ecs.Secret.fromSecretsManager(
           database.secret!,
-          "username"
+          "username",
         ),
         "spring.datasource.password": ecs.Secret.fromSecretsManager(
           database.secret!,
-          "password"
+          "password",
         ),
       },
       portMappings: [
@@ -207,7 +224,7 @@ class ApplicationStack extends cdk.Stack {
           resources: [
             ssm.StringParameter.valueFromLookup(this, "LampiRoleArn"),
           ],
-        })
+        }),
       );
 
       new alarms.ExpectedLogLineAlarm(this, "ExportTaskAlarm", {
@@ -272,13 +289,13 @@ class ApplicationStack extends cdk.Stack {
     const alb = new elasticloadbalancingv2.ApplicationLoadBalancer(
       this,
       "LoadBalancer",
-      { vpc, internetFacing: true }
+      { vpc, internetFacing: true },
     );
 
     new route53.ARecord(this, "ALBARecord", {
       zone: hostedZone,
       target: route53.RecordTarget.fromAlias(
-        new route53_targets.LoadBalancerTarget(alb)
+        new route53_targets.LoadBalancerTarget(alb),
       ),
       recordName: albHostname,
     });
@@ -290,7 +307,7 @@ class ApplicationStack extends cdk.Stack {
         domainName: albHostname,
         validation:
           certificatemanager.CertificateValidation.fromDns(hostedZone),
-      }
+      },
     );
 
     const listener = alb.addListener("Listener", {
@@ -390,7 +407,7 @@ class EcsStack extends cdk.Stack {
     id: string,
     props: cdk.StackProps & {
       vpc: ec2.IVpc;
-    }
+    },
   ) {
     super(scope, id, props);
     const { vpc } = props;
@@ -412,21 +429,21 @@ class AlarmStack extends cdk.Stack {
     this.alarmTopic = this.createAlarmTopic();
 
     this.alarmTopic.addSubscription(
-      new sns_subscriptions.LambdaSubscription(this.alarmsToSlackLambda)
+      new sns_subscriptions.LambdaSubscription(this.alarmsToSlackLambda),
     );
 
     const pagerDutyIntegrationUrlSecret =
       secretsmanager.Secret.fromSecretNameV2(
         this,
         "PagerDutyIntegrationUrlSecret",
-        "PagerDutyIntegrationUrl"
+        "PagerDutyIntegrationUrl",
       );
 
     this.alarmTopic.addSubscription(
       new sns_subscriptions.UrlSubscription(
         pagerDutyIntegrationUrlSecret.secretValue.toString(),
-        { protocol: sns.SubscriptionProtocol.HTTPS }
-      )
+        { protocol: sns.SubscriptionProtocol.HTTPS },
+      ),
     );
 
     const radiatorAccountId = "905418271050";
@@ -439,7 +456,7 @@ class AlarmStack extends cdk.Stack {
         effect: iam.Effect.ALLOW,
         actions: ["cloudwatch:DescribeAlarms"],
         resources: ["*"],
-      })
+      }),
     );
   }
 
@@ -464,14 +481,14 @@ class AlarmStack extends cdk.Stack {
       lambda.LayerVersion.fromLayerVersionArn(
         this,
         "ParametersAndSecretsLambdaExtension",
-        "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:11"
+        "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension-Arm64:11",
       );
 
     alarmsToSlack.addLayers(parametersAndSecretsExtension);
     secretsmanager.Secret.fromSecretNameV2(
       this,
       "slack-webhook",
-      "slack-webhook"
+      "slack-webhook",
     ).grantRead(alarmsToSlack);
 
     return alarmsToSlack;
@@ -491,18 +508,20 @@ class DatabaseStack extends cdk.Stack {
       ecsCluster: ecs.Cluster;
       alarmTopic: sns.ITopic;
       datantuontiExportBucket: s3.Bucket;
-    }
+    },
   ) {
     super(scope, id, props);
 
-    const { vpc, bastion, ecsCluster, alarmTopic, datantuontiExportBucket } = props;
+    const { vpc, bastion, ecsCluster, alarmTopic, datantuontiExportBucket } =
+      props;
     this.exportBucket = new s3.Bucket(this, "ExportBucket", {});
 
     const datantuontiImportRole = new iam.Role(this, "DatantuontiImport", {
-      assumedBy: new iam.ServicePrincipal("rds.amazonaws.com")
+      assumedBy: new iam.ServicePrincipal("rds.amazonaws.com"),
     });
-    datantuonti.createS3ImporPolicyStatements(this)
-        .forEach(statement =>  datantuontiImportRole.addToPolicy(statement));
+    datantuonti
+      .createS3ImporPolicyStatements(this)
+      .forEach((statement) => datantuontiImportRole.addToPolicy(statement));
 
     this.database = new rds.DatabaseCluster(this, "Database", {
       vpc,
@@ -519,7 +538,7 @@ class DatabaseStack extends cdk.Stack {
         enablePerformanceInsights: true,
         instanceType: ec2.InstanceType.of(
           ec2.InstanceClass.T4G,
-          ec2.InstanceSize.MEDIUM
+          ec2.InstanceSize.MEDIUM,
         ),
       }),
       storageEncrypted: true,
