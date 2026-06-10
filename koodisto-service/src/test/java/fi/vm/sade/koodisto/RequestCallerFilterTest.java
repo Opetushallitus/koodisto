@@ -1,5 +1,6 @@
 package fi.vm.sade.koodisto;
 
+import com.github.tomakehurst.wiremock.http.Cookie;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
@@ -21,9 +22,11 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPublicKey;
@@ -58,7 +61,7 @@ public class RequestCallerFilterTest {
   static void registerProperties(DynamicPropertyRegistry registry) {
     registry.add("host.virkailija", () -> "localhost");
     registry.add("url-virkailija", wireMock::baseUrl);
-    registry.add("cas.service", () -> wireMock.url("/koodisto-service"));
+    registry.add("cas.service", () -> "http://localhost:8080/koodisto-service");
     registry.add("cas.base", () -> wireMock.url("/cas"));
     registry.add("cas.login", () -> wireMock.url("/cas/login"));
     registry.add("koodistoUriFormat", () -> "http://localhost:8080/koodisto-service/rest/codes/{0}");
@@ -101,6 +104,99 @@ public class RequestCallerFilterTest {
     client.send(request, HttpResponse.BodyHandlers.ofString());
 
     assertThat(output).contains("\"callerHenkiloOid\": \"1.2.246.562.24.43006465835\"");
+  }
+
+  @Test
+  public void logsCallerHenkiloOidWhenCallerAuthenticatedWithCasVirkailija(CapturedOutput output)
+          throws Exception {
+    var cookie = getCookie("/cas-virkailija");
+    var ticket = "ST-30-JVB-gESc2Yc3S-zV25JOHbVEeBo-ip-10-0-55-20";
+    // Stub cas-virkailija endpoints
+    wireMock.stubFor(
+            get(urlEqualTo(
+                    "/cas/login?service="
+                            + URLEncoder.encode(
+                            "http://localhost:8080/koodisto-service", StandardCharsets.UTF_8)))
+                    .willReturn(
+                            aResponse()
+                                    .withStatus(302)
+                                    .withHeader(
+                                            "Location",
+                                            "http://localhost:8080/koodisto-service/j_spring_cas_security_check?ticket="
+                                                    + ticket)
+                                    .withHeader("Set-Cookie", cookie.toString())));
+    wireMock.stubFor(
+            post(urlEqualTo(
+                    "/cas/login?service="
+                            + URLEncoder.encode(
+                            "http://localhost:8080/koodisto-service/j_spring_cas_security_check",
+                            StandardCharsets.UTF_8)))
+                    .willReturn(
+                            aResponse()
+                                    .withStatus(302)
+                                    .withHeader(
+                                            "Location",
+                                            "http://localhost:8080/koodisto-service/j_spring_cas_security_check?ticket="
+                                                    + ticket)
+                                    .withHeader("Set-Cookie", cookie.toString())));
+    wireMock.stubFor(
+            get(urlEqualTo(
+                    "/cas/login?service="
+                            + URLEncoder.encode(
+                            "http://localhost:8080/koodisto-service/j_spring_cas_security_check",
+                            StandardCharsets.UTF_8)))
+                    .willReturn(
+                            aResponse()
+                                    .withStatus(302)
+                                    .withHeader(
+                                            "Location",
+                                            "http://localhost:8080/koodisto-service/j_spring_cas_security_check?ticket="
+                                                    + ticket)
+                                    .withHeader("Set-Cookie", cookie.toString())));
+    // validate ticket, provide cas response
+    wireMock.stubFor(
+            get(urlEqualTo(
+                    "/cas/p3/proxyValidate?ticket=%s&service=%s"
+                            .formatted(
+                                    ticket,
+                                    URLEncoder.encode(
+                                            "http://localhost:8080/koodisto-service/j_spring_cas_security_check",
+                                            StandardCharsets.UTF_8))))
+                    .willReturn(
+                            aResponse()
+                                    .withStatus(200)
+                                    .withBody(readResource("/cas-virkailija-auth-response.xml"))));
+
+    var client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build();
+
+    var loginRequest =
+            HttpRequest.newBuilder()
+                    .uri(
+                            URI.create(
+                                    wireMock.url(
+                                            "/cas/login?service="
+                                                    + URLEncoder.encode(
+                                                    "http://localhost:8080/koodisto-service/j_spring_cas_security_check",
+                                                    StandardCharsets.UTF_8))))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+    var loginResponse = client.send(loginRequest, HttpResponse.BodyHandlers.ofString());
+
+    var responseHeaders = loginResponse.headers();
+
+    var cookies = responseHeaders.allValues("Set-Cookie").get(0);
+
+    var summaryRequest =
+            HttpRequest.newBuilder()
+                    .header("Cookie", cookies)
+                    .uri(URI.create("http://localhost:" + port + "/rest/json/kieli"))
+                    .GET()
+                    .build();
+
+    client.send(summaryRequest, HttpResponse.BodyHandlers.ofString());
+
+    assertThat(output).contains("\"callerHenkiloOid\": \"1.2.246.562.98.1234567890\"");
   }
 
   private static KeyPair generateKeyPair() {
@@ -158,5 +254,26 @@ public class RequestCallerFilterTest {
               "roles": ["1.2.246.562.10.00000000001", "APP_OPPIJANUMEROREKISTERI_REKISTERINPITAJA", "APP_OPPIJANUMEROREKISTERI_REKISTERINPITAJA_1.2.246.562.10.00000000001"]
             }
             """.formatted(accessToken);
+  }
+
+  private Cookie getCookie(String path) {
+    var tgc = "TGC=asd";
+    return new Cookie(
+            path, tgc, "SameSite=none", "SameSite=None", "Secure", "HttpOnly", "Path=" + path);
+  }
+
+  private String readResource(String path) {
+    return new String(readBytes(path));
+  }
+
+  private byte[] readBytes(String path) {
+    try (var inputStream = getClass().getResourceAsStream(path)) {
+      if (inputStream == null) {
+        throw new RuntimeException("Resource not found: " + path);
+      }
+      return inputStream.readAllBytes();
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to read resource: " + path, e);
+    }
   }
 }
