@@ -26,7 +26,7 @@ COPY --from=build /build/koodisto-service/target/koodisto-service.jar koodisto-s
 COPY --chmod=755 <<"EOF" /app/entrypoint.sh
 #!/bin/bash
 set -o errexit -o nounset -o pipefail
-exec java -jar koodisto-service.jar
+exec java -XX:MaxRAMPercentage=75 -jar koodisto-service.jar
 EOF
 
 ENTRYPOINT ["/app/entrypoint.sh"]
