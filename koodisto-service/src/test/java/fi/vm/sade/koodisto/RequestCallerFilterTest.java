@@ -10,6 +10,8 @@ import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +36,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -60,12 +63,9 @@ public class RequestCallerFilterTest {
   @DynamicPropertySource
   static void registerProperties(DynamicPropertyRegistry registry) {
     registry.add("host.virkailija", () -> "localhost");
-    registry.add("url-virkailija", wireMock::baseUrl);
-    registry.add("cas.service", () -> "http://localhost:8080/koodisto-service");
+    registry.add("cas.service", () -> "http://localhost/koodisto-service");
     registry.add("cas.base", () -> wireMock.url("/cas"));
     registry.add("cas.login", () -> wireMock.url("/cas/login"));
-    registry.add("koodistoUriFormat", () -> "http://localhost:8080/koodisto-service/rest/codes/{0}");
-    registry.add("koodiUriFormat", () -> "http://localhost:8080/koodisto-service/rest/codeelement/{0}");
     // The oauth2 filter chain will not be added in the configuration without this property, check
     // WebSecurityConfiguration line 118 (right before oauth2FilterChain)
     registry.add("spring.security.oauth2.resourceserver.jwt.jwk-set-uri", () -> wireMock.url("/oauth2/jwks"));
@@ -73,6 +73,11 @@ public class RequestCallerFilterTest {
 
   @BeforeEach
   public void setup() {
+    wireMock.resetAll();
+  }
+
+  @AfterAll
+  static void teardown() {
     wireMock.resetAll();
   }
 
@@ -102,8 +107,12 @@ public class RequestCallerFilterTest {
             .build();
 
     client.send(request, HttpResponse.BodyHandlers.ofString());
-
-    assertThat(output).contains("\"callerHenkiloOid\": \"1.2.246.562.24.43006465835\"");
+    Awaitility.await()
+            .atMost(10, TimeUnit.SECONDS)
+            .pollInterval(500, TimeUnit.MILLISECONDS)
+            .untilAsserted(() -> {
+              assertThat(output).contains("\"callerHenkiloOid\": \"1.2.246.562.24.43006465835\"");
+            });
   }
 
   @Test
@@ -116,41 +125,41 @@ public class RequestCallerFilterTest {
             get(urlEqualTo(
                     "/cas/login?service="
                             + URLEncoder.encode(
-                            "http://localhost:8080/koodisto-service", StandardCharsets.UTF_8)))
+                            "http://localhost:" + port + "/koodisto-service", StandardCharsets.UTF_8)))
                     .willReturn(
                             aResponse()
                                     .withStatus(302)
                                     .withHeader(
                                             "Location",
-                                            "http://localhost:8080/koodisto-service/j_spring_cas_security_check?ticket="
+                                            "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check?ticket="
                                                     + ticket)
                                     .withHeader("Set-Cookie", cookie.toString())));
     wireMock.stubFor(
             post(urlEqualTo(
                     "/cas/login?service="
                             + URLEncoder.encode(
-                            "http://localhost:8080/koodisto-service/j_spring_cas_security_check",
+                            "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check",
                             StandardCharsets.UTF_8)))
                     .willReturn(
                             aResponse()
                                     .withStatus(302)
                                     .withHeader(
                                             "Location",
-                                            "http://localhost:8080/koodisto-service/j_spring_cas_security_check?ticket="
+                                            "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check?ticket="
                                                     + ticket)
                                     .withHeader("Set-Cookie", cookie.toString())));
     wireMock.stubFor(
             get(urlEqualTo(
                     "/cas/login?service="
                             + URLEncoder.encode(
-                            "http://localhost:8080/koodisto-service/j_spring_cas_security_check",
+                            "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check",
                             StandardCharsets.UTF_8)))
                     .willReturn(
                             aResponse()
                                     .withStatus(302)
                                     .withHeader(
                                             "Location",
-                                            "http://localhost:8080/koodisto-service/j_spring_cas_security_check?ticket="
+                                            "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check?ticket="
                                                     + ticket)
                                     .withHeader("Set-Cookie", cookie.toString())));
     // validate ticket, provide cas response
@@ -160,7 +169,7 @@ public class RequestCallerFilterTest {
                             .formatted(
                                     ticket,
                                     URLEncoder.encode(
-                                            "http://localhost:8080/koodisto-service/j_spring_cas_security_check",
+                                            "http://localhost/koodisto-service/j_spring_cas_security_check",
                                             StandardCharsets.UTF_8))))
                     .willReturn(
                             aResponse()
@@ -176,7 +185,7 @@ public class RequestCallerFilterTest {
                                     wireMock.url(
                                             "/cas/login?service="
                                                     + URLEncoder.encode(
-                                                    "http://localhost:8080/koodisto-service/j_spring_cas_security_check",
+                                                    "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check",
                                                     StandardCharsets.UTF_8))))
                     .POST(HttpRequest.BodyPublishers.noBody())
                     .build();
@@ -196,7 +205,12 @@ public class RequestCallerFilterTest {
 
     client.send(summaryRequest, HttpResponse.BodyHandlers.ofString());
 
-    assertThat(output).contains("\"callerHenkiloOid\": \"1.2.246.562.98.1234567890\"");
+    Awaitility.await()
+            .atMost(10, TimeUnit.SECONDS)
+            .pollInterval(500, TimeUnit.MILLISECONDS)
+            .untilAsserted(() -> {
+              assertThat(output).contains("\"callerHenkiloOid\": \"1.2.246.562.98.1234567890\"");
+            });
   }
 
   private static KeyPair generateKeyPair() {
