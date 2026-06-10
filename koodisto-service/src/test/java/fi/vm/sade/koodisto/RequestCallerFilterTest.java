@@ -61,6 +61,11 @@ public class RequestCallerFilterTest {
     registry.add("cas.service", () -> wireMock.url("/koodisto-service"));
     registry.add("cas.base", () -> wireMock.url("/cas"));
     registry.add("cas.login", () -> wireMock.url("/cas/login"));
+    registry.add("koodistoUriFormat", () -> "http://localhost:8080/koodisto-service/rest/codes/{0}");
+    registry.add("koodiUriFormat", () -> "http://localhost:8080/koodisto-service/rest/codeelement/{0}");
+    // The oauth2 filter chain will not be added in the configuration without this property, check
+    // WebSecurityConfiguration line 118 (right before oauth2FilterChain)
+    registry.add("spring.security.oauth2.resourceserver.jwt.jwk-set-uri", () -> wireMock.url("/oauth2/jwks"));
   }
 
   @BeforeEach
@@ -111,7 +116,7 @@ public class RequestCallerFilterTest {
   private static String generateToken(String subject) throws Exception {
     JWTClaimsSet claims = new JWTClaimsSet.Builder()
             .subject(subject)
-            .issuer("http://localhost:" + wireMock.getPort())
+            .issuer(wireMock.baseUrl())
             .audience("oppijanumerorekisteri-service")
             .expirationTime(Date.from(Instant.now().plusSeconds(3600)))
             .issueTime(Date.from(Instant.now()))
