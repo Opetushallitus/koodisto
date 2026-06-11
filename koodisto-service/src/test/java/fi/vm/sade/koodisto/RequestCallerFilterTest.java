@@ -23,6 +23,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -101,7 +102,7 @@ public class RequestCallerFilterTest {
     var client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build();
 
     var request = HttpRequest.newBuilder()
-            .uri(URI.create("http://localhost:" + port + "/rest/json/kieli"))
+            .uri(URI.create("http://localhost:" + port + "/koodisto-service/rest/json/kieli"))
             .header("Authorization", "Bearer " + token)
             .GET()
             .build();
@@ -199,7 +200,7 @@ public class RequestCallerFilterTest {
     var summaryRequest =
             HttpRequest.newBuilder()
                     .header("Cookie", cookies)
-                    .uri(URI.create("http://localhost:" + port + "/rest/json/kieli"))
+                    .uri(URI.create("http://localhost:" + port + "/koodisto-service/rest/json/kieli"))
                     .GET()
                     .build();
 
@@ -210,6 +211,104 @@ public class RequestCallerFilterTest {
             .pollInterval(500, TimeUnit.MILLISECONDS)
             .untilAsserted(() -> {
               assertThat(output).contains("\"callerHenkiloOid\": \"1.2.246.562.98.1234567890\"");
+            });
+  }
+
+  @Test
+  public void doesNotLogCallerHenkiloOidWhenUserIsAuthenticatedThroughCasOppija(CapturedOutput output)
+          throws IOException, InterruptedException {
+    var ticket = "ST-30-JVB-gESc2Yc3S-zV25JOHbVEeBo-ip-10-0-55-20";
+    var cookie = getCookie("/cas-oppija");
+    wireMock.stubFor(
+            get(urlEqualTo(
+                    "/cas/login?service="
+                            + URLEncoder.encode(
+                            "http://localhost:" + port + "/koodisto-service", StandardCharsets.UTF_8)))
+                    .willReturn(
+                            aResponse()
+                                    .withStatus(302)
+                                    .withHeader(
+                                            "Location",
+                                            "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check?ticket="
+                                                    + ticket)
+                                    .withHeader("Set-Cookie", cookie.toString())));
+    wireMock.stubFor(
+            post(urlEqualTo(
+                    "/cas/login?service="
+                            + URLEncoder.encode(
+                            "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check",
+                            StandardCharsets.UTF_8)))
+                    .willReturn(
+                            aResponse()
+                                    .withStatus(302)
+                                    .withHeader(
+                                            "Location",
+                                            "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check?ticket="
+                                                    + ticket)
+                                    .withHeader("Set-Cookie", cookie.toString())));
+    wireMock.stubFor(
+            get(urlEqualTo(
+                    "/cas/login?service="
+                            + URLEncoder.encode(
+                            "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check",
+                            StandardCharsets.UTF_8)))
+                    .willReturn(
+                            aResponse()
+                                    .withStatus(302)
+                                    .withHeader(
+                                            "Location",
+                                            "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check?ticket="
+                                                    + ticket)
+                                    .withHeader("Set-Cookie", cookie.toString())));
+    // service is missing the port since mocking the property in config to have the port is difficult, so it's just "http://localhost/koodisto-service"
+    wireMock.stubFor(
+            get(urlEqualTo(
+                    "/cas/p3/proxyValidate?ticket=%s&service=%s"
+                            .formatted(
+                                    ticket,
+                                    URLEncoder.encode(
+                                            "http://localhost/koodisto-service/j_spring_cas_security_check",
+                                            StandardCharsets.UTF_8))))
+                    .willReturn(
+                            aResponse()
+                                    .withStatus(200)
+                                    .withBody(readResource("/cas-oppija-auth-response.xml"))));
+
+    var client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build();
+
+    var request =
+            HttpRequest.newBuilder()
+                    .uri(
+                            URI.create(
+                                    wireMock.url(
+                                            "/cas/login?service="
+                                                    + URLEncoder.encode(
+                                                    "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check",
+                                                    StandardCharsets.UTF_8))))
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+    var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+    var responseHeaders = response.headers();
+
+    var cookies = responseHeaders.allValues("Set-Cookie").get(0);
+
+    var tiedotteetRequest =
+            HttpRequest.newBuilder()
+                    .header("Cookie", cookies)
+                    .uri(URI.create("http://localhost:" + port + "/koodisto-service/rest/json/kieli"))
+                    .GET()
+                    .build();
+
+    client.send(tiedotteetRequest, HttpResponse.BodyHandlers.ofString());
+
+    Awaitility.await()
+            .atMost(10, TimeUnit.SECONDS)
+            .pollInterval(500, TimeUnit.MILLISECONDS)
+            .untilAsserted(() -> {
+              assertThat(output).contains("\"callerHenkiloOid\": \"-\"");
+              assertThat(output).doesNotContain("\"callerHenkiloOid\": \"1.2.246.562.98.19783284870\"");
             });
   }
 
