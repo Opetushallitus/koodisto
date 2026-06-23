@@ -1,6 +1,6 @@
 package fi.vm.sade.koodisto;
 
-import fi.vm.sade.javautils.kayttooikeusclient.OphUserDetailsServiceImpl;
+import fi.vm.sade.koodisto.configuration.cas.OpintopolkuUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -40,12 +40,12 @@ public class RequestCallerFilter extends GenericFilterBean {
         }
     }
 
-    private Optional<OphUserDetailsServiceImpl.UserDetailsImpl> getUserDetails(ServletRequest servletRequest) {
+    private Optional<OpintopolkuUserDetailsService.UserDetailsImpl> getUserDetails(ServletRequest servletRequest) {
         if (servletRequest instanceof HttpServletRequest request) {
             var principal = request.getUserPrincipal();
             if (principal instanceof CasAuthenticationToken token) {
                 var userDetails = token.getUserDetails();
-                if (userDetails instanceof OphUserDetailsServiceImpl.UserDetailsImpl casUserDetails) {
+                if (userDetails instanceof OpintopolkuUserDetailsService.UserDetailsImpl casUserDetails) {
                     return Optional.of(casUserDetails);
                 }
             }
