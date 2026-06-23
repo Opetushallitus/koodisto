@@ -11,7 +11,6 @@ WORKDIR /build/koodisto-app
 RUN npm ci && npm run build
 
 WORKDIR /build
-COPY koodisto-audit ./koodisto-audit
 COPY koodisto-service ./koodisto-service
 COPY koodisto-api ./koodisto-api
 COPY pom.xml .
