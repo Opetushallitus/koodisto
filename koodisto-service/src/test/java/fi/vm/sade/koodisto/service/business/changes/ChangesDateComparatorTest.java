@@ -3,13 +3,13 @@ package fi.vm.sade.koodisto.service.business.changes;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class ChangesDateComparatorTest {

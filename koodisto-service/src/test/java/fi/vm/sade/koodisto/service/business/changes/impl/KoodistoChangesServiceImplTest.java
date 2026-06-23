@@ -10,13 +10,11 @@ import fi.vm.sade.koodisto.service.business.changes.ChangesService;
 import fi.vm.sade.koodisto.service.business.changes.KoodistoChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -25,12 +23,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.TimeZone;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
 public class KoodistoChangesServiceImplTest {
 
     private static final String KOODI_URI = "koivu";

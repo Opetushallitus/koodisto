@@ -10,23 +10,20 @@ import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.util.KoodiServiceSearchCriteriaBuilder;
 import org.hibernate.Hibernate;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Sql("/truncate_tables.sql")
 @Sql("/test-data.sql")
 @SpringBootTest
-@RunWith(SpringRunner.class)
 @WithMockUser(value = "1.2.3.4.5", authorities = "APP_KOODISTO_CRUD_1.2.246.562.10.00000000001")
 public class KoodiBusinessServiceTest {
 
@@ -210,9 +207,10 @@ public class KoodiBusinessServiceTest {
         assertNotNull(koodiBusinessService.getKoodi("3", 1));
     }
 
-    @Test(expected = KoodiNotFoundException.class)
+    @Test
     public void getKoodiNotFound() {
-        koodiBusinessService.getKoodi("this-should-not-exists", 0);
+        assertThrows(KoodiNotFoundException.class,
+                () -> koodiBusinessService.getKoodi("this-should-not-exists", 0));
     }
 
     public void assertRelationsArePassive(KoodiVersio latest, boolean passive) {

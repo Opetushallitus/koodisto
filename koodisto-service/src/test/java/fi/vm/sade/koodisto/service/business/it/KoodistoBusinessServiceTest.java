@@ -17,22 +17,19 @@ import fi.vm.sade.koodisto.service.types.SearchKoodistosCriteriaType;
 import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
 import fi.vm.sade.koodisto.util.KoodistoServiceSearchCriteriaBuilder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @Sql("/truncate_tables.sql")
 @Sql("/test-data.sql")
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @WithMockUser(value = "1.2.3.4.5", authorities = "APP_KOODISTO_CRUD_1.2.246.562.10.00000000001")
 public class KoodistoBusinessServiceTest {
@@ -102,23 +99,19 @@ public class KoodistoBusinessServiceTest {
         return koodisto;
     }
 
-    @Test(expected = KoodiVersioHasRelationsException.class)
+    @Test
     public void testDeleteVersioWithKoodiVersioHasRelationsException() {
         final String koodistoUri = "testikoodisto.fi";
         final Integer koodistoVersio = 2;
 
         final int numberOfVersiosBeforeDelete = 2;
-        final int numberOfVersiosAfterDelete = 2;
 
         KoodistoVersio koodisto = getKoodistoByUri(koodistoUri);
         final List<KoodistoVersio> before = listAllKoodistoVersions(koodisto.getKoodisto().getKoodistoUri());
         assertEquals(numberOfVersiosBeforeDelete, before.size());
 
-        koodistoBusinessService.delete(koodistoUri, koodistoVersio);
-
-        koodisto = getKoodistoByUri(koodistoUri);
-        final List<KoodistoVersio> after = listAllKoodistoVersions(koodisto.getKoodisto().getKoodistoUri());
-        assertEquals(numberOfVersiosAfterDelete, after.size());
+        assertThrows(KoodiVersioHasRelationsException.class,
+                () -> koodistoBusinessService.delete(koodistoUri, koodistoVersio));
     }
 
     @Test
@@ -146,9 +139,10 @@ public class KoodistoBusinessServiceTest {
         assertFalse(koodistoBusinessService.koodistoExists(koodistoUri));
     }
 
-    @Test(expected = KoodistonSuhdeContainsKoodinSuhdeException.class)
+    @Test
     public void existingCodeElementRelationsPreventDeletingKoodisto() {
-        koodistoBusinessService.removeRelation("koodisiirtyykoodisto", Arrays.asList("koodisto18"), SuhteenTyyppi.SISALTYY);
+        assertThrows(KoodistonSuhdeContainsKoodinSuhdeException.class,
+                () -> koodistoBusinessService.removeRelation("koodisiirtyykoodisto", Arrays.asList("koodisto18"), SuhteenTyyppi.SISALTYY));
     }
 
     @Test
@@ -179,17 +173,16 @@ public class KoodistoBusinessServiceTest {
         assertEquals(0, suhdeRepository.countByAlakoodistoVersio(latest));
     }
 
-    @Test(expected = KoodistoRelationToSelfException.class)
+    @Test
     public void addingRelationThatReferencesKoodistoItselfCausesError() {
-        koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY);
-        assertTrue(koodistoBusinessService.hasAnyRelation("suhde502kanssa", "suhde502kanssa"));
+        assertThrows(KoodistoRelationToSelfException.class,
+                () -> koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY));
     }
 
-    @Test(expected = KoodistoRelationToSelfException.class)
+    @Test
     public void preventsAddingRelationThatReferencesKoodistoItselfMultipleTimes() {
-        koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.RINNASTEINEN);
-        assertTrue(koodistoBusinessService.hasAnyRelation("suhde502kanssa", "suhde502kanssa"));
-        koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.SISALTYY);
+        assertThrows(KoodistoRelationToSelfException.class,
+                () -> koodistoBusinessService.addRelation("suhde502kanssa", "suhde502kanssa", SuhteenTyyppi.RINNASTEINEN));
     }
 
     @Test
@@ -249,12 +242,12 @@ public class KoodistoBusinessServiceTest {
         assertTrue(result.getYlakoodistos().isEmpty());
     }
 
-    @Test(expected = KoodistoTilaException.class)
+    @Test
     public void doesNotAllowTilaUpdateFromHyvaksyttyToLuonnos() {
         KoodistoVersio result = koodistoBusinessService.getLatestKoodistoVersio("koodisto12");
         KoodistoDto dto = koodistoVersioToKoodistoDtoConverter.convert(result);
         dto.setTila(Tila.LUONNOS);
-        koodistoBusinessService.saveKoodisto(dto);
+        assertThrows(KoodistoTilaException.class, () -> koodistoBusinessService.saveKoodisto(dto));
     }
 
     @Test

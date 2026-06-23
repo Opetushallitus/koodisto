@@ -6,11 +6,11 @@ import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodiMetadata;
 import fi.vm.sade.koodisto.model.KoodistoMetadata;
 import fi.vm.sade.koodisto.service.conversion.impl.MetadataToSimpleMetadataConverter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class MetadataToSimpleMetadataConverterTest {

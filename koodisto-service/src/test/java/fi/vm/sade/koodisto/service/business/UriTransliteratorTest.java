@@ -6,14 +6,14 @@ import fi.vm.sade.koodisto.service.business.exception.MetadataEmptyException;
 import fi.vm.sade.koodisto.service.business.impl.UriTransliteratorImpl;
 import fi.vm.sade.koodisto.service.types.common.KieliType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoMetadataType;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.*;
 
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * User: kwuoti Date: 22.3.2013 Time: 6.41
@@ -25,7 +25,7 @@ public class UriTransliteratorTest {
 
     private UriTransliterator uriTransliterator;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         koodiRepository = mock(KoodiRepository.class);
         koodistoRepository= mock(KoodistoRepository.class);
@@ -110,9 +110,10 @@ public class UriTransliteratorTest {
         verify(koodistoRepository, times(3)).existsByKoodistoUri(anyString());
     }
 
-    @Test(expected = MetadataEmptyException.class)
+    @Test
     public void testGenerateKoodistoUriEmptyMetadataList() {
-        uriTransliterator.generateKoodistoUriByMetadata(new ArrayList<>());
+        assertThrows(MetadataEmptyException.class,
+                () -> uriTransliterator.generateKoodistoUriByMetadata(new ArrayList<>()));
     }
 
     @Test

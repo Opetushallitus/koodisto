@@ -3,9 +3,9 @@ package fi.vm.sade.koodisto.service.business.impl;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.types.UpdateKoodistoDataType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 public class EntityUtilsTest {

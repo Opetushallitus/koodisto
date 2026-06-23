@@ -9,30 +9,27 @@ import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiTypeToKoodiVersioC
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.*;
 import fi.vm.sade.koodisto.service.types.common.*;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.reflect.Method;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
 public class KoodistoConversionServiceTest {
     private static final int DAYS_IN_WEEK = 7;
 
     private Calendar now;
     private Calendar weekLater;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         now = Calendar.getInstance();
         weekLater = Calendar.getInstance();
@@ -163,7 +160,7 @@ public class KoodistoConversionServiceTest {
                 assertNotNull(a);
             }
         } catch (Exception e) {
-            Assert.fail("Conversion failed with error message: " + e.getMessage());
+            Assertions.fail("Conversion failed with error message: " + e.getMessage());
         }
     }
 

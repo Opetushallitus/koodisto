@@ -11,23 +11,19 @@ import fi.vm.sade.koodisto.service.business.changes.KoodiChangesService;
 import fi.vm.sade.koodisto.service.business.changes.MuutosTila;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import fi.vm.sade.koodisto.test.support.builder.KoodiVersioBuilder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class KoodiChangesServiceImplTest {
 

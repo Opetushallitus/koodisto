@@ -8,13 +8,11 @@ import fi.vm.sade.koodisto.model.KoodistoRyhmaMetadata;
 import fi.vm.sade.koodisto.service.business.KoodistoRyhmaBusinessService;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotEmptyException;
 import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaNotFoundException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
@@ -22,12 +20,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Set.of;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Sql("/truncate_tables.sql")
 @Sql("/test-data-codes-rest.sql")
 @SpringBootTest
-@RunWith(SpringRunner.class)
 public class KoodistoRyhmaBusinessServiceTest {
 
     @Autowired
@@ -43,10 +40,10 @@ public class KoodistoRyhmaBusinessServiceTest {
         assertEquals(0, group.getKoodistos().size());
     }
 
-    @Test(expected = DataIntegrityViolationException.class)
+    @Test
     public void testCreateInvalidKoodistoRyhmaFails() {
         KoodistoRyhmaDto dto = createRyhma("relaatioidenlisaaminen");
-        resource.createKoodistoRyhma(dto);
+        assertThrows(DataIntegrityViolationException.class, () -> resource.createKoodistoRyhma(dto));
     }
 
     @Test
@@ -118,19 +115,19 @@ public class KoodistoRyhmaBusinessServiceTest {
         assertEquals("relaatioidenlisaaminen", group.getKoodistoRyhmaUri());
     }
 
-    @Test(expected = KoodistoRyhmaNotFoundException.class)
+    @Test
     public void testGetKoodistoRyhmaByNullId() {
-        resource.getKoodistoRyhmaById(null);
+        assertThrows(KoodistoRyhmaNotFoundException.class, () -> resource.getKoodistoRyhmaById(null));
     }
 
-    @Test(expected = KoodistoRyhmaNotFoundException.class)
+    @Test
     public void testGetKoodistoRyhmaByInvalidId() {
-        resource.getKoodistoRyhmaById(-987123L);
+        assertThrows(KoodistoRyhmaNotFoundException.class, () -> resource.getKoodistoRyhmaById(-987123L));
     }
 
-    @Test(expected = KoodistoRyhmaNotFoundException.class)
+    @Test
     public void testGetKoodistoRyhmaByInvalidIdZero() {
-        resource.getKoodistoRyhmaById(0L);
+        assertThrows(KoodistoRyhmaNotFoundException.class, () -> resource.getKoodistoRyhmaById(0L));
     }
 
     @Test
