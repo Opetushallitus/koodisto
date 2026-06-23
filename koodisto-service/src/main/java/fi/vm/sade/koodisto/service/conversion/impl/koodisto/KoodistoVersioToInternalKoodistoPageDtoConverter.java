@@ -7,8 +7,7 @@ import fi.vm.sade.koodisto.service.business.exception.KoodistoRyhmaMissingExcept
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.properties.OphProperties;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
@@ -17,15 +16,23 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
 public class KoodistoVersioToInternalKoodistoPageDtoConverter implements
         AbstractFromDomainConverter<KoodistoVersio, InternalKoodistoPageDto> {
 
-    private final OphProperties ophProperties;
+    private final String koodistoUriFormat;
     private final KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter koodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;
     private final KoodistoMetadataToKoodistoMetadataDtoConverter koodistoMetadataToKoodistoMetadataDtoConverter;
 
     private final List<Kieli> languageSortOrder = List.of(Kieli.FI, Kieli.SV, Kieli.EN);
+
+    public KoodistoVersioToInternalKoodistoPageDtoConverter(
+            @Value("${koodistoUriFormat}") String koodistoUriFormat,
+            KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter koodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter,
+            KoodistoMetadataToKoodistoMetadataDtoConverter koodistoMetadataToKoodistoMetadataDtoConverter) {
+        this.koodistoUriFormat = koodistoUriFormat;
+        this.koodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter = koodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;
+        this.koodistoMetadataToKoodistoMetadataDtoConverter = koodistoMetadataToKoodistoMetadataDtoConverter;
+    }
 
     @Override
     public InternalKoodistoPageDto convert(KoodistoVersio source) {
@@ -38,7 +45,7 @@ public class KoodistoVersioToInternalKoodistoPageDtoConverter implements
                                 .map(koodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter::convert)
                                 .collect(Collectors.toSet()))
                         .orElse(null))
-                .resourceUri(MessageFormat.format(ophProperties.url("koodistoUriFormat"), source.getKoodisto().getKoodistoUri()))
+                .resourceUri(MessageFormat.format(koodistoUriFormat, source.getKoodisto().getKoodistoUri()))
                 .koodistoUri(source.getKoodisto().getKoodistoUri())
                 .versio(source.getVersio())
                 .lockingVersion(source.getVersion())

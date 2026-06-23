@@ -6,7 +6,7 @@ import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
 import fi.vm.sade.koodisto.service.types.common.KoodistoType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.properties.OphProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
@@ -15,10 +15,10 @@ import java.util.Optional;
 @Component("koodistoVersioToKoodistoTypeConverter")
 public class KoodistoVersioToKoodistoTypeConverter implements AbstractFromDomainConverter<KoodistoVersio, KoodistoType> {
 
-    private final OphProperties ophProperties;
+    private final String koodistoUriFormat;
 
-    public KoodistoVersioToKoodistoTypeConverter(OphProperties ophProperties) {
-        this.ophProperties = ophProperties;
+    public KoodistoVersioToKoodistoTypeConverter(@Value("${koodistoUriFormat}") String koodistoUriFormat) {
+        this.koodistoUriFormat = koodistoUriFormat;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class KoodistoVersioToKoodistoTypeConverter implements AbstractFromDomain
         converted.setKoodistoUri(source.getKoodisto().getKoodistoUri());
 
         if (!Strings.isNullOrEmpty(converted.getKoodistoUri())) {
-            String resourceUri = MessageFormat.format(ophProperties.url("koodistoUriFormat"), converted.getKoodistoUri());
+            String resourceUri = MessageFormat.format(koodistoUriFormat, converted.getKoodistoUri());
             converted.setResourceUri(resourceUri);
         }
         converted.setOmistaja(source.getKoodisto().getOmistaja());

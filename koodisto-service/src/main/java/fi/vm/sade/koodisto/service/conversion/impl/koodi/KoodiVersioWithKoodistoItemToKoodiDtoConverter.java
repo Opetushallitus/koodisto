@@ -5,8 +5,7 @@ import fi.vm.sade.koodisto.dto.KoodiDto;
 import fi.vm.sade.koodisto.dto.KoodistoItemDto;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.ExtendedConverter;
-import fi.vm.sade.properties.OphProperties;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -14,12 +13,19 @@ import java.text.MessageFormat;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
 public class KoodiVersioWithKoodistoItemToKoodiDtoConverter implements
         ExtendedConverter<KoodiVersioWithKoodistoItem, KoodiDto> {
 
-    private final OphProperties ophProperties;
+    private final String koodiUriFormat;
     private final KoodiMetadataToKoodiMetadataDtoConverter koodistoVersioToKoodistoVersioListDtoConverter;
+
+    public KoodiVersioWithKoodistoItemToKoodiDtoConverter(
+            @Value("${koodiUriFormat}") String koodiUriFormat,
+            KoodiMetadataToKoodiMetadataDtoConverter koodistoVersioToKoodistoVersioListDtoConverter) {
+        this.koodiUriFormat = koodiUriFormat;
+        this.koodistoVersioToKoodistoVersioListDtoConverter = koodistoVersioToKoodistoVersioListDtoConverter;
+    }
+
     @Override
     public KoodiDto convert(KoodiVersioWithKoodistoItem source) {
         KoodiDto converted = new KoodiDto();
@@ -51,7 +57,7 @@ public class KoodiVersioWithKoodistoItemToKoodiDtoConverter implements
 
         if (!Strings.isNullOrEmpty(converted.getKoodiUri()) && converted.getKoodisto() != null
                 && StringUtils.hasLength(converted.getKoodisto().getKoodistoUri())) {
-            String resourceUri = MessageFormat.format(ophProperties.url("koodiUriFormat"), converted.getKoodiUri());
+            String resourceUri = MessageFormat.format(koodiUriFormat, converted.getKoodiUri());
             converted.setResourceUri(resourceUri);
         }
 

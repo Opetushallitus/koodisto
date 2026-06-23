@@ -7,8 +7,7 @@ import fi.vm.sade.koodisto.service.types.common.KoodiMetadataType;
 import fi.vm.sade.koodisto.service.types.common.KoodiType;
 import fi.vm.sade.koodisto.service.types.common.KoodistoItemType;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
-import fi.vm.sade.properties.OphProperties;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +17,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Component("koodiVersioWithKoodistoVersioItemsToKoodiTypeConverter")
-@RequiredArgsConstructor
 public class KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter implements
         Converter<KoodiVersioWithKoodistoItem, KoodiType> {
-    private final OphProperties ophProperties;
+    private final String koodistoUriFormat;
 
+    public KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter(
+            @Value("${koodistoUriFormat}") String koodistoUriFormat) {
+        this.koodistoUriFormat = koodistoUriFormat;
+    }
 
     public KoodiType convert(KoodiVersioWithKoodistoItem source) {
         KoodiType converted = new KoodiType();
@@ -63,7 +65,7 @@ public class KoodiVersioWithKoodistoVersioItemsToKoodiTypeConverter implements
             converted.setKoodisto(item);
         }
         if (!Strings.isNullOrEmpty(converted.getKoodiUri())) {
-            String resourceUri = MessageFormat.format(ophProperties.url("koodistoUriFormat"), converted.getKoodiUri());
+            String resourceUri = MessageFormat.format(koodistoUriFormat, converted.getKoodiUri());
             converted.setResourceUri(resourceUri);
         }
 

@@ -6,7 +6,6 @@ import fi.vm.sade.koodisto.model.*;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoMetadataToKoodistoMetadataDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodisto.KoodistoVersioToInternalKoodistoPageDtoConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.koodistoryhma.KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter;
-import fi.vm.sade.properties.OphProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,9 +16,11 @@ class KoodiVersioToInternalKoodiVersioDtoConverterTest {
     KoodiVersio a;
     KoodiVersioToInternalKoodiVersioDtoConverter resource =
             new KoodiVersioToInternalKoodiVersioDtoConverter(
-                    new KoodiMetadataToKoodiMetadataDtoConverter(), new KoodistoVersioToInternalKoodistoPageDtoConverter(new OphProperties().addDefault("koodistoUriFormat","foo"),
-                    new KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter(),
-                    new KoodistoMetadataToKoodistoMetadataDtoConverter())
+                    new KoodiMetadataToKoodiMetadataDtoConverter(),
+                    new KoodistoVersioToInternalKoodistoPageDtoConverter(
+                            "foo",
+                            new KoodistoRyhmaMetadataToKoodistoRyhmaMetadataDtoConverter(),
+                            new KoodistoMetadataToKoodistoMetadataDtoConverter())
             );
 
     @BeforeEach

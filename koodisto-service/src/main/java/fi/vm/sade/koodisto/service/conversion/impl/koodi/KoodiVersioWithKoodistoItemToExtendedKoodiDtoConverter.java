@@ -12,8 +12,7 @@ import fi.vm.sade.koodisto.model.KoodistoVersioKoodiVersio;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.ExtendedConverter;
 import fi.vm.sade.koodisto.service.conversion.impl.MetadataToSimpleMetadataConverter;
-import fi.vm.sade.properties.OphProperties;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
@@ -23,12 +22,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
         ExtendedConverter<KoodiVersioWithKoodistoItem, ExtendedKoodiDto> {
 
-    private final OphProperties ophProperties;
+    private final String koodiUriFormat;
     private final KoodiMetadataToKoodiMetadataDtoConverter koodistoVersioToKoodistoVersioListDtoConverter;
+
+    public KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter(
+            @Value("${koodiUriFormat}") String koodiUriFormat,
+            KoodiMetadataToKoodiMetadataDtoConverter koodistoVersioToKoodistoVersioListDtoConverter) {
+        this.koodiUriFormat = koodiUriFormat;
+        this.koodistoVersioToKoodistoVersioListDtoConverter = koodistoVersioToKoodistoVersioListDtoConverter;
+    }
 
     @Override
     public ExtendedKoodiDto convert(KoodiVersioWithKoodistoItem source) {
@@ -86,7 +91,7 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter implements
 
         if (!Strings.isNullOrEmpty(converted.getKoodiUri()) && converted.getKoodisto() != null
                 && !Strings.isNullOrEmpty(converted.getKoodisto().getKoodistoUri())) {
-            String resourceUri = MessageFormat.format(ophProperties.url("koodiUriFormat"), converted.getKoodiUri());
+            String resourceUri = MessageFormat.format(koodiUriFormat, converted.getKoodiUri());
             converted.setResourceUri(resourceUri);
         }
 

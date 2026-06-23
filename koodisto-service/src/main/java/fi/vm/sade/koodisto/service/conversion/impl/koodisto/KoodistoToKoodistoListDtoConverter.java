@@ -5,20 +5,25 @@ import fi.vm.sade.koodisto.dto.KoodistoListDto;
 import fi.vm.sade.koodisto.model.Koodisto;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.service.conversion.AbstractFromDomainConverter;
-import fi.vm.sade.properties.OphProperties;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.text.MessageFormat;
 import java.util.Collections;
 
 @Component("koodistoToKoodistoListDtoConverter")
-@RequiredArgsConstructor
 public class KoodistoToKoodistoListDtoConverter implements AbstractFromDomainConverter<Koodisto, KoodistoListDto> {
 
-    private final OphProperties ophProperties;
+    private final String koodistoUriFormat;
 
     private final KoodistoVersioToKoodistoVersioListDtoConverter koodistoVersioToKoodistoVersioListDtoConverter;
+
+    public KoodistoToKoodistoListDtoConverter(
+            @Value("${koodistoUriFormat}") String koodistoUriFormat,
+            KoodistoVersioToKoodistoVersioListDtoConverter koodistoVersioToKoodistoVersioListDtoConverter) {
+        this.koodistoUriFormat = koodistoUriFormat;
+        this.koodistoVersioToKoodistoVersioListDtoConverter = koodistoVersioToKoodistoVersioListDtoConverter;
+    }
 
     @Override
     public KoodistoListDto convert(Koodisto source) {
@@ -26,7 +31,7 @@ public class KoodistoToKoodistoListDtoConverter implements AbstractFromDomainCon
         converted.setKoodistoUri(source.getKoodistoUri());
 
         if (!Strings.isNullOrEmpty(converted.getKoodistoUri())) {
-            String resourceUri = MessageFormat.format(ophProperties.url("koodistoUriFormat"), converted.getKoodistoUri());
+            String resourceUri = MessageFormat.format(koodistoUriFormat, converted.getKoodistoUri());
             converted.setResourceUri(resourceUri);
         }
 
