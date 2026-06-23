@@ -1,7 +1,6 @@
 package fi.vm.sade.koodisto;
 
 import com.github.tomakehurst.wiremock.http.Cookie;
-import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.RSASSASigner;
@@ -11,17 +10,14 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.awaitility.Awaitility;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.RegisterExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+import org.wiremock.spring.ConfigureWireMock;
 
 import java.io.IOException;
 import java.net.URI;
@@ -43,10 +39,19 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = {
+                "host.virkailija=localhost",
+                "cas.service=http://localhost/koodisto-service",
+                "cas.base=${wiremock.server.baseUrl}/cas",
+                "cas.login=${wiremock.server.baseUrl}/cas/login",
+                "spring.security.oauth2.resourceserver.jwt.jwk-set-uri=${wiremock.server.baseUrl}/oauth2/jwks"
+        })
+@ConfigureWireMock(port = 18081)
 @ExtendWith(OutputCaptureExtension.class)
 public class RequestCallerFilterTest {
 
@@ -57,42 +62,20 @@ public class RequestCallerFilterTest {
   @LocalServerPort
   private int port;
 
-  @RegisterExtension
-  static WireMockExtension wireMock =
-          WireMockExtension.newInstance().options(wireMockConfig().dynamicPort()).build();
-
-  @DynamicPropertySource
-  static void registerProperties(DynamicPropertyRegistry registry) {
-    registry.add("host.virkailija", () -> "localhost");
-    registry.add("cas.service", () -> "http://localhost/koodisto-service");
-    registry.add("cas.base", () -> wireMock.url("/cas"));
-    registry.add("cas.login", () -> wireMock.url("/cas/login"));
-    // The oauth2 filter chain will not be added in the configuration without this property, check
-    // WebSecurityConfiguration line 118 (right before oauth2FilterChain)
-    registry.add("spring.security.oauth2.resourceserver.jwt.jwk-set-uri", () -> wireMock.url("/oauth2/jwks"));
-  }
-
-  @BeforeEach
-  public void setup() {
-    wireMock.resetAll();
-  }
-
-  @AfterAll
-  static void teardown() {
-    wireMock.resetAll();
-  }
+  @Value("${wiremock.server.baseUrl}")
+  private String wireMockBaseUrl;
 
   @Test
   public void logsCallerHenkiloOidWhenCallerAuthenticatedWithOauth2(CapturedOutput output)
           throws Exception {
     var token = generateToken("1.2.246.562.24.43006465835");
-    wireMock.stubFor(
+    stubFor(
             get(urlEqualTo("/oauth2/jwks"))
                     .willReturn(aResponse()
                             .withStatus(200)
                             .withHeader("Content-Type", "application/json")
                             .withBody(buildJwksResponse())));
-    wireMock.stubFor(
+    stubFor(
             post(urlEqualTo("/oauth2/token"))
                     .willReturn(aResponse()
                             .withStatus(200)
@@ -122,7 +105,7 @@ public class RequestCallerFilterTest {
     var cookie = getCookie("/cas-virkailija");
     var ticket = "ST-30-JVB-gESc2Yc3S-zV25JOHbVEeBo-ip-10-0-55-20";
     // Stub cas-virkailija endpoints
-    wireMock.stubFor(
+    stubFor(
             get(urlEqualTo(
                     "/cas/login?service="
                             + URLEncoder.encode(
@@ -135,7 +118,7 @@ public class RequestCallerFilterTest {
                                             "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check?ticket="
                                                     + ticket)
                                     .withHeader("Set-Cookie", cookie.toString())));
-    wireMock.stubFor(
+    stubFor(
             post(urlEqualTo(
                     "/cas/login?service="
                             + URLEncoder.encode(
@@ -149,7 +132,7 @@ public class RequestCallerFilterTest {
                                             "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check?ticket="
                                                     + ticket)
                                     .withHeader("Set-Cookie", cookie.toString())));
-    wireMock.stubFor(
+    stubFor(
             get(urlEqualTo(
                     "/cas/login?service="
                             + URLEncoder.encode(
@@ -164,7 +147,7 @@ public class RequestCallerFilterTest {
                                                     + ticket)
                                     .withHeader("Set-Cookie", cookie.toString())));
     // validate ticket, provide cas response
-    wireMock.stubFor(
+    stubFor(
             get(urlEqualTo(
                     "/cas/p3/proxyValidate?ticket=%s&service=%s"
                             .formatted(
@@ -183,7 +166,7 @@ public class RequestCallerFilterTest {
             HttpRequest.newBuilder()
                     .uri(
                             URI.create(
-                                    wireMock.url(
+                                    wireMockUrl(
                                             "/cas/login?service="
                                                     + URLEncoder.encode(
                                                     "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check",
@@ -219,7 +202,7 @@ public class RequestCallerFilterTest {
           throws IOException, InterruptedException {
     var ticket = "ST-30-JVB-gESc2Yc3S-zV25JOHbVEeBo-ip-10-0-55-20";
     var cookie = getCookie("/cas-oppija");
-    wireMock.stubFor(
+    stubFor(
             get(urlEqualTo(
                     "/cas/login?service="
                             + URLEncoder.encode(
@@ -232,7 +215,7 @@ public class RequestCallerFilterTest {
                                             "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check?ticket="
                                                     + ticket)
                                     .withHeader("Set-Cookie", cookie.toString())));
-    wireMock.stubFor(
+    stubFor(
             post(urlEqualTo(
                     "/cas/login?service="
                             + URLEncoder.encode(
@@ -246,7 +229,7 @@ public class RequestCallerFilterTest {
                                             "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check?ticket="
                                                     + ticket)
                                     .withHeader("Set-Cookie", cookie.toString())));
-    wireMock.stubFor(
+    stubFor(
             get(urlEqualTo(
                     "/cas/login?service="
                             + URLEncoder.encode(
@@ -261,7 +244,7 @@ public class RequestCallerFilterTest {
                                                     + ticket)
                                     .withHeader("Set-Cookie", cookie.toString())));
     // service is missing the port since mocking the property in config to have the port is difficult, so it's just "http://localhost/koodisto-service"
-    wireMock.stubFor(
+    stubFor(
             get(urlEqualTo(
                     "/cas/p3/proxyValidate?ticket=%s&service=%s"
                             .formatted(
@@ -280,7 +263,7 @@ public class RequestCallerFilterTest {
             HttpRequest.newBuilder()
                     .uri(
                             URI.create(
-                                    wireMock.url(
+                                    wireMockUrl(
                                             "/cas/login?service="
                                                     + URLEncoder.encode(
                                                     "http://localhost:" + port + "/koodisto-service/j_spring_cas_security_check",
@@ -322,10 +305,10 @@ public class RequestCallerFilterTest {
     }
   }
 
-  private static String generateToken(String subject) throws Exception {
+  private String generateToken(String subject) throws Exception {
     JWTClaimsSet claims = new JWTClaimsSet.Builder()
             .subject(subject)
-            .issuer(wireMock.baseUrl())
+            .issuer(wireMockBaseUrl)
             .audience("oppijanumerorekisteri-service")
             .expirationTime(Date.from(Instant.now().plusSeconds(3600)))
             .issueTime(Date.from(Instant.now()))
@@ -367,6 +350,10 @@ public class RequestCallerFilterTest {
               "roles": ["1.2.246.562.10.00000000001", "APP_OPPIJANUMEROREKISTERI_REKISTERINPITAJA", "APP_OPPIJANUMEROREKISTERI_REKISTERINPITAJA_1.2.246.562.10.00000000001"]
             }
             """.formatted(accessToken);
+  }
+
+  private String wireMockUrl(String path) {
+    return wireMockBaseUrl + path;
   }
 
   private Cookie getCookie(String path) {
