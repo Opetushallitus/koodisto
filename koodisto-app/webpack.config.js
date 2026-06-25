@@ -28,12 +28,7 @@ module.exports = function () {
         bail: isEnvProduction,
         devtool: isEnvProduction ? (shouldUseSourceMap ? 'source-map' : false) : 'cheap-module-source-map',
         devServer: {
-            allowedHosts: 'auto',
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': '*',
-                'Access-Control-Allow-Headers': '*',
-            },
+            allowedHosts: ['localhost'],
             compress: true,
             static: {
                 directory: path.resolve(__dirname, 'public'),
@@ -63,16 +58,19 @@ module.exports = function () {
                       {
                           target: 'http://localhost:9000',
                           context: ['/kayttooikeus-service', '/organisaatio-service', '/lokalisointi'],
+                          changeOrigin: true,
                       },
                   ]
                 : [
                       {
                           target: 'http://localhost:8080',
                           context: ['/koodisto-service/static', '/koodisto-service/rest', '/koodisto-service/internal'],
+                          changeOrigin: true,
                       },
                       {
                           target: 'http://localhost:9000',
                           context: ['/kayttooikeus-service', '/organisaatio-service', '/lokalisointi'],
+                          changeOrigin: true,
                       },
                   ],
         },
