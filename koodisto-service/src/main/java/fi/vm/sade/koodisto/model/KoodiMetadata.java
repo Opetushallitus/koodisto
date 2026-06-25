@@ -8,7 +8,6 @@ import fi.vm.sade.koodisto.util.FieldLengths;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Comment;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -16,9 +15,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
-@Table(name = KoodiMetadata.TABLE_NAME, uniqueConstraints = {@UniqueConstraint(name = "UK_" + KoodiMetadata.TABLE_NAME
-        + "_01", columnNames = {KoodiMetadata.KIELI_COLUMN_NAME, KoodiMetadata.KOODIVERSIO_COLUMN_NAME})})
-@Comment("KoodiMetadata sisältää mm. koodin nimen, lyhytnimen ja kuvauksen yhdellä kielellä.")
+@Table(name = KoodiMetadata.TABLE_NAME,
+       uniqueConstraints = {
+        @UniqueConstraint(name = "UK_" + KoodiMetadata.TABLE_NAME + "_01", columnNames = {KoodiMetadata.KIELI_COLUMN_NAME, KoodiMetadata.KOODIVERSIO_COLUMN_NAME})
+       },
+       comment = "KoodiMetadata sisältää mm. koodin nimen, lyhytnimen ja kuvauksen yhdellä kielellä.")
 @Cacheable
 @BatchSize(size = 20)
 @NamedEntityGraphs({@NamedEntityGraph(name = "koodiMetadataWithKoodiVersio",

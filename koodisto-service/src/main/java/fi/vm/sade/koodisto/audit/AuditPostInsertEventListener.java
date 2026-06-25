@@ -3,7 +3,7 @@ package fi.vm.sade.koodisto.audit;
 import fi.vm.sade.auditlog.Audit;
 import fi.vm.sade.auditlog.Changes;
 import fi.vm.sade.auditlog.Target;
-import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.persister.entity.EntityPersister;
@@ -52,7 +52,7 @@ public class AuditPostInsertEventListener implements PostInsertEventListener {
         }
 
         @Override
-        public SessionImplementor getSessionImplementor() {
+        public SharedSessionContractImplementor getSessionImplementor() {
             return event.getSession();
         }
 

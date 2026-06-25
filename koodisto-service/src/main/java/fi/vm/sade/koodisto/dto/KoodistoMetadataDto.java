@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.Kieli;
 import fi.vm.sade.koodisto.model.KoodistoVersio;
 import fi.vm.sade.koodisto.model.JsonViews;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +17,8 @@ import jakarta.validation.constraints.NotNull;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class KoodistoMetadataDto {
 
     @NotNull(message = "error.koodistometadata.kieli.empty")

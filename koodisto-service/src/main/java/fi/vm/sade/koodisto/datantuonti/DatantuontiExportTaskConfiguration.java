@@ -1,8 +1,7 @@
 package fi.vm.sade.koodisto.datantuonti;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.kagkarlsson.scheduler.task.Task;
-import com.github.kagkarlsson.scheduler.task.TaskWithoutDataDescriptor;
+import com.github.kagkarlsson.scheduler.task.TaskDescriptor;
 import com.github.kagkarlsson.scheduler.task.helper.Tasks;
 import com.github.kagkarlsson.scheduler.task.schedule.Daily;
 import lombok.RequiredArgsConstructor;
@@ -23,15 +22,11 @@ public class DatantuontiExportTaskConfiguration {
     @ConditionalOnProperty(name = "koodisto.tasks.datantuonti.export.enabled", matchIfMissing = false)
     Task<Void> datantuontiExportTask() {
         log.info("Creating koodisto datantuonti export task");
-        return Tasks.recurring(new TaskWithoutDataDescriptor("DatantuontiExport"), new Daily(LocalTime.of(0, 15, 0)))
+        return Tasks.recurring(TaskDescriptor.of("DatantuontiExport"), new Daily(LocalTime.of(0, 15, 0)))
                 .execute((taskInstance, executionContext) -> {
                     log.info("Running koodisto datantuonti export task");
                     String secondsFromEpoch = datantuontiExportService.createSchemaAndReturnTransactionTimestampFromEpoch();
-                    try {
-                        datantuontiExportService.generateExportFiles(secondsFromEpoch);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
+                    datantuontiExportService.generateExportFiles(secondsFromEpoch);
                     log.info("Koodisto datantuonti export task completed");
                 });
     }

@@ -1,8 +1,5 @@
 package fi.vm.sade.koodisto.datantuonti;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.databind.json.JsonMapper;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
@@ -27,8 +25,8 @@ public class DatantuontiExportService {
     private String bucketName;
     @Value("${koodisto.tasks.datantuonti.export.encryption-key-arn}")
     private String encryptionKeyArn;
-    private final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new Jdk8Module());
+    @Autowired
+    private JsonMapper objectMapper;
 
     private static final String V1_PREFIX = "koodisto/v1";
 
@@ -55,7 +53,7 @@ public class DatantuontiExportService {
         return jdbcTemplate.queryForObject("SELECT extract(epoch from transaction_timestamp())", String.class);
     }
 
-    public void generateExportFiles(String timestamp) throws JsonProcessingException {
+    public void generateExportFiles(String timestamp) {
         var koodiObjectKey = writeTableToS3(timestamp, "koodi", "SELECT * FROM datantuonti_export.koodi");
         var koodimetadataObjectKey = writeTableToS3(timestamp, "koodimetadata", "SELECT * FROM datantuonti_export.koodimetadata");
         var koodinsuhdeObjectKey = writeTableToS3(timestamp, "koodinsuhde", "SELECT * FROM datantuonti_export.koodinsuhde");
@@ -99,7 +97,7 @@ public class DatantuontiExportService {
             String koodistoversioObjectKey,
             String koodistoversio_koodiversioObjectKey,
             String koodiversioObjectKey,
-            String hibernate_sequenceObjectKey) throws JsonProcessingException {
+            String hibernate_sequenceObjectKey) {
         var objectKey = V1_PREFIX + "/manifest.json";
         var manifest = new DatantuontiManifest(
                 koodiObjectKey,

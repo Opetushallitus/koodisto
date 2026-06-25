@@ -1,5 +1,7 @@
 package fi.vm.sade.koodisto.service.business.changes;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum MuutosTila {
     EI_MUUTOKSIA("Ei muutoksia"), MUUTOKSIA("Muutoksia on tapahtunut"), POISTETTU("Poistettu");
     
@@ -12,5 +14,10 @@ public enum MuutosTila {
     @Override
     public String toString() {
         return this.value;
+    }
+
+    @JsonValue
+    public String jsonValue() {
+        return name();
     }
 }

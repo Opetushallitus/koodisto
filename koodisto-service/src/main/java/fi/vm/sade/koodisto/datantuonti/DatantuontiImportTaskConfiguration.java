@@ -1,7 +1,7 @@
 package fi.vm.sade.koodisto.datantuonti;
 
 import com.github.kagkarlsson.scheduler.task.Task;
-import com.github.kagkarlsson.scheduler.task.TaskWithoutDataDescriptor;
+import com.github.kagkarlsson.scheduler.task.TaskDescriptor;
 import com.github.kagkarlsson.scheduler.task.helper.Tasks;
 import com.github.kagkarlsson.scheduler.task.schedule.Daily;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ public class DatantuontiImportTaskConfiguration {
     @ConditionalOnProperty(name = "koodisto.tasks.datantuonti.import.enabled", matchIfMissing = false)
     Task<Void> datantuontiImportTask() {
         log.info("Creating koodisto datantuonti import task");
-        return Tasks.recurring(new TaskWithoutDataDescriptor("DatantuontiImport"), new Daily(LocalTime.of(2, 15, 0)))
+        return Tasks.recurring(TaskDescriptor.of("DatantuontiImport"), new Daily(LocalTime.of(2, 15, 0)))
                 .execute((taskInstance, executionContext) -> {
                     try {
                         log.info("Running koodisto datantuonti import task");

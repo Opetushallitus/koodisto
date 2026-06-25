@@ -6,6 +6,7 @@ import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Tila;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.validation.constraints.Min;
@@ -15,6 +16,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class InternalKoodiVersioDto extends InternalKoodiVersioListDto {
 
     @JsonView({JsonViews.Internal.class})

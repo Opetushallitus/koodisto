@@ -4,27 +4,19 @@ import fi.vm.sade.koodisto.dto.ExtendedKoodiDto;
 import fi.vm.sade.koodisto.dto.ExtendedKoodiDto.RelationCodeElement;
 import fi.vm.sade.koodisto.dto.SimpleMetadataDto;
 import fi.vm.sade.koodisto.model.*;
-import fi.vm.sade.koodisto.repository.KoodiVersioRepository;
 import fi.vm.sade.koodisto.service.business.util.KoodiVersioWithKoodistoItem;
 import fi.vm.sade.koodisto.service.business.util.KoodistoItem;
 import fi.vm.sade.koodisto.service.conversion.impl.koodi.KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter;
 import fi.vm.sade.koodisto.test.support.DtoFactory;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 @SpringBootTest
 public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
-
-    @Mock
-    private KoodiVersioRepository koodiVersioRepository;
 
     @Autowired
     KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverter koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter;
@@ -64,10 +56,6 @@ public class KoodiVersioWithKoodistoItemToExtendedKoodiDtoConverterTest {
     public void converterProvidesRelationCodeElementForLatestCodeVersionWhenRelationRelatesToLatestCodeVersion() {
         KoodiVersio parent = DtoFactory.createKoodiVersioWithUriAndVersio("penaali", 1).build();
         KoodiVersio child = DtoFactory.createKoodiVersioWithUriAndVersioAndRelation("kynä", 1, parent, SuhteenTyyppi.SISALTYY);
-        Map<String, Integer> dummyResponse = new HashMap<String, Integer>();
-        dummyResponse.put("penaali", 1);
-        when(koodiVersioRepository.getLatestVersionNumbersForUris("penaali")).thenReturn(dummyResponse);
-        when(koodiVersioRepository.isLatestKoodiVersio("kynä", 1)).thenReturn(true);
         ExtendedKoodiDto dto = koodiVersioWithKoodistoItemToExtendedKoodiDtoConverter.convert(new KoodiVersioWithKoodistoItem(child, new KoodistoItem()));
         assertEquals(1, dto.getWithinCodeElements().size());
     }

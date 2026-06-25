@@ -1,10 +1,15 @@
 package fi.vm.sade.koodisto.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.Nulls;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.SuhteenTyyppi;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +20,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor(onConstructor_ = @JsonCreator(mode = JsonCreator.Mode.DISABLED))
+@NoArgsConstructor
 public class KoodiRelaatioListaDto {
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
@@ -26,6 +33,7 @@ public class KoodiRelaatioListaDto {
     private SuhteenTyyppi relationType;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})
+    @JsonSetter(nulls = Nulls.SKIP)
     private boolean isChild;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class})

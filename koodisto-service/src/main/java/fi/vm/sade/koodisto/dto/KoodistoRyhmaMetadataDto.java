@@ -4,8 +4,10 @@ package fi.vm.sade.koodisto.dto;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Kieli;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.validation.constraints.NotEmpty;
@@ -14,6 +16,8 @@ import jakarta.validation.constraints.NotNull;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class KoodistoRyhmaMetadataDto {
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
     protected Long id;

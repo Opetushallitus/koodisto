@@ -1,8 +1,10 @@
 package fi.vm.sade.koodisto.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Tila;
@@ -21,15 +23,17 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ExtendedKoodiDto {
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
     protected Date paivitysPvm;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
     protected String paivittajaOid;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     @NotNull
     protected Date voimassaAlkuPvm;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     protected Date voimassaLoppuPvm;
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
     @NotNull
@@ -72,8 +76,6 @@ public class ExtendedKoodiDto {
     }
 
     @Getter
-    @Builder
-    @RequiredArgsConstructor
     public static class RelationCodeElement {
         @JsonView({JsonViews.Extended.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
         private final String codeElementUri;
@@ -88,5 +90,23 @@ public class ExtendedKoodiDto {
 
         @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class, JsonViews.SimpleWithRelations.class})
         private final boolean passive;
+
+        @Builder
+        @JsonCreator
+        public RelationCodeElement(
+                @JsonProperty("codeElementUri") String codeElementUri,
+                @JsonProperty("codeElementVersion") Integer codeElementVersion,
+                @JsonProperty("codeElementValue") String codeElementValue,
+                @JsonProperty("relationMetadata") List<SimpleMetadataDto> relationMetadata,
+                @JsonProperty("parentMetadata") List<SimpleMetadataDto> parentMetadata,
+                @JsonProperty("passive") Boolean passive
+        ) {
+            this.codeElementUri = codeElementUri;
+            this.codeElementVersion = codeElementVersion;
+            this.codeElementValue = codeElementValue;
+            this.relationMetadata = relationMetadata;
+            this.parentMetadata = parentMetadata;
+            this.passive = Boolean.TRUE.equals(passive);
+        }
     }
 }

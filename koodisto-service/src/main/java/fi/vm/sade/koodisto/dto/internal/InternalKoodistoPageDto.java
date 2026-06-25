@@ -6,8 +6,10 @@ import fi.vm.sade.koodisto.dto.KoodistoMetadataDto;
 import fi.vm.sade.koodisto.dto.KoodistoRyhmaMetadataDto;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.service.types.common.TilaType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import jakarta.validation.Valid;
@@ -22,6 +24,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class InternalKoodistoPageDto {
 
     @JsonView({JsonViews.Internal.class})
@@ -51,16 +55,18 @@ public class InternalKoodistoPageDto {
     private String organisaatioOid;
 
     @JsonView({JsonViews.Internal.class})
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date paivitysPvm;
 
     @JsonView({JsonViews.Internal.class})
     private String paivittajaOid;
 
     @JsonView({JsonViews.Internal.class})
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date voimassaAlkuPvm;
 
     @JsonView({JsonViews.Internal.class})
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date voimassaLoppuPvm;
 
     @JsonView({JsonViews.Internal.class})

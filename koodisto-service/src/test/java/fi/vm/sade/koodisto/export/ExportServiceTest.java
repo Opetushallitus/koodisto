@@ -1,12 +1,12 @@
 package fi.vm.sade.koodisto.export;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,9 +17,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Sql("/test-data.sql")
 @SpringBootTest
 class ExportServiceTest {
-    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired ExportService exportService;
     @Autowired JdbcTemplate jdbcTemplate;
+    @Autowired JsonMapper objectMapper;
 
     @Test
     void exportSchemaIsCreated() {

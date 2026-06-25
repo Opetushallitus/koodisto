@@ -24,9 +24,11 @@ public class KoodistoVersioListDto {
     private Date paivitysPvm;
 
     @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date voimassaAlkuPvm;
 
     @JsonView({JsonViews.Basic.class,JsonViews.Simple.class})
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date voimassaLoppuPvm;
 
     @JsonView(JsonViews.Basic.class)

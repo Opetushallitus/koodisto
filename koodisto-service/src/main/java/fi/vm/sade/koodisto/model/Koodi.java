@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Comment;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -13,8 +12,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-@Table(name = Koodi.TABLE_NAME)
-@Comment("Koodin pääentiteetti, johon eri koodiversiot liittyvät. Sisältää koodiUrin.")
+@Table(name = Koodi.TABLE_NAME, comment = "Koodin pääentiteetti, johon eri koodiversiot liittyvät. Sisältää koodiUrin.")
 @Entity
 @Cacheable
 @BatchSize(size = 100)

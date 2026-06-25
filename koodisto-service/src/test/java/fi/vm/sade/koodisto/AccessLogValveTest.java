@@ -3,8 +3,8 @@ package fi.vm.sade.koodisto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -14,20 +14,23 @@ import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
-import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.resttestclient.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureTestRestTemplate
 @ExtendWith(OutputCaptureExtension.class)
 public class AccessLogValveTest {
 
   @Autowired private TestRestTemplate restTemplate;
+  @Autowired private JsonMapper objectMapper;
 
   @Test
   void accessLogIsWrittenInExpectedJsonFormatForRealRequest(CapturedOutput output)
@@ -49,16 +52,16 @@ public class AccessLogValveTest {
     assertEquals(200, response.getStatusCode().value());
 
     String accessLogLine = waitForAccessLogLine(output, path);
-    JsonNode json = new ObjectMapper().readTree(accessLogLine);
+    JsonNode json = objectMapper.readTree(accessLogLine);
 
-    assertEquals("GET", json.get("requestMethod").asText());
-    assertEquals("GET " + path + " HTTP/1.1", json.get("request").asText());
-    assertEquals("200", json.get("responseCode").asText());
-    assertEquals(userAgent, json.get("user-agent").asText());
-    assertEquals(callerId, json.get("caller-id").asText());
+    assertEquals("GET", json.get("requestMethod").asString());
+    assertEquals("GET " + path + " HTTP/1.1", json.get("request").asString());
+    assertEquals("200", json.get("responseCode").asString());
+    assertEquals(userAgent, json.get("user-agent").asString());
+    assertEquals(callerId, json.get("caller-id").asString());
 
-    assertEquals(xForwardedFor, json.get("x-forwarded-for").asText());
-    assertEquals(referer, json.get("referer").asText());
+    assertEquals(xForwardedFor, json.get("x-forwarded-for").asString());
+    assertEquals(referer, json.get("referer").asString());
 
     for (String field :
         new String[] {

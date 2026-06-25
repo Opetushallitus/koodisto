@@ -3,6 +3,7 @@ package fi.vm.sade.koodisto.audit;
 import fi.vm.sade.auditlog.ApplicationType;
 import fi.vm.sade.auditlog.Audit;
 import org.hibernate.boot.Metadata;
+import org.hibernate.boot.spi.BootstrapContext;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
@@ -24,8 +25,8 @@ public class AuditIntegrator implements Integrator {
     }
 
     @Override
-    public void integrate(Metadata metadata, SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry) {
-        EventListenerRegistry eventListenerRegistry = serviceRegistry.getService(EventListenerRegistry.class);
+    public void integrate(Metadata metadata, BootstrapContext bootstrapContext, SessionFactoryImplementor sessionFactory) {
+        EventListenerRegistry eventListenerRegistry = sessionFactory.getServiceRegistry().getService(EventListenerRegistry.class);
         eventListenerRegistry.appendListeners(EventType.POST_INSERT, new AuditPostInsertEventListener(audit));
         eventListenerRegistry.appendListeners(EventType.POST_UPDATE, new AuditPostUpdateEventListener(audit));
         eventListenerRegistry.appendListeners(EventType.POST_DELETE, new AuditPostDeleteEventListener(audit));

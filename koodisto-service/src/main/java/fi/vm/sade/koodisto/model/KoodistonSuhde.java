@@ -1,7 +1,5 @@
 package fi.vm.sade.koodisto.model;
 
-import org.hibernate.annotations.Comment;
-
 import fi.vm.sade.koodisto.util.FieldLengths;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,9 +9,9 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = KoodistonSuhde.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistonSuhde.TABLE_NAME + "_01", columnNames = {
-        KoodistonSuhde.ALAKOODISTO_COLUMN_NAME, KoodistonSuhde.YLAKOODISTO_COLUMN_NAME, KoodistonSuhde.SUHTEEN_TYYPPI_COLUMN_NAME, KoodistonSuhde.VERSIO_COLUMN_NAME }))
-@Comment("Määrittää kahden koodiston välisen suhteen. Suhteen tyyppi voi olla SISALTYY tai RINNASTEINEN.")
+@Table(name = KoodistonSuhde.TABLE_NAME,
+       uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistonSuhde.TABLE_NAME + "_01", columnNames = {KoodistonSuhde.ALAKOODISTO_COLUMN_NAME, KoodistonSuhde.YLAKOODISTO_COLUMN_NAME, KoodistonSuhde.SUHTEEN_TYYPPI_COLUMN_NAME, KoodistonSuhde.VERSIO_COLUMN_NAME }),
+       comment = "Määrittää kahden koodiston välisen suhteen. Suhteen tyyppi voi olla SISALTYY tai RINNASTEINEN.")
 @Cacheable
 @Getter
 @Setter

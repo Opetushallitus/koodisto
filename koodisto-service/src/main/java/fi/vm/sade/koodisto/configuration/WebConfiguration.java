@@ -1,10 +1,13 @@
 package fi.vm.sade.koodisto.configuration;
 
+import org.springframework.boot.servlet.filter.OrderedFilter;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.filter.UrlHandlerFilter;
 
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
@@ -22,9 +25,12 @@ public class WebConfiguration implements WebMvcConfigurer {
                 .setViewName("forward:/index.html");
     }
 
-    @Override
-    public void configurePathMatch(PathMatchConfigurer configurer) {
-      configurer.setUseTrailingSlashMatch(true);
+    @Bean
+    public FilterRegistrationBean<UrlHandlerFilter> trailingSlashHandlerFilter() {
+        var registration = new FilterRegistrationBean<>(
+                UrlHandlerFilter.trailingSlashHandler("/**").wrapRequest().build());
+        registration.setOrder(OrderedFilter.REQUEST_WRAPPER_FILTER_MAX_ORDER);
+        return registration;
     }
 
     @Override

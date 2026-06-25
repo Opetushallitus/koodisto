@@ -4,16 +4,15 @@ import fi.vm.sade.koodisto.util.FieldLengths;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Comment;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = KoodinSuhde.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodinSuhde.TABLE_NAME + "_01", columnNames = {
-        KoodinSuhde.ALAKOODI_COLUMN_NAME, KoodinSuhde.YLAKOODI_COLUMN_NAME, KoodinSuhde.SUHTEEN_TYYPPI_COLUMN_NAME, KoodinSuhde.VERSION_COLUMN_NAME }))
-@Comment("Määrittää kahden koodin välinen suhteen. Suhteen tyyppi voi olla SISALTYY tai RINNASTEINEN.")
+@Table(name = KoodinSuhde.TABLE_NAME,
+       uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodinSuhde.TABLE_NAME + "_01", columnNames = {KoodinSuhde.ALAKOODI_COLUMN_NAME, KoodinSuhde.YLAKOODI_COLUMN_NAME, KoodinSuhde.SUHTEEN_TYYPPI_COLUMN_NAME, KoodinSuhde.VERSION_COLUMN_NAME }),
+       comment = "Määrittää kahden koodin välinen suhteen. Suhteen tyyppi voi olla SISALTYY tai RINNASTEINEN.")
 @Cacheable
 @BatchSize(size = 20)
 @Getter

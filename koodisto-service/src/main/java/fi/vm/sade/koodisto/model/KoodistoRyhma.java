@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Comment;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -18,8 +17,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-@Table(name = KoodistoRyhma.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistoRyhma.TABLE_NAME + "_01", columnNames = {KoodistoRyhma.KOODISTO_RYHMA_URI_COLUMN_NAME}))
-@Comment("Koodistoryhmä sisältää aina tietyn tyyppisiä koodistoja, esim. alueet. Koodisto voi kuulua useaan koodistoryhmään.")
+@Table(name = KoodistoRyhma.TABLE_NAME,
+       uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistoRyhma.TABLE_NAME + "_01", columnNames = {KoodistoRyhma.KOODISTO_RYHMA_URI_COLUMN_NAME}),
+       comment = "Koodistoryhmä sisältää aina tietyn tyyppisiä koodistoja, esim. alueet. Koodisto voi kuulua useaan koodistoryhmään.")
 @Entity
 @Cacheable
 @Getter

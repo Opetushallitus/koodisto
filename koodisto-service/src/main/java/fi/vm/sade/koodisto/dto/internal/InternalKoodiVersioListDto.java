@@ -8,6 +8,7 @@ import fi.vm.sade.koodisto.model.Tila;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.List;
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class InternalKoodiVersioListDto {
     @JsonView({JsonViews.Internal.class})
     private String koodiUri;
@@ -27,15 +29,15 @@ public class InternalKoodiVersioListDto {
     @JsonView({JsonViews.Internal.class})
     private Tila tila;
     @JsonView({JsonViews.Internal.class})
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date paivitysPvm;
     @JsonView({JsonViews.Internal.class})
     private String paivittajaOid;
     @JsonView({JsonViews.Internal.class})
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date voimassaAlkuPvm;
     @JsonView({JsonViews.Internal.class})
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     private Date voimassaLoppuPvm;
     @JsonView({JsonViews.Internal.class})
     private List<KoodiMetadataDto> metadata;

@@ -1,8 +1,11 @@
 package fi.vm.sade.koodisto.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.Nulls;
 import fi.vm.sade.koodisto.model.JsonViews;
 import fi.vm.sade.koodisto.model.Tila;
 import lombok.*;
@@ -24,7 +27,7 @@ import java.util.Optional;
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor_ = @JsonCreator(mode = JsonCreator.Mode.DISABLED))
 @NoArgsConstructor
 public class KoodiDto {
 
@@ -35,6 +38,7 @@ public class KoodiDto {
     private String resourceUri;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class})
+    @JsonSetter(nulls = Nulls.SKIP)
     private long version;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
@@ -47,7 +51,7 @@ public class KoodiDto {
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Simple.class, JsonViews.Internal.class})
     private String koodiArvo;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
     protected Date paivitysPvm;
 
@@ -55,10 +59,12 @@ public class KoodiDto {
     protected String paivittajaOid;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     @NotNull
     protected Date voimassaAlkuPvm = new Date();
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "UTC")
     protected Date voimassaLoppuPvm;
 
     @JsonView({JsonViews.Extended.class, JsonViews.Basic.class, JsonViews.Internal.class})

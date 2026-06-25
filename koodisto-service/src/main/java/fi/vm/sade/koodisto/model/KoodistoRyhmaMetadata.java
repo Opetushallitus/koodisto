@@ -3,8 +3,6 @@
  */
 package fi.vm.sade.koodisto.model;
 
-import org.hibernate.annotations.Comment;
-
 import com.fasterxml.jackson.annotation.JsonView;
 import fi.vm.sade.koodisto.util.FieldLengths;
 import lombok.*;
@@ -17,10 +15,9 @@ import jakarta.validation.constraints.Size;
 /**
  * @author kkammone
  */
-@Table(name = KoodistoRyhmaMetadata.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_"
-        + KoodistoRyhmaMetadata.TABLE_NAME + "_01", columnNames = {KoodistoRyhmaMetadata.KIELI_COLUMN_NAME,
-        KoodistoRyhmaMetadata.KOODISTO_RYHMA_COLUMN_NAME}))
-@Comment("Sisältää koodistoryhmän metatiedot, kuten nimi ja kieli.")
+@Table(name = KoodistoRyhmaMetadata.TABLE_NAME,
+       uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistoRyhmaMetadata.TABLE_NAME + "_01", columnNames = {KoodistoRyhmaMetadata.KIELI_COLUMN_NAME, KoodistoRyhmaMetadata.KOODISTO_RYHMA_COLUMN_NAME}),
+       comment = "Sisältää koodistoryhmän metatiedot, kuten nimi ja kieli.")
 @Entity
 @Cacheable
 @Getter

@@ -4,8 +4,9 @@ import fi.vm.sade.koodisto.util.FieldLengths;
 import fi.vm.sade.koodisto.util.UserData;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.core.style.ToStringCreator;
 
 import jakarta.persistence.CascadeType;
@@ -18,9 +19,9 @@ import jakarta.validation.constraints.NotNull;
 import java.util.*;
 
 @Entity
-@Table(name = KoodistoVersio.TABLE_NAME, uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistoVersio.TABLE_NAME
-        + "_01", columnNames = { KoodistoVersio.VERSIO_COLUMN_NAME, KoodistoVersio.KOODISTO_COLUMN_NAME }))
-@Comment("Koodistoversio sisältää mm. koodiston päivityspäivämäärän, voimassaolopäivämäärät ja koodiston tilan.")
+@Table(name = KoodistoVersio.TABLE_NAME,
+       uniqueConstraints = @UniqueConstraint(name = "UK_" + KoodistoVersio.TABLE_NAME + "_01", columnNames = { KoodistoVersio.VERSIO_COLUMN_NAME, KoodistoVersio.KOODISTO_COLUMN_NAME }),
+       comment = "Koodistoversio sisältää mm. koodiston päivityspäivämäärän, voimassaolopäivämäärät ja koodiston tilan.")
 @Cacheable
 @NamedEntityGraphs({@NamedEntityGraph(name = "koodistoWithRelations",
         attributeNodes = {

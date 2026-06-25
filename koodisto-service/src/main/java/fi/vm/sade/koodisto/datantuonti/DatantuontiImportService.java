@@ -1,6 +1,5 @@
 package fi.vm.sade.koodisto.datantuonti;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fi.vm.sade.koodisto.export.OpintopolkuAwsClients;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import tools.jackson.databind.json.JsonMapper;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.transfer.s3.S3TransferManager;
 import software.amazon.awssdk.transfer.s3.model.DownloadFileRequest;
@@ -22,7 +22,7 @@ import java.nio.file.Files;
 public class DatantuontiImportService {
     private final S3AsyncClient opintopolkuS3Client;
     private final JdbcTemplate jdbcTemplate;
-    private final ObjectMapper objectMapper;
+    private final JsonMapper objectMapper;
     @Value("${koodisto.tasks.datantuonti.import.bucket-name}")
     private String bucketName;
 
