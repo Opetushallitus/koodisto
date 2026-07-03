@@ -2,9 +2,9 @@ import { expect, test } from '@playwright/test';
 
 import { mockRoutes } from '../routes';
 import { API_INTERNAL_PATH, BASE_PATH } from '../../src/context/constants';
-import codes from '../fixtures/codes.json';
-import koodistoPostResponse from '../fixtures/koodistoPostResponse.json';
-import koodistoPostGetResponse from '../fixtures/koodistoPostGetResponse.json';
+import codes from '../fixtures/codes.json' with { type: 'json' };
+import koodistoPostResponse from '../fixtures/koodistoPostResponse.json' with { type: 'json' };
+import koodistoPostGetResponse from '../fixtures/koodistoPostGetResponse.json' with { type: 'json' };
 
 test('The Koodisto Add page', async ({ page }) => {
     await mockRoutes(page);

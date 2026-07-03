@@ -2,10 +2,10 @@ import { expect, test } from '@playwright/test';
 
 import { mockGetKoodiKoodisto, mockGetKoodisto, mockKoodiPage, mockKoodiPageKoodisto, mockRoutes } from '../routes';
 import { API_INTERNAL_PATH, BASE_PATH } from '../../src/context/constants';
-import kuntaKoodisto from '../fixtures/kuntaKoodisto.json';
-import kuntaKoodistoKoodit from '../fixtures/kuntaKoodistoKoodit.json';
-import koodiPage from '../fixtures/koodiPage.json';
-import koodiPageKoodisto from '../fixtures/koodiPageKoodisto.json';
+import kuntaKoodisto from '../fixtures/kuntaKoodisto.json' with { type: 'json' };
+import kuntaKoodistoKoodit from '../fixtures/kuntaKoodistoKoodit.json' with { type: 'json' };
+import koodiPage from '../fixtures/koodiPage.json' with { type: 'json' };
+import koodiPageKoodisto from '../fixtures/koodiPageKoodisto.json' with { type: 'json' };
 
 test('Koodi add page', async ({ page }) => {
     await mockRoutes(page);

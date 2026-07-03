@@ -1,11 +1,14 @@
 import { expect, test } from '@playwright/test';
-import * as fs from 'fs/promises';
-import path from 'path';
+import * as fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { mockRoutes } from '../routes';
 import { API_BASE_PATH, API_INTERNAL_PATH, BASE_PATH } from '../../src/context/constants';
-import arvosanat from '../fixtures/arvosanat.json';
-import arvosanatKoodisto from '../fixtures/arvosanatKoodisto.json';
+import arvosanat from '../fixtures/arvosanat.json' with { type: 'json' };
+import arvosanatKoodisto from '../fixtures/arvosanatKoodisto.json' with { type: 'json' };
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 test('CSV functionality tests', async ({ page }) => {
     await mockRoutes(page);

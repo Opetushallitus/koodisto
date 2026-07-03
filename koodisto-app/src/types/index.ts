@@ -1,6 +1,5 @@
-import { MessageDescriptor } from '@formatjs/intl/src/types';
-import { FormatXMLElementFn, PrimitiveType } from 'intl-messageformat';
-import { Options as IntlMessageFormatOptions } from 'intl-messageformat/src/core';
+import { MessageDescriptor } from 'react-intl';
+import { FormatXMLElementFn, Options as IntlMessageFormatOptions, PrimitiveType } from 'intl-messageformat';
 import { Control, FieldValues, Path } from 'react-hook-form';
 import { ApiPageKoodisto } from '../api/koodisto';
 

@@ -2,8 +2,8 @@ import { expect, test } from '@playwright/test';
 
 import { mockRoutes, mockKoodiPage, mockKoodiPageKoodisto } from '../routes';
 import { BASE_PATH } from '../../src/context/constants';
-import koodiPagePartial from '../fixtures/koodiPage-partial.json';
-import koodiPageKoodisto from '../fixtures/koodiPageKoodisto.json';
+import koodiPagePartial from '../fixtures/koodiPage-partial.json' with { type: 'json' };
+import koodiPageKoodisto from '../fixtures/koodiPageKoodisto.json' with { type: 'json' };
 
 test('Koodi view with partial data page', async ({ page }) => {
     await mockRoutes(page);

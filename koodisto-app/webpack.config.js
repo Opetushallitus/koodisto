@@ -1,7 +1,10 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const appPath = (...segments) => path.resolve(__dirname, ...segments);
 const publicPath = '/koodisto-service/';
 
@@ -17,7 +20,7 @@ const mockApiProxy = createProxy('http://localhost:9000', [
     '/lokalisointi',
 ]);
 
-module.exports = {
+export default {
     target: 'browserslist',
     mode: isProduction ? 'production' : 'development',
     bail: isProduction,

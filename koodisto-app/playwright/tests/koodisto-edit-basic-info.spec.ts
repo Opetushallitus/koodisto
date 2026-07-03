@@ -2,8 +2,8 @@ import { expect, test } from '@playwright/test';
 
 import { mockGetKoodiKoodisto, mockGetKoodisto, mockPutKoodisto, mockRoutes } from '../routes';
 import { BASE_PATH } from '../../src/context/constants';
-import kuntaKoodisto from '../fixtures/kuntaKoodisto.json';
-import kuntaKoodistoKoodit from '../fixtures/kuntaKoodistoKoodit.json';
+import kuntaKoodisto from '../fixtures/kuntaKoodisto.json' with { type: 'json' };
+import kuntaKoodistoKoodit from '../fixtures/kuntaKoodistoKoodit.json' with { type: 'json' };
 
 test('The Koodisto Edit page', async ({ page }) => {
     await mockRoutes(page);

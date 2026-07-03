@@ -2,10 +2,10 @@ import { expect, Page } from '@playwright/test';
 
 import { API_INTERNAL_PATH, API_STATUS_PATH } from '../src/context/constants';
 
-import allRyhmat from './fixtures/allRyhmat.json';
-import codes from './fixtures/codes.json';
-import kuntaKoodisto from './fixtures/kuntaKoodisto.json';
-import kuntaKoodistoKoodit from './fixtures/kuntaKoodistoKoodit.json';
+import allRyhmat from './fixtures/allRyhmat.json' with { type: 'json' };
+import codes from './fixtures/codes.json' with { type: 'json' };
+import kuntaKoodisto from './fixtures/kuntaKoodisto.json' with { type: 'json' };
+import kuntaKoodistoKoodit from './fixtures/kuntaKoodistoKoodit.json' with { type: 'json' };
 
 export const mockRoutes = async (page: Page) => {
     await page.route(API_STATUS_PATH, async (route) => {

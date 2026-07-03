@@ -1,6 +1,4 @@
-'use strict';
-
-const fs = require('fs');
+import fs from 'node:fs';
 
 const rawdata = fs.readFileSync('lang/default-translations.json');
 const translations = JSON.parse(rawdata);

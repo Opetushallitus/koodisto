@@ -2,8 +2,8 @@ import { expect, test } from '@playwright/test';
 
 import { mockRoutes } from '../routes';
 import { API_BASE_PATH, API_INTERNAL_PATH, BASE_PATH } from '../../src/context/constants';
-import codes from '../fixtures/codes.json';
-import kuntaKoodisto from '../fixtures/kuntaKoodisto.json';
+import codes from '../fixtures/codes.json' with { type: 'json' };
+import kuntaKoodisto from '../fixtures/kuntaKoodisto.json' with { type: 'json' };
 
 test.describe('Errors', async () => {
     const koodistoUri = 'kunta';

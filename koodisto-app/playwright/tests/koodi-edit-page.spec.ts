@@ -2,8 +2,8 @@ import { expect, test } from '@playwright/test';
 
 import { mockRoutes, mockKoodiPage, mockKoodiPageKoodisto } from '../routes';
 import { API_INTERNAL_PATH, BASE_PATH } from '../../src/context/constants';
-import koodiPage from '../fixtures/koodiPage.json';
-import koodiPageKoodisto from '../fixtures/koodiPageKoodisto.json';
+import koodiPage from '../fixtures/koodiPage.json' with { type: 'json' };
+import koodiPageKoodisto from '../fixtures/koodiPageKoodisto.json' with { type: 'json' };
 
 test('Koodi edit page', async ({ page }) => {
     await mockRoutes(page);

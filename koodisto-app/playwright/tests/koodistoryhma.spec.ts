@@ -8,9 +8,9 @@ import {
     mockRoutes,
 } from '../routes';
 import { BASE_PATH } from '../../src/context/constants';
-import emptyRyhma0 from '../fixtures/emptyRyhma0.json';
-import emptyRyhma1 from '../fixtures/emptyRyhma1.json';
-import haunkoodistot from '../fixtures/haunkoodistot.json';
+import emptyRyhma0 from '../fixtures/emptyRyhma0.json' with { type: 'json' };
+import emptyRyhma1 from '../fixtures/emptyRyhma1.json' with { type: 'json' };
+import haunkoodistot from '../fixtures/haunkoodistot.json' with { type: 'json' };
 
 test('Create koodistoryhmä', async ({ page }) => {
     await mockRoutes(page);

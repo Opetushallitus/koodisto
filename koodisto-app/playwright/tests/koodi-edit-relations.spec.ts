@@ -2,16 +2,16 @@ import { expect, test } from '@playwright/test';
 
 import { mockRoutes, mockKoodiPage, mockKoodiPageKoodisto } from '../routes';
 import { API_INTERNAL_PATH, BASE_PATH } from '../../src/context/constants';
-import relationKoodi from '../fixtures/relationKoodi.json';
-import koodiPageKoodisto from '../fixtures/koodiPageKoodisto.json';
-import oppilaitosKoodi from '../fixtures/oppilaitosKoodit.json';
-import aluehallintovirastoKoodit from '../fixtures/aluehallintovirastoKoodit.json';
-import saameKoodi from '../fixtures/07/saameKoodi.json';
-import aidinkielijakirjallisuusKoodit from '../fixtures/07/aidinkielijakirjallisuusKoodit.json';
-import aidinkielijakirjallisuusKoodisto from '../fixtures/07/aidinkielijakirjallisuusKoodisto.json';
-import aidinkielijakirjallisuusFi from '../fixtures/07/aidinkielijakirjallisuusFi.json';
-import aidinkielijakirjallisuusFi2 from '../fixtures/07/aidinkielijakirjallisuusFi2.json';
-import aidinkielijakirjallisuusFiSe from '../fixtures/07/aidinkielijakirjallisuusFiSe.json';
+import relationKoodi from '../fixtures/relationKoodi.json' with { type: 'json' };
+import koodiPageKoodisto from '../fixtures/koodiPageKoodisto.json' with { type: 'json' };
+import oppilaitosKoodi from '../fixtures/oppilaitosKoodit.json' with { type: 'json' };
+import aluehallintovirastoKoodit from '../fixtures/aluehallintovirastoKoodit.json' with { type: 'json' };
+import saameKoodi from '../fixtures/07/saameKoodi.json' with { type: 'json' };
+import aidinkielijakirjallisuusKoodit from '../fixtures/07/aidinkielijakirjallisuusKoodit.json' with { type: 'json' };
+import aidinkielijakirjallisuusKoodisto from '../fixtures/07/aidinkielijakirjallisuusKoodisto.json' with { type: 'json' };
+import aidinkielijakirjallisuusFi from '../fixtures/07/aidinkielijakirjallisuusFi.json' with { type: 'json' };
+import aidinkielijakirjallisuusFi2 from '../fixtures/07/aidinkielijakirjallisuusFi2.json' with { type: 'json' };
+import aidinkielijakirjallisuusFiSe from '../fixtures/07/aidinkielijakirjallisuusFiSe.json' with { type: 'json' };
 
 test('Koodi Edit page can edit relations', async ({ page }) => {
     await mockRoutes(page);
