@@ -8,7 +8,6 @@ import { ListKoodisto, SelectOptionType, KoodistoRelation, PageSize } from '../.
 import { koodistoListAtom } from '../../api/koodisto';
 import { useAtom } from 'jotai';
 import { ColumnDef, CellContext, Row, ColumnFiltersState } from '@tanstack/react-table';
-import { sortBy } from 'lodash';
 import { ButtonLabelPrefix } from '../Containers';
 import { Table } from './Table';
 import { atomWithStorage } from 'jotai/utils';
@@ -58,13 +57,12 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
     const { formatMessage } = useIntl();
     const data = useMemo<ListKoodisto[]>(
         () =>
-            sortBy(
-                atomData.reduce(
+            atomData
+                .reduce(
                     (p, c) => [...(oldRelations?.find((a) => a.koodistoUri === c.koodistoUri) ? [] : [c]), ...p],
                     [] as ListKoodisto[]
-                ),
-                (o) => o.nimi
-            ),
+                )
+                .sort((a, b) => (a.nimi || '').localeCompare(b.nimi || '')),
         [atomData, oldRelations]
     );
     const [filteredCount, setFilteredCount] = useState<number>(data.length);

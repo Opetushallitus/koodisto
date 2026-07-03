@@ -2,9 +2,10 @@ import * as React from 'react';
 import { useMemo, useState } from 'react';
 import Select from 'react-select';
 import { SelectOption } from '../../types';
-import { escapeRegExp, sortBy } from 'lodash';
 
 const MAX_DISPLAYED_OPTIONS = 500;
+const escapeRegExp = (value: string): string => value.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&');
+
 export const FastSelect: React.FC<{
     id: string;
     options: SelectOption[];
@@ -18,7 +19,9 @@ export const FastSelect: React.FC<{
             return options;
         }
         const regByInclusion = new RegExp(escapeRegExp(inputValue), 'i');
-        return sortBy([...options.filter((option) => regByInclusion.test(option.label))], [(o) => o.label]);
+        return options
+            .filter((option) => regByInclusion.test(option.label))
+            .sort((a, b) => a.label.localeCompare(b.label));
     }, [inputValue, options]);
 
     const slicedOptions = useMemo(

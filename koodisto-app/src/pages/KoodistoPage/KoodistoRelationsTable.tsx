@@ -3,7 +3,6 @@ import { useMemo, useCallback } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { Table } from '../../components/Table';
 import { Link } from 'react-router-dom';
-import { sortBy } from 'lodash';
 import { KoodistoRelation, ListKoodisto, PageKoodisto, Locale } from '../../types';
 import Button from 'virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
@@ -40,9 +39,8 @@ export const KoodistoRelationsTable: React.FC<KoodistoRelationsTableProps> = ({
     const { formatMessage, locale } = useIntl();
     const data = useMemo<KoodistoRelation[]>(
         () =>
-            sortBy(
-                [...koodistoRelations],
-                (koodistoRelation) => koodistoRelation.nimi?.[locale as Locale] || koodistoRelation.koodistoUri
+            [...koodistoRelations].sort((a, b) =>
+                (a.nimi?.[locale as Locale] || a.koodistoUri).localeCompare(b.nimi?.[locale as Locale] || b.koodistoUri)
             ),
         [koodistoRelations, locale]
     );

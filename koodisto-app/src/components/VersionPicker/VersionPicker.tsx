@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useIntl } from 'react-intl';
-import { dropRight } from 'lodash';
 import Select from 'react-select';
 import type { SelectOption } from '../../types';
 import { SelectContainer } from '..//Containers';
@@ -37,7 +36,7 @@ export const VersionPicker: React.FC<Props> = ({ version, versions }) => {
                 value={options.find((option) => option.value === `${version}`)}
                 options={options}
                 onChange={(value) => {
-                    navigate([...dropRight(location.pathname.split('/')), (value as SelectOption).value].join('/'));
+                    navigate([...location.pathname.split('/').slice(0, -1), (value as SelectOption).value].join('/'));
                 }}
             />
         </SelectContainer>

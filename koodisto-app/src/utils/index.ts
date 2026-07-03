@@ -1,6 +1,5 @@
 import { ApiDate, Kieli, Metadata, Locale } from '../types';
 import { format, parseISO } from 'date-fns';
-import { sortBy } from 'lodash';
 
 export const translateMultiLocaleText = ({
     multiLocaleText,
@@ -32,7 +31,8 @@ export const fillMetadata = (apiMetadata: Metadata[]) => {
     (['FI', 'SV', 'EN'] as Kieli[]).forEach(
         (kieli) => metadata.find((a) => a.kieli === kieli) || metadata.push({ kieli, nimi: '' })
     );
-    return sortBy(metadata, kieliSorter);
+    return metadata.sort((a, b) => kieliSorter(a) - kieliSorter(b));
 };
 export { downloadCsv } from './downloadCsv';
+export { capitalize, debounce, uniqBy, uniqWith } from './helpers';
 export { translateMetadata } from './translateMetadata';

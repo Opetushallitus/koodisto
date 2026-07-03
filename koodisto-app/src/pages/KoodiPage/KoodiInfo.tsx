@@ -1,11 +1,11 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
 import styled from 'styled-components';
-import { capitalize } from 'lodash';
 import InfoFields from '../../components/InfoFields';
 import DateRange from '../../components/DateRange';
 import UpdatedAt from '../../components/UpdatedAt';
 import { Koodi } from '../../types';
+import { capitalize } from '../../utils';
 
 const NameContainer = styled.ul`
     list-style-type: none;

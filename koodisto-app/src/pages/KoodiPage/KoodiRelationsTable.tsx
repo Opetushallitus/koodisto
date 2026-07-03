@@ -2,9 +2,8 @@ import React, { useMemo, useCallback } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Table } from '../../components/Table';
-import { translateMultiLocaleText, metadataToMultiLocaleText } from '../../utils';
+import { metadataToMultiLocaleText, translateMultiLocaleText, uniqWith } from '../../utils';
 import { useAtom } from 'jotai';
-import { sortBy, uniqWith } from 'lodash';
 import { casMeLocaleAtom } from '../../api/kayttooikeus';
 import type { KoodiRelation, Koodi, KoodiList, SelectOptionType, Locale } from '../../types';
 import { ColumnDef, CellContext, Row } from '@tanstack/react-table';
@@ -43,7 +42,9 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
     const [locale] = useAtom(casMeLocaleAtom);
     const data = useMemo<KoodiRelation[]>(
         () =>
-            sortBy([...relations], (koodiRelation) => koodiRelation.nimi?.[locale as Locale] || koodiRelation.koodiUri),
+            [...relations].sort((a, b) =>
+                (a.nimi?.[locale as Locale] || a.koodiUri).localeCompare(b.nimi?.[locale as Locale] || b.koodiUri)
+            ),
         [relations, locale]
     );
     const removeKoodiFromRelations = useCallback(

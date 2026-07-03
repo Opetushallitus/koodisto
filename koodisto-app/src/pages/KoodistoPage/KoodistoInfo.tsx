@@ -1,11 +1,10 @@
 import React from 'react';
 import { useIntl } from 'react-intl';
-import { capitalize } from 'lodash';
 import type { PageKoodisto } from '../../types';
 import InfoFields from '../../components/InfoFields';
 import DateRange from '../../components/DateRange';
 import UpdatedAt from '../../components/UpdatedAt';
-import { translateMetadata } from '../../utils';
+import { capitalize, translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLangAtom, casMeLocaleAtom } from '../../api/kayttooikeus';
 

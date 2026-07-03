@@ -9,7 +9,7 @@ import Button from 'virkailija-ui-components/Button';
 import { ModalPopup } from '../../components/Modal/Modal';
 import { KoodiSuhdeModal } from './KoodiSuhdeModal';
 import { fetchPageKoodi } from '../../api/koodi';
-import { uniqWith } from 'lodash';
+import { uniqWith } from '../../utils';
 
 type KoodiPageAccordionProps = {
     koodi: Koodi;

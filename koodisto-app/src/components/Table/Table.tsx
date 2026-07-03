@@ -26,7 +26,7 @@ import {
     OnChangeFn,
 } from '@tanstack/react-table';
 import { IconWrapper } from '../IconWapper';
-import { debounce, uniq, uniqBy } from 'lodash';
+import { debounce, uniqBy } from '../../utils';
 import { Paging } from './Paging';
 
 declare module '@tanstack/table-core' {
@@ -287,7 +287,7 @@ function Filter<T>({ column, table }: { column: Column<T, unknown>; table: React
     const sortedUniqueValues = useMemo(
         () =>
             (typeof firstValue === 'number' && []) ||
-            (typeof firstValue === 'string' && uniq(Array.from(column.getFacetedUniqueValues().keys())).sort()) ||
+            (typeof firstValue === 'string' && Array.from(new Set(column.getFacetedUniqueValues().keys())).sort()) ||
             uniqBy(Array.from(column.getFacetedUniqueValues().keys()), (a: SelectOptionType) => a.value).sort(
                 (a: SelectOptionType, b: SelectOptionType) => a.label.localeCompare(b.label)
             ),

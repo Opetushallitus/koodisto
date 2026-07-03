@@ -7,7 +7,6 @@ import { useAtom } from 'jotai';
 import { casMeLangAtom } from '../../api/kayttooikeus';
 import { ColumnDef, CellContext, Row } from '@tanstack/react-table';
 import { Table } from './Table';
-import { sortBy } from 'lodash';
 
 type Props = {
     koodiList: KoodiList[];
@@ -22,7 +21,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
     const { formatMessage } = useIntl();
     const [lang] = useAtom(casMeLangAtom);
     const data = useMemo<KoodiList[]>(
-        () => sortBy([...koodiList], (koodi) => resolveName(koodi, lang)),
+        () => [...koodiList].sort((a, b) => resolveName(a, lang).localeCompare(resolveName(b, lang))),
         [koodiList, lang]
     );
     const [, setFilteredCount] = useState<number>(data.length);
