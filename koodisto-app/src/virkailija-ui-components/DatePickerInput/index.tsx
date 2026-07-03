@@ -71,11 +71,11 @@ export type DatePickerInputProps = {
     onChange?: (date: Date | undefined) => void;
 };
 
-const formatInputValue = (value: Date | string | undefined, format: string) => {
+const formatInputValue = (value: Date | string | undefined, format: string): string => {
     if (value instanceof Date && isValidDate(value)) {
         return formatDateFn(value, format);
     }
-    return value || '';
+    return typeof value === 'string' ? value : '';
 };
 
 export const DatePickerInput = ({
@@ -151,7 +151,20 @@ export const DatePickerInput = ({
 
     const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         inputProps.onKeyDown?.(event);
+        if (event.defaultPrevented) {
+            return;
+        }
         if (event.key === 'Escape') {
+            setIsOpen(false);
+            return;
+        }
+        if (event.key === 'Enter') {
+            const parsedDate = parseDateFn(inputValue, format);
+            if (parsedDate) {
+                onChange(parsedDate);
+                setInputValue(formatDateFn(parsedDate, format));
+                setMonth(parsedDate);
+            }
             setIsOpen(false);
         }
     };

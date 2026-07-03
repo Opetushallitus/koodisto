@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { useCSVReader } from 'react-papaparse';
 import { FormattedMessage } from 'react-intl';
-import { ParseResult } from 'papaparse';
+import Papa, { ParseResult } from 'papaparse';
 import Button from 'virkailija-ui-components/Button';
 import styled from 'styled-components';
 const Reader = styled.div`
@@ -37,34 +36,65 @@ type Props<T> = {
 };
 
 export const KoodiCSVReader = <T extends object>({ onUploadAccepted }: Props<T>) => {
-    const { CSVReader } = useCSVReader();
+    const inputRef = React.useRef<HTMLInputElement>(null);
+    const [acceptedFile, setAcceptedFile] = React.useState<File>();
+
+    const openFileDialog = () => inputRef.current?.click();
+
+    const parseFile = (file: File, event: DragEvent | Event) => {
+        setAcceptedFile(file);
+        Papa.parse<T>(file, {
+            header: true,
+            complete: (results) => onUploadAccepted?.(results, file, event),
+        });
+    };
+
+    const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.currentTarget.files?.[0];
+        if (file) {
+            parseFile(file, event.nativeEvent);
+        }
+    };
+
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        const file = event.dataTransfer.files[0];
+        if (file) {
+            parseFile(file, event.nativeEvent);
+        }
+    };
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            openFileDialog();
+        }
+    };
 
     return (
-        <CSVReader onUploadAccepted={onUploadAccepted} config={{ header: true }}>
-            {({
-                getRootProps,
-                acceptedFile,
-            }: {
-                getRootProps: () => Record<string, unknown>;
-                acceptedFile: { name: string };
-            }) => (
-                <div>
-                    <Reader>
-                        <Button {...getRootProps()}>
-                            <FormattedMessage id={'LATAA_CVS_VALITSE_TIEDOSTO'} defaultMessage={'Valitse tiedosto'} />
-                        </Button>
-                        <AcceptedFile>{acceptedFile && acceptedFile.name}</AcceptedFile>
-                    </Reader>
-                    {!acceptedFile && (
-                        <UploadArea {...getRootProps()}>
-                            <FormattedMessage
-                                id={'LATAA_CVS_VALITSE_TIEDOSTO_ALUE'}
-                                defaultMessage={'Tai raahaa tiedosto tähän'}
-                            />
-                        </UploadArea>
-                    )}
-                </div>
+        <div>
+            <input ref={inputRef} type="file" accept=".csv,text/csv" hidden onChange={handleFileSelect} />
+            <Reader>
+                <Button type="button" onClick={openFileDialog}>
+                    <FormattedMessage id={'LATAA_CVS_VALITSE_TIEDOSTO'} defaultMessage={'Valitse tiedosto'} />
+                </Button>
+                <AcceptedFile>{acceptedFile?.name}</AcceptedFile>
+            </Reader>
+            {!acceptedFile && (
+                <UploadArea
+                    role="button"
+                    tabIndex={0}
+                    onClick={openFileDialog}
+                    onDrop={handleDrop}
+                    onDragOver={(event) => event.preventDefault()}
+                    onKeyDown={handleKeyDown}
+                >
+                    <FormattedMessage
+                        id={'LATAA_CVS_VALITSE_TIEDOSTO_ALUE'}
+                        defaultMessage={'Tai raahaa tiedosto tähän'}
+                    />
+                </UploadArea>
             )}
-        </CSVReader>
+        </div>
     );
 };

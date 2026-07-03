@@ -1,7 +1,6 @@
 import React, { ErrorInfo, ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 import axios from 'axios';
-import Cookies from 'universal-cookie';
 import { Provider, useAtom } from 'jotai';
 import { ROOT_OID } from './context/constants';
 import './index.css';
@@ -17,11 +16,29 @@ import App from './App';
 import { statusAtom } from './api/status';
 
 const theme = createTheme();
-const cookies = new Cookies();
+
+const decodeCookieValue = (value: string): string => {
+    try {
+        return decodeURIComponent(value);
+    } catch {
+        return value;
+    }
+};
+
+const getCookie = (name: string): string | undefined => {
+    const value = document.cookie
+        .split('; ')
+        .map((cookie) => cookie.split('='))
+        .find(([key]) => key === name)
+        ?.slice(1)
+        .join('=');
+    return value ? decodeCookieValue(value) : undefined;
+};
+
 axios.interceptors.request.use((config) => {
     if (config?.headers) {
         config.headers['Caller-Id'] = `${ROOT_OID}.koodisto-app`;
-        config.headers['CSRF'] = cookies.get('CSRF');
+        config.headers['CSRF'] = getCookie('CSRF');
     }
     return config;
 });

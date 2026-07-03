@@ -1,6 +1,5 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
-import { hideVisually } from 'polished';
 
 import { disabledStyle } from '../system';
 
@@ -16,8 +15,20 @@ const Icon = styled.svg`
     stroke: white;
     stroke-width: 2px;
 `;
+const visuallyHiddenStyle = css`
+    border: 0;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+`;
 const HiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
-    ${hideVisually}
+    ${visuallyHiddenStyle}
 `;
 
 const StyledCheckbox = styled.div<{ checked: boolean; error: boolean }>`

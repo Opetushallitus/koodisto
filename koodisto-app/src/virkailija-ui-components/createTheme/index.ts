@@ -1,5 +1,3 @@
-import { lighten, rgba } from 'polished';
-
 const createColors = () => {
     const bg_white = '#ffffff';
     const bg_black = '#2a2a2a';
@@ -12,7 +10,7 @@ const createColors = () => {
     const error = {
         main: bg_red,
         contrastText: bg_white,
-        focusOutline: rgba(bg_red, 0.2),
+        focusOutline: focusOutline('228,78,78'),
     };
 
     const colors = {
@@ -23,17 +21,17 @@ const createColors = () => {
         primary: {
             main: bg_blue,
             contrastText: bg_white,
-            focusOutline: rgba(bg_blue, 0.2),
+            focusOutline: focusOutline('10,120,156'),
         },
         success: {
             main: bg_green,
             contrastText: bg_white,
-            focusOutline: rgba(bg_green, 0.2),
+            focusOutline: focusOutline('76,127,0'),
         },
         secondary: {
             main: bg_gray,
             contrastText: bg_white,
-            focusOutline: rgba(bg_gray, 0.2),
+            focusOutline: focusOutline('102,102,102'),
         },
         error,
         danger: error,
@@ -47,11 +45,21 @@ const createColors = () => {
     return colors;
 };
 
+const focusOutline = (rgb: string) => `rgba(${rgb},0.2)`;
+
+const hoverColor = (color: string) =>
+    ({
+        '#0a789c': '#0d9dcc',
+        '#e44e4e': '#eb7a7a',
+        '#4c7f00': '#6bb200',
+        '#666': '#808080',
+    })[color] || color;
+
 const createContainedButtonVariant = (backgroundColor: string, color: string, focusOutlineColor: string) => {
     return {
         backgroundColor,
         color,
-        hoverBackgroundColor: lighten(0.1, backgroundColor),
+        hoverBackgroundColor: hoverColor(backgroundColor),
         focusOutlineColor,
     } as const;
 };
@@ -59,7 +67,7 @@ const createContainedButtonVariant = (backgroundColor: string, color: string, fo
 const createOutlinedButtonVariant = (outlineColor: string, focusOutlineColor: string) => {
     return {
         outlineColor,
-        hoverOutlineColor: lighten(0.1, outlineColor),
+        hoverOutlineColor: hoverColor(outlineColor),
         focusOutlineColor,
     } as const;
 };
@@ -67,7 +75,7 @@ const createOutlinedButtonVariant = (outlineColor: string, focusOutlineColor: st
 const createTextButtonVariant = (color: string, focusOutlineColor: string) => {
     return {
         color,
-        hoverColor: lighten(0.1, color),
+        hoverColor: hoverColor(color),
         focusOutlineColor,
     } as const;
 };

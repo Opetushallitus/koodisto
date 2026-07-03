@@ -126,13 +126,16 @@ const upsertKoodi = async <X>({
 export const fetchKoodiListByKoodisto = async ({
     koodistoUri,
     koodistoVersio,
+    controller,
 }: {
     koodistoUri: string;
     koodistoVersio?: number;
+    controller?: AbortController;
 }): Promise<Koodi[] | undefined> =>
     errorHandlingWrapper(async () => {
         const { data } = await axios.get<ApiKoodi[]>(`${API_BASE_PATH}/json/${koodistoUri}/koodi`, {
             params: koodistoVersio !== undefined ? { koodistoVersio } : {},
+            signal: controller?.signal,
         });
         return data.map((api) => mapApiKoodi({ api }));
     });

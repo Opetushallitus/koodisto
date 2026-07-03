@@ -120,10 +120,14 @@ export const CSVFunctionModal: React.FC<Props> = ({ koodistoUri, koodistoVersio,
     const refreshKoodistoList = useResetAtom(koodistoListAtom);
     const { formatMessage } = useIntl();
     useEffect(() => {
+        const controller = new AbortController();
         (async () => {
-            const koodiList = await fetchKoodiListByKoodisto({ koodistoUri, koodistoVersio });
-            setPersistedKoodiList(koodiList);
+            const koodiList = await fetchKoodiListByKoodisto({ koodistoUri, koodistoVersio, controller });
+            if (!controller.signal.aborted) {
+                setPersistedKoodiList(koodiList);
+            }
         })();
+        return () => controller.abort();
     }, [koodistoUri, koodistoVersio]);
 
     const headers = useMemo<(keyof CsvKoodiObject)[]>(() => [...getHeaders(csvKoodiArray || [])], [csvKoodiArray]);
