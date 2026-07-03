@@ -144,6 +144,7 @@ export const KoodiTable: React.FC<Props> = ({ koodiList, modal, setSelected }) =
             modal={modal}
             columns={columns}
             data={data}
+            getRowId={(row) => `${row.koodistoUri}:${row.koodiUri}:${row.versio}`}
             setSelected={setSelected}
             onFilter={(rows) => setFilteredCount(rows.length)}
             pageSize={20}

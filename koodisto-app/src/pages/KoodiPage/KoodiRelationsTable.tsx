@@ -194,7 +194,7 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
     }, [editable, formatMessage, locale, removeKoodiFromRelations]);
 
     const suhdeModal = useCallback(
-        (close) => (
+        (close: () => void) => (
             <KoodiSuhdeModal
                 relationSources={relationSources || []}
                 save={addNewKoodiToRelations}
@@ -207,7 +207,12 @@ export const KoodiRelationsTable: React.FC<RelationTableProps> = ({
     );
     return (
         <>
-            <Table<KoodiRelation> columns={columns} data={data} pageSize={20} />{' '}
+            <Table<KoodiRelation>
+                columns={columns}
+                data={data}
+                getRowId={(row) => `${row.koodiUri}:${row.koodiVersio}`}
+                pageSize={20}
+            />{' '}
             {editable && (
                 <ModalPopup
                     trigger={

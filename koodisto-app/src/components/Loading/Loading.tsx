@@ -9,7 +9,7 @@ const LoadingDiv = styled.div`
     align-items: center;
 `;
 
-export const Loading: React.FC = ({ children }) => {
+export const Loading = ({ children }: React.PropsWithChildren) => {
     return (
         <LoadingDiv>
             <Spin />

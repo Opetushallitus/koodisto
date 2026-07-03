@@ -179,7 +179,15 @@ export const CSVFunctionModal: React.FC<Props> = ({ koodistoUri, koodistoVersio,
                         </UploadContainerItem>
                         {(saving && <Loading />) || (
                             <UploadContainerItem>
-                                {!!csvKoodiArray.length && <Table columns={columns} data={dataMemo} />}
+                                {!!csvKoodiArray.length && (
+                                    <Table
+                                        columns={columns}
+                                        data={dataMemo}
+                                        getRowId={(row, index) =>
+                                            `${row.koodistoUri}:${row.koodiArvo}:${row.versio || index}`
+                                        }
+                                    />
+                                )}
                             </UploadContainerItem>
                         )}
                     </UploadContainer>

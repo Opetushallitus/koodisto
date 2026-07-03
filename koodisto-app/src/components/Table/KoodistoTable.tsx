@@ -235,6 +235,7 @@ export const KoodistoTable: React.FC<KoodistoTableProps> = ({
             <Table<ListKoodisto>
                 columns={columns}
                 data={data}
+                getRowId={(row) => `${row.koodistoUri}:${row.versio}`}
                 modal={modal}
                 onFilter={(rows) => setFilteredCount(rows.length)}
                 setSelected={setSelected}

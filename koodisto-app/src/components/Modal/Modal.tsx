@@ -4,7 +4,7 @@ import ModalFooter from 'virkailija-ui-components/ModalFooter';
 import ModalHeader from 'virkailija-ui-components/ModalHeader';
 import styled from 'styled-components';
 import Popup from 'reactjs-popup';
-import { PopupProps, PopupActions } from 'reactjs-popup/dist/types';
+import type { PopupActions, PopupProps } from 'reactjs-popup/dist/types';
 
 const StyledOPModal = styled.div`
     outline: 1px solid #979797;
@@ -68,8 +68,18 @@ export const Modal: React.FC<Props> = ({ onClose, footer, header, body }: Props)
 };
 const overlayStyle = { background: 'rgba(0,0,0,0.5)' };
 const contentStyle = { width: '80vw', padding: 0 };
-export const ModalPopup: React.FC<PopupProps & React.RefAttributes<PopupActions>> = (props) => (
-    <Popup
+
+type PopupRenderChild = React.ReactNode | ((close: () => void, isOpen: boolean) => React.ReactNode);
+type PopupPropsWithRenderChild = Omit<PopupProps, 'children'> & {
+    children?: PopupRenderChild;
+};
+const PopupWithRenderChild = Popup as React.ForwardRefExoticComponent<
+    PopupPropsWithRenderChild & React.RefAttributes<PopupActions>
+>;
+
+export const ModalPopup = React.forwardRef<PopupActions, PopupPropsWithRenderChild>((props, ref) => (
+    <PopupWithRenderChild
+        ref={ref}
         modal
         {...{
             ...props,
@@ -78,5 +88,7 @@ export const ModalPopup: React.FC<PopupProps & React.RefAttributes<PopupActions>
         }}
     >
         {props.children}
-    </Popup>
-);
+    </PopupWithRenderChild>
+));
+
+ModalPopup.displayName = 'ModalPopup';

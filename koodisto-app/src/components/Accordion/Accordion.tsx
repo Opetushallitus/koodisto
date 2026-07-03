@@ -7,10 +7,11 @@ import {
     AccordionItemPanel,
 } from 'react-accessible-accordion';
 import { IconWrapper } from '../IconWapper';
-import { UUID } from 'react-accessible-accordion/dist/types/components/ItemContext';
 import styled from 'styled-components';
 
-const ChevronIcon = styled(({ id, activeIds, ...rest }: { id: number | string; activeIds: UUID[] }) => {
+type AccordionId = NonNullable<React.ComponentProps<typeof AC>['preExpanded']>[number];
+
+const ChevronIcon = styled(({ id, activeIds, ...rest }: { id: AccordionId; activeIds: AccordionId[] }) => {
     return <IconWrapper icon={`el:chevron-${activeIds.includes(id) ? 'down' : 'right'}`} {...rest} />;
 })`
     font-size: 1.2rem;
@@ -39,20 +40,20 @@ const AccordionHeader = styled.div`
     margin: 1rem;
 `;
 type AccordionDataItem = {
-    id: number | string;
+    id: AccordionId;
     localizedHeadingTitle: ReactNode;
     panelComponent: ReactNode;
 };
 
 type AccordionProps = {
     data: AccordionDataItem[];
-    open?: UUID[];
+    open?: AccordionId[];
 };
 
 export const Accordion: React.FC<AccordionProps> = ({ data, open = [] }) => {
-    const [activeAcIds, setActiveAcIds] = useState<UUID[]>([...open]);
+    const [activeAcIds, setActiveAcIds] = useState<AccordionId[]>([...open]);
     return (
-        <AC onChange={setActiveAcIds} allowZeroExpanded allowMultipleExpanded preExpanded={activeAcIds}>
+        <AC onChange={(ids) => setActiveAcIds(ids)} allowZeroExpanded allowMultipleExpanded preExpanded={activeAcIds}>
             {data.map((item) => {
                 return (
                     <StyledAccordionItem key={item.id} uuid={item.id}>

@@ -1,5 +1,5 @@
-import React, { ErrorInfo } from 'react';
-import ReactDOM from 'react-dom';
+import React, { ErrorInfo, ReactNode } from 'react';
+import { createRoot } from 'react-dom/client';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 import { Provider, useAtom } from 'jotai';
@@ -26,8 +26,12 @@ axios.interceptors.request.use((config) => {
     return config;
 });
 
-export class ErrorBoundary extends React.Component<unknown, { hasError: boolean }> {
-    constructor(props: unknown) {
+type ErrorBoundaryProps = {
+    children?: ReactNode;
+};
+
+export class ErrorBoundary extends React.Component<ErrorBoundaryProps, { hasError: boolean }> {
+    constructor(props: ErrorBoundaryProps) {
         super(props);
         this.state = { hasError: false };
     }
@@ -49,7 +53,7 @@ export class ErrorBoundary extends React.Component<unknown, { hasError: boolean 
     }
 }
 
-const Initialize: React.FC = ({ children }) => {
+const Initialize = ({ children }: { children?: ReactNode }) => {
     useAtom(statusAtom);
     const [casMeLocale] = useAtom(casMeLocaleAtom);
     const [messages] = useAtom(lokalisaatioMessagesAtom);
@@ -59,7 +63,14 @@ const Initialize: React.FC = ({ children }) => {
         </IntlProvider>
     );
 };
-ReactDOM.render(
+
+const rootElement = document.getElementById('root');
+
+if (!rootElement) {
+    throw new Error('Root element not found');
+}
+
+createRoot(rootElement).render(
     <React.StrictMode>
         <ThemeProvider theme={theme}>
             <Provider>
@@ -74,6 +85,5 @@ ReactDOM.render(
                 </ErrorBoundary>
             </Provider>
         </ThemeProvider>
-    </React.StrictMode>,
-    document.getElementById('root')
+    </React.StrictMode>
 );

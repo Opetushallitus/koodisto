@@ -1,11 +1,12 @@
 import React, { ReactNode } from 'react';
 import 'react-notifications-component/dist/theme.css';
-import { iNotification, ReactNotifications, Store } from 'react-notifications-component';
-import {
+import { ReactNotifications, Store } from 'react-notifications-component';
+import type {
+    iNotification,
     NOTIFICATION_CONTAINER,
     NOTIFICATION_INSERTION,
     NOTIFICATION_TYPE,
-} from 'react-notifications-component/dist/src/typings';
+} from 'react-notifications-component';
 import { FormattedMessage } from 'react-intl';
 
 const DEFAULT_TIMEOUT = 5000;

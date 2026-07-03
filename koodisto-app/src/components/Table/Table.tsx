@@ -97,11 +97,13 @@ const SortColumn = styled.div`
 type TableProps<T extends object> = {
     columns: ColumnDef<T>[];
     data: T[];
+    getRowId?: (originalRow: T, index: number, parent?: Row<T>) => string;
 };
 
 export const Table = <T extends object>({
     columns,
     data,
+    getRowId,
     onFilter,
     children,
     modal,
@@ -173,6 +175,7 @@ export const Table = <T extends object>({
             columnFilters,
             rowSelection,
         },
+        getRowId,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
         getFacetedUniqueValues: getFacetedUniqueValues(),
@@ -280,7 +283,7 @@ function Filter<T>({ column, table }: { column: Column<T, unknown>; table: React
     const { formatMessage } = useIntl();
     const columnFilterValue = column.getFilterValue();
     const firstValue = table.getPreFilteredRowModel().flatRows[0]?.getValue(column.id);
-    const onChange = useCallback((value) => column.setFilterValue(value), [column]);
+    const onChange = useCallback((value: unknown) => column.setFilterValue(value), [column]);
     const sortedUniqueValues = useMemo(
         () =>
             (typeof firstValue === 'number' && []) ||

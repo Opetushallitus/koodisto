@@ -6,6 +6,7 @@ import { IconWrapper } from '../IconWapper';
 import { useNavigate } from 'react-router-dom';
 import { Tila } from '../../types';
 import Popup from 'reactjs-popup';
+import type { PopupActions, PopupProps } from 'reactjs-popup/dist/types';
 import 'reactjs-popup/dist/index.css';
 
 type Props = {
@@ -20,6 +21,13 @@ type Props = {
 };
 
 const contentStyle = { width: '300px' };
+type PopupRenderChild = React.ReactNode | ((close: () => void, isOpen: boolean) => React.ReactNode);
+type PopupPropsWithRenderChild = Omit<PopupProps, 'children'> & {
+    children?: PopupRenderChild;
+};
+const PopupWithRenderChild = Popup as React.ForwardRefExoticComponent<
+    PopupPropsWithRenderChild & React.RefAttributes<PopupActions>
+>;
 
 export const Footer: React.FC<Props> = ({
     returnPath,
@@ -36,7 +44,7 @@ export const Footer: React.FC<Props> = ({
         <FooterContainer>
             <FooterLeftContainer>
                 {versionDialog && (
-                    <Popup
+                    <PopupWithRenderChild
                         position="top left"
                         trigger={
                             <Button variant={'outlined'} name={`${localisationPrefix}_VERSIOI`} disabled={!latest}>
@@ -49,9 +57,9 @@ export const Footer: React.FC<Props> = ({
                         {...{ contentStyle }}
                     >
                         {versionDialog}
-                    </Popup>
+                    </PopupWithRenderChild>
                 )}
-                <Popup
+                <PopupWithRenderChild
                     position="top left"
                     trigger={
                         <Button variant={'outlined'} name={`${localisationPrefix}_POISTA`} disabled={locked}>
@@ -65,7 +73,7 @@ export const Footer: React.FC<Props> = ({
                     {...{ contentStyle }}
                 >
                     {removeDialog}
-                </Popup>
+                </PopupWithRenderChild>
             </FooterLeftContainer>
             <FooterRightContainer>
                 <Button
