@@ -1,228 +1,142 @@
 const path = require('path');
-const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const { createHash } = require('crypto');
 
+const appPath = (...segments) => path.resolve(__dirname, ...segments);
+const publicPath = '/koodisto-service/';
+
+const isProduction = process.env.NODE_ENV === 'production';
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
-const imageInlineSizeLimit = parseInt(process.env.IMAGE_INLINE_SIZE_LIMIT || '10000');
+const imageInlineSizeLimit = Number(process.env.IMAGE_INLINE_SIZE_LIMIT || 10000);
 
-const isEnvDevelopment = process.env.NODE_ENV === 'development';
-const isEnvProduction = process.env.NODE_ENV === 'production';
-const isPlaywright = process.env.PLAYWRIGHT === 'true';
-const isEnvProductionProfile = isEnvProduction && process.argv.includes('--profile');
+const createProxy = (target, context) => ({ target, context, changeOrigin: true });
 
-const createEnvironmentHash = () => {
-    const hash = createHash('md5');
-    hash.update(JSON.stringify({ NODE_ENV: process.env.NODE_ENV }));
-    return hash.digest('hex');
-};
+const mockApiProxy = createProxy('http://localhost:9000', [
+    '/kayttooikeus-service',
+    '/organisaatio-service',
+    '/lokalisointi',
+]);
 
-module.exports = function () {
-    return {
-        target: ['browserslist'],
-        stats: 'errors-warnings',
-        mode: isEnvProduction ? 'production' : 'development',
-        bail: isEnvProduction,
-        devtool: isEnvProduction ? (shouldUseSourceMap ? 'source-map' : false) : 'cheap-module-source-map',
-        devServer: {
-            allowedHosts: ['localhost'],
-            compress: true,
-            static: {
-                directory: path.resolve(__dirname, 'public'),
-                publicPath: ['/koodisto-service/'],
-                watch: {
-                    ignored: {},
-                },
+module.exports = {
+    target: 'browserslist',
+    mode: isProduction ? 'production' : 'development',
+    bail: isProduction,
+    stats: 'errors-warnings',
+    devtool: isProduction ? (shouldUseSourceMap ? 'source-map' : false) : 'cheap-module-source-map',
+    devServer: {
+        client: {
+            overlay: {
+                errors: true,
+                warnings: false,
             },
-            client: {
-                overlay: {
-                    errors: true,
-                    warnings: false,
-                },
-            },
-            devMiddleware: {
-                publicPath: '/koodisto-service',
-            },
-            historyApiFallback: {
-                disableDotRule: true,
-                index: '/koodisto-service',
-            },
-            host: '127.0.0.1',
-            hot: true,
-            port: isPlaywright ? 8686 : 3001,
-            proxy: isPlaywright
-                ? [
-                      {
-                          target: 'http://localhost:9000',
-                          context: ['/kayttooikeus-service', '/organisaatio-service', '/lokalisointi'],
-                          changeOrigin: true,
-                      },
-                  ]
+        },
+        historyApiFallback: {
+            disableDotRule: true,
+            index: publicPath,
+        },
+        host: '127.0.0.1',
+        port: process.env.PLAYWRIGHT === 'true' ? 8686 : 3001,
+        proxy:
+            process.env.PLAYWRIGHT === 'true'
+                ? [mockApiProxy]
                 : [
-                      {
-                          target: 'http://localhost:8080',
-                          context: ['/koodisto-service/static', '/koodisto-service/rest', '/koodisto-service/internal'],
-                          changeOrigin: true,
-                      },
-                      {
-                          target: 'http://localhost:9000',
-                          context: ['/kayttooikeus-service', '/organisaatio-service', '/lokalisointi'],
-                          changeOrigin: true,
-                      },
+                      createProxy('http://localhost:8080', [
+                          '/koodisto-service/static',
+                          '/koodisto-service/rest',
+                          '/koodisto-service/internal',
+                      ]),
+                      mockApiProxy,
                   ],
+        static: {
+            directory: appPath('public'),
+            publicPath,
         },
-        entry: {
-            main: path.resolve(__dirname, 'src', 'index.tsx'),
+    },
+    entry: appPath('src', 'index.tsx'),
+    output: {
+        path: appPath('build'),
+        pathinfo: !isProduction,
+        filename: isProduction ? 'static/js/[name].[contenthash:8].js' : 'static/js/[name].bundle.js',
+        chunkFilename: isProduction ? 'static/js/[name].[contenthash:8].chunk.js' : 'static/js/[name].chunk.js',
+        assetModuleFilename: 'static/media/[name].[hash][ext]',
+        publicPath,
+    },
+    cache: {
+        type: 'filesystem',
+        name: isProduction ? 'production' : 'development',
+        buildDependencies: {
+            config: [__filename],
+            tsconfig: [appPath('tsconfig.json')],
         },
-        output: {
-            path: path.resolve(__dirname, 'build'),
-            pathinfo: isEnvDevelopment,
-            filename: isEnvProduction
-                ? 'static/js/[name].[contenthash:8].js'
-                : isEnvDevelopment && 'static/js/[name].bundle.js',
-            chunkFilename: isEnvProduction
-                ? 'static/js/[name].[contenthash:8].chunk.js'
-                : isEnvDevelopment && 'static/js/[name].chunk.js',
-            assetModuleFilename: 'static/media/[name].[hash][ext]',
-            publicPath: '/koodisto-service/',
-            devtoolModuleFilenameTemplate: isEnvProduction
-                ? (info) => path.relative(path.resolve(__dirname, 'src'), info.absoluteResourcePath).replace(/\\/g, '/')
-                : isEnvDevelopment && ((info) => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
+    },
+    resolve: {
+        alias: {
+            'virkailija-ui-components': appPath('src', 'virkailija-ui-components'),
         },
-        cache: {
-            type: 'filesystem',
-            version: createEnvironmentHash(),
-            cacheDirectory: path.resolve(__dirname, 'node_modules', '.cache'),
-            store: 'pack',
-            buildDependencies: {
-                defaultWebpack: ['webpack/lib/'],
-                config: [__filename],
-                tsconfig: [path.resolve(__dirname, 'tsconfig.json')],
+        extensions: ['.tsx', '.ts', '.jsx', '.js', '.mjs', '.json'],
+    },
+    module: {
+        rules: [
+            shouldUseSourceMap && {
+                enforce: 'pre',
+                test: /\.(js|mjs|jsx|ts|tsx|css)$/,
+                loader: 'source-map-loader',
+                exclude: [/virkailija-ui-components/, /fast-memoize/],
             },
-        },
-        resolve: {
-            extensions: [
-                '.web.mjs',
-                '.mjs',
-                '.web.js',
-                '.js',
-                '.web.ts',
-                '.ts',
-                '.web.tsx',
-                '.tsx',
-                '.json',
-                '.web.jsx',
-                '.jsx',
-            ],
-            alias: {
-                ...(isEnvProductionProfile && {
-                    'react-dom$': 'react-dom/profiling',
-                    'scheduler/tracing': 'scheduler/tracing-profiling',
-                }),
-                'virkailija-ui-components': path.resolve(__dirname, 'src', 'virkailija-ui-components'),
+            {
+                test: /\.[jt]sx?$/,
+                exclude: /node_modules/,
+                loader: 'ts-loader',
+                options: {
+                    transpileOnly: !isProduction,
+                },
             },
-        },
-        module: {
-            strictExportPresence: true,
-            rules: [
-                shouldUseSourceMap && {
-                    enforce: 'pre',
-                    test: /\.(js|mjs|jsx|ts|tsx|css)$/,
-                    loader: 'source-map-loader',
-                    exclude: [/virkailija-ui-components/, /fast-memoize/],
-                },
-                {
-                    oneOf: [
-                        {
-                            test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-                            type: 'asset',
-                            parser: {
-                                dataUrlCondition: {
-                                    maxSize: imageInlineSizeLimit,
-                                },
-                            },
-                        },
-                        { test: /\.svg/, type: 'asset/inline' },
-                        {
-                            test: /\.(js|mjs|jsx|ts|tsx)?$/,
-                            exclude: /node_modules/,
-                            use: [
-                                {
-                                    loader: 'ts-loader',
-                                    options: {
-                                        transpileOnly: isEnvDevelopment,
-                                    },
-                                },
-                            ],
-                        },
-                        {
-                            test: /\.css$/,
-                            exclude: /\.module\.css$/,
-                            use: ['style-loader', 'css-loader'],
-                            sideEffects: true,
-                        },
-                        {
-                            test: /\.module\.css$/,
-                            use: ['style-loader', 'css-loader'],
-                        },
-                        {
-                            exclude: [/^$/, /\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
-                            type: 'asset/resource',
-                        },
-                    ],
-                },
-            ].filter(Boolean),
-        },
-        plugins: [
-            new HtmlWebpackPlugin({
-                filename: 'index.html',
-                template: path.resolve(__dirname, 'public', 'index.html'),
-                favicon: path.resolve(__dirname, 'public', 'favicon.ico'),
-                chunks: ['main'],
-            }),
-            new webpack.DefinePlugin({
-                'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-            }),
-            isEnvProduction &&
-                new MiniCssExtractPlugin({
-                    filename: 'static/css/[name].[contenthash:8].css',
-                    chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
-                }),
-            new WebpackManifestPlugin({
-                fileName: 'asset-manifest.json',
-                publicPath: '/koodisto-service/ui/',
-                generate: (seed, files, entrypoints) => {
-                    const manifestFiles = files.reduce((manifest, file) => {
-                        manifest[file.name] = file.path;
-                        return manifest;
-                    }, seed);
-                    const entrypointFiles = entrypoints.main.filter((fileName) => !fileName.endsWith('.map'));
-
-                    return {
-                        files: manifestFiles,
-                        entrypoints: entrypointFiles,
-                    };
-                },
-            }),
-            new ForkTsCheckerWebpackPlugin({
-                typescript: {
-                    configOverwrite: {
-                        compilerOptions: {
-                            sourceMap: isEnvProduction ? shouldUseSourceMap : isEnvDevelopment,
-                            noEmit: true,
-                            incremental: true,
-                            tsBuildInfoFile: path.resolve(__dirname, 'node_modules', '.cache', 'tsconfig.tsbuildinfo'),
-                        },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
+                sideEffects: true,
+            },
+            {
+                test: /\.(bmp|gif|jpe?g|png)$/i,
+                type: 'asset',
+                parser: {
+                    dataUrlCondition: {
+                        maxSize: imageInlineSizeLimit,
                     },
-                    diagnosticOptions: {
-                        syntactic: true,
-                    },
-                    mode: 'write-references',
                 },
-            }),
+            },
+            {
+                test: /\.svg$/i,
+                type: 'asset/inline',
+            },
+            {
+                test: /\.(eot|otf|ttf|woff2?)$/i,
+                type: 'asset/resource',
+            },
         ].filter(Boolean),
-    };
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            template: appPath('public', 'index.html'),
+            favicon: appPath('public', 'favicon.ico'),
+            chunks: ['main'],
+        }),
+        new ForkTsCheckerWebpackPlugin({
+            typescript: {
+                configOverwrite: {
+                    compilerOptions: {
+                        sourceMap: isProduction ? shouldUseSourceMap : true,
+                        noEmit: true,
+                        incremental: true,
+                        tsBuildInfoFile: appPath('node_modules', '.cache', 'tsconfig.tsbuildinfo'),
+                    },
+                },
+                diagnosticOptions: {
+                    syntactic: true,
+                },
+                mode: 'write-references',
+            },
+        }),
+    ],
 };
