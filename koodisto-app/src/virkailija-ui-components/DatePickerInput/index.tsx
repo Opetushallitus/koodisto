@@ -2,9 +2,7 @@ import 'react-day-picker/lib/style.css';
 
 import * as React from 'react';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import formatDate from 'date-fns/format';
-import isValidDate from 'date-fns/isValid';
-import parseDate from 'date-fns/parse';
+import { format as formatDate, isValid as isValidDate, parse as parseDate } from 'date-fns';
 
 import DatePickerStyle from '../DatePickerStyle';
 import Input from '../Input';

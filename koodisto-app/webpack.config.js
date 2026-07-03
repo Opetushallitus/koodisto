@@ -207,10 +207,6 @@ module.exports = function () {
                     };
                 },
             }),
-            new webpack.IgnorePlugin({
-                resourceRegExp: /^\.\/locale$/,
-                contextRegExp: /moment$/,
-            }),
             new ForkTsCheckerWebpackPlugin({
                 typescript: {
                     configOverwrite: {
