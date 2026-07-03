@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { KoodistoRyhma } from '../../types';
 import { FormattedMessage } from 'react-intl';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
 import { success } from '../../components/Notification';
 import { deleteKoodistoRyhma } from '../../api/koodistoRyhma';

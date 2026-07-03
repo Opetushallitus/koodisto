@@ -1,6 +1,6 @@
 import React from 'react';
 import { FooterContainer, FooterLeftContainer, FooterRightContainer } from '../Containers';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 import { FormattedMessage } from 'react-intl';
 import { IconWrapper } from '../IconWapper';
 import { useNavigate } from 'react-router-dom';

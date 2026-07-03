@@ -1,5 +1,5 @@
 import { Controller, FieldValues } from 'react-hook-form';
-import DatePickerInput from '@opetushallitus/virkailija-ui-components/DatePickerInput';
+import DatePickerInput from 'virkailija-ui-components/DatePickerInput';
 import * as React from 'react';
 import { DayPickerProps } from 'react-day-picker/types/Props';
 import { ControllerProps } from '../../types';

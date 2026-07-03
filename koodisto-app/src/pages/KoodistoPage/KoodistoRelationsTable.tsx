@@ -5,7 +5,7 @@ import { Table } from '../../components/Table';
 import { Link } from 'react-router-dom';
 import { sortBy } from 'lodash';
 import { KoodistoRelation, ListKoodisto, PageKoodisto, Locale } from '../../types';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
 import { KoodistoSuhdeModal } from './KoodistoSuhdeModal';
 import { ColumnDef, CellContext } from '@tanstack/react-table';

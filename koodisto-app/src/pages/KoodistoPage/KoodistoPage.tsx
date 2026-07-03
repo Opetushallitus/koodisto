@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fetchPageKoodisto } from '../../api/koodisto';
 import { translateMetadata } from '../../utils';

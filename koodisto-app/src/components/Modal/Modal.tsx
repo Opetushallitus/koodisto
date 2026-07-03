@@ -1,7 +1,7 @@
 import React from 'react';
-import ModalBody from '@opetushallitus/virkailija-ui-components/ModalBody';
-import ModalFooter from '@opetushallitus/virkailija-ui-components/ModalFooter';
-import ModalHeader from '@opetushallitus/virkailija-ui-components/ModalHeader';
+import ModalBody from 'virkailija-ui-components/ModalBody';
+import ModalFooter from 'virkailija-ui-components/ModalFooter';
+import ModalHeader from 'virkailija-ui-components/ModalHeader';
 import styled from 'styled-components';
 import Popup from 'reactjs-popup';
 import { PopupProps, PopupActions } from 'reactjs-popup/dist/types';

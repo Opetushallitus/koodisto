@@ -1,7 +1,7 @@
 import { Controller, FieldValues } from 'react-hook-form';
 import * as React from 'react';
 import { ControllerProps } from '../../types';
-import Input from '@opetushallitus/virkailija-ui-components/Input';
+import Input from 'virkailija-ui-components/Input';
 
 type Props<T extends FieldValues> = ControllerProps<T>;
 export const InputController = <T extends FieldValues>({ name, control, disabled, rules }: Props<T>) => {

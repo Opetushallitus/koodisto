@@ -1,7 +1,7 @@
 import React, { ReactNode, useState, useEffect, useMemo, useCallback, useRef, HTMLProps } from 'react';
 import styled from 'styled-components';
 import { MessageDescriptor, useIntl } from 'react-intl';
-import Input from '@opetushallitus/virkailija-ui-components/Input';
+import Input from 'virkailija-ui-components/Input';
 import Select from 'react-select';
 import type { SelectOptionType, PageSize } from '../../types';
 import {

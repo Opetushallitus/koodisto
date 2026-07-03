@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
-import Checkbox from '@opetushallitus/virkailija-ui-components/Checkbox';
+import Button from 'virkailija-ui-components/Button';
+import Checkbox from 'virkailija-ui-components/Checkbox';
 import { FormattedMessage, MessageDescriptor } from 'react-intl';
 
 const CloseWrapper = styled.div`

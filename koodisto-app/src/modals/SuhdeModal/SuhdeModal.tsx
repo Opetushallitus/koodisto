@@ -1,5 +1,5 @@
 import { Footer } from '../../components/Modal';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 import { FormattedMessage } from 'react-intl';
 import React from 'react';
 

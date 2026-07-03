@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import { IconWrapper } from '../../components/IconWapper';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 import { KoodistoRyhmaModal } from '../../modals/KoodistoRyhmaModal';
 import { useParams, useNavigate } from 'react-router-dom';
 import { KoodistoTable } from '../../components/Table';

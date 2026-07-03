@@ -8,7 +8,7 @@ import './index.css';
 import { ErrorPage } from './pages/ErrorPage';
 import { Loading } from './components/Loading';
 import { Raamit } from './components/Raamit';
-import createTheme from '@opetushallitus/virkailija-ui-components/createTheme';
+import createTheme from 'virkailija-ui-components/createTheme';
 import { ThemeProvider } from 'styled-components';
 import { casMeLocaleAtom } from './api/kayttooikeus';
 import { IntlProvider } from 'react-intl';

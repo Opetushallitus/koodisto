@@ -122,6 +122,7 @@ module.exports = function () {
                     'react-dom$': 'react-dom/profiling',
                     'scheduler/tracing': 'scheduler/tracing-profiling',
                 }),
+                'virkailija-ui-components': path.resolve(__dirname, 'src', 'virkailija-ui-components'),
             },
         },
         module: {

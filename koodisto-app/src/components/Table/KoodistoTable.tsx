@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';

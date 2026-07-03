@@ -1,7 +1,7 @@
 import { Modal, Footer } from '../../components/Modal';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { KoodiCSVReader } from './KoodiCSVReader';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Table } from '../../components/Table';

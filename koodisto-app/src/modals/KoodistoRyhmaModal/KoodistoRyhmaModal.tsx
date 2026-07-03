@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Modal, Footer } from '../../components/Modal';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { useForm } from 'react-hook-form';
-import Input from '@opetushallitus/virkailija-ui-components/Input';
+import Input from 'virkailija-ui-components/Input';
 import { IconWrapper } from '../../components/IconWapper';
 import { success } from '../../components/Notification';
 import { KoodistoRyhma } from '../../types';

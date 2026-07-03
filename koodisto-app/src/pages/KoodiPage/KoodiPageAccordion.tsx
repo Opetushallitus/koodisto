@@ -5,7 +5,7 @@ import { KoodiRelationsTable } from './KoodiRelationsTable';
 import { Koodi, KoodiList, KoodiRelation } from '../../types';
 import { UseFieldArrayReturn } from 'react-hook-form';
 import styled from 'styled-components';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 import { ModalPopup } from '../../components/Modal/Modal';
 import { KoodiSuhdeModal } from './KoodiSuhdeModal';
 import { fetchPageKoodi } from '../../api/koodi';

@@ -21,7 +21,10 @@
       "noUnusedLocals": true,
       "noUnusedParameters": true,
       "module": "esnext",
-      "moduleResolution": "node",
+      "moduleResolution": "bundler",
+      "paths": {
+        "virkailija-ui-components/*": ["./src/virkailija-ui-components/*"]
+      },
       "resolveJsonModule": true,
       "isolatedModules": true,
       "jsx": "react",

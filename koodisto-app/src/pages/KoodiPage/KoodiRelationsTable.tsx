@@ -10,7 +10,7 @@ import type { KoodiRelation, Koodi, KoodiList, SelectOptionType, Locale } from '
 import { ColumnDef, CellContext, Row } from '@tanstack/react-table';
 import { UseFieldArrayReturn } from 'react-hook-form';
 import { KoodiSuhdeModal } from './KoodiSuhdeModal';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 import { IconWrapper } from '../../components/IconWapper';
 import { ModalPopup } from '../../components/Modal/Modal';
 import { ButtonLabelPrefix } from '../../components/Containers';

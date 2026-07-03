@@ -5,7 +5,7 @@ import { casMeLangAtom } from '../../api/kayttooikeus';
 import { CrumbTrail } from '../../components/CrumbTrail';
 import type { Koodi, PageKoodisto } from '../../types';
 import { fetchPageKoodisto } from '../../api/koodisto';
-import Spin from '@opetushallitus/virkailija-ui-components/Spin';
+import Spin from 'virkailija-ui-components/Spin';
 import { Crumb } from '../../components/CrumbTrail/CrumbTrail';
 
 export const KoodiCrumbTrail: React.FC<{ koodi: Koodi; koodistoUriParam?: string }> = ({ koodi, koodistoUriParam }) => {

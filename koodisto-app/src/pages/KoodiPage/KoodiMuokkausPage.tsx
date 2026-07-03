@@ -21,7 +21,7 @@ import { Footer, ConfirmationDialog } from '../../components/Footer';
 import { DatePickerController, InputArrayController, InputController } from '../../components/controllers';
 import { success } from '../../components/Notification';
 import { KoodiPageAccordion } from './KoodiPageAccordion';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 
 const successNotification = (koodiUri: string) => {
     success({

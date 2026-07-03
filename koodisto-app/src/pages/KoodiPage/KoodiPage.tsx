@@ -6,7 +6,7 @@ import { fetchPageKoodi } from '../../api/koodi';
 import { translateMetadata } from '../../utils';
 import { useAtom } from 'jotai';
 import { casMeLangAtom } from '../../api/kayttooikeus';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 import { Loading } from '../../components/Loading';
 import { KoodiPageAccordion } from './KoodiPageAccordion';
 import { KoodiInfo } from './KoodiInfo';

@@ -2,7 +2,7 @@ import React from 'react';
 import { Table } from '@tanstack/react-table';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
-import Button from '@opetushallitus/virkailija-ui-components/Button';
+import Button from 'virkailija-ui-components/Button';
 import Select from 'react-select';
 import type { PageSize } from '../../types';
 import { IconWrapper } from '../IconWapper';

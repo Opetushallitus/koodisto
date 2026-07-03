@@ -14,8 +14,8 @@ import styled from 'styled-components';
 import { IconWrapper } from '../IconWapper';
 import * as React from 'react';
 import { MainContainerRowTitle, MainContainerRowTitleMandatory, MainContainerRowContent } from '../Containers';
-import Textarea from '@opetushallitus/virkailija-ui-components/Textarea';
-import Input from '@opetushallitus/virkailija-ui-components/Input';
+import Textarea from 'virkailija-ui-components/Textarea';
+import Input from 'virkailija-ui-components/Input';
 
 const Container = styled.div`
     display: flex;
