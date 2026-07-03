@@ -1,11 +1,10 @@
 import { Controller, FieldValues } from 'react-hook-form';
-import DatePickerInput from 'virkailija-ui-components/DatePickerInput';
+import DatePickerInput, { DatePickerDayPickerProps } from 'virkailija-ui-components/DatePickerInput';
 import * as React from 'react';
-import { DayPickerProps } from 'react-day-picker/types/Props';
 import { ControllerProps } from '../../types';
 
 type Props<T extends FieldValues> = ControllerProps<T> & {
-    dayPickerProps?: DayPickerProps;
+    dayPickerProps?: DatePickerDayPickerProps;
 };
 export const DatePickerController = <T extends FieldValues>({
     name,

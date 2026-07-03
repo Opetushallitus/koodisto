@@ -1,39 +1,39 @@
-import 'react-day-picker/lib/style.css';
+import '@daypicker/react/style.css';
 
 import { createGlobalStyle } from 'styled-components';
 
 const DatePickerStyle = createGlobalStyle`
   .DatePicker__ {
-    .DayPicker-Caption {
-      color: ${({ theme }) => theme.colors.text.primary} !important;
-    }
+    --rdp-accent-color: ${({ theme }) => theme.colors.primary.main};
+    --rdp-accent-background-color: ${({ theme }) => theme.colors.primary.focusOutline};
+    --rdp-day_button-border-radius: ${({ theme }) => theme.radii[1]}px;
 
-    .DayPicker-wrapper {
-      font-family: ${({ theme }) => theme.fonts.main};
-    }
+    font-family: ${({ theme }) => theme.fonts.main};
 
-    .DayPicker-Day {
+    .rdp-caption_label,
+    .rdp-day_button {
       color: ${({ theme }) => theme.colors.text.primary};
+    }
 
-      &:not(.DayPicker-Day--outside):not(.DayPicker-Day--selected) {
-        &:hover {
-          background-color: rgba(0, 0, 0, .05) !important;
-        }
-      }
+    .rdp-day_button:hover:not(:disabled) {
+      background-color: rgba(0, 0, 0, .05) !important;
     }
     
-    .DayPicker-Day--today {
+    .rdp-today:not(.rdp-outside) {
       color: ${({ theme }) => theme.colors.primary.main};
       font-weight: normal !important;
     }
 
-    .DayPicker-Day--selected:not(.DayPicker-Day--outside) {
-      background-color: ${({ theme }) => theme.colors.primary.main} !important;
+    .rdp-selected .rdp-day_button {
+      background-color: ${({ theme }) => theme.colors.primary.main};
+      border-color: ${({ theme }) => theme.colors.primary.main};
+      color: ${({ theme }) => theme.colors.primary.contrastText};
       font-weight: ${({ theme }) => theme.fontWeights.bold} !important;
     }
 
-    .DayPicker-Weekday {
+    .rdp-weekday {
       color: ${({ theme }) => theme.colors.text.secondary} !important;
+      opacity: 1;
     }
   }
 

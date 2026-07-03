@@ -1,11 +1,10 @@
-import 'react-day-picker/lib/style.css';
-
 import * as React from 'react';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
+import styled from 'styled-components';
+import { DayPicker, type PropsBase } from '@daypicker/react';
 import { format as formatDate, isValid as isValidDate, parse as parseDate } from 'date-fns';
 
 import DatePickerStyle from '../DatePickerStyle';
-import Input from '../Input';
+import Input, { InputProps } from '../Input';
 import InputIcon from '../InputIcon';
 import isString from '../utils/isString';
 
@@ -54,14 +53,29 @@ const defaultClassNames = {
 
 const noop = () => undefined;
 
-type DayPickerInputProps = React.ComponentProps<typeof DayPickerInput>;
+const DatePickerInputContainer = styled.div`
+    position: relative;
+`;
 
-export type DatePickerInputProps = Omit<DayPickerInputProps, 'classNames' | 'onChange' | 'format'> & {
+export type DatePickerDayPickerProps = Omit<PropsBase, 'mode' | 'required'>;
+
+export type DatePickerInputProps = {
+    value?: Date | string;
+    placeholder?: string;
     error?: boolean;
     showIcon?: boolean;
     format?: string;
     classNames?: Record<string, string>;
-    onChange?: DayPickerInputProps['onDayChange'];
+    inputProps?: InputProps;
+    dayPickerProps?: DatePickerDayPickerProps;
+    onChange?: (date: Date | undefined) => void;
+};
+
+const formatInputValue = (value: Date | string | undefined, format: string) => {
+    if (value instanceof Date && isValidDate(value)) {
+        return formatDateFn(value, format);
+    }
+    return value || '';
 };
 
 export const DatePickerInput = ({
@@ -73,8 +87,35 @@ export const DatePickerInput = ({
     error = false,
     showIcon = true,
     classNames: classNamesProp = {},
-    ...props
+    dayPickerProps = {},
 }: DatePickerInputProps) => {
+    const wrapperRef = React.useRef<HTMLDivElement>(null);
+    const [isOpen, setIsOpen] = React.useState(false);
+    const [month, setMonth] = React.useState(value instanceof Date ? value : undefined);
+    const [inputValue, setInputValue] = React.useState(formatInputValue(value, format));
+
+    React.useEffect(() => {
+        setInputValue(formatInputValue(value, format));
+        if (value instanceof Date && isValidDate(value)) {
+            setMonth(value);
+        }
+    }, [format, value]);
+
+    React.useEffect(() => {
+        if (!isOpen) {
+            return undefined;
+        }
+
+        const closeOnOutsideClick = (event: MouseEvent) => {
+            if (!wrapperRef.current?.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', closeOnOutsideClick);
+        return () => document.removeEventListener('mousedown', closeOnOutsideClick);
+    }, [isOpen]);
+
     const classNames = {
         ...classNamesProp,
         overlay: `${defaultClassNames.overlay} ${classNamesProp.overlay || ''}`,
@@ -82,26 +123,93 @@ export const DatePickerInput = ({
         container: `${defaultClassNames.container} ${classNamesProp.container || ''}`,
     };
 
+    const selectedDate = value instanceof Date && isValidDate(value) ? value : undefined;
+    const disabled = !!inputProps.disabled;
+
+    const open = () => {
+        if (!disabled) {
+            setIsOpen(true);
+        }
+    };
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const nextValue = event.target.value;
+        setInputValue(nextValue);
+        inputProps.onChange?.(event);
+
+        if (nextValue === '') {
+            onChange(undefined);
+            return;
+        }
+
+        const parsedDate = parseDateFn(nextValue, format);
+        if (parsedDate) {
+            setMonth(parsedDate);
+            onChange(parsedDate);
+        }
+    };
+
+    const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        inputProps.onKeyDown?.(event);
+        if (event.key === 'Escape') {
+            setIsOpen(false);
+        }
+    };
+
+    const handleInputClick = (event: React.MouseEvent<HTMLInputElement>) => {
+        inputProps.onClick?.(event);
+        open();
+    };
+
+    const handleInputFocus = (event: React.FocusEvent<HTMLInputElement>) => {
+        inputProps.onFocus?.(event);
+        open();
+    };
+
+    const handleMonthChange = (nextMonth: Date) => {
+        setMonth(nextMonth);
+        dayPickerProps.onMonthChange?.(nextMonth);
+    };
+
+    const handleSelect = (selected: Date | undefined) => {
+        onChange(selected);
+        if (selected) {
+            setInputValue(formatDateFn(selected, format));
+            setMonth(selected);
+            setIsOpen(false);
+        } else {
+            setInputValue('');
+        }
+    };
+
     return (
-        <>
+        <DatePickerInputContainer ref={wrapperRef} className={classNames.container}>
             <DatePickerStyle />
-            <DayPickerInput
-                classNames={classNames}
-                format={format}
-                value={value}
-                component={Input}
-                inputProps={{
-                    ...inputProps,
-                    suffix: showIcon && <InputIcon type="event" />,
-                    error,
-                }}
-                parseDate={parseDateFn}
-                formatDate={formatDateFn}
+            <Input
+                {...inputProps}
+                value={inputValue}
+                suffix={showIcon && <InputIcon type="event" />}
+                error={error}
                 placeholder={placeholder}
-                onDayChange={onChange}
-                {...props}
+                onChange={handleInputChange}
+                onClick={handleInputClick}
+                onFocus={handleInputFocus}
+                onKeyDown={handleInputKeyDown}
             />
-        </>
+            {isOpen && (
+                <div className={classNames.overlayWrapper}>
+                    <DayPicker
+                        {...dayPickerProps}
+                        className={`${classNames.overlay} ${dayPickerProps.className || ''}`}
+                        mode="single"
+                        selected={selectedDate}
+                        month={dayPickerProps.month || month}
+                        onMonthChange={handleMonthChange}
+                        onSelect={handleSelect}
+                    />
+                </div>
+            )}
+        </DatePickerInputContainer>
     );
 };
 
