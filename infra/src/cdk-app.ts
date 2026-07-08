@@ -119,7 +119,7 @@ class ApplicationStack extends cdk.Stack {
 
     const logGroup = new logs.LogGroup(this, "AppLogGroup", {
       logGroupName: "Koodisto/koodisto",
-      retention: logs.RetentionDays.INFINITE,
+      retention: logs.RetentionDays.FIVE_YEARS,
     });
 
     const dockerImage = new ecr_assets.DockerImageAsset(this, "AppImage", {
