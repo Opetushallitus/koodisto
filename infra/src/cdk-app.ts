@@ -474,6 +474,10 @@ class AlarmStack extends cdk.Stack {
       runtime: new lambda.Runtime("nodejs24.x"),
       architecture: lambda.Architecture.ARM_64,
       timeout: cdk.Duration.seconds(30),
+      logGroup: new logs.LogGroup(this, "AlarmsToSlackLogGroup", {
+        logGroupName: "/aws/lambda/alarms-to-slack",
+        retention: logs.RetentionDays.FIVE_YEARS,
+      }),
     });
 
     // https://docs.aws.amazon.com/secretsmanager/latest/userguide/retrieving-secrets_lambda.html
