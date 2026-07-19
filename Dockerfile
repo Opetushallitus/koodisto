@@ -1,4 +1,4 @@
-FROM maven:3.9.15-amazoncorretto-21-al2023@sha256:e3c1928769e2cd7df6ba55f0afb7c711a6e0a2b7b994e7b2b27316f19d893b0b AS build
+FROM maven:3.9.16-amazoncorretto-21-al2023@sha256:cc6d01a53e95e525f8dda3ffd1f0d2efcfd45a4f9e9fc125d22e58a21d2be31b AS build
 WORKDIR /build
 
 RUN dnf install -y nodejs24 \
