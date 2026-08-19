@@ -5,8 +5,9 @@ source "$( dirname "${BASH_SOURCE[0]}" )/lib/common-functions.sh"
 function main {
   init_nodejs
 
-  cd "${repo}/koodisto-app"
+  cd "${repo}/koodisto-app/mock-api"
   npm_ci_if_needed
+  cd ../
   npm run mock-api
 }
 
