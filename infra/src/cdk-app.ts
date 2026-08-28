@@ -133,8 +133,8 @@ class ApplicationStack extends cdk.Stack {
       this,
       "TaskDefinition",
       {
-        cpu: 1024,
-        memoryLimitMiB: 2048,
+        cpu: config.taskCpu,
+        memoryLimitMiB: config.taskMemoryMiB,
         runtimePlatform: {
           operatingSystemFamily: ecs.OperatingSystemFamily.LINUX,
           cpuArchitecture: ecs.CpuArchitecture.ARM64,
