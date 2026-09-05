@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "@aws-sdk/client-iam": "3.1053.0",
-    "@aws-sdk/client-sts": "3.1053.0",
+    "@aws-sdk/client-iam": "3.1125.0",
+    "@aws-sdk/client-sts": "3.1125.0",
     "@types/node": "24.10.15",
     "aws-cdk": "2.1133.0",
     "aws-cdk-lib": "2.262.0",
