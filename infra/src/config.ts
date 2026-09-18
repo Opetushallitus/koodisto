@@ -24,8 +24,8 @@ export type Config = {
   oauthServer?: string;
 };
 const defaultConfig = {
-  taskCpu: 512,
-  taskMemoryMiB: 1024,
+  taskCpu: 1024,
+  taskMemoryMiB: 2048,
   minCapacity: 2,
   maxCapacity: 8,
   datantuonti: {
@@ -115,8 +115,6 @@ export const qa: Config = {
 
 export const prod: Config = {
   ...defaultConfig,
-  taskCpu: 1024,
-  taskMemoryMiB: 2048,
   virkailijaHost: "virkailija.opintopolku.fi",
   zoneName: "prod.koodisto.opintopolku.fi",
   vpcCidr: "10.7.0.0/18",
