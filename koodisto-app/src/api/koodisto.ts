@@ -138,7 +138,7 @@ const upsertKoodisto = async <X>({
     lang: Kieli;
     mapper: (a: PageKoodisto) => X;
     path: string;
-    axiosFunc: <T, R = AxiosResponse<T>>(url: string, data?: X) => Promise<R>;
+    axiosFunc: <T>(url: string, data?: X) => Promise<AxiosResponse<T>>;
 }): Promise<PageKoodisto | undefined> =>
     errorHandlingWrapper(async () => {
         const { data: apiKoodisto } = await axiosFunc<ApiPageKoodisto>(path, mapper(koodisto));
@@ -220,7 +220,7 @@ const pageKoodistoAccessor = async <X>({
     koodistoUri: string;
     versio?: number;
     lang: Kieli;
-    axiosFunc: <T, R = AxiosResponse<T>>(url: string, data?: X) => Promise<R>;
+    axiosFunc: <T>(url: string, data?: X) => Promise<AxiosResponse<T>>;
 }): Promise<PageKoodisto | undefined> =>
     errorHandlingWrapper(async () => {
         const { data: apiPageKoodisto } = await axiosFunc<ApiPageKoodisto>(

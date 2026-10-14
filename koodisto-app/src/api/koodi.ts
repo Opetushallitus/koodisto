@@ -70,7 +70,7 @@ export const fetchKoodistoKoodis = async (
 const pageKoodiAccessor = async <X>(
     koodiUri: string,
     versio: number,
-    axiosFunc: <T, R = AxiosResponse<T>>(url: string, data?: X) => Promise<R>
+    axiosFunc: <T>(url: string, data?: X) => Promise<AxiosResponse<T>>
 ): Promise<Koodi | undefined> =>
     errorHandlingWrapper(async () => {
         const { data: pageData } = await axiosFunc<ApiKoodi>(`${API_INTERNAL_PATH}/koodi/${koodiUri}/${versio}`);
@@ -110,7 +110,7 @@ const upsertKoodi = async <X>({
     koodi: Koodi;
     mapper: (a: Koodi) => X;
     path: string;
-    axiosFunc: <T, R = AxiosResponse<T>>(url: string, data?: X) => Promise<R>;
+    axiosFunc: <T>(url: string, data?: X) => Promise<AxiosResponse<T>>;
 }): Promise<Koodi | undefined> =>
     errorHandlingWrapper(async () => {
         const { data: apiKoodi } = await axiosFunc<ApiKoodi>(path, mapper(koodi));
