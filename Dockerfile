@@ -1,14 +1,22 @@
 FROM maven:3.9.16-amazoncorretto-21-al2023@sha256:efdf660ec74911594e2a7f642e177ffba21b741c8e848223bf41a6d0fc367692 AS build
 WORKDIR /build
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-RUN dnf install -y nodejs24 \
-  && alternatives --install /usr/bin/node node /usr/bin/node-24 90 \
-  && alternatives --install /usr/bin/npm npm /usr/bin/npm-24 90 \
-  && alternatives --install /usr/bin/npx npx /usr/bin/npx-24 90
+ENV NVM_DIR=/opt/nvm
+
+COPY .nvmrc ./
+COPY scripts/lib/nvm.sh ${NVM_DIR}/nvm.sh
+
+RUN source "$NVM_DIR/nvm.sh" --no-use \
+  && nvm install
 
 COPY koodisto-app ./koodisto-app
 WORKDIR /build/koodisto-app
-RUN npm ci && npm run build
+
+RUN source "$NVM_DIR/nvm.sh" --no-use \
+  && nvm use \
+  && npm ci \
+  && npm run build
 
 WORKDIR /build
 COPY koodisto-service ./koodisto-service
