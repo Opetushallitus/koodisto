@@ -84,14 +84,13 @@ export const InputArrayController = <T extends { metadata: KoodiMetadata[] }>({
                                 tagName={'div'}
                             />
                             {index === 0 && (
-                                <div
+                                <button
+                                    type="button"
                                     title={formatMessage({
                                         id: 'KOPIOI_MUIHIN_KIELIIN',
                                         defaultMessage: 'Kopioi muihin kieliin',
                                     })}
-                                    onClick={() => copyToFields()}
-                                    tabIndex={0}
-                                    role="button"
+                                    onClick={copyToFields}
                                 >
                                     <IconWrapper
                                         icon="ci:copy"
@@ -99,7 +98,7 @@ export const InputArrayController = <T extends { metadata: KoodiMetadata[] }>({
                                         height={'1rem'}
                                         name={'KOPIOI_MUIHIN_KIELIIN'}
                                     />
-                                </div>
+                                </button>
                             )}
                         </TitleContainer>
                         <Controller

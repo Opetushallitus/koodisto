@@ -130,14 +130,13 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                                 }),
                             })}
                             suffix={
-                                <div
+                                <button
+                                    type="button"
                                     title={formatMessage({
                                         id: 'KOPIOI_MUIHIN_NIMIIN',
                                         defaultMessage: 'Kopioi muihin kieliin',
                                     })}
-                                    onClick={() => copyToNames()}
-                                    tabIndex={0}
-                                    role="button"
+                                    onClick={copyToNames}
                                 >
                                     <IconWrapper
                                         icon="ci:copy"
@@ -145,7 +144,7 @@ export const KoodistoRyhmaModal: React.FC<Props> = ({ koodistoRyhmaUri, closeMod
                                         height={'1.5rem'}
                                         name={'KOPIOI_MUIHIN_NIMIIN'}
                                     />
-                                </div>
+                                </button>
                             }
                         />
                         <MainContainerRowTitleMandatory id={'KOODISTO_RYHMA_SV'} defaultMessage={'SV'} />
