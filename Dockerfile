@@ -26,7 +26,7 @@ COPY codebuild-mvn-settings.xml .
 
 RUN mvn clean package -s codebuild-mvn-settings.xml -DskipTests
 
-FROM amazoncorretto:21.0.13@sha256:1a307926702559b0086a5c4d339eaafa9c992b3e8ba54201ac8ebbde31d22f0b
+FROM amazoncorretto:21.0.13@sha256:90100f194336ef2326f5efe1ee747395fd87d8210ad6d60463196aa0c4b0ad4e
 WORKDIR /app
 
 COPY --from=build /build/koodisto-service/target/koodisto-service.jar koodisto-service.jar
