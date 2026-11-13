@@ -42,15 +42,13 @@ test('The Koodisto Add page', async ({ page }) => {
 
         await page.locator('textarea[name="metadata[0][kuvaus]"]').fill('nimi-1655458944744');
         await page
-                .getByText('Kuvaus', { exact: true })
-                .locator('..')
-                .getByRole('button', { name: 'Kopioi muihin kieliin', exact: true })
-                .click();
+            .getByText('Kuvaus', { exact: true })
+            .locator('..')
+            .getByRole('button', { name: 'Kopioi muihin kieliin', exact: true })
+            .click();
 
-        await expect(page.locator('textarea[name="metadata[1][kuvaus]"]'))
-            .toHaveValue('nimi-1655458944744');
-        await expect(page.locator('textarea[name="metadata[2][kuvaus]"]'))
-            .toHaveValue('nimi-1655458944744');
+        await expect(page.locator('textarea[name="metadata[1][kuvaus]"]')).toHaveValue('nimi-1655458944744');
+        await expect(page.locator('textarea[name="metadata[2][kuvaus]"]')).toHaveValue('nimi-1655458944744');
     });
 
     await test.step('can save changes and open view page', async () => {
