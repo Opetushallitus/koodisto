@@ -8,7 +8,7 @@ export default defineConfig({
     forbidOnly: CI,
     retries: CI ? 2 : 0,
     workers: 2,
-    reporter: CI ? [['junit', { outputFile: '/playwright/playwright-results.xml' }]] : 'html',
+    reporter: CI ? [['junit', { outputFile: 'test-results/playwright-results.xml' }]] : 'html',
     use: {
         baseURL: 'http://localhost:8686/',
         trace: 'on',

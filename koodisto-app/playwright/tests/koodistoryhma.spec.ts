@@ -46,7 +46,10 @@ test('Create koodistoryhmä', async ({ page }) => {
         await mockPostKoodistoRyhma(page, { nimi: { fi: 'bar', sv: 'bar', en: 'bar' } });
         await page.locator('input[name=fi]').clear();
         await page.locator('input[name=fi]').fill('bar');
-        await page.locator('svg[name=KOPIOI_MUIHIN_NIMIIN]').click();
+        await page.getByRole('dialog').getByRole('button', { name: 'Kopioi muihin kieliin', exact: true }).click();
+
+        await expect(page.locator('input[name=sv]')).toHaveValue('bar');
+        await expect(page.locator('input[name=en]')).toHaveValue('bar');
         await mockGetKoodistoRyhma(page, 'empty', emptyRyhma1);
         await page.locator('button[name=KOODISTO_RYHMA_LUO_UUSI]').click();
     });

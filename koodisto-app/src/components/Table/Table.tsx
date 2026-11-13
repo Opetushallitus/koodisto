@@ -268,15 +268,17 @@ export const Table = <T extends object>({
 };
 const ResetFilter = ({ resetFilters }: { resetFilters: (() => void) | undefined }) =>
     resetFilters ? (
-        <IconWrapper
+        <button
+            type="button"
             id="clear-filter"
+            aria-label="Tyhjennä suodatin"
             onClick={resetFilters}
-            icon="ci:off-outline-close"
-            color={'gray'}
-            height={'1.5rem'}
-        />
+            style={{ minWidth: '1.5rem', minHeight: '1.5rem' }}
+        >
+            <IconWrapper icon="ci:off-outline-close" color="gray" height="1.5rem" />
+        </button>
     ) : (
-        <IconWrapper icon="ci:search" color={'gray'} height={'1.5rem'} />
+        <IconWrapper icon="ci:search" color="gray" height="1.5rem" />
     );
 
 function Filter<T>({ column, table }: { column: Column<T, unknown>; table: ReactTable<T> }) {
