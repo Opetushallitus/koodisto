@@ -358,13 +358,11 @@ function addProductionApprovalGate(
     }),
   );
 
-  const region = cdk.Stack.of(scope).region;
   pipeline.addStage({ stageName: "ProductionApproval" }).addAction(
     new codepipeline_actions.ManualApprovalAction({
       actionName: "ApproveProductionDeployment",
       additionalInformation:
         "Review the commit list in Slack before approving this production deployment.",
-      externalEntityLink: `https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineName}/view?region=${region}`,
     }),
   );
 }
