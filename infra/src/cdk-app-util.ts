@@ -122,10 +122,11 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
   ) {
     super(scope, id, props);
     const capitalizedEnv = capitalize(env);
+    const pipelineName = `Deploy${capitalizedEnv}`;
 
     const artifactBucket = new s3.Bucket(this, `ArtifactBucket`, {});
     const pipeline = new codepipeline.Pipeline(this, `DeployPipeline`, {
-      pipelineName: `Deploy${capitalizedEnv}`,
+      pipelineName,
       pipelineType: codepipeline.PipelineType.V1,
       artifactBucket,
     });
@@ -280,7 +281,13 @@ class ContinuousDeploymentPipelineStack extends cdk.Stack {
       project: deployProject,
     });
     if (env === "prod") {
-      addProductionApprovalGate(this, pipeline, sourceOutput, repository);
+      addProductionApprovalGate(
+        this,
+        pipeline,
+        sourceOutput,
+        repository,
+        pipelineName,
+      );
     }
     const deployStage = pipeline.addStage({ stageName: "Deploy" });
     deployStage.addAction(deployAction);
@@ -292,6 +299,7 @@ function addProductionApprovalGate(
   pipeline: codepipeline.Pipeline,
   sourceOutput: codepipeline.Artifact,
   repository: Repository,
+  pipelineName: string,
 ) {
   const approvalWebhookParameter =
     "/env/prod/slack-production-approval-webhook";
@@ -311,7 +319,7 @@ function addProductionApprovalGate(
         },
         PIPELINE_NAME: {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
-          value: pipeline.pipelineName,
+          value: pipelineName,
         },
         PIPELINE_REGION: {
           type: codebuild.BuildEnvironmentVariableType.PLAINTEXT,
@@ -356,7 +364,7 @@ function addProductionApprovalGate(
       actionName: "ApproveProductionDeployment",
       additionalInformation:
         "Review the commit list in Slack before approving this production deployment.",
-      externalEntityLink: `https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipeline.pipelineName}/view?region=${region}`,
+      externalEntityLink: `https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineName}/view?region=${region}`,
     }),
   );
 }
