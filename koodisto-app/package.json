@@ -28,7 +28,7 @@
         "@playwright/test": "1.65.1",
         "@types/node": "24.19.2",
         "@types/papaparse": "5.5.2",
-        "@types/react": "18.3.31",
+        "@types/react": "18.3.32",
         "@types/react-dom": "18.3.7",
         "@types/styled-components": "5.1.36",
         "@types/styled-system": "5.1.26",
